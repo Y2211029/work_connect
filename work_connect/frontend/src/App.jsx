@@ -12,7 +12,7 @@ function App() {
     {/* kjafdjkdabfvkbadbebjkenjkbneknb
     aoaloalalalalaldlalalalalalalalla
     anklndnlnfnkabfnabab
-
+    家で追加しましたぜ
      */}
       <div>
         <a href="https://vitejs.dev" target="_blank">

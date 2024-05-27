@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ReactDOM from "react-dom/client";
 import "./App.css";
-import "normalize.css"; //こちらを新たに追加!!!///
+import "normalize.css"; //こちらを新たに追加!!!!!///
 import HorizontalLinearStepper from "./components/stepbar.jsx";
 import Header from "./components/Header.jsx";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";

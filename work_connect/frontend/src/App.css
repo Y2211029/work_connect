@@ -1,0 +1,244 @@
+/* #root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+} */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.App {
+  width: 100%;
+  height: 100vh;
+  font-size: 18px
+}
+
+header {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #f3f6fc;
+  color: #696969;
+  /* position: fixed; */
+  width: 100%;
+  z-index: 10;
+  height: 60px;
+}
+
+header .logo {
+  font-size: 30px;
+}
+
+nav ul {
+  margin: 0px;
+}
+
+nav ul li {
+  list-style: none;
+  display: inline-block;
+  margin-right: 30px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #696969;
+  transition: all 0.2s;
+}
+
+nav ul li a:hover {
+  color: rgb(45, 214, 158);
+}
+
+
+
+/* 以下、出口記入 */
+.loginFormContainer {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+h1 {
+  text-align: center;
+}
+
+.loginFormContainer form {
+  background-color: white;
+  width: 70%;
+  max-width: 600px;
+  padding: 30px;
+  border-radius: 50px;
+  border: 1px solid #dfdfdf;
+  font-weight: 700;
+}
+
+.loginUiForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 500px;
+}
+
+.loginFormField {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.loginFormField input {
+  border: 1px solid grey;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.loginFormField input:focus {
+  outline: none;
+}
+
+.loginFormField label {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+.loginUiForm button {
+  background-color: #f3f6fc;
+  width: 100%;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 30px;
+  color: black;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.signUpUiForm button {
+  background-color: #f3f6fc;
+  width: 100%;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 30px;
+  color: black;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+button:hover {
+  background-color: #175892;
+}
+
+.errorMsg {
+  color: red;
+  margin: 0;
+  align-self: flex-start;
+}
+
+.signUpFormContainer {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.signUpFormContainer form {
+  background-color: white;
+  width: 70%;
+  max-width: 450px;
+  padding: 30px;
+  border-radius: 50px;
+  border: 1px solid #dfdfdf;
+  font-weight: 700;
+}
+
+.signUpUiForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 250px;
+}
+
+.signUpFormField {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.signUpFormField input {
+  border: 1px solid grey;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.signUpFormField input:focus {
+  outline: none;
+}
+
+.signUpFormField label {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+

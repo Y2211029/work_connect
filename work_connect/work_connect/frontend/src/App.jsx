@@ -10,7 +10,7 @@ const App = () => {
 
   const [value,setValue] = useState([]);
 
-  // 先ほど作成したLaravelのAPIのURL
+  // 先ほど作成したLaravelのAPIのURL //
   const url = "http://localhost:8000/list";
 
   useEffect(()=>{

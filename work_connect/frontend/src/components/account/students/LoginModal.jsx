@@ -91,8 +91,9 @@ const LoginModal = () => {
   })
   .done(function(data) {
     // ajax成功時の処理
-    console.log(data.id);
+    
     if(data != null){
+      console.log(data.id);
       console.log("login成功");
       alert("ログインに成功しました。");
 

@@ -43,6 +43,7 @@ return new class extends Migration
             $table->text('border_color')->nullable()->default(null);
             $table->text('background_color')->nullable()->default(null);
             $table->text('border_style')->nullable()->default(null);
+            $table->timestamps(); // created_atとupdated_atのカラムを自動作成
             $table->primary('id');
         });
 

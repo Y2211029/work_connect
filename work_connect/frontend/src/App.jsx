@@ -1,12 +1,16 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { useEffect, useState } from 'react'
-import App2 from './components/test/test';
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import './App.css'
+import "./App.css";
+import Header from "./components/Header";
+import BlogPage from "./components/BlogPage";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 
-function App() {
-  const [value, setValue] = useState([])
+const App = () => {
+
+  const [value,setValue] = useState([]);
+
+  // 先ほど作成したLaravelのAPIのURL
   const url = "http://localhost:8000/list";
 
   useEffect(()=>{
@@ -20,17 +24,27 @@ function App() {
       }
     })();
   },[]);
+
   return (
-    <>
+    // <div className="App">
+    //   {value.map((article)=>{
+    //     return (
+    //       <div key={article.id}>
+    //         <h1>{article.title}</h1>
+    //         <p>{article.content}</p>
+    //       </div>
+    //     );
+    //   })}
+    // </div>
     <Router>
+      <div className="App">
+        <Header />
         <Routes>
-          <Route path="/" />
+          <Route path="/" element={<BlogPage />}/>
         </Routes>
-        <App2 />
-      
+      </div>
     </Router>
-    </>
-  )
+  );
 }
 
-export default App
+export default App;

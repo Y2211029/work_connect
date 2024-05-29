@@ -13,7 +13,6 @@ class newloginController extends Controller
 
         
         $userName = $request->input('user_name');
-        $mail = $request->input('mail');
         $password = $request->input('password');
        
         \Log::info('aaaaaaaaaaaaaaaaaa');
@@ -21,18 +20,26 @@ class newloginController extends Controller
         \Log::info('get_InputValue: ' . json_encode($userName));
     
         
-        if(!empty($userName)&&!empty($mail)&&!empty($password)){
-          $userInfo2 = DB::table('w_users')
-          // ->where('user_name', json_encode($userName))
-          ->where('user_name', "$userName")
-          ->where('mail', "$mail")
-          ->where('password', "$password")
-          ->first();
+        if(!empty($userName)&&!empty($password)){
+          if(preg_match('/@/', $userName)){
+            // @マークを含む(メールアドレス)
+            $userInfo = DB::table('w_users')
+            ->where('mail', "$userName")
+            ->where('password', "$password")
+            ->first();
+          } else {
+            // @マークを含まない(ユーザー名)
+            $userInfo = DB::table('w_users')
+            ->where('user_name', "$userName")
+            ->where('password', "$password")
+            ->first();
+          }
+          
           \Log::info('get_InputValue(b): ' . json_encode($userName));
-          \Log::info('userInfo2: ' . json_encode($userInfo2));
-          // return json_encode($userInfo2);
+          \Log::info('userInfo: ' . json_encode($userInfo));
+          // return json_encode($userInfo);
           /*reactに返す*/
-          echo json_encode($userInfo2);
+          echo json_encode($userInfo);
           //return response()->json($userInfo2, 200, [], JSON_UNESCAPED_UNICODE);
           //return '<script>alert("やあ")</script>';
         

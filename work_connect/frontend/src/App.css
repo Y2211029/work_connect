@@ -1,65 +1,3 @@
-/* #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-} */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .App {
   width: 100%;
   height: 100vh;
@@ -171,6 +109,19 @@ h1 {
   transition: all 0.2s;
 }
 
+.preSignUpUiForm button {
+  background-color: #f3f6fc;
+  width: 100%;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 30px;
+  color: black;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
 .signUpUiForm button {
   background-color: #f3f6fc;
   width: 100%;
@@ -194,6 +145,54 @@ button:hover {
   align-self: flex-start;
 }
 
+.preSignUpFormContainer {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preSignUpFormContainer form {
+  background-color: white;
+  width: 70%;
+  max-width: 450px;
+  padding: 30px;
+  border-radius: 50px;
+  border: 1px solid #dfdfdf;
+  font-weight: 700;
+}
+
+.preSignUpUiForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 250px;
+}
+
+.preSignUpFormField {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.preSignUpFormField input {
+  border: 1px solid grey;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.preSignUpFormField input:focus {
+  outline: none;
+}
+
+.preSignUpFormField label {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
 .signUpFormContainer {
   height: 100vh;
   width: 100%;
@@ -204,8 +203,8 @@ button:hover {
 
 .signUpFormContainer form {
   background-color: white;
-  width: 70%;
-  max-width: 450px;
+  width: 700%;
+  max-width: 500px;
   padding: 30px;
   border-radius: 50px;
   border: 1px solid #dfdfdf;
@@ -216,9 +215,24 @@ button:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow-y: scroll;
+  float: left;
   justify-content: space-evenly;
-  height: 250px;
+  height: 500px;
+  width: 100%;
+  padding-right: 10px;
 }
+
+.signUpUiForm::-webkit-scrollbar {
+  background: white;
+  width: 10px;
+  height: 5px;
+}
+
+.signUpUiForm::-webkit-scrollbar-thumb {
+  background-color: #8b8b8b;
+}
+
 
 .signUpFormField {
   display: flex;
@@ -228,7 +242,8 @@ button:hover {
 
 .signUpFormField input {
   border: 1px solid grey;
-  padding: 20px;
+  padding: 15px;
+  width: 88%;
   border-radius: 10px;
 }
 
@@ -242,3 +257,26 @@ button:hover {
   margin-bottom: 3px;
 }
 
+
+.signUpUiForm .signUpFormField_name {
+  /* float: left; */
+  width: 100%;
+}
+
+.signUpFormField_name input {
+  border: 1px solid grey;
+  padding: 15px;
+  border-radius: 10px;
+  width: 40%;
+  margin-right: 10px;
+}
+
+.signUpFormField_name input:focus {
+  outline: none;
+}
+
+.signUpFormField_name label {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 3px;
+}

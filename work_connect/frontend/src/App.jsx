@@ -26,6 +26,7 @@ const App = () => {
   },[]);
 
   return (
+    // 少し変更を加えました。
     // <div className="App">
     //   {value.map((article)=>{
     //     return (

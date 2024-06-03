@@ -42,8 +42,9 @@
 // export default SignModal;
 
 
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import Modal from "react-modal";
+import axios from "axios";
 import "../../../App.css";
 
 // ログインのモーダル CSS設定
@@ -62,12 +63,14 @@ const PreSignModal = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [formValues, setFormValues] = useState({
-    user_name: "",
     mail: "",
-    password: "",
   });
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
+  const [csrfToken, setCsrfToken] = useState('');
+
+  const url = "http://localhost:8000/s_pre_register";
+  const csrf_url = "http://localhost:8000/csrf-token";
 
   const handleOpenModal = () => {
     setShowModal(true);
@@ -82,12 +85,67 @@ const PreSignModal = () => {
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
   };
+  useEffect(() => {
+    async function fetchCsrfToken() {
+      try {
+        const response = await axios.get(csrf_url); // CSRFトークンを取得するAPIエンドポイント
+        console.log(response.data.csrf_token); // ログ
+        console.log('fetching CSRF token:OK'); // ログ
+        const csrfToken = response.data.csrf_token;
+        setCsrfToken(csrfToken); // 状態を更新
+      } catch (error) {
+        console.error('Error fetching CSRF token:', error);
+      }
+    }
+      fetchCsrfToken(); // ページがロードされた時点でCSRFトークンを取得
+    }, []); // 空の依存配列を渡して、初回のみ実行するようにする
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     // フォームの送信処理
     setFormErrors(validate(formValues));
     setIsSubmit(true);
+
+    const mail = document.getElementsByName('mail')[0].value;
+
+    console.log("mail="+mail);
+
+      //ajax
+    $.ajax({
+      url: url, // アクセスするURL 
+      type: 'GET', // POST または GET
+      cache: false, // cacheを使うか使わないかを設定
+      dataType: 'json', // データタイプ (script, xmlDocument, jsonなど)
+      data: { 
+        mail: mail,
+      },
+      headers: {
+        'X-CSRF-TOKEN': csrfToken
+      }
+    })
+    .done(function(data) {
+      // ajax成功時の処理
+      
+      if(data != null){
+        console.log(data.id);
+        console.log("login成功");
+        alert("ログインに成功しました。");
+
+        // データの保存(セッションストレージ)
+        sessionStorage.setItem('user_id', data.id);
+        console.log("ユーザーidは"+sessionStorage.getItem('user_id'));
+
+      } else {
+        console.log("login失敗");
+        alert("ログインに失敗しました。\nユーザー名、メールアドレス、パスポートをご確認ください。");
+      }
+    })
+    .fail(function(textStatus, errorThrown) {
+      //ajax失敗時の処理
+      console.log('Error:', textStatus, errorThrown);
+    });
+
+
     // handleCloseModal(); // モーダルを閉じる
   };
 

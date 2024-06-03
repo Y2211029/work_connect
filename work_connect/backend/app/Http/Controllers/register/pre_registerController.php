@@ -24,7 +24,7 @@ class pre_registerController extends Controller
     
         Mail::to($mail)->send(new mailSend($details));
     
-        return "Email Sent!";
+        return json_encode("Email Sent!");
         
     }
 

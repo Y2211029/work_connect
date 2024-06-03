@@ -125,15 +125,25 @@ const PreSignModal = () => {
     })
     .done(function(data) {
       // ajax成功時の処理
+
+      data = "重複"; //////////////////// ← 仮でデータを入れてます ////////////////////////
       
       if(data != null){
-        console.log(data.id);
-        console.log("login成功");
-        alert("ログインに成功しました。");
+        // すでに入力されたメールアドレスが存在している場合に警告文を表示
+        if(data == "重複"){
+          console.log(data);
+          console.log("メールアドレス重複");
+          alert("このメールアドレスはすでに使用されています。");
+        } else {
+          console.log(data);
+          console.log("login成功");
+          alert("ログインに成功しました。");
+  
+          // データの保存(セッションストレージ)
+          // sessionStorage.setItem('user_id', data.id);
+          // console.log("ユーザーidは"+sessionStorage.getItem('user_id'));
+        }
 
-        // データの保存(セッションストレージ)
-        sessionStorage.setItem('user_id', data.id);
-        console.log("ユーザーidは"+sessionStorage.getItem('user_id'));
 
       } else {
         console.log("login失敗");

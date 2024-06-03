@@ -135,7 +135,8 @@ const PreSignModal = () => {
           console.log("メールアドレス重複");
           alert("このメールアドレスはすでに使用されています。");
 
-          document.getElementsByName('mail')[0].value = "";
+          // メールアドレスの文字を選択状態にする
+          document.getElementsByName('mail')[0].select();
         } else {
           console.log(data);
           console.log("login成功");

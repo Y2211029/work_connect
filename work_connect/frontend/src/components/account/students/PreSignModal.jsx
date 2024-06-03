@@ -110,7 +110,7 @@ const PreSignModal = () => {
 
     console.log("mail="+mail);
 
-      //ajax
+    //ajax
     $.ajax({
       url: url, // アクセスするURL 
       type: 'GET', // POST または GET
@@ -134,6 +134,8 @@ const PreSignModal = () => {
           console.log(data);
           console.log("メールアドレス重複");
           alert("このメールアドレスはすでに使用されています。");
+
+          document.getElementsByName('mail')[0].value = "";
         } else {
           console.log(data);
           console.log("login成功");

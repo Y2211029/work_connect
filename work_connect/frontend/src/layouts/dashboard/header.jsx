@@ -1,37 +1,39 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
-import Stack from '@mui/material/Stack';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import { useTheme } from '@mui/material/styles';
-import IconButton from '@mui/material/IconButton';
+import Stack from "@mui/material/Stack";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import { useTheme } from "@mui/material/styles";
+import IconButton from "@mui/material/IconButton";
 
-import Box from '@mui/material/Box';
+import Box from "@mui/material/Box";
 
-import { useResponsive } from '../../hooks/use-responsive';
+import { useResponsive } from "../../hooks/use-responsive";
 
-import { bgBlur } from '../../theme/css';
+import LoginModal from "../../components/account/students/LoginModal";
+import PreSignModal from "../../components/account/students/PreSignModal";
+import SignUp from "../../components/account/students/SignUp";
 
-import Iconify from '../../components/iconify';
+import { bgBlur } from "../../theme/css";
 
-import Searchbar from './common/searchbar';
-import { NAV, HEADER } from './config-layout';
-import AccountPopover from './common/account-popover';
+import Iconify from "../../components/iconify";
+
+import Searchbar from "./common/searchbar";
+import { NAV, HEADER } from "./config-layout";
+import AccountPopover from "./common/account-popover";
 
 // import LanguagePopover from './common/language-popover';
 
 // import chatPopover from './common/chat_popover';
 
-import ChatPng from './common/chatPng';
-import NotificationsPopover from './common/notifications-popover';
-
-
+import ChatPng from "./common/chatPng";
+import NotificationsPopover from "./common/notifications-popover";
 
 // ----------------------------------------------------------------------
 
 export default function Header({ onOpenNav }) {
   const theme = useTheme();
-  const lgUp = useResponsive('up', 'lg');
+  const lgUp = useResponsive("up", "lg");
   const renderContent = (
     <>
       {!lgUp && (
@@ -48,6 +50,9 @@ export default function Header({ onOpenNav }) {
 
       {/* チャット、通知、アカウントプロフィール */}
       <Stack direction="row" alignItems="center" spacing={1}>
+        <LoginModal />
+        <PreSignModal />
+        <SignUp />
         <ChatPng />
         <NotificationsPopover />
         <AccountPopover />
@@ -58,13 +63,13 @@ export default function Header({ onOpenNav }) {
   return (
     <AppBar
       sx={{
-        boxShadow: 'none',
+        boxShadow: "none",
         height: HEADER.H_MOBILE,
         zIndex: theme.zIndex.appBar + 1,
         ...bgBlur({
           color: theme.palette.background.default,
         }),
-        transition: theme.transitions.create(['height'], {
+        transition: theme.transitions.create(["height"], {
           duration: theme.transitions.duration.shorter,
         }),
         ...(lgUp && {

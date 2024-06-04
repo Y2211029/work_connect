@@ -4,7 +4,7 @@ import LoginModal from './account/students/LoginModal';
 import PreSignModal from './account/students/PreSignModal';
 import SignUp from './account/students/SignUp';
 
-const Header = () => {
+const testHeader = () => {
   return (
     <header>
         <dir className="logo">
@@ -28,4 +28,4 @@ const Header = () => {
   )
 }
 
-export default Header
+export default testHeader

@@ -34,9 +34,11 @@ const App = () => {
   }, []);
 
   return (
-    <ThemeProvider>
-      <Router />
-    </ThemeProvider>
+    <>
+      <ThemeProvider>
+        <Router />
+      </ThemeProvider>
+    </>
   );
 };
 

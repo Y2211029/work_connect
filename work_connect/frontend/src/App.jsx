@@ -6,7 +6,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 import { useScrollToTop } from "./hooks/use-scroll-to-top";
+
 import Router from "./routes/sections";
+
 import ThemeProvider from "./theme";
 
 // ----------------------------------------------------------------------

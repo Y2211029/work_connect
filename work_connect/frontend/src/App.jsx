@@ -1,51 +1,43 @@
+/* eslint-disable perfectionist/sort-imports */
+// カスタムスクロールバー
+import "./global.css";
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "./App.css";
-import Header from "./components/Header";
-import BlogPage from "./components/BlogPage";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
+import { useScrollToTop } from "./hooks/use-scroll-to-top";
+
+import Router from "./routes/sections";
+
+import ThemeProvider from "./theme";
+
+// ----------------------------------------------------------------------
 
 const App = () => {
+  useScrollToTop();
 
-  const [value,setValue] = useState([]);
+  const [value, setValue] = useState([]);
 
   // 先ほど作成したLaravelのAPIのURL
   const url = "http://localhost:8000/list";
 
-  useEffect(()=>{
-    (async ()=>{
-      try{
+  useEffect(() => {
+    (async () => {
+      try {
         const res = await axios.get(url);
         setValue(res.data.post);
         return;
-      }catch (e){
+      } catch (e) {
         return e;
       }
     })();
-  },[]);
+  }, []);
 
   return (
-    // 少し変更を加えました。
-    // <div className="App">
-    //   {value.map((article)=>{
-    //     return (
-    //       <div key={article.id}>
-    //         <h1>{article.title}</h1>
-    //         <p>{article.content}</p>
-    //       </div>
-    //     );
-    //   })}
-    // </div>
-    <Router>
-      <div className="App">
-        <Header />
-        <Routes>
-          <Route path="/" element={<BlogPage />}/>
-        </Routes>
-      </div>
-    </Router>
+    <ThemeProvider>
+      <Router />
+    </ThemeProvider>
   );
-}
+};
 
 export default App;

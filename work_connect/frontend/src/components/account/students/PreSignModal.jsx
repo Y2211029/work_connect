@@ -89,12 +89,13 @@ const PreSignModal = () => {
           console.log("つくれます");
           
 
-          // メールアドレスの文字を選択状態にする
-          document.getElementsByName('mail')[0].select();
         } else {
           console.log(data);
           console.log("つくれません");
           setFormErrors(validate(null,false));
+          
+          // メールアドレスの文字を選択状態にする
+          document.getElementsByName('mail')[0].select();
   
           // データの保存(セッションストレージ)
           // sessionStorage.setItem('user_id', data.id);

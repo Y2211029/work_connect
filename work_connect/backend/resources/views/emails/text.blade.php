@@ -1,4 +1,6 @@
 {{-- text.blade.php --}}
-{{ $details['title'] }}
+{{ $details['title'] }}<br>
 
-{{ $details['body'] }}
+{{ $details['body'] }}<br>
+
+{{ $details['url'] }}

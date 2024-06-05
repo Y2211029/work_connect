@@ -3,6 +3,7 @@ import Modal from "react-modal";
 import axios from "axios";
 import "../../../App.css";
 
+
 // ログインのモーダル CSS設定
 const modalStyle = {
   content: {
@@ -58,10 +59,16 @@ const PreSignModal = () => {
 
   const handleSubmit = async(e) => {
     e.preventDefault();
+    
     // フォームの送信処理
-    setFormErrors(validate(formValues));
+    const errors = validate(formValues, true);
+    setFormErrors(errors);
     setIsSubmit(true);
-
+  
+    // バリデーションエラーがある場合、処理を中断する
+    if (Object.keys(errors).length > 0) {
+      return;
+    }
     const mail = document.getElementsByName('mail')[0].value;
 
     console.log("mail="+mail);
@@ -82,21 +89,21 @@ const PreSignModal = () => {
     .done(function(data) {
       // ajax成功時の処理
 
-      data = "重複"; /////////////////// ← 仮でデータを入れてます ////////////////////////
-      
+
       if(data != null){
         // すでに入力されたメールアドレスが存在している場合に警告文を表示
-        if(data == "重複"){
+        if(data == "true"){
           console.log(data);
-          console.log("メールアドレス重複");
-          alert("このメールアドレスはすでに使用されています。");
+          console.log("つくれます");
+          
 
-          // メールアドレスの文字を選択状態にする
-          document.getElementsByName('mail')[0].select();
         } else {
           console.log(data);
-          console.log("login成功");
-          alert("ログインに成功しました。");
+          console.log("つくれません");
+          setFormErrors(validate(null,false));
+          
+          // メールアドレスの文字を選択状態にする
+          document.getElementsByName('mail')[0].select();
   
           // データの保存(セッションストレージ)
           // sessionStorage.setItem('user_id', data.id);
@@ -106,7 +113,7 @@ const PreSignModal = () => {
 
       } else {
         console.log("login失敗");
-        alert("ログインに失敗しました。\nユーザー名、メールアドレス、パスポートをご確認ください。");
+        alert("ログインに失敗しました。\nユーザー名、メールアドレス、パスワードをご確認ください。");
       }
     })
     .fail(function(textStatus, errorThrown) {
@@ -118,13 +125,18 @@ const PreSignModal = () => {
     // handleCloseModal(); // モーダルを閉じる
   };
 
-  const validate = (values) => {
+  const validate = (values,boolean) => {
     const errors = {};
     const regex = /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/;
-    if(!values.mail) {
+    // メールアドレスがまだ存在しないときはboolean == "true"
+    if(boolean == true && !values.mail) {
       errors.mail = "メールアドレスを入力してください";
-    } else if (!regex.test(values.mail)) {
+    } else if (boolean == true && !regex.test(values.mail)) {
       errors.mail = "正しいメールアドレスを入力してください";
+    } 
+    // メールアドレスが既に存在するときはboolean == "false"
+    if (boolean == false){
+      errors.mail = "このメールアドレスは既に登録されています。";
     }
     return errors;
   };

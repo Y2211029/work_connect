@@ -15,11 +15,7 @@ class WPreUser extends Model
     // マスアサインメント可能な属性
     protected $fillable = [
         'urltoken',
-        'user_name',
         'mail',
-        'password',
-        'date',
-        'flag',
     ];
 
     // タイムスタンプのカラムが存在しない場合は、$timestampsをfalseに設定

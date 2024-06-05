@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ListController;
 use App\Http\Controllers\login\loginController;
 use App\Http\Controllers\register\pre_registerController;
+use App\Http\Controllers\register\preRegisterCheckController;
 
 
 // トップ画面
@@ -14,6 +15,8 @@ Route::get('/', function () {
 
 // /list
 // Route::get('list',[ListController::class, 'index']);
+
+Route::get('/s_pre_register_check',[preRegisterCheckController::class, 'preRegisterCheckController']);
 
 Route::get('/list',[ListController::class, 'DB_connection']);
 Route::post('/list',[ListController::class, 'DB_connection']);

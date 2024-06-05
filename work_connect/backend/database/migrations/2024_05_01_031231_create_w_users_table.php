@@ -61,6 +61,20 @@ return new class extends Migration
                 'graduation_year' => '2025年卒業'
             ]
         );
+        \DB::table('w_users')->insert(
+            [
+                'id' => 'C_000000000002',
+                'student_surname' => '坂東',
+                'student_name' => '航希',
+                'student_kanasurname' => 'バンドウ',
+                'student_kananame' => 'コウキ',
+                'user_name' => 'bandou',
+                'school_name' => '清風情報工科学院',
+                'mail' => '2211023@i-seifu.jp',
+                'password' => '2023gakusei',
+                'graduation_year' => '2025年卒業'
+            ]
+        );
     }
 
 

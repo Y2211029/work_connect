@@ -45,13 +45,13 @@ class pre_registerController extends Controller
         
             Mail::to($mail)->send(new mailSend($w_pre_user,$details));
         
-            return json_encode("Email Sent!");
+            return json_encode("true");
         } else {
             // w_usersテーブルにアドレスが存在する場合、アカウントは作れない
             \Log::info('アドレス：'.$mail);
             \Log::info('アカウント作れません');
         
-            return json_encode("Email No Sent!");
+            return json_encode("false");
         }
 
         

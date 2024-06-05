@@ -59,10 +59,16 @@ const PreSignModal = () => {
 
   const handleSubmit = async(e) => {
     e.preventDefault();
+    
     // フォームの送信処理
-    setFormErrors(validate(formValues,true));
+    const errors = validate(formValues, true);
+    setFormErrors(errors);
     setIsSubmit(true);
-
+  
+    // バリデーションエラーがある場合、処理を中断する
+    if (Object.keys(errors).length > 0) {
+      return;
+    }
     const mail = document.getElementsByName('mail')[0].value;
 
     console.log("mail="+mail);
@@ -83,7 +89,7 @@ const PreSignModal = () => {
     .done(function(data) {
       // ajax成功時の処理
 
-      
+
       if(data != null){
         // すでに入力されたメールアドレスが存在している場合に警告文を表示
         if(data == "true"){
@@ -91,12 +97,13 @@ const PreSignModal = () => {
           console.log("つくれます");
           
 
-          // メールアドレスの文字を選択状態にする
-          document.getElementsByName('mail')[0].select();
         } else {
           console.log(data);
           console.log("つくれません");
           setFormErrors(validate(null,false));
+          
+          // メールアドレスの文字を選択状態にする
+          document.getElementsByName('mail')[0].select();
   
           // データの保存(セッションストレージ)
           // sessionStorage.setItem('user_id', data.id);

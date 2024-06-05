@@ -25,6 +25,10 @@ class pre_registerController extends Controller
             ->first();
 
         if($userInfo == null){
+
+            // w_pre_usersテーブルから$mailと一致するデータを削除
+            WPreUser::where('mail', "$mail")->delete();
+
             // w_usersテーブルにアドレスが存在しない場合、アカウント作成ができる
             \Log::info('アドレス：'.$mail);
             \Log::info('アカウント作れます');

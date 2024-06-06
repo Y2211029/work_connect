@@ -16,11 +16,11 @@ class preRegisterCheckController extends Controller
         
         // w_pre_usersテーブルから$url_tokenと一致するユーザー情報を抽出
         $userInfo = DB::table('w_pre_users')
-            ->where('token', "$url_token")
-            ->where('flg', 0)
+            ->where('urltoken', "$url_token")
+            ->where('flag', 0)
             ->first();
 
-        if($userInfo == null){
+        if($userInfo != null){
             // w_pre_usersテーブルのurltokenと一致した場合、本登録ができる
             \Log::info('url_token：'.$url_token);
             \Log::info('url_tokenが存在します');

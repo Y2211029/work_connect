@@ -10,6 +10,8 @@ import DashboardLayout from '../layouts/dashboard';
 // export const ProductsPage = lazy(() => import('src/pages/products'));
 // export const Page404 = lazy(() => import('src/pages/page-not-found'));
 
+export const SignRegistar = lazy(() => import('../pages/SignRegistar'));
+
 export const WorksListPage = lazy(() => import('../pages/workList'));
 export const VideoListPage = lazy(() => import('../pages/videoList'));
 export const StudentListPage = lazy(() => import('../pages/studentList'));
@@ -40,6 +42,7 @@ export default function Router() {
         { path: 'StudentList', element: <StudentListPage /> },
         { path: 'CompanyList', element: <CompanyListPage /> },
         { path: 'Internship_JobOffer', element: <internshipJobOfferPage /> },
+        { path: 'SignRegistar', element: <SignRegistar /> },
       ],
     },
     // {

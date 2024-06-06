@@ -10,7 +10,7 @@ import Typography from "@mui/material/Typography";
 const steps = ["アカウント", "学校情報", "詳細情報", "確認"];
 let stepConnectorLinesArray = [];
 
-export default function HorizontalLinearStepper() {
+export default function HorizontalLinearStepper({ Stepbar }) {
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
 
@@ -33,16 +33,16 @@ export default function HorizontalLinearStepper() {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     setSkipped(newSkipped);
     // ステップバーの色を変える処理
-    
+
     console.log("aaa", activeStep);
     console.log("iii", stepConnectorLinesArray[activeStep]);
     stepConnectorLinesArray[activeStep].style.borderTop = "5px solid #1976d2";
-
   };
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    stepConnectorLinesArray[activeStep - 1].style.borderTop = "5px solid #868686";
+    stepConnectorLinesArray[activeStep - 1].style.borderTop =
+      "5px solid #868686";
   };
 
   const handleSkip = () => {
@@ -81,7 +81,7 @@ export default function HorizontalLinearStepper() {
   });
 
   return (
-    <Box sx={{ width: "calc(100% - 20px)", padding: "50px 10px" }}>
+    <Box sx={{ width: "calc(100% - 20px)", padding: "50px 10px", display: Stepbar }}>
       {/* alternativeLabel ステップナンバーとステップ名の縦並び */}
       <Stepper
         activeStep={activeStep}
@@ -89,7 +89,7 @@ export default function HorizontalLinearStepper() {
         sx={{
           "& .MuiStepConnector-line": {
             borderTop: "5px solid #868686",
-            borderRadius: "20px"
+            borderRadius: "20px",
           },
         }}
       >
@@ -126,7 +126,14 @@ export default function HorizontalLinearStepper() {
       ) : (
         <React.Fragment>
           {/* <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography> */}
-          <Box sx={{ display: "flex", justifyContent: "space-between", flexDirection: "row", pt: 2 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              flexDirection: "row",
+              pt: 2,
+            }}
+          >
             <Button
               color="inherit"
               disabled={activeStep === 0}

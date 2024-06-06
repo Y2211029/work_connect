@@ -44,7 +44,7 @@ class pre_registerController extends Controller
             $details = [
                 'title' => '仮登録ありがとうございます。',
                 'body' => '下記URLをクリックして、本登録を完了させてください。',
-                'url' => 'http://localhost:5174/?urltoken='.$w_pre_user->urltoken
+                'url' => 'http://localhost:5174/SignRegistar/?urltoken='.$w_pre_user->urltoken
             ];
         
             Mail::to($mail)->send(new mailSend($w_pre_user,$details));

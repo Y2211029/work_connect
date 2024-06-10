@@ -2,6 +2,7 @@ import React, { useEffect,useState } from "react";
 import Modal from "react-modal";
 import axios from "axios";
 import "../../../App.css";
+import CompanyLoginModal from '../company/LoginModal';
 
 // ログインのモーダル CSS設定
 const modalStyle = {
@@ -15,7 +16,7 @@ const modalStyle = {
     }
 };
 
-const LoginModal = () => {
+const LoginModal = ({ FromCompanyPage }) => {
 
   const [showModal, setShowModal] = useState(false);
   const [formValues, setFormValues] = useState({
@@ -138,7 +139,12 @@ const LoginModal = () => {
 
   return (
     <div>
-      <button onClick={handleOpenModal}>ログイン</button>
+      {/* 条件付きレンダリングを使用 */}
+      {FromCompanyPage ? (
+        <a href="javascript:void(0)" onClick={handleOpenModal}>学生の方はこちら</a>
+      ) : (
+        <button onClick={handleOpenModal}>ログイン</button>
+      )}
       <Modal isOpen={showModal} contentLabel="Example Modal" style={modalStyle}>
         <div className="loginFormContainer">
           <form onSubmit={handleSubmit}>
@@ -169,7 +175,8 @@ const LoginModal = () => {
               <button type="submit" className="submitButton">ログイン</button>
               {Object.keys(formErrors).length === 0 && isSubmit && handleCloseModal}
               <button onClick={handleCloseModal}>閉じる</button>
-              <a href="">企業の方はこちら</a>
+              <CompanyLoginModal />
+              {/* <a href="">企業の方はこちら</a> */}
             </div>
           </form>
         </div>

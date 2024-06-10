@@ -2,6 +2,8 @@ import React, { useState,useEffect,useRef } from "react";
 import Modal from "react-modal";
 import axios from "axios";
 
+// import $ from "jquery"
+
 import "../../../App.css";
 import CompanyPreSignModal from '../company/PreSignModal';
 
@@ -185,12 +187,11 @@ const PreSignModal = ({ FromCompanyPage }) => {
 
   return (
     <div>
-      <button onClick={handleOpenModal} id="preSignModalOpenButton">新規登録</button>
       {/* 条件付きレンダリングを使用 */}
       {FromCompanyPage ? (
         <a href="javascript:void(0)" onClick={handleOpenModal}>学生の方はこちら</a>
       ) : (
-        <button onClick={handleOpenModal}>新規登録</button>
+        <button onClick={handleOpenModal} id="preSignModalOpenButton">新規登録</button>
       )}
       <Modal isOpen={showModal} contentLabel="Example Modal" style={modalStyle}>
         <div className="preSignUpFormContainer">
@@ -211,7 +212,6 @@ const PreSignModal = ({ FromCompanyPage }) => {
               <button type="submit" className="submitButton">仮登録</button>
               {Object.keys(formErrors).length === 0 && isSubmit && handleCloseModal}
               <button onClick={handleCloseModal}>閉じる</button>
-              <a href="" id="goCampanyPreSign">企業の方はこちら</a>
               <CompanyPreSignModal />
             </div>
           </form>

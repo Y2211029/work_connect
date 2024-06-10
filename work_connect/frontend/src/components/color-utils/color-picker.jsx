@@ -100,6 +100,10 @@ const ColorPicker = forwardRef(
   }
 );
 
+
+// displayName を追加
+ColorPicker.displayName = 'ColorPicker';
+
 ColorPicker.propTypes = {
   colors: PropTypes.arrayOf(PropTypes.string).isRequired, // 修正
   limit: PropTypes.oneOfType([PropTypes.number, PropTypes.string]), // 修正

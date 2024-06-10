@@ -1,6 +1,6 @@
 import { TextField } from "@mui/material";
 import { useState, useEffect } from "react";
-// 
+//
 import "./css/AccountRegistration.css";
 
 const AccountRegistar = () => {
@@ -42,14 +42,7 @@ const AccountRegistar = () => {
       "InputFilled",
       allInputsFilled(accountData, inputError, passwordMatch)
     );
-  }, [
-    accountData.userName,
-    accountData.password,
-    accountData.passwordCheck,
-    inputError.userName,
-    inputError.password,
-    inputError.passwordCheck,
-  ]); // パスワードまたはパスワード確認が変更されたときに実行
+  }, [accountData, inputError]); // パスワードまたはパスワード確認が変更されたときに実行
 
   const handleChange = (e) => {
     const { name, value } = e.target;

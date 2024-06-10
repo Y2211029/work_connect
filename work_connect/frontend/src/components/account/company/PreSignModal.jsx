@@ -62,7 +62,7 @@ const CompanyPreSignModal = () => {
   return (
     <div>
       {/* javascript:void(0)でリロードを停止させてます。 */}
-      <a href="javascript:void(0)" onClick={handleOpenModal}>企業の方はこちら</a>
+      <a href="javascript:void(0)" onClick={handleOpenModal} id="goCampanyPreSign">企業の方はこちら</a>
       {/* <button onClick={handleOpenModal}>新規登録</button> */}
       <Modal isOpen={showModal} contentLabel="Example Modal" style={modalStyle}>
         <div className="preSignUpFormContainer">

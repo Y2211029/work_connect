@@ -29,9 +29,9 @@ function TagInput () {
     [selected]
   )
 
-  const onShouldCollapse  = (value) => {
-    return value.length === 0;
-  };
+  // const onShouldCollapse  = (value) => {
+  //   return value.length === 0;
+  // };
 
 
   return (

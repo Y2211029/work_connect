@@ -88,4 +88,5 @@ const options = [
   { value: '音楽鑑賞', label: '薬学科' },  
 ]
 
-export default () => <CreatableSelect options={options} isClearable/>;
+const SchoolNameDropdown = () => <CreatableSelect options={options} isClearable/>;
+export default SchoolNameDropdown;

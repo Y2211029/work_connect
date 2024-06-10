@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Modal from "react-modal";
+
 import "../../../App.css";
+
 import LoginModal from '../students/LoginModal';
 
 // ログインのモーダル CSS設定
@@ -50,7 +52,8 @@ const CompanyLoginModal = () => {
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  const url = "http://localhost:8000/login";
+  // const url = "http://localhost:8000/login";
+  // console.log(url); // デバッグ用に一時的に使用する例
   const user_name = document.getElementsByName('user_name')[0].value;
   // const mail = document.getElementsByName('mail')[0].value;
   // const password = document.getElementsByName('password')[0].value;
@@ -108,8 +111,8 @@ const CompanyLoginModal = () => {
   return (
     <div>
       {/* javascript:void(0)でリロードを停止させてます。 */}
-      <a href="javascript:void(0)" onClick={handleOpenModal}>企業の方はこちら</a>
-      <Modal isOpen={showModal} contentLabel="Example Modal" style={modalStyle}>
+      <a href="javascript:void(0)" onClick={handleOpenModal} id="goCampanyLogin">企業の方はこちら</a>
+      <Modal  isOpen={showModal} contentLabel="Example Modal" style={modalStyle} >
         <div className="loginFormContainer">
           <form onSubmit={handleSubmit}>
             <h3>Work & Connect ログイン</h3>

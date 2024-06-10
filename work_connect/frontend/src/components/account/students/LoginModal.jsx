@@ -1,4 +1,4 @@
-import React, { useEffect,useState } from "react";
+import React, { useEffect,useState,useRef } from "react";
 import Modal from "react-modal";
 import axios from "axios";
 import "../../../App.css";
@@ -27,8 +27,49 @@ const LoginModal = () => {
   const [isSubmit, setIsSubmit] = useState(false);
   const [csrfToken, setCsrfToken] = useState('');
 
+  const clickOneTimes = useRef(false); // 一度だけ処理させたい処理を管理するuseRefを作成する
+
   const url = "http://localhost:8000/s_login";
   const csrf_url = "http://localhost:8000/csrf-token";
+
+  // 新規登録モーダルが開くボタンを押したとき、ログインモーダルを閉じる処理
+  $('*').click(function(e) {
+    // console.log($(e.target).attr('class'));
+    if(($(e.target).attr('id') != "goCampanyPreSign")
+      && ($(e.target).attr('id') != "goCampanyLogin")
+      && ($(e.target).attr('class') != "submitButton"))
+    {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    if(clickOneTimes.current) return; // 送信処理中かを判定する（trueなら抜ける）
+    clickOneTimes.current = true; // 送信処理中フラグを立てる
+
+    // ④ 行いたい処理を記述する
+    // クリックした要素の<html>までのすべての親要素の中に"formInModal"クラスがついている要素を取得
+    var targetParants = $(e.target).parents('.formInModal');
+  
+    // 取得した要素の個数が0個の場合
+    if(targetParants.length == 0) {
+      // クリックした要素に"formInModal"クラスがついていない場合
+      if($(e.target).attr('class') != "formInModal") {
+        // ログインモーダルを閉じる
+        setShowModal(false);
+      }
+    }
+
+    // ヘッダーのログインボタンを押したときにログインモーダルを開いたり閉じたりする処理
+    if($(e.target).attr('id') == 'loginModalOpenButton') {
+      if(showModal == true) { 
+        setShowModal(false);
+      } else {
+        setShowModal(true);
+      }
+    }
+
+    clickOneTimes.current = false;  // 送信処理中フラグを下げる
+  });
 
   const handleOpenModal = () => {
     setShowModal(true);
@@ -138,10 +179,10 @@ const LoginModal = () => {
 
   return (
     <div>
-      <button onClick={handleOpenModal}>ログイン</button>
+      <button onClick={handleOpenModal} id="loginModalOpenButton">ログイン</button>
       <Modal isOpen={showModal} contentLabel="Example Modal" style={modalStyle}>
         <div className="loginFormContainer">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="formInModal">
             <h3>Work & Connect ログイン</h3>
             <hr />
             <div className="loginUiForm">
@@ -169,7 +210,7 @@ const LoginModal = () => {
               <button type="submit" className="submitButton">ログイン</button>
               {Object.keys(formErrors).length === 0 && isSubmit && handleCloseModal}
               <button onClick={handleCloseModal}>閉じる</button>
-              <a href="">企業の方はこちら</a>
+              <a href="" id="goCampanyLogin">企業の方はこちら</a>
             </div>
           </form>
         </div>

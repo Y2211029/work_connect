@@ -1,4 +1,4 @@
-import React from "react";
+// 
 import SchoolNameDropdown from "./SchoolInfomation/SchoolNameDropdown";
 import { styled } from "@mui/material";
 import GraduationYearDropdown from "./SchoolInfomation/GraduationYearDropdown";

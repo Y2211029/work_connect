@@ -42,6 +42,9 @@ const Label = forwardRef(
   }
 );
 
+// displayNameプロパティを設定
+Label.displayName = 'Label';
+
 Label.propTypes = {
   children: PropTypes.node,
   endIcon: PropTypes.object,

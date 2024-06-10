@@ -1,4 +1,5 @@
-import * as React from "react";
+import React from "react";
+import PropTypes from "prop-types";
 
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
@@ -7,17 +8,13 @@ import StepLabel from "@mui/material/StepLabel";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
+
 const steps = ["アカウント", "学校情報", "詳細情報", "確認"];
 let stepConnectorLinesArray = [];
 
 export default function HorizontalLinearStepper({ Stepbar }) {
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
-
-  // console.log(activeStep);
-  const isStepOptional = (step) => {
-    return step === 1;
-  };
 
   const isStepSkipped = (step) => {
     return skipped.has(step);
@@ -45,21 +42,6 @@ export default function HorizontalLinearStepper({ Stepbar }) {
       "5px solid #868686";
   };
 
-  const handleSkip = () => {
-    if (!isStepOptional(activeStep)) {
-      // You probably want to guard against something like this,
-      // it should never occur unless someone's actively trying to break something.
-      throw new Error("You can't skip a step that isn't optional.");
-    }
-
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped((prevSkipped) => {
-      const newSkipped = new Set(prevSkipped.values());
-      newSkipped.add(activeStep);
-      return newSkipped;
-    });
-  };
-
   const handleReset = () => {
     setActiveStep(0);
   };
@@ -70,7 +52,7 @@ export default function HorizontalLinearStepper({ Stepbar }) {
   // document.getElementById("")
   // console.log(activeStep);
 
-  window.addEventListener("load", (event) => {
+  window.addEventListener("load", () => {
     const stepConnectorLines = document.querySelectorAll(
       ".MuiStepConnector-line"
     );
@@ -81,7 +63,13 @@ export default function HorizontalLinearStepper({ Stepbar }) {
   });
 
   return (
-    <Box sx={{ width: "calc(100% - 20px)", padding: "50px 10px", display: Stepbar }}>
+    <Box
+      sx={{
+        width: "calc(100% - 20px)",
+        padding: "50px 10px",
+        display: Stepbar,
+      }}
+    >
       {/* alternativeLabel ステップナンバーとステップ名の縦並び */}
       <Stepper
         activeStep={activeStep}
@@ -107,11 +95,12 @@ export default function HorizontalLinearStepper({ Stepbar }) {
           );
         })}
       </Stepper>
+      {/* 入力フォーム表示位置 */}
+      {/* {activeStep === 0 ? <AccountRegistar /> : ""}; */}
 
-      {/*
-      
-      
-      */}
+      {/* {activeStep === 1 ? <SchoolInformation /> : ""};
+      {activeStep === 2 ? <MoreInformation /> : ""};
+      {activeStep === 3 ? <Confirmation /> : ""}; */}
 
       {activeStep === steps.length ? (
         <React.Fragment>
@@ -151,3 +140,7 @@ export default function HorizontalLinearStepper({ Stepbar }) {
     </Box>
   );
 }
+
+HorizontalLinearStepper.propTypes = {
+  Stepbar: PropTypes.element.isRequired, // StepbarがReact要素（コンポーネント）であると仮定
+};

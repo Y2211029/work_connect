@@ -21,7 +21,7 @@ import Box from '@mui/material/Box';
 import { fToNow } from '../../../utils/format-time';
 
 import Iconify from '../../../components/iconify';
-import Scrollbar from '../../../components/scrollbar';
+import Scrollbar from '../../../components/scrollbar/scrollbar';
 
 // ----------------------------------------------------------------------
 

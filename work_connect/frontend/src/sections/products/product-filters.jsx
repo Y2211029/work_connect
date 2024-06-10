@@ -15,7 +15,7 @@ import IconButton from '@mui/material/IconButton';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 import Iconify from '../../components/iconify';
-import Scrollbar from '../../components/scrollbar';
+import Scrollbar from '../../components/scrollbar/scrollbar';
 import { ColorPicker } from '../../components/color-utils';
 
 // ----------------------------------------------------------------------

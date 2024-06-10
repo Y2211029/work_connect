@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Modal from "react-modal";
 import "../../../App.css";
+import LoginModal from '../students/LoginModal';
 
 // ログインのモーダル CSS設定
 const modalStyle = {
@@ -14,7 +15,7 @@ const modalStyle = {
     }
 };
 
-const LoginModal = () => {
+const CompanyLoginModal = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [formValues, setFormValues] = useState({
@@ -107,7 +108,8 @@ const LoginModal = () => {
 
   return (
     <div>
-      <button onClick={handleOpenModal}>ログイン</button>
+      {/* javascript:void(0)でリロードを停止させてます。 */}
+      <a href="javascript:void(0)" onClick={handleOpenModal}>企業の方はこちら</a>
       <Modal isOpen={showModal} contentLabel="Example Modal" style={modalStyle}>
         <div className="loginFormContainer">
           <form onSubmit={handleSubmit}>
@@ -147,7 +149,7 @@ const LoginModal = () => {
               <button type="submit" className="submitButton">ログイン</button>
               {Object.keys(formErrors).length === 0 && isSubmit && handleCloseModal}
               <button onClick={handleCloseModal}>閉じる</button>
-              <a href="">生徒の方はこちら</a>
+              <LoginModal FromCompanyPage={true}/>
             </div>
           </form>
         </div>
@@ -156,4 +158,4 @@ const LoginModal = () => {
   );
 };
 
-export default LoginModal;
+export default CompanyLoginModal;

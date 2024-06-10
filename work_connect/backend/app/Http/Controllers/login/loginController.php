@@ -4,6 +4,7 @@ namespace App\Http\Controllers\login;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
 class loginController extends Controller
@@ -14,8 +15,13 @@ class loginController extends Controller
         
         $userName = $request->input('user_name');
         $password = $request->input('password');
-       
-        \Log::info('aaaaaaaaaaaaaaaaaa');
+        $password_x = Hash::make($password);
+        // 試し
+        \Log::info('hash:'.$password_x);
+        // Hash::check(平文のパスワード, ハッシュ化したパスワード)
+        if(Hash::check($password, $password_x)){
+          \Log::info('hash OK');
+        }
         // 
         \Log::info('get_InputValue: ' . json_encode($userName));
     

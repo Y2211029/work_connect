@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+
 import $ from "jquery";
 
 import CircularIndeterminate from "../../loading/circle";
-import AccountRegistar from "../../../sections/sign/AccountRegistration";
-// import HorizontalLinearStepper from "../stepbar";
+// import AccountRegistar from "../../../sections/sign/AccountRegistration";
+import HorizontalLinearStepper from "../stepbar";
 
 const PreSignUrlCheck = () => {
   const [csrfToken, setCsrfToken] = useState("");
@@ -58,7 +59,7 @@ const PreSignUrlCheck = () => {
           //  ローディングcircle非表示
           <CircularIndeterminate Circul={setCircul("none")} />;
           //  ステップバー表示
-          // <HorizontalLinearStepper Stepbar={setStepbar("block")} />;
+          <HorizontalLinearStepper Stepbar={setStepbar("block")} />;
           // <AccountRegistar />;
         } else {
           console.log(data);
@@ -81,8 +82,8 @@ const PreSignUrlCheck = () => {
       {/* ローディングcircle表示 */}
       <CircularIndeterminate Circul={Circul} />
       {/* ステップバー */}
-      {/* <HorizontalLinearStepper Stepbar={Stepbar} /> */}
-      <AccountRegistar />
+      <HorizontalLinearStepper Stepbar={Stepbar} />
+      {/* <AccountRegistar /> */}
     </>
   );
 };

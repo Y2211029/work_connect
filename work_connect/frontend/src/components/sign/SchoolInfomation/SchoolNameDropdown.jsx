@@ -10,7 +10,7 @@ const SchoolNameDropdown = () => {
   const accessToken = "268|G5fHGAGA7Col8FetXAQ6EMNHnjDIA5TInN2uByIB";
 
   const schoolTypeCodes = ["H1", "H2"]; // 複数のschool_type_codeを配列として定義
-
+  
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -53,7 +53,7 @@ const SchoolNameDropdown = () => {
     };
 
     fetchData();
-  }, []); // 最初のレンダリング時のみ実行される
+  }, [schoolTypeCodes]); // 最初のレンダリング時のみ実行される
 
   // ドロップダウンで選択された値を状態に設定
   const handleChange = (selectedOption) => {

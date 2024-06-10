@@ -1,8 +1,8 @@
 import { useState,useEffect } from "react";
 import Modal from "react-modal";
 import axios from "axios";
-import $ from 'jquery';
 
+import $ from "jquery"
 
 import "../../../App.css";
 

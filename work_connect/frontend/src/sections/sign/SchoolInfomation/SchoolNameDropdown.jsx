@@ -9,9 +9,9 @@ const SchoolNameDropdown = () => {
   const [loading, setLoading] = useState(false); // ローディング状態
   const accessToken = "268|G5fHGAGA7Col8FetXAQ6EMNHnjDIA5TInN2uByIB";
 
-  const schoolTypeCodes = ["H1", "H2"]; // 複数のschool_type_codeを配列として定義
-
+  
   useEffect(() => {
+    const schoolTypeCodes = ["H1", "H2"]; // 複数のschool_type_codeを配列として定義
     const fetchData = async () => {
       setLoading(true);
       let allSchools = [];

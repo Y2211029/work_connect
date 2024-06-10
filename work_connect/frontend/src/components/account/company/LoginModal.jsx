@@ -49,7 +49,8 @@ const LoginModal = () => {
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  const url = "http://localhost:8000/login";
+  // const url = "http://localhost:8000/login";
+  // console.log(url); // デバッグ用に一時的に使用する例
   const user_name = document.getElementsByName('user_name')[0].value;
   // const mail = document.getElementsByName('mail')[0].value;
   // const password = document.getElementsByName('password')[0].value;

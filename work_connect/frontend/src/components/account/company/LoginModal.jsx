@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Modal from "react-modal";
 import "../../../App.css";
 import LoginModal from '../students/LoginModal';
@@ -52,33 +52,33 @@ const CompanyLoginModal = () => {
 
   const url = "http://localhost:8000/login";
   const user_name = document.getElementsByName('user_name')[0].value;
-  const mail = document.getElementsByName('mail')[0].value;
-  const password = document.getElementsByName('password')[0].value;
+  // const mail = document.getElementsByName('mail')[0].value;
+  // const password = document.getElementsByName('password')[0].value;
 
   console.log("user_name="+user_name);
 
   
-    await $.ajax({
-      url: url, //アクセスするURL"http://localhost:8000/login"
-      type: 'GET', //post or get
-      cache: false,        //cacheを使うか使わないかを設定
-      dataType:'json',     //data type script・xmlDocument・jsonなど
-      data: { 
-        inputValue : inputValue
-      },
-      headers: {
-        'X-CSRF-TOKEN': csrfToken
-      },
-      success: function(response) {
+    // await $.ajax({
+    //   url: url, //アクセスするURL"http://localhost:8000/login"
+    //   type: 'GET', //post or get
+    //   cache: false,        //cacheを使うか使わないかを設定
+    //   dataType:'json',     //data type script・xmlDocument・jsonなど
+    //   data: { 
+    //     inputValue : inputValue
+    //   },
+    //   headers: {
+    //     'X-CSRF-TOKEN': csrfToken
+    //   },
+    //   success: function(response) {
         
-        console.log(response);
-      },
-      error: function(xhr, status) {
+    //     console.log(response);
+    //   },
+    //   error: function(xhr, status) {
         
-        console.log('Status:', status);
-        console.log('XHR:', xhr);
-      }
-    })
+    //     console.log('Status:', status);
+    //     console.log('XHR:', xhr);
+    //   }
+    // })
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // handleCloseModal(); // モーダルを閉じる

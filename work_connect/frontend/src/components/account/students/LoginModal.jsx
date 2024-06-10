@@ -1,8 +1,12 @@
-import React, { useEffect,useState } from "react";
+import { useEffect,useState } from "react";
 import Modal from "react-modal";
 import axios from "axios";
+import $ from 'jquery';
+
+
 import "../../../App.css";
 import CompanyLoginModal from '../company/LoginModal';
+
 
 // ログインのモーダル CSS設定
 const modalStyle = {

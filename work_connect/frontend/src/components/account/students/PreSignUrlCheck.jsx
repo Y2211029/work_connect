@@ -4,12 +4,12 @@ import axios from "axios";
 import $ from "jquery";
 
 import CircularIndeterminate from "../../loading/circle";
-// import AccountRegistar from "../../../sections/sign/AccountRegistration";
+
 import HorizontalLinearStepper from "../stepbar";
 
 const PreSignUrlCheck = () => {
   const [csrfToken, setCsrfToken] = useState("");
-  const [Circul, setCircul] = useState("flex");
+  const [Circul, setCircul] = useState("block");
   const [Stepbar, setStepbar] = useState("none");
 
   let GetUrl = new URL(window.location.href);

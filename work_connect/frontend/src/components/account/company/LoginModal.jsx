@@ -3,7 +3,7 @@ import Modal from "react-modal";
 
 import "../../../App.css";
 
-import LoginModal from '../students/LoginModal';
+import LoginModal from "../students/LoginModal";
 
 // ログインのモーダル CSS設定
 const modalStyle = {
@@ -13,12 +13,11 @@ const modalStyle = {
     border: "none",
     borderRadius: "0",
     padding: "1.5rem",
-    overflow: "none"
-    }
+    overflow: "none",
+  },
 };
 
 const CompanyLoginModal = () => {
-
   const [showModal, setShowModal] = useState(false);
   const [formValues, setFormValues] = useState({
     user_name: "",
@@ -43,67 +42,67 @@ const CompanyLoginModal = () => {
   };
 
   // aysncつけました
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     e.preventDefault();
     // フォームの送信処理
     setFormErrors(validate(formValues));
     setIsSubmit(true);
 
-  //////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  // const url = "http://localhost:8000/login";
-  // console.log(url); // デバッグ用に一時的に使用する例
-  const user_name = document.getElementsByName('user_name')[0].value;
-  // const mail = document.getElementsByName('mail')[0].value;
-  // const password = document.getElementsByName('password')[0].value;
+    // const url = "http://localhost:8000/login";
+    // console.log(url); // デバッグ用に一時的に使用する例
+    const user_name = document.getElementsByName("user_name")[0].value;
+    // const mail = document.getElementsByName('mail')[0].value;
+    // const password = document.getElementsByName('password')[0].value;
 
-  console.log("user_name="+user_name);
+    console.log("user_name=" + user_name);
 
-  
     // await $.ajax({
     //   url: url, //アクセスするURL"http://localhost:8000/login"
     //   type: 'GET', //post or get
     //   cache: false,        //cacheを使うか使わないかを設定
     //   dataType:'json',     //data type script・xmlDocument・jsonなど
-    //   data: { 
+    //   data: {
     //     inputValue : inputValue
     //   },
     //   headers: {
     //     'X-CSRF-TOKEN': csrfToken
     //   },
     //   success: function(response) {
-        
+
     //     console.log(response);
     //   },
     //   error: function(xhr, status) {
-        
+
     //     console.log('Status:', status);
     //     console.log('XHR:', xhr);
     //   }
     // })
-//////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // handleCloseModal(); // モーダルを閉じる
   };
 
   const validate = (values) => {
     const errors = {};
-    const regex = /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/;
-    if(!values.user_name) {
+    const regex =
+      /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/;
+    if (!values.user_name) {
       errors.user_name = "ユーザー名を入力してください";
     }
-    if(!values.mail) {
+    if (!values.mail) {
       errors.mail = "メールアドレスを入力してください";
     } else if (!regex.test(values.mail)) {
       errors.mail = "正しいメールアドレスを入力してください";
     }
-    if(!values.password) {
+    if (!values.password) {
       errors.password = "パスワードを入力してください";
     } else if (values.password.length < 4) {
-      errors.password ="4文字以上15文字以下のパスワードを入力してください";
+      errors.password = "4文字以上15文字以下のパスワードを入力してください";
     } else if (values.password.length > 15) {
-      errors.password ="4文字以上15文字以下のパスワードを入力してください";
+      errors.password = "4文字以上15文字以下のパスワードを入力してください";
     }
     return errors;
   };
@@ -111,8 +110,14 @@ const CompanyLoginModal = () => {
   return (
     <div>
       {/* javascript:void(0)でリロードを停止させてます。 */}
-      <a href="javascript:void(0)" onClick={handleOpenModal} id="goCampanyLogin">企業の方はこちら</a>
-      <Modal  isOpen={showModal} contentLabel="Example Modal" style={modalStyle} >
+      <a
+        href="javascript:void(0)"
+        onClick={handleOpenModal}
+        id="goCampanyLogin"
+      >
+        企業の方はこちら
+      </a>
+      <Modal isOpen={showModal} contentLabel="Example Modal" style={modalStyle}>
         <div className="loginFormContainer">
           <form onSubmit={handleSubmit}>
             <h3>Work & Connect ログイン</h3>
@@ -148,10 +153,14 @@ const CompanyLoginModal = () => {
                 />
               </div>
               <p className="errorMsg">{formErrors.password}</p>
-              <button type="submit" className="submitButton">ログイン</button>
-              {Object.keys(formErrors).length === 0 && isSubmit && handleCloseModal}
+              <button type="submit" className="submitButton">
+                ログイン
+              </button>
+              {Object.keys(formErrors).length === 0 &&
+                isSubmit &&
+                handleCloseModal}
               <button onClick={handleCloseModal}>閉じる</button>
-              <LoginModal FromCompanyPage={true}/>
+              <LoginModal FromCompanyPage={true} />
             </div>
           </form>
         </div>
@@ -159,5 +168,6 @@ const CompanyLoginModal = () => {
     </div>
   );
 };
+
 
 export default CompanyLoginModal;

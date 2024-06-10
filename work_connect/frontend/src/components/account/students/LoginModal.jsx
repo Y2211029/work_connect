@@ -1,12 +1,13 @@
-import React, { useEffect,useState,useRef } from "react";
+import { useEffect, useState, useRef } from "react";
+import PropTypes from "prop-types";
+
 import Modal from "react-modal";
 import axios from "axios";
 
-// import $ from "jquery"
+import $ from "jquery";
 
 import "../../../App.css";
-import CompanyLoginModal from '../company/LoginModal';
-
+import CompanyLoginModal from "../company/LoginModal";
 
 // ログインのモーダル CSS設定
 const modalStyle = {
@@ -16,12 +17,11 @@ const modalStyle = {
     border: "none",
     borderRadius: "0",
     padding: "1.5rem",
-    overflow: "none"
-    }
+    overflow: "none",
+  },
 };
 
 const LoginModal = ({ FromCompanyPage }) => {
-
   const [showModal, setShowModal] = useState(false);
   const [formValues, setFormValues] = useState({
     user_name: "",
@@ -30,7 +30,7 @@ const LoginModal = ({ FromCompanyPage }) => {
   });
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
-  const [csrfToken, setCsrfToken] = useState('');
+  const [csrfToken, setCsrfToken] = useState("");
 
   const clickOneTimes = useRef(false); // 一度だけ処理させたい処理を管理するuseRefを作成する
 
@@ -38,42 +38,43 @@ const LoginModal = ({ FromCompanyPage }) => {
   const csrf_url = "http://localhost:8000/csrf-token";
 
   // 新規登録モーダルが開くボタンを押したとき、ログインモーダルを閉じる処理
-  $('*').click(function(e) {
+  $("*").click(function (e) {
     // console.log($(e.target).attr('class'));
-    if(($(e.target).attr('id') != "goCampanyPreSign")
-      && ($(e.target).attr('id') != "goCampanyLogin")
-      && ($(e.target).attr('class') != "submitButton"))
-    {
+    if (
+      $(e.target).attr("id") != "goCampanyPreSign" &&
+      $(e.target).attr("id") != "goCampanyLogin" &&
+      $(e.target).attr("class") != "submitButton"
+    ) {
       e.preventDefault();
       e.stopPropagation();
     }
 
-    if(clickOneTimes.current) return; // 送信処理中かを判定する（trueなら抜ける）
+    if (clickOneTimes.current) return; // 送信処理中かを判定する（trueなら抜ける）
     clickOneTimes.current = true; // 送信処理中フラグを立てる
 
     // 行いたい処理を記述する
     // クリックした要素の<html>までのすべての親要素の中に"formInModal"クラスがついている要素を取得
-    var targetParants = $(e.target).parents('.formInModal');
-  
+    var targetParants = $(e.target).parents(".formInModal");
+
     // 取得した要素の個数が0個の場合
-    if(targetParants.length == 0) {
+    if (targetParants.length == 0) {
       // クリックした要素に"formInModal"クラスがついていない場合
-      if($(e.target).attr('class') != "formInModal") {
+      if ($(e.target).attr("class") != "formInModal") {
         // ログインモーダルを閉じる
         setShowModal(false);
       }
     }
 
     // ヘッダーのログインボタンを押したときにログインモーダルを開いたり閉じたりする処理
-    if($(e.target).attr('id') == 'loginModalOpenButton') {
-      if(showModal == true) { 
+    if ($(e.target).attr("id") == "loginModalOpenButton") {
+      if (showModal == true) {
         setShowModal(false);
       } else {
         setShowModal(true);
       }
     }
 
-    clickOneTimes.current = false;  // 送信処理中フラグを下げる
+    clickOneTimes.current = false; // 送信処理中フラグを下げる
   });
 
   const handleOpenModal = () => {
@@ -91,22 +92,22 @@ const LoginModal = ({ FromCompanyPage }) => {
   };
 
   useEffect(() => {
-  async function fetchCsrfToken() {
-    try {
-      const response = await axios.get(csrf_url); // CSRFトークンを取得するAPIエンドポイント
-      console.log(response.data.csrf_token); // ログ
-      console.log('fetching CSRF token:OK'); // ログ
-      const csrfToken = response.data.csrf_token;
-      setCsrfToken(csrfToken); // 状態を更新
-    } catch (error) {
-      console.error('Error fetching CSRF token:', error);
+    async function fetchCsrfToken() {
+      try {
+        const response = await axios.get(csrf_url); // CSRFトークンを取得するAPIエンドポイント
+        console.log(response.data.csrf_token); // ログ
+        console.log("fetching CSRF token:OK"); // ログ
+        const csrfToken = response.data.csrf_token;
+        setCsrfToken(csrfToken); // 状態を更新
+      } catch (error) {
+        console.error("Error fetching CSRF token:", error);
+      }
     }
-  }
     fetchCsrfToken(); // ページがロードされた時点でCSRFトークンを取得
   }, []); // 空の依存配列を渡して、初回のみ実行するようにする
 
   // aysncつけました
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // フォームの送信処理
     setFormErrors(validate(formValues));
@@ -114,71 +115,72 @@ const LoginModal = ({ FromCompanyPage }) => {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  
-  const user_name = document.getElementsByName('user_name')[0].value;
-  const password = document.getElementsByName('password')[0].value;
+    const user_name = document.getElementsByName("user_name")[0].value;
+    const password = document.getElementsByName("password")[0].value;
 
-  console.log("user_name"+user_name);
-  console.log("password"+password);
+    console.log("user_name" + user_name);
+    console.log("password" + password);
 
-  //ajax
-  $.ajax({
-    url: url, // アクセスするURL "http://localhost:8000/login"
-    type: 'GET', // POST または GET
-    cache: false, // cacheを使うか使わないかを設定
-    dataType: 'json', // データタイプ (script, xmlDocument, jsonなど)
-    data: { 
-      user_name: user_name,
-      password: password
-    },
-    headers: {
-      'X-CSRF-TOKEN': csrfToken
-    }
-  })
-  .done(function(data) {
-    // ajax成功時の処理
-    
-    if(data != null){
-      console.log(data.id);
-      console.log("login成功");
-      alert("ログインに成功しました。");
+    //ajax
+    $.ajax({
+      url: url, // アクセスするURL "http://localhost:8000/login"
+      type: "GET", // POST または GET
+      cache: false, // cacheを使うか使わないかを設定
+      dataType: "json", // データタイプ (script, xmlDocument, jsonなど)
+      data: {
+        user_name: user_name,
+        password: password,
+      },
+      headers: {
+        "X-CSRF-TOKEN": csrfToken,
+      },
+    })
+      .done(function (data) {
+        // ajax成功時の処理
 
-      // データの保存(セッションストレージ)
-      sessionStorage.setItem('user_id', data.id);
-      console.log("ユーザーidは"+sessionStorage.getItem('user_id'));
+        if (data != null) {
+          console.log(data.id);
+          console.log("login成功");
+          alert("ログインに成功しました。");
 
-    } else {
-      console.log("login失敗");
-      alert("ログインに失敗しました。\nユーザー名、メールアドレス、パスポートをご確認ください。");
-    }
-  })
-  .fail(function(textStatus, errorThrown) {
-    //ajax失敗時の処理
-    console.log('Error:', textStatus, errorThrown);
-  });
-  
-//////////////////////////////////////////////////////////////////////////////////////////////////////
+          // データの保存(セッションストレージ)
+          sessionStorage.setItem("user_id", data.id);
+          console.log("ユーザーidは" + sessionStorage.getItem("user_id"));
+        } else {
+          console.log("login失敗");
+          alert(
+            "ログインに失敗しました。\nユーザー名、メールアドレス、パスポートをご確認ください。"
+          );
+        }
+      })
+      .fail(function (textStatus, errorThrown) {
+        //ajax失敗時の処理
+        console.log("Error:", textStatus, errorThrown);
+      });
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
     // handleCloseModal(); // モーダルを閉じる
   };
 
   const validate = (values) => {
     const errors = {};
     // 有効なメールアドレスか検証
-    const regex = /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/;
+    const regex =
+      /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/;
 
-    if(!values.user_name) {
+    if (!values.user_name) {
       errors.user_name = "ユーザー名またはメールアドレスを入力してください";
-    } else if(/[@]/.test(values.user_name) && !regex.test(values.user_name)){
+    } else if (/[@]/.test(values.user_name) && !regex.test(values.user_name)) {
       // @マークを含み(メールアドレス)かつ、メールアドレスが無効の場合
-        errors.mail = "正しいメールアドレスを入力してください";
+      errors.mail = "正しいメールアドレスを入力してください";
     }
-    
-    if(!values.password) {
+
+    if (!values.password) {
       errors.password = "パスワードを入力してください";
     } else if (values.password.length < 4 || values.password.length > 15) {
-      errors.password ="4文字以上15文字以下のパスワードを入力してください";
-    } 
-    
+      errors.password = "4文字以上15文字以下のパスワードを入力してください";
+    }
+
     return errors;
   };
 
@@ -186,9 +188,13 @@ const LoginModal = ({ FromCompanyPage }) => {
     <div>
       {/* 条件付きレンダリングを使用 */}
       {FromCompanyPage ? (
-        <a href="javascript:void(0)" onClick={handleOpenModal}>学生の方はこちら</a>
+        <a href="javascript:void(0)" onClick={handleOpenModal}>
+          学生の方はこちら
+        </a>
       ) : (
-        <button onClick={handleOpenModal} id="loginModalOpenButton">ログイン</button>
+        <button onClick={handleOpenModal} id="loginModalOpenButton">
+          ログイン
+        </button>
       )}
       <Modal isOpen={showModal} contentLabel="Example Modal" style={modalStyle}>
         <div className="loginFormContainer">
@@ -206,7 +212,7 @@ const LoginModal = ({ FromCompanyPage }) => {
                 />
               </div>
               <p className="errorMsg">{formErrors.user_name}</p>
-              
+
               <div className="loginFormField">
                 <label>パスワード</label>
                 <input
@@ -217,8 +223,12 @@ const LoginModal = ({ FromCompanyPage }) => {
                 />
               </div>
               <p className="errorMsg">{formErrors.password}</p>
-              <button type="submit" className="submitButton">ログイン</button>
-              {Object.keys(formErrors).length === 0 && isSubmit && handleCloseModal}
+              <button type="submit" className="submitButton">
+                ログイン
+              </button>
+              {Object.keys(formErrors).length === 0 &&
+                isSubmit &&
+                handleCloseModal}
               <button onClick={handleCloseModal}>閉じる</button>
               <CompanyLoginModal />
               {/* <a href="">企業の方はこちら</a> */}
@@ -230,4 +240,9 @@ const LoginModal = ({ FromCompanyPage }) => {
   );
 };
 
+LoginModal.propTypes = {
+  FromCompanyPage: PropTypes.bool.isRequired,
+};
+
 export default LoginModal;
+

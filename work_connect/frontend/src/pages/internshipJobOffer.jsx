@@ -1,10 +1,10 @@
-import { Helmet } from 'react-helmet-async';
+import { Helmet } from "react-helmet-async";
 
-import { InternshipJobOfferView } from '../sections/InternshipJobOffer';
+import { InternshipJobOfferView } from "../sections/InternshipJobOffer";
 
 // ----------------------------------------------------------------------
 
-export default function LoginPage() {
+export default function InternshipJobOfferPage() {
   return (
     <>
       <Helmet>

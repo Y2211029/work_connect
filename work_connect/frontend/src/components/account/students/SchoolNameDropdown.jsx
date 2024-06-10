@@ -9,9 +9,10 @@ const SchoolNameDropdown = () => {
   const [loading, setLoading] = useState(false); // ローディング状態
   const accessToken = "268|G5fHGAGA7Col8FetXAQ6EMNHnjDIA5TInN2uByIB";
 
-  const schoolTypeCodes = ["H1", "H2"]; // 複数のschool_type_codeを配列として定義
   
   useEffect(() => {
+    const schoolTypeCodes = ["H1", "H2"]; // 複数のschool_type_codeを配列として定義
+    
     const fetchData = async () => {
       setLoading(true);
       let allSchools = [];
@@ -53,7 +54,7 @@ const SchoolNameDropdown = () => {
     };
 
     fetchData();
-  }, [schoolTypeCodes]); // 最初のレンダリング時のみ実行される
+  }, []); // 最初のレンダリング時のみ実行される
 
   // ドロップダウンで選択された値を状態に設定
   const handleChange = (selectedOption) => {

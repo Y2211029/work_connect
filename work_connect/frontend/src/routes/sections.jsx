@@ -16,7 +16,7 @@ export const WorksListPage = lazy(() => import('../pages/workList'));
 export const VideoListPage = lazy(() => import('../pages/videoList'));
 export const StudentListPage = lazy(() => import('../pages/studentList'));
 export const CompanyListPage = lazy(() => import('../pages/companyList'));
-export const internshipJobOfferPage = lazy(() => import('../pages/internshipJobOffer'));
+export const InternshipJobOfferPage = lazy(() => import('../pages/internshipJobOffer'));
 
 // ----------------------------------------------------------------------
 
@@ -30,29 +30,15 @@ export default function Router() {
           </Suspense>
         </DashboardLayout>
       ),
-      // children: [
-      //   { element: <IndexPage />, index: true },
-      //   { path: 'user', element: <UserPage /> },
-      //   { path: 'products', element: <ProductsPage /> },
-      //   { path: 'blog', element: <BlogPage /> },
-      // ],
       children: [
         { element: <WorksListPage />, index: true },
         { path: 'VideoList', element: <VideoListPage /> },
         { path: 'StudentList', element: <StudentListPage /> },
         { path: 'CompanyList', element: <CompanyListPage /> },
-        { path: 'Internship_JobOffer', element: <internshipJobOfferPage /> },
+        { path: 'Internship_JobOffer', element: <InternshipJobOfferPage /> },
         { path: 'SignRegistar', element: <SignRegistar /> },
       ],
     },
-    // {
-    //   path: 'VideoList',
-    //   element: <Page404 />,
-    // },
-    // {
-    //   path: 'login',
-    //   element: <LoginPage />,
-    // },
     {
       path: '*',
       element: <Navigate to="/404" replace />,

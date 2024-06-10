@@ -1,6 +1,7 @@
-import { TextField } from "@mui/material";
 import { useState, useEffect } from "react";
-//
+
+import { TextField } from "@mui/material";
+
 import "./css/AccountRegistration.css";
 
 const AccountRegistar = () => {
@@ -21,15 +22,14 @@ const AccountRegistar = () => {
 
   // input要素に全て値が入力されたかどうかをチェック
   const allInputsFilled = (accountData, inputError, passwordMatch) => {
-    const allInputsTrue =
+    return (
       !inputError.userName &&
       accountData.userName !== "" &&
       !inputError.password &&
       accountData.password !== "" &&
       passwordMatch &&
-      accountData.passwordCheck !== "";
-
-    return allInputsTrue;
+      accountData.passwordCheck !== ""
+    );
   };
 
   useEffect(() => {

@@ -1,5 +1,5 @@
-import PropTypes from "prop-types";
 import { memo, forwardRef } from "react";
+import PropTypes from "prop-types";
 
 import { StyledScrollbar, StyledRootScrollbar } from "./styles";
 
@@ -7,7 +7,8 @@ import Box from "@mui/material/Box";
 
 // ----------------------------------------------------------------------
 
-const Scrollbar = forwardRef(({ children, sx, ...other }, ref) => {
+// eslint-disable-next-line react/no-multi-comp
+const ScrollbarComponent = forwardRef(({ children, sx, ...other }, ref) => {
   const userAgent =
     typeof navigator === "undefined" ? "SSR" : navigator.userAgent;
 
@@ -41,11 +42,14 @@ const Scrollbar = forwardRef(({ children, sx, ...other }, ref) => {
 });
 
 // displayNameを設定
-Scrollbar.displayName = "Scrollbar";
+ScrollbarComponent.displayName = "Scrollbar";
 
-Scrollbar.propTypes = {
+ScrollbarComponent.propTypes = {
   children: PropTypes.node,
   sx: PropTypes.object,
 };
 
-export default memo(Scrollbar);
+// コンポーネントに名前を付ける
+const Scrollbar = memo(ScrollbarComponent);
+
+export default Scrollbar;

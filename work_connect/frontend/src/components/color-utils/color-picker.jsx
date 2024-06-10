@@ -101,10 +101,10 @@ const ColorPicker = forwardRef(
 );
 
 ColorPicker.propTypes = {
-  colors: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
-  limit: PropTypes.number,
-  onSelectColor: PropTypes.func,
-  selected: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
+  colors: PropTypes.arrayOf(PropTypes.string).isRequired, // 修正
+  limit: PropTypes.oneOfType([PropTypes.number, PropTypes.string]), // 修正
+  onSelectColor: PropTypes.func.isRequired, // 追加
+  selected: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]).isRequired, // 追加
   sx: PropTypes.object,
 };
 

@@ -1,4 +1,4 @@
-import React from "react";
+// 
 import { styled } from "@mui/material";
 import Environment from "./DetailInfomation/EnvironmentDropdown";
 import Hobby from "./DetailInfomation/Hobby";

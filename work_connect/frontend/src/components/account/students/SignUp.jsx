@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Modal from "react-modal";
 import "../../../App.css";
 import "../../tag/tag.css";
-import TagInput from "../../tag/tag";
 import GraduationYearDropdown from "./GraduationYearDropdown";
 import SchoolNameDropdown from "./SchoolNameDropdown";
-import HorizontalLinearStepper from "../stepbar";
+
 
 // ログインのモーダル CSS設定
 const modalStyle = {

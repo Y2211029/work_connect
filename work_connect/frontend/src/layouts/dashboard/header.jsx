@@ -1,4 +1,3 @@
-import { Link, Routes, Route } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import AppBar from "@mui/material/AppBar";
@@ -8,7 +7,6 @@ import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
 import { useTheme } from "@mui/material/styles";
 
-import HorizontalLinearStepper from "../../components/account/stepbar";
 import LoginModal from "../../components/account/students/LoginModal";
 import PreSignModal from "../../components/account/students/PreSignModal";
 import SignUp from "../../components/account/students/SignUp";

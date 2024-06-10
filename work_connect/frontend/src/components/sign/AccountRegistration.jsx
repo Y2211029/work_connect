@@ -1,6 +1,6 @@
 import { TextField } from "@mui/material";
 import { useState, useEffect } from "react";
-import React from "react";
+// 
 import "./css/AccountRegistration.css";
 
 const AccountRegistar = () => {

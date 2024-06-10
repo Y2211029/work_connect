@@ -1,50 +1,7 @@
-// import React from "react";
-// import Modal from "react-modal";
-
-// class SignModal extends React.Component {
-//   constructor() {
-//     super();
-
-//     this.state = {
-//       showModal: false,
-//     };
-
-//     this.handleOpenModal = this.handleOpenModal.bind(this);
-//     this.handleCloseModal = this.handleCloseModal.bind(this);
-//   }
-
-//   handleOpenModal() {
-//     this.setState({ showModal: true });
-//   }
-
-//   handleCloseModal() {
-//     this.setState({ showModal: false });
-//   }
-
-//   render() {
-//     return (
-//       <div>
-//         <button onClick={this.handleOpenModal}>新規登録</button>
-//         <Modal isOpen={this.state.showModal} contentLabel="Example Modal">
-//           <h2>新規登録</h2>
-//           <form action="">
-//             <input type="email" />
-//             <input type="submit" value="仮登録"/>
-//           </form>
-
-//           <button onClick={this.handleCloseModal}>閉じる</button>
-//         </Modal>
-//       </div>
-//     );
-//   }
-// }
-
-// export default SignModal;
-
-
-import React, { useState } from "react";
+import { useState } from "react";
 import Modal from "react-modal";
 import "../../../App.css";
+import PreSignModal from '../students/PreSignModal';
 
 // ログインのモーダル CSS設定
 const modalStyle = {
@@ -58,7 +15,7 @@ const modalStyle = {
     }
 };
 
-const PreSignModal = () => {
+const CompanyPreSignModal = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [formValues, setFormValues] = useState({
@@ -104,14 +61,16 @@ const PreSignModal = () => {
 
   return (
     <div>
-      <button onClick={handleOpenModal}>新規登録</button>
+      {/* javascript:void(0)でリロードを停止させてます。 */}
+      <a href="javascript:void(0)" onClick={handleOpenModal}>企業の方はこちら</a>
+      {/* <button onClick={handleOpenModal}>新規登録</button> */}
       <Modal isOpen={showModal} contentLabel="Example Modal" style={modalStyle}>
-        <div className="signUpFormContainer">
+        <div className="preSignUpFormContainer">
           <form onSubmit={handleSubmit}>
             <h3>Work & Connect 仮登録</h3>
             <hr />
-            <div className="signUpUiForm">
-              <div className="signUpFormField">
+            <div className="preSignUpUiForm">
+              <div className="preSignUpFormField">
                 <label>メールアドレス</label>
                 <input
                   type="text"
@@ -124,7 +83,7 @@ const PreSignModal = () => {
               <button type="submit" className="submitButton">仮登録</button>
               {Object.keys(formErrors).length === 0 && isSubmit && handleCloseModal}
               <button onClick={handleCloseModal}>閉じる</button>
-              <a href="">企業の方はこちら</a>
+              <PreSignModal FromCompanyPage={true}/>
             </div>
           </form>
         </div>
@@ -133,4 +92,4 @@ const PreSignModal = () => {
   );
 };
 
-export default PreSignModal;
+export default CompanyPreSignModal;

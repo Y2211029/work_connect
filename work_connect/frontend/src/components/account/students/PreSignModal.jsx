@@ -1,7 +1,9 @@
 import React, { useState,useEffect,useRef } from "react";
 import Modal from "react-modal";
 import axios from "axios";
+
 import "../../../App.css";
+import CompanyPreSignModal from '../company/PreSignModal';
 
 
 // ログインのモーダル CSS設定
@@ -16,7 +18,7 @@ const modalStyle = {
     }
 };
 
-const PreSignModal = () => {
+const PreSignModal = ({ FromCompanyPage }) => {
 
   const [showModal, setShowModal] = useState(false);
   const [formValues, setFormValues] = useState({
@@ -184,6 +186,12 @@ const PreSignModal = () => {
   return (
     <div>
       <button onClick={handleOpenModal} id="preSignModalOpenButton">新規登録</button>
+      {/* 条件付きレンダリングを使用 */}
+      {FromCompanyPage ? (
+        <a href="javascript:void(0)" onClick={handleOpenModal}>学生の方はこちら</a>
+      ) : (
+        <button onClick={handleOpenModal}>新規登録</button>
+      )}
       <Modal isOpen={showModal} contentLabel="Example Modal" style={modalStyle}>
         <div className="preSignUpFormContainer">
           <form onSubmit={handleSubmit} className="formInModal">
@@ -204,6 +212,7 @@ const PreSignModal = () => {
               {Object.keys(formErrors).length === 0 && isSubmit && handleCloseModal}
               <button onClick={handleCloseModal}>閉じる</button>
               <a href="" id="goCampanyPreSign">企業の方はこちら</a>
+              <CompanyPreSignModal />
             </div>
           </form>
         </div>

@@ -1,7 +1,10 @@
 import React, { useEffect,useState,useRef } from "react";
 import Modal from "react-modal";
 import axios from "axios";
+
 import "../../../App.css";
+import CompanyLoginModal from '../company/LoginModal';
+
 
 // ログインのモーダル CSS設定
 const modalStyle = {
@@ -15,7 +18,7 @@ const modalStyle = {
     }
 };
 
-const LoginModal = () => {
+const LoginModal = ({ FromCompanyPage }) => {
 
   const [showModal, setShowModal] = useState(false);
   const [formValues, setFormValues] = useState({
@@ -46,7 +49,7 @@ const LoginModal = () => {
     if(clickOneTimes.current) return; // 送信処理中かを判定する（trueなら抜ける）
     clickOneTimes.current = true; // 送信処理中フラグを立てる
 
-    // ④ 行いたい処理を記述する
+    // 行いたい処理を記述する
     // クリックした要素の<html>までのすべての親要素の中に"formInModal"クラスがついている要素を取得
     var targetParants = $(e.target).parents('.formInModal');
   
@@ -180,6 +183,12 @@ const LoginModal = () => {
   return (
     <div>
       <button onClick={handleOpenModal} id="loginModalOpenButton">ログイン</button>
+      {/* 条件付きレンダリングを使用 */}
+      {FromCompanyPage ? (
+        <a href="javascript:void(0)" onClick={handleOpenModal}>学生の方はこちら</a>
+      ) : (
+        <button onClick={handleOpenModal}>ログイン</button>
+      )}
       <Modal isOpen={showModal} contentLabel="Example Modal" style={modalStyle}>
         <div className="loginFormContainer">
           <form onSubmit={handleSubmit} className="formInModal">
@@ -211,6 +220,8 @@ const LoginModal = () => {
               {Object.keys(formErrors).length === 0 && isSubmit && handleCloseModal}
               <button onClick={handleCloseModal}>閉じる</button>
               <a href="" id="goCampanyLogin">企業の方はこちら</a>
+              <CompanyLoginModal />
+              {/* <a href="">企業の方はこちら</a> */}
             </div>
           </form>
         </div>

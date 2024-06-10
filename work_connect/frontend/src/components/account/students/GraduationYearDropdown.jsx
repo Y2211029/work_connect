@@ -1,4 +1,4 @@
-import React from 'react';
+// ;
 import Select from 'react-select';
 
 // 現在の年とその前後5年間の年度を生成する関数

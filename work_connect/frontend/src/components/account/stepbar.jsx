@@ -23,6 +23,7 @@ export default function HorizontalLinearStepper({ Stepbar }) {
   };
 
   const handleNext = () => {
+    console.log("nananananananan");
     let newSkipped = skipped;
     if (isStepSkipped(activeStep)) {
       newSkipped = new Set(newSkipped.values());

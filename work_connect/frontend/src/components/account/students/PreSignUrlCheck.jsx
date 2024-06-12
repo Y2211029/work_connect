@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, } from "react";
 import axios from "axios";
 
 import $ from "jquery";
@@ -7,10 +7,15 @@ import CircularIndeterminate from "../../loading/circle";
 
 import HorizontalLinearStepper from "../stepbar";
 
+import { emailContext } from "./EmailContext";
+
 const PreSignUrlCheck = () => {
   const [csrfToken, setCsrfToken] = useState("");
   const [Circul, setCircul] = useState("block");
   const [Stepbar, setStepbar] = useState("none");
+  const [AccountData, setAccountData] = useState({ email: "", tf: "" });
+
+  // const oneTimes = useRef(false); // 一度だけ処理させたい処理を管理するuseRefを作成する
 
   let GetUrl = new URL(window.location.href);
   let params = GetUrl.searchParams;
@@ -35,54 +40,72 @@ const PreSignUrlCheck = () => {
     fetchCsrfToken(); // ページがロードされた時点でCSRFトークンを取得
   }, []); // 空の依存配列を渡して、初回のみ実行するようにする
 
-  //ajax
-  $.ajax({
-    url: url, // アクセスするURL
-    type: "GET", // POST または GET
-    cache: false, // cacheを使うか使わないかを設定
-    dataType: "json", // データタイプ (script, xmlDocument, jsonなど)
-    data: {
-      url_token: params.get("urltoken"),
-    },
-    headers: {
-      "X-CSRF-TOKEN": csrfToken,
-    },
-  })
-    .done(function (data) {
-      // ajax成功時の処理
-
-      if (data != null) {
-        // すでに入力されたメールアドレスが存在している場合に警告文を表示
-        if (data == "true") {
-          console.log(data);
-          console.log("正しいです。");
-          //  ローディングcircle非表示
-          <CircularIndeterminate Circul={setCircul("none")} />;
-          //  ステップバー表示
-          <HorizontalLinearStepper Stepbar={setStepbar("block")} />;
-          // <AccountRegistar />;
-        } else {
-          console.log(data);
-          console.log("違います。");
-          location.href = "/404";
-        }
-      } else {
-        console.log("login失敗");
-        alert(
-          "ログインに失敗しました。\nユーザー名、メールアドレス、パスワードをご確認ください。"
-        );
-      }
+  useEffect(() => {
+    //ajax
+    $.ajax({
+      url: url, // アクセスするURL
+      type: "GET", // POST または GET
+      cache: false, // cacheを使うか使わないかを設定
+      dataType: "json", // データタイプ (script, xmlDocument, jsonなど)
+      data: {
+        url_token: params.get("urltoken"),
+      },
+      headers: {
+        "X-CSRF-TOKEN": csrfToken,
+      },
     })
-    .fail(function (textStatus, errorThrown) {
-      //ajax失敗時の処理
-      console.log("Error:", textStatus, errorThrown);
-    });
+      .done(function (data) {
+        // ajax成功時の処理
+
+        if (data != null) {
+          // すでに入力されたメールアドレスが存在している場合に警告文を表示
+          if (data.tf == "true") {
+            console.log(data);
+            console.log("正しいです。");
+            setAccountData({ ...AccountData, email: data.email });
+          } else {
+            console.log(data);
+            console.log("違います。");
+            location.href = "/404";
+          }
+        } else {
+          console.log("login失敗");
+          alert(
+            "ログインに失敗しました。\nユーザー名、メールアドレス、パスワードをご確認ください。"
+          );
+        }
+      })
+      .fail(function (textStatus, errorThrown) {
+        //ajax失敗時の処理
+        console.log("Error:", textStatus, errorThrown);
+      });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // 空の依存配列を渡して、初回のみ実行するようにする
+
+  useEffect(() => {
+    console.log(AccountData);
+
+    //  ローディングcircle非表示
+    <CircularIndeterminate Circul={setCircul("none")} />;
+    //  ステップバー表示
+    <HorizontalLinearStepper Stepbar={setStepbar("block")} />;
+    // <AccountRegistar />;
+  }, [AccountData]); // 空の依存配列を渡して、初回のみ実行するようにする
+
+  let newArray = Object.entries(AccountData);
+
+  // const emailContext = useContext(AccountData);
+
+
   return (
     <>
       {/* ローディングcircle表示 */}
       <CircularIndeterminate Circul={Circul} />
       {/* ステップバー */}
-      <HorizontalLinearStepper Stepbar={Stepbar} />
+      <emailContext.Provider value={newArray}>
+        <HorizontalLinearStepper Stepbar={Stepbar} />
+      </emailContext.Provider>
       {/* <AccountRegistar /> */}
     </>
   );

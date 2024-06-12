@@ -22,16 +22,32 @@ class preRegisterCheckController extends Controller
 
         if($userInfo != null){
             // w_pre_usersテーブルのurltokenと一致した場合、本登録ができる
-            \Log::info('url_token：'.$url_token);
-            \Log::info('url_tokenが存在します');
+            // \Log::info('url_token：'.$url_token);
+            // \Log::info('url_tokenが存在します');
+            // \Log::info("userInfo");
+            // \Log::info(json_encode($userInfo));
+            
+            $arrayUserInfo = json_decode(json_encode($userInfo), true);
+
+            // \Log::info($arrayUserInfo);
+            
+            $return_json_data = [
+                "tf" => "true",
+                "email" => "{$arrayUserInfo['mail']}"
+            ];
         
-            return json_encode("true");
+            return json_encode($return_json_data);
         } else {
             // w_pre_usersテーブルのurltokenと一致しない場合、本登録はできない
             \Log::info('url_token：'.$url_token);
             \Log::info('url_tokenが正しくありません');
         
-            return json_encode("false");
+            $return_json_data = [
+                "tf" => "false",
+                "email" => ""
+            ];
+
+            return json_encode($return_json_data);
         }
     }
 }

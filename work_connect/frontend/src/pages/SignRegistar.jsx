@@ -1,4 +1,4 @@
-import PreSignUrlCheck from "../components/account/students/PreSignUrlCheck";
+import PreSignUrlCheck from "src/components/account/students/PreSignUrlCheck";
 
 export default function SignRegistar() {
   return (

@@ -3,7 +3,7 @@ import NewspaperOutlinedIcon from '@mui/icons-material/NewspaperOutlined';
 import VideoLibraryOutlinedIcon from '@mui/icons-material/VideoLibraryOutlined';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 
-import SvgColor from '../../components/svg-color';
+import SvgColor from 'src/components/svg-color';
 
 // ----------------------------------------------------------------------
 

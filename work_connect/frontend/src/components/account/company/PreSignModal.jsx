@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Modal from "react-modal";
-import "../../../App.css";
-import PreSignModal from '../students/PreSignModal';
+import "src/App.css";
+import PreSignModal from 'src/components/account/students/PreSignModal';
 
 // ログインのモーダル CSS設定
 const modalStyle = {

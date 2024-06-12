@@ -4,8 +4,7 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 
-import AppCurrentVisits from '../app-current-visits';
-
+import AppCurrentVisits from 'src/sections/overview/app-current-visits';
 // ----------------------------------------------------------------------
 
 export default function AppView() {

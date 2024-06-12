@@ -1,6 +1,6 @@
-// 
-import SchoolNameDropdown from "./SchoolInfomation/SchoolNameDropdown";
 import { styled } from "@mui/material";
+
+import SchoolNameDropdown from "./SchoolInfomation/SchoolNameDropdown";
 import GraduationYearDropdown from "./SchoolInfomation/GraduationYearDropdown";
 import DepartmentNameDropdown from "./SchoolInfomation/DepartmentNameDropdown";
 import FacultyName from "./SchoolInfomation/FacultyName";

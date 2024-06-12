@@ -6,8 +6,8 @@ import axios from "axios";
 
 import $ from "jquery";
 
-import "../../../App.css";
-import CompanyLoginModal from "../company/LoginModal";
+import "src/App.css";
+import CompanyLoginModal from "src/components/account/company/LoginModal";
 
 // ログインのモーダル CSS設定
 const modalStyle = {

@@ -5,7 +5,7 @@ import $ from "jquery";
 
 import CircularIndeterminate from "src/components/loading/circle";
 
-import HorizontalLinearStepper from "src/components/account/stepbar";
+import HorizontalLinearStepper from "src/sections/sign/stepbar";
 
 import { emailContext } from "./EmailContext";
 

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { emailContext } from "../account/students/EmailContext";
+import { emailContext } from "src/components/account/students/EmailContext";
 
 const Account = () => {
   const AccountData = useContext(emailContext);

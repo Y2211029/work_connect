@@ -6,7 +6,7 @@ const Account = () => {
 console.log('Account内AccountDataです:', AccountData);
 
 const objAccountData = {};
-
+//
 for (const [key, value] of AccountData) {
   objAccountData[key] = value;
 }

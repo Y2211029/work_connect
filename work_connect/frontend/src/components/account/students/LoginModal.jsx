@@ -60,7 +60,7 @@ const LoginModal = ({ FromCompanyPage }) => {
     var targetParants = $(e.target).parents(".formInModal");
 
     // 取得した要素の個数が0個の場合
-    if (targetParants.length == 0) {
+    if (targetParants.length == 0 || $(e.target).text() == "閉じる") {
       // クリックした要素に"formInModal"クラスがついていない場合
       if ($(e.target).attr("class") != "formInModal" && $(e.target).attr("id") != "loginModalOpenButton") {
         // ログインモーダルを閉じる

@@ -23,22 +23,9 @@ class WCompany extends Model
 
     // マスアサインメント可能な属性
     protected $fillable = [
-        'id',
         'company_name',
         'mail',
         'password',
-        'thumbnail_id',
-        'icon_id',
-        'intro',
-        'office',
-        'industry',
-        'others',
-        'address',
-        'map_url',
-        'hp_url',
-        'video_url',
-        'background_color',
-        'registered_datetime',
     ];
 
     // タイムスタンプのカラムが存在しない場合は、$timestampsをfalseに設定

@@ -110,11 +110,13 @@ const CompanyLoginModal = () => {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const user_name = document.getElementsByName("user_name")[0].value;
-    const password = document.getElementsByName("password")[0].value;
+    const user_name = formValues.user_name;
+    const password = formValues.password;
+    const kind = "c";
 
-    console.log("user_name" + user_name);
-    console.log("password" + password);
+    console.log("user_name=" + user_name);
+    console.log("password=" + password);
+    console.log("kind=" + kind);
 
     //ajax
     $.ajax({
@@ -125,6 +127,7 @@ const CompanyLoginModal = () => {
       data: {
         user_name: user_name,
         password: password,
+        kind: kind,
       },
       headers: {
         "X-CSRF-TOKEN": csrfToken,

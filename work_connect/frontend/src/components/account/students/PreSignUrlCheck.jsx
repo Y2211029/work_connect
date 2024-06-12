@@ -63,10 +63,16 @@ const PreSignUrlCheck = () => {
             console.log(data);
             console.log("正しいです。");
             setAccountData({ ...AccountData, email: data.email });
+
+            //  ローディングcircle非表示
+            <CircularIndeterminate Circul={setCircul("none")} />;
+            //  ステップバー表示
+            <HorizontalLinearStepper Stepbar={setStepbar("block")} />;
           } else {
             console.log(data);
             console.log("違います。");
             location.href = "/404";
+            
           }
         } else {
           console.log("login失敗");
@@ -74,6 +80,7 @@ const PreSignUrlCheck = () => {
             "ログインに失敗しました。\nユーザー名、メールアドレス、パスワードをご確認ください。"
           );
         }
+
       })
       .fail(function (textStatus, errorThrown) {
         //ajax失敗時の処理
@@ -82,16 +89,6 @@ const PreSignUrlCheck = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // 空の依存配列を渡して、初回のみ実行するようにする
-
-  useEffect(() => {
-    console.log(AccountData);
-
-    //  ローディングcircle非表示
-    <CircularIndeterminate Circul={setCircul("none")} />;
-    //  ステップバー表示
-    <HorizontalLinearStepper Stepbar={setStepbar("block")} />;
-    // <AccountRegistar />;
-  }, [AccountData]); // 空の依存配列を渡して、初回のみ実行するようにする
 
   let newArray = Object.entries(AccountData);
 

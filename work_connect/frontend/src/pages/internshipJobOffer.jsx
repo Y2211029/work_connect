@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 
-import { InternshipJobOfferView } from "../sections/InternshipJobOffer";
+import { InternshipJobOfferView } from "src/sections/InternshipJobOffer";
 
 // ----------------------------------------------------------------------
 

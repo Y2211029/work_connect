@@ -7,10 +7,9 @@ import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-// import AccountRegistar from "../sign/AccountRegistration";
-import Account from "../sign/Account";
-// import SchoolInfo from "../sign/SchoolInfo";
 
+// import AccountRegistar from "src/sections/sign/AccountRegistration";
+// import SchoolInformation from "src/sections/sign/SchoolInformation";
 
 const steps = ["アカウント", "学校情報", "詳細情報", "確認"];
 let stepConnectorLinesArray = [];
@@ -100,8 +99,8 @@ export default function HorizontalLinearStepper({ Stepbar }) {
         })}
       </Stepper>
       {/* 入力フォーム表示位置 */}
-      {activeStep === 0 ? <Account /> : ""}
-      {/* {activeStep === 1 ? <SchoolInfo /> : ""} */}
+      {/* {activeStep === 0 ? <AccountRegistar /> : ""}
+      {activeStep === 1 ? <SchoolInformation /> : ""} */}
 
       {/* 
       {activeStep === 2 ? <MoreInformation /> : ""};

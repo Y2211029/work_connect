@@ -7,16 +7,16 @@ import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
 import { useTheme } from "@mui/material/styles";
 
-import LoginModal from "../../components/account/students/LoginModal";
-import PreSignModal from "../../components/account/students/PreSignModal";
-import SignUp from "../../components/account/students/SignUp";
-import SignUp1 from "../../components/account/students/SignUp1";
-import { useResponsive } from "../../hooks/use-responsive";
+import LoginModal from "src/components/account/students/LoginModal";
+import PreSignModal from "src/components/account/students/PreSignModal";
+import SignUp from "src/components/account/students/SignUp";
+import SignUp1 from "src/components/account/students/SignUp1";
+import { useResponsive } from "src/hooks/use-responsive";
 
-import { bgBlur } from "../../theme/css";
+import { bgBlur } from "src/theme/css";
 
 import AccountPopover from "./common/account-popover";
-import Iconify from "../../components/iconify";
+import Iconify from "src/components/iconify";
 import { NAV, HEADER } from "./config-layout";
 import Searchbar from "./common/searchbar";
 // import LanguagePopover from './common/language-popover';

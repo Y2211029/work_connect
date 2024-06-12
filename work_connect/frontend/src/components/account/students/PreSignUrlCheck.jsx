@@ -3,9 +3,9 @@ import axios from "axios";
 
 import $ from "jquery";
 
-import CircularIndeterminate from "../../loading/circle";
+import CircularIndeterminate from "src/components/loading/circle";
 
-import HorizontalLinearStepper from "../stepbar";
+import HorizontalLinearStepper from "src/components/account/stepbar";
 
 const PreSignUrlCheck = () => {
   const [csrfToken, setCsrfToken] = useState("");

@@ -10,7 +10,7 @@ import IconButton from '@mui/material/IconButton';
 
 import Box from '@mui/material/Box';
 
-import { account } from '../../../_mock/account';
+import { account } from 'src/_mock/account';
 
 // ----------------------------------------------------------------------
 

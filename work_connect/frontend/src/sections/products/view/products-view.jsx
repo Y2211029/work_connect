@@ -5,12 +5,12 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 
-import { products } from '../../../_mock/products';
+import { products } from 'src/_mock/products';
 
-import ProductCard from '../product-card';
-import ProductSort from '../product-sort';
-import ProductFilters from '../product-filters';
-import ProductCartWidget from '../product-cart-widget';
+import ProductCard from 'src/sections/products/product-card';
+import ProductSort from 'src/sections/products/product-sort';
+import ProductFilters from 'src/sections/products/product-filters';
+import ProductCartWidget from 'src/sections/products/product-cart-widget';
 
 // ----------------------------------------------------------------------
 

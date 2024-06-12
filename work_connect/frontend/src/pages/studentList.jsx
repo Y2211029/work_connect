@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 
-import { StudentListView } from '../sections/StudentList/view';
+import { StudentListView } from 'src/sections/StudentList/view';
 
 // ----------------------------------------------------------------------
 

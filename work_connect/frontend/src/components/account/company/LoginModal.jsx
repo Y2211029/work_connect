@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Modal from "react-modal";
 
-import "../../../App.css";
+import "src/App.css";
 
-import LoginModal from "../students/LoginModal";
+import LoginModal from "src/components/account/students/LoginModal";
 
 // ログインのモーダル CSS設定
 const modalStyle = {

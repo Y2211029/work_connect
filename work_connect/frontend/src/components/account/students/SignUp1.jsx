@@ -5,7 +5,7 @@ import Modal from "react-modal";
 // import axios from "axios";
 
 
-import "../../../App.css";
+import "src/App.css";
 
 
 // ログインのモーダル CSS設定

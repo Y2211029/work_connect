@@ -1,4 +1,4 @@
-import { styled } from "@mui/material";
+import { styled } from "@mui/system";
 
 import SchoolNameDropdown from "./SchoolInfomation/SchoolNameDropdown";
 import GraduationYearDropdown from "./SchoolInfomation/GraduationYearDropdown";
@@ -30,8 +30,8 @@ const SchoolInformation = () => {
         <p>学科</p>
         <FacultyName />
         <p>専攻</p>
-      </LoginCard>
         <p>コース</p>
+      </LoginCard>
     </Container>
   );
 };

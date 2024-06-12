@@ -35,43 +35,36 @@ const PreSignModal = ({ FromCompanyPage }) => {
   const url = "http://localhost:8000/s_pre_register";
   const csrf_url = "http://localhost:8000/csrf-token";
 
-  // ログインモーダルが開くボタンを押したとき、新規登録モーダルを閉じる処理
-  $("*").click(function (e) {
-    if (
-      $(e.target).attr("id") != "goCampanyPreSign" &&
-      $(e.target).attr("id") != "goCampanyLogin" &&
-      $(e.target).attr("class") != "submitButton"
-    ) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
+  // ヘッダーの新規登録ボタンを押したときに新規登録モーダルを開いたり閉じたりする処理
+  $("#preSignModalOpenButton").click(function (e) {
+    e.preventDefault();
+    e.stopPropagation();
 
     if (clickOneTimes.current) return; // 送信処理中かを判定する（trueなら抜ける）
     clickOneTimes.current = true; // 送信処理中フラグを立てる
 
-    // ④ 行いたい処理を記述する
+    if (showModal == true) {
+      setShowModal(false);
+    } else {
+      setShowModal(true);
+    }
+
+    clickOneTimes.current = false; // 送信処理中フラグを下げる
+  });
+  
+  // 新規登録のform内以外をクリックしたときにモーダルを閉じる処理
+  $("*").click(function (e) {
     // クリックした要素の<html>までのすべての親要素の中に"formInModal"クラスがついている要素を取得
     var targetParants = $(e.target).parents(".formInModal");
 
     // 取得した要素の個数が0個の場合
     if (targetParants.length == 0) {
       // クリックした要素に"formInModal"クラスがついていない場合
-      if ($(e.target).attr("class") != "formInModal") {
-        // ログインモーダルを閉じる
+      if ($(e.target).attr("class") != "formInModal" && $(e.target).attr("id") != "preSignModalOpenButton") {
+        // 新規登録モーダルを閉じる
         setShowModal(false);
       }
     }
-
-    // ヘッダーのログインボタンを押したときにログインモーダルを開いたり閉じたりする処理
-    if ($(e.target).attr("id") == "preSignModalOpenButton") {
-      if (showModal == true) {
-        setShowModal(false);
-      } else {
-        setShowModal(true);
-      }
-    }
-
-    clickOneTimes.current = false; // 送信処理中フラグを下げる
   });
 
   const handleOpenModal = () => {

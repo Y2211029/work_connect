@@ -37,44 +37,36 @@ const LoginModal = ({ FromCompanyPage }) => {
   const url = "http://localhost:8000/s_login";
   const csrf_url = "http://localhost:8000/csrf-token";
 
-  // 新規登録モーダルが開くボタンを押したとき、ログインモーダルを閉じる処理
-  $("*").click(function (e) {
-    // console.log($(e.target).attr('class'));
-    if (
-      $(e.target).attr("id") != "goCampanyPreSign" &&
-      $(e.target).attr("id") != "goCampanyLogin" &&
-      $(e.target).attr("class") != "submitButton"
-    ) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
+  // ヘッダーのログインボタンを押したときにログインモーダルを開いたり閉じたりする処理
+  $("#loginModalOpenButton").click(function (e) {
+    e.preventDefault();
+    e.stopPropagation();
 
     if (clickOneTimes.current) return; // 送信処理中かを判定する（trueなら抜ける）
     clickOneTimes.current = true; // 送信処理中フラグを立てる
 
-    // 行いたい処理を記述する
+    if (showModal == true) {
+      setShowModal(false);
+    } else {
+      setShowModal(true);
+    }
+
+    clickOneTimes.current = false; // 送信処理中フラグを下げる
+  });
+  
+  // ログインのform内以外をクリックしたときにモーダルを閉じる処理
+  $("*").click(function (e) {
     // クリックした要素の<html>までのすべての親要素の中に"formInModal"クラスがついている要素を取得
     var targetParants = $(e.target).parents(".formInModal");
 
     // 取得した要素の個数が0個の場合
     if (targetParants.length == 0) {
       // クリックした要素に"formInModal"クラスがついていない場合
-      if ($(e.target).attr("class") != "formInModal") {
+      if ($(e.target).attr("class") != "formInModal" && $(e.target).attr("id") != "loginModalOpenButton") {
         // ログインモーダルを閉じる
         setShowModal(false);
       }
     }
-
-    // ヘッダーのログインボタンを押したときにログインモーダルを開いたり閉じたりする処理
-    if ($(e.target).attr("id") == "loginModalOpenButton") {
-      if (showModal == true) {
-        setShowModal(false);
-      } else {
-        setShowModal(true);
-      }
-    }
-
-    clickOneTimes.current = false; // 送信処理中フラグを下げる
   });
 
   const handleOpenModal = () => {

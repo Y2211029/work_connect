@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import { TextField } from "@mui/material";
+import { TextField } from "@mui/system";
 
 import "./css/AccountRegistration.css";
 
@@ -42,21 +42,14 @@ const AccountRegistar = () => {
     );
   }, [accountData, inputError]); // パスワードまたはパスワード確認が変更されたときに実行
 
-  // useEffect(() => {
-  //   const passwordMatch = accountData.password === accountData.passwordCheck;
-  //   setInputError((prev) => ({ ...prev, passwordCheck: !passwordMatch }));
-  //   console.log(
-  //     "InputFilled",
-  //     allInputsFilled(accountData, inputError, passwordMatch)
-  //   );
-  // }, [
-  //   accountData.userName,
-  //   accountData.password,
-  //   accountData.passwordCheck,
-  //   inputError.userName,
-  //   inputError.password,
-  //   inputError.passwordCheck,
-  // ]); // パスワードまたはパスワード確認が変更されたときに実行
+  useEffect(() => {
+    const passwordMatch = accountData.password === accountData.passwordCheck;
+    setInputError((prev) => ({ ...prev, passwordCheck: !passwordMatch }));
+    console.log(
+      "InputFilled",
+      allInputsFilled(accountData, inputError, passwordMatch)
+    );
+  }, [accountData, inputError]); // パスワードまたはパスワード確認が変更されたときに実行
 
   const handleChange = (e) => {
     const { name, value } = e.target;

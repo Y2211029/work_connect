@@ -61,7 +61,10 @@ const CompanyLoginModal = () => {
     var targetParants = $(e.target).parents(".formInModal");
 
     // 取得した要素の個数が0個の場合
-    if (targetParants.length == 0) {
+    // 変更地点6/12坂東
+    // ***if (targetParants.length == 0 || $(e.target).text() == "閉じる")***
+    console.log($(e.target).text());
+    if (targetParants.length == 0 || $(e.target).text() == "閉じる") {
       // クリックした要素に"formInModal"クラスがついていない場合
       if ($(e.target).attr("class") != "formInModal" && $(e.target).attr("id") != "CompanyloginModalOpenButton") {
         // ログインモーダルを閉じる
@@ -219,7 +222,7 @@ const CompanyLoginModal = () => {
               {Object.keys(formErrors).length === 0 &&
                 isSubmit &&
                 handleCloseModal}
-              <button onClick={handleCloseModal}>閉じる</button>
+              <button onClick={handleCloseModal} id="CompanyshutButton">閉じる</button>
               <LoginModal FromCompanyPage={true} />
             </div>
           </form>

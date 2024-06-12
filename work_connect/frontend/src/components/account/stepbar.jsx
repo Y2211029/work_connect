@@ -9,6 +9,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 // import AccountRegistar from "../sign/AccountRegistration";
 import Account from "../sign/Account";
+// import SchoolInfo from "../sign/SchoolInfo";
 
 
 const steps = ["アカウント", "学校情報", "詳細情報", "確認"];
@@ -100,11 +101,11 @@ export default function HorizontalLinearStepper({ Stepbar }) {
       </Stepper>
       {/* 入力フォーム表示位置 */}
       {activeStep === 0 ? <Account /> : ""}
-      {/* {activeStep === 0 ? <AccountRegistar /> : ""}; */}
+      {/* {activeStep === 1 ? <SchoolInfo /> : ""} */}
 
-      {/* {activeStep === 1 ? <SchoolInformation /> : ""};
+      {/* 
       {activeStep === 2 ? <MoreInformation /> : ""};
-      {activeStep === 3 ? <Confirmation /> : ""}; */}
+      {activeStep === 3 ? <Confirmation /> : ""};  */}
 
       {activeStep === steps.length ? (
         <React.Fragment>

@@ -1,8 +1,15 @@
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 
-import { TextField } from "@mui/system";
+import TextField from "@mui/material/TextField";
+import { Container, RegistarCard } from "./css/RegistarStyled";
 
-import "./css/AccountRegistration.css";
+// 仮登録からemailに届いたURLをクリックしたアカウントのemailを表示するための準備
+// import { emailContext } from "src/components/account/students/EmailContext";
+import Email from "./email/emai";
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
+
+
 
 const AccountRegistar = () => {
   // アカウントデータの状態管理
@@ -20,36 +27,41 @@ const AccountRegistar = () => {
     passwordCheck: false,
   });
 
+  // const AccountData = useContext(emailContext);
+  // const objAccountData = {};
+
+  // //
+  // for (const [key, value] of AccountData) {
+  //   objAccountData[key] = value;
+  // }
+
   // input要素に全て値が入力されたかどうかをチェック
-  const allInputsFilled = (accountData, inputError, passwordMatch) => {
-    const allInputsTrue =
-      !inputError.userName &&
-      accountData.userName !== "" &&
-      !inputError.password &&
-      accountData.password !== "" &&
-      passwordMatch &&
-      accountData.passwordCheck !== "";
+  // const allInputsFilled = (accountData, inputError, passwordMatch) => {
+  //   const allInputsTrue =
+  //     !inputError.userName &&
+  //     accountData.userName !== "" &&
+  //     !inputError.password &&
+  //     accountData.password !== "" &&
+  //     passwordMatch &&
+  //     accountData.passwordCheck !== "";
 
-    return allInputsTrue;
-  };
+  //   return allInputsTrue;
+  // };
 
-  useEffect(() => {
-    const passwordMatch = accountData.password === accountData.passwordCheck;
-    setInputError((prev) => ({ ...prev, passwordCheck: !passwordMatch }));
-    console.log(
-      "InputFilled",
-      allInputsFilled(accountData, inputError, passwordMatch)
-    );
-  }, [accountData, inputError]); // パスワードまたはパスワード確認が変更されたときに実行
+  // 登録項目確認の際に利用
+  const { setSessionData } = useSessionStorage();
 
   useEffect(() => {
     const passwordMatch = accountData.password === accountData.passwordCheck;
     setInputError((prev) => ({ ...prev, passwordCheck: !passwordMatch }));
-    console.log(
-      "InputFilled",
-      allInputsFilled(accountData, inputError, passwordMatch)
-    );
   }, [accountData, inputError]); // パスワードまたはパスワード確認が変更されたときに実行
+
+  useEffect(() => {
+    setSessionData("accountData", accountData);
+
+    // ESlintError削除、推奨されて無いので他の方法を追々考えます。
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accountData]); // accountDataの変更を監視
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -62,20 +74,28 @@ const AccountRegistar = () => {
     }
   };
 
+
   return (
     <>
-      <div className="Container">
-        <div className="LoginCard">
+      <Container>
+        <RegistarCard>
           <div>
-            <h3>新規登録</h3>
-
+            <TextField
+              fullWidth
+              label="メールアドレス"
+              margin="normal"
+              required
+              type="email"
+              value={<Email />}
+              variant="outlined"
+              disabled
+            />
             <TextField
               error={inputError.userName}
               fullWidth
               helperText={
-                (inputError.userName
-                  ? "ユーザー名が条件に合致していません"
-                  : "") + "　※大文字・小文字・英数字・8文字以上16文字以内"
+                (inputError.userName ? "ユーザー名が条件に合致していません" : "") +
+                "※大文字・小文字・英数字・8文字以上16文字以内"
               }
               label="ユーザー名"
               margin="normal"
@@ -99,9 +119,8 @@ const AccountRegistar = () => {
               error={inputError.password}
               fullWidth
               helperText={
-                (inputError.password
-                  ? "パスワードが条件に合致していません"
-                  : "") + "　※大文字・小文字・英数字・8文字以上30文字以内"
+                (inputError.password ? "パスワードが条件に合致していません" : "") +
+                "※大文字・小文字・英数字・8文字以上30文字以内"
               }
               label="パスワード"
               margin="normal"
@@ -111,8 +130,7 @@ const AccountRegistar = () => {
               type="password"
               value={accountData.password}
               inputProps={{
-                pattern:
-                  "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,30}$",
+                pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,30}$",
                 // ^                : 文字列の開始
                 // (?=.*[a-z])      : 少なくとも一つの小文字の英字が含まれていること
                 // (?=.*[A-Z])      : 少なくとも一つの大文字の英字が含まれていること
@@ -126,16 +144,14 @@ const AccountRegistar = () => {
             <TextField
               disabled={
                 !accountData.password ||
-                !new RegExp(
-                  "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,30}$"
-                ).test(accountData.password)
+                !new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,30}$").test(
+                  accountData.password
+                )
               }
               error={inputError.passwordCheck}
               fullWidth
               helperText={
-                inputError.passwordCheck
-                  ? "パスワードが一致しません"
-                  : "パスワードが一致しました"
+                inputError.passwordCheck ? "パスワードが一致しません" : "パスワードが一致しました"
               }
               label="パスワード確認"
               margin="normal"
@@ -147,10 +163,22 @@ const AccountRegistar = () => {
               variant="outlined"
             />
           </div>
-        </div>
-      </div>
+        </RegistarCard>
+      </Container>
     </>
   );
+};
+
+AccountRegistar.propTypes = {
+  accountData: PropTypes.shape({
+    email: PropTypes.string.isRequired,
+    userName: PropTypes.string.isRequired,
+  }).isRequired,
+  inputError: PropTypes.shape({
+    userName: PropTypes.bool.isRequired,
+  }).isRequired,
+  handleChange: PropTypes.func.isRequired,
+  SessionSaveTrigger: PropTypes.string, // ここでSessionSaveTriggerの型を定義
 };
 
 export default AccountRegistar;

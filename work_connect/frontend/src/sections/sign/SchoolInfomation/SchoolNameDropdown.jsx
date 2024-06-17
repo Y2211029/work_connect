@@ -31,7 +31,7 @@ const SchoolNameDropdown = () => {
               }
             });
 
-            console.log(`API response for code ${code} and page ${page}:`, response.data); // レスポンスデータを詳細にログ出力
+            // console.log(`API response for code ${code} and page ${page}:`, response.data); // レスポンスデータを詳細にログ出力
 
             if (Array.isArray(response.data.schools.data)) {
               allSchools = [...allSchools, ...response.data.schools.data]; // 取得したデータを蓄積

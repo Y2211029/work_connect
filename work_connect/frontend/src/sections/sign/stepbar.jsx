@@ -1,4 +1,5 @@
 import React from "react";
+import { useEffect } from "react";
 
 import PropTypes from "prop-types";
 
@@ -8,11 +9,11 @@ import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import Account from "./Account";
-import SchoolInfo from "./SchoolInfo";
 
-// import AccountRegistar from "src/sections/sign/AccountRegistration";
-// import SchoolInformation from "src/sections/sign/SchoolInformation";
+import SchoolInformation from "./SchoolInformation";
+import AccountRegistar from "./AccountRegistration";
+import MoreInformation from "./MoreInformation";
+import Confirmation from "./Confirmation";
 
 const steps = ["アカウント", "学校情報", "詳細情報", "確認"];
 let stepConnectorLinesArray = [];
@@ -20,14 +21,16 @@ let stepConnectorLinesArray = [];
 export default function HorizontalLinearStepper({ Stepbar }) {
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
-
+  // const [SessionTrigger, setSessionTrigger] = React.useState("");
   const isStepSkipped = (step) => {
     return skipped.has(step);
   };
 
+  // 次へボタン押されたとき
   const handleNext = () => {
-    console.log("nananananananan");
+
     let newSkipped = skipped;
+
     if (isStepSkipped(activeStep)) {
       newSkipped = new Set(newSkipped.values());
       newSkipped.delete(activeStep);
@@ -35,38 +38,27 @@ export default function HorizontalLinearStepper({ Stepbar }) {
 
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     setSkipped(newSkipped);
-    // ステップバーの色を変える処理
 
-    console.log("aaa", activeStep);
-    console.log("iii", stepConnectorLinesArray[activeStep]);
+    // ステップバーの色を変える処理
     stepConnectorLinesArray[activeStep].style.borderTop = "5px solid #1976d2";
   };
 
+  // 戻るボタン押されたとき
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    stepConnectorLinesArray[activeStep - 1].style.borderTop =
-      "5px solid #868686";
+    stepConnectorLinesArray[activeStep - 1].style.borderTop = "5px solid #898989";
   };
 
   const handleReset = () => {
     setActiveStep(0);
   };
 
-  // const stepBar = () => {
-
-  // }
-  // document.getElementById("")
-  // console.log(activeStep);
-
-  window.addEventListener("load", () => {
-    const stepConnectorLines = document.querySelectorAll(
-      ".MuiStepConnector-line"
-    );
+  useEffect(() => {
+    const stepConnectorLines = document.querySelectorAll(".MuiStepConnector-line");
     stepConnectorLinesArray = Array.from(stepConnectorLines);
 
-    // console.log(activeStep);
-    // console.log(stepConnectorLinesArray); // stepConnectorLinesArrayに配列が格納されます
-  });
+    // console.log("gaijneranjngaenrnj", stepConnectorLinesArray); // stepConnectorLinesArrayに配列が格納されます
+  }, []);
 
   return (
     <Box
@@ -82,7 +74,7 @@ export default function HorizontalLinearStepper({ Stepbar }) {
         alternativeLabel
         sx={{
           "& .MuiStepConnector-line": {
-            borderTop: "5px solid #868686",
+            borderTop: "5px solid #898989",
             borderRadius: "20px",
           },
         }}
@@ -101,9 +93,15 @@ export default function HorizontalLinearStepper({ Stepbar }) {
           );
         })}
       </Stepper>
-      {/* 入力フォーム表示位置 */}
-      {activeStep === 0 ? <Account /> : ""}
-      {activeStep === 1 ? <SchoolInfo /> : ""}
+
+      {/*ーーーーーーーーーーーーーーーーーーーーーー 入力フォーム表示位置 ーーーーーーーーーーーーーーーーーーーーーー*/}
+
+      {activeStep === 0 ? <AccountRegistar /> : ""}
+      {activeStep === 1 ? <SchoolInformation /> : ""}
+      {activeStep === 2 ? <MoreInformation /> : ""}
+      {activeStep === 3 ? <Confirmation /> : ""}
+
+      {/*ーーーーーーーーーーーーーーーーーーーーーー 入力フォーム表示位置 ーーーーーーーーーーーーーーーーーーーーーー*/}
 
       {activeStep === steps.length ? (
         <React.Fragment>
@@ -126,12 +124,7 @@ export default function HorizontalLinearStepper({ Stepbar }) {
               pt: 2,
             }}
           >
-            <Button
-              color="inherit"
-              disabled={activeStep === 0}
-              onClick={handleBack}
-              sx={{ mr: 1 }}
-            >
+            <Button color="inherit" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
               戻る
             </Button>
             <Button onClick={handleNext}>

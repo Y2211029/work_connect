@@ -12,12 +12,18 @@ export const useSessionStorage = () => {
   const setSessionData = (keyName, setData) => {
     const temp = JSON.stringify(setData);
     sessionStorage.setItem(keyName, temp);
+    };
+    
+    // 削除
+    const deleteSessionData = (keyName) => {
+      sessionStorage.removeItem(keyName);
+      };
+      
+      const updateSessionData = (sessionKeyName, jsonKeyName, setData) => {
+        let sessionData = getSessionData(sessionKeyName);
+        sessionData[jsonKeyName] = setData;
+        setSessionData(sessionKeyName, sessionData)
   };
 
-  // 削除
-  const deleteSessionData = (keyName) => {
-    sessionStorage.removeItem(keyName);
-  };
-
-  return { getSessionData, setSessionData, deleteSessionData };
+  return { getSessionData, setSessionData, deleteSessionData, updateSessionData };
 };

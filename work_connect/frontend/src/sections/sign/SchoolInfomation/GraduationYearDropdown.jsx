@@ -1,8 +1,8 @@
-// ;
-import Select from 'react-select';
+import Select from "react-select";
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 // 現在の年とその前後5年間の年度を生成する関数
-const generateYearOptions = (startYear, range) => {
+const generateYearOptions = (range) => {
   const currentYear = new Date().getFullYear();
   const options = [];
   for (let i = currentYear; i <= currentYear + range; i++) {
@@ -12,10 +12,13 @@ const generateYearOptions = (startYear, range) => {
 };
 
 const GraduationYearDropdown = () => {
+  // 登録項目確認の際に利用
+  const { updateSessionData } = useSessionStorage();
+
   const yearOptions = generateYearOptions(new Date().getFullYear(), 5);
 
   const handleChange = (selectedOption) => {
-    console.log(`Selected year: ${selectedOption.value}`);
+    updateSessionData("accountData", "graduation_year", selectedOption.value);
   };
 
   return (

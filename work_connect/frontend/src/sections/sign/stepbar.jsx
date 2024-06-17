@@ -1,6 +1,4 @@
-import React from "react";
-import { useEffect } from "react";
-
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 import Box from "@mui/material/Box";
@@ -19,16 +17,62 @@ const steps = ["アカウント", "学校情報", "詳細情報", "確認"];
 let stepConnectorLinesArray = [];
 
 export default function HorizontalLinearStepper({ Stepbar }) {
-  const [activeStep, setActiveStep] = React.useState(0);
-  const [skipped, setSkipped] = React.useState(new Set());
+  const [activeStep, setActiveStep] = useState(0);
+  const [skipped, setSkipped] = useState(new Set());
   // const [SessionTrigger, setSessionTrigger] = React.useState("");
   const isStepSkipped = (step) => {
     return skipped.has(step);
   };
 
+  // sessionStrageに保存するキーを宣言
+  const [AccountData, setAccountData] = useState({
+    user_name: "",
+    password: "",
+    graduation_year: "",
+    school_name: "", 
+    department_name: "", //学部
+    faculty_name: "", //学科
+    major_name: "", //専攻
+    course_name: "",  //コース
+
+    // intro: "",
+    // user_from: "",
+    // programming_language: "",
+    // development_environment: "",
+    // software: "",
+    // acquisition_qualification: "",
+    // desired_work_region: "",
+    // hobby: "",
+    // others: "",
+    // icon: "",
+    // mypr_movie_id: "",
+    // resume: "",
+    // desired_occupation: "",
+    // registered_datetime: "",
+    // border_color: "",
+    // background_color: "",
+    // border_style: "",
+    // created_at: "",
+    // updated_at: "",
+  });
+
+  // 子コンポーネントの項目に文字が入力されたらsessionStrageに保存する。
+  const handleValueChange = (key, value) => {
+    console.log("AccountData", AccountData);
+
+    setAccountData((AccountObject) => ({
+      ...AccountObject,
+      [key]: value,
+    }));
+  };
+
+  // sessionStrageに保存されるキーと値を見る
+  useEffect(() => {
+    console.log("AccountData", AccountData);
+  }, [AccountData]);
+
   // 次へボタン押されたとき
   const handleNext = () => {
-
     let newSkipped = skipped;
 
     if (isStepSkipped(activeStep)) {
@@ -96,8 +140,9 @@ export default function HorizontalLinearStepper({ Stepbar }) {
 
       {/*ーーーーーーーーーーーーーーーーーーーーーー 入力フォーム表示位置 ーーーーーーーーーーーーーーーーーーーーーー*/}
 
-      {activeStep === 0 ? <AccountRegistar /> : ""}
-      {activeStep === 1 ? <SchoolInformation /> : ""}
+      {/* handleValueChange 入力した値を */}
+      {activeStep === 0 ? <AccountRegistar handleValueChange={handleValueChange} /> : ""}
+      {activeStep === 1 ? <SchoolInformation handleValueChange={handleValueChange}  /> : ""}
       {activeStep === 2 ? <MoreInformation /> : ""}
       {activeStep === 3 ? <Confirmation /> : ""}
 
@@ -127,9 +172,7 @@ export default function HorizontalLinearStepper({ Stepbar }) {
             <Button color="inherit" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
               戻る
             </Button>
-            <Button onClick={handleNext}>
-              {activeStep === steps.length - 1 ? "保存" : "次へ"}
-            </Button>
+            <Button onClick={handleNext}>{activeStep === steps.length - 1 ? "保存" : "次へ"}</Button>
           </Box>
         </React.Fragment>
       )}
@@ -139,4 +182,5 @@ export default function HorizontalLinearStepper({ Stepbar }) {
 
 HorizontalLinearStepper.propTypes = {
   Stepbar: PropTypes.string.isRequired, // StepbarがReact要素（コンポーネント）であると仮定
+  handleValueChange: PropTypes.func.isRequired, // 必須の関数として定義
 };

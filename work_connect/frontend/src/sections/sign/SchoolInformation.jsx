@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import PropTypes from "prop-types";
 
 import { Container, RegistarCard } from "./css/RegistarStyled";
@@ -8,12 +7,7 @@ import GraduationYearDropdown from "./SchoolInfomation/GraduationYearDropdown";
 import DepartmentNameDropdown from "./SchoolInfomation/DepartmentNameDropdown";
 import FacultyName from "./SchoolInfomation/FacultyName";
 
-
-const SchoolInformation = ({ SessionSaveTrigger }) => {
-  useEffect(() => {
-    console.log("SessionSaveTrigger", SessionSaveTrigger);
-  }, [SessionSaveTrigger]);
-
+const SchoolInformation = () => {
   return (
     <Container>
       <RegistarCard>

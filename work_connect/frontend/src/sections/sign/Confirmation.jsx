@@ -1,11 +1,19 @@
-// import { useEffect } from "react";
+import { useContext } from "react";
 import { Container, RegistarCard } from "./css/RegistarStyled";
 
-// import { useSessionStorage } from "src/hooks/use-sessionStorage";
-import Email from "./email/emai";
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import { emailContext } from "src/components/account/students/EmailContext";
 
 export const Confirmation = () => {
-  // const { getSessionData } = useSessionStorage();
+  const AccountData = useContext(emailContext);
+  const objAccountData = {};
+  for (const [key, value] of AccountData) {
+    objAccountData[key] = value;
+  }
+
+  const { getSessionData } = useSessionStorage();
+  let Account = "";
+  Account = getSessionData("accountData");
 
   return (
     <Container>
@@ -13,14 +21,15 @@ export const Confirmation = () => {
         <ul>
           <li>
             <p>メールアドレス</p>
-            <span>{<Email />}</span>
+            <span>{objAccountData.email}</span>
           </li>
           <li>
             <p>ユーザー名</p>
-            <span></span>
+            <span>{Account.userName}</span>
           </li>
           <li>
             <p>パスワード</p>
+            <span>{Account.password}</span>
           </li>
         </ul>
 

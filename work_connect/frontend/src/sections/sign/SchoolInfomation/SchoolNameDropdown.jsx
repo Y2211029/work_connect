@@ -2,12 +2,16 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Select from 'react-select';
 import * as wanakana from 'wanakana';
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
+
 
 const SchoolNameDropdown = () => {
   const [schools, setSchools] = useState([]);
   const [selectedSchool, setSelectedSchool] = useState('');
   const [loading, setLoading] = useState(false); // ローディング状態
   const accessToken = "268|G5fHGAGA7Col8FetXAQ6EMNHnjDIA5TInN2uByIB";
+
+  const { setSessionData } = useSessionStorage();
 
   
   useEffect(() => {
@@ -55,9 +59,15 @@ const SchoolNameDropdown = () => {
     fetchData();
   }, []); // 最初のレンダリング時のみ実行される
 
+  useEffect(() => {
+    setSessionData("schoolName", selectedSchool.label);
+  }, [setSessionData,selectedSchool])
+  
   // ドロップダウンで選択された値を状態に設定
   const handleChange = (selectedOption) => {
     setSelectedSchool(selectedOption);
+
+   
   };
 
   // ドロップダウンのオプションを設定

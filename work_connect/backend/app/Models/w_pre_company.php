@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class WPreCompany extends Model
+class w_pre_company extends Model
 {
     use HasFactory;
 
@@ -15,11 +15,7 @@ class WPreCompany extends Model
     // マスアサインメント可能な属性
     protected $fillable = [
         'urltoken',
-        'company_name',
         'mail',
-        'password',
-        'date',
-        'flag',
     ];
 
     // タイムスタンプのカラムが存在しない場合は、$timestampsをfalseに設定

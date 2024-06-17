@@ -114,7 +114,8 @@ $("*").click(function (e) {
       return;
     }
     const mail = document.getElementsByName("mail")[0].value;
-
+    const kind = "c";
+    
     console.log("mail=" + mail);
 
     //ajax
@@ -125,6 +126,7 @@ $("*").click(function (e) {
       dataType: "json", // データタイプ (script, xmlDocument, jsonなど)
       data: {
         mail: mail,
+        kind: kind,
       },
       headers: {
         "X-CSRF-TOKEN": csrfToken,

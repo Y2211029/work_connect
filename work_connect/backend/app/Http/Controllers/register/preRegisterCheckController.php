@@ -5,7 +5,8 @@ namespace App\Http\Controllers\register;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\WPreUser;
+use App\Models\w_pre_user;
+use App\Models\w_pre_company;
 
 class preRegisterCheckController extends Controller
 {

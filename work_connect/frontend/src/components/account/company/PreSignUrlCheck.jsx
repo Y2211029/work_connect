@@ -49,7 +49,7 @@ const PreSignUrlCheck = () => {
       dataType: "json", // データタイプ (script, xmlDocument, jsonなど)
       data: {
         url_token: params.get("urltoken"),
-        kind: "s",
+        kind: "c",
       },
       headers: {
         "X-CSRF-TOKEN": csrfToken,

@@ -14,12 +14,23 @@ class preRegisterCheckController extends Controller
 
         // react側からのリクエスト
         $url_token = $request->input('url_token');
+        $kind = $request->input('kind');
         
         // w_pre_usersテーブルから$url_tokenと一致するユーザー情報を抽出
-        $userInfo = DB::table('w_pre_users')
+        if($kind == "s"){
+            // 学生側
+            $userInfo = DB::table('w_pre_users')
             ->where('urltoken', "$url_token")
             ->where('flag', 0)
             ->first();
+        } else {
+            // 企業側
+            $userInfo = DB::table('w_pre_companies')
+            ->where('urltoken', "$url_token")
+            ->where('flag', 0)
+            ->first();
+        }
+         
 
         if($userInfo != null){
             // w_pre_usersテーブルのurltokenと一致した場合、本登録ができる

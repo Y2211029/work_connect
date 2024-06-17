@@ -108,7 +108,7 @@ const PreSignModal = ({ FromCompanyPage }) => {
       return;
     }
     const mail = document.getElementsByName("mail")[0].value;
-
+    const kind = "s";
     console.log("mail=" + mail);
 
     //ajax
@@ -119,6 +119,7 @@ const PreSignModal = ({ FromCompanyPage }) => {
       dataType: "json", // データタイプ (script, xmlDocument, jsonなど)
       data: {
         mail: mail,
+        kind: kind,
       },
       headers: {
         "X-CSRF-TOKEN": csrfToken,

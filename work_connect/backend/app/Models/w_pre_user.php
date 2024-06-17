@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class WPreUser extends Model
+class w_pre_user extends Model
 {
     use HasFactory;
 

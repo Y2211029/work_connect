@@ -13,22 +13,18 @@ const generateYearOptions = (range) => {
 
 const GraduationYearDropdown = () => {
   // 登録項目確認の際に利用
-  const { setSessionData } = useSessionStorage();
+  const { updateSessionData } = useSessionStorage();
 
   const yearOptions = generateYearOptions(new Date().getFullYear(), 5);
 
   const handleChange = (selectedOption) => {
-    setSessionData("schoolData", selectedOption.value);
+    updateSessionData("accountData", "graduation_year", selectedOption.value);
   };
 
   return (
     <div>
       <label htmlFor="yearOptions">卒業年度</label>
-      <Select
-        name="yearOptions"
-        options={yearOptions}
-        onChange={handleChange}
-      />
+      <Select name="yearOptions" options={yearOptions} onChange={handleChange} />
     </div>
   );
 };

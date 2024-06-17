@@ -139,6 +139,8 @@ export default function HorizontalLinearStepper({ Stepbar }) {
       </Stepper>
 
       {/*ーーーーーーーーーーーーーーーーーーーーーー 入力フォーム表示位置 ーーーーーーーーーーーーーーーーーーーーーー*/}
+
+      {/* handleValueChange 入力した値を */}
       {activeStep === 0 ? <AccountRegistar handleValueChange={handleValueChange} /> : ""}
       {activeStep === 1 ? <SchoolInformation handleValueChange={handleValueChange}  /> : ""}
       {activeStep === 2 ? <MoreInformation /> : ""}

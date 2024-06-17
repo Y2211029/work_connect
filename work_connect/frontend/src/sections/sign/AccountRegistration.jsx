@@ -6,6 +6,8 @@ import { Container, RegistarCard } from "./css/RegistarStyled";
 
 // 仮登録からemailに届いたURLをクリックしたアカウントのemailを表示するための準備
 import { emailContext } from "src/components/account/students/EmailContext";
+
+// sessionStrage呼び出し
 import { useSessionStorage } from "../../hooks/use-sessionStorage";
 
 const AccountRegistar = (props) => {
@@ -61,7 +63,6 @@ const AccountRegistar = (props) => {
 
   // 登録項目確認の際に利用
   const { setSessionData } = useSessionStorage();
-
 
   // パスワード確認
   useEffect(() => {

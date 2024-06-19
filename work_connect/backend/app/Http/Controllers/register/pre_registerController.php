@@ -43,7 +43,8 @@ class pre_registerController extends Controller
             \Log::info('アカウント作れます');
 
             if($kind == "s"){
-            // w_pre_usersテーブルにトークンとメールアドレスを挿入
+                // 学生側 
+                // w_pre_usersテーブルにトークンとメールアドレスを挿入
                         // Eloquentモデルを使用
                         $w_pre_user = w_pre_user::create([
                             'urltoken' => Str::random(60), // urltokenに値を設定
@@ -53,11 +54,12 @@ class pre_registerController extends Controller
                         $details = [
                             'title' => '仮登録ありがとうございます。',
                             'body' => '下記URLをクリックして、本登録を完了させてください。',
-                            'url' => 'http://localhost:5174/SignRegistar/?urltoken='.$w_pre_user->urltoken
+                            'url' => 'http://localhost:5174/SignRegistar/?kind=s&urltoken='.$w_pre_user->urltoken
                         ];
                     
                         Mail::to($mail)->send(new mailSend($w_pre_user,$details));
             } else {
+                // 企業側
                 // w_pre_companyテーブルにトークンとメールアドレスを挿入
                         // Eloquentモデルを使用
                         $w_pre_company = w_pre_company::create([
@@ -68,7 +70,7 @@ class pre_registerController extends Controller
                         $details = [
                             'title' => '仮登録ありがとうございます。',
                             'body' => '下記URLをクリックして、本登録を完了させてください。',
-                            'url' => 'http://localhost:5174/SignRegistar/?urltoken='.$w_pre_company->urltoken
+                            'url' => 'http://localhost:5174/SignRegistar/?kind=c&urltoken='.$w_pre_company->urltoken
                         ];
                     
                         Mail::to($mail)->send(new mailSend($w_pre_company,$details));

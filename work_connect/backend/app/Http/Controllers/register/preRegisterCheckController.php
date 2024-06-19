@@ -15,7 +15,6 @@ class preRegisterCheckController extends Controller
         // react側からのリクエスト
         $url_token = $request->input('url_token');
         $kind = $request->input('kind');
-        
         // w_pre_usersテーブルから$url_tokenと一致するユーザー情報を抽出
         if($kind == "s"){
             // 学生側

@@ -3,7 +3,7 @@ import Select from "react-select";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 const Software = () => {
-  const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [selectedSoftware, setSelectedSoftware] = useState("");
 
   const { updateSessionData } = useSessionStorage();
   const options = [
@@ -18,10 +18,18 @@ const Software = () => {
     { value: "Figma", label: "Figma" },
     { value: "Adobe PremierePro", label: "Adobe PremierePro" },
   ];
+
+  const handleChange = (selectedOption) => {
+    setSelectedSoftware(selectedOption);
+
+    // sessionStrageに値を保存
+    updateSessionData("accountData", "software", selectedOption.label);
+  };
+
   return (
     <>
       <p>ソフトウェア</p>
-      <Select options={options} isMulti />
+      <Select id="software" value={selectedSoftware} onChange={handleChange} options={options} placeholder="Select..." isMulti />
     </>
   );
 };

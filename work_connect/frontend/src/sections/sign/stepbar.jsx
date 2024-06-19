@@ -25,46 +25,36 @@ export default function HorizontalLinearStepper({ Stepbar }) {
   };
 
   // sessionStrageに保存するキーを宣言
-  const [AccountData, setAccountData] = useState({
-    user_name: "",
-    password: "",
-    graduation_year: "",
-    school_name: "", 
-    department_name: "", //学部
-    faculty_name: "", //学科
-    major_name: "", //専攻
-    course_name: "",  //コース
+  // const [AccountData, setAccountData] = useState({
+  //   user_name: "",
+  //   password: "",
+  //   graduation_year: "",
+  //   school_name: "", 
+  //   department_name: "", //学部
+  //   faculty_name: "", //学科
+  //   major_name: "", //専攻
+  //   course_name: "",  //コース
 
-    // intro: "",
-    // user_from: "",
-    // programming_language: "",
-    // development_environment: "",
-    // software: "",
-    // acquisition_qualification: "",
-    // desired_work_region: "",
-    // hobby: "",
-    // others: "",
-    // icon: "",
-    // mypr_movie_id: "",
-    // resume: "",
-    // desired_occupation: "",
-    // registered_datetime: "",
-    // border_color: "",
-    // background_color: "",
-    // border_style: "",
-    // created_at: "",
-    // updated_at: "",
-  });
-
-  // 子コンポーネントの項目に文字が入力されたらsessionStrageに保存する。
-  const handleValueChange = (key, value) => {
-    // console.log("AccountData", AccountData);
-
-    setAccountData((AccountObject) => ({
-      ...AccountObject,
-      [key]: value,
-    }));
-  };
+  //   // intro: "",
+  //   // user_from: "",
+  //   // programming_language: "",
+  //   // development_environment: "",
+  //   // software: "",
+  //   // acquisition_qualification: "",
+  //   // desired_work_region: "",
+  //   // hobby: "",
+  //   // others: "",
+  //   // icon: "",
+  //   // mypr_movie_id: "",
+  //   // resume: "",
+  //   // desired_occupation: "",
+  //   // registered_datetime: "",
+  //   // border_color: "",
+  //   // background_color: "",
+  //   // border_style: "",
+  //   // created_at: "",
+  //   // updated_at: "",
+  // });
 
   // sessionStrageに保存されるキーと値を見る
   // useEffect(() => {
@@ -141,8 +131,8 @@ export default function HorizontalLinearStepper({ Stepbar }) {
       {/*ーーーーーーーーーーーーーーーーーーーーーー 入力フォーム表示位置 ーーーーーーーーーーーーーーーーーーーーーー*/}
 
       {/* handleValueChange 入力した値を */}
-      {activeStep === 0 ? <AccountRegistar handleValueChange={handleValueChange} /> : ""}
-      {activeStep === 1 ? <SchoolInformation handleValueChange={handleValueChange}  /> : ""}
+      {activeStep === 0 ? <AccountRegistar /> : ""}
+      {activeStep === 1 ? <SchoolInformation /> : ""}
       {activeStep === 2 ? <MoreInformation /> : ""}
       {activeStep === 3 ? <Confirmation /> : ""}
 
@@ -182,5 +172,4 @@ export default function HorizontalLinearStepper({ Stepbar }) {
 
 HorizontalLinearStepper.propTypes = {
   Stepbar: PropTypes.string.isRequired, // StepbarがReact要素（コンポーネント）であると仮定
-  handleValueChange: PropTypes.func.isRequired, // 必須の関数として定義
 };

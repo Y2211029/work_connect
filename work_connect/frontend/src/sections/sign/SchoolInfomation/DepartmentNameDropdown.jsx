@@ -51,13 +51,7 @@ const DepartmentNameDropdown = () => {
   return (
     <div>
       <p>学部</p>
-      <Select
-        id="departmentDropdown"
-        value={selectedDepartment}
-        onChange={handleChange}
-        options={options}
-        placeholder="Select..."
-      />
+      <Select id="departmentDropdown" value={selectedDepartment} onChange={handleChange} options={options} placeholder="Select..." isMulti />
     </div>
   );
 };

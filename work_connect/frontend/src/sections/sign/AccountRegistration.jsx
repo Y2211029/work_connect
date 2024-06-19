@@ -9,7 +9,8 @@ import { emailContext } from "src/components/account/students/EmailContext";
 
 // sessionStrage呼び出し
 import { useSessionStorage } from "../../hooks/use-sessionStorage";
-const AccountRegistar = (props) => {
+
+const AccountRegistar = () => {
   // アカウントデータの状態管理
   const [accountData, setAccountData] = useState({
     sei: "",
@@ -30,11 +31,29 @@ const AccountRegistar = (props) => {
   });
 
   // 登録項目確認の際に利用
-  const { getSessionData, setSessionData } = useSessionStorage();
+  const { setSessionData, getSessionData } = useSessionStorage();
+
+  if (performance.navigation.type !== performance.navigation.TYPE_RELOAD) {
+    setSessionData("accountData", accountData);
+  }
+
+  useEffect(() => {
+    if (Object.values({ ...accountData }).some((value) => value !== "")) {
+      setSessionData("accountData", accountData);
+      console.log("空じゃないです。");
+    } else {
+      console.log("空です。");
+    }
+
+    // ESlintError削除、推奨されて無いので他の方法を追々考えます。
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accountData]);
 
   // sessionStrageにデータがあれば出力
   useEffect(() => {
     let sessionDataAccount = getSessionData("accountData");
+    console.log("sessionDataAccount", sessionDataAccount);
+
     setAccountData((prev) => ({
       ...prev,
       sei: sessionDataAccount.sei,
@@ -45,6 +64,7 @@ const AccountRegistar = (props) => {
       password: sessionDataAccount.password,
       passwordCheck: sessionDataAccount.passwordCheck,
     }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // const AccountData = useContext(emailContext);
@@ -77,9 +97,6 @@ const AccountRegistar = (props) => {
     } else {
       setInputError((prev) => ({ ...prev, [name]: false }));
     }
-
-    // 親コンポーネント（stepbar.jsx）に値を渡す。
-    props.handleValueChange(name, value);
   };
 
   // パスワード確認
@@ -89,12 +106,6 @@ const AccountRegistar = (props) => {
   }, [accountData, inputError]); // パスワードまたはパスワード確認が変更されたときに実行
 
   // sessionStrageにaccountDataを保存
-  useEffect(() => {
-    setSessionData("accountData", accountData);
-
-    // ESlintError削除、推奨されて無いので他の方法を追々考えます。
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accountData]);
 
   const AccountData = useContext(emailContext);
   const objAccountData = {};
@@ -168,10 +179,7 @@ const AccountRegistar = (props) => {
             <TextField
               error={inputError.userName}
               fullWidth
-              helperText={
-                (inputError.userName ? "ユーザー名が条件に合致していません" : "") +
-                "※大文字・小文字・英数字・8文字以上16文字以内"
-              }
+              helperText={(inputError.userName ? "ユーザー名が条件に合致していません" : "") + "※大文字・小文字・英数字・8文字以上16文字以内"}
               label="ユーザー名"
               margin="normal"
               name="userName"
@@ -193,10 +201,7 @@ const AccountRegistar = (props) => {
             <TextField
               error={inputError.password}
               fullWidth
-              helperText={
-                (inputError.password ? "パスワードが条件に合致していません" : "") +
-                "※大文字・小文字・英数字・8文字以上30文字以内"
-              }
+              helperText={(inputError.password ? "パスワードが条件に合致していません" : "") + "※大文字・小文字・英数字・8文字以上30文字以内"}
               label="パスワード"
               margin="normal"
               name="password"
@@ -217,17 +222,10 @@ const AccountRegistar = (props) => {
               variant="outlined"
             />
             <TextField
-              disabled={
-                !accountData.password ||
-                !new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,30}$").test(
-                  accountData.password
-                )
-              }
+              disabled={!accountData.password || !new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,30}$").test(accountData.password)}
               error={inputError.passwordCheck}
               fullWidth
-              helperText={
-                inputError.passwordCheck ? "パスワードが一致しません" : "パスワードが一致しました"
-              }
+              helperText={inputError.passwordCheck ? "パスワードが一致しません" : "パスワードが一致しました"}
               label="パスワード確認"
               margin="normal"
               name="passwordCheck"
@@ -252,8 +250,7 @@ AccountRegistar.propTypes = {
   inputError: PropTypes.shape({
     userName: PropTypes.bool.isRequired,
   }).isRequired,
-  handleChange: PropTypes.func.isRequired,
-  handleValueChange: PropTypes.func.isRequired, // 必須の関数として定義
+  handleChange: PropTypes.func.isRequired, // 必須の関数として定義
   SessionSaveTrigger: PropTypes.string, // ここでSessionSaveTriggerの型を定義
 };
 

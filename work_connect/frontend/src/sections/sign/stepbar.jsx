@@ -13,6 +13,9 @@ import AccountRegistar from "./AccountRegistration";
 import MoreInformation from "./MoreInformation";
 import Confirmation from "./Confirmation";
 
+// sessionStrage
+import { useSessionStorage } from "../../hooks/use-sessionStorage";
+
 const steps = ["アカウント", "学校情報", "詳細情報", "確認"];
 let stepConnectorLinesArray = [];
 
@@ -24,42 +27,21 @@ export default function HorizontalLinearStepper({ Stepbar }) {
     return skipped.has(step);
   };
 
-  // sessionStrageに保存するキーを宣言
-  // const [AccountData, setAccountData] = useState({
-  //   user_name: "",
-  //   password: "",
-  //   graduation_year: "",
-  //   school_name: "", 
-  //   department_name: "", //学部
-  //   faculty_name: "", //学科
-  //   major_name: "", //専攻
-  //   course_name: "",  //コース
+  // 登録項目確認の際に利用
+  const { getSessionData, updateSessionData } = useSessionStorage();
 
-  //   // intro: "",
-  //   // user_from: "",
-  //   // programming_language: "",
-  //   // development_environment: "",
-  //   // software: "",
-  //   // acquisition_qualification: "",
-  //   // desired_work_region: "",
-  //   // hobby: "",
-  //   // others: "",
-  //   // icon: "",
-  //   // mypr_movie_id: "",
-  //   // resume: "",
-  //   // desired_occupation: "",
-  //   // registered_datetime: "",
-  //   // border_color: "",
-  //   // background_color: "",
-  //   // border_style: "",
-  //   // created_at: "",
-  //   // updated_at: "",
-  // });
+  useEffect(() => {
+    let sessionStep = getSessionData("ActiveStep");
+    if (sessionStep !== undefined) {
+      setActiveStep(sessionStep.step);
+    }
+  }, []);
 
-  // sessionStrageに保存されるキーと値を見る
-  // useEffect(() => {
-  //   // console.log("AccountData", AccountData);
-  // }, [AccountData]);
+  useEffect(() => {
+    updateSessionData("ActiveStep", "step", activeStep);
+  }, [activeStep]);
+
+  // setActiveStep(getSessionData("ActiveStep"));
 
   // 次へボタン押されたとき
   const handleNext = () => {
@@ -162,7 +144,9 @@ export default function HorizontalLinearStepper({ Stepbar }) {
             <Button color="inherit" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
               戻る
             </Button>
-            <Button onClick={handleNext}>{activeStep === steps.length - 1 ? "保存" : "次へ"}</Button>
+            <Button onClick={handleNext}>
+              {activeStep === steps.length - 1 ? "保存" : "次へ"}
+            </Button>
           </Box>
         </React.Fragment>
       )}

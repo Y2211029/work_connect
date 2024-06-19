@@ -1,22 +1,46 @@
-import { useContext } from "react";
+import { useEffect, useState } from "react";
 import { Container, RegistarCard } from "./css/RegistarStyled";
-
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
-import { emailContext } from "src/components/account/students/EmailContext";
+function Greeting({ test }) {
+  return (
+    <button className="greeting">
+    {test}
+    </button>
+  );
+}
 
 export const Confirmation = () => {
-  const AccountData = useContext(emailContext);
-  const objAccountData = {};
-  for (const [key, value] of AccountData) {
-    objAccountData[key] = value;
-  }
-
+  const [developmentEnvironment, setDevelopmentEnvironment] = useState();
   const { getSessionData } = useSessionStorage();
   let Account = "";
   Account = getSessionData("accountData");
 
-  // 任意項目入力チェック
-  // if(Account)
+  let devtagString = "";
+
+  useEffect(() => {
+    // if (performance.navigation.type !== performance.navigation.TYPE_RELOAD) {
+    // console.log("外部URLからアクセスしたです。");
+
+    if (getSessionData("accountData") !== undefined) {
+      let SessionData = getSessionData("accountData");
+
+      if (
+        SessionData.development_environment !== undefined &&
+        SessionData.development_environment !== ""
+      ) {
+        let commaArray = SessionData.development_environment.split(",");
+
+        commaArray.map((item) => {
+          // devtagString += `<button>${item}</button>`;
+          devtagString = {<Greeting test=item />};
+        });
+
+        setDevelopmentEnvironment(devtagString);
+      }
+    }
+    // }
+  }, []);
+  console.log("devtagString", developmentEnvironment);
 
   return (
     <Container>
@@ -24,7 +48,7 @@ export const Confirmation = () => {
         <ul>
           <li>
             <p>メールアドレス</p>
-            <span>{objAccountData.email}</span>
+            <span>{Account.mail}</span>
           </li>
           <li>
             <p>姓名</p>
@@ -54,9 +78,7 @@ export const Confirmation = () => {
           </li>
           <li>
             <p>開発環境</p>
-            <span>
-              
-            </span>
+            <span>{developmentEnvironment}</span>
           </li>
           <li>
             <p></p>

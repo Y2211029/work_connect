@@ -1,29 +1,46 @@
 export const useSessionStorage = () => {
   // 情報取得
   const getSessionData = (keyName) => {
-    const temp = sessionStorage.getItem(keyName);
-    if (temp != null) {
-      return JSON.parse(temp);
+    if (sessionStorage.getItem(keyName) !== null) {
+      const temp = sessionStorage.getItem(keyName);
+      if (temp != null) {
+        return JSON.parse(temp);
+      }
     }
     return undefined;
   };
 
-  // 編集・追加
+  // 追加
   const setSessionData = (keyName, setData) => {
     const temp = JSON.stringify(setData);
     sessionStorage.setItem(keyName, temp);
-    };
-    
-    // 削除
-    const deleteSessionData = (keyName) => {
-      sessionStorage.removeItem(keyName);
-      };
-      
-      const updateSessionData = (sessionKeyName, jsonKeyName, setData) => {
-        let sessionData = getSessionData(sessionKeyName);
-        sessionData[jsonKeyName] = setData;
-        setSessionData(sessionKeyName, sessionData)
   };
 
-  return { getSessionData, setSessionData, deleteSessionData, updateSessionData };
+  // 削除
+  const deleteSessionData = (keyName) => {
+    sessionStorage.removeItem(keyName);
+  };
+
+  // 編集
+  const updateSessionData = (sessionKeyName, jsonKeyName, setData) => {
+    // console.log("sessionKeyName, jsonKeyName, setData", sessionKeyName, jsonKeyName, setData);
+    let sessionData = getSessionData(sessionKeyName);
+    // console.log("sessionData", sessionData);
+    if (sessionData !== undefined) {
+      sessionData[jsonKeyName] = setData;
+    } else {
+      sessionData = {
+        [jsonKeyName]: setData,
+      };
+    }
+    setSessionData(sessionKeyName, sessionData);
+  };
+
+  const updateObjectSessionData = (sessionKeyName, setData) => {
+    Object.keys(setData).forEach((key) => {
+      updateSessionData(sessionKeyName, key, setData[key]);
+    });
+  };
+
+  return { getSessionData, setSessionData, deleteSessionData, updateSessionData, updateObjectSessionData };
 };

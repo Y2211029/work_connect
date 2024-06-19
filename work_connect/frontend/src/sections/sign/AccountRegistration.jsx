@@ -31,25 +31,19 @@ const AccountRegistar = () => {
   });
 
   // 登録項目確認の際に利用
-  const { setSessionData, getSessionData } = useSessionStorage();
-
-  if (performance.navigation.type !== performance.navigation.TYPE_RELOAD) {
-    setSessionData("accountData", accountData);
-  }
+  const { getSessionData, updateSessionData, updateObjectSessionData } = useSessionStorage();
 
   useEffect(() => {
-    if (Object.values({ ...accountData }).some((value) => value !== "")) {
-      setSessionData("accountData", accountData);
-      console.log("空じゃないです。");
-    } else {
-      console.log("空です。");
+    // 外部URLから本アプリにアクセスした際に、sessionStrageに保存する
+    if (performance.navigation.type !== performance.navigation.TYPE_RELOAD) {
+      console.log("外部URLからアクセスしたです。");
+      if (getSessionData("accountData") === undefined) {
+        updateObjectSessionData("accountData", accountData);
+      }
     }
+  }, []);
 
-    // ESlintError削除、推奨されて無いので他の方法を追々考えます。
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accountData]);
-
-  // sessionStrageにデータがあれば出力
+  // sessionStrageに保存されているデータを取得する
   useEffect(() => {
     let sessionDataAccount = getSessionData("accountData");
     console.log("sessionDataAccount", sessionDataAccount);
@@ -66,6 +60,19 @@ const AccountRegistar = () => {
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // リロードしたときに、accountDataのオブジェクト内のvalueに値があれば、sessionStrageに保存する
+  useEffect(() => {
+    if (Object.values({ ...accountData }).some((value) => value !== "")) {
+      console.log("空じゃないです。");
+      updateObjectSessionData("accountData", accountData);
+    } else {
+      console.log("空。");
+    }
+
+    // ESlintError削除、推奨されて無いので他の方法を追々考えます。
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accountData]);
 
   // const AccountData = useContext(emailContext);
   // const objAccountData = {};
@@ -112,7 +119,7 @@ const AccountRegistar = () => {
   for (const [key, value] of AccountData) {
     objAccountData[key] = value;
   }
-
+  updateSessionData("accountData", "mail", AccountData[0][1]);
   return (
     <>
       <Container>
@@ -179,7 +186,10 @@ const AccountRegistar = () => {
             <TextField
               error={inputError.userName}
               fullWidth
-              helperText={(inputError.userName ? "ユーザー名が条件に合致していません" : "") + "※大文字・小文字・英数字・8文字以上16文字以内"}
+              helperText={
+                (inputError.userName ? "ユーザー名が条件に合致していません" : "") +
+                "※大文字・小文字・英数字・8文字以上16文字以内"
+              }
               label="ユーザー名"
               margin="normal"
               name="userName"
@@ -201,7 +211,10 @@ const AccountRegistar = () => {
             <TextField
               error={inputError.password}
               fullWidth
-              helperText={(inputError.password ? "パスワードが条件に合致していません" : "") + "※大文字・小文字・英数字・8文字以上30文字以内"}
+              helperText={
+                (inputError.password ? "パスワードが条件に合致していません" : "") +
+                "※大文字・小文字・英数字・8文字以上30文字以内"
+              }
               label="パスワード"
               margin="normal"
               name="password"
@@ -222,10 +235,17 @@ const AccountRegistar = () => {
               variant="outlined"
             />
             <TextField
-              disabled={!accountData.password || !new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,30}$").test(accountData.password)}
+              disabled={
+                !accountData.password ||
+                !new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,30}$").test(
+                  accountData.password
+                )
+              }
               error={inputError.passwordCheck}
               fullWidth
-              helperText={inputError.passwordCheck ? "パスワードが一致しません" : "パスワードが一致しました"}
+              helperText={
+                inputError.passwordCheck ? "パスワードが一致しません" : "パスワードが一致しました"
+              }
               label="パスワード確認"
               margin="normal"
               name="passwordCheck"

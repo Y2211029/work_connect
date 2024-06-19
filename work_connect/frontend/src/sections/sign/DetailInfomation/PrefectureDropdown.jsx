@@ -4,7 +4,6 @@ import axios from "axios";
 
 const PrefectureSelect = () => {
   const [prefectures, setPrefectures] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // RESAS APIのエンドポイントとAPIキー
@@ -24,17 +23,11 @@ const PrefectureSelect = () => {
         setPrefectures(data);
       } catch (error) {
         console.error("Failed to fetch prefectures", error);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchPrefectures();
   }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div>

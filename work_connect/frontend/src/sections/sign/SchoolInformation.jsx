@@ -13,9 +13,7 @@ const SchoolInformation = () => {
       <RegistarCard>
         <GraduationYearDropdown />
         <SchoolNameDropdown />
-        <p>学部</p>
         <DepartmentNameDropdown />
-        <p>学科</p>
         <FacultyName />
         <p>専攻</p>
         <p>コース</p>

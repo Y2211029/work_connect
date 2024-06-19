@@ -9,10 +9,13 @@ import { emailContext } from "src/components/account/students/EmailContext";
 
 // sessionStrage呼び出し
 import { useSessionStorage } from "../../hooks/use-sessionStorage";
-
 const AccountRegistar = (props) => {
   // アカウントデータの状態管理
   const [accountData, setAccountData] = useState({
+    sei: "",
+    mei: "",
+    seiCana: "",
+    meiCana: "",
     userName: "",
     password: "",
     passwordCheck: "",
@@ -25,6 +28,24 @@ const AccountRegistar = (props) => {
     // trueだった時にエラーを表示
     passwordCheck: false,
   });
+
+  // 登録項目確認の際に利用
+  const { getSessionData, setSessionData } = useSessionStorage();
+
+  // sessionStrageにデータがあれば出力
+  useEffect(() => {
+    let sessionDataAccount = getSessionData("accountData");
+    setAccountData((prev) => ({
+      ...prev,
+      sei: sessionDataAccount.sei,
+      mei: sessionDataAccount.mei,
+      seiCana: sessionDataAccount.seiCana,
+      meiCana: sessionDataAccount.meiCana,
+      userName: sessionDataAccount.userName,
+      password: sessionDataAccount.password,
+      passwordCheck: sessionDataAccount.passwordCheck,
+    }));
+  }, []);
 
   // const AccountData = useContext(emailContext);
   // const objAccountData = {};
@@ -61,15 +82,11 @@ const AccountRegistar = (props) => {
     props.handleValueChange(name, value);
   };
 
-  // 登録項目確認の際に利用
-  const { setSessionData } = useSessionStorage();
-
   // パスワード確認
   useEffect(() => {
     const passwordMatch = accountData.password === accountData.passwordCheck;
     setInputError((prev) => ({ ...prev, passwordCheck: !passwordMatch }));
   }, [accountData, inputError]); // パスワードまたはパスワード確認が変更されたときに実行
-
 
   // sessionStrageにaccountDataを保存
   useEffect(() => {
@@ -84,7 +101,6 @@ const AccountRegistar = (props) => {
   for (const [key, value] of AccountData) {
     objAccountData[key] = value;
   }
-
 
   return (
     <>
@@ -101,10 +117,61 @@ const AccountRegistar = (props) => {
               variant="outlined"
               disabled
             />
+            <div style={{ display: "flex" }}>
+              <TextField
+                fullWidth
+                label="姓"
+                margin="normal"
+                name="sei"
+                onChange={handleChange}
+                required
+                type="text"
+                value={accountData.sei}
+                variant="outlined"
+              />
+              <TextField
+                fullWidth
+                label="名"
+                margin="normal"
+                name="mei"
+                onChange={handleChange}
+                required
+                type="text"
+                value={accountData.mei}
+                variant="outlined"
+              />
+            </div>
+            <div style={{ display: "flex" }}>
+              <TextField
+                fullWidth
+                label="セイ"
+                margin="normal"
+                name="seiCana"
+                onChange={handleChange}
+                required
+                type="text"
+                value={accountData.seiCana}
+                variant="outlined"
+              />
+              <TextField
+                fullWidth
+                label="メイ"
+                margin="normal"
+                name="meiCana"
+                onChange={handleChange}
+                required
+                type="text"
+                value={accountData.meiCana}
+                variant="outlined"
+              />
+            </div>
             <TextField
               error={inputError.userName}
               fullWidth
-              helperText={(inputError.userName ? "ユーザー名が条件に合致していません" : "") + "※大文字・小文字・英数字・8文字以上16文字以内"}
+              helperText={
+                (inputError.userName ? "ユーザー名が条件に合致していません" : "") +
+                "※大文字・小文字・英数字・8文字以上16文字以内"
+              }
               label="ユーザー名"
               margin="normal"
               name="userName"
@@ -126,7 +193,10 @@ const AccountRegistar = (props) => {
             <TextField
               error={inputError.password}
               fullWidth
-              helperText={(inputError.password ? "パスワードが条件に合致していません" : "") + "※大文字・小文字・英数字・8文字以上30文字以内"}
+              helperText={
+                (inputError.password ? "パスワードが条件に合致していません" : "") +
+                "※大文字・小文字・英数字・8文字以上30文字以内"
+              }
               label="パスワード"
               margin="normal"
               name="password"
@@ -147,10 +217,17 @@ const AccountRegistar = (props) => {
               variant="outlined"
             />
             <TextField
-              disabled={!accountData.password || !new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,30}$").test(accountData.password)}
+              disabled={
+                !accountData.password ||
+                !new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,30}$").test(
+                  accountData.password
+                )
+              }
               error={inputError.passwordCheck}
               fullWidth
-              helperText={inputError.passwordCheck ? "パスワードが一致しません" : "パスワードが一致しました"}
+              helperText={
+                inputError.passwordCheck ? "パスワードが一致しません" : "パスワードが一致しました"
+              }
               label="パスワード確認"
               margin="normal"
               name="passwordCheck"

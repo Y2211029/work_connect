@@ -1,6 +1,12 @@
-// ;
-import CreatableSelect from "react-select/creatable";
+import { useState } from "react";
+import Select from "react-select";
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
+
 const FacultyNameDropdown = () => {
+  const [selectedFaculty, setSelectedFaculty] = useState("");
+
+  const { updateSessionData } = useSessionStorage();
+
   const options = [
     { value: "旅行", label: "法律学科" },
     { value: "読書", label: "政治経済学科" },
@@ -87,8 +93,25 @@ const FacultyNameDropdown = () => {
     { value: "音楽鑑賞", label: "獣医学科" },
     { value: "音楽鑑賞", label: "薬学科" },
   ];
+  const handleChange = (selectedOption) => {
+    setSelectedFaculty(selectedOption);
 
-  return <CreatableSelect options={options} isClearable />;
+    // sessionStrageに値を保存
+    updateSessionData("accountData", "faculty_name", selectedOption.label);
+  };
+
+  return (
+    <div>
+      <p>学科</p>
+      <Select
+        id="departmentDropdown"
+        value={selectedFaculty}
+        onChange={handleChange}
+        options={options}
+        placeholder="Select..."
+      />
+    </div>
+  );
 };
 
 export default FacultyNameDropdown;

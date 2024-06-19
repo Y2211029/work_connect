@@ -15,6 +15,9 @@ export const Confirmation = () => {
   let Account = "";
   Account = getSessionData("accountData");
 
+  // 任意項目入力チェック
+  // if(Account)
+
   return (
     <Container>
       <RegistarCard>
@@ -24,6 +27,16 @@ export const Confirmation = () => {
             <span>{objAccountData.email}</span>
           </li>
           <li>
+            <p>姓名</p>
+            <span>{Account.sei}</span>
+            <span>{Account.mei}</span>
+          </li>
+          <li>
+            <p>セイメイ</p>
+            <span>{Account.seiCana}</span>
+            <span>{Account.meiCana}</span>
+          </li>
+          <li>
             <p>ユーザー名</p>
             <span>{Account.userName}</span>
           </li>
@@ -31,10 +44,25 @@ export const Confirmation = () => {
             <p>パスワード</p>
             <span>{Account.password}</span>
           </li>
+          <li>
+            <p>卒業年度</p>
+            <span>{Account.graduation_year}年</span>
+          </li>
+          <li>
+            <p>学校名</p>
+            <span>{Account.school_name}</span>
+          </li>
+          <li>
+            <p>開発環境</p>
+            <span>
+              
+            </span>
+          </li>
+          <li>
+            <p></p>
+            <span></span>
+          </li>
         </ul>
-
-        <p>卒業年度</p>
-        <p>学校名</p>
         <p>学科</p>
         <p>学部</p>
         <p>専攻</p>

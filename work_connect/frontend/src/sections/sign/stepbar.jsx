@@ -58,7 +58,7 @@ export default function HorizontalLinearStepper({ Stepbar }) {
 
   // 子コンポーネントの項目に文字が入力されたらsessionStrageに保存する。
   const handleValueChange = (key, value) => {
-    console.log("AccountData", AccountData);
+    // console.log("AccountData", AccountData);
 
     setAccountData((AccountObject) => ({
       ...AccountObject,
@@ -67,9 +67,9 @@ export default function HorizontalLinearStepper({ Stepbar }) {
   };
 
   // sessionStrageに保存されるキーと値を見る
-  useEffect(() => {
-    console.log("AccountData", AccountData);
-  }, [AccountData]);
+  // useEffect(() => {
+  //   // console.log("AccountData", AccountData);
+  // }, [AccountData]);
 
   // 次へボタン押されたとき
   const handleNext = () => {

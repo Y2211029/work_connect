@@ -7,7 +7,6 @@ import { useSessionStorage } from "src/hooks/use-sessionStorage";
 const SchoolNameDropdown = () => {
   const [schools, setSchools] = useState([]);
   const [selectedSchool, setSelectedSchool] = useState("");
-  const [loading, setLoading] = useState(false); // ローディング状態
   const accessToken = "268|G5fHGAGA7Col8FetXAQ6EMNHnjDIA5TInN2uByIB";
 
   const { updateSessionData } = useSessionStorage();
@@ -15,7 +14,6 @@ const SchoolNameDropdown = () => {
   useEffect(() => {
     const schoolTypeCodes = ["H1", "H2"]; // 複数のschool_type_codeを配列として定義
     const fetchData = async () => {
-      setLoading(true);
       let allSchools = [];
       let page = 1;
       let hasMore = true;
@@ -52,8 +50,6 @@ const SchoolNameDropdown = () => {
         setSchools(allSchools);
       } catch (error) {
         console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -92,7 +88,6 @@ const SchoolNameDropdown = () => {
         options={options}
         placeholder="Select..."
         filterOption={filterOption}
-        isLoading={loading} // ローディング状態を表示
       />
     </div>
   );

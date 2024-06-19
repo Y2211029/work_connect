@@ -21,7 +21,7 @@ const modalStyle = {
   },
 };
 
-const CompanyLoginModal = () => {
+const CompanyLoginModal = ({ FromCompanyPage = false }) => {
   const [showModal, setShowModal] = useState(false);
   const [formValues, setFormValues] = useState({
     user_name: "",
@@ -61,7 +61,6 @@ const CompanyLoginModal = () => {
     var targetParants = $(e.target).parents(".formInModal");
 
     // 取得した要素の個数が0個の場合
-    // 変更地点6/12坂東
     // ***if (targetParants.length == 0 || $(e.target).text() == "閉じる")***
     console.log($(e.target).text());
     if (targetParants.length == 0 || $(e.target).text() == "閉じる") {
@@ -72,7 +71,9 @@ const CompanyLoginModal = () => {
       }
     }
   });
-  const handleOpenModal = () => {
+
+  const handleOpenModal = (e) => {
+    e.preventDefault();
     setShowModal(true);
   };
 
@@ -184,14 +185,16 @@ const CompanyLoginModal = () => {
 
   return (
     <div>
-      {/* javascript:void(0)でリロードを停止させてます。 */}
-      <a
-        href="javascript:void(0)"
-        onClick={handleOpenModal}
-        id="CompanyloginModalOpenButton"
-      >
-        企業の方はこちら
-      </a>
+      
+      {/* 条件付きレンダリングを使用 */}
+      {FromCompanyPage ? (
+        <>
+        </>
+      ) : (
+        <a href="" onClick={handleOpenModal} id="CompanyloginModalOpenButton">
+          企業の方はこちら
+       </a>
+      )}
       <Modal isOpen={showModal} contentLabel="Example Modal" style={modalStyle}>
         <div className="loginFormContainer">
           <form onSubmit={handleSubmit} className="formInModal">

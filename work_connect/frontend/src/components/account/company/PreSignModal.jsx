@@ -21,7 +21,7 @@ const modalStyle = {
     }
 };
 
-const CompanyPreSignModal = () => {
+const CompanyPreSignModal = ({ FromCompanyPage = false }) => {
 
   const [showModal, setShowModal] = useState(false);
   const [formValues, setFormValues] = useState({
@@ -60,7 +60,6 @@ $("*").click(function (e) {
   var targetParants = $(e.target).parents(".formInModal");
 
   // 取得した要素の個数が0個の場合
-  // 変更地点6/12坂東
   // ***if (targetParants.length == 0 || $(e.target).text() == "閉じる")***
   if (targetParants.length == 0 || $(e.target).text() == "閉じる") {
     // クリックした要素に"formInModal"クラスがついていない場合
@@ -72,7 +71,8 @@ $("*").click(function (e) {
 });
 
 
-  const handleOpenModal = () => {
+  const handleOpenModal = (e) => {
+    e.preventDefault();
     setShowModal(true);
   };
 
@@ -113,7 +113,7 @@ $("*").click(function (e) {
     if (Object.keys(errors).length > 0) {
       return;
     }
-    const mail = document.getElementsByName("mail")[0].value;
+    const mail = formValues.mail;
     const kind = "c";
     
     console.log("mail=" + mail);
@@ -186,8 +186,17 @@ $("*").click(function (e) {
 
   return (
     <div>
-      {/* javascript:void(0)でリロードを停止させてます。 */}
-      <a href="javascript:void(0)" onClick={handleOpenModal} id="CompanypreSignModalOpenButton">企業の方はこちら</a>
+      {/* #でリロードを停止させてます。 */}
+      
+      {/* 条件付きレンダリングを使用 */}
+      {FromCompanyPage ? (
+        <>
+        </>
+      ) : (
+        <a href="" onClick={handleOpenModal} id="CompanypreSignModalOpenButton">
+          企業の方はこちら
+        </a>
+      )}
       {/* <button onClick={handleOpenModal}>新規登録</button> */}
       <Modal isOpen={showModal} contentLabel="Example Modal" style={modalStyle}>
         <div className="preSignUpFormContainer">
@@ -216,9 +225,8 @@ $("*").click(function (e) {
     </div>
   );
 };
-
-export default CompanyPreSignModal;
-
 CompanyPreSignModal.propTypes = {
   FromCompanyPage: PropTypes.bool.isRequired,
 };
+export default CompanyPreSignModal;
+

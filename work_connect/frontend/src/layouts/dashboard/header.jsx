@@ -48,8 +48,8 @@ export default function Header({ onOpenNav }) {
       {/* ログイン、新規登録、本登録、チャット、通知、アカウントプロフィール */}
       <Stack direction="row" alignItems="center" spacing={1}>
         <SignUp1 />
-        <LoginModal />
-        <PreSignModal />
+        <LoginModal FromCompanyPage={false}/>
+        <PreSignModal FromCompanyPage={false}/>
         <SignUp />
         <ChatPng />
         <NotificationsPopover />

@@ -21,7 +21,7 @@ const modalStyle = {
   },
 };
 
-const PreSignModal = ({ FromCompanyPage }) => {
+const PreSignModal = ({ FromCompanyPage = false }) => {
   const [showModal, setShowModal] = useState(false);
   const [formValues, setFormValues] = useState({
     mail: "",
@@ -67,7 +67,8 @@ const PreSignModal = ({ FromCompanyPage }) => {
     }
   });
 
-  const handleOpenModal = () => {
+  const handleOpenModal = (e) => {
+    e.preventDefault();
     setShowModal(true);
   };
 
@@ -107,7 +108,7 @@ const PreSignModal = ({ FromCompanyPage }) => {
     if (Object.keys(errors).length > 0) {
       return;
     }
-    const mail = document.getElementsByName("mail")[0].value;
+    const mail = formValues.mail;
     const kind = "s";
     console.log("mail=" + mail);
 
@@ -181,7 +182,7 @@ const PreSignModal = ({ FromCompanyPage }) => {
     <div>
       {/* 条件付きレンダリングを使用 */}
       {FromCompanyPage ? (
-        <a href="javascript:void(0)" onClick={handleOpenModal}>
+        <a href="" onClick={handleOpenModal} id="preSignModalOpenButton">
           学生の方はこちら
         </a>
       ) : (
@@ -212,7 +213,7 @@ const PreSignModal = ({ FromCompanyPage }) => {
                 isSubmit &&
                 handleCloseModal}
               <button onClick={handleCloseModal}>閉じる</button>
-              <CompanyPreSignModal />
+              <CompanyPreSignModal FromCompanyPage={false} />
             </div>
           </form>
         </div>
@@ -221,8 +222,8 @@ const PreSignModal = ({ FromCompanyPage }) => {
   );
 };
 
-export default PreSignModal;
-
 PreSignModal.propTypes = {
   FromCompanyPage: PropTypes.bool.isRequired,
 };
+export default PreSignModal;
+

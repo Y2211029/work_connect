@@ -21,7 +21,7 @@ const modalStyle = {
   },
 };
 
-const LoginModal = ({ FromCompanyPage }) => {
+const LoginModal = ({ FromCompanyPage = false }) => {
   const [showModal, setShowModal] = useState(false);
   const [formValues, setFormValues] = useState({
     user_name: "",
@@ -69,7 +69,8 @@ const LoginModal = ({ FromCompanyPage }) => {
     }
   });
 
-  const handleOpenModal = () => {
+  const handleOpenModal = (e) => {
+    e.preventDefault();
     setShowModal(true);
   };
 
@@ -182,7 +183,7 @@ const LoginModal = ({ FromCompanyPage }) => {
     <div>
       {/* 条件付きレンダリングを使用 */}
       {FromCompanyPage ? (
-        <a href="javascript:void(0)" onClick={handleOpenModal}>
+        <a href="" onClick={handleOpenModal} id="loginModalOpenButton">
           学生の方はこちら
         </a>
       ) : (
@@ -224,7 +225,7 @@ const LoginModal = ({ FromCompanyPage }) => {
                 isSubmit &&
                 handleCloseModal}
               <button onClick={handleCloseModal}>閉じる</button>
-              <CompanyLoginModal />
+              <CompanyLoginModal FromCompanyPage={false} />
               {/* <a href="">企業の方はこちら</a> */}
             </div>
           </form>

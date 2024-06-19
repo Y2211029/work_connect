@@ -1,0 +1,54 @@
+.editor_title{
+  position: relative;
+  width:1000px;
+  height:50px;
+  font-weight:bold;
+  font-size: 30px;
+  outline: none;
+  border:none;
+  left:15%;
+  padding-top:50px;
+  padding-bottom:50px;
+  overflow:hidden;
+  background-color: #F9FAFB;
+}
+
+.editor-wrapper {
+  position: relative;
+  margin-left:5%;
+  top: 10px;
+  padding: 4px;
+}
+
+  .editor .ce-block__content {
+    min-height: 100px; /* Adjust based on your needs */
+  }
+
+  .ce-popover__items {
+    width: 100%;
+  }
+
+.cover_img_upload{
+  width:10%;
+  height:10%;
+  margin-left: 12%;
+}
+
+.uploaded-image {
+  position: relative;
+  display: inline-block;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.cancelIcon {
+  position: absolute;
+  top: 0;
+  right: 4;
+  transform: translate(-50%, -50%);
+  width: 30px; /* 適切なサイズに調整 */
+  height: 30px; /* 適切なサイズに調整 */
+  z-index: 10; /* 画像よりも手前に表示するために必要な場合 */
+}
+

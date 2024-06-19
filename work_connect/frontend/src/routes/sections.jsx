@@ -13,6 +13,10 @@ export const InternshipJobOfferPage = lazy(
 );
 export const Page404 = lazy(() => import("src/pages/page-not-found"));
 
+//20240619 金田追加
+export const SettingsPage = lazy(() => import('../pages/Settings'));
+export const EditorPage = lazy(() => import('../pages/Editor/Editor'));
+
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -32,6 +36,9 @@ export default function Router() {
         { path: "CompanyList", element: <CompanyListPage /> },
         { path: "Internship_JobOffer", element: <InternshipJobOfferPage /> },
         { path: "SignRegistar", element: <SignRegistar /> },
+        //20240619 金田追加
+        { path: 'Settings', element: <SettingsPage /> },
+        { path: 'Editor', element: <EditorPage /> },
       ],
     },
     {

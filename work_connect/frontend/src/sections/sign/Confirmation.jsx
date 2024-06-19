@@ -1,46 +1,38 @@
 import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import { Container, RegistarCard } from "./css/RegistarStyled";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
+
 function Greeting({ test }) {
   return (
     <button className="greeting">
-    {test}
+      {test}
     </button>
   );
 }
 
-export const Confirmation = () => {
-  const [developmentEnvironment, setDevelopmentEnvironment] = useState();
-  const { getSessionData } = useSessionStorage();
-  let Account = "";
-  Account = getSessionData("accountData");
+Greeting.propTypes = {
+  test: PropTypes.string.isRequired,
+};
 
-  let devtagString = "";
+export const Confirmation = () => {
+  const [developmentEnvironment, setDevelopmentEnvironment] = useState([]);
+  const { getSessionData } = useSessionStorage();
+  let Account = getSessionData("accountData") || {};
 
   useEffect(() => {
-    // if (performance.navigation.type !== performance.navigation.TYPE_RELOAD) {
-    // console.log("外部URLからアクセスしたです。");
-
-    if (getSessionData("accountData") !== undefined) {
+    if (getSessionData("accountData")) {
       let SessionData = getSessionData("accountData");
 
-      if (
-        SessionData.development_environment !== undefined &&
-        SessionData.development_environment !== ""
-      ) {
+      if (SessionData.development_environment) {
         let commaArray = SessionData.development_environment.split(",");
-
-        commaArray.map((item) => {
-          // devtagString += `<button>${item}</button>`;
-          devtagString = {<Greeting test=item />};
-        });
-
-        setDevelopmentEnvironment(devtagString);
+        let devtagComponents = commaArray.map((item, index) => (
+          <Greeting key={index} test={item} />
+        ));
+        setDevelopmentEnvironment(devtagComponents);
       }
     }
-    // }
   }, []);
-  console.log("devtagString", developmentEnvironment);
 
   return (
     <Container>
@@ -79,10 +71,6 @@ export const Confirmation = () => {
           <li>
             <p>開発環境</p>
             <span>{developmentEnvironment}</span>
-          </li>
-          <li>
-            <p></p>
-            <span></span>
           </li>
         </ul>
         <p>学科</p>

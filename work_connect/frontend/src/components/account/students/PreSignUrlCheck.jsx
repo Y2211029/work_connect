@@ -9,11 +9,16 @@ import HorizontalLinearStepper from "src/sections/sign/stepbar";
 
 import { emailContext } from "./EmailContext";
 
+// sessionStrage呼び出し
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
+
 const PreSignUrlCheck = () => {
   const [csrfToken, setCsrfToken] = useState("");
   const [Circul, setCircul] = useState("block");
   const [Stepbar, setStepbar] = useState("none");
   const [AccountData, setAccountData] = useState({ email: "", tf: "" });
+
+  const { updateSessionData } = useSessionStorage();
 
   // const oneTimes = useRef(false); // 一度だけ処理させたい処理を管理するuseRefを作成する
 
@@ -63,8 +68,30 @@ const PreSignUrlCheck = () => {
           if (data.tf == "true") {
             console.log(data);
             console.log("正しいです。");
-            setAccountData({ ...AccountData, email: data.email });
 
+            //sessionData初期値
+            updateSessionData("accountData", "mail", data.email);
+            updateSessionData("accountData", "student_surname", "");
+            updateSessionData("accountData", "student_name", "");
+            updateSessionData("accountData", "student_kanasurname", "");
+            updateSessionData("accountData", "student_kananame", "");
+            updateSessionData("accountData", "graduation_year", "");
+            updateSessionData("accountData", "school_name", "");
+            updateSessionData("accountData", "department_name", "");
+            updateSessionData("accountData", "faculty_name", "");
+            updateSessionData("accountData", "major_name", "");
+            updateSessionData("accountData", "course_name", "");
+            updateSessionData("accountData", "user_from", "");
+            updateSessionData("accountData", "programming_language", "");
+            updateSessionData("accountData", "development_environment", "");
+            updateSessionData("accountData", "software", "");
+            updateSessionData("accountData", "acquisition_qualification", "");
+            updateSessionData("accountData", "desired_work_region", "");
+            updateSessionData("accountData", "hobby", "");
+            updateSessionData("accountData", "others", "");
+            updateSessionData("accountData", "desired_occupation", "");
+
+            setAccountData({ ...AccountData, email: data.email });
             //  ローディングcircle非表示
             <CircularIndeterminate Circul={setCircul("none")} />;
             //  ステップバー表示
@@ -73,7 +100,6 @@ const PreSignUrlCheck = () => {
             console.log(data);
             console.log("違います。");
             location.href = "/404";
-            
           }
         } else {
           console.log("login失敗");
@@ -81,7 +107,6 @@ const PreSignUrlCheck = () => {
             "ログインに失敗しました。\nユーザー名、メールアドレス、パスワードをご確認ください。"
           );
         }
-
       })
       .fail(function (textStatus, errorThrown) {
         //ajax失敗時の処理
@@ -94,7 +119,6 @@ const PreSignUrlCheck = () => {
   let newArray = Object.entries(AccountData);
 
   // const emailContext = useContext(AccountData);
-
 
   return (
     <>

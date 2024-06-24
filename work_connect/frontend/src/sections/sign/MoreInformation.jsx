@@ -14,6 +14,7 @@ const MoreInformation = () => {
         <Environment />
         <Hobby />
         <PrefectureSelect />
+        {/* desired_occupation */}
         <ProgrammingLanguage />
         <Qualification />
         <Software />

@@ -13,18 +13,18 @@ import { useSessionStorage } from "../../hooks/use-sessionStorage";
 const AccountRegistar = () => {
   // アカウントデータの状態管理
   const [accountData, setAccountData] = useState({
-    sei: "",
-    mei: "",
-    seiCana: "",
-    meiCana: "",
-    userName: "",
+    student_surname: "",
+    student_name: "",
+    student_kanasurname: "",
+    student_kananame: "",
+    user_name: "",
     password: "",
     passwordCheck: "",
   });
 
   // 入力エラーの状態管理
   const [inputError, setInputError] = useState({
-    userName: false,
+    user_name: false,
     password: false,
     // trueだった時にエラーを表示
     passwordCheck: false,
@@ -50,11 +50,11 @@ const AccountRegistar = () => {
 
     setAccountData((prev) => ({
       ...prev,
-      sei: sessionDataAccount.sei,
-      mei: sessionDataAccount.mei,
-      seiCana: sessionDataAccount.seiCana,
-      meiCana: sessionDataAccount.meiCana,
-      userName: sessionDataAccount.userName,
+      student_surname: sessionDataAccount.student_surname,
+      student_name: sessionDataAccount.student_name,
+      student_kanasurname: sessionDataAccount.student_kanasurname,
+      student_kananame: sessionDataAccount.student_kananame,
+      user_name: sessionDataAccount.user_name,
       password: sessionDataAccount.password,
       passwordCheck: sessionDataAccount.passwordCheck,
     }));
@@ -121,22 +121,22 @@ const AccountRegistar = () => {
                 fullWidth
                 label="姓"
                 margin="normal"
-                name="sei"
+                name="student_surname"
                 onChange={handleChange}
                 required
                 type="text"
-                value={accountData.sei}
+                value={accountData.student_surname}
                 variant="outlined"
               />
               <TextField
                 fullWidth
                 label="名"
                 margin="normal"
-                name="mei"
+                name="student_name"
                 onChange={handleChange}
                 required
                 type="text"
-                value={accountData.mei}
+                value={accountData.student_name}
                 variant="outlined"
               />
             </div>
@@ -145,39 +145,39 @@ const AccountRegistar = () => {
                 fullWidth
                 label="セイ"
                 margin="normal"
-                name="seiCana"
+                name="student_kanasurname"
                 onChange={handleChange}
                 required
                 type="text"
-                value={accountData.seiCana}
+                value={accountData.student_kanasurname}
                 variant="outlined"
               />
               <TextField
                 fullWidth
                 label="メイ"
                 margin="normal"
-                name="meiCana"
+                name="student_kananame"
                 onChange={handleChange}
                 required
                 type="text"
-                value={accountData.meiCana}
+                value={accountData.student_kananame}
                 variant="outlined"
               />
             </div>
             <TextField
-              error={inputError.userName}
+              error={inputError.user_name}
               fullWidth
               // helperText={
-              //   (inputError.userName ? "ユーザー名が条件に合致していません" : "") +
+              //   (inputError.user_name ? "ユーザー名が条件に合致していません" : "") +
               //   "※大文字・小文字・英数字・8文字以上16文字以内"
               // }
               label="ユーザー名"
               margin="normal"
-              name="userName"
+              name="user_name"
               onChange={handleChange}
               required
               type="text"
-              value={accountData.userName}
+              value={accountData.user_name}
               // inputProps={{
               //   pattern: "^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?\\d).{8,16}$",
               //   // ^                : 文字列の開始
@@ -246,10 +246,10 @@ const AccountRegistar = () => {
 AccountRegistar.propTypes = {
   accountData: PropTypes.shape({
     email: PropTypes.string.isRequired,
-    userName: PropTypes.string.isRequired,
+    user_name: PropTypes.string.isRequired,
   }).isRequired,
   inputError: PropTypes.shape({
-    userName: PropTypes.bool.isRequired,
+    user_name: PropTypes.bool.isRequired,
   }).isRequired,
   handleChange: PropTypes.func.isRequired, // 必須の関数として定義
   SessionSaveTrigger: PropTypes.string, // ここでSessionSaveTriggerの型を定義
@@ -269,8 +269,8 @@ export default AccountRegistar;
 // input要素に全て値が入力されたかどうかをチェック
 // const allInputsFilled = (accountData, inputError, passwordMatch) => {
 //   const allInputsTrue =
-//     !inputError.userName &&
-//     accountData.userName !== "" &&
+//     !inputError.user_name &&
+//     accountData.user_name !== "" &&
 //     !inputError.password &&
 //     accountData.password !== "" &&
 //     passwordMatch &&

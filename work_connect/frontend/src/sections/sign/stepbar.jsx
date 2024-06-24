@@ -13,6 +13,9 @@ import AccountRegistar from "./AccountRegistration";
 import MoreInformation from "./MoreInformation";
 import Confirmation from "./Confirmation";
 
+// Laravelとの通信用
+import axios from "axios";
+
 // sessionStrage
 import { useSessionStorage } from "../../hooks/use-sessionStorage";
 
@@ -20,12 +23,15 @@ const steps = ["アカウント", "学校情報", "詳細情報", "確認"];
 let stepConnectorLinesArray = [];
 
 export default function HorizontalLinearStepper({ Stepbar }) {
+  // ユーザー名重複エラー用
+  const [userNameCheck, setUserNameCheck] = useState("重複なし");
+
+  const coleSetUserNameCheck = (value) => {
+    console.log("value: ", value);
+    setUserNameCheck(value);
+  }
+
   const [activeStep, setActiveStep] = useState(0);
-  const [skipped, setSkipped] = useState(new Set());
-  // const [SessionTrigger, setSessionTrigger] = React.useState("");
-  const isStepSkipped = (step) => {
-    return skipped.has(step);
-  };
 
   // 登録項目確認の際に利用
   const { getSessionData, updateSessionData } = useSessionStorage();
@@ -44,25 +50,50 @@ export default function HorizontalLinearStepper({ Stepbar }) {
   // setActiveStep(getSessionData("ActiveStep"));
 
   // 次へボタン押されたとき
-  const handleNext = () => {
-    let newSkipped = skipped;
+  const handleNext = (e) => {
+    if(userNameCheck == "重複なし") {
+      console.log("重複あり!!");
 
-    if (isStepSkipped(activeStep)) {
-      newSkipped = new Set(newSkipped.values());
-      newSkipped.delete(activeStep);
+      // activeStepが3未満(次へをクリックした場合の処理)
+      if (activeStep < 3) {
+  
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  
+        // ステップバーの色を変える処理
+        stepConnectorLinesArray[activeStep].style.borderTop = "5px solid #1976d2";
+      } else {
+        // activeStepが3(保存をクリックした場合の処理)
+        const url = "http://localhost:8000/s_register";
+  
+        const sessionData = getSessionData("accountData");
+        console.log(sessionData);
+  
+        axios
+          .get(url, {
+            params: {
+              sessionData,
+            },
+          })
+          // thenで成功した場合の処理
+          .then((response) => {
+            console.log("レスポンス:", response);
+  
+            // ここで作品一覧ページに飛ばす処理 //////////////////////////
+  
+          })
+          // catchでエラー時の挙動を定義
+          .catch((err) => {
+            console.log("err:", err);
+          });
+      }
     }
-
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped(newSkipped);
-
-    // ステップバーの色を変える処理
-    stepConnectorLinesArray[activeStep].style.borderTop = "5px solid #1976d2";
   };
 
   // 戻るボタン押されたとき
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    stepConnectorLinesArray[activeStep - 1].style.borderTop = "5px solid #898989";
+    stepConnectorLinesArray[activeStep - 1].style.borderTop =
+      "5px solid #898989";
   };
 
   const handleReset = () => {
@@ -70,7 +101,9 @@ export default function HorizontalLinearStepper({ Stepbar }) {
   };
 
   useEffect(() => {
-    const stepConnectorLines = document.querySelectorAll(".MuiStepConnector-line");
+    const stepConnectorLines = document.querySelectorAll(
+      ".MuiStepConnector-line"
+    );
     stepConnectorLinesArray = Array.from(stepConnectorLines);
 
     // console.log("gaijneranjngaenrnj", stepConnectorLinesArray); // stepConnectorLinesArrayに配列が格納されます
@@ -95,13 +128,10 @@ export default function HorizontalLinearStepper({ Stepbar }) {
           },
         }}
       >
-        {steps.map((label, index) => {
+        {steps.map((label) => {
           // console.log("stepsインデックス", activeStep);
           const stepProps = {};
           const labelProps = {};
-          if (isStepSkipped(index)) {
-            stepProps.completed = false;
-          }
           return (
             <Step key={label} {...stepProps}>
               <StepLabel {...labelProps}>{label}</StepLabel>
@@ -113,7 +143,7 @@ export default function HorizontalLinearStepper({ Stepbar }) {
       {/*ーーーーーーーーーーーーーーーーーーーーーー 入力フォーム表示位置 ーーーーーーーーーーーーーーーーーーーーーー*/}
 
       {/* handleValueChange 入力した値を */}
-      {activeStep === 0 ? <AccountRegistar /> : ""}
+      {activeStep === 0 ? <AccountRegistar coleSetUserNameCheck={coleSetUserNameCheck}/> : ""}
       {activeStep === 1 ? <SchoolInformation /> : ""}
       {activeStep === 2 ? <MoreInformation /> : ""}
       {activeStep === 3 ? <Confirmation /> : ""}
@@ -141,7 +171,12 @@ export default function HorizontalLinearStepper({ Stepbar }) {
               pt: 2,
             }}
           >
-            <Button color="inherit" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
+            <Button
+              color="inherit"
+              disabled={activeStep === 0}
+              onClick={handleBack}
+              sx={{ mr: 1 }}
+            >
               戻る
             </Button>
             <Button onClick={handleNext}>

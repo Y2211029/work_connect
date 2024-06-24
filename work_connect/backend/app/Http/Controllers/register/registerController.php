@@ -5,11 +5,14 @@ namespace App\Http\Controllers\register;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\w_users;
-use App\Models\WPreUser;
+use App\Models\w_pre_user;
 
 class registerController extends Controller
 {
     public function registerController(Request $request){
+
+        // idの初期値セット
+        $id = "";
 
         $requestData = $request['sessionData'];
 
@@ -84,13 +87,14 @@ class registerController extends Controller
                 }
             }
 
+            \Log::info('registerController:id重複チェック');
+            \Log::info($id);
         } catch (\Exception $e) {
             \Log::info('registerController:id重複チェックエラー');
             \Log::info($e);
 
             /*reactに返す*/
             echo json_encode($e);
-            exit;
         }
     
         /* DBにデータを登録 */
@@ -124,13 +128,12 @@ class registerController extends Controller
                 ]);
 
                 // w_pre_usersテーブルのflgを0から1にUPDATEする
-                WPreUser::where('mail', $mail)->update(['flag' => 1]);
+                w_pre_user::where('mail', $mail)->update(['flag' => 1]);
 
                 \Log::info('新規登録データのDB保存処理成功');
 
                 /*reactに返す*/
                 echo json_encode('新規登録データのDB保存処理成功');
-                exit;
 
             } catch (\Exception $e) {
 
@@ -139,14 +142,12 @@ class registerController extends Controller
 
                 /*reactに返す*/
                 echo json_encode($e);
-                exit;
             }
         } else {
             \Log::info('registerController:INSERTエラー');
 
             /*reactに返す*/
             echo json_encode('「mail」が送られていません');
-            exit;
         }
     }
 }

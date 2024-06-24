@@ -10,28 +10,36 @@ import { emailContext } from "src/components/account/students/EmailContext";
 // sessionStrage呼び出し
 import { useSessionStorage } from "../../hooks/use-sessionStorage";
 
-const AccountRegistar = () => {
+// Laravelとの通信用
+import axios from "axios";
+// import { prepareCssVars } from "@mui/system";
+
+const AccountRegistar = (props) => {
+  // ユーザー名重複時のhelperTextの内容を宣言
+  const [userNameHelperText, setUserNameHelperText] = useState("");
+
   // アカウントデータの状態管理
   const [accountData, setAccountData] = useState({
-    sei: "",
-    mei: "",
-    seiCana: "",
-    meiCana: "",
-    userName: "",
+    student_surname: "",
+    student_name: "",
+    student_kanasurname: "",
+    student_kananame: "",
+    user_name: "",
     password: "",
     passwordCheck: "",
   });
 
   // 入力エラーの状態管理
   const [inputError, setInputError] = useState({
-    userName: false,
+    user_name: false,
     password: false,
     // trueだった時にエラーを表示
     passwordCheck: false,
   });
 
   // 登録項目確認の際に利用
-  const { getSessionData, updateSessionData, updateObjectSessionData } = useSessionStorage();
+  const { getSessionData, updateSessionData, updateObjectSessionData } =
+    useSessionStorage();
 
   useEffect(() => {
     // 外部URLから本アプリにアクセスした際に、sessionStrageに保存する
@@ -50,15 +58,14 @@ const AccountRegistar = () => {
 
     setAccountData((prev) => ({
       ...prev,
-      sei: sessionDataAccount.sei,
-      mei: sessionDataAccount.mei,
-      seiCana: sessionDataAccount.seiCana,
-      meiCana: sessionDataAccount.meiCana,
-      userName: sessionDataAccount.userName,
+      student_surname: sessionDataAccount.student_surname,
+      student_name: sessionDataAccount.student_name,
+      student_kanasurname: sessionDataAccount.student_kanasurname,
+      student_kananame: sessionDataAccount.student_kananame,
+      user_name: sessionDataAccount.user_name,
       password: sessionDataAccount.password,
       passwordCheck: sessionDataAccount.passwordCheck,
     }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // リロードしたときに、accountDataのオブジェクト内のvalueに値があれば、sessionStrageに保存する
@@ -78,10 +85,51 @@ const AccountRegistar = () => {
     const { name, value } = e.target;
     setAccountData((prev) => ({ ...prev, [name]: value }));
     // 条件が一致していない場合はエラーを表示
+    console.log("props: ", props);
     if (!e.target.checkValidity()) {
       setInputError((prev) => ({ ...prev, [name]: true }));
     } else {
       setInputError((prev) => ({ ...prev, [name]: false }));
+    }
+
+    if (name == "user_name") {
+      // activeStepが3(保存をクリックした場合の処理)
+      const url = "http://localhost:8000/user_name_check";
+
+      axios
+        .get(url, {
+          params: {
+            user_name: value,
+          },
+        })
+        // thenで成功した場合の処理
+        .then((response) => {
+          console.log("レスポンス:", response);
+
+          if (response.data == "重複あり") {
+            // console.log("ユーザー名が重複しています");
+            setUserNameHelperText("ユーザー名が重複しています");
+            console.log("aaaaaaaaaaa");
+            // console.log("aaaaaaaaaaa", inputError.user_name);
+            setInputError((prevState) => ({
+              ...prevState,
+              user_name: true,
+            }));
+
+            props.coleSetUserNameCheck("重複あり");
+          } else {
+            setUserNameHelperText("");
+            setInputError((prevState) => ({
+              ...prevState,
+              user_name: false,
+            }));
+            props.coleSetUserNameCheck("重複なし");
+          }
+        })
+        // catchでエラー時の挙動を定義
+        .catch((err) => {
+          console.log("err:", err);
+        });
     }
   };
 
@@ -98,7 +146,7 @@ const AccountRegistar = () => {
   for (const [key, value] of AccountData) {
     objAccountData[key] = value;
   }
-  
+
   updateSessionData("accountData", "mail", AccountData[0][1]);
 
   return (
@@ -121,22 +169,22 @@ const AccountRegistar = () => {
                 fullWidth
                 label="姓"
                 margin="normal"
-                name="sei"
+                name="student_surname"
                 onChange={handleChange}
                 required
                 type="text"
-                value={accountData.sei}
+                value={accountData.student_surname}
                 variant="outlined"
               />
               <TextField
                 fullWidth
                 label="名"
                 margin="normal"
-                name="mei"
+                name="student_name"
                 onChange={handleChange}
                 required
                 type="text"
-                value={accountData.mei}
+                value={accountData.student_name}
                 variant="outlined"
               />
             </div>
@@ -145,56 +193,58 @@ const AccountRegistar = () => {
                 fullWidth
                 label="セイ"
                 margin="normal"
-                name="seiCana"
+                name="student_kanasurname"
                 onChange={handleChange}
                 required
                 type="text"
-                value={accountData.seiCana}
+                value={accountData.student_kanasurname}
                 variant="outlined"
               />
               <TextField
                 fullWidth
                 label="メイ"
                 margin="normal"
-                name="meiCana"
+                name="student_kananame"
                 onChange={handleChange}
                 required
                 type="text"
-                value={accountData.meiCana}
+                value={accountData.student_kananame}
                 variant="outlined"
               />
             </div>
             <TextField
-              error={inputError.userName}
+              error={inputError.user_name}
               fullWidth
-              helperText={
-                (inputError.userName ? "ユーザー名が条件に合致していません" : "") +
-                "※大文字・小文字・英数字・8文字以上16文字以内"
-              }
+              helperText={userNameHelperText}
+              // helperText={
+              //   (inputError.user_name ? "ユーザー名が条件に合致していません" : "") +
+              //   "※大文字・小文字・英数字・8文字以上16文字以内"
+              // }
               label="ユーザー名"
               margin="normal"
-              name="userName"
+              name="user_name"
               onChange={handleChange}
               required
               type="text"
-              value={accountData.userName}
-              inputProps={{
-                pattern: "^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?\\d).{8,16}$",
-                // ^                : 文字列の開始
-                // (?=.*[a-z])      : 少なくとも一つの小文字の英字が含まれていること
-                // (?=.*[A-Z])      : 少なくとも一つの大文字の英字が含まれていること
-                // (?=.*\\d)        : 少なくとも一つの数字が含まれていること
-                // .{8,16}          : 全体の長さが8文字以上16文字以下であること
-                // $                : 文字列の終了
-              }}
+              value={accountData.user_name}
+              // inputProps={{
+              //   pattern: "^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?\\d).{8,16}$",
+              //   // ^                : 文字列の開始
+              //   // (?=.*[a-z])      : 少なくとも一つの小文字の英字が含まれていること
+              //   // (?=.*[A-Z])      : 少なくとも一つの大文字の英字が含まれていること
+              //   // (?=.*\\d)        : 少なくとも一つの数字が含まれていること
+              //   // .{8,16}          : 全体の長さが8文字以上16文字以下であること
+              //   // $                : 文字列の終了
+              // }}
               variant="outlined"
             />
             <TextField
               error={inputError.password}
               fullWidth
               helperText={
-                (inputError.password ? "パスワードが条件に合致していません" : "") +
-                "※大文字・小文字・英数字・8文字以上30文字以内"
+                (inputError.password
+                  ? "パスワードが条件に合致していません"
+                  : "") + "※大文字・小文字・英数字・8文字以上30文字以内"
               }
               label="パスワード"
               margin="normal"
@@ -204,7 +254,8 @@ const AccountRegistar = () => {
               type="password"
               value={accountData.password}
               inputProps={{
-                pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,30}$",
+                pattern:
+                  "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,30}$",
                 // ^                : 文字列の開始
                 // (?=.*[a-z])      : 少なくとも一つの小文字の英字が含まれていること
                 // (?=.*[A-Z])      : 少なくとも一つの大文字の英字が含まれていること
@@ -218,14 +269,16 @@ const AccountRegistar = () => {
             <TextField
               disabled={
                 !accountData.password ||
-                !new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,30}$").test(
-                  accountData.password
-                )
+                !new RegExp(
+                  "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,30}$"
+                ).test(accountData.password)
               }
               error={inputError.passwordCheck}
               fullWidth
               helperText={
-                inputError.passwordCheck ? "パスワードが一致しません" : "パスワードが一致しました"
+                inputError.passwordCheck
+                  ? "パスワードが一致しません"
+                  : "パスワードが一致しました"
               }
               label="パスワード確認"
               margin="normal"
@@ -246,10 +299,10 @@ const AccountRegistar = () => {
 AccountRegistar.propTypes = {
   accountData: PropTypes.shape({
     email: PropTypes.string.isRequired,
-    userName: PropTypes.string.isRequired,
+    user_name: PropTypes.string.isRequired,
   }).isRequired,
   inputError: PropTypes.shape({
-    userName: PropTypes.bool.isRequired,
+    user_name: PropTypes.bool.isRequired,
   }).isRequired,
   handleChange: PropTypes.func.isRequired, // 必須の関数として定義
   SessionSaveTrigger: PropTypes.string, // ここでSessionSaveTriggerの型を定義
@@ -269,8 +322,8 @@ export default AccountRegistar;
 // input要素に全て値が入力されたかどうかをチェック
 // const allInputsFilled = (accountData, inputError, passwordMatch) => {
 //   const allInputsTrue =
-//     !inputError.userName &&
-//     accountData.userName !== "" &&
+//     !inputError.user_name &&
+//     accountData.user_name !== "" &&
 //     !inputError.password &&
 //     accountData.password !== "" &&
 //     passwordMatch &&

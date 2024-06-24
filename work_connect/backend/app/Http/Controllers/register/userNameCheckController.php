@@ -17,10 +17,8 @@ class userNameCheckController extends Controller
 
             if(!$userNameExists) {
                 echo json_encode("重複なし");
-                exit;
             } else {
                 echo json_encode("重複あり");
-                exit;
             }
 
         } catch (\Exception $e) {
@@ -29,7 +27,6 @@ class userNameCheckController extends Controller
 
             /*reactに返す*/
             echo json_encode($e);
-            exit;
         }
     
     }

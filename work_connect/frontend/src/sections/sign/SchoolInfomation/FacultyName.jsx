@@ -102,7 +102,7 @@ const FacultyNameDropdown = () => {
       if (SessionData.faculty_name !== undefined && SessionData.faculty_name !== "") {
         setSelectedFaculty({
           value: SessionData.faculty_name,
-          label: `${SessionData.faculty_name}年`,
+          label: `${SessionData.faculty_name}`,
         });
       }
     }
@@ -110,7 +110,7 @@ const FacultyNameDropdown = () => {
 
   const handleChange = (selectedOption) => {
     setSelectedFaculty(selectedOption);
-
+    console.log("aa");
     // sessionStrageに値を保存
     updateSessionData("accountData", "faculty_name", selectedOption.label);
   };

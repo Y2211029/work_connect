@@ -13,6 +13,9 @@ import AccountRegistar from "./AccountRegistration";
 import MoreInformation from "./MoreInformation";
 import Confirmation from "./Confirmation";
 
+// Laravelとの通信用
+import axios from "axios";
+
 // sessionStrage
 import { useSessionStorage } from "../../hooks/use-sessionStorage";
 
@@ -45,24 +48,49 @@ export default function HorizontalLinearStepper({ Stepbar }) {
 
   // 次へボタン押されたとき
   const handleNext = () => {
-    let newSkipped = skipped;
+    // activeStepが3未満(次へをクリックした場合の処理)
+    if (activeStep < 3) {
+      let newSkipped = skipped;
 
-    if (isStepSkipped(activeStep)) {
-      newSkipped = new Set(newSkipped.values());
-      newSkipped.delete(activeStep);
+      if (isStepSkipped(activeStep)) {
+        newSkipped = new Set(newSkipped.values());
+        newSkipped.delete(activeStep);
+      }
+
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      setSkipped(newSkipped);
+
+      // ステップバーの色を変える処理
+      stepConnectorLinesArray[activeStep].style.borderTop = "5px solid #1976d2";
+    } else {
+      // activeStepが3(保存をクリックした場合の処理)
+      const url = "http://localhost:8000/s_register";
+
+      const sessionData = getSessionData("accountData");
+      console.log(sessionData);
+
+      axios
+        .get(url, {
+          params:{
+            sessionData
+          }
+        })
+        // thenで成功した場合の処理
+        .then(() => {
+          console.log("ステータスコード:", status);
+        })
+        // catchでエラー時の挙動を定義
+        .catch((err) => {
+          console.log("err:", err);
+        });
     }
-
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped(newSkipped);
-
-    // ステップバーの色を変える処理
-    stepConnectorLinesArray[activeStep].style.borderTop = "5px solid #1976d2";
   };
 
   // 戻るボタン押されたとき
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    stepConnectorLinesArray[activeStep - 1].style.borderTop = "5px solid #898989";
+    stepConnectorLinesArray[activeStep - 1].style.borderTop =
+      "5px solid #898989";
   };
 
   const handleReset = () => {
@@ -70,7 +98,9 @@ export default function HorizontalLinearStepper({ Stepbar }) {
   };
 
   useEffect(() => {
-    const stepConnectorLines = document.querySelectorAll(".MuiStepConnector-line");
+    const stepConnectorLines = document.querySelectorAll(
+      ".MuiStepConnector-line"
+    );
     stepConnectorLinesArray = Array.from(stepConnectorLines);
 
     // console.log("gaijneranjngaenrnj", stepConnectorLinesArray); // stepConnectorLinesArrayに配列が格納されます
@@ -141,7 +171,12 @@ export default function HorizontalLinearStepper({ Stepbar }) {
               pt: 2,
             }}
           >
-            <Button color="inherit" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
+            <Button
+              color="inherit"
+              disabled={activeStep === 0}
+              onClick={handleBack}
+              sx={{ mr: 1 }}
+            >
               戻る
             </Button>
             <Button onClick={handleNext}>

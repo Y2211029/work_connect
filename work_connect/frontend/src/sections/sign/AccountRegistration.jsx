@@ -58,7 +58,7 @@ const AccountRegistar = () => {
       password: sessionDataAccount.password,
       passwordCheck: sessionDataAccount.passwordCheck,
     }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, []);
 
   // リロードしたときに、accountDataのオブジェクト内のvalueに値があれば、sessionStrageに保存する
@@ -167,10 +167,10 @@ const AccountRegistar = () => {
             <TextField
               error={inputError.userName}
               fullWidth
-              helperText={
-                (inputError.userName ? "ユーザー名が条件に合致していません" : "") +
-                "※大文字・小文字・英数字・8文字以上16文字以内"
-              }
+              // helperText={
+              //   (inputError.userName ? "ユーザー名が条件に合致していません" : "") +
+              //   "※大文字・小文字・英数字・8文字以上16文字以内"
+              // }
               label="ユーザー名"
               margin="normal"
               name="userName"
@@ -178,15 +178,15 @@ const AccountRegistar = () => {
               required
               type="text"
               value={accountData.userName}
-              inputProps={{
-                pattern: "^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?\\d).{8,16}$",
-                // ^                : 文字列の開始
-                // (?=.*[a-z])      : 少なくとも一つの小文字の英字が含まれていること
-                // (?=.*[A-Z])      : 少なくとも一つの大文字の英字が含まれていること
-                // (?=.*\\d)        : 少なくとも一つの数字が含まれていること
-                // .{8,16}          : 全体の長さが8文字以上16文字以下であること
-                // $                : 文字列の終了
-              }}
+              // inputProps={{
+              //   pattern: "^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?\\d).{8,16}$",
+              //   // ^                : 文字列の開始
+              //   // (?=.*[a-z])      : 少なくとも一つの小文字の英字が含まれていること
+              //   // (?=.*[A-Z])      : 少なくとも一つの大文字の英字が含まれていること
+              //   // (?=.*\\d)        : 少なくとも一つの数字が含まれていること
+              //   // .{8,16}          : 全体の長さが8文字以上16文字以下であること
+              //   // $                : 文字列の終了
+              // }}
               variant="outlined"
             />
             <TextField

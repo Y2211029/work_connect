@@ -21,11 +21,6 @@ let stepConnectorLinesArray = [];
 
 export default function HorizontalLinearStepper({ Stepbar }) {
   const [activeStep, setActiveStep] = useState(0);
-  const [skipped, setSkipped] = useState(new Set());
-  // const [SessionTrigger, setSessionTrigger] = React.useState("");
-  const isStepSkipped = (step) => {
-    return skipped.has(step);
-  };
 
   // 登録項目確認の際に利用
   const { getSessionData, updateSessionData } = useSessionStorage();
@@ -45,15 +40,7 @@ export default function HorizontalLinearStepper({ Stepbar }) {
 
   // 次へボタン押されたとき
   const handleNext = () => {
-    let newSkipped = skipped;
-
-    if (isStepSkipped(activeStep)) {
-      newSkipped = new Set(newSkipped.values());
-      newSkipped.delete(activeStep);
-    }
-
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped(newSkipped);
 
     // ステップバーの色を変える処理
     stepConnectorLinesArray[activeStep].style.borderTop = "5px solid #1976d2";
@@ -95,13 +82,10 @@ export default function HorizontalLinearStepper({ Stepbar }) {
           },
         }}
       >
-        {steps.map((label, index) => {
+        {steps.map((label) => {
           // console.log("stepsインデックス", activeStep);
           const stepProps = {};
           const labelProps = {};
-          if (isStepSkipped(index)) {
-            stepProps.completed = false;
-          }
           return (
             <Step key={label} {...stepProps}>
               <StepLabel {...labelProps}>{label}</StepLabel>

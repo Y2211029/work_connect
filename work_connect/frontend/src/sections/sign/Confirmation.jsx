@@ -29,6 +29,8 @@ const displayContentsName = {
   hobby: "趣味",
 };
 
+// メールチェック
+
 // 複数選択タグを表示するための関数
 const useTagListShow = (tagName, sessionData) => {
   const [tags, setTags] = useState([]);

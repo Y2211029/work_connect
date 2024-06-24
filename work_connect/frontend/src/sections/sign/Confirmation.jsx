@@ -3,88 +3,125 @@ import PropTypes from "prop-types";
 import { Container, RegistarCard } from "./css/RegistarStyled";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
-function Greeting({ test }) {
-  return (
-    <button className="greeting">
-      {test}
-    </button>
-  );
+function CreateTagElements({ itemContents }) {
+  return <button className="greeting">{itemContents}</button>;
 }
 
-Greeting.propTypes = {
-  test: PropTypes.string.isRequired,
+// li要素のP要素に項目名を表示させるのに必要なオブジェクトをセット
+const displayContentsName = {
+  mail: "メールアドレス",
+  sei: "姓",
+  mei: "名",
+  seiCana: "セイ",
+  meiCana: "メイ",
+  userName: "ユーザーネーム",
+  password: "パスワード",
+  // passwordCheck: "パスワードチェック",
+  graduation_year: "卒業年度",
+  school_name: "学校名",
+  department_name: "学部",
+  faculty_name: "学科",
+  desired_work_region: "希望勤務地",
+  development_environment: "開発環境",
+  acquisition_qualification: "取得資格",
+  programming_language: "プログラミング言語",
+  software: "ソフトウェア",
+  hobby: "趣味",
 };
 
-export const Confirmation = () => {
-  const [developmentEnvironment, setDevelopmentEnvironment] = useState([]);
+// 複数選択タグを表示するための関数
+const useTagListShow = (tagName, sessionData) => {
+  const [tags, setTags] = useState([]);
+  useEffect(() => {
+    if (sessionData && sessionData[tagName]) {
+      const commaArray = sessionData[tagName].split(",");
+      const devtagComponents = commaArray.map((item) => (
+        <CreateTagElements key={item} itemContents={item} />
+      ));
+      setTags(devtagComponents);
+    }
+  }, [sessionData, tagName]);
+  return tags;
+};
+
+// 別コンポーネントに分離する。
+const SessionDataList = ({ sessionData }) => {
+  const developmentEnvironment = useTagListShow("development_environment", sessionData);
+  const hobby = useTagListShow("hobby", sessionData);
+  const desiredWorkRegion = useTagListShow("desired_work_region", sessionData);
+  const programmingLanguage = useTagListShow("programming_language", sessionData);
+  const acquisitionQualification = useTagListShow("acquisition_qualification", sessionData);
+  const software = useTagListShow("software", sessionData);
+
+  let itemContentValues = [];
+
+  return (
+    <>
+      <ul>
+        {/* entriesはオブジェクト内のkeyとvalueをセットで"配列"にして渡してくれる。 */}
+        {Object.entries(displayContentsName).map(([key, label]) => {
+          const value = sessionData[key];
+          // developmentEnvironmentこの作成したタグを入れ替えたい。
+          // sessionDataから取り出した値が空でないものを表示する。
+          if (value !== null && value !== "" && value !== undefined) {
+            if (label === "開発環境") {
+              itemContentValues = <span>{developmentEnvironment}</span>;
+            } else if (label === "趣味") {
+              itemContentValues = <span>{hobby}</span>;
+            } else if (label === "希望職種") {
+              itemContentValues = <span>{desiredWorkRegion}</span>;
+            } else if (label === "プログラミング言語") {
+              itemContentValues = <span>{programmingLanguage}</span>;
+            } else if (label === "取得資格") {
+              itemContentValues = <span>{acquisitionQualification}</span>;
+            } else if (label === "ソフトウェア") {
+              itemContentValues = <span>{software}</span>;
+            } else {
+              itemContentValues = value;
+            }
+            return (
+              <li key={key}>
+                <p>{label}</p>
+                {itemContentValues}
+              </li>
+            );
+          }
+          return null;
+        })}
+      </ul>
+    </>
+  );
+};
+
+SessionDataList.propTypes = {
+  sessionData: PropTypes.object.isRequired,
+};
+const Confirmation = () => {
+  // セッションデータを取得する関数
   const { getSessionData } = useSessionStorage();
-  let Account = getSessionData("accountData") || {};
+  const [sessionData, setSessionData] = useState({});
 
   useEffect(() => {
-    if (getSessionData("accountData")) {
-      let SessionData = getSessionData("accountData");
-
-      if (SessionData.development_environment) {
-        let commaArray = SessionData.development_environment.split(",");
-        let devtagComponents = commaArray.map((item, index) => (
-          <Greeting key={index} test={item} />
-        ));
-        setDevelopmentEnvironment(devtagComponents);
-      }
+    const data = getSessionData("accountData");
+    if (data) {
+      setSessionData(data);
     }
   }, []);
 
   return (
     <Container>
       <RegistarCard>
-        <ul>
-          <li>
-            <p>メールアドレス</p>
-            <span>{Account.mail}</span>
-          </li>
-          <li>
-            <p>姓名</p>
-            <span>{Account.sei}</span>
-            <span>{Account.mei}</span>
-          </li>
-          <li>
-            <p>セイメイ</p>
-            <span>{Account.seiCana}</span>
-            <span>{Account.meiCana}</span>
-          </li>
-          <li>
-            <p>ユーザー名</p>
-            <span>{Account.userName}</span>
-          </li>
-          <li>
-            <p>パスワード</p>
-            <span>{Account.password}</span>
-          </li>
-          <li>
-            <p>卒業年度</p>
-            <span>{Account.graduation_year}年</span>
-          </li>
-          <li>
-            <p>学校名</p>
-            <span>{Account.school_name}</span>
-          </li>
-          <li>
-            <p>開発環境</p>
-            <span>{developmentEnvironment}</span>
-          </li>
-        </ul>
-        <p>学科</p>
-        <p>学部</p>
-        <p>専攻</p>
-        <p>コース</p>
-        <p>開発環境</p>
-        <p>趣味</p>
-        <p>希望勤務地</p>
-        <p>プログラミング言語</p>
-        <p>取得資格ソフトウェア</p>
+        <SessionDataList sessionData={sessionData} />
       </RegistarCard>
     </Container>
   );
 };
 
 export default Confirmation;
+
+CreateTagElements.propTypes = {
+  itemContents: PropTypes.string.isRequired,
+};
+// SessionDataList.propTypes = {
+//   itemContents: PropTypes.string.isRequired,
+// };

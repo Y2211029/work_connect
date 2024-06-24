@@ -1,12 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Select from "react-select";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
-
 const Hobby = () => {
-  const [selectedSelectedHobby, setSelectedHobby] = useState("");
-
-  const { updateSessionData } = useSessionStorage();
+  const [selectedDepartment, setSelectedHobby] = useState([]);
+  const { getSessionData, updateSessionData } = useSessionStorage();
+  
   const options = [
     { value: "旅行", label: "旅行" },
     { value: "読書", label: "読書" },
@@ -23,26 +22,50 @@ const Hobby = () => {
     { value: "ツーリング", label: "ツーリング" },
     { value: "音楽鑑賞", label: "音楽鑑賞" },
   ];
-  
+
+  // すでに趣味がsessionStrageに保存されていればその値をstateにセットして表示する。
+  useEffect(() => {
+    if (getSessionData("accountData") !== undefined) {
+      let SessionData = getSessionData("accountData");
+
+      if (SessionData.hobby !== undefined && SessionData.hobby !== "") {
+        let commaArray = SessionData.hobby.split(",");
+        let devtagArray = [];
+        commaArray.map((item) => {
+          devtagArray.push({ value: item, label: item });
+        });
+        setSelectedHobby(devtagArray);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    let devTag = "";
+    let devTagArray = [];
+    selectedDepartment.map((item) => {
+      devTagArray.push(item.value);
+    });
+    devTag = devTagArray.join(",");
+
+    updateSessionData("accountData", "hobby", devTag);
+  }, [selectedDepartment]);
+
   const handleChange = (selectedOption) => {
     setSelectedHobby(selectedOption);
-
-    // sessionStrageに値を保存
-    updateSessionData("accountData", "hobby", selectedOption.label);
   };
 
-
   return (
-     <div>
-     <p>趣味</p>
-     <Select
-       id="hobbyDropdown"
-       value={selectedSelectedHobby}
-       onChange={handleChange}
-       options={options}
-       placeholder="Select..."
-     />
-   </div>
+    <div>
+      <p>趣味</p>
+      <Select
+        id="hobbyDropdown"
+        value={selectedDepartment}
+        onChange={handleChange}
+        options={options}
+        placeholder="Select..."
+        isMulti
+      />
+    </div>
   );
 };
 

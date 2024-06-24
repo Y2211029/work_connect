@@ -36,11 +36,35 @@ export const useSessionStorage = () => {
     setSessionData(sessionKeyName, sessionData);
   };
 
+  //タグ要素などのオブジェクトデータを保存
   const updateObjectSessionData = (sessionKeyName, setData) => {
     Object.keys(setData).forEach((key) => {
       updateSessionData(sessionKeyName, key, setData[key]);
     });
   };
 
-  return { getSessionData, setSessionData, deleteSessionData, updateSessionData, updateObjectSessionData };
+  //
+  // const tagSessionData = (tagName, setStatename) => {
+  //   if (getSessionData("accountData") !== undefined) {
+  //     let SessionData = getSessionData("accountData");
+  //     console.log("SessionData[tagName]", SessionData[tagName]);
+
+  //     if (SessionData[tagName] !== undefined && SessionData[tagName] !== "") {
+        
+  //       setStatename({
+  //         value: SessionData[tagName],
+  //         label: `${SessionData[tagName]}`,
+  //       });
+  //     }
+  //   }
+  // };
+
+  return {
+    getSessionData,
+    setSessionData,
+    deleteSessionData,
+    updateSessionData,
+    updateObjectSessionData,
+    // tagSessionData,
+  };
 };

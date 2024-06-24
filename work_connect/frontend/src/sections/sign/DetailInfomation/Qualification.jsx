@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Select from "react-select";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 const Qualification = () => {
-  const [selectedQualification, setSelectedQualification] = useState("");
+  const [selectedQualification, setSelectedQualification] = useState([]);
+  const { getSessionData, updateSessionData } = useSessionStorage();
 
-  const { updateSessionData } = useSessionStorage();
   const options = [
     { value: "ITパスポート", label: "ITパスポート" },
     { value: "基本情報技術者試験", label: "基本情報技術者試験" },
@@ -17,17 +17,49 @@ const Qualification = () => {
     { value: "野菜スペシャリスト", label: "野菜スペシャリスト" },
     { value: "Microsoft Office Specialist", label: "Microsoft Office Specialist" },
   ];
+
+  // すでに取得資格がsessionStrageに保存されていればその値をstateにセットして表示する。
+  useEffect(() => {
+    if (getSessionData("accountData") !== undefined) {
+      let SessionData = getSessionData("accountData");
+
+      if (SessionData.acquisition_qualification !== undefined && SessionData.acquisition_qualification !== "") {
+        let commaArray = SessionData.acquisition_qualification.split(",");
+        let devtagArray = [];
+        commaArray.map((item) => {
+          devtagArray.push({ value: item, label: item });
+        });
+        setSelectedQualification(devtagArray);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    let devTag = "";
+    let devTagArray = [];
+    selectedQualification.map((item) => {
+      devTagArray.push(item.value);
+    });
+    devTag = devTagArray.join(",");
+
+    updateSessionData("accountData", "acquisition_qualification", devTag);
+  }, [selectedQualification]);
+
   const handleChange = (selectedOption) => {
     setSelectedQualification(selectedOption);
-
-    // sessionStrageに値を保存
-    updateSessionData("accountData", "acquisition_qualification", selectedOption.label);
   };
 
   return (
     <>
       <p>取得資格</p>
-      <Select id="acquisitionQualification" value={selectedQualification} onChange={handleChange} options={options} placeholder="Select..." isMulti />
+      <Select
+        id="acquisitionQualification"
+        value={selectedQualification}
+        onChange={handleChange}
+        options={options}
+        placeholder="Select..."
+        isMulti
+      />
     </>
   );
 };

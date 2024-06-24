@@ -9,7 +9,7 @@ const SchoolNameDropdown = () => {
   const [selectedSchool, setSelectedSchool] = useState("");
   const accessToken = "268|G5fHGAGA7Col8FetXAQ6EMNHnjDIA5TInN2uByIB";
 
-  const { updateSessionData } = useSessionStorage();
+  const { getSessionData, updateSessionData } = useSessionStorage();
 
   useEffect(() => {
     const schoolTypeCodes = ["H1", "H2"]; // 複数のschool_type_codeを配列として定義
@@ -56,9 +56,24 @@ const SchoolNameDropdown = () => {
     fetchData();
   }, []); // 最初のレンダリング時のみ実行される
 
+  // sessionデータ取得
+  useEffect(() => {
+    if (getSessionData("accountData") !== undefined) {
+      let SessionData = getSessionData("accountData");
+      if (SessionData.school_name !== undefined && SessionData.school_name !== "") {
+        setSelectedSchool({
+          value: SessionData.school_name,
+          label: `${SessionData.school_name}年`,
+        });
+      }
+    }
+  }, []);
+
   // sessionStrageに値を保存
   const handleChange = (selectedOption) => {
     setSelectedSchool(selectedOption);
+
+    console.log("selectedOption", selectedOption);
 
     // sessionStrageに値を保存
     updateSessionData("accountData", "school_name", selectedOption.label);

@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Select from "react-select";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 const DepartmentNameDropdown = () => {
   const [selectedDepartment, setSelectedDepartment] = useState("");
 
-  const { updateSessionData } = useSessionStorage();
+  const { getSessionData, updateSessionData } = useSessionStorage();
 
   const options = [
     { value: "総合政策学部", label: "総合政策学部" },
@@ -40,6 +40,20 @@ const DepartmentNameDropdown = () => {
     { value: "保健学部", label: "保健学部" },
     { value: "医療技術学部", label: "医療技術学部" },
   ];
+
+  // 外部URLから本アプリにアクセスした際に、sessionStrageに保存する
+  useEffect(() => {
+    if (getSessionData("accountData") !== undefined) {
+      let SessionData = getSessionData("accountData");
+
+      if (SessionData.department_name !== undefined && SessionData.department_name !== "") {
+        setSelectedDepartment({
+          value: SessionData.department_name,
+          label: `${SessionData.department_name}年`,
+        });
+      }
+    }
+  }, []);
 
   const handleChange = (selectedOption) => {
     setSelectedDepartment(selectedOption);

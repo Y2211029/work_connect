@@ -74,27 +74,6 @@ const AccountRegistar = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accountData]);
 
-  // const AccountData = useContext(emailContext);
-  // const objAccountData = {};
-
-  // //
-  // for (const [key, value] of AccountData) {
-  //   objAccountData[key] = value;
-  // }
-
-  // input要素に全て値が入力されたかどうかをチェック
-  // const allInputsFilled = (accountData, inputError, passwordMatch) => {
-  //   const allInputsTrue =
-  //     !inputError.userName &&
-  //     accountData.userName !== "" &&
-  //     !inputError.password &&
-  //     accountData.password !== "" &&
-  //     passwordMatch &&
-  //     accountData.passwordCheck !== "";
-
-  //   return allInputsTrue;
-  // };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setAccountData((prev) => ({ ...prev, [name]: value }));
@@ -119,7 +98,9 @@ const AccountRegistar = () => {
   for (const [key, value] of AccountData) {
     objAccountData[key] = value;
   }
+  
   updateSessionData("accountData", "mail", AccountData[0][1]);
+
   return (
     <>
       <Container>
@@ -275,3 +256,25 @@ AccountRegistar.propTypes = {
 };
 
 export default AccountRegistar;
+
+// 以下のコードは絶対消さないでへへ
+// const AccountData = useContext(emailContext);
+// const objAccountData = {};
+
+// //
+// for (const [key, value] of AccountData) {
+//   objAccountData[key] = value;
+// }
+
+// input要素に全て値が入力されたかどうかをチェック
+// const allInputsFilled = (accountData, inputError, passwordMatch) => {
+//   const allInputsTrue =
+//     !inputError.userName &&
+//     accountData.userName !== "" &&
+//     !inputError.password &&
+//     accountData.password !== "" &&
+//     passwordMatch &&
+//     accountData.passwordCheck !== "";
+
+//   return allInputsTrue;
+// };

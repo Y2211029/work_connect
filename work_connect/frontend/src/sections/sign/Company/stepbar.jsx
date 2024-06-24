@@ -9,13 +9,13 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
 import AccountRegistar from "./AccountRegistration";
-// import MoreInformation from "./MoreInformation";
-// import Confirmation from "./Confirmation";
+import CompanyInformation from "./CompanyInformation";
+import Confirmation from "./Confirmation";
 
 // sessionStrage
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
-const steps = ["アカウント", "学校情報", "詳細情報", "確認"];
+const steps = ["アカウント", "企業情報", "確認"];
 let stepConnectorLinesArray = [];
 
 export default function HorizontalLinearStepper({ Stepbar }) {
@@ -113,8 +113,8 @@ export default function HorizontalLinearStepper({ Stepbar }) {
 
       {/* handleValueChange 入力した値を */}
       {activeStep === 0 ? <AccountRegistar /> : ""}
-      {/* {activeStep === 2 ? <MoreInformation /> : ""}
-      {activeStep === 3 ? <Confirmation /> : ""} */}
+      {activeStep === 1 ? <CompanyInformation /> : ""}
+      {activeStep === 2 ? <Confirmation /> : ""}
 
       {/*ーーーーーーーーーーーーーーーーーーーーーー 入力フォーム表示位置 ーーーーーーーーーーーーーーーーーーーーーー*/}
 

@@ -1,11 +1,11 @@
-import { useState, useEffect /*useContext*/ } from "react";
+import { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 
 import TextField from "@mui/material/TextField";
 import { Container, RegistarCard } from "../css/RegistarStyled";
 
 // 仮登録からemailに届いたURLをクリックしたアカウントのemailを表示するための準備
-// import { emailContext } from "src/components/account/students/EmailContext";
+import { emailContext } from "src/components/account/company/EmailContext";
 
 // sessionStrage呼び出し
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
@@ -13,10 +13,8 @@ import { useSessionStorage } from "src/hooks/use-sessionStorage";
 const AccountRegistar = () => {
   // アカウントデータの状態管理
   const [accountData, setAccountData] = useState({
-    sei: "",
-    mei: "",
-    seiCana: "",
-    meiCana: "",
+    company_name: "",
+    company_nameCana: "",
     userName: "",
     password: "",
     passwordCheck: "",
@@ -31,7 +29,7 @@ const AccountRegistar = () => {
   });
 
   // 登録項目確認の際に利用
-  const { getSessionData, /*updateSessionData,*/ updateObjectSessionData } = useSessionStorage();
+  const { getSessionData, updateSessionData, updateObjectSessionData } = useSessionStorage();
 
   useEffect(() => {
     // 外部URLから本アプリにアクセスした際に、sessionStrageに保存する
@@ -50,10 +48,8 @@ const AccountRegistar = () => {
 
     setAccountData((prev) => ({
       ...prev,
-      sei: sessionDataAccount.sei,
-      mei: sessionDataAccount.mei,
-      seiCana: sessionDataAccount.seiCana,
-      meiCana: sessionDataAccount.meiCana,
+      company_name: sessionDataAccount.company_name,
+      company_nameCana: sessionDataAccount.company_nameCana,
       userName: sessionDataAccount.userName,
       password: sessionDataAccount.password,
       passwordCheck: sessionDataAccount.passwordCheck,
@@ -93,20 +89,20 @@ const AccountRegistar = () => {
 
   // sessionStrageにaccountDataを保存
 
-//   const AccountData = useContext(emailContext);
-//   const objAccountData = {};
-//   for (const [key, value] of AccountData) {
-//     objAccountData[key] = value;
-//   }
+  const AccountData = useContext(emailContext);
+  const objAccountData = {};
+  for (const [key, value] of AccountData) {
+    objAccountData[key] = value;
+  }
   
-//   updateSessionData("accountData", "mail", AccountData[0][1]);
+  updateSessionData("accountData", "mail", AccountData[0][1]);
 
   return (
     <>
       <Container>
         <RegistarCard>
           <div>
-            {/* <TextField
+            <TextField
               fullWidth
               label="メールアドレス"
               margin="normal"
@@ -115,52 +111,30 @@ const AccountRegistar = () => {
               value={objAccountData.email}
               variant="outlined"
               disabled
-            /> */}
+            />
             <div style={{ display: "flex" }}>
               <TextField
                 fullWidth
-                label="姓"
+                label="企業名"
                 margin="normal"
-                name="sei"
+                name="company_name"
                 onChange={handleChange}
                 required
                 type="text"
-                value={accountData.sei}
-                variant="outlined"
-              />
-              <TextField
-                fullWidth
-                label="名"
-                margin="normal"
-                name="mei"
-                onChange={handleChange}
-                required
-                type="text"
-                value={accountData.mei}
+                value={accountData.company_name}
                 variant="outlined"
               />
             </div>
             <div style={{ display: "flex" }}>
               <TextField
                 fullWidth
-                label="セイ"
+                label="企業名(カタカナ)"
                 margin="normal"
-                name="seiCana"
+                name="company_nameCana"
                 onChange={handleChange}
                 required
                 type="text"
-                value={accountData.seiCana}
-                variant="outlined"
-              />
-              <TextField
-                fullWidth
-                label="メイ"
-                margin="normal"
-                name="meiCana"
-                onChange={handleChange}
-                required
-                type="text"
-                value={accountData.meiCana}
+                value={accountData.company_nameCana}
                 variant="outlined"
               />
             </div>
@@ -194,7 +168,7 @@ const AccountRegistar = () => {
               fullWidth
               helperText={
                 (inputError.password ? "パスワードが条件に合致していません" : "") +
-                "※大文字・小文字・英数字・8文字以上30文字以内"
+                "※大文字・小文字・英数字・記号・8文字以上30文字以内"
               }
               label="パスワード"
               margin="normal"

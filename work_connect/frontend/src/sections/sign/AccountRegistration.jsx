@@ -10,7 +10,14 @@ import { emailContext } from "src/components/account/students/EmailContext";
 // sessionStrage呼び出し
 import { useSessionStorage } from "../../hooks/use-sessionStorage";
 
-const AccountRegistar = () => {
+// Laravelとの通信用
+import axios from "axios";
+// import { prepareCssVars } from "@mui/system";
+
+const AccountRegistar = (props) => {
+  // ユーザー名重複時のhelperTextの内容を宣言
+  const [userNameHelperText, setUserNameHelperText] = useState("");
+
   // アカウントデータの状態管理
   const [accountData, setAccountData] = useState({
     student_surname: "",
@@ -58,7 +65,6 @@ const AccountRegistar = () => {
       password: sessionDataAccount.password,
       passwordCheck: sessionDataAccount.passwordCheck,
     }));
-    
   }, []);
 
   // リロードしたときに、accountDataのオブジェクト内のvalueに値があれば、sessionStrageに保存する
@@ -75,16 +81,61 @@ const AccountRegistar = () => {
   }, [accountData]);
 
   const handleChange = (e) => {
-
     const { name, value } = e.target;
 
     setAccountData((prev) => ({ ...prev, [name]: value }));
 
     // 条件が一致していない場合はエラーを表示
+    console.log("props: ", props);
     if (!e.target.checkValidity()) {
       setInputError((prev) => ({ ...prev, [name]: true }));
     } else {
       setInputError((prev) => ({ ...prev, [name]: false }));
+    }
+
+    if (name == "user_name") {
+      // activeStepが3(保存をクリックした場合の処理)
+      const url = "http://localhost:8000/user_name_check";
+
+      axios
+        .get(url, {
+          params: {
+            user_name: value,
+          },
+        })
+        // thenで成功した場合の処理
+        .then((response) => {
+          console.log("レスポンス:", response);
+
+          if (response.data == "重複あり") {
+            // console.log("ユーザー名が重複しています");
+            setUserNameHelperText("ユーザー名が重複しています");
+            console.log("aaaaaaaaaaa");
+            // console.log("aaaaaaaaaaa", inputError.user_name);
+            setInputError((prevState) => ({
+              ...prevState,
+              user_name: true,
+            }));
+
+            props.coleSetUserNameCheck("user_name", true);
+          } else {
+            setUserNameHelperText("");
+            setInputError((prevState) => ({
+              ...prevState,
+              user_name: false,
+            }));
+            props.coleSetUserNameCheck("user_name", false);
+          }
+        })
+        // catchでエラー時の挙動を定義
+        .catch((err) => {
+          console.log("err:", err);
+        });
+    }
+
+    if (name == "password") {
+      console.log("e.error", inputError.password);
+      
     }
   };
 
@@ -101,7 +152,7 @@ const AccountRegistar = () => {
   for (const [key, value] of AccountData) {
     objAccountData[key] = value;
   }
-  
+
   updateSessionData("accountData", "mail", AccountData[0][1]);
 
   return (
@@ -171,6 +222,7 @@ const AccountRegistar = () => {
             <TextField
               error={inputError.user_name}
               fullWidth
+              helperText={userNameHelperText}
               // helperText={
               //   (inputError.user_name ? "ユーザー名が条件に合致していません" : "") +
               //   "※大文字・小文字・英数字・8文字以上16文字以内"
@@ -249,6 +301,7 @@ AccountRegistar.propTypes = {
   }).isRequired,
   handleChange: PropTypes.func.isRequired, // 必須の関数として定義
   SessionSaveTrigger: PropTypes.string, // ここでSessionSaveTriggerの型を定義
+  coleSetUserNameCheck: PropTypes.func.isRequired,
 };
 
 export default AccountRegistar;

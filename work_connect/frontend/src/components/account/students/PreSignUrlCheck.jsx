@@ -69,7 +69,7 @@ const PreSignUrlCheck = () => {
             console.log(data);
             console.log("正しいです。");
 
-            //sessionData初期値
+            //sessionData初期化
             updateSessionData("accountData", "mail", data.email);
             updateSessionData("accountData", "student_surname", "");
             updateSessionData("accountData", "student_name", "");

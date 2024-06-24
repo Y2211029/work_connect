@@ -75,8 +75,11 @@ const AccountRegistar = () => {
   }, [accountData]);
 
   const handleChange = (e) => {
+
     const { name, value } = e.target;
+
     setAccountData((prev) => ({ ...prev, [name]: value }));
+
     // 条件が一致していない場合はエラーを表示
     if (!e.target.checkValidity()) {
       setInputError((prev) => ({ ...prev, [name]: true }));
@@ -164,6 +167,7 @@ const AccountRegistar = () => {
                 variant="outlined"
               />
             </div>
+
             <TextField
               error={inputError.user_name}
               fullWidth
@@ -178,23 +182,15 @@ const AccountRegistar = () => {
               required
               type="text"
               value={accountData.user_name}
-              // inputProps={{
-              //   pattern: "^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?\\d).{8,16}$",
-              //   // ^                : 文字列の開始
-              //   // (?=.*[a-z])      : 少なくとも一つの小文字の英字が含まれていること
-              //   // (?=.*[A-Z])      : 少なくとも一つの大文字の英字が含まれていること
-              //   // (?=.*\\d)        : 少なくとも一つの数字が含まれていること
-              //   // .{8,16}          : 全体の長さが8文字以上16文字以下であること
-              //   // $                : 文字列の終了
-              // }}
               variant="outlined"
             />
+
             <TextField
               error={inputError.password}
               fullWidth
               helperText={
                 (inputError.password ? "パスワードが条件に合致していません" : "") +
-                "※大文字・小文字・英数字・8文字以上30文字以内"
+                "※大文字・小文字・英数字・記号すべて含め、8文字以上30文字以内"
               }
               label="パスワード"
               margin="normal"

@@ -8,28 +8,33 @@ import { Container, RegistarCard } from "../css/RegistarStyled";
 import { emailContext } from "src/components/account/company/EmailContext";
 
 // sessionStrage呼び出し
-import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import { useSessionStorage } from "../../../hooks/use-sessionStorage";
 
-const AccountRegistar = () => {
+// Laravelとの通信用
+import axios from "axios";
+const AccountRegistar = (props) => {
+  // ユーザー名重複時のhelperTextの内容を宣言
+  const [userNameHelperText, setUserNameHelperText] = useState("");
   // アカウントデータの状態管理
   const [accountData, setAccountData] = useState({
     company_name: "",
     company_nameCana: "",
-    userName: "",
+    user_name: "",
     password: "",
     passwordCheck: "",
   });
 
   // 入力エラーの状態管理
   const [inputError, setInputError] = useState({
-    userName: false,
+    user_name: false,
     password: false,
     // trueだった時にエラーを表示
     passwordCheck: false,
   });
 
   // 登録項目確認の際に利用
-  const { getSessionData, updateSessionData, updateObjectSessionData } = useSessionStorage();
+  const { getSessionData, updateSessionData, updateObjectSessionData } = 
+  useSessionStorage();
 
   useEffect(() => {
     // 外部URLから本アプリにアクセスした際に、sessionStrageに保存する
@@ -39,6 +44,7 @@ const AccountRegistar = () => {
         updateObjectSessionData("accountData", accountData);
       }
     }
+    props.coleSetUserNameCheck("requierd", true);
   }, []);
 
   // sessionStrageに保存されているデータを取得する
@@ -50,7 +56,7 @@ const AccountRegistar = () => {
       ...prev,
       company_name: sessionDataAccount.company_name,
       company_nameCana: sessionDataAccount.company_nameCana,
-      userName: sessionDataAccount.userName,
+      user_name: sessionDataAccount.user_name,
       password: sessionDataAccount.password,
       passwordCheck: sessionDataAccount.passwordCheck,
     }));
@@ -66,6 +72,26 @@ const AccountRegistar = () => {
       console.log("空。");
     }
 
+    /* --------------------------------------------------------------------- */
+    /* 必須項目全て入力された場合のみ次に行けるようにする処理を追加しました */
+    /* --------------------------------------------------------------------- */
+    // フラグをセット
+    let requierdFlg = false;
+
+    // accountDataのvalueに1個でも空欄のものが存在するとフラグをtrueにする
+    Object.values(accountData).map((value) => {
+      if (value == "") {
+        requierdFlg = true;
+      }
+    });
+
+    // フラグがtrueならstepbar.jsxのuserAccountCheck.requierdをtrueにする
+    if (requierdFlg) {
+      props.coleSetUserNameCheck("requierd", true);
+    } else {
+      props.coleSetUserNameCheck("requierd", false);
+    }
+
     // ESlintError削除、推奨されて無いので他の方法を追々考えます。
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accountData]);
@@ -79,7 +105,84 @@ const AccountRegistar = () => {
     } else {
       setInputError((prev) => ({ ...prev, [name]: false }));
     }
-  };
+  
+  if (name == "user_name") {
+    // ユーザー名重複チェックのリクエスト用URL
+    const url = "http://localhost:8000/user_name_check";
+
+    axios
+      .get(url, {
+        params: {
+          user_name: value,
+          kind: "c",
+        },
+      })
+      // thenで成功した場合の処理
+      .then((response) => {
+        console.log("レスポンス:", response);
+
+        if (response.data == "重複あり") {
+          // console.log("ユーザー名が重複しています");
+          setUserNameHelperText("ユーザー名が重複しています");
+          // console.log("inputError.user_name: ", inputError.user_name);
+          setInputError((prevState) => ({
+            ...prevState,
+            user_name: true,
+          }));
+
+          props.coleSetUserNameCheck("user_name", true);
+        } else {
+          setUserNameHelperText("");
+          setInputError((prevState) => ({
+            ...prevState,
+            user_name: false,
+          }));
+          props.coleSetUserNameCheck("user_name", false);
+        }
+      })
+      // catchでエラー時の挙動を定義
+      .catch((err) => {
+        console.log("err:", err);
+      });
+  }
+  console.log("処理準確認用: 4");
+};
+
+/*-------------------------------------------------------------------------------*/
+/* パスワードがバリデーションに違反している場合に次へ行かない処理を追加しました */
+/*-------------------------------------------------------------------------------*/
+// inputError.passwordの値が変化したときの処理
+useEffect(() => {
+  console.log("e.error", inputError.password);
+
+  // パスワードがバリデーションに違反しているときstepbar.jsxのuserAccountCheck.passwordをtrueにする
+  if (inputError.password) {
+    // パスワードがバリデーションに違反している場合
+    console.log("パスワードの条件に当てはまっていません");
+    props.coleSetUserNameCheck("password", true);
+  } else {
+    // パスワードがバリデーションに違反していない場合
+    props.coleSetUserNameCheck("password", false);
+  }
+}, [inputError.password]);
+
+/*-----------------------------------------------------------------*/
+/* パスワードが一致していない場合に次へ行かない処理を追加しました */
+/*-----------------------------------------------------------------*/
+// inputError.passwordCheckの値が変化したときの処理
+useEffect(() => {
+  console.log("e.error", inputError.passwordCheck);
+
+  // パスワードが一致していないときstepbar.jsxのuserAccountCheck.passwordをtrueにする
+  if (inputError.passwordCheck) {
+    // パスワードが一致していない場合
+    console.log("パスワードが一致していません");
+    props.coleSetUserNameCheck("passwordCheck", true);
+  } else {
+    // パスワードが一致している場合
+    props.coleSetUserNameCheck("passwordCheck", false);
+  }
+}, [inputError.passwordCheck]);
 
   // パスワード確認
   useEffect(() => {
@@ -139,28 +242,16 @@ const AccountRegistar = () => {
               />
             </div>
             <TextField
-              error={inputError.userName}
+              error={inputError.user_name}
               fullWidth
-              helperText={
-                (inputError.userName ? "ユーザー名が条件に合致していません" : "") +
-                "※大文字・小文字・英数字・8文字以上16文字以内"
-              }
+              helperText={userNameHelperText}
               label="ユーザー名"
               margin="normal"
-              name="userName"
+              name="user_name"
               onChange={handleChange}
               required
               type="text"
-              value={accountData.userName}
-              inputProps={{
-                pattern: "^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?\\d).{8,16}$",
-                // ^                : 文字列の開始
-                // (?=.*[a-z])      : 少なくとも一つの小文字の英字が含まれていること
-                // (?=.*[A-Z])      : 少なくとも一つの大文字の英字が含まれていること
-                // (?=.*\\d)        : 少なくとも一つの数字が含まれていること
-                // .{8,16}          : 全体の長さが8文字以上16文字以下であること
-                // $                : 文字列の終了
-              }}
+              value={accountData.user_name}
               variant="outlined"
             />
             <TextField
@@ -217,16 +308,18 @@ const AccountRegistar = () => {
   );
 };
 
+
 AccountRegistar.propTypes = {
   accountData: PropTypes.shape({
     email: PropTypes.string.isRequired,
-    userName: PropTypes.string.isRequired,
+    user_name: PropTypes.string.isRequired,
   }).isRequired,
   inputError: PropTypes.shape({
-    userName: PropTypes.bool.isRequired,
+    user_name: PropTypes.bool.isRequired,
   }).isRequired,
   handleChange: PropTypes.func.isRequired, // 必須の関数として定義
   SessionSaveTrigger: PropTypes.string, // ここでSessionSaveTriggerの型を定義
+  coleSetUserNameCheck: PropTypes.func.isRequired,
 };
 
 export default AccountRegistar;
@@ -243,8 +336,8 @@ export default AccountRegistar;
 // input要素に全て値が入力されたかどうかをチェック
 // const allInputsFilled = (accountData, inputError, passwordMatch) => {
 //   const allInputsTrue =
-//     !inputError.userName &&
-//     accountData.userName !== "" &&
+//     !inputError.user_name &&
+//     accountData.user_name !== "" &&
 //     !inputError.password &&
 //     accountData.password !== "" &&
 //     passwordMatch &&

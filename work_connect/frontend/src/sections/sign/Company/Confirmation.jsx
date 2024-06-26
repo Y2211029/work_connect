@@ -12,7 +12,7 @@ const displayContentsName = {
   mail: "メールアドレス",
   company_name: "企業名",
   company_nameCana: "企業名(カタカナ)",
-  userName: "ユーザーネーム",
+  user_name: "ユーザーネーム",
   password: "パスワード",
   // passwordCheck: "パスワードチェック",
   selectedOccupation: "職種",

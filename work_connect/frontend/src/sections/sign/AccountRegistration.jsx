@@ -131,6 +131,7 @@ const AccountRegistar = (props) => {
         .get(url, {
           params: {
             user_name: value,
+            kind: "s",
           },
         })
         // thenで成功した場合の処理

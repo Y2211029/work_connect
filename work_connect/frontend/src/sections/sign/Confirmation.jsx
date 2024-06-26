@@ -22,6 +22,7 @@ const displayContentsName = {
   department_name: "学部",
   faculty_name: "学科",
   desired_work_region: "希望勤務地",
+  desired_occupation: "希望職種",
   development_environment: "開発環境",
   acquisition_qualification: "取得資格",
   programming_language: "プログラミング言語",
@@ -51,6 +52,7 @@ const SessionDataList = ({ sessionData }) => {
   const developmentEnvironment = useTagListShow("development_environment", sessionData);
   const hobby = useTagListShow("hobby", sessionData);
   const desiredWorkRegion = useTagListShow("desired_work_region", sessionData);
+  const desiredOccupation = useTagListShow("desired_occupation", sessionData);
   const programmingLanguage = useTagListShow("programming_language", sessionData);
   const acquisitionQualification = useTagListShow("acquisition_qualification", sessionData);
   const software = useTagListShow("software", sessionData);
@@ -70,9 +72,11 @@ const SessionDataList = ({ sessionData }) => {
               itemContentValues = <span>{developmentEnvironment}</span>;
             } else if (label === "趣味") {
               itemContentValues = <span>{hobby}</span>;
-            } else if (label === "希望職種") {
+            } else if (label === "希望勤務地") {
               itemContentValues = <span>{desiredWorkRegion}</span>;
-            } else if (label === "プログラミング言語") {
+            } else if (label === "希望職種") {
+              itemContentValues = <span>{desiredOccupation}</span>;
+             } else if (label === "プログラミング言語") {
               itemContentValues = <span>{programmingLanguage}</span>;
             } else if (label === "取得資格") {
               itemContentValues = <span>{acquisitionQualification}</span>;

@@ -38,20 +38,26 @@ const AccountRegistar = (props) => {
   });
 
   // 登録項目確認の際に利用
-  const { getSessionData, updateSessionData, updateObjectSessionData } = useSessionStorage();
+  const { getSessionData, updateSessionData, updateObjectSessionData } =
+    useSessionStorage();
 
   useEffect(() => {
     // 外部URLから本アプリにアクセスした際に、sessionStrageに保存する
     if (performance.navigation.type !== performance.navigation.TYPE_RELOAD) {
-      console.log("外部URLからアクセスしたです。");
+      console.log("外部URLからのアクセスです。");
       if (getSessionData("accountData") === undefined) {
         updateObjectSessionData("accountData", accountData);
       }
+    } else {
+      console.log("リロードでのアクセスです。");
     }
+    props.coleSetUserNameCheck("requierd", true);
+    console.log('props.coleSetUserNameCheck("requierd", true)');
   }, []);
 
   // sessionStrageに保存されているデータを取得する
   useEffect(() => {
+    console.log("処理準確認用: 1");
     let sessionDataAccount = getSessionData("accountData");
     console.log("sessionDataAccount", sessionDataAccount);
 
@@ -69,11 +75,34 @@ const AccountRegistar = (props) => {
 
   // リロードしたときに、accountDataのオブジェクト内のvalueに値があれば、sessionStrageに保存する
   useEffect(() => {
+    console.log("処理準確認用: 2");
     if (Object.values({ ...accountData }).some((value) => value !== "")) {
       console.log("空じゃないです。");
+      let sessionDataAccount = getSessionData("accountData");
+      console.log("sessionDataAccount", sessionDataAccount);
       updateObjectSessionData("accountData", accountData);
     } else {
       console.log("空。");
+    }
+
+    /* --------------------------------------------------------------------- */
+    /* 必須項目全て入力された場合のみ次に行けるようにする処理を追加しました */
+    /* --------------------------------------------------------------------- */
+    // フラグをセット
+    let requierdFlg = false;
+
+    // accountDataのvalueに1個でも空欄のものが存在するとフラグをtrueにする
+    Object.values(accountData).map((value) => {
+      if (value == "") {
+        requierdFlg = true;
+      }
+    });
+
+    // フラグがtrueならstepbar.jsxのuserAccountCheck.requierdをtrueにする
+    if (requierdFlg) {
+      props.coleSetUserNameCheck("requierd", true);
+    } else {
+      props.coleSetUserNameCheck("requierd", false);
     }
 
     // ESlintError削除、推奨されて無いので他の方法を追々考えます。
@@ -85,6 +114,7 @@ const AccountRegistar = (props) => {
 
     setAccountData((prev) => ({ ...prev, [name]: value }));
 
+    console.log("処理準確認用: 3");
     // 条件が一致していない場合はエラーを表示
     console.log("props: ", props);
     if (!e.target.checkValidity()) {
@@ -94,7 +124,7 @@ const AccountRegistar = (props) => {
     }
 
     if (name == "user_name") {
-      // activeStepが3(保存をクリックした場合の処理)
+      // ユーザー名重複チェックのリクエスト用URL
       const url = "http://localhost:8000/user_name_check";
 
       axios
@@ -110,8 +140,7 @@ const AccountRegistar = (props) => {
           if (response.data == "重複あり") {
             // console.log("ユーザー名が重複しています");
             setUserNameHelperText("ユーザー名が重複しています");
-            console.log("aaaaaaaaaaa");
-            // console.log("aaaaaaaaaaa", inputError.user_name);
+            // console.log("inputError.user_name: ", inputError.user_name);
             setInputError((prevState) => ({
               ...prevState,
               user_name: true,
@@ -132,12 +161,44 @@ const AccountRegistar = (props) => {
           console.log("err:", err);
         });
     }
-
-    if (name == "password") {
-      console.log("e.error", inputError.password);
-      
-    }
+    console.log("処理準確認用: 4");
   };
+
+  /*-------------------------------------------------------------------------------*/
+  /* パスワードがバリデーションに違反している場合に次へ行かない処理を追加しました */
+  /*-------------------------------------------------------------------------------*/
+  // inputError.passwordの値が変化したときの処理
+  useEffect(() => {
+    console.log("e.error", inputError.password);
+
+    // パスワードがバリデーションに違反しているときstepbar.jsxのuserAccountCheck.passwordをtrueにする
+    if (inputError.password) {
+      // パスワードがバリデーションに違反している場合
+      console.log("パスワードの条件に当てはまっていません");
+      props.coleSetUserNameCheck("password", true);
+    } else {
+      // パスワードがバリデーションに違反していない場合
+      props.coleSetUserNameCheck("password", false);
+    }
+  }, [inputError.password]);
+
+  /*-----------------------------------------------------------------*/
+  /* パスワードが一致していない場合に次へ行かない処理を追加しました */
+  /*-----------------------------------------------------------------*/
+  // inputError.passwordCheckの値が変化したときの処理
+  useEffect(() => {
+    console.log("e.error", inputError.passwordCheck);
+
+    // パスワードが一致していないときstepbar.jsxのuserAccountCheck.passwordをtrueにする
+    if (inputError.passwordCheck) {
+      // パスワードが一致していない場合
+      console.log("パスワードが一致していません");
+      props.coleSetUserNameCheck("passwordCheck", true);
+    } else {
+      // パスワードが一致している場合
+      props.coleSetUserNameCheck("passwordCheck", false);
+    }
+  }, [inputError.passwordCheck]);
 
   // パスワード確認
   useEffect(() => {
@@ -241,7 +302,9 @@ const AccountRegistar = (props) => {
               error={inputError.password}
               fullWidth
               helperText={
-                (inputError.password ? "パスワードが条件に合致していません" : "") +
+                (inputError.password
+                  ? "パスワードが条件に合致していません"
+                  : "") +
                 "※大文字・小文字・英数字・記号すべて含め、8文字以上30文字以内"
               }
               label="パスワード"
@@ -252,7 +315,8 @@ const AccountRegistar = (props) => {
               type="password"
               value={accountData.password}
               inputProps={{
-                pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,30}$",
+                pattern:
+                  "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,30}$",
                 // ^                : 文字列の開始
                 // (?=.*[a-z])      : 少なくとも一つの小文字の英字が含まれていること
                 // (?=.*[A-Z])      : 少なくとも一つの大文字の英字が含まれていること
@@ -266,14 +330,16 @@ const AccountRegistar = (props) => {
             <TextField
               disabled={
                 !accountData.password ||
-                !new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,30}$").test(
-                  accountData.password
-                )
+                !new RegExp(
+                  "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,30}$"
+                ).test(accountData.password)
               }
               error={inputError.passwordCheck}
               fullWidth
               helperText={
-                inputError.passwordCheck ? "パスワードが一致しません" : "パスワードが一致しました"
+                inputError.passwordCheck
+                  ? "パスワードが一致しません"
+                  : "パスワードが一致しました"
               }
               label="パスワード確認"
               margin="normal"

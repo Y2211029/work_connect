@@ -29,6 +29,9 @@ export default function HorizontalLinearStepper({ Stepbar }) {
     user_name: false,
     password: false,
     passwordCheck: false,
+
+    // 必須項目がすべて入力されている場合のみfalseになる
+    requierd: false,
   });
 
   // 作品一覧に飛ばす。
@@ -44,18 +47,27 @@ export default function HorizontalLinearStepper({ Stepbar }) {
     }));
   };
   
-
-  const [activeStep, setActiveStep] = useState(0);
-
   // 登録項目確認の際に利用
   const { getSessionData, updateSessionData } = useSessionStorage();
 
-  useEffect(() => {
-    let sessionStep = getSessionData("ActiveStep");
-    if (sessionStep !== undefined) {
-      setActiveStep(sessionStep.step);
+  let sessionStep = 0;
+  let sessionActiveStep = getSessionData("ActiveStep");
+  if(sessionActiveStep != undefined) {
+    console.log("sessionActiveStep.step: ", sessionActiveStep.step);
+    if(sessionActiveStep.step == 1 || sessionActiveStep.step == 2 || sessionActiveStep.step == 3) {
+      console.log("aaaaaaaaaaaaaaa");
+      sessionStep = sessionActiveStep.step;
     }
-  }, []);
+  }
+
+  const [activeStep, setActiveStep] = useState(sessionStep);
+
+  // useEffect(() => {
+  //   let sessionStep = getSessionData("ActiveStep");
+  //   if (sessionStep !== undefined) {
+  //     setActiveStep(sessionStep.step);
+  //   }
+  // }, []);
 
   useEffect(() => {
     updateSessionData("ActiveStep", "step", activeStep);
@@ -65,7 +77,8 @@ export default function HorizontalLinearStepper({ Stepbar }) {
 
   // 次へボタン押されたとき
   const handleNext = () => {
-    if (userAccountCheck == "重複なし") {
+    console.log("userAccountCheck: ", userAccountCheck);
+    if (userAccountCheck.user_name == false && userAccountCheck.password == false && userAccountCheck.passwordCheck == false && userAccountCheck.requierd == false) {
       console.log("重複あり!!");
 
       // activeStepが3未満(次へをクリックした場合の処理)

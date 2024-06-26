@@ -78,6 +78,11 @@
     "editorjs-toggle-block": "^0.3.16",
     "editorjs-tooltip": "^1.2.2",
     "eslint": "^8.57.0",
+
+
+    "react-hooks/exhaustive-deps": "off",
+
+
     "eslint-plugin-react": "^7.34.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",

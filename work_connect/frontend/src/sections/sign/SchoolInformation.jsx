@@ -8,6 +8,7 @@ import DepartmentNameDropdown from "./SchoolInfomation/DepartmentNameDropdown";
 import FacultyName from "./SchoolInfomation/FacultyName";
 
 const SchoolInformation = () => {
+  console.log("SchoolInformationです");
   return (
     <Container>
       <RegistarCard>

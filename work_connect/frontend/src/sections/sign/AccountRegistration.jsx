@@ -52,7 +52,7 @@ const AccountRegistar = (props) => {
       console.log("リロードでのアクセスです。");
     }
     props.coleSetUserNameCheck("requierd", true);
-    console.log('props.coleSetUserNameCheck("requierd", true)');
+    // console.log('props.coleSetUserNameCheck("requierd", true)');
   }, []);
 
   // sessionStrageに保存されているデータを取得する
@@ -93,7 +93,7 @@ const AccountRegistar = (props) => {
 
     // accountDataのvalueに1個でも空欄のものが存在するとフラグをtrueにする
     Object.values(accountData).map((value) => {
-      if (value == "") {
+      if (value == "" || value == undefined) {
         requierdFlg = true;
       }
     });

@@ -10,12 +10,12 @@ function CreateTagElements({ itemContents }) {
 // li要素のP要素に項目名を表示させるのに必要なオブジェクトをセット
 const displayContentsName = {
   mail: "メールアドレス",
-  sei: "企業名",
-  seiCana: "企業名(カタカナ)",
+  company_name: "企業名",
+  company_nameCana: "企業名(カタカナ)",
   userName: "ユーザーネーム",
   password: "パスワード",
   // passwordCheck: "パスワードチェック",
-  occupation: "職種",
+  selectedOccupation: "職種",
   Prefecture: "勤務地",
   HP_URL: "ホームページURL",
 };
@@ -23,24 +23,51 @@ const displayContentsName = {
 // メールチェック
 
 // 複数選択タグを表示するための関数
-const useTagListShow = (tagName, sessionData) => {
-  const [tags, setTags] = useState([]);
-  useEffect(() => {
-    if (sessionData && sessionData[tagName]) {
-      const commaArray = sessionData[tagName].split(",");
-      const devtagComponents = commaArray.map((item) => (
-        <CreateTagElements key={item} itemContents={item} />
-      ));
-      setTags(devtagComponents);
-    }
-  }, [sessionData, tagName]);
-  return tags;
+// ホームページURLのみnumは0
+// ホームページURLのみタグではなくaタグ付きの文字列を出力
+const useTagListShow = (tagName, sessionData, num) => {
+  // if(num == 1){
+    const [tags, setTags] = useState([]);
+    useEffect(() => {
+      // 職種or勤務地の場合
+      // if(num == 1){
+        if (sessionData && sessionData[tagName]) {
+          const commaArray = sessionData[tagName].split(",");
+          // if(num == 1){
+          const devtagComponents = commaArray.map((item) => (
+          
+            num === 0
+          ? <a key={item} href={item} target="_blank" rel="noopener noreferrer">{item}</a>
+          : <CreateTagElements key={item} itemContents={item} />
+          ));
+          //}
+          setTags(devtagComponents);
+        }
+      //}
+    }, [sessionData, tagName]);
+    return tags;
+  //} else if (num == 0){
+    // const [tags, setTags] = useState([]);
+    // useEffect(() => {
+    //   if (sessionData && sessionData[tagName]) {
+    //     console.log("sessionDataaaaaaaaaaaaaaa="+sessionData[tagName]);
+    //     const commaArray = sessionData[tagName].split(",");
+    //     const devtagComponents = commaArray.map((item) => (
+    //       <CreateTagElements key={item} itemContents={item} />
+    //     ));
+    //     setTags(devtagComponents);
+    //   }
+    // }, [sessionData, tagName]);
+    // return tags;
+  //}
+  
 };
 
 // 別コンポーネントに分離する。
 const SessionDataList = ({ sessionData }) => {
-  const Occupation = useTagListShow("Occupation", sessionData);
-  const Prefecture = useTagListShow("Prefecture", sessionData);
+  const Occupation = useTagListShow("selectedOccupation", sessionData, 1);
+  const Prefecture = useTagListShow("Prefecture", sessionData, 1);
+  const HP_URL = useTagListShow("HP_URL", sessionData, 0);
   let itemContentValues = [];
 
   return (
@@ -56,6 +83,8 @@ const SessionDataList = ({ sessionData }) => {
               itemContentValues = <span>{Occupation}</span>;
             } else if (label === "勤務地") {
               itemContentValues = <span>{Prefecture}</span>;
+            } else if (label === "ホームページURL") {
+              itemContentValues = <span>{HP_URL}</span>;
             } else {
               itemContentValues = value;
             }

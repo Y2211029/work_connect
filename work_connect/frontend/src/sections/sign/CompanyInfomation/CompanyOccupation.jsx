@@ -3,14 +3,13 @@ import Select from "react-select";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 const OccupationNameDropdown = () => {
-  const [selectedOccupation, setSelectedOccupation] = useState("");
-
+  const [selectedOccupation, setSelectedOccupation] = useState([]);
   const { getSessionData, updateSessionData } = useSessionStorage();
 
   const options = [
     { value: "システムエンジニア", label: "システムエンジニア" },
     { value: "プログラマー", label: "プログラマー" },
-    { value: "インフラエンジニア", label: "システムエンジニア" },
+    { value: "インフラエンジニア", label: "インフラエンジニア" },
     { value: "サーバーエンジニア", label: "サーバーエンジニア" },
     { value: "ネットワークエンジニア", label: "ネットワークエンジニア" },
     { value: "セキュリティエンジニア", label: "セキュリティエンジニア" },
@@ -42,27 +41,38 @@ const OccupationNameDropdown = () => {
     if (getSessionData("accountData") !== undefined) {
       let SessionData = getSessionData("accountData");
 
-      if (SessionData.Occupation_name !== undefined && SessionData.Occupation_name !== "") {
-        setSelectedOccupation({
-          value: SessionData.Occupation_name,
-          label: `${SessionData.Occupation_name}年`,
+      if (SessionData.selectedOccupation !== undefined && SessionData.selectedOccupation !== "") {
+        let commaArray = SessionData.selectedOccupation.split(",");
+        let devtagArray = [];
+        commaArray.map((item) => {
+          devtagArray.push({ value: item, label: item });
         });
+        setSelectedOccupation(devtagArray);
       }
     }
   }, []);
 
+  useEffect(() => {
+    let devTag = "";
+    let devTagArray = [];
+    console.log("selectedOccupation", selectedOccupation);
+    selectedOccupation.map((item) => {
+      devTagArray.push(item.value);
+    });
+    devTag = devTagArray.join(",");
+
+    updateSessionData("accountData", "selectedOccupation", devTag);
+  }, [selectedOccupation]);
+
   const handleChange = (selectedOption) => {
     setSelectedOccupation(selectedOption);
-
-    // sessionStrageに値を保存
-    updateSessionData("accountData", "Occupation_name", selectedOption.label);
   };
 
   return (
     <div>
       <p>職種</p>
       <Select
-        id="departmentDropdown"
+        id="OccupationDropdown"
         value={selectedOccupation}
         onChange={handleChange}
         options={options}

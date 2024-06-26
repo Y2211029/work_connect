@@ -4,8 +4,8 @@ import axios from "axios";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 const PrefectureSelect = () => {
-  const [prefectures, setPrefectures] = useState([]);
-  const [Prefectures, setPrefecture] = useState([]);
+  const [Prefectures, setPrefectures] = useState([]);
+  const [Prefecture, setPrefecture] = useState([]);
 
   const { getSessionData, updateSessionData } = useSessionStorage();
   useEffect(() => {
@@ -38,8 +38,8 @@ const PrefectureSelect = () => {
     if (getSessionData("accountData") !== undefined) {
       let SessionData = getSessionData("accountData");
 
-      if (SessionData.desired_work_region !== undefined && SessionData.desired_work_region !== "") {
-        let commaArray = SessionData.desired_work_region.split(",");
+      if (SessionData.Prefecture !== undefined && SessionData.Prefecture !== "") {
+        let commaArray = SessionData.Prefecture.split(",");
         let devtagArray = [];
         commaArray.map((item) => {
           devtagArray.push({ value: item, label: item });
@@ -53,14 +53,14 @@ const PrefectureSelect = () => {
   useEffect(() => {
     let devTag = "";
     let devTagArray = [];
-    console.log("Prefectures", Prefectures);
-    Prefectures.map((item) => {
+    console.log("Prefecture", Prefecture);
+    Prefecture.map((item) => {
       devTagArray.push(item.label);
     });
     devTag = devTagArray.join(",");
 
-    updateSessionData("accountData", "desired_work_region", devTag);
-  }, [Prefectures]);
+    updateSessionData("accountData", "Prefecture", devTag);
+  }, [Prefecture]);
 
   const handleChange = (selectedOption) => {
     setPrefecture(selectedOption);
@@ -69,12 +69,12 @@ const PrefectureSelect = () => {
   return (
     <div>
       <>
-        <p>希望勤務地</p>
+        <p>勤務地</p>
         <Select
           id="prefecturesDropdwon"
-          value={Prefectures}
+          value={Prefecture}
           onChange={handleChange}
-          options={prefectures}
+          options={Prefectures}
           placeholder="Select..."
           isMulti
         />

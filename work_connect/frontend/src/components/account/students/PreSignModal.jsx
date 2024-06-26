@@ -134,6 +134,9 @@ const PreSignModal = ({ FromCompanyPage = false }) => {
           if (data == "true") {
             console.log(data);
             console.log("つくれます");
+            
+            // 二重送信を防ぐため初期化
+            formValues.mail = "";
           } else {
             console.log(data);
             console.log("つくれません");

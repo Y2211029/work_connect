@@ -4,7 +4,7 @@ import { Container, RegistarCard } from "../css/RegistarStyled";
 
 import CompanyOccupation from "../CompanyInfomation/CompanyOccupation";
 import CompanyPrefecture from "../CompanyInfomation/CompanyPrefecture";
-// import DepartmentNameDropdown from "./SchoolInfomation/DepartmentNameDropdown";
+import CompanyHP_URL from "../CompanyInfomation/CompanyHP_URL";
 // import FacultyName from "./SchoolInfomation/FacultyName";
 
 const SchoolInformation = () => {
@@ -13,7 +13,7 @@ const SchoolInformation = () => {
       <RegistarCard>
       <CompanyOccupation />
       <CompanyPrefecture />
-        <p>ホームページURL</p>
+      <CompanyHP_URL />
       </RegistarCard>
     </Container>
   );

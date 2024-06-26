@@ -10,11 +10,11 @@ function CreateTagElements({ itemContents }) {
 // li要素のP要素に項目名を表示させるのに必要なオブジェクトをセット
 const displayContentsName = {
   mail: "メールアドレス",
-  sei: "姓",
-  mei: "名",
-  seiCana: "セイ",
-  meiCana: "メイ",
-  userName: "ユーザーネーム",
+  student_surname: "姓",
+  student_name: "名",
+  student_kanasurname: "セイ",
+  student_kananame: "メイ",
+  user_name: "ユーザーネーム",
   password: "パスワード",
   // passwordCheck: "パスワードチェック",
   graduation_year: "卒業年度",

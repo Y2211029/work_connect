@@ -12,8 +12,8 @@ class w_company extends Model
     // テーブル名を指定（省略可能、Laravelはモデル名を複数形にして自動推測する）
     protected $table = 'w_companies';
 
-    // 主キーのカラム名を指定（省略可能、Laravelは"id"を自動使用する）
-    protected $primaryKey = 'id';
+    // // 主キーのカラム名を指定（省略可能、Laravelは"id"を自動使用する）
+    // protected $primaryKey = 'id';
 
     // 主キーが自動増分ではない場合は、$incrementingをfalseに設定
     public $incrementing = false;
@@ -23,9 +23,15 @@ class w_company extends Model
 
     // マスアサインメント可能な属性
     protected $fillable = [
-        'company_name',
+        'id',
         'mail',
+        'user_name',
         'password',
+        'company_name',
+        'company_nameCana',
+        'selectedOccupation',
+        'Prefecture',
+        'hp_url',    
     ];
 
     // タイムスタンプのカラムが存在しない場合は、$timestampsをfalseに設定

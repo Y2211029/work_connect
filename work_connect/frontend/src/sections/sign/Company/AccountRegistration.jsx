@@ -36,84 +36,15 @@ const AccountRegistar = (props) => {
   const { getSessionData, updateSessionData, updateObjectSessionData } = 
   useSessionStorage();
 
-  useEffect(() => {
-    // 外部URLから本アプリにアクセスした際に、sessionStrageに保存する
-    if (performance.navigation.type !== performance.navigation.TYPE_RELOAD) {
-      console.log("外部URLからアクセスしたです。");
-      if (getSessionData("accountData") === undefined) {
-        updateObjectSessionData("accountData", accountData);
-      }
-    }
-    props.coleSetUserNameCheck("requierd", true);
-  }, []);
-
-  // sessionStrageに保存されているデータを取得する
-  useEffect(() => {
-    let sessionDataAccount = getSessionData("accountData");
-    console.log("sessionDataAccount", sessionDataAccount);
-
-    setAccountData((prev) => ({
-      ...prev,
-      company_name: sessionDataAccount.company_name,
-      company_nameCana: sessionDataAccount.company_nameCana,
-      user_name: sessionDataAccount.user_name,
-      password: sessionDataAccount.password,
-      passwordCheck: sessionDataAccount.passwordCheck,
-    }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // リロードしたときに、accountDataのオブジェクト内のvalueに値があれば、sessionStrageに保存する
-  useEffect(() => {
-    if (Object.values({ ...accountData }).some((value) => value !== "")) {
-      console.log("空じゃないです。");
-      updateObjectSessionData("accountData", accountData);
-    } else {
-      console.log("空。");
-    }
-
-    /* --------------------------------------------------------------------- */
-    /* 必須項目全て入力された場合のみ次に行けるようにする処理を追加しました */
-    /* --------------------------------------------------------------------- */
-    // フラグをセット
-    let requierdFlg = false;
-
-    // accountDataのvalueに1個でも空欄のものが存在するとフラグをtrueにする
-    Object.values(accountData).map((value) => {
-      if (value == "") {
-        requierdFlg = true;
-      }
-    });
-
-    // フラグがtrueならstepbar.jsxのuserAccountCheck.requierdをtrueにする
-    if (requierdFlg) {
-      props.coleSetUserNameCheck("requierd", true);
-    } else {
-      props.coleSetUserNameCheck("requierd", false);
-    }
-
-    // ESlintError削除、推奨されて無いので他の方法を追々考えます。
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accountData]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setAccountData((prev) => ({ ...prev, [name]: value }));
-    // 条件が一致していない場合はエラーを表示
-    if (!e.target.checkValidity()) {
-      setInputError((prev) => ({ ...prev, [name]: true }));
-    } else {
-      setInputError((prev) => ({ ...prev, [name]: false }));
-    }
-  
-  if (name == "user_name") {
+  // ユーザー名の重複チェック
+  const inviteUserNameCheck = (user_name) => {
     // ユーザー名重複チェックのリクエスト用URL
     const url = "http://localhost:8000/user_name_check";
 
     axios
       .get(url, {
         params: {
-          user_name: value,
+          user_name: user_name,
           kind: "c",
         },
       })
@@ -121,6 +52,7 @@ const AccountRegistar = (props) => {
       .then((response) => {
         console.log("レスポンス:", response);
 
+        console.log("response.data:", response.data);
         if (response.data == "重複あり") {
           // console.log("ユーザー名が重複しています");
           setUserNameHelperText("ユーザー名が重複しています");
@@ -144,7 +76,101 @@ const AccountRegistar = (props) => {
       .catch((err) => {
         console.log("err:", err);
       });
-  }
+    };
+
+    // パスワードのバリデーションチェック
+    const passwordCheck = (passwordElement) => {
+      // 条件が一致していない場合はエラーを表示
+      console.log("props: ", props);
+      if (!passwordElement.checkValidity()) {
+        setInputError((prev) => ({ ...prev, password: true }));
+      } else {
+        setInputError((prev) => ({ ...prev, password: false }));
+      }
+    };
+  
+    useEffect(() => {
+      // 外部URLから本アプリにアクセスした際に、sessionStrageに保存する
+      if (performance.navigation.type !== performance.navigation.TYPE_RELOAD) {
+        console.log("外部URLからのアクセスです。");
+        if (getSessionData("accountData") === undefined) {
+          updateObjectSessionData("accountData", accountData);
+        }
+      } else {
+        console.log("リロードでのアクセスです。");
+      }
+      props.coleSetUserNameCheck("required", true);
+  
+      // console.log('props.coleSetUserNameCheck("required", true)');
+    }, []);
+  
+    // sessionStrageに保存されているデータを取得する
+    useEffect(() => {
+      console.log("処理準確認用: 1");
+      let sessionDataAccount = getSessionData("accountData");
+      console.log("sessionDataAccount", sessionDataAccount);
+  
+      setAccountData((prev) => ({
+        ...prev,
+        company_name: sessionDataAccount.company_name,
+        company_nameCana: sessionDataAccount.company_nameCana,
+        user_name: sessionDataAccount.user_name,
+        password: sessionDataAccount.password,
+        passwordCheck: sessionDataAccount.passwordCheck,
+      }));
+    }, []);
+  
+    // リロードしたときに、accountDataのオブジェクト内のvalueに値があれば、sessionStrageに保存する
+    useEffect(() => {
+      console.log("処理準確認用: 2");
+      if (Object.values({ ...accountData }).some((value) => value !== "")) {
+        console.log("空じゃないです。");
+        let sessionDataAccount = getSessionData("accountData");
+        console.log("sessionDataAccount", sessionDataAccount);
+        updateObjectSessionData("accountData", accountData);
+      } else {
+        console.log("空。");
+      }
+  
+      /* --------------------------------------------------------------------- */
+      /* 必須項目全て入力された場合のみ次に行けるようにする処理を追加しました */
+      /* --------------------------------------------------------------------- */
+      // フラグをセット
+      let requiredFlg = false;
+  
+      // accountDataのvalueに1個でも空欄のものが存在するとフラグをtrueにする
+      Object.values(accountData).map((value) => {
+        if (value == "" || value == undefined) {
+          requiredFlg = true;
+        }
+      });
+  
+      // フラグがtrueならstepbar.jsxのuserAccountCheck.requiredをtrueにする
+      if (requiredFlg) {
+        props.coleSetUserNameCheck("required", true);
+      } else {
+        props.coleSetUserNameCheck("required", false);
+      }
+  
+      // ユーザー名の重複チェック
+      inviteUserNameCheck(accountData.user_name);
+  
+      // パスワードのhtmlオブジェクトを取得
+      const passwordElement = document.querySelector('[name="password"]');
+      // パスワードのバリデーションチェック
+      passwordCheck(passwordElement);
+  
+      // ESlintError削除、推奨されて無いので他の方法を追々考えます。
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [accountData]);
+  
+    const handleChange = (e) => {
+      const { name, value } = e.target;
+  
+      setAccountData((prev) => ({ ...prev, [name]: value }));
+  
+      console.log("処理準確認用: 3");
+
   console.log("処理準確認用: 4");
 };
 
@@ -235,7 +261,6 @@ useEffect(() => {
                 margin="normal"
                 name="company_nameCana"
                 onChange={handleChange}
-                required
                 type="text"
                 value={accountData.company_nameCana}
                 variant="outlined"

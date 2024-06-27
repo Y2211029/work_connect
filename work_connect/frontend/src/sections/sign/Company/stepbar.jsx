@@ -74,7 +74,7 @@ export default function HorizontalLinearStepper({ Stepbar }) {
       console.log("重複あり!!");
 
       // activeStepが3未満(次へをクリックした場合の処理)
-      if (activeStep < 3) {
+      if (activeStep < 2) {
         console.log("activeStep", activeStep);
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
 
@@ -85,12 +85,14 @@ export default function HorizontalLinearStepper({ Stepbar }) {
     const url = "http://localhost:8000/s_register";
 
     const sessionData = getSessionData("accountData");
+    const kind = "c";
     console.log(sessionData);
 
     axios
       .get(url, {
         params: {
           sessionData,
+          kind,
         },
       })
       // thenで成功した場合の処理

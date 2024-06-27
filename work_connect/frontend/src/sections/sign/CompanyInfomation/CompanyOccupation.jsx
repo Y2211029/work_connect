@@ -76,6 +76,7 @@ const OccupationNameDropdown = () => {
         value={selectedOccupation}
         onChange={handleChange}
         options={options}
+        required
         placeholder="Select..."
         isMulti
       />

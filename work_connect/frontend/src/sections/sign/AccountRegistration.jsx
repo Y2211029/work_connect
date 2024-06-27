@@ -41,6 +41,58 @@ const AccountRegistar = (props) => {
   const { getSessionData, updateSessionData, updateObjectSessionData } =
     useSessionStorage();
 
+  // ユーザー名の重複チェック
+  const inviteUserNameCheck = (user_name) => {
+    // ユーザー名重複チェックのリクエスト用URL
+    const url = "http://localhost:8000/user_name_check";
+
+    axios
+      .get(url, {
+        params: {
+          user_name: user_name,
+          kind: "s",
+        },
+      })
+      // thenで成功した場合の処理
+      .then((response) => {
+        console.log("レスポンス:", response);
+
+        console.log("response.data:", response.data);
+        if (response.data == "重複あり") {
+          // console.log("ユーザー名が重複しています");
+          setUserNameHelperText("ユーザー名が重複しています");
+          // console.log("inputError.user_name: ", inputError.user_name);
+          setInputError((prevState) => ({
+            ...prevState,
+            user_name: true,
+          }));
+
+          props.coleSetUserNameCheck("user_name", true);
+        } else {
+          setUserNameHelperText("");
+          setInputError((prevState) => ({
+            ...prevState,
+            user_name: false,
+          }));
+          props.coleSetUserNameCheck("user_name", false);
+        }
+      })
+      // catchでエラー時の挙動を定義
+      .catch((err) => {
+        console.log("err:", err);
+      });
+  };
+
+  const passwordCheck = (passwordElement) => {
+    // 条件が一致していない場合はエラーを表示
+    console.log("props: ", props);
+    if (!passwordElement.checkValidity()) {
+      setInputError((prev) => ({ ...prev, password: true }));
+    } else {
+      setInputError((prev) => ({ ...prev, password: false }));
+    }
+  };
+
   useEffect(() => {
     // 外部URLから本アプリにアクセスした際に、sessionStrageに保存する
     if (performance.navigation.type !== performance.navigation.TYPE_RELOAD) {
@@ -52,6 +104,7 @@ const AccountRegistar = (props) => {
       console.log("リロードでのアクセスです。");
     }
     props.coleSetUserNameCheck("requierd", true);
+
     // console.log('props.coleSetUserNameCheck("requierd", true)');
   }, []);
 
@@ -105,6 +158,14 @@ const AccountRegistar = (props) => {
       props.coleSetUserNameCheck("requierd", false);
     }
 
+    // ユーザー名の重複チェック
+    inviteUserNameCheck(accountData.user_name);
+
+    // パスワードのhtmlオブジェクトを取得
+    const passwordElement = document.querySelector('[name="password"]');
+    // パスワードのバリデーションチェック
+    passwordCheck(passwordElement);
+
     // ESlintError削除、推奨されて無いので他の方法を追々考えます。
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accountData]);
@@ -115,53 +176,7 @@ const AccountRegistar = (props) => {
     setAccountData((prev) => ({ ...prev, [name]: value }));
 
     console.log("処理準確認用: 3");
-    // 条件が一致していない場合はエラーを表示
-    console.log("props: ", props);
-    if (!e.target.checkValidity()) {
-      setInputError((prev) => ({ ...prev, [name]: true }));
-    } else {
-      setInputError((prev) => ({ ...prev, [name]: false }));
-    }
 
-    if (name == "user_name") {
-      // ユーザー名重複チェックのリクエスト用URL
-      const url = "http://localhost:8000/user_name_check";
-
-      axios
-        .get(url, {
-          params: {
-            user_name: value,
-            kind: "s",
-          },
-        })
-        // thenで成功した場合の処理
-        .then((response) => {
-          console.log("レスポンス:", response);
-
-          if (response.data == "重複あり") {
-            // console.log("ユーザー名が重複しています");
-            setUserNameHelperText("ユーザー名が重複しています");
-            // console.log("inputError.user_name: ", inputError.user_name);
-            setInputError((prevState) => ({
-              ...prevState,
-              user_name: true,
-            }));
-
-            props.coleSetUserNameCheck("user_name", true);
-          } else {
-            setUserNameHelperText("");
-            setInputError((prevState) => ({
-              ...prevState,
-              user_name: false,
-            }));
-            props.coleSetUserNameCheck("user_name", false);
-          }
-        })
-        // catchでエラー時の挙動を定義
-        .catch((err) => {
-          console.log("err:", err);
-        });
-    }
     console.log("処理準確認用: 4");
   };
 

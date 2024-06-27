@@ -1,155 +1,102 @@
-import { useState } from 'react';
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { Helmet } from "react-helmet-async";
 
-import Link from '@mui/material/Link';
-import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import LoadingButton from '@mui/lab/LoadingButton';
-import { alpha, useTheme } from '@mui/material/styles';
-import InputAdornment from '@mui/material/InputAdornment';
+const newsContainer = {
+  display: "flex",
+  flexWrap: "wrap",
+  gap: "20px", 
+  marginLeft: "4%",
+};
 
-import Box from '@mui/material/Box';
+const newsItem = {
+  flex: "1 1 calc(50% - 20px)", 
+  boxSizing: "border-box",
+  border: "solid 2px #329eff",
+  width:"100px",
+  height:"400px",
+  maxWidth:"600px",
+};
 
-import { useRouter } from 'src/routes/hooks';
+const news_img = {
+  width: "300px",
+  height: "200px",
+  border: "solid 2px #329eff",
 
-import { bgGradient } from 'src/theme/css';
+};
 
-import Logo from 'src/components/logo';
-import Iconify from 'src/components/iconify';
+const news_font = {
+  fontSize: "px",
+  padding: "auto",
+};
 
-// ----------------------------------------------------------------------
+const genre_update = {
+  display: "flex",
+  paddingLeft:"20px",
+  marginLeft:"50%",
+  marginTop:"0%",
+};
 
-export default function InternshipJobOfferView() {
-  const theme = useTheme();
 
-  const router = useRouter();
 
-  const [showPassword, setShowPassword] = useState(false);
+export default function InternshipJobOfferPage() {
+  const [data, setData] = useState(null);
 
-  const handleClick = () => {
-    router.push('/dashboard');
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/Internship_JobOffer');
+        console.log(response.data);
+        setData(response.data);
+      } catch (error) {
+        console.error('データの取得中にエラーが発生しました！', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const formatDate = (dateString) => {
+    const dateObj = new Date(dateString);
+    const year = dateObj.getFullYear();
+    const month = dateObj.getMonth() + 1;
+    const day = dateObj.getDate();
+    return `${year}/${month}/${day}`;
   };
 
-  const renderForm = (
-    <>
-      <Stack spacing={3}>
-        <TextField name="email" label="Email address" />
-
-        <TextField
-          name="password"
-          label="Password"
-          type={showPassword ? 'text' : 'password'}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                  <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
-      </Stack>
-
-      <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ my: 3 }}>
-        <Link variant="subtitle2" underline="hover">
-          Forgot password?
-        </Link>
-      </Stack>
-
-      <LoadingButton
-        fullWidth
-        size="large"
-        type="submit"
-        variant="contained"
-        color="inherit"
-        onClick={handleClick}
-      >
-        Login
-      </LoadingButton>
-    </>
-  );
-
   return (
-    <Box
-      sx={{
-        ...bgGradient({
-          color: alpha(theme.palette.background.default, 0.9),
-          imgUrl: '/assets/background/overlay_4.jpg',
-        }),
-        height: 1,
-      }}
-    >
-      <Logo
-        sx={{
-          position: 'fixed',
-          top: { xs: 16, md: 24 },
-          left: { xs: 16, md: 24 },
-        }}
-      />
+    <>
+      <Helmet>
+        <title>ニュース一覧</title>
+      </Helmet>
 
-      <Stack alignItems="center" justifyContent="center" sx={{ height: 1 }}>
-        <Card
-          sx={{
-            p: 5,
-            width: 1,
-            maxWidth: 420,
-          }}
-        >
-          <Typography variant="h4">Sign in to Minimal</Typography>
+      <div style={newsContainer}>
+        {data && data.length > 0 ? (
+          data.map(post => {
+            const title = post.article_title;
+            const header_img = post.header_img;
+            const genre = post.genre;
+            const updated_at = post.updated_at;
+            const company_name = "シナジーマーケティング株式会社";
 
-          <Typography variant="body2" sx={{ mt: 2, mb: 5 }}>
-            Don’t have an account?
-            <Link variant="subtitle2" sx={{ ml: 0.5 }}>
-              Get started
-            </Link>
-          </Typography>
-
-          <Stack direction="row" spacing={2}>
-            <Button
-              fullWidth
-              size="large"
-              color="inherit"
-              variant="outlined"
-              sx={{ borderColor: alpha(theme.palette.grey[500], 0.16) }}
-            >
-              <Iconify icon="eva:google-fill" color="#DF3E30" />
-            </Button>
-
-            <Button
-              fullWidth
-              size="large"
-              color="inherit"
-              variant="outlined"
-              sx={{ borderColor: alpha(theme.palette.grey[500], 0.16) }}
-            >
-              <Iconify icon="eva:facebook-fill" color="#1877F2" />
-            </Button>
-
-            <Button
-              fullWidth
-              size="large"
-              color="inherit"
-              variant="outlined"
-              sx={{ borderColor: alpha(theme.palette.grey[500], 0.16) }}
-            >
-              <Iconify icon="eva:twitter-fill" color="#1C9CEA" />
-            </Button>
-          </Stack>
-
-          <Divider sx={{ my: 3 }}>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              OR
-            </Typography>
-          </Divider>
-
-          {renderForm}
-        </Card>
-      </Stack>
-    </Box>
+            return (
+              <div key={post.id} style={newsItem}>
+                <figure>
+                  <div className="genre_update" style={genre_update}>
+                  <p>{genre}</p>
+                  <p>{formatDate(updated_at)}</p>
+                  </div>
+                  <p style={news_font}>{company_name}</p>
+                  <p style={news_font}>{title}</p>
+                  <img src={header_img} style={news_img} alt={title} />
+                </figure>
+              </div>
+            );
+          })
+        ) : (
+          <p>Loading...</p>
+        )}
+      </div>
+    </>
   );
 }

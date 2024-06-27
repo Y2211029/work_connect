@@ -3,11 +3,11 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ListController;
+use App\Http\Controllers\EditorController;
 use App\Http\Controllers\login\loginController;
 use App\Http\Controllers\register\pre_registerController;
 use App\Http\Controllers\register\preRegisterCheckController;
 use App\Http\Controllers\register\registerController;
-use App\Http\Controllers\register\userNameCheckController;
 
 
 // トップ画面
@@ -18,8 +18,6 @@ Route::get('/', function () {
 // /list
 // Route::get('list',[ListController::class, 'index']);
 
-Route::get('/user_name_check',[userNameCheckController::class, 'userNameCheckController']);
-
 Route::get('/s_pre_register_check',[preRegisterCheckController::class, 'preRegisterCheckController']);
 
 Route::get('/s_register',[registerController::class, 'registerController']);
@@ -29,6 +27,15 @@ Route::post('/list',[ListController::class, 'DB_connection']);
 
 Route::get('/s_login',[loginController::class, 'loginController']);
 Route::get('/s_pre_register',[pre_registerController::class, 'pre_registerController']);
+
+
+//ニュース機能
+Route::get('/news_upload',[EditorController::class, 'news_upload']);
+Route::get('/news_save',[EditorController::class, 'news_save']);
+Route::get('/Editor',[EditorController::class, 'editor_get']);
+Route::get('/Internship_JobOffer',[EditorController::class, 'editor_get']);
+
+
 
 // ミドルウェア
 Route::group(['middleware' => ['api', 'cors']], function(){

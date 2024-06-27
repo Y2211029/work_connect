@@ -80,7 +80,7 @@
     "eslint": "^8.57.0",
 
 
-    "react-hooks/exhaustive-deps": "off",
+
 
 
     "eslint-plugin-react": "^7.34.1",

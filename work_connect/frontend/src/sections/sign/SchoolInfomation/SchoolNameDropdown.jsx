@@ -3,8 +3,9 @@ import axios from "axios";
 import Select from "react-select";
 import * as wanakana from "wanakana";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import PropTypes from 'prop-types';
 
-const SchoolNameDropdown = () => {
+const SchoolNameDropdown = (props) => {
   const [schools, setSchools] = useState([]);
   const [selectedSchool, setSelectedSchool] = useState("");
   const accessToken = "268|G5fHGAGA7Col8FetXAQ6EMNHnjDIA5TInN2uByIB";
@@ -63,11 +64,20 @@ const SchoolNameDropdown = () => {
       if (SessionData.school_name !== undefined && SessionData.school_name !== "") {
         setSelectedSchool({
           value: SessionData.school_name,
-          label: `${SessionData.school_name}年`,
+          label: `${SessionData.school_name}`,
         });
       }
     }
   }, []);
+
+  useEffect(() => {
+    // 学校名必須項目チェック
+    if(selectedSchool == "") {
+      props.coleSetRequiredCheck("school_name", true);
+    } else {
+      props.coleSetRequiredCheck("school_name", false);
+    }
+  }, [selectedSchool])
 
   // sessionStrageに値を保存
   const handleChange = (selectedOption) => {
@@ -95,7 +105,7 @@ const SchoolNameDropdown = () => {
 
   return (
     <div>
-      <p>学校名</p>
+      <p>学校名*</p>
       <Select
         id="schoolDropdown"
         value={selectedSchool}
@@ -106,6 +116,10 @@ const SchoolNameDropdown = () => {
       />
     </div>
   );
+};
+
+SchoolNameDropdown.propTypes = {
+  coleSetRequiredCheck: PropTypes.func.isRequired,
 };
 
 export default SchoolNameDropdown;

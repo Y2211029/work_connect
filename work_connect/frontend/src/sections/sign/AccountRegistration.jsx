@@ -83,6 +83,7 @@ const AccountRegistar = (props) => {
       });
   };
 
+  // パスワードのバリデーションチェック
   const passwordCheck = (passwordElement) => {
     // 条件が一致していない場合はエラーを表示
     console.log("props: ", props);
@@ -103,9 +104,9 @@ const AccountRegistar = (props) => {
     } else {
       console.log("リロードでのアクセスです。");
     }
-    props.coleSetUserNameCheck("requierd", true);
+    props.coleSetUserNameCheck("required", true);
 
-    // console.log('props.coleSetUserNameCheck("requierd", true)');
+    // console.log('props.coleSetUserNameCheck("required", true)');
   }, []);
 
   // sessionStrageに保存されているデータを取得する
@@ -142,20 +143,20 @@ const AccountRegistar = (props) => {
     /* 必須項目全て入力された場合のみ次に行けるようにする処理を追加しました */
     /* --------------------------------------------------------------------- */
     // フラグをセット
-    let requierdFlg = false;
+    let requiredFlg = false;
 
     // accountDataのvalueに1個でも空欄のものが存在するとフラグをtrueにする
     Object.values(accountData).map((value) => {
       if (value == "" || value == undefined) {
-        requierdFlg = true;
+        requiredFlg = true;
       }
     });
 
-    // フラグがtrueならstepbar.jsxのuserAccountCheck.requierdをtrueにする
-    if (requierdFlg) {
-      props.coleSetUserNameCheck("requierd", true);
+    // フラグがtrueならstepbar.jsxのuserAccountCheck.requiredをtrueにする
+    if (requiredFlg) {
+      props.coleSetUserNameCheck("required", true);
     } else {
-      props.coleSetUserNameCheck("requierd", false);
+      props.coleSetUserNameCheck("required", false);
     }
 
     // ユーザー名の重複チェック

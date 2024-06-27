@@ -31,7 +31,7 @@ export default function HorizontalLinearStepper({ Stepbar }) {
     passwordCheck: false,
 
     // 必須項目がすべて入力されている場合のみfalseになる
-    requierd: false,
+    required: false,
   });
 
   // 作品一覧に飛ばす。
@@ -78,33 +78,37 @@ export default function HorizontalLinearStepper({ Stepbar }) {
   // 次へボタン押されたとき
   const handleNext = () => {
     console.log("userAccountCheck: ", userAccountCheck);
-    if (userAccountCheck.user_name == false && userAccountCheck.password == false && userAccountCheck.passwordCheck == false && userAccountCheck.requierd == false) {
-      console.log("重複あり!!");
+    if (userAccountCheck.user_name == false && userAccountCheck.password == false && userAccountCheck.passwordCheck == false) {
+      if(userAccountCheck.required == false) {
 
-      // activeStepが3未満(次へをクリックした場合の処理)
-      if (activeStep < 3) {
-        console.log("activeStep", activeStep);
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-
-        // ステップバーの色を変える処理
-        stepConnectorLinesArray[activeStep].style.borderTop = "5px solid #1976d2";
-      } else {
-        // activeStepが3(保存をクリックした場合の処理)
-        const url = "http://localhost:8000/s_register";
-
-        const sessionData = getSessionData("accountData");
-        console.log(sessionData);
-
-        axios
+        console.log("重複あり!!");
+        
+        // activeStepが3未満(次へをクリックした場合の処理)
+        if (activeStep < 3) {
+          console.log("activeStep", activeStep);
+          setActiveStep((prevActiveStep) => prevActiveStep + 1);
+          
+          // ステップバーの色を変える処理
+          stepConnectorLinesArray[activeStep].style.borderTop = "5px solid #1976d2";
+        } else {
+          // activeStepが3(保存をクリックした場合の処理)
+          const url = "http://localhost:8000/s_register";
+          
+          const sessionData = getSessionData("accountData");
+          const kind = "s";
+          console.log(sessionData);
+          
+          axios
           .get(url, {
             params: {
               sessionData,
+              kind,
             },
           })
           // thenで成功した場合の処理
           .then((response) => {
             console.log("レスポンス:", response);
-
+            
             // ここで作品一覧ページに飛ばす処理 //////////////////////////
             navigation("/");
           })
@@ -112,6 +116,7 @@ export default function HorizontalLinearStepper({ Stepbar }) {
           .catch((err) => {
             console.log("err:", err);
           });
+        }
       }
     }
   };
@@ -168,7 +173,7 @@ export default function HorizontalLinearStepper({ Stepbar }) {
 
       {/* handleValueChange 入力した値を */}
       {activeStep === 0 ? <AccountRegistar coleSetUserNameCheck={coleSetUserNameCheck} /> : ""}
-      {activeStep === 1 ? <SchoolInformation /> : ""}
+      {activeStep === 1 ? <SchoolInformation coleSetUserNameCheck={coleSetUserNameCheck} /> : ""}
       {activeStep === 2 ? <MoreInformation /> : ""}
       {activeStep === 3 ? <Confirmation /> : ""}
 

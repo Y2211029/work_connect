@@ -9,6 +9,7 @@ use App\Http\Controllers\register\pre_registerController;
 use App\Http\Controllers\register\preRegisterCheckController;
 use App\Http\Controllers\register\registerController;
 use App\Http\Controllers\register\userNameCheckController;
+use App\Http\Controllers\work\GetWorkListController;
 
 
 // トップ画面
@@ -16,8 +17,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// /list
-// Route::get('list',[ListController::class, 'index']);
+// 作品一覧取得
+Route::get('/get_work_list',[GetWorkListController::class, 'GetWorkListController']);
 
 Route::get('/user_name_check',[userNameCheckController::class, 'userNameCheckController']);
 

@@ -69,11 +69,3 @@ export default function AppView() {
     </Container>
   );
 }
-
-{/* <ul>
-  {item.chart.series.map((seriesItem, index) => (
-    <li key={index}>
-      {seriesItem.label}: {seriesItem.value}
-    </li>
-  ))}
-</ul>; */}

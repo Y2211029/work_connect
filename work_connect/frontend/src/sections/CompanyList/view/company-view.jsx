@@ -5,8 +5,8 @@ import Typography from "@mui/material/Typography";
 
 import StudentListItem from "src/_mock/studentListItem";
 
-import PostCard from "src/sections/StudentList/post-card";
-import PostSort from "src/sections/StudentList/post-sort";
+import PostCard from "src/sections/CompanyList/post-card";
+import PostSort from "src/sections/CompanyList/post-sort";
 
 // import Button from '@mui/material/Button';
 // import Iconify from 'src/components/iconify';
@@ -14,13 +14,13 @@ import PostSort from "src/sections/StudentList/post-sort";
 
 // ----------------------------------------------------------------------
 
-export default function StudentListView() {
-  const postsFromBlog = StudentListItem();
+export default function CompanyListView() {
+  const postsFromBlog = CompanyListItem();
   console.log("postsFromBlog", postsFromBlog);
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4">学生一覧</Typography>
+        <Typography variant="h4">企業一覧</Typography>
         {/* 
         <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />}>
           New Post

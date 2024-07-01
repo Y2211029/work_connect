@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up() {
         Schema::table('w_companies', function (Blueprint $table) {
-            $table->text('company_nameCana')->nullable()->after('company_name'); 
-            $table->text('selectedOccupation')->nullable()->after('company_nameCana'); 
-            $table->text('Prefecture')->nullable()->after('selectedOccupation'); 
+            $table->text('company_namecana')->nullable()->after('company_name'); 
+            $table->text('selected_occupation')->nullable()->after('company_namecana'); 
+            $table->text('prefecture')->nullable()->after('selected_occupation'); 
         });
     }
     /**
@@ -21,9 +21,9 @@ return new class extends Migration
      */
     public function down() {
         Schema::table('w_companies', function (Blueprint $table) { 
-            $table->dropColumn('company_nameCana'); 
-            $table->dropColumn('selectedOccupation'); 
-            $table->dropColumn('Prefecture'); 
+            $table->dropColumn('company_namecana'); 
+            $table->dropColumn('selected_occupation'); 
+            $table->dropColumn('prefecture'); 
         });
     }
         

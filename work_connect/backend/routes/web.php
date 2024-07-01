@@ -11,7 +11,8 @@ use App\Http\Controllers\register\registerController;
 use App\Http\Controllers\register\userNameCheckController;
 use App\Http\Controllers\work\GetWorkListController;
 use App\Http\Controllers\movie\GetMovieListController;
-use App\Http\Controllers\student\GetstudentListController;
+use App\Http\Controllers\student\GetStudentListController;
+use App\Http\Controllers\company\GetCompanyListController;
 
 
 // トップ画面
@@ -25,6 +26,8 @@ Route::get('/get_work_list',[GetWorkListController::class, 'GetWorkListControlle
 Route::get('/get_movie_list',[GetMovieListController::class, 'GetMovieListController']);
 // 学生一覧取得
 Route::get('/get_student_list',[GetStudentListController::class, 'GetStudentListController']);
+// 企業一覧取得
+Route::get('/get_company_list',[GetCompanyListController::class, 'GetCompanyListController']);
 
 Route::get('/user_name_check',[userNameCheckController::class, 'userNameCheckController']);
 

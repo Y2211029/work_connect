@@ -8,6 +8,7 @@ use App\Http\Controllers\login\loginController;
 use App\Http\Controllers\register\pre_registerController;
 use App\Http\Controllers\register\preRegisterCheckController;
 use App\Http\Controllers\register\registerController;
+use App\Http\Controllers\register\userNameCheckController;
 
 
 // トップ画面
@@ -17,6 +18,8 @@ Route::get('/', function () {
 
 // /list
 // Route::get('list',[ListController::class, 'index']);
+
+Route::get('/user_name_check',[userNameCheckController::class, 'userNameCheckController']);
 
 Route::get('/s_pre_register_check',[preRegisterCheckController::class, 'preRegisterCheckController']);
 

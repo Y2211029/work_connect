@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, forwardRef,useImperativeHandle } from "react";
 import PropTypes from "prop-types";
 
 import TextField from "@mui/material/TextField";
@@ -12,7 +12,34 @@ import { useSessionStorage } from "../../../hooks/use-sessionStorage";
 
 // Laravelとの通信用
 import axios from "axios";
-const AccountRegistar = (props) => {
+
+let NULL_validation1 = false;
+let NULL_validation2 = false;
+let NULL_validation3 = false;
+let NULL_validation4 = false;
+let NULL_validation5 = false;
+
+const AccountRegistar = forwardRef((props, ref) => {
+  
+  // 「次へ」を押したときに企業名・企業名(カナ)が空だったらバリデーションを実行
+  // ./stepbar.jsx から呼び出し
+  useImperativeHandle(ref, () => ({
+    NULL_validation(num) {
+      console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+      if(num == 1){
+        NULL_validation1 = true;
+      } else if(num == 2){
+        NULL_validation2 = true;
+      } else if(num == 3){
+        NULL_validation3 = true;
+      } else if(num == 4){
+        NULL_validation4 = true;
+      } else if(num == 5){
+        NULL_validation5 = true;
+      }
+    }
+  }));
+    
   // ユーザー名重複時のhelperTextの内容を宣言
   const [userNameHelperText, setUserNameHelperText] = useState("");
   // アカウントデータの状態管理
@@ -26,6 +53,8 @@ const AccountRegistar = (props) => {
 
   // 入力エラーの状態管理
   const [inputError, setInputError] = useState({
+    company_name: false,
+    company_nameCana: false,
     user_name: false,
     password: false,
     // trueだった時にエラーを表示
@@ -166,7 +195,43 @@ const AccountRegistar = (props) => {
   
     const handleChange = (e) => {
       const { name, value } = e.target;
-  
+
+      // 未入力バリデーションに伴う処理を追加
+      console.log("name------------------->>>>>>>>>>>>>>>>>>>>>>>>"+name);
+      console.log("value------------------->>>>>>>>>>>>>>>>>>>>>>>>"+value);
+
+      if(name == "company_name" && value.trim() === ''){
+        // バリデーションを実行
+        NULL_validation1 = true;
+      } else if(name == "company_nameCana" && value.trim() === ''){
+        // バリデーションを実行
+        NULL_validation2 = true;
+      } else if(name == "user_name" && value.trim() === ''){
+        // バリデーションを実行
+        NULL_validation3 = true;
+      } else if(name == "password" && value.trim() === ''){
+        // バリデーションを実行
+        NULL_validation4 = true;
+      } else if(name == "passwordCheck" && value.trim() === ''){
+        // バリデーションを実行
+        NULL_validation5 = true;
+      } else if(name == "company_name" && value.trim() !== ''){
+        // バリデーションを解除
+        NULL_validation1 = false;
+      } else if(name == "company_nameCana" && value.trim() !== ''){
+        // バリデーションを解除
+        NULL_validation2 = false;
+      } else if(name == "user_name" && value.trim() !== ''){
+        // バリデーションを解除
+        NULL_validation3 = false;
+      } else if(name == "password" && value.trim() !== ''){
+        // バリデーションを解除
+        NULL_validation4 = false;
+      } else if(name == "passwordCheck" && value.trim() !== ''){
+        // バリデーションを解除
+        NULL_validation5 = false;
+      } 
+
       setAccountData((prev) => ({ ...prev, [name]: value }));
   
       console.log("処理準確認用: 3");
@@ -243,6 +308,7 @@ useEffect(() => {
             />
             <div style={{ display: "flex" }}>
               <TextField
+              error={NULL_validation1 == true || inputError.company_name}
                 fullWidth
                 label="企業名"
                 margin="normal"
@@ -256,18 +322,20 @@ useEffect(() => {
             </div>
             <div style={{ display: "flex" }}>
               <TextField
+              error={NULL_validation2 == true || inputError.company_nameCana}
                 fullWidth
                 label="企業名(カタカナ)"
                 margin="normal"
                 name="company_nameCana"
                 onChange={handleChange}
+                required
                 type="text"
                 value={accountData.company_nameCana}
                 variant="outlined"
               />
             </div>
             <TextField
-              error={inputError.user_name}
+              error={NULL_validation3 == true || inputError.user_name}
               fullWidth
               helperText={userNameHelperText}
               label="ユーザー名"
@@ -280,10 +348,12 @@ useEffect(() => {
               variant="outlined"
             />
             <TextField
-              error={inputError.password}
+            // パスワードが空の時にもエラー表示出てたので修正しました。
+              error={NULL_validation4 == true || (accountData.password != undefined && accountData.password != "") && inputError.password}
               fullWidth
               helperText={
-                (inputError.password ? "パスワードが条件に合致していません" : "") +
+                // パスワードが空の時にもエラー表示出てたので修正しました。
+                (accountData.password == undefined || accountData.password == "" ? "" : inputError.password ? "パスワードが条件に合致していません" : "") +
                 "※大文字・小文字・英数字・記号・8文字以上30文字以内"
               }
               label="パスワード"
@@ -312,10 +382,12 @@ useEffect(() => {
                   accountData.password
                 )
               }
-              error={inputError.passwordCheck}
+              // パスワード確認が空の時にもエラー表示出てたので修正しました。
+              error={NULL_validation5 == true || (accountData.passwordCheck != undefined && accountData.passwordCheck != "") && inputError.passwordCheck}
               fullWidth
               helperText={
-                inputError.passwordCheck ? "パスワードが一致しません" : "パスワードが一致しました"
+                // パスワード確認が空の時にもエラー表示出てたので修正しました。
+                accountData.passwordCheck == undefined || accountData.passwordCheck == "" ? "" : inputError.passwordCheck ? "パスワードが一致しません" : "パスワードが一致しました"
               }
               label="パスワード確認"
               margin="normal"
@@ -331,7 +403,7 @@ useEffect(() => {
       </Container>
     </>
   );
-};
+});
 
 
 AccountRegistar.propTypes = {
@@ -348,6 +420,8 @@ AccountRegistar.propTypes = {
 };
 
 export default AccountRegistar;
+
+AccountRegistar.displayName = 'Child';
 
 // 以下のコードは絶対消さないでへへ
 // const AccountData = useContext(emailContext);

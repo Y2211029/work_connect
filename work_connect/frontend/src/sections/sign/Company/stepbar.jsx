@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -30,7 +30,7 @@ export default function HorizontalLinearStepper({ Stepbar }) {
     passwordCheck: false,
 
     // 必須項目がすべて入力されている場合のみfalseになる
-    requierd: false,
+    required: false,
   });
   // 作品一覧に飛ばす。
   let navigation = useNavigate();
@@ -52,7 +52,7 @@ export default function HorizontalLinearStepper({ Stepbar }) {
   let sessionActiveStep = getSessionData("ActiveStep");
   if(sessionActiveStep != undefined) {
     console.log("sessionActiveStep.step: ", sessionActiveStep.step);
-    if(sessionActiveStep.step == 1 || sessionActiveStep.step == 2 || sessionActiveStep.step == 3) {
+    if(sessionActiveStep.step == 1 || sessionActiveStep.step == 2) {
       console.log("aaaaaaaaaaaaaaa");
       sessionStep = sessionActiveStep.step;
     }
@@ -67,47 +67,73 @@ export default function HorizontalLinearStepper({ Stepbar }) {
 
   // setActiveStep(getSessionData("ActiveStep"));
 
+  const childRef = useRef(null);
+
   // 次へボタン押されたとき
   const handleNext = () => {
     console.log("userAccountCheck: ", userAccountCheck);
-    if (userAccountCheck.user_name == false && userAccountCheck.password == false && userAccountCheck.passwordCheck == false && userAccountCheck.requierd == false) {
+    if (userAccountCheck.user_name == false && userAccountCheck.password == false && userAccountCheck.passwordCheck == false && userAccountCheck.required == false) {
       console.log("重複あり!!");
 
-      // activeStepが3未満(次へをクリックした場合の処理)
+      // activeStepが2未満(次へをクリックした場合の処理)
       if (activeStep < 2) {
         console.log("activeStep", activeStep);
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
 
-    // ステップバーの色を変える処理
-    stepConnectorLinesArray[activeStep].style.borderTop = "5px solid #1976d2";
-  } else {
-    // activeStepが3(保存をクリックした場合の処理)
-    const url = "http://localhost:8000/s_register";
+        // ステップバーの色を変える処理
+        stepConnectorLinesArray[activeStep].style.borderTop = "5px solid #1976d2";
+      } else {
+        // activeStepが2(保存をクリックした場合の処理)
+        const url = "http://localhost:8000/s_register";
 
-    const sessionData = getSessionData("accountData");
-    const kind = "c";
-    console.log(sessionData);
+        const sessionData = getSessionData("accountData");
+        const kind = "c";
+        console.log(sessionData);
 
-    axios
-      .get(url, {
-        params: {
-          sessionData,
-          kind,
-        },
-      })
-      // thenで成功した場合の処理
-      .then((response) => {
-        console.log("レスポンス:", response);
+        axios
+          .get(url, {
+            params: {
+              sessionData,
+              kind,
+            },
+          })
+        // thenで成功した場合の処理
+        .then((response) => {
+          console.log("レスポンス:", response);
 
-        // ここで作品一覧ページに飛ばす処理 //////////////////////////
-        navigation("/");
-      })
-      // catchでエラー時の挙動を定義
-      .catch((err) => {
-        console.log("err:", err);
-      });
-  }
-}
+          // ここで作品一覧ページに飛ばす処理 //////////////////////////
+          navigation("/");
+        })
+        // catchでエラー時の挙動を定義
+        .catch((err) => {
+          console.log("err:", err);
+        });
+      }
+    } else {
+      // データ取得
+      const accountData = getSessionData("accountData");
+      // 各項目が空だった場合、バリデーションを実行(AccountRegistration.jsxへ)
+      if(accountData.company_name == undefined){
+        childRef.current?.NULL_validation(1);
+      }
+      if(accountData.company_nameCana == undefined){
+        childRef.current?.NULL_validation(2);
+      }
+      if(accountData.user_name == undefined){
+        childRef.current?.NULL_validation(3);
+      }
+      if(accountData.password == undefined){
+        childRef.current?.NULL_validation(4);
+      }
+      if(accountData.passwordCheck == undefined){
+        childRef.current?.NULL_validation(5);
+      }
+      
+      alert("エラー：未入力項目があります");
+
+      
+
+    }
   };
 
   // 戻るボタン押されたとき
@@ -161,7 +187,7 @@ export default function HorizontalLinearStepper({ Stepbar }) {
       {/*ーーーーーーーーーーーーーーーーーーーーーー 入力フォーム表示位置 ーーーーーーーーーーーーーーーーーーーーーー*/}
 
       {/* handleValueChange 入力した値を */}
-      {activeStep === 0 ? <AccountRegistar coleSetUserNameCheck={coleSetUserNameCheck} /> : ""}
+      {activeStep === 0 ? <AccountRegistar coleSetUserNameCheck={coleSetUserNameCheck} ref={childRef} /> : ""}
       {activeStep === 1 ? <CompanyInformation /> : ""}
       {activeStep === 2 ? <Confirmation /> : ""}
 

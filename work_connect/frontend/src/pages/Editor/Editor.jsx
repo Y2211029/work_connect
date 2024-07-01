@@ -13,7 +13,6 @@ import Delimiter from "@editorjs/delimiter";
 import Raw from "@editorjs/raw";
 import Header from "editorjs-header-with-anchor";
 import Quote from "@editorjs/quote";
-import Marker from "@editorjs/marker";
 import InlineCode from "@editorjs/inline-code";
 import TextVariantTune from "@editorjs/text-variant-tune";
 import Image from "@editorjs/image";
@@ -22,24 +21,44 @@ import createGenericInlineTool, { UnderlineInlineTool } from "editorjs-inline-to
 import Alert from "editorjs-alert";
 import ToggleBlock from "editorjs-toggle-block";
 import EditorjsNestedChecklist from "@calumk/editorjs-nested-checklist";
-import { Instagram, Twitter } from "@mui/icons-material";
+import IndentTune from 'editorjs-indent-tune'; //インデントを1回ずつ決められる
+import NoticeTune from 'editorjs-notice';
+import Strikethrough from '@sotaproject/strikethrough'; //取り消し線
+import ColorPlugin from 'editorjs-text-color-plugin'; //テキストのカラーを変更できる(現在赤と黄色しか選べない)
+import Tooltip from 'editorjs-tooltip'; //ホバーすると操作方法や注釈を表示する
+import ChangeCase from 'editorjs-change-case'; //大文字と小文字を変更
 
+//画像
+import { Instagram, Twitter } from "@mui/icons-material";
 import ImageSearchIcon from '@mui/icons-material/ImageSearch';
 import CancelIcon from '@mui/icons-material/Cancel';
 
+//データ保存
+import axios from "axios";
+import $ from "jquery";
+
+
+
 const Editor = () => {
+
   const editorInstance = useRef(null);
   const editorHolder = useRef(null);
   const [imageUrl, setImageUrl] = useState(null); // 画像のURLを保持するステート
   const [displayInput, setDisplayInput] = useState(true); // input要素の表示状態を管理するステート
   const [textValue, setTextValue] = useState('');
+  const [csrfToken, setCsrfToken] = useState("");
+  const [show, setShow] = useState(false) 
+  const [news_id, setNewsId] = useState(0); //ニュースの情報が格納されているDBのidを格納する
+  const news_save_url = "http://127.0.0.1:8000/news_save";
+  const news_upload_url = "http://127.0.0.1:8000/news_upload";
+  const csrf_url = "http://127.0.0.1:8000/csrf-token";
 
   const titlechange = (event) => {
     setTextValue(event.target.value); // テキストエリアの値をstateに反映
   };
 
 
-  const buttonAlert = () => {
+  const news_save = () => {
     alert("下書きを保存しました!");
     console.log(imageUrl)
     console.log(textValue)
@@ -48,13 +67,91 @@ const Editor = () => {
         .save()
         .then((outputData) => {
           console.log("Article data: ", outputData);
+          // ajax
+          $.ajax({
+            url: news_save_url, // アクセスするURL
+            type: "GET", // POST または GET
+            cache: false, // cacheを使うか使わないかを設定
+            dataType: "json", // データタイプ (script, xmlDocument, jsonなど)
+            data: {
+              image: imageUrl,    //サムネイル
+              value: outputData,  //ニュース記事
+              title: textValue,   //タイトル
+              news_id: news_id,   //ID
+            },
+            headers: {
+              "X-CSRF-TOKEN": csrfToken,
+            },
+          })
+            .done(function (response) {
+              // ajax成功時の処理
+              console.log(response.id);
+              setNewsId(response.id); // news_idを更新する
+              console.log("成功");
+            })
+            .fail(function (textStatus, errorThrown) {
+              // ajax失敗時の処理
+              console.log("Error:", textStatus, errorThrown);
+            });
         })
         .catch((error) => {
-          console.log("Saving failed: ", error);
+          console.error("Error saving article:", error);
         });
     } else {
-      console.error("Editor.jsが初期化されていないか、保存関数が利用できません");
+      console.log("Editor instance or save function not available");
     }
+  };
+
+  const news_upload = () => {
+    alert("ニュースを投稿しました");
+    const newsContent = document.getElementById('news_textarea').value;
+    const radioButtons = document.getElementsByName('news_genre');
+    let selectedGenre = '';
+
+    for (let i = 0; i < radioButtons.length; i++) {
+      if (radioButtons[i].checked) {
+        selectedGenre = radioButtons[i].value;
+        break;
+      }
+    }
+    console.log(newsContent);
+    console.log(selectedGenre);
+    console.log(news_id);
+     // ajax
+     $.ajax({
+      url: news_upload_url, // アクセスするURL
+      type: "GET", // POST または GET
+      cache: false, // cacheを使うか使わないかを設定
+      dataType: "json", // データタイプ (script, xmlDocument, jsonなど)
+      data: {
+        news_id: news_id,    //ID
+        message: newsContent,  //企業の方からのメッセージ
+        genre: selectedGenre,   //ジャンル
+      },
+      headers: {
+        "X-CSRF-TOKEN": csrfToken,
+      },
+    })
+    .done(function (response) {
+      // ajax成功時の処理
+      console.log(response.id);
+      setNewsId(response.id); // news_idを更新する
+      console.log("成功");
+    })
+    .fail(function (textStatus, errorThrown) {
+      // ajax失敗時の処理
+      console.log("Error:", textStatus, errorThrown);
+    });
+  }
+
+  const news_release_setting = () => {
+    setShow(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeModal = () => {
+    setShow(false);
+    document.body.style.overflow = 'auto';
   };
 
   const handleImageUpload = async (file) => {
@@ -104,7 +201,25 @@ const Editor = () => {
       reader.onerror = (error) => reject(error);
     });
 
+
+
   useEffect(() => {
+    
+    console.log(news_id); // news_idの値が変更されたときに実行される処理
+    async function fetchCsrfToken() {
+      try {
+        const response = await axios.get(csrf_url); // CSRFトークンを取得するAPIエンドポイント
+        console.log(response.data.csrf_token); // ログ
+        console.log("fetching CSRF token:OK"); // ログ
+        const csrfToken = response.data.csrf_token;
+        setCsrfToken(csrfToken); // 状態を更新
+      } catch (error) {
+        console.error("Error fetching CSRF token:", error);
+      }
+    }
+    fetchCsrfToken(); // ページがロードされた時点でCSRFトークンを取得
+
+
     const handleUrlUpload = async (fileUrl) => {
       try {
         const response = await fetch(fileUrl);
@@ -131,13 +246,15 @@ const Editor = () => {
 
     if (editorHolder.current) {
       editorInstance.current = new EditorJS({
+
+
         holder: editorHolder.current,
         placeholder: "コンテンツを入力してください",
         tools: {
           paragraph: {
             class: Paragraph,
             inlineToolbar: true,
-            tunes: ["textVariant"],
+            tunes: ["textVariant", "indentTune", "noticeTune"],
           },
           embed: {
             class: Embed,
@@ -165,6 +282,36 @@ const Editor = () => {
                 coub: true,
               },
             },
+          },
+          Color: {
+            class: ColorPlugin,
+            config: {
+              colorCollections: [
+                "#FF1300",
+                "#EC7878",
+                "#9C27B0",
+                "#673AB7",
+                "#3F51B5",
+                "#0070FF",
+                "#03A9F4",
+                "#00BCD4",
+                "#4CAF50",
+                "#8BC34A",
+                "#CDDC39",
+                "#FFF"
+              ],
+              defaultColor: "#FF1300",
+              type: "text",
+              customPicker: true
+            }
+          },
+          Marker: {
+            class: ColorPlugin,
+            config: {
+              defaultColor: '#FFBF00',
+              type: 'marker',
+              icon: `<svg fill="#000000" height="200px" width="200px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path d="M17.6,6L6.9,16.7c-0.2,0.2-0.3,0.4-0.3,0.6L6,23.9c0,0.3,0.1,0.6,0.3,0.8C6.5,24.9,6.7,25,7,25c0,0,0.1,0,0.1,0l6.6-0.6 c0.2,0,0.5-0.1,0.6-0.3L25,13.4L17.6,6z"></path> <path d="M26.4,12l1.4-1.4c1.2-1.2,1.1-3.1-0.1-4.3l-3-3c-0.6-0.6-1.3-0.9-2.2-0.9c-0.8,0-1.6,0.3-2.2,0.9L19,4.6L26.4,12z"></path> </g> <g> <path d="M28,29H4c-0.6,0-1-0.4-1-1s0.4-1,1-1h24c0.6,0,1,0.4,1,1S28.6,29,28,29z"></path> </g> </g></svg>`
+            }
           },
           table: {
             class: Table,
@@ -232,11 +379,23 @@ const Editor = () => {
             },
           },
           quote: Quote,
-          marker: Marker,
           checklist: CheckList,
           delimiter: Delimiter,
           inlineCode: InlineCode,
           textVariant: TextVariantTune,
+          noticeTune: NoticeTune,
+          indentTune: {
+            class: IndentTune,
+            config: {
+              customBlockIndentLimits: {
+                someOtherBlock: { max: 5 },
+              },
+              maxIndent: 10,
+              indentSize: 30,
+              multiblock: true,
+              tuneName: 'indentTune',
+            }
+          },
           bold: {
             class: createGenericInlineTool({
               sanitize: {
@@ -266,8 +425,34 @@ const Editor = () => {
                 "この機能で、\n折りたたみメニュー(アコーディオンメニュー)を作成できます",
             },
           },
+          tooltip: {
+            class: Tooltip,
+            inlineToolbar: true,
+            config: {
+              location: 'left',
+              underline: true,
+              placeholder: '注釈を書いてください',
+              highlightColor: '#FFEFD5',
+              backgroundColor: '#154360',
+              textColor: '#FDFEFE',
+              holder: 'editor',
+            }
+          },
+          strikethrough: {
+            class: Strikethrough,
+            inlineToolbar: true,
+          },
+          changeCase: {
+            class: ChangeCase,
+            inlineToolbar: true,
+            config: {
+              showLocaleOption: true, // enable locale case options
+              locale: 'ja'
+            }
+          },
           nestedchecklist: EditorjsNestedChecklist,
         },
+        tunes: ["indentTune", "noticeTune"],
         autofocus: true,
         i18n: {
           messages: {
@@ -289,6 +474,11 @@ const Editor = () => {
                 },
               },
             },
+            tools: {
+              noticeTune: {
+                'Notice caption': '強調表示をする'
+              }
+            },
             toolNames: {
               Text: "テキスト",
               "Nested Checklist": "リスト",
@@ -303,13 +493,15 @@ const Editor = () => {
               "Raw HTML": "HTML",
               Table: "テーブル",
               Link: "リンク",
-              Marker: "マーカー",
               Bold: "太字",
               Underline: "下線",
               Italic: "斜体",
               InlineCode: "インラインコード",
               Image: "画像",
               Toggle: "折りたたみメニュー",
+              Strikethrough: "取り消し線",
+              Tooltip: "ツールチップ",
+              ChangeCase: "大文字:小文字 変換",
             },
           },
         },
@@ -320,15 +512,51 @@ const Editor = () => {
   return (
     <div className="editor">
 
+      <div className="news_button">
+        <button id="save" className="save" onClick={news_save}>下書きを保存する</button>
+        <button id="news_release" className="news_release" onClick={news_release_setting}>公開へ進む</button>
+
+        {/* 公開へ進むボタンを押すと出現するモーダル */}
+        {show && (
+          <div id="news_release_modal" className="news_release_modal">
+            <div className="news_release_modal_content">
+              <p><button onClick={closeModal}>キャンセル</button></p>
+              <p>公開設定</p>
+
+              <p>どのジャンルで公開しますか?</p>
+              <input type="radio" name="news_genre" id="blog" value="ブログ" />
+              <label className="label" htmlFor="blog">ブログ</label>
+
+              <input type="radio" name="news_genre" id="internship" value="インターンシップ" />
+              <label className="label" htmlFor="internship">インターンシップ</label>
+
+              <input type="radio" name="news_genre" id="job" value="求人" />
+              <label className="label" htmlFor="job">求人</label>
+              <br></br><br></br><br></br>
+              <p>学生さんへのメッセージや記事の内容を一言でご記入ください!</p>
+              <textarea id="news_textarea" className="news_textarea">
+              </textarea>
+              <p>{news_id}</p>
+              <p><button onClick={news_upload}>投稿</button></p>
+            </div>
+          </div>
+        )}
+      </div>
+
+
+
+
       {/* アップロードされた画像の表示 */}
-      {imageUrl && (
-        <div className="uploaded-image" id="uploaded-image">
-          <img src={imageUrl} alt="Uploaded" style={{ maxWidth: '100%', maxHeight: '300px' }} />
-          <CancelIcon 
-          className="cancelIcon"
-          />
-        </div>
-      )}
+      {
+        imageUrl && (
+          <div className="uploaded-image" id="uploaded-image">
+            <img src={imageUrl} alt="Uploaded" style={{ maxWidth: '100%', maxHeight: '300px' }} />
+            <CancelIcon
+              className="cancelIcon"
+            />
+          </div>
+        )
+      }
 
       {/* 画像を選ぶ */}
       <input
@@ -339,28 +567,27 @@ const Editor = () => {
         onChange={handleFileSelect} // ファイル選択時の処理
       />
 
-        <ImageSearchIcon
+      <ImageSearchIcon
         className="cover_img_upload"
         style={{ display: displayInput ? 'block' : 'none' }}
         onClick={() => document.getElementById('fileInput').click()}
-      />  
+      />
 
       <h1>ニュースの編集</h1>
-      <textarea className="editor_title" 
-                id="editor_title" 
-                wrap="soft" 
-                placeholder="記事タイトル"
-                value={textValue} // 状態の値をテキストエリアにセット
-                onChange={titlechange} // テキストエリアの変更を監視し、stateを更新 
-                />
-      
+      <textarea className="editor_title"
+        id="editor_title"
+        wrap="soft"
+        placeholder="記事タイトル"
+        value={textValue} // 状態の値をテキストエリアにセット
+        onChange={titlechange} // テキストエリアの変更を監視し、stateを更新 
+      />
+
       <div className="editor-wrapper">
         <div ref={editorHolder} id="editor" className="editor" />
       </div>
-      <button id="save" className="save" onClick={buttonAlert}>下書きを保存する</button>
       <Instagram />
       <Twitter />
-    </div>
+    </div >
   );
 };
 

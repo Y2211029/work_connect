@@ -18,7 +18,7 @@ const PreSignUrlCheck = () => {
   const [Stepbar, setStepbar] = useState("none");
   const [AccountData, setAccountData] = useState({ email: "", tf: "" });
 
-  const { updateSessionData } = useSessionStorage();
+  const { updateSessionData, getSessionData } = useSessionStorage();
 
   // const oneTimes = useRef(false); // 一度だけ処理させたい処理を管理するuseRefを作成する
 
@@ -69,29 +69,37 @@ const PreSignUrlCheck = () => {
             console.log(data);
             console.log("正しいです。");
 
-            //sessionData初期値
-            updateSessionData("accountData", "mail", data.email);
-            updateSessionData("accountData", "student_surname", "");
-            updateSessionData("accountData", "student_name", "");
-            updateSessionData("accountData", "student_kanasurname", "");
-            updateSessionData("accountData", "student_kananame", "");
-            updateSessionData("accountData", "graduation_year", "");
-            updateSessionData("accountData", "school_name", "");
-            updateSessionData("accountData", "department_name", "");
-            updateSessionData("accountData", "faculty_name", "");
-            updateSessionData("accountData", "major_name", "");
-            updateSessionData("accountData", "course_name", "");
-            updateSessionData("accountData", "user_from", "");
-            updateSessionData("accountData", "programming_language", "");
-            updateSessionData("accountData", "development_environment", "");
-            updateSessionData("accountData", "software", "");
-            updateSessionData("accountData", "acquisition_qualification", "");
-            updateSessionData("accountData", "desired_work_region", "");
-            updateSessionData("accountData", "hobby", "");
-            updateSessionData("accountData", "others", "");
-            updateSessionData("accountData", "desired_occupation", "");
-
             setAccountData({ ...AccountData, email: data.email });
+
+            const sessionAccountData = getSessionData("accountData");
+            console.log("sessionAccountData.student_surname: ", sessionAccountData.student_surname);
+            if (sessionAccountData.student_surname == undefined){
+              console.log("sessionAccountData.student_surname == undefined");
+              //sessionData初期化
+              updateSessionData("accountData", "mail", data.email);
+              updateSessionData("accountData", "student_surname", "");
+              updateSessionData("accountData", "student_name", "");
+              updateSessionData("accountData", "student_kanasurname", "");
+              updateSessionData("accountData", "student_kananame", "");
+              updateSessionData("accountData", "user_name", "");
+              updateSessionData("accountData", "password", "");
+              updateSessionData("accountData", "graduation_year", "");
+              updateSessionData("accountData", "school_name", "");
+              updateSessionData("accountData", "department_name", "");
+              updateSessionData("accountData", "faculty_name", "");
+              updateSessionData("accountData", "major_name", "");
+              updateSessionData("accountData", "course_name", "");
+              updateSessionData("accountData", "user_from", "");
+              updateSessionData("accountData", "programming_language", "");
+              updateSessionData("accountData", "development_environment", "");
+              updateSessionData("accountData", "software", "");
+              updateSessionData("accountData", "acquisition_qualification", "");
+              updateSessionData("accountData", "desired_work_region", "");
+              updateSessionData("accountData", "hobby", "");
+              updateSessionData("accountData", "others", "");
+              updateSessionData("accountData", "desired_occupation", "");
+            }
+
             //  ローディングcircle非表示
             <CircularIndeterminate Circul={setCircul("none")} />;
             //  ステップバー表示

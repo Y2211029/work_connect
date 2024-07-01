@@ -49,7 +49,7 @@ const DepartmentNameDropdown = () => {
       if (SessionData.department_name !== undefined && SessionData.department_name !== "") {
         setSelectedDepartment({
           value: SessionData.department_name,
-          label: `${SessionData.department_name}年`,
+          label: `${SessionData.department_name}`,
         });
       }
     }

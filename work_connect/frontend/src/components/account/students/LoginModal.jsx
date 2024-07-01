@@ -141,6 +141,11 @@ const LoginModal = ({ FromCompanyPage = false }) => {
           // データの保存(セッションストレージ)
           sessionStorage.setItem("user_id", data.id);
           console.log("ユーザーidは" + sessionStorage.getItem("user_id"));
+
+          // 二重送信を防ぐため初期化
+          formValues.user_name = "";
+          formValues.password = "";
+          
         } else {
           console.log("login失敗");
           alert(

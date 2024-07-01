@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Select from "react-select";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import PropTypes from 'prop-types';
 
 // 現在の年とその前後5年間の年度を生成する関数
 const generateYearOptions = (range) => {
@@ -12,7 +13,7 @@ const generateYearOptions = (range) => {
   return options;
 };
 
-const GraduationYearDropdown = () => {
+const GraduationYearDropdown = (props) => {
   const yearOptions = generateYearOptions(new Date().getFullYear(), 5);
   const [selectedGraduation, setSelectedGraduation] = useState("");
 
@@ -32,6 +33,16 @@ const GraduationYearDropdown = () => {
       }
     }
   }, []);
+
+  useEffect(() => {
+    // 卒業年度必須項目チェック
+    if(selectedGraduation == "") {
+      props.coleSetRequiredCheck("graduation_year", true);
+    } else {
+      props.coleSetRequiredCheck("graduation_year", false);
+    }
+  }, [selectedGraduation])
+
   console.log("graduation_year", selectedGraduation);
 
   const handleChange = (selectedOption) => {
@@ -43,7 +54,7 @@ const GraduationYearDropdown = () => {
 
   return (
     <div>
-      <label htmlFor="yearOptions">卒業年度</label>
+      <label htmlFor="yearOptions">卒業年度*</label>
       <Select
         name="yearOptions"
         options={yearOptions}
@@ -53,6 +64,10 @@ const GraduationYearDropdown = () => {
       />
     </div>
   );
+};
+
+GraduationYearDropdown.propTypes = {
+  coleSetRequiredCheck: PropTypes.func.isRequired,
 };
 
 export default GraduationYearDropdown;

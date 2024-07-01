@@ -42,18 +42,77 @@ const AccountRegistar = (props) => {
   const { getSessionData, updateSessionData, updateObjectSessionData } =
     useSessionStorage();
 
+  // ユーザー名の重複チェック
+  const inviteUserNameCheck = (user_name) => {
+    // ユーザー名重複チェックのリクエスト用URL
+    const url = "http://localhost:8000/user_name_check";
+
+    axios
+      .get(url, {
+        params: {
+          user_name: user_name,
+          kind: "s",
+        },
+      })
+      // thenで成功した場合の処理
+      .then((response) => {
+        console.log("レスポンス:", response);
+
+        console.log("response.data:", response.data);
+        if (response.data == "重複あり") {
+          // console.log("ユーザー名が重複しています");
+          setUserNameHelperText("ユーザー名が重複しています");
+          // console.log("inputError.user_name: ", inputError.user_name);
+          setInputError((prevState) => ({
+            ...prevState,
+            user_name: true,
+          }));
+
+          props.coleSetUserNameCheck("user_name", true);
+        } else {
+          setUserNameHelperText("");
+          setInputError((prevState) => ({
+            ...prevState,
+            user_name: false,
+          }));
+          props.coleSetUserNameCheck("user_name", false);
+        }
+      })
+      // catchでエラー時の挙動を定義
+      .catch((err) => {
+        console.log("err:", err);
+      });
+  };
+
+  // パスワードのバリデーションチェック
+  const passwordCheck = (passwordElement) => {
+    // 条件が一致していない場合はエラーを表示
+    console.log("props: ", props);
+    if (!passwordElement.checkValidity()) {
+      setInputError((prev) => ({ ...prev, password: true }));
+    } else {
+      setInputError((prev) => ({ ...prev, password: false }));
+    }
+  };
+
   useEffect(() => {
     // 外部URLから本アプリにアクセスした際に、sessionStrageに保存する
     if (performance.navigation.type !== performance.navigation.TYPE_RELOAD) {
-      console.log("外部URLからアクセスしたです。");
+      console.log("外部URLからのアクセスです。");
       if (getSessionData("accountData") === undefined) {
         updateObjectSessionData("accountData", accountData);
       }
+    } else {
+      console.log("リロードでのアクセスです。");
     }
+    props.coleSetUserNameCheck("required", true);
+
+    // console.log('props.coleSetUserNameCheck("required", true)');
   }, []);
 
   // sessionStrageに保存されているデータを取得する
   useEffect(() => {
+    console.log("処理準確認用: 1");
     let sessionDataAccount = getSessionData("accountData");
     console.log("sessionDataAccount", sessionDataAccount);
 
@@ -71,12 +130,43 @@ const AccountRegistar = (props) => {
 
   // リロードしたときに、accountDataのオブジェクト内のvalueに値があれば、sessionStrageに保存する
   useEffect(() => {
+    console.log("処理準確認用: 2");
     if (Object.values({ ...accountData }).some((value) => value !== "")) {
       console.log("空じゃないです。");
+      let sessionDataAccount = getSessionData("accountData");
+      console.log("sessionDataAccount", sessionDataAccount);
       updateObjectSessionData("accountData", accountData);
     } else {
       console.log("空。");
     }
+
+    /* --------------------------------------------------------------------- */
+    /* 必須項目全て入力された場合のみ次に行けるようにする処理を追加しました */
+    /* --------------------------------------------------------------------- */
+    // フラグをセット
+    let requiredFlg = false;
+
+    // accountDataのvalueに1個でも空欄のものが存在するとフラグをtrueにする
+    Object.values(accountData).map((value) => {
+      if (value == "" || value == undefined) {
+        requiredFlg = true;
+      }
+    });
+
+    // フラグがtrueならstepbar.jsxのuserAccountCheck.requiredをtrueにする
+    if (requiredFlg) {
+      props.coleSetUserNameCheck("required", true);
+    } else {
+      props.coleSetUserNameCheck("required", false);
+    }
+
+    // ユーザー名の重複チェック
+    inviteUserNameCheck(accountData.user_name);
+
+    // パスワードのhtmlオブジェクトを取得
+    const passwordElement = document.querySelector('[name="password"]');
+    // パスワードのバリデーションチェック
+    passwordCheck(passwordElement);
 
     // ESlintError削除、推奨されて無いので他の方法を追々考えます。
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -84,55 +174,49 @@ const AccountRegistar = (props) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     setAccountData((prev) => ({ ...prev, [name]: value }));
-    // 条件が一致していない場合はエラーを表示
-    console.log("props: ", props);
-    if (!e.target.checkValidity()) {
-      setInputError((prev) => ({ ...prev, [name]: true }));
-    } else {
-      setInputError((prev) => ({ ...prev, [name]: false }));
-    }
 
-    if (name == "user_name") {
-      // activeStepが3(保存をクリックした場合の処理)
-      const url = "http://localhost:8000/user_name_check";
+    console.log("処理準確認用: 3");
 
-      axios
-        .get(url, {
-          params: {
-            user_name: value,
-          },
-        })
-        // thenで成功した場合の処理
-        .then((response) => {
-          console.log("レスポンス:", response);
-
-          if (response.data == "重複あり") {
-            // console.log("ユーザー名が重複しています");
-            setUserNameHelperText("ユーザー名が重複しています");
-            console.log("aaaaaaaaaaa");
-            // console.log("aaaaaaaaaaa", inputError.user_name);
-            setInputError((prevState) => ({
-              ...prevState,
-              user_name: true,
-            }));
-
-            props.coleSetUserNameCheck("重複あり");
-          } else {
-            setUserNameHelperText("");
-            setInputError((prevState) => ({
-              ...prevState,
-              user_name: false,
-            }));
-            props.coleSetUserNameCheck("重複なし");
-          }
-        })
-        // catchでエラー時の挙動を定義
-        .catch((err) => {
-          console.log("err:", err);
-        });
-    }
+    console.log("処理準確認用: 4");
   };
+
+  /*-------------------------------------------------------------------------------*/
+  /* パスワードがバリデーションに違反している場合に次へ行かない処理を追加しました */
+  /*-------------------------------------------------------------------------------*/
+  // inputError.passwordの値が変化したときの処理
+  useEffect(() => {
+    console.log("e.error", inputError.password);
+
+    // パスワードがバリデーションに違反しているときstepbar.jsxのuserAccountCheck.passwordをtrueにする
+    if (inputError.password) {
+      // パスワードがバリデーションに違反している場合
+      console.log("パスワードの条件に当てはまっていません");
+      props.coleSetUserNameCheck("password", true);
+    } else {
+      // パスワードがバリデーションに違反していない場合
+      props.coleSetUserNameCheck("password", false);
+    }
+  }, [inputError.password]);
+
+  /*-----------------------------------------------------------------*/
+  /* パスワードが一致していない場合に次へ行かない処理を追加しました */
+  /*-----------------------------------------------------------------*/
+  // inputError.passwordCheckの値が変化したときの処理
+  useEffect(() => {
+    console.log("e.error", inputError.passwordCheck);
+
+    // パスワードが一致していないときstepbar.jsxのuserAccountCheck.passwordをtrueにする
+    if (inputError.passwordCheck) {
+      // パスワードが一致していない場合
+      console.log("パスワードが一致していません");
+      props.coleSetUserNameCheck("passwordCheck", true);
+    } else {
+      // パスワードが一致している場合
+      props.coleSetUserNameCheck("passwordCheck", false);
+    }
+  }, [inputError.passwordCheck]);
 
   // パスワード確認
   useEffect(() => {
@@ -213,6 +297,7 @@ const AccountRegistar = (props) => {
                 variant="outlined"
               />
             </div>
+
             <TextField
               error={inputError.user_name}
               fullWidth
@@ -228,24 +313,17 @@ const AccountRegistar = (props) => {
               required
               type="text"
               value={accountData.user_name}
-              // inputProps={{
-              //   pattern: "^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?\\d).{8,16}$",
-              //   // ^                : 文字列の開始
-              //   // (?=.*[a-z])      : 少なくとも一つの小文字の英字が含まれていること
-              //   // (?=.*[A-Z])      : 少なくとも一つの大文字の英字が含まれていること
-              //   // (?=.*\\d)        : 少なくとも一つの数字が含まれていること
-              //   // .{8,16}          : 全体の長さが8文字以上16文字以下であること
-              //   // $                : 文字列の終了
-              // }}
               variant="outlined"
             />
+
             <TextField
               error={inputError.password}
               fullWidth
               helperText={
                 (inputError.password
                   ? "パスワードが条件に合致していません"
-                  : "") + "※大文字・小文字・英数字・8文字以上30文字以内"
+                  : "") +
+                "※大文字・小文字・英数字・記号すべて含め、8文字以上30文字以内"
               }
               label="パスワード"
               margin="normal"
@@ -307,6 +385,7 @@ AccountRegistar.propTypes = {
   }).isRequired,
   handleChange: PropTypes.func.isRequired, // 必須の関数として定義
   SessionSaveTrigger: PropTypes.string, // ここでSessionSaveTriggerの型を定義
+  coleSetUserNameCheck: PropTypes.func.isRequired,
 };
 
 export default AccountRegistar;

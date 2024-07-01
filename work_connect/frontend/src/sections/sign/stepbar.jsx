@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import Box from "@mui/material/Box";
@@ -24,24 +25,49 @@ let stepConnectorLinesArray = [];
 
 export default function HorizontalLinearStepper({ Stepbar }) {
   // ユーザー名重複エラー用
-  const [userNameCheck, setUserNameCheck] = useState("重複なし");
+  const [userAccountCheck, setUserAccountCheck] = useState({
+    user_name: false,
+    password: false,
+    passwordCheck: false,
 
-  const coleSetUserNameCheck = (value) => {
-    console.log("value: ", value);
-    setUserNameCheck(value);
-  }
+    // 必須項目がすべて入力されている場合のみfalseになる
+    required: false,
+  });
 
-  const [activeStep, setActiveStep] = useState(0);
+  // 作品一覧に飛ばす。
+  let navigation = useNavigate();
 
+  const coleSetUserNameCheck = (key, value) => {
+    console.log("key, value: ", key, value);
+    setUserAccountCheck((test) => ({
+      ...test,
+      [key]: value,
+      // password: false,
+      // passwordCheck: false,
+    }));
+  };
+  
   // 登録項目確認の際に利用
   const { getSessionData, updateSessionData } = useSessionStorage();
 
-  useEffect(() => {
-    let sessionStep = getSessionData("ActiveStep");
-    if (sessionStep !== undefined) {
-      setActiveStep(sessionStep.step);
+  let sessionStep = 0;
+  let sessionActiveStep = getSessionData("ActiveStep");
+  if(sessionActiveStep != undefined) {
+    console.log("sessionActiveStep.step: ", sessionActiveStep.step);
+    if(sessionActiveStep.step == 1 || sessionActiveStep.step == 2 || sessionActiveStep.step == 3) {
+      console.log("aaaaaaaaaaaaaaa");
+      sessionStep = sessionActiveStep.step;
     }
-  }, []);
+  }
+
+  const [activeStep, setActiveStep] = useState(sessionStep);
+
+  // useEffect(() => {
+  //   let sessionStep = getSessionData("ActiveStep");
+  //   if (sessionStep !== undefined) {
+  //     setActiveStep(sessionStep.step);
+  //   }
+  // }, []);
 
   useEffect(() => {
     updateSessionData("ActiveStep", "step", activeStep);
@@ -50,41 +76,47 @@ export default function HorizontalLinearStepper({ Stepbar }) {
   // setActiveStep(getSessionData("ActiveStep"));
 
   // 次へボタン押されたとき
-  const handleNext = (e) => {
-    if(userNameCheck == "重複なし") {
-      console.log("重複あり!!");
+  const handleNext = () => {
+    console.log("userAccountCheck: ", userAccountCheck);
+    if (userAccountCheck.user_name == false && userAccountCheck.password == false && userAccountCheck.passwordCheck == false) {
+      if(userAccountCheck.required == false) {
 
-      // activeStepが3未満(次へをクリックした場合の処理)
-      if (activeStep < 3) {
-  
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  
-        // ステップバーの色を変える処理
-        stepConnectorLinesArray[activeStep].style.borderTop = "5px solid #1976d2";
-      } else {
-        // activeStepが3(保存をクリックした場合の処理)
-        const url = "http://localhost:8000/s_register";
-  
-        const sessionData = getSessionData("accountData");
-        console.log(sessionData);
-  
-        axios
+        console.log("重複あり!!");
+        
+        // activeStepが3未満(次へをクリックした場合の処理)
+        if (activeStep < 3) {
+          console.log("activeStep", activeStep);
+          setActiveStep((prevActiveStep) => prevActiveStep + 1);
+          
+          // ステップバーの色を変える処理
+          stepConnectorLinesArray[activeStep].style.borderTop = "5px solid #1976d2";
+        } else {
+          // activeStepが3(保存をクリックした場合の処理)
+          const url = "http://localhost:8000/s_register";
+          
+          const sessionData = getSessionData("accountData");
+          const kind = "s";
+          console.log(sessionData);
+          
+          axios
           .get(url, {
             params: {
               sessionData,
+              kind,
             },
           })
           // thenで成功した場合の処理
           .then((response) => {
             console.log("レスポンス:", response);
-  
+            
             // ここで作品一覧ページに飛ばす処理 //////////////////////////
-  
+            navigation("/");
           })
           // catchでエラー時の挙動を定義
           .catch((err) => {
             console.log("err:", err);
           });
+        }
       }
     }
   };
@@ -92,8 +124,7 @@ export default function HorizontalLinearStepper({ Stepbar }) {
   // 戻るボタン押されたとき
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    stepConnectorLinesArray[activeStep - 1].style.borderTop =
-      "5px solid #898989";
+    stepConnectorLinesArray[activeStep - 1].style.borderTop = "5px solid #898989";
   };
 
   const handleReset = () => {
@@ -101,9 +132,7 @@ export default function HorizontalLinearStepper({ Stepbar }) {
   };
 
   useEffect(() => {
-    const stepConnectorLines = document.querySelectorAll(
-      ".MuiStepConnector-line"
-    );
+    const stepConnectorLines = document.querySelectorAll(".MuiStepConnector-line");
     stepConnectorLinesArray = Array.from(stepConnectorLines);
 
     // console.log("gaijneranjngaenrnj", stepConnectorLinesArray); // stepConnectorLinesArrayに配列が格納されます
@@ -143,8 +172,8 @@ export default function HorizontalLinearStepper({ Stepbar }) {
       {/*ーーーーーーーーーーーーーーーーーーーーーー 入力フォーム表示位置 ーーーーーーーーーーーーーーーーーーーーーー*/}
 
       {/* handleValueChange 入力した値を */}
-      {activeStep === 0 ? <AccountRegistar coleSetUserNameCheck={coleSetUserNameCheck}/> : ""}
-      {activeStep === 1 ? <SchoolInformation /> : ""}
+      {activeStep === 0 ? <AccountRegistar coleSetUserNameCheck={coleSetUserNameCheck} /> : ""}
+      {activeStep === 1 ? <SchoolInformation coleSetUserNameCheck={coleSetUserNameCheck} /> : ""}
       {activeStep === 2 ? <MoreInformation /> : ""}
       {activeStep === 3 ? <Confirmation /> : ""}
 
@@ -171,12 +200,7 @@ export default function HorizontalLinearStepper({ Stepbar }) {
               pt: 2,
             }}
           >
-            <Button
-              color="inherit"
-              disabled={activeStep === 0}
-              onClick={handleBack}
-              sx={{ mr: 1 }}
-            >
+            <Button color="inherit" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
               戻る
             </Button>
             <Button onClick={handleNext}>

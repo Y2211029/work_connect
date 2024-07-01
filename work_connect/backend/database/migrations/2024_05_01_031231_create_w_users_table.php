@@ -33,7 +33,7 @@ return new class extends Migration
             $table->text('acquisition_qualification')->nullable()->default(null);
             $table->text('desired_work_region')->nullable()->default(null);
             $table->text('hobby')->nullable()->default(null);
-            $table->text('others')->nullable()->default(null);
+            $table->text('other')->nullable()->default(null);
             $table->text('icon')->nullable()->default(null);
             $table->text('mypr_movie_id')->nullable()->default(null);
             $table->text('resume')->nullable()->default(null);

@@ -10,6 +10,8 @@ use App\Http\Controllers\register\preRegisterCheckController;
 use App\Http\Controllers\register\registerController;
 use App\Http\Controllers\register\userNameCheckController;
 use App\Http\Controllers\work\GetWorkListController;
+use App\Http\Controllers\movie\GetMovieListController;
+use App\Http\Controllers\student\GetstudentListController;
 
 
 // トップ画面
@@ -19,6 +21,10 @@ Route::get('/', function () {
 
 // 作品一覧取得
 Route::get('/get_work_list',[GetWorkListController::class, 'GetWorkListController']);
+// 動画一覧取得
+Route::get('/get_movie_list',[GetMovieListController::class, 'GetMovieListController']);
+// 学生一覧取得
+Route::get('/get_student_list',[GetStudentListController::class, 'GetStudentListController']);
 
 Route::get('/user_name_check',[userNameCheckController::class, 'userNameCheckController']);
 

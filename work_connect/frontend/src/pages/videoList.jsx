@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 
-import { AppView } from 'src/sections/overview/view';
+import { VideoListView } from 'src/sections/VideoList/view';
 
 // ----------------------------------------------------------------------
 
@@ -11,7 +11,7 @@ export default function VideoList() {
         <title> 動画一覧 | Work&Connect </title>
       </Helmet>
 
-      <AppView />
+      <VideoListView />
     </>
   );
 }

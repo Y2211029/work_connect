@@ -9,49 +9,37 @@ import Typography from "@mui/material/Typography";
 
 export default function AppView() {
   const WorkOfList = {
-    item1: {
-      title: "Connectというwebアプリを作成しました。",
-      chart: {
-        series: [
-          { label: "America", value: 4344 },
-          { label: "Asia", value: 5435 },
-          { label: "Europe", value: 1443 },
-          { label: "Africa", value: 4443 },
-        ],
-      },
+    WorkItem1: {
+      title: "Connect",
+      img: "test",
+      tag: ["tagTest", "tagTest", "tagTest", "tagTest", "tagTest"],
+      introductory: "この作品紹介文です。",
+      userNama: "ryutyan",
+      postDate: "3ヶ月",
     },
-    item2: {
-      title: "Connectというwebアプリを作成しました。",
-      chart: {
-        series: [
-          { label: "America", value: 4344 },
-          { label: "Asia", value: 5435 },
-          { label: "Europe", value: 1443 },
-          { label: "Africa", value: 4443 },
-        ],
-      },
+    WorkItem2: {
+      title: "Connect",
+      img: "test",
+      tag: ["tagTest", "tagTest", "tagTest", "tagTest", "tagTest"],
+      introductory: "この作品紹介文です。",
+      userNama: "ryutyan",
+      postDate: "3ヶ月",
     },
-    item3: {
-      title: "Connectというwebアプリを作成しました。",
-      chart: {
-        series: [
-          { label: "America", value: 4344 },
-          { label: "Asia", value: 5435 },
-          { label: "Europe", value: 1443 },
-          { label: "Africa", value: 4443 },
-        ],
-      },
+    WorkItem3: {
+      title: "Connect",
+      img: "test",
+      tag: ["tagTest", "tagTest", "tagTest", "tagTest", "tagTest"],
+      introductory: "この作品紹介文です。",
+      userNama: "ryutyan",
+      postDate: "3ヶ月",
     },
-    item4: {
-      title: "Connectというwebアプリを作成しました。",
-      chart: {
-        series: [
-          { label: "America", value: 4344 },
-          { label: "Asia", value: 5435 },
-          { label: "Europe", value: 1443 },
-          { label: "Africa", value: 55555 },
-        ],
-      },
+    WorkItem4: {
+      title: "Connect",
+      img: "test",
+      tag: ["tagTest", "tagTest", "tagTest", "tagTest", "tagTest"],
+      introductory: "この作品紹介文です。",
+      userNama: "ryutyan",
+      postDate: "3ヶ月",
     },
   };
 
@@ -64,19 +52,16 @@ export default function AppView() {
       </Typography>
 
       {Object.keys(WorkOfList).map((key) => {
-        const item = WorkOfList[key];
+        const WorkItem = WorkOfList[key];
         return (
           <Grid container spacing={8} key={key}>
             <Grid xs={12} md={6} lg={4}>
-              
-              <h3>{item.title}</h3>
-              <ul>
-                {item.chart.series.map((seriesItem, index) => (
-                  <li key={index}>
-                    {seriesItem.label}: {seriesItem.value}
-                  </li>
-                ))}
-              </ul>
+              <h3>{WorkItem.title}</h3>
+              <h3>{WorkItem.img}</h3>
+              <h3>{WorkItem.tag}</h3>
+              <h3>{WorkItem.introductory}</h3>
+              <h3>{WorkItem.userNama}</h3>
+              <h3>{WorkItem.postDate}</h3>
             </Grid>
           </Grid>
         );
@@ -84,3 +69,11 @@ export default function AppView() {
     </Container>
   );
 }
+
+{/* <ul>
+  {item.chart.series.map((seriesItem, index) => (
+    <li key={index}>
+      {seriesItem.label}: {seriesItem.value}
+    </li>
+  ))}
+</ul>; */}

@@ -103,7 +103,8 @@ export default function PostCard({ post, index }) {
   const renderCover = (
     <Box
       component="img"
-      alt={title}
+      // altをアンコメント（コメントアウトの逆のこと）をするとアイコンの上に名前が表示されてしまうので注意
+      // alt={title}
       src={cover}
       sx={{
         top: 0,

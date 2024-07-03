@@ -1,12 +1,12 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-
 import Modal from "react-modal";
 import axios from "axios";
-
 import $ from "jquery";
-
 import { useNavigate } from "react-router-dom";
+
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import LoginStatusCheck from "src/components/account/loginStatusCheck/loginStatusCheck";
 
 import "src/App.css";
 
@@ -23,6 +23,9 @@ const modalStyle = {
 };
 
 const CompanyLoginModal = (props) => {
+  const { updateSessionData } = useSessionStorage();
+  const { loginStatusCheckFunction } = LoginStatusCheck();
+
   const navigate = useNavigate();
 
   const [showModal, setShowModal] = useState(true);

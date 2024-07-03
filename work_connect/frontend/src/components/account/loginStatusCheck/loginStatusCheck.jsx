@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-import { useSessionStorage } from "../../../hooks/use-sessionStorage";
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
 /*--------------------------------------------*/
 /* ログイン状態をチェックする処理を追加しました。 */
 /*--------------------------------------------*/

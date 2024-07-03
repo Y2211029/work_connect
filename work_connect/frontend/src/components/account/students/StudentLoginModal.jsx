@@ -1,9 +1,14 @@
 import { useEffect, useState, useRef } from "react";
+
 import PropTypes from "prop-types";
 import Modal from "react-modal";
 import axios from "axios";
 import $ from "jquery";
 import { useNavigate } from "react-router-dom";
+
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import LoginStatusCheck from "src/components/account/loginStatusCheck/loginStatusCheck";
+
 import "src/App.css";
 
 // ログインのモーダル CSS設定
@@ -19,6 +24,8 @@ const modalStyle = {
 };
 
 const StudentLoginModal = (props) => {
+  const { updateSessionData } = useSessionStorage();
+  const { loginStatusCheckFunction } = LoginStatusCheck();
   const navigate = useNavigate();
 
   const [showModal, setShowModal] = useState(true);
@@ -52,7 +59,6 @@ const StudentLoginModal = (props) => {
 
     clickOneTimes.current = false; // 送信処理中フラグを下げる
   });
-
 
   // 親に渡す。
   const handleOpenCompanyModal = () => {

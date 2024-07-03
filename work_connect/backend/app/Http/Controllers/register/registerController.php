@@ -66,7 +66,7 @@ class registerController extends Controller
             // 趣味
             $hobby = $requestData['hobby'];
             // その他
-            $others = $requestData['others'];
+            $other = $requestData['other'];
             // 卒業年
             $graduation_year = $requestData['graduation_year'];
             // 希望職種
@@ -130,7 +130,7 @@ class registerController extends Controller
                         'acquisition_qualification' => $acquisition_qualification,
                         'desired_work_region' => $desired_work_region,
                         'hobby' => $hobby,
-                        'others' => $others,
+                        'other' => $other,
                         'graduation_year' => $graduation_year,
                         'desired_occupation' => $desired_occupation,
                     ]);

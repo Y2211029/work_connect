@@ -11,6 +11,8 @@ import { useNavigate } from "react-router-dom";
 import "src/App.css";
 import CompanyLoginModal from "src/components/account/company/LoginModal";
 
+import LoginStatusCheck from "../loginStatusCheck/loginStatusCheck";
+
 // ログインのモーダル CSS設定
 const modalStyle = {
   content: {
@@ -24,28 +26,8 @@ const modalStyle = {
 };
 
 const LoginModal = ({ FromCompanyPage = false }) => {
+  const {loginStatusCheckFunction} = LoginStatusCheck();
   const navigate = useNavigate();
-
-  /*--------------------------------------------*/ ///////////////////////////仮としてここに記述しています。 別のファイルで定義して、関数として呼び出すほうが良いかも。
-  /* ログイン状態をチェックする処理を追加しました。 */
-  /*--------------------------------------------*/
-  const loginStatusCheck = async (id) => {
-    const loginStatusCheckReaponse = await axios.get(
-      "http://localhost:8000/login_status_check",
-      {
-        params: {
-          id: id,
-        },
-      }
-    );
-
-    console.log("loginStatusCheckReaponse: ", loginStatusCheckReaponse);
-    if (loginStatusCheckReaponse.data == "false") {
-      // もしログインチェックに失敗した場合は、404ページに飛ばす
-      navigate("/Top");
-    }
-  };
-  /*--------------------------------------------*/
 
   const [showModal, setShowModal] = useState(false);
   const [formValues, setFormValues] = useState({
@@ -174,7 +156,7 @@ const LoginModal = ({ FromCompanyPage = false }) => {
           // formValues.user_name = "";
           // formValues.password = "";
 
-          loginStatusCheck(data.id);
+          loginStatusCheckFunction(data.id);
 
           /*------------------------------------------------------------------*/
           /* ログイン成功時にモーダルを閉じて、作品一覧に飛ばす処理を追加しました。 */

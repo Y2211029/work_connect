@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ListController;
 use App\Http\Controllers\EditorController;
 use App\Http\Controllers\login\loginController;
+use App\Http\Controllers\login\LoginStatusCheckController;
 use App\Http\Controllers\register\pre_registerController;
 use App\Http\Controllers\register\preRegisterCheckController;
 use App\Http\Controllers\register\registerController;
@@ -18,6 +19,9 @@ use App\Http\Controllers\student\GetstudentListController;
 Route::get('/', function () {
     return view('welcome');
 });
+
+// ログイン状態のチェック
+Route::get('/login_status_check',[LoginStatusCheckController::class, 'LoginStatusCheckController']);
 
 // 作品一覧取得
 Route::get('/get_work_list',[GetWorkListController::class, 'GetWorkListController']);

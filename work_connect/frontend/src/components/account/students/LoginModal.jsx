@@ -6,6 +6,8 @@ import axios from "axios";
 
 import $ from "jquery";
 
+import { useNavigate } from "react-router-dom";
+
 import "src/App.css";
 import CompanyLoginModal from "src/components/account/company/LoginModal";
 
@@ -22,6 +24,29 @@ const modalStyle = {
 };
 
 const LoginModal = ({ FromCompanyPage = false }) => {
+  const navigate = useNavigate();
+
+  /*--------------------------------------------*/ ///////////////////////////仮としてここに記述しています。 別のファイルで定義して、関数として呼び出すほうが良いかも。
+  /* ログイン状態をチェックする処理を追加しました。 */
+  /*--------------------------------------------*/
+  const loginStatusCheck = async (id) => {
+    const loginStatusCheckReaponse = await axios.get(
+      "http://localhost:8000/login_status_check",
+      {
+        params: {
+          id: id,
+        },
+      }
+    );
+
+    console.log("loginStatusCheckReaponse: ", loginStatusCheckReaponse);
+    if (loginStatusCheckReaponse.data == "false") {
+      // もしログインチェックに失敗した場合は、404ページに飛ばす
+      navigate("/404");
+    }
+  };
+  /*--------------------------------------------*/
+
   const [showModal, setShowModal] = useState(false);
   const [formValues, setFormValues] = useState({
     user_name: "",
@@ -53,7 +78,7 @@ const LoginModal = ({ FromCompanyPage = false }) => {
 
     clickOneTimes.current = false; // 送信処理中フラグを下げる
   });
-  
+
   // ログインのform内以外をクリックしたときにモーダルを閉じる処理
   $("*").click(function (e) {
     // クリックした要素の<html>までのすべての親要素の中に"formInModal"クラスがついている要素を取得
@@ -62,7 +87,10 @@ const LoginModal = ({ FromCompanyPage = false }) => {
     // 取得した要素の個数が0個の場合
     if (targetParants.length == 0 || $(e.target).text() == "閉じる") {
       // クリックした要素に"formInModal"クラスがついていない場合
-      if ($(e.target).attr("class") != "formInModal" && $(e.target).attr("id") != "loginModalOpenButton") {
+      if (
+        $(e.target).attr("class") != "formInModal" &&
+        $(e.target).attr("id") != "loginModalOpenButton"
+      ) {
         // ログインモーダルを閉じる
         setShowModal(false);
       }
@@ -108,7 +136,7 @@ const LoginModal = ({ FromCompanyPage = false }) => {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const user_name =  formValues.user_name;
+    const user_name = formValues.user_name;
     const password = formValues.password;
     const kind = "s";
 
@@ -136,16 +164,28 @@ const LoginModal = ({ FromCompanyPage = false }) => {
         if (data != null) {
           console.log(data.id);
           console.log("login成功");
-          alert("ログインに成功しました。");
+          // alert("ログインに成功しました。");
 
           // データの保存(セッションストレージ)
           sessionStorage.setItem("user_id", data.id);
           console.log("ユーザーidは" + sessionStorage.getItem("user_id"));
 
           // 二重送信を防ぐため初期化
-          formValues.user_name = "";
-          formValues.password = "";
-          
+          // formValues.user_name = "";
+          // formValues.password = "";
+
+          loginStatusCheck(data.id);
+
+          /*------------------------------------------------------------------*/
+          /* ログイン成功時にモーダルを閉じて、作品一覧に飛ばす処理を追加しました。 */
+          /*------------------------------------------------------------------*/
+          setShowModal(false);
+          setFormValues({
+            ...formValues,
+            user_name: "",
+            password: "",
+          });
+          navigate("/");
         } else {
           console.log("login失敗");
           alert(
@@ -245,4 +285,3 @@ LoginModal.propTypes = {
 };
 
 export default LoginModal;
-

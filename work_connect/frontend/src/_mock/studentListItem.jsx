@@ -51,10 +51,13 @@ export const StudentListItem = () => {
 
   const posts = StudentOfList.map((index, key) => ({
     id: StudentOfList[key].id,
-    cover: `/assets/images/covers/cover_${index + 1}.jpg`,
+    cover: `/assets/images/covers/cover_${6 + 1}.jpg`,
     title: StudentOfList[key].student_surname + StudentOfList[key].student_name,
-    // createdAt: StudentOfList[key].post_datetime,
-
+    graduationYear: StudentOfList[key].graduation_year,
+    // substring(0, 200) 第一引数：文字列の開始位置。第二引数：開始位置から何文字目を取得する。
+    // introの文字数が200文字以上の時、「...」を表示する。
+    // intro: MovieOfList[key].intro.length > 200 ? MovieOfList[key].intro.substring(0, 200) + "..." : MovieOfList[key].intro,
+    schoolName: StudentOfList[key].school_name,
     view: faker.number.int(99999),
     comment: faker.number.int(99999),
     favorite: faker.number.int(99999),

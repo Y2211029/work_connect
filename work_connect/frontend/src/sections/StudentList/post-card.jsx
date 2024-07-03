@@ -18,7 +18,7 @@ import SvgColor from "src/components/svg-color";
 // ----------------------------------------------------------------------
 
 export default function PostCard({ post, index }) {
-  const { cover, title, view, comment, share, author, createdAt } = post;
+  const { cover, title, graduationYear, schoolName, view, comment, share, author, createdAt } = post;
 
   const latestPostLarge = index === 0;
 
@@ -67,6 +67,8 @@ export default function PostCard({ post, index }) {
     </Link>
   );
 
+  const renderGraduationYear = <Typography color="common.white">卒業年度:{graduationYear}</Typography>;
+  const renderSchoolName = <Typography color="common.white">学校名:{schoolName}</Typography>;
   const renderInfo = (
     <Stack
       direction="row"
@@ -195,6 +197,10 @@ export default function PostCard({ post, index }) {
           {renderDate}
 
           {renderTitle}
+
+          {renderGraduationYear}
+
+          {renderSchoolName}
 
           {renderInfo}
         </Box>

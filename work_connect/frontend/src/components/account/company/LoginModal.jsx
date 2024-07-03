@@ -6,6 +6,8 @@ import axios from "axios";
 
 import $ from "jquery";
 
+import { useNavigate } from "react-router-dom";
+
 import "src/App.css";
 import LoginModal from "src/components/account/students/LoginModal";
 
@@ -22,6 +24,8 @@ const modalStyle = {
 };
 
 const CompanyLoginModal = ({ FromCompanyPage = false }) => {
+  const navigate = useNavigate();
+  
   const [showModal, setShowModal] = useState(false);
   const [formValues, setFormValues] = useState({
     user_name: "",
@@ -147,8 +151,19 @@ const CompanyLoginModal = ({ FromCompanyPage = false }) => {
           console.log("ユーザーidは" + sessionStorage.getItem("user_id"));
 
           // 二重送信を防ぐため初期化
-          formValues.user_name = "";
-          formValues.password = "";
+          // formValues.user_name = "";
+          // formValues.password = "";
+
+          /*------------------------------------------------------------------*/
+          /* ログイン成功時にモーダルを閉じて、作品一覧に飛ばす処理を追加しました。 */
+          /*------------------------------------------------------------------*/
+          setShowModal(false);
+          setFormValues({
+            ...formValues,
+             user_name: "",
+             password: "", 
+          });
+          navigate('/');
           
         } else {
           console.log("login失敗");

@@ -32,21 +32,22 @@ export default function AppView() {
         // console.log("response.data:", response.data);
 
         // プログラミング言語、開発環境、その他はタグのため、カンマ区切りの文字列を配列に変換する
+        console.log("response", response);
         response.data.forEach((element) => {
-          element.programming_language = element.programming_language.split(",");
-          element.development_environment = element.development_environment.split(",");
-          element.other = element.other.split(",");
+          element.programming_language !== null ? (element.programming_language = element.programming_language.split(",")) : "";
+          element.development_environment !== null ? (element.development_environment = element.development_environment.split(",")) : "";
+          element.other !== null ? (element.other = element.other.split(",")) : "";
         });
 
         // 取得した作品データを表示用のオブジェクトにセットする
-        const updatedWorkOfList  = {};
+        const updatedWorkOfList = {};
         response.data.forEach((element, index) => {
           const keyString = "WorkItem" + (index + 1);
-          updatedWorkOfList [keyString] = element;
+          updatedWorkOfList[keyString] = element;
         });
 
         setWorkOfList(updatedWorkOfList);
-        console.log("workListObject:", updatedWorkOfList );
+        console.log("workListObject:", updatedWorkOfList);
       } catch (err) {
         console.log("err:", err);
       }

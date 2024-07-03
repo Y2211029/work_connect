@@ -27,7 +27,6 @@ class GetWorkListController extends Controller
         } catch (\Exception $e) {
             \Log::info('GetWorkListController:user_name重複チェックエラー');
             \Log::info($e);
-
             /*reactに返す*/
             echo json_encode($e);
         }

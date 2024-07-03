@@ -1,3 +1,4 @@
+import { faker } from "@faker-js/faker";
 import { useEffect, useState } from "react";
 import axios from "axios";
 // ----------------------------------------------------------------------
@@ -15,6 +16,7 @@ export const VideoListItem = () => {
   const url = "http://localhost:8000/get_movie_list";
 
   useEffect(() => {
+    // 非同期関数
     async function MovieListFunction() {
       try {
         // Laravel側から作品一覧データを取得
@@ -41,31 +43,17 @@ export const VideoListItem = () => {
 
   const posts = MovieOfList.map((index, key) => ({
     id: MovieOfList[key].movie_id,
-    cover: `/assets/images/covers/cover_${index + 1}.jpg`,
-    title: MovieOfList[key].movie_name,
-    createdAt: MovieOfList[key].post_datetime,
-
-    // view: MovieOfList[key].title,
-    // comment: MovieOfList[key].title,
-    // share: MovieOfList[key].title,
-    // favorite: MovieOfList[key].title,
+    cover: `/assets/images/covers/cover_${5 + 1}.jpg`,
+    title: MovieOfList[key].title,
     author: {
-      name: MovieOfList[key].creator_id,
       avatarUrl: `/assets/images/avatars/avatar_${index + 1}.jpg`,
     },
-
-    // id: MovieOfList[key].movie_id,
-    // cover: `/assets/images/covers/cover_${index + 1}.jpg`,
-    // title: MovieOfList[key].title,
-    // createdAt: MovieOfList[key].post_datetime,
-    // // view: MovieOfList[key].title,
-    // // comment: MovieOfList[key].title,
-    // // share: MovieOfList[key].title,
-    // // favorite: MovieOfList[key].title,
-    // author: {
-    //   name: MovieOfList[key].creator_id,
-    //   avatarUrl: `/assets/images/avatars/avatar_${index + 1}.jpg`,
-    // },
+    thumbnail: `"../../../public/assets/videoImages/thumbnail/cover_${index + 1}.jpg"`,
+    view: faker.number.int(99999),
+    comment: faker.number.int(99999),
+    favorite: faker.number.int(99999),
+    userName: MovieOfList[key].user_name,
+    createdAt: MovieOfList[key].post_datetime,
   }));
 
   console.log("aadlkmbadkmbkmda;", posts);

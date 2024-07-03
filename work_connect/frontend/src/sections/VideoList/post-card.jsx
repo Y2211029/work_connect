@@ -18,12 +18,13 @@ import SvgColor from "src/components/svg-color";
 // ----------------------------------------------------------------------
 
 export default function PostCard({ post, index }) {
-  const { cover, title, view, comment, share, author, createdAt } = post;
+  const { cover, title, thumbnail, view, comment, author, userName, createdAt } = post;
 
   const latestPostLarge = index === 0;
 
   const latestPost = index === 1 || index === 2;
 
+  // アイコン
   const renderAvatar = (
     <Avatar
       alt={author.name}
@@ -46,6 +47,7 @@ export default function PostCard({ post, index }) {
     />
   );
 
+  // タイトル
   const renderTitle = (
     <Link
       color="inherit"
@@ -67,21 +69,64 @@ export default function PostCard({ post, index }) {
     </Link>
   );
 
+  console.log("thumbnail", thumbnail);
+  console.log("author", author);
+  // サムネイル
+  const renderThumbnail = <img src={thumbnail} alt="" width="100%" height="100" />;
+
+  /* 投稿日 */
+  const renderDate = (
+    <Typography
+      variant="caption"
+      component="div"
+      sx={{
+        mb: 2,
+        color: "text.disabled",
+        ...((latestPostLarge || latestPost) && {
+          opacity: 0.48,
+          color: "common.white",
+        }),
+      }}
+    >
+      {fDate(createdAt, "yyyy MM dd")}
+    </Typography>
+  );
+
+  /*  ユーザー名 */
+  const renderUserName = (
+    <Typography
+      variant="caption"
+      component="div"
+      sx={{
+        mb: 2,
+        color: "text.disabled",
+        ...((latestPostLarge || latestPost) && {
+          opacity: 0.48,
+          color: "common.white",
+        }),
+      }}
+    >
+      {userName}
+    </Typography>
+  );
+
+  /* 表示：ユーザー名、コメント数、閲覧数、投稿日 */
   const renderInfo = (
     <Stack
       direction="row"
       flexWrap="wrap"
       spacing={1.5}
-      justifyContent="flex-end"
+      justifyContent="center"
       sx={{
         mt: 3,
         color: "text.disabled",
       }}
     >
+      {/* 学生名前 */}
+      {renderUserName}
       {[
         { number: comment, icon: "eva:message-circle-fill" },
         { number: view, icon: "eva:eye-fill" },
-        { number: share, icon: "eva:share-fill" },
       ].map((info, _index) => (
         <Stack
           key={_index}
@@ -93,10 +138,16 @@ export default function PostCard({ post, index }) {
             }),
           }}
         >
+          {/* コメント数 */}
           <Iconify width={16} icon={info.icon} sx={{ mr: 0.5 }} />
+
+          {/* 閲覧数 */}
           <Typography variant="caption">{fShortenNumber(info.number)}</Typography>
         </Stack>
       ))}
+
+      {/* 投稿日 */}
+      {renderDate}
     </Stack>
   );
 
@@ -115,23 +166,6 @@ export default function PostCard({ post, index }) {
     />
   );
 
-  const renderDate = (
-    <Typography
-      variant="caption"
-      component="div"
-      sx={{
-        mb: 2,
-        color: "text.disabled",
-        ...((latestPostLarge || latestPost) && {
-          opacity: 0.48,
-          color: "common.white",
-        }),
-      }}
-    >
-      {fDate(createdAt, "yyyy MM dd")}
-    </Typography>
-  );
-
   const renderShape = (
     <SvgColor
       color="paper"
@@ -147,6 +181,8 @@ export default function PostCard({ post, index }) {
       }}
     />
   );
+
+  // 動画紹介文
 
   return (
     <Grid xs={12} sm={latestPostLarge ? 12 : 6} md={latestPostLarge ? 6 : 3}>
@@ -175,9 +211,7 @@ export default function PostCard({ post, index }) {
           }}
         >
           {renderShape}
-
           {renderAvatar}
-
           {renderCover}
         </Box>
 
@@ -191,10 +225,9 @@ export default function PostCard({ post, index }) {
             }),
           }}
         >
-          {renderDate}
-
+          {renderThumbnail}
           {renderTitle}
-
+          {/* ここに紹介文配置、配置語にこのコメントを削除する */}
           {renderInfo}
         </Box>
       </Card>

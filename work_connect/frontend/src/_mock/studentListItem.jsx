@@ -59,7 +59,6 @@ export const StudentListItem = () => {
     // share: StudentOfList[key].title,
     // favorite: StudentOfList[key].title,
     author: {
-    //   name: "",
       avatarUrl: `/assets/images/avatars/avatar_${index + 1}.jpg`,
     },
   }));

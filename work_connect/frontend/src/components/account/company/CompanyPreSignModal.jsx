@@ -7,8 +7,6 @@ import axios from "axios";
 import $ from "jquery";
 
 import "src/App.css";
-import PreSignModal from 'src/components/account/students/PreSignModal';
-
 // ログインのモーダル CSS設定
 const modalStyle = {
   content: {
@@ -17,13 +15,12 @@ const modalStyle = {
     border: "none",
     borderRadius: "0",
     padding: "1.5rem",
-    overflow: "none"
-    }
+    overflow: "none",
+  },
 };
 
-const CompanyPreSignModal = ({ FromCompanyPage = false }) => {
-
-  const [showModal, setShowModal] = useState(false);
+const CompanyPreSignModal = (props) => {
+  const [showModal, setShowModal] = useState(true);
   const [formValues, setFormValues] = useState({
     mail: "",
   });
@@ -36,44 +33,43 @@ const CompanyPreSignModal = ({ FromCompanyPage = false }) => {
   const url = "http://localhost:8000/s_pre_register";
   const csrf_url = "http://localhost:8000/csrf-token";
 
-// ヘッダーの新規登録ボタンを押したときに新規登録モーダルを開いたり閉じたりする処理
-$("#CompanypreSignModalOpenButton").click(function (e) {
-  e.preventDefault();
-  e.stopPropagation();
-
-  if (clickOneTimes.current) return; // 送信処理中かを判定する（trueなら抜ける）
-  clickOneTimes.current = true; // 送信処理中フラグを立てる
-
-  if (showModal == true) {
-    setShowModal(false);
-  } else {
-    setShowModal(true);
-  }
-
-  clickOneTimes.current = false; // 送信処理中フラグを下げる
-});
-
-// 新規登録のform内以外をクリックしたときにモーダルを閉じる処理
-
-$("*").click(function (e) {
-  // クリックした要素の<html>までのすべての親要素の中に"formInModal"クラスがついている要素を取得
-  var targetParants = $(e.target).parents(".formInModal");
-
-  // 取得した要素の個数が0個の場合
-  // ***if (targetParants.length == 0 || $(e.target).text() == "閉じる")***
-  if (targetParants.length == 0 || $(e.target).text() == "閉じる") {
-    // クリックした要素に"formInModal"クラスがついていない場合
-    if ($(e.target).attr("class") != "formInModal" && $(e.target).attr("id") != "preSignModalOpenButton") {
-      // 新規登録モーダルを閉じる
-      setShowModal(false);
-    }
-  }
-});
-
-
-  const handleOpenModal = (e) => {
+  // ヘッダーの新規登録ボタンを押したときに新規登録モーダルを開いたり閉じたりする処理
+  $("#CompanypreSignModalOpenButton").click(function (e) {
     e.preventDefault();
-    setShowModal(true);
+    e.stopPropagation();
+
+    if (clickOneTimes.current) return; // 送信処理中かを判定する（trueなら抜ける）
+    clickOneTimes.current = true; // 送信処理中フラグを立てる
+
+    if (showModal == true) {
+      setShowModal(false);
+    } else {
+      setShowModal(true);
+    }
+
+    clickOneTimes.current = false; // 送信処理中フラグを下げる
+  });
+
+  // 新規登録のform内以外をクリックしたときにモーダルを閉じる処理
+
+  $("*").click(function (e) {
+    // クリックした要素の<html>までのすべての親要素の中に"formInModal"クラスがついている要素を取得
+    var targetParants = $(e.target).parents(".formInModal");
+
+    // 取得した要素の個数が0個の場合
+    // ***if (targetParants.length == 0 || $(e.target).text() == "閉じる")***
+    if (targetParants.length == 0 || $(e.target).text() == "閉じる") {
+      // クリックした要素に"formInModal"クラスがついていない場合
+      if ($(e.target).attr("class") != "formInModal" && $(e.target).attr("id") != "preSignModalOpenButton") {
+        // 新規登録モーダルを閉じる
+        setShowModal(false);
+      }
+    }
+  });
+
+  // 親に渡す。
+  const handleOpenStudentPreModal = () => {
+    props.callSetPreModalChange("学生");
   };
 
   const handleCloseModal = () => {
@@ -101,7 +97,7 @@ $("*").click(function (e) {
     fetchCsrfToken(); // ページがロードされた時点でCSRFトークンを取得
   }, []); // 空の依存配列を渡して、初回のみ実行するようにする
 
-   const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // フォームの送信処理
@@ -115,7 +111,7 @@ $("*").click(function (e) {
     }
     const mail = formValues.mail;
     const kind = "c";
-    
+
     console.log("mail=" + mail);
 
     //ajax
@@ -140,7 +136,7 @@ $("*").click(function (e) {
           if (data == "true") {
             console.log(data);
             console.log("つくれます");
-            
+
             // 二重送信を防ぐため初期化
             formValues.mail = "";
           } else {
@@ -157,9 +153,7 @@ $("*").click(function (e) {
           }
         } else {
           console.log("login失敗");
-          alert(
-            "ログインに失敗しました。\nユーザー名、メールアドレス、パスワードをご確認ください。"
-          );
+          alert("ログインに失敗しました。\nユーザー名、メールアドレス、パスワードをご確認ください。");
         }
       })
       .fail(function (textStatus, errorThrown) {
@@ -172,8 +166,7 @@ $("*").click(function (e) {
 
   const validate = (values, boolean) => {
     const errors = {};
-    const regex =
-      /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/;
+    const regex = /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/;
     // メールアドレスがまだ存在しないときはboolean == "true"
     if (boolean == true && !values.mail) {
       errors.mail = "メールアドレスを入力してください";
@@ -190,16 +183,8 @@ $("*").click(function (e) {
   return (
     <div>
       {/* #でリロードを停止させてます。 */}
-      
+
       {/* 条件付きレンダリングを使用 */}
-      {FromCompanyPage ? (
-        <>
-        </>
-      ) : (
-        <a href="" onClick={handleOpenModal} id="CompanypreSignModalOpenButton">
-          企業の方はこちら
-        </a>
-      )}
       {/* <button onClick={handleOpenModal}>新規登録</button> */}
       <Modal isOpen={showModal} contentLabel="Example Modal" style={modalStyle}>
         <div className="preSignUpFormContainer">
@@ -209,18 +194,17 @@ $("*").click(function (e) {
             <div className="preSignUpUiForm">
               <div className="preSignUpFormField">
                 <label>メールアドレス</label>
-                <input
-                  type="text"
-                  name="mail"
-                  value={formValues.mail}
-                  onChange={handleChange}
-                />
+                <input type="text" name="mail" value={formValues.mail} onChange={handleChange} />
               </div>
               <p className="errorMsg">{formErrors.mail}</p>
-              <button type="submit" className="submitButton">仮登録</button>
+              <button type="submit" className="submitButton">
+                仮登録
+              </button>
               {Object.keys(formErrors).length === 0 && isSubmit && handleCloseModal}
               <button onClick={handleCloseModal}>閉じる</button>
-              <PreSignModal FromCompanyPage={true}/>
+              <div onClick={handleOpenStudentPreModal} id="PreSignStudentModalLink">
+                学生の方はこちら
+              </div>
             </div>
           </form>
         </div>
@@ -230,6 +214,6 @@ $("*").click(function (e) {
 };
 CompanyPreSignModal.propTypes = {
   FromCompanyPage: PropTypes.bool.isRequired,
+  callSetPreModalChange: PropTypes.func.isRequired,
 };
 export default CompanyPreSignModal;
-

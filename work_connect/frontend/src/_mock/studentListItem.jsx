@@ -15,6 +15,11 @@ export const StudentListItem = () => {
   // 学生の一覧データを取得する用URL
   const url = "http://localhost:8000/get_student_list";
 
+  // タグ作成
+  function CreateTagElements({ itemContents }) {
+    return <button className="greeting">{itemContents}</button>;
+  }
+
   useEffect(() => {
     async function StudentListFunction() {
       try {
@@ -26,18 +31,18 @@ export const StudentListItem = () => {
         // response.dataは配列の中にオブジェクトがある形になっています
         // console.log("response.data:", response.data);
 
-        // 希望職業、希望勤務地、取得資格、プログラミング言語、開発環境、ソフトウェア、趣味、その他
-        // はタグのため、カンマ区切りの文字列を配列に変換する
+        // 卒業年度、学校名、希望職業、希望勤務地、はタグのため、カンマ区切りの文字列を配列に変換する
         response.data.forEach((element) => {
-          element.desired_occupation !== null ? (element.desired_occupation = element.desired_occupation.split(",")) : "";
-          element.desired_work_region !== null ? (element.desired_work_region = element.desired_work_region.split(",")) : "";
-          element.acquisition_qualification !== null ? (element.acquisition_qualification = element.acquisition_qualification.split(",")) : "";
-          element.programming_language !== null ? (element.programming_language = element.programming_language.split(",")) : "";
-          element.desired_work_region !== null ? (element.desired_work_region = element.desired_work_region.split(",")) : "";
-          element.development_environment !== null ? (element.development_environment = element.development_environment.split(",")) : "";
-          element.software !== null ? (element.software = element.software.split(",")) : "";
-          element.hobby !== null ? (element.hobby = element.hobby.split(",")) : "";
-          element.other !== null ? (element.other = element.other.split(",")) : "";
+          element.desired_work_region !== null
+            ? (element.desired_work_region = element.desired_work_region
+                .split(",")
+                .map((item) => <CreateTagElements key={item} itemContents={item} />))
+            : "";
+          element.desired_occupation !== null
+            ? (element.desired_occupation = element.desired_occupation
+              .split(",")
+              .map((item) => <CreateTagElements key={item} itemContents={item} />))
+            : "";
         });
 
         setStudentOfList(response.data);
@@ -54,15 +59,15 @@ export const StudentListItem = () => {
     cover: `/assets/images/covers/cover_${6 + 1}.jpg`,
     title: StudentOfList[key].student_surname + StudentOfList[key].student_name,
     graduationYear: StudentOfList[key].graduation_year,
-    // substring(0, 200) 第一引数：文字列の開始位置。第二引数：開始位置から何文字目を取得する。
-    // introの文字数が200文字以上の時、「...」を表示する。
-    // intro: MovieOfList[key].intro.length > 200 ? MovieOfList[key].intro.substring(0, 200) + "..." : MovieOfList[key].intro,
     schoolName: StudentOfList[key].school_name,
+    desiredWorkRegion: StudentOfList[key].desired_work_region,
+    desiredOccupation: StudentOfList[key].desired_occupation,
+    
     view: faker.number.int(99999),
     comment: faker.number.int(99999),
     favorite: faker.number.int(99999),
     author: {
-      avatarUrl: `/assets/images/avatars/avatar_${index + 1}.jpg`,
+      avatarUrl: `/assets/images/avatars/avatar_${5 + 1}.jpg`,
     },
   }));
 

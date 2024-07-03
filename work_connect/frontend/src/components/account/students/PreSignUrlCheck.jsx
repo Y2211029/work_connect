@@ -96,7 +96,7 @@ const PreSignUrlCheck = () => {
               updateSessionData("accountData", "acquisition_qualification", "");
               updateSessionData("accountData", "desired_work_region", "");
               updateSessionData("accountData", "hobby", "");
-              updateSessionData("accountData", "others", "");
+              updateSessionData("accountData", "other", "");
               updateSessionData("accountData", "desired_occupation", "");
             }
 

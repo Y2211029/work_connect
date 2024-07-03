@@ -4,10 +4,18 @@ import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 
+// import LoginStatusCheck from "../../../components/account/loginStatusCheck/loginStatusCheck";
+
 // import AppCurrentVisits from "src/sections/overview/app-current-visits";
 // ----------------------------------------------------------------------
 
 export default function AppView() {
+  /*----------------------*/
+  /* ログイン状態のチェック */
+  /*----------------------*/
+  // const { loginStatusCheckFunction } = LoginStatusCheck();
+  // loginStatusCheckFunction();
+
   /*--------------------------------------------*/
   /* 作品一覧のデータを取得する処理を追加しました。 */
   /*--------------------------------------------*/
@@ -34,9 +42,17 @@ export default function AppView() {
         // プログラミング言語、開発環境、その他はタグのため、カンマ区切りの文字列を配列に変換する
         console.log("response", response);
         response.data.forEach((element) => {
-          element.programming_language !== null ? (element.programming_language = element.programming_language.split(",")) : "";
-          element.development_environment !== null ? (element.development_environment = element.development_environment.split(",")) : "";
-          element.other !== null ? (element.other = element.other.split(",")) : "";
+          element.programming_language !== null
+            ? (element.programming_language =
+                element.programming_language.split(","))
+            : "";
+          element.development_environment !== null
+            ? (element.development_environment =
+                element.development_environment.split(","))
+            : "";
+          element.other !== null
+            ? (element.other = element.other.split(","))
+            : "";
         });
 
         // 取得した作品データを表示用のオブジェクトにセットする

@@ -12,6 +12,7 @@ import "src/App.css";
 import CompanyLoginModal from "src/components/account/company/LoginModal";
 
 import LoginStatusCheck from "../loginStatusCheck/loginStatusCheck";
+import { useSessionStorage } from "../../../hooks/use-sessionStorage";
 
 // ログインのモーダル CSS設定
 const modalStyle = {
@@ -26,6 +27,7 @@ const modalStyle = {
 };
 
 const LoginModal = ({ FromCompanyPage = false }) => {
+  const {updateSessionData} = useSessionStorage();
   const {loginStatusCheckFunction} = LoginStatusCheck();
   const navigate = useNavigate();
 
@@ -149,14 +151,14 @@ const LoginModal = ({ FromCompanyPage = false }) => {
           // alert("ログインに成功しました。");
 
           // データの保存(セッションストレージ)
-          sessionStorage.setItem("user_id", data.id);
+          updateSessionData("accountData", "id", data.id);
           console.log("ユーザーidは" + sessionStorage.getItem("user_id"));
 
           // 二重送信を防ぐため初期化
           // formValues.user_name = "";
           // formValues.password = "";
 
-          loginStatusCheckFunction(data.id);
+          loginStatusCheckFunction();
 
           /*------------------------------------------------------------------*/
           /* ログイン成功時にモーダルを閉じて、作品一覧に飛ばす処理を追加しました。 */

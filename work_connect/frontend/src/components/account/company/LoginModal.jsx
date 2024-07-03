@@ -10,6 +10,8 @@ import { useNavigate } from "react-router-dom";
 
 import "src/App.css";
 import LoginModal from "src/components/account/students/LoginModal";
+import { useSessionStorage } from "../../../hooks/use-sessionStorage";
+import LoginStatusCheck from "../loginStatusCheck/loginStatusCheck";
 
 // ログインのモーダル CSS設定
 const modalStyle = {
@@ -24,6 +26,8 @@ const modalStyle = {
 };
 
 const CompanyLoginModal = ({ FromCompanyPage = false }) => {
+  const {updateSessionData} = useSessionStorage();
+  const {loginStatusCheckFunction} = LoginStatusCheck();
   const navigate = useNavigate();
   
   const [showModal, setShowModal] = useState(false);
@@ -144,15 +148,17 @@ const CompanyLoginModal = ({ FromCompanyPage = false }) => {
         if (data != null) {
           console.log(data.id);
           console.log("login成功");
-          alert("ログインに成功しました。");
+          // alert("ログインに成功しました。");
 
           // データの保存(セッションストレージ)
-          sessionStorage.setItem("user_id", data.id);
+          updateSessionData("accountData", "id", data.id);
           console.log("ユーザーidは" + sessionStorage.getItem("user_id"));
 
           // 二重送信を防ぐため初期化
           // formValues.user_name = "";
           // formValues.password = "";
+
+          loginStatusCheckFunction();
 
           /*------------------------------------------------------------------*/
           /* ログイン成功時にモーダルを閉じて、作品一覧に飛ばす処理を追加しました。 */

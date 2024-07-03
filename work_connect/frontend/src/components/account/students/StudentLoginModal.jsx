@@ -124,14 +124,14 @@ const StudentLoginModal = (props) => {
           // alert("ログインに成功しました。");
 
           // データの保存(セッションストレージ)
-          sessionStorage.setItem("user_id", data.id);
+          updateSessionData("accountData", "id", data.id);
           console.log("ユーザーidは" + sessionStorage.getItem("user_id"));
 
           // 二重送信を防ぐため初期化
           // formValues.user_name = "";
           // formValues.password = "";
 
-          loginStatusCheck(data.id);
+          loginStatusCheckFunction();
 
           /*------------------------------------------------------------------*/
           /* ログイン成功時にモーダルを閉じて、作品一覧に飛ばす処理を追加しました。 */

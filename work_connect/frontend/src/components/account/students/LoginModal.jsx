@@ -42,7 +42,7 @@ const LoginModal = ({ FromCompanyPage = false }) => {
     console.log("loginStatusCheckReaponse: ", loginStatusCheckReaponse);
     if (loginStatusCheckReaponse.data == "false") {
       // もしログインチェックに失敗した場合は、404ページに飛ばす
-      navigate("/404");
+      navigate("/Top");
     }
   };
   /*--------------------------------------------*/

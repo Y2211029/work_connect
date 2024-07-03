@@ -17,6 +17,8 @@ export const Page404 = lazy(() => import("src/pages/page-not-found"));
 export const SettingsPage = lazy(() => import('../pages/Settings'));
 export const EditorPage = lazy(() => import('../pages/Editor/Editor'));
 
+// トップ画面追加
+export const TopPage = lazy(() => import('../pages/topPage'));
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -39,6 +41,8 @@ export default function Router() {
         //20240619 金田追加
         { path: 'Settings', element: <SettingsPage /> },
         { path: 'Editor', element: <EditorPage /> },
+        // トップ画面追加
+        { path: 'Top', element: <TopPage /> },
       ],
     },
     {

@@ -36,7 +36,7 @@ class w_users extends Model
         'acquisition_qualification',
         'desired_work_region',
         'hobby',
-        'others',
+        'other',
         'icon',
         'mypr_movie_id',
         'resume',

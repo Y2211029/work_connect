@@ -14,7 +14,7 @@ const generateYearOptions = (range) => {
 };
 
 const GraduationYearDropdown = (props) => {
-  const yearOptions = generateYearOptions(new Date().getFullYear(), 5);
+  const yearOptions = generateYearOptions(5);
   const [selectedGraduation, setSelectedGraduation] = useState("");
 
   // 登録項目確認の際に利用

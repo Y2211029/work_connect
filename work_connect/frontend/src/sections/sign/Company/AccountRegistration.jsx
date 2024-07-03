@@ -2,6 +2,11 @@ import { useState, useEffect, useContext, forwardRef,useImperativeHandle } from 
 import PropTypes from "prop-types";
 
 import TextField from "@mui/material/TextField";
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+
 import { Container, RegistarCard } from "../css/RegistarStyled";
 
 // 仮登録からemailに届いたURLをクリックしたアカウントのemailを表示するための準備
@@ -25,7 +30,6 @@ const AccountRegistar = forwardRef((props, ref) => {
   // ./stepbar.jsx から呼び出し
   useImperativeHandle(ref, () => ({
     NULL_validation(num) {
-      console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
       if(num == 1){
         NULL_validation1 = true;
       } else if(num == 2){
@@ -60,6 +64,28 @@ const AccountRegistar = forwardRef((props, ref) => {
     // trueだった時にエラーを表示
     passwordCheck: false,
   });
+
+  // パスワード表示/非表示の切り替え(パスワード)
+  const [showPassword, setShowPassword] = useState("");
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleMouseDownPassword = (e) => {
+    e.preventDefault();
+  };
+
+  // パスワード表示/非表示の切り替え(パスワード確認)
+  const [showPassword2, setShowPassword2] = useState("");
+
+  const handleClickShowPassword2 = () => {
+    setShowPassword2(!showPassword2);
+  };
+
+  const handleMouseDownPassword2 = (e) => {
+    e.preventDefault();
+  };
 
   // 登録項目確認の際に利用
   const { getSessionData, updateSessionData, updateObjectSessionData } = 
@@ -197,8 +223,8 @@ const AccountRegistar = forwardRef((props, ref) => {
       const { name, value } = e.target;
 
       // 未入力バリデーションに伴う処理を追加
-      console.log("name------------------->>>>>>>>>>>>>>>>>>>>>>>>"+name);
-      console.log("value------------------->>>>>>>>>>>>>>>>>>>>>>>>"+value);
+      console.log("name--->>>"+name);
+      console.log("value--->>>"+value);
 
       if(name == "company_name" && value.trim() === ''){
         // バリデーションを実行
@@ -308,7 +334,7 @@ useEffect(() => {
             />
             <div style={{ display: "flex" }}>
               <TextField
-              error={NULL_validation1 == true || inputError.company_name}
+                error={NULL_validation1 == true || inputError.company_name}
                 fullWidth
                 label="企業名"
                 margin="normal"
@@ -322,7 +348,7 @@ useEffect(() => {
             </div>
             <div style={{ display: "flex" }}>
               <TextField
-              error={NULL_validation2 == true || inputError.company_nameCana}
+                error={NULL_validation2 == true || inputError.company_nameCana}
                 fullWidth
                 label="企業名(カタカナ)"
                 margin="normal"
@@ -353,15 +379,15 @@ useEffect(() => {
               fullWidth
               helperText={
                 // パスワードが空の時にもエラー表示出てたので修正しました。
-                (accountData.password == undefined || accountData.password == "" ? "" : inputError.password ? "パスワードが条件に合致していません" : "") +
-                "※大文字・小文字・英数字・記号・8文字以上30文字以内"
+                (accountData.password == undefined || accountData.password == "" ? "" : inputError.password ? "パスワードが条件に合致していません" : "") + 
+                " ※大文字・小文字・英数字・記号・8文字以上30文字以内"
               }
               label="パスワード"
               margin="normal"
               name="password"
               onChange={handleChange}
               required
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={accountData.password}
               inputProps={{
                 pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,30}$",
@@ -374,6 +400,21 @@ useEffect(() => {
                 // $                : 文字列の終了
               }}
               variant="outlined"
+              // パスワード表示/非表示の切り替え
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             <TextField
               disabled={
@@ -394,9 +435,23 @@ useEffect(() => {
               name="passwordCheck"
               onChange={handleChange}
               required
-              type="password"
+              type={showPassword2 ? "text" : "password"}
               value={accountData.passwordCheck}
               variant="outlined"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword2}
+                      onMouseDown={handleMouseDownPassword2}
+                      edge="end"
+                    >
+                      {showPassword2 ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
           </div>
         </RegistarCard>

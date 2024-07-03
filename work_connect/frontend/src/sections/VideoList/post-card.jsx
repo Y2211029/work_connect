@@ -18,7 +18,7 @@ import SvgColor from "src/components/svg-color";
 // ----------------------------------------------------------------------
 
 export default function PostCard({ post, index }) {
-  const { cover, title, thumbnail, view, comment, author, userName, createdAt } = post;
+  const { cover, title, intro, thumbnail, view, comment, author, userName, createdAt } = post;
 
   const latestPostLarge = index === 0;
 
@@ -30,19 +30,13 @@ export default function PostCard({ post, index }) {
       alt={author.name}
       src={author.avatarUrl}
       sx={{
-        zIndex: 9,
-        width: 32,
-        height: 32,
         position: "absolute",
-        left: (theme) => theme.spacing(3),
         bottom: (theme) => theme.spacing(-2),
-        ...((latestPostLarge || latestPost) && {
-          zIndex: 9,
-          top: 24,
-          left: 24,
-          width: 40,
-          height: 40,
-        }),
+        zIndex: 9,
+        top: 24,
+        left: 24,
+        width: 40,
+        height: 40,
       }}
     />
   );
@@ -59,18 +53,14 @@ export default function PostCard({ post, index }) {
         WebkitLineClamp: 2,
         display: "-webkit-box",
         WebkitBoxOrient: "vertical",
-        ...(latestPostLarge && { typography: "h5", height: 60 }),
-        ...((latestPostLarge || latestPost) && {
-          color: "common.white",
-        }),
+        typography: "h5",
+        color: "common.white",
       }}
     >
       {title}
     </Link>
   );
 
-  console.log("thumbnail", thumbnail);
-  console.log("author", author);
   // サムネイル
   const renderThumbnail = <img src={thumbnail} alt="" width="100%" height="100" />;
 
@@ -81,11 +71,9 @@ export default function PostCard({ post, index }) {
       component="div"
       sx={{
         mb: 2,
-        color: "text.disabled",
-        ...((latestPostLarge || latestPost) && {
-          opacity: 0.48,
-          color: "common.white",
-        }),
+
+        opacity: 0.48,
+        color: "common.white",
       }}
     >
       {fDate(createdAt, "yyyy MM dd")}
@@ -95,15 +83,14 @@ export default function PostCard({ post, index }) {
   /*  ユーザー名 */
   const renderUserName = (
     <Typography
+      // キャプションは通常、小さいサイズで補足情報や注釈などを表示するために使われます。
       variant="caption"
       component="div"
       sx={{
         mb: 2,
-        color: "text.disabled",
-        ...((latestPostLarge || latestPost) && {
-          opacity: 0.48,
-          color: "common.white",
-        }),
+
+        opacity: 0.48,
+        color: "common.white",
       }}
     >
       {userName}
@@ -132,10 +119,8 @@ export default function PostCard({ post, index }) {
           key={_index}
           direction="row"
           sx={{
-            ...((latestPostLarge || latestPost) && {
-              opacity: 0.48,
-              color: "common.white",
-            }),
+            opacity: 0.48,
+            color: "common.white",
           }}
         >
           {/* コメント数 */}
@@ -166,6 +151,7 @@ export default function PostCard({ post, index }) {
     />
   );
 
+  // アイコンのCSSを変更してる。
   const renderShape = (
     <SvgColor
       color="paper"
@@ -177,12 +163,27 @@ export default function PostCard({ post, index }) {
         bottom: -15,
         position: "absolute",
         color: "background.paper",
-        ...((latestPostLarge || latestPost) && { display: "none" }),
+        display: "none",
       }}
     />
   );
 
   // 動画紹介文
+  const renderIntro = (
+    <Typography
+      //  variant="caption"、キャプションは通常、小さいサイズで補足情報や注釈などを表示するために使われます。
+      variant="caption"
+      component="div"
+      sx={{
+        mb: 2,
+        opacity: 0.85,
+        color: "common.white",
+      }}
+    >
+      
+      {intro}
+    </Typography>
+  );
 
   return (
     <Grid xs={12} sm={latestPostLarge ? 12 : 6} md={latestPostLarge ? 6 : 3}>
@@ -190,24 +191,18 @@ export default function PostCard({ post, index }) {
         <Box
           sx={{
             position: "relative",
-            pt: "calc(100% * 3 / 4)",
-            ...((latestPostLarge || latestPost) && {
-              pt: "calc(100% * 4 / 3)",
-              "&:after": {
-                top: 0,
-                content: "''",
-                width: "100%",
-                height: "100%",
-                position: "absolute",
-                bgcolor: (theme) => alpha(theme.palette.grey[900], 0.72),
-              },
-            }),
-            ...(latestPostLarge && {
-              pt: {
-                xs: "calc(100% * 4 / 3)",
-                sm: "calc(100% * 3 / 4.66)",
-              },
-            }),
+            "&:after": {
+              top: 0,
+              content: "''",
+              width: "100%",
+              height: "100%",
+              position: "absolute",
+              bgcolor: (theme) => alpha(theme.palette.grey[900], 0.72),
+            },
+            pt: {
+              xs: "calc(100% * 4 / 3)",
+              sm: "calc(100% * 3 / 4.66)",
+            },
           }}
         >
           {renderShape}
@@ -228,6 +223,7 @@ export default function PostCard({ post, index }) {
           {renderThumbnail}
           {renderTitle}
           {/* ここに紹介文配置、配置語にこのコメントを削除する */}
+          {renderIntro}
           {renderInfo}
         </Box>
       </Card>

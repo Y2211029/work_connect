@@ -44,11 +44,16 @@ export const VideoListItem = () => {
   const posts = MovieOfList.map((index, key) => ({
     id: MovieOfList[key].movie_id,
     cover: `/assets/images/covers/cover_${5 + 1}.jpg`,
+    thumbnail: `"../../../public/assets/videoImages/thumbnail/cover_${index + 1}.jpg"`,
     title: MovieOfList[key].title,
+
+    // substring(0, 200) 第一引数：文字列の開始位置。第二引数：開始位置から何文字目を取得する。
+    // introの文字数が200文字以上の時、「...」を表示する。
+    intro: MovieOfList[key].intro.length > 200 ? MovieOfList[key].intro.substring(0, 200) + "..." : MovieOfList[key].intro,
+
     author: {
       avatarUrl: `/assets/images/avatars/avatar_${index + 1}.jpg`,
     },
-    thumbnail: `"../../../public/assets/videoImages/thumbnail/cover_${index + 1}.jpg"`,
     view: faker.number.int(99999),
     comment: faker.number.int(99999),
     favorite: faker.number.int(99999),

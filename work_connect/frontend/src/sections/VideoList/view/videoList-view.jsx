@@ -6,7 +6,8 @@ import Typography from "@mui/material/Typography";
 import VideoListItem from "src/_mock/videoListItem";
 
 import PostCard from "src/sections/VideoList/post-card";
-import PostSort from "src/sections/VideoList/post-sort";
+
+// import PostSort from "src/sections/VideoList/post-sort";
 
 // import Button from '@mui/material/Button';
 // import Iconify from 'src/components/iconify';
@@ -27,15 +28,19 @@ export default function VideoListView() {
         </Button> */}
       </Stack>
 
+      {/* 並べ替えボタン */}
       <Stack mb={5} direction="row" alignItems="center" justifyContent="space-between">
         {/* <PostSearch posts={posts} /> */}
-        <PostSort
+        
+        {/* 変なエラー出るんで一旦コメントアウトしてます。 */}
+        {/* <PostSort
           options={[
-            { value: "latest", label: "Latest" },
-            { value: "popular", label: "Popular" },
-            { value: "oldest", label: "Oldest" },
+            // （仮）
+            { value: "投稿日が新しい順", label: "投稿日が新しい順" },
+            { value: "投稿日が古い順", label: "投稿日が古い順" },
+            { value: "おすすめ順", label: "おすすめ順" },
           ]}
-        />
+        /> */}
       </Stack>
 
       <Grid container spacing={3}>

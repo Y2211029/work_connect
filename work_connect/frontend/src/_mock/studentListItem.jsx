@@ -1,3 +1,4 @@
+import { faker } from "@faker-js/faker";
 import { useEffect, useState } from "react";
 import axios from "axios";
 // ----------------------------------------------------------------------
@@ -54,10 +55,9 @@ export const StudentListItem = () => {
     title: StudentOfList[key].student_surname + StudentOfList[key].student_name,
     // createdAt: StudentOfList[key].post_datetime,
 
-    // view: StudentOfList[key].title,
-    // comment: StudentOfList[key].title,
-    // share: StudentOfList[key].title,
-    // favorite: StudentOfList[key].title,
+    view: faker.number.int(99999),
+    comment: faker.number.int(99999),
+    favorite: faker.number.int(99999),
     author: {
       avatarUrl: `/assets/images/avatars/avatar_${index + 1}.jpg`,
     },

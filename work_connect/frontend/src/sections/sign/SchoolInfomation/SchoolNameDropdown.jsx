@@ -113,6 +113,7 @@ const SchoolNameDropdown = (props) => {
         options={options}
         placeholder="Select..."
         filterOption={filterOption}
+        required
       />
     </div>
   );

@@ -101,6 +101,28 @@ const AccountRegistar = forwardRef((props, ref) => {
   const { getSessionData, updateSessionData, updateObjectSessionData } =
     useSessionStorage();
 
+    // セイのバリデーションチェック
+  const student_kanasurnameCheck = (student_kanasurnameElement) => {
+    // 条件が一致していない場合はエラーを表示
+    console.log("props: ", props);
+    if (!student_kanasurnameElement.checkValidity()) {
+      setInputError((prev) => ({ ...prev, student_kanasurname: true }));
+    } else {
+      setInputError((prev) => ({ ...prev, student_kanasurname: false }));
+    }
+  };
+
+  // メイのバリデーションチェック
+  const student_kananameCheck = (student_kananameElement) => {
+    // 条件が一致していない場合はエラーを表示
+    console.log("props: ", props);
+    if (!student_kananameElement.checkValidity()) {
+      setInputError((prev) => ({ ...prev, student_kananame: true }));
+    } else {
+      setInputError((prev) => ({ ...prev, student_kananame: false }));
+    }
+  };
+
   // ユーザー名の重複チェック
   const inviteUserNameCheck = (user_name) => {
     // ユーザー名重複チェックのリクエスト用URL
@@ -219,6 +241,17 @@ const AccountRegistar = forwardRef((props, ref) => {
       props.coleSetUserNameCheck("required", false);
     }
 
+    
+    // セイのhtmlオブジェクトを取得
+    const student_kanasurnameElement = document.querySelector('[name="student_kanasurname"]');
+    // セイのバリデーションチェック
+    student_kanasurnameCheck(student_kanasurnameElement);
+
+    // メイのhtmlオブジェクトを取得
+    const student_kananameElement = document.querySelector('[name="student_kananame"]');
+    // メイのバリデーションチェック
+    student_kananameCheck(student_kananameElement);
+
     // ユーザー名の重複チェック
     inviteUserNameCheck(accountData.user_name);
 
@@ -288,6 +321,42 @@ const AccountRegistar = forwardRef((props, ref) => {
 
     console.log("処理準確認用: 4");
   };
+
+  /*-------------------------------------------------------------------------------*/
+/* セイがカタカナじゃないときに次へ行かない処理を追加しました */
+/*-------------------------------------------------------------------------------*/
+// inputError.company_nameCanaの値が変化したときの処理
+useEffect(() => {
+  console.log("e.error", inputError.student_kanasurname);
+
+  // パスワードがバリデーションに違反しているときstepbar.jsxのuserAccountCheck.passwordをtrueにする
+  if (inputError.student_kanasurname) {
+    // パスワードがバリデーションに違反している場合
+    console.log("パスワードの条件に当てはまっていません");
+    props.coleSetUserNameCheck("student_kanasurname", true);
+  } else {
+    // パスワードがバリデーションに違反していない場合
+    props.coleSetUserNameCheck("student_kanasurname", false);
+  }
+}, [inputError.student_kanasurname]);
+
+/*-------------------------------------------------------------------------------*/
+/* メイがカタカナじゃないときに次へ行かない処理を追加しました */
+/*-------------------------------------------------------------------------------*/
+// inputError.company_nameCanaの値が変化したときの処理
+useEffect(() => {
+  console.log("e.error", inputError.student_kananame);
+
+  // パスワードがバリデーションに違反しているときstepbar.jsxのuserAccountCheck.passwordをtrueにする
+  if (inputError.student_kananame) {
+    // パスワードがバリデーションに違反している場合
+    console.log("パスワードの条件に当てはまっていません");
+    props.coleSetUserNameCheck("student_kananame", true);
+  } else {
+    // パスワードがバリデーションに違反していない場合
+    props.coleSetUserNameCheck("student_kananame", false);
+  }
+}, [inputError.student_kananame]);
 
   /*-------------------------------------------------------------------------------*/
   /* パスワードがバリデーションに違反している場合に次へ行かない処理を追加しました */
@@ -384,8 +453,11 @@ const AccountRegistar = forwardRef((props, ref) => {
             </div>
             <div style={{ display: "flex" }}>
               <TextField
-                error={NULL_validation3 == true || inputError.student_kanasurname}
+                error={NULL_validation3 == true || (accountData.student_kanasurname != undefined && accountData.student_kanasurname != "") && inputError.student_kanasurname}
                 fullWidth
+                helperText={
+                  (accountData.student_kanasurname == undefined || accountData.student_kanasurname == "" ? "" : inputError.student_kanasurname ? "カタカナで入力してください" : "")
+                }
                 label="セイ"
                 margin="normal"
                 name="student_kanasurname"
@@ -393,11 +465,21 @@ const AccountRegistar = forwardRef((props, ref) => {
                 required
                 type="text"
                 value={accountData.student_kanasurname}
+                inputProps={{
+                  pattern: "^[ァ-ヶ]+$",
+                  // ^      : 文字列の開始
+                  // [ァ-ヶ]: 一文字のカタカナ文字（ァからヶまでの範囲）
+                  // +      : 1回以上の繰り返し
+                  // $      : 文字列の終了
+                }}
                 variant="outlined"
               />
               <TextField
-                error={NULL_validation4 == true || inputError.student_kananame}
+                error={NULL_validation4 == true || (accountData.student_kananame != undefined && accountData.student_kananame != "") && inputError.student_kananame}
                 fullWidth
+                helperText={
+                  (accountData.student_kananame == undefined || accountData.student_kananame == "" ? "" : inputError.student_kananame ? "カタカナで入力してください" : "")
+                }
                 label="メイ"
                 margin="normal"
                 name="student_kananame"
@@ -405,6 +487,13 @@ const AccountRegistar = forwardRef((props, ref) => {
                 required
                 type="text"
                 value={accountData.student_kananame}
+                inputProps={{
+                  pattern: "^[ァ-ヶ]+$",
+                  // ^      : 文字列の開始
+                  // [ァ-ヶ]: 一文字のカタカナ文字（ァからヶまでの範囲）
+                  // +      : 1回以上の繰り返し
+                  // $      : 文字列の終了
+                }}
                 variant="outlined"
               />
             </div>
@@ -433,7 +522,7 @@ const AccountRegistar = forwardRef((props, ref) => {
               fullWidth
               helperText={
                 // パスワードが空の時にもエラー表示出てたので修正しました。
-                (accountData.password == undefined || accountData.password == "" ? "" : inputError.password ? "パスワードが条件に合致していません" : "") + 
+                (accountData.password == undefined || accountData.password == "" ? "" : inputError.password ? "パスワードが条件を満たしていません" : "") + 
                 " ※大文字・小文字・英数字・記号・8文字以上30文字以内"
               }
               label="パスワード"
@@ -464,7 +553,7 @@ const AccountRegistar = forwardRef((props, ref) => {
                       onMouseDown={handleMouseDownPassword}
                       edge="end"
                     >
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
                 ),
@@ -500,8 +589,14 @@ const AccountRegistar = forwardRef((props, ref) => {
                       onClick={handleClickShowPassword2}
                       onMouseDown={handleMouseDownPassword2}
                       edge="end"
+                      disabled={
+                        !accountData.password ||
+                        !new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,30}$").test(
+                          accountData.password
+                        )
+                      }
                     >
-                      {showPassword2 ? <Visibility /> : <VisibilityOff />}
+                      {showPassword2 ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
                 ),

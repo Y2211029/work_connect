@@ -61,6 +61,7 @@ const GraduationYearDropdown = (props) => {
         value={selectedGraduation}
         onChange={handleChange}
         placeholder="Select..."
+        required
       />
     </div>
   );

@@ -124,7 +124,7 @@ const SessionDataList = ({ sessionData }) => {
                           onMouseDown={handleMouseDownPassword}
                           edge="end"
                         >
-                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
                         </IconButton>
                       </InputAdornment>
                     ),

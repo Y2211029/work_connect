@@ -44,8 +44,8 @@ const SchoolInformation = (props) => {
         <SchoolNameDropdown  coleSetRequiredCheck={coleSetRequiredCheck}/>
         <DepartmentNameDropdown />
         <FacultyName />
-        <p>専攻</p>
-        <p>コース</p>
+        {/* <p>専攻</p>
+        <p>コース</p> */}
       </RegistarCard>
     </Container>
   );

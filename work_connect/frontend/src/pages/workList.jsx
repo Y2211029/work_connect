@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 
-import { AppView } from 'src/sections/overview/view';
+import { WorkOfListView } from 'src/sections/WorkList/view';
 
 // ----------------------------------------------------------------------
 
@@ -11,7 +11,7 @@ export default function AppPage() {
         <title> 作品一覧 | Work&Connect </title>
       </Helmet>
 
-      <AppView />
+      <WorkOfListView />
     </>
   );
 }

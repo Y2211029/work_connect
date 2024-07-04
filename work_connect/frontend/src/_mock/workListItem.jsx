@@ -1,29 +1,16 @@
+import { faker } from "@faker-js/faker";
 import { useEffect, useState } from "react";
-import Container from "@mui/material/Container";
-import Grid from "@mui/material/Unstable_Grid2";
-import Typography from "@mui/material/Typography";
 import axios from "axios";
-
-// import LoginStatusCheck from "../../../components/account/loginStatusCheck/loginStatusCheck";
-
-// import AppCurrentVisits from "src/sections/overview/app-current-visits";
 // ----------------------------------------------------------------------
+/*--------------------------------------------*/
+/* 作品一覧のデータを取得する処理を追加しました。 */
+/*--------------------------------------------*/
+// 下のWorkOfListの形に合わせたオブジェクト(WorkItem～:の形)にしたresponse.dataが入ります
+// ! 注意 ! titleやuserNamaなどのキーはDBのカラム名になっています。
 
-export default function AppView() {
-  /*----------------------*/
-  /* ログイン状態のチェック */
-  /*----------------------*/
-  // const { loginStatusCheckFunction } = LoginStatusCheck();
-  // loginStatusCheckFunction();
-
-  /*--------------------------------------------*/
-  /* 作品一覧のデータを取得する処理を追加しました。 */
-  /*--------------------------------------------*/
-  // 下のWorkOfListの形に合わせたオブジェクト(WorkItem～:の形)にしたresponse.dataが入ります
-  // ! 注意 ! titleやuserNamaなどのキーはDBのカラム名になっています。
-
+export const WorkListItem = () => {
   // 作品一覧のデータを保持するステート
-  const [WorkOfList, setWorkOfList] = useState({});
+  const [WorkOfList, setWorkOfList] = useState([]);
 
   // 作品の一覧データを取得する用URL
   const url = "http://localhost:8000/get_work_list";
@@ -71,27 +58,28 @@ export default function AppView() {
     workListFunction();
   }, []); // 空の依存配列を渡すことで初回のみ実行されるようにする
 
-  /*--------------------------------------------*/
-  return (
-    <Container maxWidth="xl">
-      <Typography variant="h4" sx={{ mb: 5 }}>
-        作品一覧
-      </Typography>
+  const posts = WorkOfList.map((index, key) => ({
+    id: WorkOfList[key].movie_id,
+    cover: `/assets/images/covers/cover_${5 + 1}.jpg`,
+    thumbnail: `"../../../public/assets/videoImages/thumbnail/cover_${index + 1}.jpg"`,
+    title: WorkOfList[key].title,
 
-      {Object.keys(WorkOfList).map((key) => {
-        const WorkItem = WorkOfList[key];
-        return (
-          <Grid container spacing={8} key={key}>
-            <Grid xs={12} md={6} lg={4}>
-              <p>{WorkItem.work_name}</p>
-              <p>{WorkItem.thumbnail}</p>
-              <p>{WorkItem.work_genre}</p>
-              <p>{WorkItem.post_datetime}</p>
-              <p>{WorkItem.user_name}</p>
-            </Grid>
-          </Grid>
-        );
-      })}
-    </Container>
-  );
-}
+    // substring(0, 200) 第一引数：文字列の開始位置。第二引数：開始位置から何文字目を取得する。
+    // introの文字数が200文字以上の時、「...」を表示する。
+    intro: WorkOfList[key].intro.length > 200 ? WorkOfList[key].intro.substring(0, 200) + "..." : WorkOfList[key].intro,
+
+    author: {
+      avatarUrl: `/assets/images/avatars/avatar_${index + 1}.jpg`,
+    },
+    view: faker.number.int(99999),
+    comment: faker.number.int(99999),
+    favorite: faker.number.int(99999),
+    userName: WorkOfList[key].user_name,
+    createdAt: WorkOfList[key].post_datetime,
+  }));
+
+  console.log("aadlkmbadkmbkmda;", posts);
+  return posts;
+};
+
+export default WorkListItem;

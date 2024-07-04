@@ -9,17 +9,17 @@ import axios from "axios";
 // ! 注意 ! titleやuserNamaなどのキーはDBのカラム名になっています。
 
 export const VideoListItem = () => {
-  // 作品一覧のデータを保持するステート
+  // 動画一覧のデータを保持するステート
   const [MovieOfList, setMovieOfList] = useState([]);
 
-  // 作品の一覧データを取得する用URL
+  // 動画の一覧データを取得する用URL
   const url = "http://localhost:8000/get_movie_list";
 
   useEffect(() => {
     // 非同期関数
     async function MovieListFunction() {
       try {
-        // Laravel側から作品一覧データを取得
+        // Laravel側から動画一覧データを取得
         const response = await axios.get(url, {
           params: {},
         });

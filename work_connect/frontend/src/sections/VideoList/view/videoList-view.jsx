@@ -17,7 +17,7 @@ import PostCard from "src/sections/VideoList/post-card";
 
 export default function VideoListView() {
   const postsFromVideo = VideoListItem();
-  console.log("postsFromBlog", postsFromBlog);
+  console.log("postsFromVideo", postsFromVideo);
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>

@@ -4,7 +4,7 @@ import { WorkOfListView } from 'src/sections/WorkList/view';
 
 // ----------------------------------------------------------------------
 
-export default function AppPage() {
+export default function workListPage() {
   return (
     <>
       <Helmet>

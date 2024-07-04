@@ -5,11 +5,10 @@ import Link from "@mui/material/Link";
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
-import { alpha } from "@mui/material/styles";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 
-import { fDate } from "src/utils/format-time";
+// import { fDate } from "src/utils/format-time";
 import { fShortenNumber } from "src/utils/format-number";
 
 import Iconify from "src/components/iconify";
@@ -18,7 +17,9 @@ import SvgColor from "src/components/svg-color";
 // ----------------------------------------------------------------------
 
 export default function PostCard({ post, index }) {
-  const { cover, title, graduationYear, schoolName, desiredWorkRegion, desiredOccupation, view, comment, share, author, createdAt } = post;
+  const { cover, title, graduationYear, schoolName, 
+    desiredWorkRegion, desiredOccupation,
+     view, comment, author } = post;
 
   const latestPostLarge = index === 0;
 
@@ -45,7 +46,6 @@ export default function PostCard({ post, index }) {
       variant="subtitle2"
       underline="hover"
       sx={{
-        height: 44,
         overflow: "hidden",
         WebkitLineClamp: 2,
         display: "-webkit-box",
@@ -77,7 +77,7 @@ export default function PostCard({ post, index }) {
       {[
         { number: comment, icon: "eva:message-circle-fill" },
         { number: view, icon: "eva:eye-fill" },
-        { number: share, icon: "eva:share-fill" },
+        // { number: share, icon: "eva:share-fill" },
       ].map((info, _index) => (
         <Stack key={_index} direction="row">
           <Iconify width={16} icon={info.icon} sx={{ mr: 0.5 }} />
@@ -103,18 +103,18 @@ export default function PostCard({ post, index }) {
     />
   );
 
-  const renderDate = (
-    <Typography
-      variant="caption"
-      component="div"
-      sx={{
-        mb: 2,
-        color: "text.disabled",
-      }}
-    >
-      {fDate(createdAt, "yyyy MM dd")}
-    </Typography>
-  );
+  // const renderDate = (
+  //   <Typography
+  //     variant="caption"
+  //     component="div"
+  //     sx={{
+  //       mb: 2,
+  //       color: "text.disabled",
+  //     }}
+  //   >
+  //     {fDate(createdAt, "yyyy MM dd")}
+  //   </Typography>
+  // );
 
   const renderShape = (
     <SvgColor
@@ -152,7 +152,7 @@ export default function PostCard({ post, index }) {
             p: (theme) => theme.spacing(4, 3, 3, 3),
           }}
         >
-          {renderDate}
+          {/* {renderDate} */}
 
           {renderTitle}
 

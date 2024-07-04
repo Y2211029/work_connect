@@ -14,13 +14,15 @@ use App\Http\Controllers\work\GetWorkListController;
 use App\Http\Controllers\movie\GetMovieListController;
 use App\Http\Controllers\student\GetStudentListController;
 use App\Http\Controllers\company\GetCompanyListController;
+use App\Http\Controllers\tag\GetLanguageTagController;
 
 
 // トップ画面
 Route::get('/', function () {
     return view('welcome');
 });
-
+// プログラミング言語タグ取得
+Route::get('/get_language_tag',[GetLanguageTagController::class, 'GetLanguageTagController']);
 // ログイン状態のチェック
 Route::get('/login_status_check',[LoginStatusCheckController::class, 'LoginStatusCheckController']);
 

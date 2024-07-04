@@ -4,7 +4,7 @@ namespace App\Http\Controllers\company;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\w_companies;
+use App\Models\w_company;
 
 
 class GetCompanyListController extends Controller
@@ -13,7 +13,7 @@ class GetCompanyListController extends Controller
     public function GetCompanyListController(Request $request)
     {
         try {
-            $companyList = w_companies::select()->get();
+            $companyList = w_company::select()->get();
             $companyListArray = json_decode(json_encode($companyList), true);
 
             echo json_encode($companyListArray);

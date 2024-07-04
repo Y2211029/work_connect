@@ -1,4 +1,6 @@
+import { useState } from "react";
 import PropTypes from "prop-types";
+import $ from "jquery";
 
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -24,10 +26,14 @@ import Searchbar from "./common/searchbar";
 // import chatPopover from './common/chat_popover';
 import ChatPng from "./common/chatPng";
 import NotificationsPopover from "./common/notifications-popover";
-import { useState } from "react";
 
+<<<<<<< HEAD
+import { useNavigate } from "react-router-dom";
+
+=======
 import StudentPreSignModal from "../../components/account/students/StudentPreSignModal";
 import CompanyPreSignModal from "../../components/account/company/CompanyPreSignModal";
+>>>>>>> 2cd5b1402c30e25fbe48124873c491d00eaabf04
 
 // ----------------------------------------------------------------------
 
@@ -36,6 +42,14 @@ export default function Header({ onOpenNav }) {
   const [PreModalChange, setPreModalChange] = useState("");
   const theme = useTheme();
   const lgUp = useResponsive("up", "lg");
+<<<<<<< HEAD
+  let navigation = useNavigate();
+  const handleOpenModal = () => {
+    // setShowModal(true);
+    navigation("WorkPosting");
+  };
+
+=======
 
   const callSetModalChange = (newValue) => {
     setModalChange(newValue);
@@ -61,7 +75,7 @@ export default function Header({ onOpenNav }) {
 
     // 取得した要素の個数が0個の場合
     // ***if (targetParants.length == 0 || $(e.target).text() == "閉じる")***
-    console.log($(e.target).text());
+    // console.log($(e.target).text());
     if (targetParants.length == 0 || $(e.target).text() == "閉じる") {
       // クリックした要素に"formInModal"クラスがついていない場合
       if (
@@ -86,6 +100,7 @@ export default function Header({ onOpenNav }) {
     }
   });
 
+>>>>>>> 2cd5b1402c30e25fbe48124873c491d00eaabf04
   const renderContent = (
     <>
       {!lgUp && (
@@ -102,6 +117,7 @@ export default function Header({ onOpenNav }) {
 
       {/* ログイン、新規登録、本登録、チャット、通知、アカウントプロフィール */}
       <Stack direction="row" alignItems="center" spacing={1}>
+        <button onClick={handleOpenModal}>作品投稿</button>
         <SignUp1 />
 
         <button id="LoginButton" onClick={handleChange}>

@@ -27,30 +27,14 @@ export const WorkListItem = () => {
         // console.log("response.data:", response.data);
 
         // プログラミング言語、開発環境、その他はタグのため、カンマ区切りの文字列を配列に変換する
-        console.log("response", response);
         response.data.forEach((element) => {
-          element.programming_language !== null
-            ? (element.programming_language =
-                element.programming_language.split(","))
-            : "";
-          element.development_environment !== null
-            ? (element.development_environment =
-                element.development_environment.split(","))
-            : "";
-          element.other !== null
-            ? (element.other = element.other.split(","))
-            : "";
+          element.programming_language !== null ? (element.programming_language = element.programming_language.split(",")) : "";
+          element.development_environment !== null ? (element.development_environment = element.development_environment.split(",")) : "";
+          element.other !== null ? (element.other = element.other.split(",")) : "";
         });
 
-        // 取得した作品データを表示用のオブジェクトにセットする
-        const updatedWorkOfList = {};
-        response.data.forEach((element, index) => {
-          const keyString = "WorkItem" + (index + 1);
-          updatedWorkOfList[keyString] = element;
-        });
-
-        setWorkOfList(updatedWorkOfList);
-        console.log("workListObject:", updatedWorkOfList);
+        setWorkOfList(response.data);
+        console.log("response:", response);
       } catch (err) {
         console.log("err:", err);
       }
@@ -66,7 +50,7 @@ export const WorkListItem = () => {
 
     // substring(0, 200) 第一引数：文字列の開始位置。第二引数：開始位置から何文字目を取得する。
     // introの文字数が200文字以上の時、「...」を表示する。
-    intro: WorkOfList[key].intro.length > 200 ? WorkOfList[key].intro.substring(0, 200) + "..." : WorkOfList[key].intro,
+    intro: WorkOfList[key].work_intro.length > 200 ? WorkOfList[key].work_intro.substring(0, 200) + "..." : WorkOfList[key].work_intro,
 
     author: {
       avatarUrl: `/assets/images/avatars/avatar_${index + 1}.jpg`,

@@ -14,7 +14,7 @@ import PostCard from "src/sections/WorkList/post-card";
 
 export default function WorkOfListView() {
   const postsFromWork = WorkListItem();
-  console.log("postsFromBlog", postsFromBlog);
+  console.log("postsFromBlog", postsFromWork);
   /*--------------------------------------------*/
   return (
     <Container>

@@ -2,8 +2,8 @@ import { useState } from "react";
 import Modal from "react-modal";
 import "src/App.css";
 import "src/components/tag/tag.css";
-import GraduationYearDropdown from "src/sections/sign/SchoolInfomation/GraduationYearDropdown";
-import SchoolNameDropdown from "src/sections/sign/SchoolInfomation/SchoolNameDropdown";
+import GraduationYearDropdown from "src/sections/sign/SchoolInformation/GraduationYearDropdown";
+import SchoolNameDropdown from "src/sections/sign/SchoolInformation/SchoolNameDropdown";
 
 
 // ログインのモーダル CSS設定

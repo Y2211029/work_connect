@@ -7,8 +7,6 @@ import axios from "axios";
 import $ from "jquery";
 
 import "src/App.css";
-import CompanyPreSignModal from "src/components/account/company/PreSignModal";
-
 // ログインのモーダル CSS設定
 const modalStyle = {
   content: {
@@ -21,8 +19,8 @@ const modalStyle = {
   },
 };
 
-const PreSignModal = ({ FromCompanyPage = false }) => {
-  const [showModal, setShowModal] = useState(false);
+const CompanyPreSignModal = (props) => {
+  const [showModal, setShowModal] = useState(true);
   const [formValues, setFormValues] = useState({
     mail: "",
   });
@@ -36,7 +34,7 @@ const PreSignModal = ({ FromCompanyPage = false }) => {
   const csrf_url = "http://localhost:8000/csrf-token";
 
   // ヘッダーの新規登録ボタンを押したときに新規登録モーダルを開いたり閉じたりする処理
-  $("#preSignModalOpenButton").click(function (e) {
+  $("#CompanypreSignModalOpenButton").click(function (e) {
     e.preventDefault();
     e.stopPropagation();
 
@@ -51,13 +49,15 @@ const PreSignModal = ({ FromCompanyPage = false }) => {
 
     clickOneTimes.current = false; // 送信処理中フラグを下げる
   });
-  
+
   // 新規登録のform内以外をクリックしたときにモーダルを閉じる処理
+
   $("*").click(function (e) {
     // クリックした要素の<html>までのすべての親要素の中に"formInModal"クラスがついている要素を取得
     var targetParants = $(e.target).parents(".formInModal");
 
     // 取得した要素の個数が0個の場合
+    // ***if (targetParants.length == 0 || $(e.target).text() == "閉じる")***
     if (targetParants.length == 0 || $(e.target).text() == "閉じる") {
       // クリックした要素に"formInModal"クラスがついていない場合
       if ($(e.target).attr("class") != "formInModal" && $(e.target).attr("id") != "preSignModalOpenButton") {
@@ -67,9 +67,9 @@ const PreSignModal = ({ FromCompanyPage = false }) => {
     }
   });
 
-  const handleOpenModal = (e) => {
-    e.preventDefault();
-    setShowModal(true);
+  // 親に渡す。
+  const handleOpenStudentPreModal = () => {
+    props.callSetPreModalChange("学生");
   };
 
   const handleCloseModal = () => {
@@ -81,6 +81,7 @@ const PreSignModal = ({ FromCompanyPage = false }) => {
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
   };
+
   useEffect(() => {
     async function fetchCsrfToken() {
       try {
@@ -109,7 +110,8 @@ const PreSignModal = ({ FromCompanyPage = false }) => {
       return;
     }
     const mail = formValues.mail;
-    const kind = "s";
+    const kind = "c";
+
     console.log("mail=" + mail);
 
     //ajax
@@ -134,7 +136,7 @@ const PreSignModal = ({ FromCompanyPage = false }) => {
           if (data == "true") {
             console.log(data);
             console.log("つくれます");
-            
+
             // 二重送信を防ぐため初期化
             formValues.mail = "";
           } else {
@@ -151,9 +153,7 @@ const PreSignModal = ({ FromCompanyPage = false }) => {
           }
         } else {
           console.log("login失敗");
-          alert(
-            "ログインに失敗しました。\nユーザー名、メールアドレス、パスワードをご確認ください。"
-          );
+          alert("ログインに失敗しました。\nユーザー名、メールアドレス、パスワードをご確認ください。");
         }
       })
       .fail(function (textStatus, errorThrown) {
@@ -166,8 +166,7 @@ const PreSignModal = ({ FromCompanyPage = false }) => {
 
   const validate = (values, boolean) => {
     const errors = {};
-    const regex =
-      /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/;
+    const regex = /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/;
     // メールアドレスがまだ存在しないときはboolean == "true"
     if (boolean == true && !values.mail) {
       errors.mail = "メールアドレスを入力してください";
@@ -183,16 +182,10 @@ const PreSignModal = ({ FromCompanyPage = false }) => {
 
   return (
     <div>
+      {/* #でリロードを停止させてます。 */}
+
       {/* 条件付きレンダリングを使用 */}
-      {FromCompanyPage ? (
-        <a href="" onClick={handleOpenModal} id="preSignModalOpenButton">
-          学生の方はこちら
-        </a>
-      ) : (
-        <button onClick={handleOpenModal} id="preSignModalOpenButton">
-          新規登録
-        </button>
-      )}
+      {/* <button onClick={handleOpenModal}>新規登録</button> */}
       <Modal isOpen={showModal} contentLabel="Example Modal" style={modalStyle}>
         <div className="preSignUpFormContainer">
           <form onSubmit={handleSubmit} className="formInModal">
@@ -201,22 +194,17 @@ const PreSignModal = ({ FromCompanyPage = false }) => {
             <div className="preSignUpUiForm">
               <div className="preSignUpFormField">
                 <label>メールアドレス</label>
-                <input
-                  type="text"
-                  name="mail"
-                  value={formValues.mail}
-                  onChange={handleChange}
-                />
+                <input type="text" name="mail" value={formValues.mail} onChange={handleChange} />
               </div>
               <p className="errorMsg">{formErrors.mail}</p>
               <button type="submit" className="submitButton">
                 仮登録
               </button>
-              {Object.keys(formErrors).length === 0 &&
-                isSubmit &&
-                handleCloseModal}
+              {Object.keys(formErrors).length === 0 && isSubmit && handleCloseModal}
               <button onClick={handleCloseModal}>閉じる</button>
-              <CompanyPreSignModal FromCompanyPage={false} />
+              <div onClick={handleOpenStudentPreModal} id="PreSignStudentModalLink">
+                学生の方はこちら
+              </div>
             </div>
           </form>
         </div>
@@ -224,9 +212,8 @@ const PreSignModal = ({ FromCompanyPage = false }) => {
     </div>
   );
 };
-
-PreSignModal.propTypes = {
+CompanyPreSignModal.propTypes = {
   FromCompanyPage: PropTypes.bool.isRequired,
+  callSetPreModalChange: PropTypes.func.isRequired,
 };
-export default PreSignModal;
-
+export default CompanyPreSignModal;

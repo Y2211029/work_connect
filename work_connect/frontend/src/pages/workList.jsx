@@ -1,17 +1,17 @@
 import { Helmet } from 'react-helmet-async';
 
-import { AppView } from 'src/sections/overview/view';
+import { WorkOfListView } from 'src/sections/WorkList/view';
 
 // ----------------------------------------------------------------------
 
-export default function AppPage() {
+export default function workListPage() {
   return (
     <>
       <Helmet>
         <title> 作品一覧 | Work&Connect </title>
       </Helmet>
 
-      <AppView />
+      <WorkOfListView />
     </>
   );
 }

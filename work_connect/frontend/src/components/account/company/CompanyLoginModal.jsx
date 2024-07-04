@@ -1,17 +1,14 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-
 import Modal from "react-modal";
 import axios from "axios";
-
 import $ from "jquery";
-
 import { useNavigate } from "react-router-dom";
 
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import LoginStatusCheck from "src/components/account/loginStatusCheck/loginStatusCheck";
+
 import "src/App.css";
-import LoginModal from "src/components/account/students/LoginModal";
-import { useSessionStorage } from "../../../hooks/use-sessionStorage";
-import LoginStatusCheck from "../loginStatusCheck/loginStatusCheck";
 
 // ログインのモーダル CSS設定
 const modalStyle = {
@@ -25,12 +22,13 @@ const modalStyle = {
   },
 };
 
-const CompanyLoginModal = ({ FromCompanyPage = false }) => {
-  const {updateSessionData} = useSessionStorage();
-  const {loginStatusCheckFunction} = LoginStatusCheck();
+const CompanyLoginModal = (props) => {
+  const { updateSessionData } = useSessionStorage();
+  const { loginStatusCheckFunction } = LoginStatusCheck();
+
   const navigate = useNavigate();
-  
-  const [showModal, setShowModal] = useState(false);
+
+  const [showModal, setShowModal] = useState(true);
   const [formValues, setFormValues] = useState({
     user_name: "",
     mail: "",
@@ -40,49 +38,11 @@ const CompanyLoginModal = ({ FromCompanyPage = false }) => {
   const [isSubmit, setIsSubmit] = useState(false);
   const [csrfToken, setCsrfToken] = useState("");
 
-  const clickOneTimes = useRef(false); // 一度だけ処理させたい処理を管理するuseRefを作成する
-
   const url = "http://localhost:8000/s_login";
   const csrf_url = "http://localhost:8000/csrf-token";
 
-
-  // ヘッダーのログインボタンを押したときにログインモーダルを開いたり閉じたりする処理
-  $("#CompanyloginModalOpenButton").click(function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (clickOneTimes.current) return; // 送信処理中かを判定する（trueなら抜ける）
-    clickOneTimes.current = true; // 送信処理中フラグを立てる
-
-    if (showModal == true) {
-      setShowModal(false);
-    } else {
-      setShowModal(true);
-    }
-
-    clickOneTimes.current = false; // 送信処理中フラグを下げる
-  });
-  
-  // ログインのform内以外をクリックしたときにモーダルを閉じる処理
-  $("*").click(function (e) {
-    // クリックした要素の<html>までのすべての親要素の中に"formInModal"クラスがついている要素を取得
-    var targetParants = $(e.target).parents(".formInModal");
-
-    // 取得した要素の個数が0個の場合
-    // ***if (targetParants.length == 0 || $(e.target).text() == "閉じる")***
-    console.log($(e.target).text());
-    if (targetParants.length == 0 || $(e.target).text() == "閉じる") {
-      // クリックした要素に"formInModal"クラスがついていない場合
-      if ($(e.target).attr("class") != "formInModal" && $(e.target).attr("id") != "CompanyloginModalOpenButton") {
-        // ログインモーダルを閉じる
-        setShowModal(false);
-      }
-    }
-  });
-
-  const handleOpenModal = (e) => {
-    e.preventDefault();
-    setShowModal(true);
+  const handleOpenStudentModal = () => {
+    props.callSetModalChange("学生");
   };
 
   const handleCloseModal = () => {
@@ -166,16 +126,13 @@ const CompanyLoginModal = ({ FromCompanyPage = false }) => {
           setShowModal(false);
           setFormValues({
             ...formValues,
-             user_name: "",
-             password: "", 
+            user_name: "",
+            password: "",
           });
-          navigate('/');
-          
+          navigate("/");
         } else {
           console.log("login失敗");
-          alert(
-            "ログインに失敗しました。\nユーザー名、メールアドレス、パスポートをご確認ください。"
-          );
+          alert("ログインに失敗しました。\nユーザー名、メールアドレス、パスポートをご確認ください。");
         }
       })
       .fail(function (textStatus, errorThrown) {
@@ -190,11 +147,10 @@ const CompanyLoginModal = ({ FromCompanyPage = false }) => {
   const validate = (values) => {
     const errors = {};
     // 有効なメールアドレスか検証
-    const regex =
-      /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/;
+    const regex = /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/;
 
     if (!values.user_name) {
-      errors.user_name = "ユーザー名またはメールアドレスを入力してください";
+      errors.user_name = "企業名またはメールアドレスを入力してください";
     } else if (/[@]/.test(values.user_name) && !regex.test(values.user_name)) {
       // @マークを含み(メールアドレス)かつ、メールアドレスが無効の場合
       errors.mail = "正しいメールアドレスを入力してください";
@@ -211,16 +167,7 @@ const CompanyLoginModal = ({ FromCompanyPage = false }) => {
 
   return (
     <div>
-      
       {/* 条件付きレンダリングを使用 */}
-      {FromCompanyPage ? (
-        <>
-        </>
-      ) : (
-        <a href="" onClick={handleOpenModal} id="CompanyloginModalOpenButton">
-          企業の方はこちら
-       </a>
-      )}
       <Modal isOpen={showModal} contentLabel="Example Modal" style={modalStyle}>
         <div className="loginFormContainer">
           <form onSubmit={handleSubmit} className="formInModal">
@@ -228,34 +175,26 @@ const CompanyLoginModal = ({ FromCompanyPage = false }) => {
             <hr />
             <div className="loginUiForm">
               <div className="loginFormField">
-                <label>ユーザー名またはメールアドレス</label>
-                <input
-                  type="text"
-                  name="user_name"
-                  value={formValues.user_name}
-                  onChange={handleChange}
-                />
+                <label>企業名またはメールアドレス</label>
+                <input type="text" name="user_name" value={formValues.user_name} onChange={handleChange} />
               </div>
               <p className="errorMsg">{formErrors.user_name}</p>
 
               <div className="loginFormField">
                 <label>パスワード</label>
-                <input
-                  type="password"
-                  name="password"
-                  value={formValues.password}
-                  onChange={handleChange}
-                />
+                <input type="password" name="password" value={formValues.password} onChange={handleChange} />
               </div>
               <p className="errorMsg">{formErrors.password}</p>
               <button type="submit" className="submitButton">
                 ログイン
               </button>
-              {Object.keys(formErrors).length === 0 &&
-                isSubmit &&
-                handleCloseModal}
-              <button onClick={handleCloseModal} id="CompanyshutButton">閉じる</button>
-              <LoginModal FromCompanyPage={true} />
+              {Object.keys(formErrors).length === 0 && isSubmit && handleCloseModal}
+              <button onClick={handleCloseModal} id="CompanyshutButton">
+                閉じる
+              </button>
+              <div onClick={handleOpenStudentModal} id="loginStudentModalLink">
+                学生の方はこちら
+              </div>
             </div>
           </form>
         </div>
@@ -266,6 +205,7 @@ const CompanyLoginModal = ({ FromCompanyPage = false }) => {
 
 CompanyLoginModal.propTypes = {
   FromCompanyPage: PropTypes.bool.isRequired,
+  callSetModalChange: PropTypes.func.isRequired,
 };
 
 export default CompanyLoginModal;

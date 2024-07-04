@@ -1,1 +1,1 @@
-export { default as StudentListView } from './studentList';
+export { default as StudentListView } from './StudentList-view';

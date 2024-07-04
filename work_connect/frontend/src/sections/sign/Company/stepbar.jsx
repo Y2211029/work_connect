@@ -100,12 +100,13 @@ export default function HorizontalLinearStepper({ Stepbar }) {
         // thenで成功した場合の処理
         .then((response) => {
           console.log("レスポンス:", response);
-
+          alert("新規登録が完了しました。");
           // ここで作品一覧ページに飛ばす処理 //////////////////////////
           navigation("/");
         })
         // catchでエラー時の挙動を定義
         .catch((err) => {
+          alert("新規登録できませんでした。");
           console.log("err:", err);
         });
       }

@@ -1,4 +1,6 @@
+import { useState } from "react";
 import PropTypes from "prop-types";
+import $ from "jquery";
 
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -7,8 +9,9 @@ import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
 import { useTheme } from "@mui/material/styles";
 
-import LoginModal from "src/components/account/students/LoginModal";
-import PreSignModal from "src/components/account/students/PreSignModal";
+import StudentLoginModal from "src/components/account/students/StudentLoginModal";
+import CompanyLoginModal from "src/components/account/company/CompanyLoginModal";
+
 import SignUp from "src/components/account/students/SignUp";
 import SignUp1 from "src/components/account/students/SignUp1";
 import { useResponsive } from "src/hooks/use-responsive";
@@ -24,20 +27,80 @@ import Searchbar from "./common/searchbar";
 import ChatPng from "./common/chatPng";
 import NotificationsPopover from "./common/notifications-popover";
 
+<<<<<<< HEAD
 import { useNavigate } from "react-router-dom";
 
+=======
+import StudentPreSignModal from "../../components/account/students/StudentPreSignModal";
+import CompanyPreSignModal from "../../components/account/company/CompanyPreSignModal";
+>>>>>>> 2cd5b1402c30e25fbe48124873c491d00eaabf04
 
 // ----------------------------------------------------------------------
 
 export default function Header({ onOpenNav }) {
+  const [ModalChange, setModalChange] = useState("");
+  const [PreModalChange, setPreModalChange] = useState("");
   const theme = useTheme();
   const lgUp = useResponsive("up", "lg");
+<<<<<<< HEAD
   let navigation = useNavigate();
   const handleOpenModal = () => {
     // setShowModal(true);
     navigation("WorkPosting");
   };
 
+=======
+
+  const callSetModalChange = (newValue) => {
+    setModalChange(newValue);
+  };
+  const callSetPreModalChange = (newValue) => {
+    setPreModalChange(newValue);
+  };
+
+  const handleChange = (e) => {
+    if (e.target.id === "LoginButton") {
+      setModalChange("学生");
+      setPreModalChange("");
+    } else {
+      setModalChange("");
+      setPreModalChange("学生");
+    }
+  };
+
+  // ログインのform内以外をクリックしたときにモーダルを閉じる処理
+  $("*").click(function (e) {
+    // クリックした要素の<html>までのすべての親要素の中に"formInModal"クラスがついている要素を取得
+    var targetParants = $(e.target).parents(".formInModal");
+
+    // 取得した要素の個数が0個の場合
+    // ***if (targetParants.length == 0 || $(e.target).text() == "閉じる")***
+    // console.log($(e.target).text());
+    if (targetParants.length == 0 || $(e.target).text() == "閉じる") {
+      // クリックした要素に"formInModal"クラスがついていない場合
+      if (
+        $(e.target).attr("class") != "formInModal" &&
+        $(e.target).attr("id") != "LoginButton" &&
+        $(e.target).attr("id") != "loginCompanyModalLink" &&
+        $(e.target).attr("id") != "loginStudentModalLink"
+      ) {
+        // ログインモーダルを閉じる
+        setModalChange("");
+      }
+
+      if (
+        $(e.target).attr("class") != "formInModal" &&
+        $(e.target).attr("id") != "PreSignButton" &&
+        $(e.target).attr("id") != "PreSignCompanyModalLink" &&
+        $(e.target).attr("id") != "PreSignStudentModalLink"
+      ) {
+        // 新規登録モーダルを閉じる
+        setPreModalChange("");
+      }
+    }
+  });
+
+>>>>>>> 2cd5b1402c30e25fbe48124873c491d00eaabf04
   const renderContent = (
     <>
       {!lgUp && (
@@ -56,8 +119,27 @@ export default function Header({ onOpenNav }) {
       <Stack direction="row" alignItems="center" spacing={1}>
         <button onClick={handleOpenModal}>作品投稿</button>
         <SignUp1 />
-        <LoginModal FromCompanyPage={false}/>
-        <PreSignModal FromCompanyPage={false}/>
+
+        <button id="LoginButton" onClick={handleChange}>
+          ログイン
+        </button>
+
+        <button id="PreSignButton" onClick={handleChange}>
+          新規登録
+        </button>
+
+        {ModalChange === "学生" ? (
+          <StudentLoginModal callSetModalChange={callSetModalChange} />
+        ) : ModalChange === "企業" ? (
+          <CompanyLoginModal callSetModalChange={callSetModalChange} />
+        ) : null}
+
+        {PreModalChange === "学生" ? (
+          <StudentPreSignModal callSetPreModalChange={callSetPreModalChange} />
+        ) : PreModalChange === "企業" ? (
+          <CompanyPreSignModal callSetPreModalChange={callSetPreModalChange} />
+        ) : null}
+
         <SignUp />
         <ChatPng />
         <NotificationsPopover />

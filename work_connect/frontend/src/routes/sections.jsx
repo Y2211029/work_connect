@@ -19,6 +19,10 @@ export const EditorPage = lazy(() => import('../pages/Editor/Editor'));
 
 // トップ画面追加
 export const TopPage = lazy(() => import('../pages/topPage'));
+
+// 作品投稿画面追加
+export const WorkPosting = lazy(() => import("src/components/account/students/WorkPosting"));
+
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -43,6 +47,8 @@ export default function Router() {
         { path: 'Editor', element: <EditorPage /> },
         // トップ画面追加
         { path: 'Top', element: <TopPage /> },
+        // 作品投稿画面
+        { path: "WorkPosting", element: <WorkPosting /> },
       ],
     },
     {

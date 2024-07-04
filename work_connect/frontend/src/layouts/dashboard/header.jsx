@@ -24,6 +24,7 @@ import Searchbar from "./common/searchbar";
 import ChatPng from "./common/chatPng";
 import NotificationsPopover from "./common/notifications-popover";
 
+import { useNavigate } from "react-router-dom";
 
 
 // ----------------------------------------------------------------------
@@ -31,6 +32,12 @@ import NotificationsPopover from "./common/notifications-popover";
 export default function Header({ onOpenNav }) {
   const theme = useTheme();
   const lgUp = useResponsive("up", "lg");
+  let navigation = useNavigate();
+  const handleOpenModal = () => {
+    // setShowModal(true);
+    navigation("WorkPosting");
+  };
+
   const renderContent = (
     <>
       {!lgUp && (
@@ -47,6 +54,7 @@ export default function Header({ onOpenNav }) {
 
       {/* ログイン、新規登録、本登録、チャット、通知、アカウントプロフィール */}
       <Stack direction="row" alignItems="center" spacing={1}>
+        <button onClick={handleOpenModal}>作品投稿</button>
         <SignUp1 />
         <LoginModal FromCompanyPage={false}/>
         <PreSignModal FromCompanyPage={false}/>

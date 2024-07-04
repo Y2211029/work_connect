@@ -1,6 +1,11 @@
-import { faker } from "@faker-js/faker";
 import { useEffect, useState } from "react";
 import axios from "axios";
+
+import { faker } from "@faker-js/faker";
+
+// タグボタン作成コンポーネント
+import CreateTagElements from "src/components/tag/CreateTagElements";
+
 // ----------------------------------------------------------------------
 /*--------------------------------------------*/
 /* 動画一覧のデータを取得する処理を追加しました。 */
@@ -29,7 +34,9 @@ export const VideoListItem = () => {
 
         // ジャンルはタグのため、カンマ区切りの文字列を配列に変換する
         response.data.forEach((element) => {
-          element.genre = element.genre.split(",");
+          element.genre !== null
+            ? (element.genre = element.genre.split(",").map((item) => <CreateTagElements key={item} itemContents={item} />))
+            : "";
         });
 
         setMovieOfList(response.data);
@@ -46,7 +53,7 @@ export const VideoListItem = () => {
     cover: `/assets/images/covers/cover_${5 + 1}.jpg`,
     thumbnail: `"../../../public/assets/videoImages/thumbnail/cover_${index + 1}.jpg"`,
     title: MovieOfList[key].title,
-
+    genre: MovieOfList[key].genre,
     // substring(0, 200) 第一引数：文字列の開始位置。第二引数：開始位置から何文字目を取得する。
     // introの文字数が200文字以上の時、「...」を表示する。
     intro: MovieOfList[key].intro.length > 200 ? MovieOfList[key].intro.substring(0, 200) + "..." : MovieOfList[key].intro,

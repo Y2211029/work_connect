@@ -18,7 +18,7 @@ import SvgColor from "src/components/svg-color";
 // ----------------------------------------------------------------------
 
 export default function PostCard({ post, index }) {
-  const { cover, title, intro, thumbnail, view, comment, author, userName, createdAt } = post;
+  const { cover, title, genre, intro, thumbnail, view, comment, author, userName, createdAt } = post;
 
   const latestPostLarge = index === 0;
 
@@ -60,6 +60,9 @@ export default function PostCard({ post, index }) {
       {title}
     </Link>
   );
+
+  // ジャンル
+  const renderGenre = genre !== null ? <Typography>{genre}</Typography> : null;
 
   // サムネイル
   const renderThumbnail = <img src={thumbnail} alt="" width="100%" height="100" />;
@@ -180,7 +183,6 @@ export default function PostCard({ post, index }) {
         color: "common.white",
       }}
     >
-      
       {intro}
     </Typography>
   );
@@ -221,6 +223,7 @@ export default function PostCard({ post, index }) {
           }}
         >
           {renderThumbnail}
+          {renderGenre}
           {renderTitle}
           {/* ここに紹介文配置、配置語にこのコメントを削除する */}
           {renderIntro}

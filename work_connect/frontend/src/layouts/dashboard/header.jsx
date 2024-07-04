@@ -1,4 +1,6 @@
+import { useState } from "react";
 import PropTypes from "prop-types";
+import $ from "jquery";
 
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -24,7 +26,6 @@ import Searchbar from "./common/searchbar";
 // import chatPopover from './common/chat_popover';
 import ChatPng from "./common/chatPng";
 import NotificationsPopover from "./common/notifications-popover";
-import { useState } from "react";
 
 import StudentPreSignModal from "../../components/account/students/StudentPreSignModal";
 import CompanyPreSignModal from "../../components/account/company/CompanyPreSignModal";
@@ -61,7 +62,7 @@ export default function Header({ onOpenNav }) {
 
     // 取得した要素の個数が0個の場合
     // ***if (targetParants.length == 0 || $(e.target).text() == "閉じる")***
-    console.log($(e.target).text());
+    // console.log($(e.target).text());
     if (targetParants.length == 0 || $(e.target).text() == "閉じる") {
       // クリックした要素に"formInModal"クラスがついていない場合
       if (

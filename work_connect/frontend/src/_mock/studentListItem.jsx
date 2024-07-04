@@ -1,6 +1,11 @@
-import { faker } from "@faker-js/faker";
 import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import axios from "axios";
+
+import { faker } from "@faker-js/faker";
+
+// タグボタン作成コンポーネント
+import CreateTagElements from "src/components/tag/CreateTagElements";
 // ----------------------------------------------------------------------
 /*--------------------------------------------*/
 /* 学生一覧のデータを取得する処理を追加しました。 */
@@ -14,11 +19,6 @@ export const StudentListItem = () => {
 
   // 学生の一覧データを取得する用URL
   const url = "http://localhost:8000/get_student_list";
-
-  // タグ作成
-  function CreateTagElements({ itemContents }) {
-    return <button className="greeting">{itemContents}</button>;
-  }
 
   useEffect(() => {
     async function StudentListFunction() {
@@ -39,9 +39,7 @@ export const StudentListItem = () => {
                 .map((item) => <CreateTagElements key={item} itemContents={item} />))
             : "";
           element.desired_occupation !== null
-            ? (element.desired_occupation = element.desired_occupation
-              .split(",")
-              .map((item) => <CreateTagElements key={item} itemContents={item} />))
+            ? (element.desired_occupation = element.desired_occupation.split(",").map((item) => <CreateTagElements key={item} itemContents={item} />))
             : "";
         });
 
@@ -54,24 +52,27 @@ export const StudentListItem = () => {
     StudentListFunction();
   }, []); // 空の依存配列を渡すことで初回のみ実行されるようにする
 
-  const posts = StudentOfList.map((index, key) => ({
-    id: StudentOfList[key].id,
-    cover: `/assets/images/covers/cover_${6 + 1}.jpg`,
-    title: StudentOfList[key].student_surname + StudentOfList[key].student_name,
+  console.log("posts:", StudentOfList[0]);
+  const posts = StudentOfList.map((_, key) => ({
+    cover: `/assets/images/covers/cover_${key + 1}.jpg`,
     graduationYear: StudentOfList[key].graduation_year,
+    title: StudentOfList[key].student_surname + StudentOfList[key].student_name,
     schoolName: StudentOfList[key].school_name,
     desiredWorkRegion: StudentOfList[key].desired_work_region,
     desiredOccupation: StudentOfList[key].desired_occupation,
-    
     view: faker.number.int(99999),
     comment: faker.number.int(99999),
     favorite: faker.number.int(99999),
     author: {
-      avatarUrl: `/assets/images/avatars/avatar_${5 + 1}.jpg`,
+      avatarUrl: `/assets/images/avatars/avatar_${key + 1}.jpg`,
     },
   }));
 
   return posts;
+};
+
+CreateTagElements.propTypes = {
+  itemContents: PropTypes.string.isRequired, // ここで型と必須の設定を行う
 };
 
 export default StudentListItem;

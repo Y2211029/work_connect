@@ -9,7 +9,8 @@ import { alpha } from "@mui/material/styles";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 
-import { fDate } from "src/utils/format-time";
+// import { fDate } from "src/utils/format-time";
+
 import { fShortenNumber } from "src/utils/format-number";
 
 import Iconify from "src/components/iconify";
@@ -18,7 +19,7 @@ import SvgColor from "src/components/svg-color";
 // ----------------------------------------------------------------------
 
 export default function PostCard({ post, index }) {
-  const { cover, title, view, comment, share, author, createdAt } = post;
+  const { cover, title, selectedOccupation, view, comment, author } = post;
 
   const latestPostLarge = index === 0;
 
@@ -26,7 +27,7 @@ export default function PostCard({ post, index }) {
 
   const renderAvatar = (
     <Avatar
-      alt={author.name}
+      // alt={author.name}
       src={author.avatarUrl}
       sx={{
         zIndex: 9,
@@ -66,7 +67,7 @@ export default function PostCard({ post, index }) {
       {title}
     </Link>
   );
-
+  const renderSelectedOccupation = <Typography opacity="0.48">{selectedOccupation}</Typography>;
   const renderInfo = (
     <Stack
       direction="row"
@@ -81,7 +82,7 @@ export default function PostCard({ post, index }) {
       {[
         { number: comment, icon: "eva:message-circle-fill" },
         { number: view, icon: "eva:eye-fill" },
-        { number: share, icon: "eva:share-fill" },
+        // { number: share, icon: "eva:share-fill" },
       ].map((info, _index) => (
         <Stack
           key={_index}
@@ -103,7 +104,7 @@ export default function PostCard({ post, index }) {
   const renderCover = (
     <Box
       component="img"
-      alt={title}
+      // alt={title}
       src={cover}
       sx={{
         top: 0,
@@ -115,22 +116,22 @@ export default function PostCard({ post, index }) {
     />
   );
 
-  const renderDate = (
-    <Typography
-      variant="caption"
-      component="div"
-      sx={{
-        mb: 2,
-        color: "text.disabled",
-        ...((latestPostLarge || latestPost) && {
-          opacity: 0.48,
-          color: "common.white",
-        }),
-      }}
-    >
-      {fDate(createdAt, "yyyy MM dd")}
-    </Typography>
-  );
+  // const renderDate = (
+  //   <Typography
+  //     variant="caption"
+  //     component="div"
+  //     sx={{
+  //       mb: 2,
+  //       color: "text.disabled",
+  //       ...((latestPostLarge || latestPost) && {
+  //         opacity: 0.48,
+  //         color: "common.white",
+  //       }),
+  //     }}
+  //   >
+  //     {fDate(createdAt, "yyyy MM dd")}
+  //   </Typography>
+  // );
 
   const renderShape = (
     <SvgColor
@@ -191,9 +192,8 @@ export default function PostCard({ post, index }) {
             }),
           }}
         >
-          {renderDate}
-
           {renderTitle}
+          {renderSelectedOccupation}
 
           {renderInfo}
         </Box>

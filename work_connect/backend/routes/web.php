@@ -24,7 +24,7 @@ Route::get('/', function () {
 // プログラミング言語タグ取得
 Route::get('/get_language_tag',[GetLanguageTagController::class, 'GetLanguageTagController']);
 // ログイン状態のチェック
-Route::get('/login_status_check',[LoginStatusCheckController::class, 'LoginStatusCheckController']);
+Route::post('/login_status_check',[LoginStatusCheckController::class, 'LoginStatusCheckController']);
 
 // 作品一覧取得
 Route::get('/get_work_list',[GetWorkListController::class, 'GetWorkListController']);

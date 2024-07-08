@@ -27,13 +27,10 @@ import Searchbar from "./common/searchbar";
 import ChatPng from "./common/chatPng";
 import NotificationsPopover from "./common/notifications-popover";
 
-<<<<<<< HEAD
 import { useNavigate } from "react-router-dom";
 
-=======
 import StudentPreSignModal from "../../components/account/students/StudentPreSignModal";
 import CompanyPreSignModal from "../../components/account/company/CompanyPreSignModal";
->>>>>>> 2cd5b1402c30e25fbe48124873c491d00eaabf04
 
 // ----------------------------------------------------------------------
 
@@ -42,14 +39,12 @@ export default function Header({ onOpenNav }) {
   const [PreModalChange, setPreModalChange] = useState("");
   const theme = useTheme();
   const lgUp = useResponsive("up", "lg");
-<<<<<<< HEAD
   let navigation = useNavigate();
   const handleOpenModal = () => {
     // setShowModal(true);
     navigation("WorkPosting");
   };
 
-=======
 
   const callSetModalChange = (newValue) => {
     setModalChange(newValue);
@@ -100,7 +95,6 @@ export default function Header({ onOpenNav }) {
     }
   });
 
->>>>>>> 2cd5b1402c30e25fbe48124873c491d00eaabf04
   const renderContent = (
     <>
       {!lgUp && (

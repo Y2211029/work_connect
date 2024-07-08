@@ -113,13 +113,14 @@ const SchoolNameDropdown = (props) => {
         options={options}
         placeholder="Select..."
         filterOption={filterOption}
+        required
       />
     </div>
   );
 };
 
 SchoolNameDropdown.propTypes = {
-  coleSetRequiredCheck: PropTypes.func,
+  coleSetRequiredCheck: PropTypes.func.isRequired,
 };
 
 export default SchoolNameDropdown;

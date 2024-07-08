@@ -155,7 +155,7 @@ const SessionDataList = ({ sessionData }) => {
                           onMouseDown={handleMouseDownPassword}
                           edge="end"
                         >
-                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
                         </IconButton>
                       </InputAdornment>
                     ),
@@ -183,7 +183,7 @@ const SessionDataList = ({ sessionData }) => {
             }
             return (
               <li key={key}>
-                <p>{label}</p>
+                <p>{label === "姓" ? "名前": label === "セイ" ? "名前(カタカナ)": label}</p>
                 {itemContentValues}
               </li>
             );

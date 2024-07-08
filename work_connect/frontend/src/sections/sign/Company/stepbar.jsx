@@ -114,19 +114,19 @@ export default function HorizontalLinearStepper({ Stepbar }) {
       // データ取得
       const accountData = getSessionData("accountData");
       // 各項目が空だった場合、バリデーションを実行(AccountRegistration.jsxへ)
-      if(accountData.company_name == undefined){
+      if(accountData.company_name == undefined || accountData.company_name == ""){
         childRef.current?.NULL_validation(1);
       }
-      if(accountData.company_nameCana == undefined){
+      if(accountData.company_nameCana == undefined || accountData.company_nameCana == ""){
         childRef.current?.NULL_validation(2);
       }
-      if(accountData.user_name == undefined){
+      if(accountData.user_name == undefined || accountData.user_name == ""){
         childRef.current?.NULL_validation(3);
       }
-      if(accountData.password == undefined){
+      if(accountData.password == undefined || accountData.password == ""){
         childRef.current?.NULL_validation(4);
       }
-      if(accountData.passwordCheck == undefined){
+      if(accountData.passwordCheck == undefined || accountData.passwordCheck == ""){
         childRef.current?.NULL_validation(5);
       }
       

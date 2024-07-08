@@ -5,7 +5,7 @@ import Link from "@mui/material/Link";
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
-import { alpha } from "@mui/material/styles";
+// import { alpha } from "@mui/material/styles";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 
@@ -19,11 +19,11 @@ import SvgColor from "src/components/svg-color";
 // ----------------------------------------------------------------------
 
 export default function PostCard({ post, index }) {
-  const { cover, title, selectedOccupation, view, comment, author } = post;
+  const { cover, title, selectedOccupation, prefecture, view, comment, author } = post;
 
   const latestPostLarge = index === 0;
 
-  const latestPost = index === 1 || index === 2;
+  // const latestPost = index === 1 || index === 2;
 
   const renderAvatar = (
     <Avatar
@@ -36,13 +36,13 @@ export default function PostCard({ post, index }) {
         position: "absolute",
         left: (theme) => theme.spacing(3),
         bottom: (theme) => theme.spacing(-2),
-        ...((latestPostLarge || latestPost) && {
-          zIndex: 9,
-          top: 24,
-          left: 24,
-          width: 40,
-          height: 40,
-        }),
+        // ...((latestPostLarge || latestPost) && {
+        //   zIndex: 9,
+        //   top: 24,
+        //   left: 24,
+        //   width: 40,
+        //   height: 40,
+        // }),
       }}
     />
   );
@@ -58,16 +58,22 @@ export default function PostCard({ post, index }) {
         WebkitLineClamp: 2,
         display: "-webkit-box",
         WebkitBoxOrient: "vertical",
-        ...(latestPostLarge && { typography: "h5", height: 60 }),
-        ...((latestPostLarge || latestPost) && {
-          color: "common.white",
-        }),
+        // ...(latestPostLarge && { typography: "h5", height: 60 }),
+        // ...((latestPostLarge || latestPost) && {
+        //   color: "common.white",
+        // }),
       }}
     >
       {title}
     </Link>
   );
-  const renderSelectedOccupation = <Typography opacity="0.48">{selectedOccupation}</Typography>;
+
+  // 募集職種
+  const renderSelectedOccupation = selectedOccupation !== null ? <Typography opacity="0.48">募集職種: {selectedOccupation}</Typography> : null;
+
+  // 勤務地
+  const renderPrefecture = prefecture !== null ? <Typography opacity="0.48">勤務地: {prefecture}</Typography> : null;
+
   const renderInfo = (
     <Stack
       direction="row"
@@ -88,10 +94,10 @@ export default function PostCard({ post, index }) {
           key={_index}
           direction="row"
           sx={{
-            ...((latestPostLarge || latestPost) && {
-              opacity: 0.48,
-              color: "common.white",
-            }),
+            // ...((latestPostLarge || latestPost) && {
+            //   opacity: 0.48,
+            //   color: "common.white",
+            // }),
           }}
         >
           <Iconify width={16} icon={info.icon} sx={{ mr: 0.5 }} />
@@ -144,7 +150,7 @@ export default function PostCard({ post, index }) {
         bottom: -15,
         position: "absolute",
         color: "background.paper",
-        ...((latestPostLarge || latestPost) && { display: "none" }),
+        // ...((latestPostLarge || latestPost) && { display: "none" }),
       }}
     />
   );
@@ -156,23 +162,23 @@ export default function PostCard({ post, index }) {
           sx={{
             position: "relative",
             pt: "calc(100% * 3 / 4)",
-            ...((latestPostLarge || latestPost) && {
-              pt: "calc(100% * 4 / 3)",
-              "&:after": {
-                top: 0,
-                content: "''",
-                width: "100%",
-                height: "100%",
-                position: "absolute",
-                bgcolor: (theme) => alpha(theme.palette.grey[900], 0.72),
-              },
-            }),
-            ...(latestPostLarge && {
-              pt: {
-                xs: "calc(100% * 4 / 3)",
-                sm: "calc(100% * 3 / 4.66)",
-              },
-            }),
+            // ...((latestPostLarge || latestPost) && {
+            //   pt: "calc(100% * 4 / 3)",
+            //   "&:after": {
+            //     top: 0,
+            //     content: "''",
+            //     width: "100%",
+            //     height: "100%",
+            //     position: "absolute",
+            //     bgcolor: (theme) => alpha(theme.palette.grey[900], 0.72),
+            //   },
+            // }),
+            // ...(latestPostLarge && {
+            //   pt: {
+            //     xs: "calc(100% * 4 / 3)",
+            //     sm: "calc(100% * 3 / 4.66)",
+            //   },
+            // }),
           }}
         >
           {renderShape}
@@ -185,15 +191,18 @@ export default function PostCard({ post, index }) {
         <Box
           sx={{
             p: (theme) => theme.spacing(4, 3, 3, 3),
-            ...((latestPostLarge || latestPost) && {
-              width: 1,
-              bottom: 0,
-              position: "absolute",
-            }),
+            // ...((latestPostLarge || latestPost) && {
+            //   width: 1,
+            //   bottom: 0,
+            //   position: "absolute",
+            // }),
           }}
         >
           {renderTitle}
+
           {renderSelectedOccupation}
+
+          {renderPrefecture}
 
           {renderInfo}
         </Box>

@@ -1,7 +1,8 @@
+import { Link } from "react-router-dom";
+import "src/App.css";
 import PropTypes from "prop-types";
 
 import Box from "@mui/material/Box";
-import Link from "@mui/material/Link";
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
@@ -44,17 +45,14 @@ export default function PostCard({ post, index }) {
   // タイトル
   const renderTitle = (
     <Link
+      to="VideoDetail"
       color="inherit"
       variant="subtitle2"
-      underline="hover"
-      sx={{
-        height: 44,
-        overflow: "hidden",
-        WebkitLineClamp: 2,
-        display: "-webkit-box",
-        WebkitBoxOrient: "vertical",
+      underline="none" // デフォルトで下線を消す
+      className="link"
+      style={{
+        height: 30,
         typography: "h5",
-        color: "common.white",
       }}
     >
       {title}

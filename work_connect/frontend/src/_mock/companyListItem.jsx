@@ -38,6 +38,11 @@ export const CompanyListItem = () => {
                 .split(",")
                 .map((item) => <CreateTagElements key={item} itemContents={item} />))
             : "";
+          element.prefecture !== null
+            ? (element.prefecture = element.prefecture
+                .split(",")
+                .map((item) => <CreateTagElements key={item} itemContents={item} />))
+            : "";
         });
 
         setCompanyOfList(response.data);
@@ -49,17 +54,18 @@ export const CompanyListItem = () => {
     CompanyListFunction();
   }, []); // 空の依存配列を渡すことで初回のみ実行されるようにする
 
-  const posts = CompanyOfList.map((index, key) => ({
+  const posts = CompanyOfList.map((_, key) => ({
     id: CompanyOfList[key].id,
-    cover: `/assets/images/covers/cover_${index + 1}.jpg`,
+    cover: `/assets/images/covers/cover_${key + 1}.jpg`,
     title: CompanyOfList[key].company_name,
     selectedOccupation: CompanyOfList[key].selected_occupation,
+    prefecture: CompanyOfList[key].prefecture,
     view: faker.number.int(99999),
     comment: faker.number.int(99999),
     favorite: faker.number.int(99999),
     author: {
       //   name: "",
-      avatarUrl: `/assets/images/avatars/avatar_${index + 1}.jpg`,
+      avatarUrl: `/assets/images/avatars/avatar_${key + 1}.jpg`,
     },
   }));
 

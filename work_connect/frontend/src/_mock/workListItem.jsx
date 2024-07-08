@@ -12,7 +12,7 @@ import CreateTagElements from "src/components/tag/CreateTagElements";
 /*--------------------------------------------*/
 // 下のWorkOfListの形に合わせたオブジェクト(WorkItem～:の形)にしたresponse.dataが入ります
 // ! 注意 ! titleやuserNameなどのキーはDBのカラム名になっています。
-export const WorkListItem = () => {
+const WorkListItem = () => {
   // 作品一覧のデータを保持するステート
   const [WorkOfList, setWorkOfList] = useState([]);
 
@@ -38,7 +38,7 @@ export const WorkListItem = () => {
         });
 
         setWorkOfList(response.data);
-        console.log("response:", response);
+        // console.log("response:", response);
       } catch (err) {
         console.log("err:", err);
       }
@@ -49,7 +49,7 @@ export const WorkListItem = () => {
   const posts = WorkOfList.map((_, key) => ({
     id: WorkOfList[key].id,
     cover: `/assets/images/covers/cover_${key + 1}.jpg`,
-    thumbnail: `"../../../public/assets/videoImages/thumbnail/cover_${key + 1}.jpg"`,
+    thumbnail: `/assets/workImages/thumbnail/cover_${key + 1}.jpg`,
     title: WorkOfList[key].work_name,
     genre: WorkOfList[key].work_genre,
     // substring(0, 200) 第一引数：文字列の開始位置。第二引数：開始位置から何文字目を取得する。
@@ -66,7 +66,7 @@ export const WorkListItem = () => {
     createdAt: WorkOfList[key].post_datetime,
   }));
 
-  console.log("posts:", posts);
+  // console.log("posts:", posts);
   return posts;
 };
 

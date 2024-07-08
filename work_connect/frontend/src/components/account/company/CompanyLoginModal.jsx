@@ -108,10 +108,12 @@ const CompanyLoginModal = (props) => {
         if (data != null) {
           console.log(data.id);
           console.log("login成功");
-          // alert("ログインに成功しました。");
+          alert("ログインに成功しました。");
 
           // データの保存(セッションストレージ)
           updateSessionData("accountData", "id", data.id);
+          updateSessionData("accountData", "user_name", data.user_name);
+          updateSessionData("accountData", "mail", data.mail);
           console.log("ユーザーidは" + sessionStorage.getItem("user_id"));
 
           // 二重送信を防ぐため初期化

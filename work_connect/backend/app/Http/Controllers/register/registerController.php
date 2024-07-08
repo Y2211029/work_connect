@@ -141,7 +141,7 @@ class registerController extends Controller
                     \Log::info('新規登録データのDB保存処理成功');
 
                     /*reactに返す*/
-                    echo json_encode('新規登録データのDB保存処理成功');
+                    echo json_encode($id);
 
                 } catch (\Exception $e) {
 
@@ -246,7 +246,7 @@ class registerController extends Controller
                 \Log::info('新規登録データのDB保存処理成功');
 
                 /*reactに返す*/
-                echo json_encode('新規登録データのDB保存処理成功');
+                echo json_encode($c_id);
 
             } catch (\Exception $e) {
 

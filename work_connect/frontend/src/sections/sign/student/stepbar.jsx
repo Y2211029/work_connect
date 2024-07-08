@@ -18,7 +18,7 @@ import Confirmation from "./Confirmation";
 import axios from "axios";
 
 // sessionStrage
-import { useSessionStorage } from "../../hooks/use-sessionStorage";
+import { useSessionStorage } from "../../../hooks/use-sessionStorage";
 
 const steps = ["アカウント", "学校情報", "詳細情報", "確認"];
 let stepConnectorLinesArray = [];
@@ -108,6 +108,10 @@ export default function HorizontalLinearStepper({ Stepbar }) {
           .then((response) => {
             console.log("レスポンス:", response);
             alert("新規登録が完了しました。");
+
+            // データの保存(セッションストレージ)
+            updateSessionData("accountData", "id", response.data);
+            alert("ユーザーidは" + response.data);
             // ここで作品一覧ページに飛ばす処理 //////////////////////////
             navigation("/");
           })

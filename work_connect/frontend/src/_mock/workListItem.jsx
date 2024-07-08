@@ -47,7 +47,7 @@ const WorkListItem = () => {
   }, []); // 空の依存配列を渡すことで初回のみ実行されるようにする
 
   const posts = WorkOfList.map((_, key) => ({
-    id: WorkOfList[key].id,
+    id: WorkOfList[key].work_id,
     cover: `/assets/images/covers/cover_${key + 1}.jpg`,
     thumbnail: `/assets/workImages/thumbnail/cover_${key + 1}.jpg`,
     title: WorkOfList[key].work_name,

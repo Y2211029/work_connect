@@ -20,7 +20,7 @@ import SvgColor from "src/components/svg-color";
 // ----------------------------------------------------------------------
 
 export default function PostCard({ post, index }) {
-  const { cover, title, genre, intro, thumbnail, view, comment, author, userName, createdAt } = post;
+  const { id, cover, title, genre, intro, thumbnail, view, comment, author, userName, createdAt } = post;
 
   const latestPostLarge = index === 0;
 
@@ -45,7 +45,7 @@ export default function PostCard({ post, index }) {
 
   const renderTitle = (
     <Link
-      to="WorkDetail"
+      to={`/WorkDetail/${id}`}
       color="inherit"
       variant="subtitle2"
       underline="none" // デフォルトで下線を消す
@@ -58,7 +58,7 @@ export default function PostCard({ post, index }) {
       {title}
     </Link>
   );
-  
+
   // ジャンル
   const renderGenre = genre !== null ? <Typography>{genre}</Typography> : null;
 

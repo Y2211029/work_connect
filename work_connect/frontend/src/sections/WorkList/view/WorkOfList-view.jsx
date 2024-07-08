@@ -17,7 +17,7 @@ export default function WorkOfListView() {
   // loginStatusCheckFunction();
 
   const postsFromWork = WorkListItem();
-  console.log("postsFromBlog", postsFromWork);
+  // console.log("postsFromBlog", postsFromWork);
   /*--------------------------------------------*/
   return (
     <Container>

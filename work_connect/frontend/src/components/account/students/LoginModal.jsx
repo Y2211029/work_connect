@@ -46,6 +46,11 @@ const LoginModal = ({ FromCompanyPage = false }) => {
   const url = "http://localhost:8000/s_login";
   const csrf_url = "http://localhost:8000/csrf-token";
 
+  const coleStudentLoginModalOpen = (value) => {
+    console.log("value: ", value);
+    setShowModal(value);
+  };
+
   // ヘッダーのログインボタンを押したときにログインモーダルを開いたり閉じたりする処理
   $("#loginModalOpenButton").click(function (e) {
     e.preventDefault();
@@ -68,15 +73,18 @@ const LoginModal = ({ FromCompanyPage = false }) => {
     // クリックした要素の<html>までのすべての親要素の中に"formInModal"クラスがついている要素を取得
     var targetParants = $(e.target).parents(".formInModal");
 
+    console.log("$(e.target).attr('id'): ", $(e.target).attr('id'));
     // 取得した要素の個数が0個の場合
-    if (targetParants.length == 0 || $(e.target).text() == "閉じる") {
+    if (targetParants.length == 0 || $(e.target).text() == "閉じる" || $(e.target).attr('id') == "CompanyloginModalOpenButton") {
       // クリックした要素に"formInModal"クラスがついていない場合
+      console.log("学生側のログインモーダルを閉じました");
       if (
         $(e.target).attr("class") != "formInModal" &&
         $(e.target).attr("id") != "loginModalOpenButton"
       ) {
         // ログインモーダルを閉じる
         setShowModal(false);
+        console.log("学生側のログインモーダルを閉じました");
       }
     }
   });
@@ -212,7 +220,7 @@ const LoginModal = ({ FromCompanyPage = false }) => {
     <div>
       {/* 条件付きレンダリングを使用 */}
       {FromCompanyPage ? (
-        <a href="" onClick={handleOpenModal} id="loginModalOpenButton">
+        <a href="" onClick={handleOpenModal} id="StudentLoginModalOpenButton">
           学生の方はこちら
         </a>
       ) : (
@@ -254,7 +262,7 @@ const LoginModal = ({ FromCompanyPage = false }) => {
                 isSubmit &&
                 handleCloseModal}
               <button onClick={handleCloseModal}>閉じる</button>
-              <CompanyLoginModal FromCompanyPage={false} />
+              <CompanyLoginModal FromCompanyPage={false} coleStudentLoginModalOpen={coleStudentLoginModalOpen}/>
               {/* <a href="">企業の方はこちら</a> */}
             </div>
           </form>

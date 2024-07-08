@@ -67,21 +67,21 @@ const CompanyLoginModal = ({ FromCompanyPage = false }) => {
   $("*").click(function (e) {
     // クリックした要素の<html>までのすべての親要素の中に"formInModal"クラスがついている要素を取得
     var targetParants = $(e.target).parents(".formInModal");
-
+    // console.log("$(e.target).attr('id'): ", $(e.target).attr('id'));
     // 取得した要素の個数が0個の場合
     // ***if (targetParants.length == 0 || $(e.target).text() == "閉じる")***
-    console.log($(e.target).text());
-    if (targetParants.length == 0 || $(e.target).text() == "閉じる") {
+    if (targetParants.length == 0 || $(e.target).text() == "閉じる" || $(e.target).attr('id') == "StudentLoginModalOpenButton") {
       // クリックした要素に"formInModal"クラスがついていない場合
       if ($(e.target).attr("class") != "formInModal" && $(e.target).attr("id") != "CompanyloginModalOpenButton") {
         // ログインモーダルを閉じる
         setShowModal(false);
+        console.log("企業側のログインモーダルを閉じました");
       }
     }
   });
 
-  const handleOpenModal = (e) => {
-    e.preventDefault();
+  const handleOpenModal = () => {
+    // e.preventDefault();
     setShowModal(true);
   };
 

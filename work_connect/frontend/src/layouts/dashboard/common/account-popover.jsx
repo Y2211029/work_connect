@@ -43,10 +43,37 @@ export default function AccountPopover() {
   };
 
   const handleLogout = () => {
-    console.log("aiueo");
+    const confirmed = window.confirm('ログアウトしますか？');
+    if (confirmed) {
+      // 「はい」が選択された場合の処理
+      // ログアウト
+      sessionStorage.removeItem('accountData');
+      alert('ログアウトしました。');
+      // 画面を一度だけリロードする(リロードしないとモーダルに前の情報が残ったままになる)
+      window.location.reload();
+    } else {
+      // 「いいえ」が選択された場合の処理
+    }
   }
+
+  // 登録項目確認の際に利用
+  const sessionData = sessionStorage.getItem('accountData');
+  let user_name = "";
+  let mail = "";
+  let login_state = false;
+  if(sessionData){
+    const accountData = JSON.parse(sessionData);
+    user_name = accountData.user_name;
+    mail = accountData.mail;
+    if(user_name && mail){
+      login_state = true;
+    }
+  } 
+  
+  
   return (
     <>
+    
       <IconButton
         onClick={handleOpen}
         sx={{
@@ -89,31 +116,35 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2 }}>
           <Typography variant="subtitle2" noWrap>
-            {account.displayName}
+            {/* セッションストレージからユーザーネームを取得、なければデフォルト */}
+            {user_name != "" && login_state == true ? user_name : account.displayName}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.email}
+            {/* セッションストレージからメールアドレスを取得、なければデフォルト */}
+            {mail != "" && login_state == true ? mail : ""}
           </Typography>
         </Box>
 
-        <Divider sx={{ borderStyle: 'dashed' }} />
+        <Divider sx={{ borderStyle: 'dashed' , display: login_state ? 'block' : 'none'}} />
 
         {MENU_OPTIONS.map((option) => (
-          <MenuItem key={option.label} onClick={handleClose}>
+          <MenuItem key={option.label} onClick={handleClose} sx={{ display: login_state ? 'block' : 'none'}}>
             {option.label}
           </MenuItem>
         ))}
 
-        <Divider sx={{ borderStyle: 'dashed', m: 0 }} />
+        <Divider sx={{ borderStyle: 'dashed', m: 0 , display: login_state ? 'block' : 'none'}} />
 
+        
         <MenuItem
           disableRipple
           disableTouchRipple
           onClick={handleLogout}
-          sx={{ typography: 'body2', color: 'error.main', py: 1.5 }}
+          sx={{ typography: 'body2', color: 'error.main', py: 1.5 , display: login_state ? 'block' : 'none'}}
         >
           ログアウト
         </MenuItem>
+
       </Popover>
     </>
   );

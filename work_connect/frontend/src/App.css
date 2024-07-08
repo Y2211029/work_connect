@@ -343,3 +343,16 @@ textarea {
 }
 
 /* 作品投稿画面 ここまで */
+
+
+/* 作品一覧画面　ここから */
+.link {
+  color: white;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+/* 作品一覧画面　ここまで */

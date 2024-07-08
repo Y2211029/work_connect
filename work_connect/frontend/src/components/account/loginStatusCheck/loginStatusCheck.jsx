@@ -22,15 +22,15 @@ function LoginStatusCheck() {
 
     var loginStatusCheckResponse = { data: "false" };
 
+    const data = {
+      id: accountData.id,
+    };
+    
     if (accountData != undefined) {
       if (accountData.id != undefined) {
-        loginStatusCheckResponse = await axios.get(
+        loginStatusCheckResponse = await axios.post(
           "http://localhost:8000/login_status_check",
-          {
-            params: {
-              id: accountData.id,
-            },
-          }
+          data
         );
       }
     }

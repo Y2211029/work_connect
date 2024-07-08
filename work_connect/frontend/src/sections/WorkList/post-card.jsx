@@ -1,7 +1,9 @@
+import { Link } from "react-router-dom";
+import "src/App.css";
 import PropTypes from "prop-types";
 
 import Box from "@mui/material/Box";
-import Link from "@mui/material/Link";
+
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
@@ -41,31 +43,40 @@ export default function PostCard({ post, index }) {
     />
   );
 
-  // タイトル
   const renderTitle = (
     <Link
+      to="WorkDetail"
       color="inherit"
       variant="subtitle2"
-      underline="hover"
-      sx={{
-        height: 44,
-        overflow: "hidden",
-        WebkitLineClamp: 2,
-        display: "-webkit-box",
-        WebkitBoxOrient: "vertical",
+      underline="none" // デフォルトで下線を消す
+      className="link"
+      style={{
+        height: 30,
         typography: "h5",
-        color: "common.white",
       }}
     >
       {title}
     </Link>
   );
-
+  
   // ジャンル
   const renderGenre = genre !== null ? <Typography>{genre}</Typography> : null;
 
   // サムネイル
-  const renderThumbnail = <img src={thumbnail} alt="" width="100%" height="100" />;
+  const renderThumbnail = (
+    <Box
+      component="img"
+      // alt=""
+      src={thumbnail}
+      sx={{
+        // top: ,
+        width: 1,
+        height: 200,
+        objectFit: "cover",
+        // position: "absolute",
+      }}
+    />
+  );
 
   /* 投稿日 */
   const renderDate = (
@@ -225,7 +236,6 @@ export default function PostCard({ post, index }) {
           {renderThumbnail}
           {renderGenre}
           {renderTitle}
-          {/* ここに紹介文配置、配置語にこのコメントを削除する */}
           {renderIntro}
           {renderInfo}
         </Box>

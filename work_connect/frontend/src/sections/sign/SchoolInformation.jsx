@@ -53,7 +53,7 @@ const SchoolInformation = (props) => {
 
 SchoolInformation.propTypes = {
   SessionSaveTrigger: PropTypes.string, // ここでSessionSaveTriggerの型を定義
-  coleSetUserNameCheck: PropTypes.func.isRequired,
+  coleSetUserNameCheck: PropTypes.func,
 };
 
 export default SchoolInformation;

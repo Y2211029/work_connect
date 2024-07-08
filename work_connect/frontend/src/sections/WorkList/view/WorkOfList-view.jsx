@@ -13,8 +13,11 @@ import PostCard from "src/sections/WorkList/post-card";
 // ----------------------------------------------------------------------
 
 export default function WorkOfListView() {
+  // const {loginStatusCheckFunction} = LoginStatusCheck();
+  // loginStatusCheckFunction();
+
   const postsFromWork = WorkListItem();
-  console.log("postsFromBlog", postsFromWork);
+  // console.log("postsFromBlog", postsFromWork);
   /*--------------------------------------------*/
   return (
     <Container>

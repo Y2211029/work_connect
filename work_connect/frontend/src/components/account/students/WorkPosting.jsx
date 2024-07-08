@@ -10,7 +10,7 @@ import Environment from "../../../sections/work/WorkPosting/Environment";
 // import { useState } from "react";
 // import { useNavigate } from "react-router-dom";
 
-// import "../../App.css";
+import "../../../App.css";
 
 // ログインのモーダル CSS設定
 // const modalStyle = {
@@ -47,52 +47,53 @@ const WorkPosting = () => {
         ariaHideApp={false}
         style={modalStyle}
       > */}
-        <div className="WorkPostingFormContainer">
-          <form action="" method="post" id="youtubeForm">
-            <h3>作品投稿</h3>
-            <hr />
-            <div className="WorkPostingUiForm">
+      <div className="WorkPostingFormContainer">
+        <form action="" method="post" id="youtubeForm">
+          <h3>作品投稿</h3>
+          <hr />
+          <div className="WorkPostingUiForm">
+            <div className="ImageUpload">
               <div className="WorkPostingFormField">
                 <YoutubeURL />
               </div>
               <div className="WorkPostingFormField">
                 <ImageUpload />
               </div>
-              <div className="WorkPostingFormField">
-                <WorkTitle />
-              </div>
-              {/* ジャンル */}
-              <div className="WorkPostingFormField">
-                <div className="workGenre" id="workGenre">
-                  <p className="work_genre">
-                    ジャンル&nbsp;<span className="red_txt">必須</span>
-                    &nbsp;
-                    <span className="alert_red_txt" id="alert_a_3">
-                      タグを入れてください
-                    </span>
-                  </p>
-                  <WorkGenre />
-                </div>
-              </div>
-              <div className="WorkPostingFormField">
-                <Introduction />
-              </div>
-              <div className="WorkPostingFormField">
-                <Obsession />
-              </div>
-              <div className="WorkPostingFormField">
-                <p>プログラミング言語</p>
-                <Language />
-              </div>
-              <div className="WorkPostingFormField">
-                <p>開発環境</p>
-                <Environment />
-              </div>
-
-              {/* <button onClick={handleCloseModal}>閉じる</button> */}
             </div>
-          </form>
-        </div>
+            <div className="WorkPostingFormField">
+              <WorkTitle />
+            </div>
+            {/* ジャンル */}
+            <div className="WorkPostingFormField">
+              <div className="workGenre" id="workGenre">
+                <p className="work_genre">
+                  ジャンル&nbsp;<span className="red_txt">必須</span>
+                  &nbsp;
+                  <span className="alert_red_txt" id="alert_a_3">
+                    タグを入れてください
+                  </span>
+                </p>
+                <WorkGenre />
+              </div>
+            </div>
+            <div className="WorkPostingFormField">
+              <Introduction />
+            </div>
+            <div className="WorkPostingFormField">
+              <Obsession />
+            </div>
+            <div className="WorkPostingFormField">
+              <p>プログラミング言語</p>
+              <Language />
+            </div>
+            <div className="WorkPostingFormField">
+              <p>開発環境</p>
+              <Environment />
+            </div>
+            <input type="submit" value="送信" />
+          </div>
+        </form>
+      </div>
       {/* </Modal> */}
     </div>
   );

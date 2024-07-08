@@ -16,6 +16,7 @@ use App\Http\Controllers\student\GetStudentListController;
 use App\Http\Controllers\company\GetCompanyListController;
 use App\Http\Controllers\tag\GetGenreTagController;
 use App\Http\Controllers\tag\GetLanguageTagController;
+use App\Http\Controllers\tag\GetEnvironmentTagController;
 use App\Http\Controllers\tag\InsertTagController;
 
 
@@ -25,10 +26,12 @@ Route::get('/', function () {
 });
 // タグ作成
 Route::post('/insert_tag',[InsertTagController::class, 'InsertTagController']);
-// プログラミング言語タグ取得
+// 作品ジャンルタグ取得
 Route::get('/get_genre_tag',[GetGenreTagController::class, 'GetGenreTagController']);
 // プログラミング言語タグ取得
 Route::get('/get_language_tag',[GetLanguageTagController::class, 'GetLanguageTagController']);
+// 開発環境タグ取得
+Route::get('/get_environment_tag',[GetEnvironmentTagController::class, 'GetEnvironmentTagController']);
 // ログイン状態のチェック
 Route::post('/login_status_check',[LoginStatusCheckController::class, 'LoginStatusCheckController']);
 

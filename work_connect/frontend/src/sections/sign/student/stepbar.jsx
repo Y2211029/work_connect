@@ -109,9 +109,14 @@ export default function HorizontalLinearStepper({ Stepbar }) {
             console.log("レスポンス:", response);
             alert("新規登録が完了しました。");
 
+            // セキュリティ対策のため初期化
+            sessionStorage.removeItem('accountData');
+
             // データの保存(セッションストレージ)
-            updateSessionData("accountData", "id", response.data);
-            alert("ユーザーidは" + response.data);
+            updateSessionData("accountData", "id", response.data.id);
+            updateSessionData("accountData", "user_name", response.data.user_name);
+            updateSessionData("accountData", "mail", response.data.mail);
+
             // ここで作品一覧ページに飛ばす処理 //////////////////////////
             navigation("/");
           })

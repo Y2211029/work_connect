@@ -95,10 +95,23 @@ h1 {
   margin-bottom: 3px;
 }
 
-.loginUiForm button {
+/* .loginUiForm button {
   background-color: #f3f6fc;
   width: 100%;
-  margin-top: 10px;
+  //margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 30px;
+  color: black;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+} */
+
+.submitButton {
+  background-color: #f3f6fc;
+  width: 100%;
+  //margin-top: 10px;
   border: none;
   border-radius: 5px;
   padding: 10px 30px;

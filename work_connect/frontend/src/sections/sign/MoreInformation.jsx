@@ -1,12 +1,12 @@
 import { Container, RegistarCard } from "./css/RegistarStyled";
 
-import Environment from "./DetailInfomation/EnvironmentDropdown";
-import Hobby from "./DetailInfomation/Hobby";
-import PrefectureSelect from "./DetailInfomation/PrefectureDropdown";
-import DesiredOccupation from "./DetailInfomation/DesiredOccupation";
-import ProgrammingLanguage from "./DetailInfomation/ProgrammingLanguage";
-import Qualification from "./DetailInfomation/Qualification";
-import Software from "./DetailInfomation/SoftwareDropdown";
+import Environment from "./DetailInformation/EnvironmentDropdown";
+import Hobby from "./DetailInformation/Hobby";
+import PrefectureSelect from "./DetailInformation/PrefectureDropdown";
+import DesiredOccupation from "./DetailInformation/DesiredOccupation";
+import ProgrammingLanguage from "./DetailInformation/ProgrammingLanguage";
+import Qualification from "./DetailInformation/Qualification";
+import Software from "./DetailInformation/SoftwareDropdown";
 
 const MoreInformation = () => {
   return (

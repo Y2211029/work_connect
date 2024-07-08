@@ -2,10 +2,10 @@ import PropTypes from "prop-types";
 
 import { Container, RegistarCard } from "./css/RegistarStyled";
 
-import SchoolNameDropdown from "./SchoolInfomation/SchoolNameDropdown";
-import GraduationYearDropdown from "./SchoolInfomation/GraduationYearDropdown";
-import DepartmentNameDropdown from "./SchoolInfomation/DepartmentNameDropdown";
-import FacultyName from "./SchoolInfomation/FacultyName";
+import GraduationYearDropdown from "./SchoolInformation/GraduationYearDropdown";
+import SchoolNameDropdown from "./SchoolInformation/SchoolNameDropdown";
+import DepartmentNameDropdown from "./SchoolInformation/DepartmentNameDropdown";
+import FacultyName from "./SchoolInformation/FacultyName";
 
 import { useEffect, useState } from "react";
 

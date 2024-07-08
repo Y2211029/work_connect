@@ -15,13 +15,19 @@ use App\Http\Controllers\movie\GetMovieListController;
 use App\Http\Controllers\work\GetWorkDetailController;
 use App\Http\Controllers\student\GetStudentListController;
 use App\Http\Controllers\company\GetCompanyListController;
+use App\Http\Controllers\tag\GetGenreTagController;
 use App\Http\Controllers\tag\GetLanguageTagController;
+use App\Http\Controllers\tag\InsertTagController;
 
 
 // トップ画面
 Route::get('/', function () {
     return view('welcome');
 });
+// タグ作成
+Route::post('/insert_tag',[InsertTagController::class, 'InsertTagController']);
+// プログラミング言語タグ取得
+Route::get('/get_genre_tag',[GetGenreTagController::class, 'GetGenreTagController']);
 // プログラミング言語タグ取得
 Route::get('/get_language_tag', [GetLanguageTagController::class, 'GetLanguageTagController']);
 // ログイン状態のチェック

@@ -120,7 +120,7 @@ const SchoolNameDropdown = (props) => {
 };
 
 SchoolNameDropdown.propTypes = {
-  coleSetRequiredCheck: PropTypes.func,
+  coleSetRequiredCheck: PropTypes.func.isRequired,
 };
 
 export default SchoolNameDropdown;

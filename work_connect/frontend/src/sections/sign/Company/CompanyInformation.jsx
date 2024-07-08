@@ -2,10 +2,10 @@ import PropTypes from "prop-types";
 
 import { Container, RegistarCard } from "../css/RegistarStyled";
 
-import CompanyOccupation from "../CompanyInfomation/CompanyOccupation";
-import CompanyPrefecture from "../CompanyInfomation/CompanyPrefecture";
-import CompanyHP_URL from "../CompanyInfomation/CompanyHP_URL";
-// import FacultyName from "./SchoolInfomation/FacultyName";
+import CompanyOccupation from "./CompanyOccupation";
+import CompanyPrefecture from "./CompanyPrefecture";
+import CompanyHP_URL from "./CompanyHP_URL";
+// import FacultyName from "./SchoolInformation/FacultyName";
 
 const SchoolInformation = () => {
   return (

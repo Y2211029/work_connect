@@ -10,6 +10,12 @@ import LoginStatusCheck from "src/components/account/loginStatusCheck/loginStatu
 
 import "src/App.css";
 
+import TextField from "@mui/material/TextField";
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+
 // ログインのモーダル CSS設定
 const modalStyle = {
   content: {
@@ -40,6 +46,20 @@ const CompanyLoginModal = (props) => {
 
   const url = "http://localhost:8000/s_login";
   const csrf_url = "http://localhost:8000/csrf-token";
+
+    // パスワード表示/非表示の切り替え(パスワード)
+    const [showPassword, setShowPassword] = useState("");
+
+    const handleClickShowPassword = (e) => {
+      setShowModal(true);
+      setShowPassword(!showPassword);
+      e.stopPropagation();
+    };
+  
+    const handleMouseDownPassword = (e) => {
+      setShowModal(true);
+      e.preventDefault();
+    };
 
   const handleOpenStudentModal = () => {
     props.callSetModalChange("学生");
@@ -108,10 +128,12 @@ const CompanyLoginModal = (props) => {
         if (data != null) {
           console.log(data.id);
           console.log("login成功");
-          // alert("ログインに成功しました。");
+          alert("ログインに成功しました。");
 
           // データの保存(セッションストレージ)
           updateSessionData("accountData", "id", data.id);
+          updateSessionData("accountData", "user_name", data.user_name);
+          updateSessionData("accountData", "mail", data.mail);
           console.log("ユーザーidは" + sessionStorage.getItem("user_id"));
 
           // 二重送信を防ぐため初期化
@@ -174,22 +196,56 @@ const CompanyLoginModal = (props) => {
             <h3>Work & Connect ログイン</h3>
             <hr />
             <div className="loginUiForm">
-              <div className="loginFormField">
-                <label>企業名またはメールアドレス</label>
-                <input type="text" name="user_name" value={formValues.user_name} onChange={handleChange} />
-              </div>
-              <p className="errorMsg">{formErrors.user_name}</p>
+              <TextField
+              fullWidth
+              label="企業名またはメールアドレス"
+              margin="normal"
+              name="user_name"
+              onChange={handleChange}
+              required
+              type= "text"
+              value={formValues.user_name}
+              variant="outlined"
+            />
+              <TextField
+              fullWidth
+              label="パスワード"
+              margin="normal"
+              name="password"
+              onChange={handleChange}
+              required
+              type={showPassword ? "text" : "password"}
+              value={formValues.password}
+              variant="outlined"
+              // パスワード表示/非表示の切り替え
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                      sx={{
+                        
+                      }}
+                      variant="outlined"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
 
-              <div className="loginFormField">
-                <label>パスワード</label>
-                <input type="password" name="password" value={formValues.password} onChange={handleChange} />
-              </div>
-              <p className="errorMsg">{formErrors.password}</p>
+
+
+
               <button type="submit" className="submitButton">
                 ログイン
               </button>
               {Object.keys(formErrors).length === 0 && isSubmit && handleCloseModal}
-              <button onClick={handleCloseModal} id="CompanyshutButton">
+              <button onClick={handleCloseModal} id="CompanyshutButton" className="submitButton">
                 閉じる
               </button>
               <div onClick={handleOpenStudentModal} id="loginStudentModalLink">

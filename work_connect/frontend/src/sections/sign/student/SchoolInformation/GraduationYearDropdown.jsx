@@ -61,13 +61,15 @@ const GraduationYearDropdown = (props) => {
         value={selectedGraduation}
         onChange={handleChange}
         placeholder="Select..."
+        required
       />
     </div>
   );
 };
 
 GraduationYearDropdown.propTypes = {
-  coleSetRequiredCheck: PropTypes.func,
+  coleSetRequiredCheck: PropTypes.func.isRequired,
 };
 
 export default GraduationYearDropdown;
+

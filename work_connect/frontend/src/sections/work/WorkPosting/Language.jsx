@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import CreatableSelect from 'react-select/creatable';
+import InsertTag from 'src/components/tag/InsertTag';
 import axios from 'axios';
 
 const Language = () => {
-
+  const {InsertTagFunction} = InsertTag();
   const url = 'http://localhost:8000/get_language_tag'
   const [options, setOptions] = useState([]);
   useEffect(()=>{
@@ -45,12 +46,13 @@ const Language = () => {
       console.log(inputValue);  
       const newOption = { value: inputValue.option.value, label: inputValue.option.label };
       setOptions([...options, newOption]);
+      // 12は作品投稿のプログラミング言語です。 
+      InsertTagFunction(inputValue.option.value, 12);
     }
   };
 
   return(
-    <CreatableSelect options={options} isClearable isMulti onChange={handleChange}
-       />
+    <CreatableSelect options={options} isClearable isMulti onChange={handleChange}/>
   );
 
 };

@@ -7,7 +7,6 @@ import Title from "title-editorjs";
 import Paragraph from "editorjs-paragraph-with-alignment";
 import Embed from "@editorjs/embed";
 import Table from "@editorjs/table";
-import Code from "@editorjs/code";
 import CheckList from "@editorjs/checklist";
 import Delimiter from "@editorjs/delimiter";
 import Raw from "@editorjs/raw";
@@ -15,18 +14,26 @@ import Header from "editorjs-header-with-anchor";
 import Quote from "@editorjs/quote";
 import InlineCode from "@editorjs/inline-code";
 import TextVariantTune from "@editorjs/text-variant-tune";
-import Image from "@editorjs/image";
-import LinkTool from "@editorjs/link";
 import createGenericInlineTool, { UnderlineInlineTool } from "editorjs-inline-tool";
 import Alert from "editorjs-alert";
-import ToggleBlock from "editorjs-toggle-block";
+import ToggleBlock from "editorjs-toggle-block"; //アコーディオンメニューができる
 import EditorjsNestedChecklist from "@calumk/editorjs-nested-checklist";
-import IndentTune from 'editorjs-indent-tune'; //インデントを1回ずつ決められる
+import IndentTune from 'editorjs-indent-tune'; //インデントを1個ずつ決められる
 import NoticeTune from 'editorjs-notice';
 import Strikethrough from '@sotaproject/strikethrough'; //取り消し線
 import ColorPlugin from 'editorjs-text-color-plugin'; //テキストのカラーを変更できる(現在赤と黄色しか選べない)
 import Tooltip from 'editorjs-tooltip'; //ホバーすると操作方法や注釈を表示する
 import ChangeCase from 'editorjs-change-case'; //大文字と小文字を変更
+import Hyperlink from 'editorjs-hyperlink';
+import Button from 'editorjs-button';
+import Code from '@rxpm/editor-js-code';
+import ImageTool from 'editorjs-image-with-link'; //トリミングはできないが、Cropper.jsを使用する
+import SKMFlipBox from 'skm-flipbox'; //画像のスライドができるカルーセル
+import AudioPlayer from 'editorjs-audio-player'; //音声を挿入できる
+import ImageGallery from '@rodrigoodhin/editorjs-image-gallery';
+import Carousel from 'editorjs-carousel';
+import 'cropperjs/dist/cropper.css';
+
 
 //画像
 import { Instagram, Twitter } from "@mui/icons-material";
@@ -39,6 +46,7 @@ import $ from "jquery";
 
 
 
+
 const Editor = () => {
 
   const editorInstance = useRef(null);
@@ -47,9 +55,10 @@ const Editor = () => {
   const [displayInput, setDisplayInput] = useState(true); // input要素の表示状態を管理するステート
   const [textValue, setTextValue] = useState('');
   const [csrfToken, setCsrfToken] = useState("");
-  const [show, setShow] = useState(false) 
+  const [show, setShow] = useState(false)
   const [news_id, setNewsId] = useState(0); //ニュースの情報が格納されているDBのidを格納する
   const news_save_url = "http://127.0.0.1:8000/news_save";
+  const image_save_url = "http://127.0.0.1:8000/image_save";
   const news_upload_url = "http://127.0.0.1:8000/news_upload";
   const csrf_url = "http://127.0.0.1:8000/csrf-token";
 
@@ -60,7 +69,6 @@ const Editor = () => {
 
   const news_save = () => {
     alert("下書きを保存しました!");
-    console.log(imageUrl)
     console.log(textValue)
     if (editorInstance.current && typeof editorInstance.current.save === "function") {
       editorInstance.current
@@ -74,7 +82,6 @@ const Editor = () => {
             cache: false, // cacheを使うか使わないかを設定
             dataType: "json", // データタイプ (script, xmlDocument, jsonなど)
             data: {
-              image: imageUrl,    //サムネイル
               value: outputData,  //ニュース記事
               title: textValue,   //タイトル
               news_id: news_id,   //ID
@@ -117,8 +124,8 @@ const Editor = () => {
     console.log(newsContent);
     console.log(selectedGenre);
     console.log(news_id);
-     // ajax
-     $.ajax({
+    // ajax
+    $.ajax({
       url: news_upload_url, // アクセスするURL
       type: "GET", // POST または GET
       cache: false, // cacheを使うか使わないかを設定
@@ -132,16 +139,16 @@ const Editor = () => {
         "X-CSRF-TOKEN": csrfToken,
       },
     })
-    .done(function (response) {
-      // ajax成功時の処理
-      console.log(response.id);
-      setNewsId(response.id); // news_idを更新する
-      console.log("成功");
-    })
-    .fail(function (textStatus, errorThrown) {
-      // ajax失敗時の処理
-      console.log("Error:", textStatus, errorThrown);
-    });
+      .done(function (response) {
+        // ajax成功時の処理
+        console.log(response.id);
+        setNewsId(response.id); // news_idを更新する
+        console.log("成功");
+      })
+      .fail(function (textStatus, errorThrown) {
+        // ajax失敗時の処理
+        console.log("Error:", textStatus, errorThrown);
+      });
   }
 
   const news_release_setting = () => {
@@ -173,38 +180,43 @@ const Editor = () => {
     }
   };
 
-  // ファイル選択時の処理
-  const handleFileSelect = (event) => {
+  const handleFileSelect = async (event) => {
     const file = event.target.files[0];
-    if (file) {
-      handleCoverImageUpload(file);
+    if (file && csrfToken) {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('news_id', news_id);
+
+      console.log('FormData:', formData);
+      console.log('file', file);
+      console.log('news_id', news_id);
+
+      try {
+        const response = await axios.post(image_save_url, formData, {
+          headers: {
+            "X-CSRF-TOKEN": csrfToken,
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        console.log(response.data);
+        const path = `./header_img/${response.data.image}`;
+        const id = response.data.id;
+        console.log(path);
+        console.log(id);
+        setNewsId(id);
+        setImageUrl(path);
+        setDisplayInput(false);
+        console.log("成功");
+      } catch (error) {
+        console.error("データの取得中にエラーが発生しました", error);
+      }
     }
   };
-
-  // ファイルをBase64形式に変換して、画像URLを設定する処理
-  const handleCoverImageUpload = async (file) => {
-    try {
-      const base64Image = await toBase64(file);
-      setImageUrl(base64Image); // 画像のURLを設定
-      setDisplayInput(false); // 画像をアップロードした後にinput要素を非表示にする
-    } catch (error) {
-      console.error('画像のアップロードに失敗しました:', error);
-    }
-  };
-
-  // ファイルをBase64に変換する関数
-  const toBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
 
 
 
   useEffect(() => {
-    
+
     console.log(news_id); // news_idの値が変更されたときに実行される処理
     async function fetchCsrfToken() {
       try {
@@ -321,22 +333,73 @@ const Editor = () => {
             class: Code,
             inlineToolbar: true,
             config: {
-              placeholder: "コードを書いてください",
-            },
+              modes: {
+                'js': 'JavaScript',     // JavaScript
+                'py': 'Python',         // Python
+                'java': 'Java',         // Java
+                'cpp': 'C++',           // C++
+                'cs': 'C#',             // C#
+                'php': 'PHP',           // PHP
+                'rb': 'Ruby',           // Ruby
+                'go': 'Go',             // Go
+                'ts': 'TypeScript',     // TypeScript
+                'swift': 'Swift',       // Swift
+                'kt': 'Kotlin',         // Kotlin
+                'rs': 'Rust',           // Rust
+                'md': 'Markdown',       // Markdown
+                'html': 'HTML',         // HTML
+                'css': 'CSS',           // CSS
+                'sql': 'SQL',           // SQL
+                'sh': 'Shell',          // Shell
+                'r': 'R',               // R
+                'scala': 'Scala',       // Scala
+                'perl': 'Perl',         // Perl
+                'dart': 'Dart',         // Dart
+              },
+              defaultMode: 'js'
+            }
           },
-          linkTool: {
-            class: LinkTool,
-            config: {
-              endpoint: "/editorjs_link",
-            },
-          },
-          image: {
-            class: Image,
+          carousel: {
+            class: Carousel,
+            inlineToolbar: true,
             config: {
               uploader: {
                 uploadByFile: handleImageUpload,
                 uploadByURL: handleUrlUpload,
               },
+            },
+          },
+          image: {
+            class: ImageTool,
+            config: {
+              uploader: {
+                uploadByFile: handleImageUpload,
+                uploadByURL: handleUrlUpload,
+              },
+            },
+          },
+          slide: {
+            class: SKMFlipBox,
+            inlineToolbar: true,
+          },
+          audioPlayer: {
+            class: AudioPlayer,
+            inlineToolbar: true,
+          },
+          imageGallery: {
+            class: ImageGallery,
+            inlineToolbar: true,
+            config: {
+              placeholder: "画像アドレスをコピーして貼付してください(最後はjpg)",
+              actions: {
+                "Edit Images": '画像URLを表示・非表示',
+                "Activate/Deactivate dark mode": 'ダークモードを有効化/無効化',
+                "Default layout": 'デフォルトのレイアウト',
+                "Set horizontal layout": '水平レイアウト',
+                "Set square layout": '正方形レイアウト',
+                "Set layout with gap": '隙間のあるレイアウト',
+                "Set layout with fixed size": '固定サイズのレイアウト',
+              }
             },
           },
           raw: {
@@ -446,8 +509,47 @@ const Editor = () => {
             class: ChangeCase,
             inlineToolbar: true,
             config: {
-              showLocaleOption: true, // enable locale case options
+              showLocaleOption: true,
               locale: 'ja'
+            }
+          },
+          hyperlink: {
+            class: Hyperlink,
+            config: {
+              shortcut: 'CMD+L',
+              target: '_blank',
+              rel: 'nofollow',
+              availableTargets: ['_blank', '_self'],
+              availableRels: ['author', 'noreferrer'],
+              validate: false,
+            }
+          },
+          button: {
+            class: Button,
+            inlineToolbar: true,
+            config: {
+              css: {
+                btnColor: "btn--gray",
+                btnBorder: "solid",
+              },
+              textValidation: (text) => {
+                // ボタンテキストが空でないことを確認する
+                if (text.trim() !== "") {
+                  return true;
+                } else {
+                  console.log("error! Button text is empty.");
+                  return false;
+                }
+              },
+              linkValidation: (text) => {
+                // リンクURLがhttp://またはhttps://で始まることを確認する
+                if (text.startsWith("https://") || text.startsWith("http://")) {
+                  return true;
+                } else {
+                  console.log("error! Invalid URL:", text);
+                  return false;
+                }
+              }
             }
           },
           nestedchecklist: EditorjsNestedChecklist,
@@ -477,7 +579,18 @@ const Editor = () => {
             tools: {
               noticeTune: {
                 'Notice caption': '強調表示をする'
-              }
+              },
+              hyperlink: {
+                Save: 'Salvar',
+                'Select target': 'Seleziona destinazione',
+                'Select rel': 'Wählen rel'
+              },
+              button: {
+                'Button Text': 'ボタンに表示するテキスト',
+                'Link Url': 'ボタンのジャンプ先のURL',
+                'Set': "設定する",
+                'Default Button': "デフォルト",
+              },
             },
             toolNames: {
               Text: "テキスト",
@@ -492,7 +605,7 @@ const Editor = () => {
               Delimiter: "区切り",
               "Raw HTML": "HTML",
               Table: "テーブル",
-              Link: "リンク",
+              Hyperlink: 'ハイパーリンク',
               Bold: "太字",
               Underline: "下線",
               Italic: "斜体",
@@ -502,12 +615,20 @@ const Editor = () => {
               Strikethrough: "取り消し線",
               Tooltip: "ツールチップ",
               ChangeCase: "大文字:小文字 変換",
+              Button: "ボタン",
+              FlipBox: "スライド(テキストのみ)",
+              AudioPlayer: "オーディオ",
+              "Image Gallery": "画像ギャラリー",
+              Carousel: "カルーセル",
             },
           },
         },
       });
     }
+
   }, []); // 空の依存配列を渡して初回のみ実行
+
+
 
   return (
     <div className="editor">
@@ -543,14 +664,11 @@ const Editor = () => {
         )}
       </div>
 
-
-
-
       {/* アップロードされた画像の表示 */}
       {
         imageUrl && (
           <div className="uploaded-image" id="uploaded-image">
-            <img src={imageUrl} alt="Uploaded" style={{ maxWidth: '100%', maxHeight: '300px' }} />
+            <img src={imageUrl} alt="Uploaded" style={{ width: '100%', height: '300px' }} />
             <CancelIcon
               className="cancelIcon"
             />
@@ -559,13 +677,15 @@ const Editor = () => {
       }
 
       {/* 画像を選ぶ */}
-      <input
-        id="fileInput"
-        type="file"
-        accept="image/*"
-        style={{ display: 'none' }} // displayInput の状態によって表示を制御
-        onChange={handleFileSelect} // ファイル選択時の処理
-      />
+      <form>
+        <input
+          id="fileInput"
+          type="file"
+          accept="image/*"
+          style={{ display: 'none' }} // displayInput の状態によって表示を制御
+          onChange={handleFileSelect} // ファイル選択時の処理
+        />
+      </form>
 
       <ImageSearchIcon
         className="cover_img_upload"
@@ -579,7 +699,7 @@ const Editor = () => {
         wrap="soft"
         placeholder="記事タイトル"
         value={textValue} // 状態の値をテキストエリアにセット
-        onChange={titlechange} // テキストエリアの変更を監視し、stateを更新 
+        onChange={titlechange} // テキストエリアの変更を監視し、stateを更新
       />
 
       <div className="editor-wrapper">

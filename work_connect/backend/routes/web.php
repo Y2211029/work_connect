@@ -4,44 +4,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ListController;
 use App\Http\Controllers\EditorController;
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\login\loginController;
-use App\Http\Controllers\login\LoginStatusCheckController;
 use App\Http\Controllers\register\pre_registerController;
 use App\Http\Controllers\register\preRegisterCheckController;
 use App\Http\Controllers\register\registerController;
-use App\Http\Controllers\register\userNameCheckController;
-use App\Http\Controllers\work\GetWorkListController;
-use App\Http\Controllers\movie\GetMovieListController;
-use App\Http\Controllers\student\GetStudentListController;
-use App\Http\Controllers\company\GetCompanyListController;
-use App\Http\Controllers\tag\GetGenreTagController;
-use App\Http\Controllers\tag\GetLanguageTagController;
-use App\Http\Controllers\tag\InsertTagController;
 
 
 // トップ画面
 Route::get('/', function () {
     return view('welcome');
 });
-// タグ作成
-Route::post('/insert_tag',[InsertTagController::class, 'InsertTagController']);
-// プログラミング言語タグ取得
-Route::get('/get_genre_tag',[GetGenreTagController::class, 'GetGenreTagController']);
-// プログラミング言語タグ取得
-Route::get('/get_language_tag',[GetLanguageTagController::class, 'GetLanguageTagController']);
-// ログイン状態のチェック
-Route::post('/login_status_check',[LoginStatusCheckController::class, 'LoginStatusCheckController']);
 
-// 作品一覧取得
-Route::get('/get_work_list',[GetWorkListController::class, 'GetWorkListController']);
-// 動画一覧取得
-Route::get('/get_movie_list',[GetMovieListController::class, 'GetMovieListController']);
-// 学生一覧取得
-Route::get('/get_student_list',[GetStudentListController::class, 'GetStudentListController']);
-// 企業一覧取得
-Route::get('/get_company_list',[GetCompanyListController::class, 'GetCompanyListController']);
-
-Route::get('/user_name_check',[userNameCheckController::class, 'userNameCheckController']);
+// /list
+// Route::get('list',[ListController::class, 'index']);
 
 Route::get('/s_pre_register_check',[preRegisterCheckController::class, 'preRegisterCheckController']);
 
@@ -54,12 +31,17 @@ Route::get('/s_login',[loginController::class, 'loginController']);
 Route::get('/s_pre_register',[pre_registerController::class, 'pre_registerController']);
 
 
-//ニュース機能
-Route::get('/news_upload',[EditorController::class, 'news_upload']);
+//ニュース編集・投稿・閲覧機能
 Route::get('/news_save',[EditorController::class, 'news_save']);
-Route::get('/Editor',[EditorController::class, 'editor_get']);
+Route::get('/news_upload',[EditorController::class, 'news_upload']);
+Route::post('/image_save',[EditorController::class, 'image_save']);
 Route::get('/Internship_JobOffer',[EditorController::class, 'editor_get']);
+Route::get('/Internship_JobOffer/news_detail/{id}', [NewsController::class, 'news_detail_get']);
+Route::post('/news_bookmark',[NewsController::class, 'news_bookmark']);
 
+
+//設定機能
+Route::get('/color_save',[SettingController::class, 'color_save']);
 
 
 // ミドルウェア

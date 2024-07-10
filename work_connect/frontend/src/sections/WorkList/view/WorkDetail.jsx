@@ -1,36 +1,3 @@
-<<<<<<< HEAD
-const WorkDetail = () => {
-
-  /*
-    ※必須項目
-    持ってくるもの
-    ※作品タイトル
-    ※サムネイル
-    ※➡︎スライド画像
-    ※➡︎スライド画像紹介文
-    ※アイコン
-    ※ジャンル(タグ)
-    ※紹介文
-    プログラミング言語(タグ)
-    開発環境(タグ)
-    その他
-    
-    コメント
-
-    必要な要素
-    ・ローディング
-    ・
-  */
-  return (
-    <div>
-      <h1>作品詳細</h1>
-      {/*  */}
-    </div>
-  );
-};
-
-export default WorkDetail;
-=======
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -200,4 +167,3 @@ const WorkDetail = () => {
 };
 
 export default WorkDetail;
->>>>>>> f74bb114622c2917b98d0449d67e8b7e25daac84

@@ -7,14 +7,14 @@ import WorkListItem from "src/_mock/workListItem";
 
 import PostCard from "src/sections/WorkList/post-card";
 
-// import LoginStatusCheck from "../../../components/account/loginStatusCheck/loginStatusCheck";
+import LoginStatusCheck from "../../../components/account/loginStatusCheck/loginStatusCheck";
 
 // import AppCurrentVisits from "src/sections/overview/app-current-visits";
 // ----------------------------------------------------------------------
 
 export default function WorkOfListView() {
-  // const {loginStatusCheckFunction} = LoginStatusCheck();
-  // loginStatusCheckFunction();
+  const {loginStatusCheckFunction} = LoginStatusCheck();
+  loginStatusCheckFunction();
 
   const postsFromWork = WorkListItem();
   // console.log("postsFromBlog", postsFromWork);

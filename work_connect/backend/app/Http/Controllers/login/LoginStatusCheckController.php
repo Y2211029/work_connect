@@ -5,7 +5,7 @@ namespace App\Http\Controllers\login;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\w_users;
-use App\Models\w_companies;
+use App\Models\w_company;
 
 class LoginStatusCheckController extends Controller
 {
@@ -29,7 +29,7 @@ class LoginStatusCheckController extends Controller
             if ($kind == "S") {
                 $accountCheck = w_users::where('id', $id)->exists();
             } else if ($kind == "C") {
-                $accountCheck = w_companies::where('id', $id)->exists();
+                $accountCheck = w_company::where('id', $id)->exists();
             } else {
                 \Log::info('LoginStatusCheckController: $kindがSでもCでもない');
                 $accountCheck = false;

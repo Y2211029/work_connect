@@ -211,7 +211,7 @@ const StudentLoginModal = (props) => {
       {/* 条件付きレンダリングを使用 */}
 
       <Modal isOpen={showModal} contentLabel="Example Modal" style={modalStyle}>
-        <div className="loginFormContainer">
+        <div className="Modal">
           <form onSubmit={handleSubmit} className="formInModal">
             <h3>Work & Connect ログイン</h3>
             <hr />

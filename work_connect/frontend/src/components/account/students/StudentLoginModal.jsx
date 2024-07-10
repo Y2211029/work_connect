@@ -205,11 +205,10 @@ const StudentLoginModal = (props) => {
 
     return errors;
   };
-
+  
   return (
     <div>
       {/* 条件付きレンダリングを使用 */}
-
       <Modal isOpen={showModal} contentLabel="Example Modal" style={modalStyle}>
         <div className="Modal">
           <form onSubmit={handleSubmit} className="formInModal">
@@ -272,7 +271,6 @@ const StudentLoginModal = (props) => {
     </div>
   );
 };
-
 StudentLoginModal.propTypes = {
   FromCompanyPage: PropTypes.bool.isRequired,
   callSetModalChange: PropTypes.func.isRequired,

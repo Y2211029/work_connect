@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Box from '@material-ui/material/Box';
-import { makeStyles } from '@material-ui/material/styles';
-import AppBar from '@material-ui/material/AppBar';
-import Tabs from '@material-ui/material/Tabs';
-import Tab from '@material-ui/material/Tab';
-// import Typography from '@material-ui/material/Typography';
+
+import { makeStyles } from '@mui/styles/makeStyles';
+import AppBar from '@mui/material/AppBar';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
+// import Typography from '@mui/material/Typography';
 
 
 function TabPanel(props) {

@@ -111,7 +111,7 @@ h1 {
 .submitButton {
   background-color: #f3f6fc;
   width: 100%;
-  //margin-top: 10px;
+  margin-top: 10px;
   border: none;
   border-radius: 5px;
   padding: 10px 30px;
@@ -147,9 +147,9 @@ h1 {
   transition: all 0.2s;
 }
 
-button:hover {
+/* button:hover {
   background-color: #175892;
-}
+} */
 
 .errorMsg {
   color: red;
@@ -306,7 +306,7 @@ button:hover {
 .WorkPostingFormContainer form {
   background-color: white;
   width: 100%;
-  max-width: 600px;
+  /* max-width: 600px; */
   padding: 30px;
   border-radius: 50px;
   float: left;
@@ -315,11 +315,7 @@ button:hover {
 }
 
 .WorkPostingUiForm {
-  display: flex;
-  float: left;
-  flex-direction: column;
   align-items: center;
-  overflow-y: scroll;
   float: left;
   justify-content: space-evenly;
   height: 600px;
@@ -354,6 +350,39 @@ button:hover {
 textarea {
   resize: none;
 }
+
+.WorkPostingUiForm {
+  display: flex;
+  flex-direction: row;
+  /* float: left; */
+}
+
+.ImageUpload {
+  display: flex;
+  flex-direction: column;
+  background-color: #8b8b8b;
+  overflow-y: auto;
+  padding: 20px;
+  flex: 1 1 0%;
+  width: ;
+  height: 100%;
+}
+
+.Information {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-y: scroll;
+  background-color: #8b8b8b;
+  border-radius: 5px;
+  width: 50%;
+  flex: 1 1 0%;
+  padding: 20px;
+  height: 100%;
+  margin-left: 6px;
+  box-sizing: border-box;
+}
+
 
 /* 作品投稿画面 ここまで */
 

@@ -1,38 +1,74 @@
-import { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { DndContext, closestCenter } from '@dnd-kit/core';
-import { arrayMove, SortableContext, useSortable, rectSortingStrategy } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import { useState, useEffect, useRef } from "react";
+import PropTypes from "prop-types";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  rectSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
-const SortableItem = ({ id, image }) => {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
+const SortableItem = ({ id, image, onDelete }) => {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    margin: '10px',
-    textAlign: 'center',
-    boxSizing: 'border-box',
+    margin: "10px",
+    textAlign: "center",
+    boxSizing: "border-box",
+    position: "relative",
   };
 
   const imgStyle = {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
   };
 
   const containerStyle = {
-    width: '400px', // 16:9の比率に基づいた幅
-    height: '225px', // 16:9の比率に基づいた高さ
-    overflow: 'hidden', // 親要素のサイズを超える部分を隠す
-    position: 'relative', // 必要に応じて絶対配置をサポート
-    boxSizing: 'border-box',
+    width: "100%",
+    height: "auto",
+    overflow: "hidden",
+    position: "relative",
+    boxSizing: "border-box",
+    zIndex: 1,
+  };
+
+  const buttonStyle = {
+    position: "absolute",
+    top: "5px",
+    right: "5px",
+    background: "red",
+    color: "white",
+    border: "none",
+    borderRadius: "50%",
+    width: "25px",
+    height: "25px",
+    cursor: "pointer",
+    zIndex: 2,
+  };
+
+  const handleDelete = (event) => {
+    event.preventDefault();
+    onDelete(id);
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <div ref={setNodeRef} style={style} {...attributes}>
       <div style={containerStyle}>
-        <img src={image} alt="" style={imgStyle} />
+        <img src={image} alt="" style={imgStyle} {...listeners} />
+        <button type="button" style={buttonStyle} onClick={handleDelete}>
+          ×
+        </button>
       </div>
     </div>
   );
@@ -41,20 +77,22 @@ const SortableItem = ({ id, image }) => {
 SortableItem.propTypes = {
   id: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
+  onDelete: PropTypes.func.isRequired,
 };
 
 const ImageUpload = () => {
   const [items, setItems] = useState([]);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
-    const savedItems = localStorage.getItem('items');
+    const savedItems = localStorage.getItem("items");
     if (savedItems) {
       setItems(JSON.parse(savedItems));
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('items', JSON.stringify(items));
+    localStorage.setItem("items", JSON.stringify(items));
   }, [items]);
 
   const handleImageUpload = (event) => {
@@ -64,6 +102,11 @@ const ImageUpload = () => {
       image: URL.createObjectURL(file),
     }));
     setItems((prevItems) => [...prevItems, ...newItems]);
+  };
+
+  const handleDelete = (id) => {
+    console.log(`Deleting item with id: ${id}`);
+    setItems((items) => items.filter((item) => item.id !== id));
   };
 
   const handleDragEnd = (event) => {
@@ -79,15 +122,78 @@ const ImageUpload = () => {
     }
   };
 
+  // useSensors と PointerSensor を使用
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 10,
+      },
+      // ボタンの上ではドラッグアンドドロップを無効にする
+      filter: (event) => !event.target.closest("button"),
+    })
+  );
+
+  const handleButtonClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const inputStyle = {
+    display: "none",
+  };
+
+  const buttonStyle = {
+    display: "flex",
+    flexDirection: "column",
+    borderWidth: "2px",
+    borderStyle: "dashed",
+    borderColor: "rgb(88, 99, 248)",
+    borderRadius: "5px",
+    boxSizing: "borderBox",
+    height: "12.0625rem",
+    webkitBoxPack: "center",
+    justifyContent: "center",
+    webkitBoxAlign: "center",
+    alignItems: "center",
+    cursor: "pointer",
+    width: "100%",
+  };
+
   return (
     <div>
       <p>画像</p>
-      <input type="file" multiple onChange={handleImageUpload} />
-      <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext items={items.map(item => item.id)} strategy={rectSortingStrategy}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '10px' }}>
+      <input
+        type="file"
+        multiple
+        onChange={handleImageUpload}
+        ref={fileInputRef}
+        style={inputStyle}
+      />
+      <button type="button" onClick={handleButtonClick} style={buttonStyle}>
+        アップロード
+      </button>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={items.map((item) => item.id)}
+          strategy={rectSortingStrategy}
+        >
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
+              gap: "10px",
+            }}
+          >
             {items.map((item) => (
-              <SortableItem key={item.id} id={item.id} image={item.image} />
+              <SortableItem
+                key={item.id}
+                id={item.id}
+                image={item.image}
+                onDelete={handleDelete}
+              />
             ))}
           </div>
         </SortableContext>

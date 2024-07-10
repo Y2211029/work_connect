@@ -38,7 +38,7 @@ export const EditorPage = lazy(() => import("src/pages/Editor/Editor"));
 export const Page404 = lazy(() => import("src/pages/page-not-found"));
 
 //プロフィール
-export const ProfilePage = lazy(() => import("src/sections/Profile/View/Profile"));
+export const ProfilePage = lazy(() => import("src/pages/Profile"));
 
 //20240704 金田追加
 export const NewsDetailPage = lazy(() => import('src/sections/InternshipJobOffer/news_detail'));

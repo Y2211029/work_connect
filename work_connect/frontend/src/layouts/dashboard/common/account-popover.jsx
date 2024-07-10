@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Divider from '@mui/material/Divider';
 import Popover from '@mui/material/Popover';
@@ -21,6 +21,7 @@ const MENU_OPTIONS = [
   // },
   {
     label: 'プロフィール',
+    path: '/Profile',
     icon: 'eva:person-fill',
   },
   {
@@ -33,6 +34,7 @@ const MENU_OPTIONS = [
 
 export default function AccountPopover() {
   const [open, setOpen] = useState(null);
+  const navigate = useNavigate();
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -40,6 +42,11 @@ export default function AccountPopover() {
 
   const handleClose = () => {
     setOpen(null);
+  };
+
+  const handleMenuItemClick = (path) => {
+    handleClose();
+    navigate(path);
   };
 
   const handleLogout = () => {
@@ -128,7 +135,7 @@ export default function AccountPopover() {
         <Divider sx={{ borderStyle: 'dashed' , display: login_state ? 'block' : 'none'}} />
 
         {MENU_OPTIONS.map((option) => (
-          <MenuItem key={option.label} onClick={handleClose} sx={{ display: login_state ? 'block' : 'none'}}>
+          <MenuItem key={option.label} onClick={() => handleMenuItemClick(option.path)} sx={{ display: login_state ? 'block' : 'none'}}>
             {option.label}
           </MenuItem>
         ))}

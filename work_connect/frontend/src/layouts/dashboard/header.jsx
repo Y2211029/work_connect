@@ -8,6 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
 import { useTheme } from "@mui/material/styles";
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 
 import StudentLoginModal from "src/components/account/students/StudentLoginModal";
 import CompanyLoginModal from "src/components/account/company/CompanyLoginModal";
@@ -37,6 +38,7 @@ import CompanyPreSignModal from "../../components/account/company/CompanyPreSign
 export default function Header({ onOpenNav }) {
   const [ModalChange, setModalChange] = useState("");
   const [PreModalChange, setPreModalChange] = useState("");
+
   const theme = useTheme();
   const lgUp = useResponsive("up", "lg");
   let navigation = useNavigate();
@@ -62,6 +64,15 @@ export default function Header({ onOpenNav }) {
       setPreModalChange("学生");
     }
   };
+
+  //クリックすると一番上まで戻るボタン
+  const handleScrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+
+
+
 
   // ログインのform内以外をクリックしたときにモーダルを閉じる処理
   $("*").click(function (e) {
@@ -169,7 +180,21 @@ export default function Header({ onOpenNav }) {
         >
           {renderContent}
         </Toolbar>
-      </AppBar>
+        <ArrowUpwardIcon
+          onClick={handleScrollToTop}
+          style={{
+            cursor: 'pointer',
+            width: '50px',
+            height: '50px',
+            position: 'fixed',
+            top: '800px',
+            right: '20px',
+            color: 'black',
+            borderRadius: '50%',
+            boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)'
+          }}
+        />
+        </AppBar>
     </>
   );
 }

@@ -30,6 +30,18 @@ export default function Nav({ openNav, onCloseNav }) {
 
   const upLg = useResponsive('up', 'lg');
 
+  // セッションデータを取得
+  const sessionData = sessionStorage.getItem('accountData');
+  let user_name = "";
+  let login_state = false;
+  if(sessionData){
+    const accountData = JSON.parse(sessionData);
+    user_name = accountData.user_name;
+    if(user_name){
+      login_state = true;
+    }
+  } 
+
   useEffect(() => {
     if (openNav) {
       onCloseNav();
@@ -53,7 +65,11 @@ export default function Nav({ openNav, onCloseNav }) {
       <Avatar src={account.photoURL} alt="photoURL" />
 
       <Box sx={{ ml: 2 }}>
-        <Typography variant="subtitle2">{account.displayName}</Typography>
+        
+        <Typography variant="subtitle2">
+          {/* セッションストレージからユーザーネームを取得、なければデフォルト */}
+          {user_name != "" && login_state == true ? user_name : account.displayName}
+          </Typography>
 
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
           {account.role}

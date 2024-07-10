@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-import { Container, RegistarCard } from "./css/RegistarStyled";
+import { Container, RegistarCard } from "../css/RegistarStyled";
 
 import GraduationYearDropdown from "./SchoolInformation/GraduationYearDropdown";
 import SchoolNameDropdown from "./SchoolInformation/SchoolNameDropdown";

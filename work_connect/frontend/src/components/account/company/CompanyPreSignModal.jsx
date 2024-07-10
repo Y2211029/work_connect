@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import Modal from "react-modal";
 import PropTypes from "prop-types";
+import TextField from "@mui/material/TextField";
 
 import axios from "axios";
 
@@ -136,12 +137,14 @@ const CompanyPreSignModal = (props) => {
           if (data == "true") {
             console.log(data);
             console.log("つくれます");
+            alert("メールアドレスを送信しました。");
 
             // 二重送信を防ぐため初期化
             formValues.mail = "";
           } else {
             console.log(data);
             console.log("つくれません");
+            alert("このメールアドレスは使用できません。");
             setFormErrors(validate(null, false));
 
             // メールアドレスの文字を選択状態にする
@@ -192,10 +195,16 @@ const CompanyPreSignModal = (props) => {
             <h3>Work & Connect 仮登録</h3>
             <hr />
             <div className="preSignUpUiForm">
-              <div className="preSignUpFormField">
-                <label>メールアドレス</label>
-                <input type="text" name="mail" value={formValues.mail} onChange={handleChange} />
-              </div>
+              <TextField
+                fullWidth
+                label="メールアドレス"
+                margin="normal"
+                name="mail"
+                onChange={handleChange}
+                type= "text"
+                value={formValues.mail}
+                variant="outlined"
+              />
               <p className="errorMsg">{formErrors.mail}</p>
               <button type="submit" className="submitButton">
                 仮登録

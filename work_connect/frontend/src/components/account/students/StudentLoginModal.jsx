@@ -11,6 +11,12 @@ import LoginStatusCheck from "src/components/account/loginStatusCheck/loginStatu
 
 import "src/App.css";
 
+import TextField from "@mui/material/TextField";
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+
 // ログインのモーダル CSS設定
 const modalStyle = {
   content: {
@@ -43,9 +49,18 @@ const StudentLoginModal = (props) => {
   const url = "http://localhost:8000/s_login";
   const csrf_url = "http://localhost:8000/csrf-token";
 
-  const coleStudentLoginModalOpen = (value) => {
-    console.log("value: ", value);
-    setShowModal(value);
+  // パスワード表示/非表示の切り替え(パスワード)
+  const [showPassword, setShowPassword] = useState("");
+
+  const handleClickShowPassword = (e) => {
+    setShowModal(true);
+    setShowPassword(!showPassword);
+    e.stopPropagation();
+  };
+
+  const handleMouseDownPassword = (e) => {
+    setShowModal(true);
+    e.preventDefault();
   };
 
   // ヘッダーのログインボタンを押したときにログインモーダルを開いたり閉じたりする処理
@@ -132,10 +147,12 @@ const StudentLoginModal = (props) => {
         if (data != null) {
           console.log(data.id);
           console.log("login成功");
-          // alert("ログインに成功しました。");
+          alert("ログインに成功しました。");
 
           // データの保存(セッションストレージ)
           updateSessionData("accountData", "id", data.id);
+          updateSessionData("accountData", "user_name", data.user_name);
+          updateSessionData("accountData", "mail", data.mail);
           console.log("ユーザーidは" + sessionStorage.getItem("user_id"));
 
           // 二重送信を防ぐため初期化
@@ -188,32 +205,62 @@ const StudentLoginModal = (props) => {
 
     return errors;
   };
-
+  
   return (
     <div>
       {/* 条件付きレンダリングを使用 */}
       <Modal isOpen={showModal} contentLabel="Example Modal" style={modalStyle}>
-        <div className="loginFormContainer">
+        <div className="Modal">
           <form onSubmit={handleSubmit} className="formInModal">
             <h3>Work & Connect ログイン</h3>
             <hr />
             <div className="loginUiForm">
-              <div className="loginFormField">
-                <label>ユーザー名またはメールアドレス</label>
-                <input type="text" name="user_name" value={formValues.user_name} onChange={handleChange} />
-              </div>
-              <p className="errorMsg">{formErrors.user_name}</p>
-
-              <div className="loginFormField">
-                <label>パスワード</label>
-                <input type="password" name="password" value={formValues.password} onChange={handleChange} />
-              </div>
-              <p className="errorMsg">{formErrors.password}</p>
+              <TextField
+              fullWidth
+              label="ユーザー名またはメールアドレス"
+              margin="normal"
+              name="user_name"
+              onChange={handleChange}
+              required
+              type= "text"
+              value={formValues.user_name}
+              variant="outlined"
+            />
+              <TextField
+              fullWidth
+              label="パスワード"
+              margin="normal"
+              name="password"
+              onChange={handleChange}
+              required
+              type={showPassword ? "text" : "password"}
+              value={formValues.password}
+              variant="outlined"
+              // パスワード表示/非表示の切り替え
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                      sx={{
+                        
+                      }}
+                      variant="outlined"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
               <button type="submit" className="submitButton">
                 ログイン
               </button>
               {Object.keys(formErrors).length === 0 && isSubmit && handleCloseModal}
-              <button onClick={handleCloseModal}>閉じる</button>
+              <button onClick={handleCloseModal} className="submitButton">閉じる</button>
               <div href="" onClick={handleOpenCompanyModal} id="loginCompanyModalLink">
                 企業の方はこちら
               </div>
@@ -224,7 +271,6 @@ const StudentLoginModal = (props) => {
     </div>
   );
 };
-
 StudentLoginModal.propTypes = {
   FromCompanyPage: PropTypes.bool.isRequired,
   callSetModalChange: PropTypes.func.isRequired,

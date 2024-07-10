@@ -36,6 +36,14 @@ export const EditorPage = lazy(() => import("src/pages/Editor/Editor"));
 
 // リンク無し画面
 export const Page404 = lazy(() => import("src/pages/page-not-found"));
+
+//プロフィール
+export const ProfilePage = lazy(() => import("src/sections/Profile/View/Profile"));
+
+//20240704 金田追加
+export const NewsDetailPage = lazy(() => import('src/sections/InternshipJobOffer/news_detail'));
+
+
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -57,16 +65,22 @@ export default function Router() {
         { path: "CompanyList", element: <CompanyListPage /> },
         { path: "Internship_JobOffer", element: <InternshipJobOfferPage /> },
 
-        { path: "WorkDetail", element: <WorkDetail /> },
+        { path: "WorkDetail/:1d", element: <WorkDetail /> },
         { path: "VideoDetail", element: <VideoDetail /> },
 
         //20240619 金田追加
         { path: "Settings", element: <SettingsPage /> },
         { path: "Editor", element: <EditorPage /> },
+        //20240704 金田追加
+        { path: "news_detail", element: <NewsDetailPage /> },
+
         // トップ画面追加
         { path: "Top", element: <TopPage /> },
         // 作品投稿画面
         { path: "WorkPosting", element: <WorkPosting /> },
+
+        //プロフィール
+        { path: "Profile", element: <ProfilePage /> },
       ],
     },
     {

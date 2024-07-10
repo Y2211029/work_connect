@@ -16,7 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(Cors::class);
         $middleware->validateCsrfTokens(except: [
             // Laravel側のURLの方を記述すればCSRFトークンの認証が通るようになりました
-            'http://localhost:8000/*',
+            'http://127.0.0.1:8000/*',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

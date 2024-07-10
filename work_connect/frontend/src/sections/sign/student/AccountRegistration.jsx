@@ -8,13 +8,13 @@ import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-import { Container, RegistarCard } from "./css/RegistarStyled";
+import { Container, RegistarCard } from "../css/RegistarStyled";
 
 // 仮登録からemailに届いたURLをクリックしたアカウントのemailを表示するための準備
 import { emailContext } from "src/components/account/students/EmailContext";
 
 // sessionStrage呼び出し
-import { useSessionStorage } from "../../hooks/use-sessionStorage";
+import { useSessionStorage } from "../../../hooks/use-sessionStorage";
 
 // Laravelとの通信用
 import axios from "axios";
@@ -466,11 +466,11 @@ useEffect(() => {
                 type="text"
                 value={accountData.student_kanasurname}
                 inputProps={{
-                  pattern: "^[ァ-ヶ]+$",
-                  // ^      : 文字列の開始
-                  // [ァ-ヶ]: 一文字のカタカナ文字（ァからヶまでの範囲）
-                  // +      : 1回以上の繰り返し
-                  // $      : 文字列の終了
+                  pattern: "^[ァ-ヶ＆‘,\\-.・ー]+$",
+                  // ^        : 文字列の開始
+                  // [ァ-ヶ＆‘,\\-.・]: 一文字のカタカナ、アンパサンド、アポストロフィ、コンマ、ハイフン、ピリオド、中点
+                  // +        : 1回以上の繰り返し
+                  // $        : 文字列の終了
                 }}
                 variant="outlined"
               />
@@ -488,11 +488,11 @@ useEffect(() => {
                 type="text"
                 value={accountData.student_kananame}
                 inputProps={{
-                  pattern: "^[ァ-ヶ]+$",
-                  // ^      : 文字列の開始
-                  // [ァ-ヶ]: 一文字のカタカナ文字（ァからヶまでの範囲）
-                  // +      : 1回以上の繰り返し
-                  // $      : 文字列の終了
+                  pattern: "^[ァ-ヶ＆‘,\\-.・ー]+$",
+                  // ^        : 文字列の開始
+                  // [ァ-ヶ＆‘,\\-.・]: 一文字のカタカナ、アンパサンド、アポストロフィ、コンマ、ハイフン、ピリオド、中点
+                  // +        : 1回以上の繰り返し
+                  // $        : 文字列の終了
                 }}
                 variant="outlined"
               />

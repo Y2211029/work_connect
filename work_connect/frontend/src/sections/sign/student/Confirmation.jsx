@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { Container, RegistarCard } from "./css/RegistarStyled";
+import { Container, RegistarCard } from "../css/RegistarStyled";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 import TextField from "@mui/material/TextField";

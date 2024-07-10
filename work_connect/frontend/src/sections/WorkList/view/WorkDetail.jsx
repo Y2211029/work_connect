@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-import Modal from "react-modal";
-
 import axios from "axios";
+
+import Modal from "react-modal";
+import Box from '@mui/material/Box';
+
 import { Splide, SplideSlide, SplideTrack } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
 
@@ -17,6 +19,8 @@ const WorkDetail = () => {
   // 作品IDの取得
   const { id } = useParams();
   // 作品の項目
+  // const { id } = useParams();
+
   const [workDetail, setWorkDetail] = useState([]);
   // スライドの位置
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
@@ -28,13 +32,14 @@ const WorkDetail = () => {
   const mainSplideRef = useRef(null);
   const modalSplideRef = useRef(null);
 
-  // デモスライドデータ
-  const WorkSlide = [
-    { image: "/assets/workImages/thumbnail/cover_1.jpg", annotation: "作品スライドの紹介文です。1" },
-    { image: "/assets/workImages/thumbnail/cover_2.jpg", annotation: "作品スライドの紹介文です。2" },
-    { image: "/assets/workImages/thumbnail/cover_3.jpg", annotation: "作品スライドの紹介文です。3" },
-    // 他のスライドも同様に追加
-  ];
+  // const WorkSlide = [
+  //   { image: "/assets/workImages/thumbnail/cover_1.jpg", annotation: "作品スライドの紹介文です。1" },
+  //   { image: "/assets/workImages/thumbnail/cover_2.jpg", annotation: "作品スライドの紹介文です。2" },
+  //   { image: "/assets/workImages/thumbnail/cover_3.jpg", annotation: "作品スライドの紹介文です。3" },
+  //   // 他のスライドも同様に追加
+  // ];
+
+  const [WorkSlide, setWorkSlide] = useState([]);
 
   // メインスライドのCSS
   const options = {
@@ -65,7 +70,7 @@ const WorkDetail = () => {
   // Laravel側から作品一覧データを取得
   useEffect(() => {
     async function workListFunction() {
-      // let workImagesArray = [];
+      let workImagesArray = [];
       try {
         // Laravel側から作品一覧データを取得
         const response = await axios.get(url, {
@@ -90,20 +95,23 @@ const WorkDetail = () => {
         // console.log(ThumbnailJudgement);
         // console.log(NotThumbnail);
 
-        // response.data[0].images.forEach((value) => {
-        //   console.log("valuevalue", value);
-        //   if (value.thumbnail_judgement === 1) {
-        //     // サムネイルの場合
-        //     setThumbnailJudgement(value);
-        //     workImagesArray.unshift(value); //unshift 配列の先頭に追加
-        //   } else {
-        //     // サムネイル以外の場合
-        //     setNotThumbnail((prevState) => [...prevState, value]);
-        //     workImagesArray.push(value); // push 配列の末尾に追加
-        //   }
-        // });
+        response.data[0].images.forEach((value) => {
+          console.log("valuevalue", value);
+          if (value.thumbnail_judgement === 1) {
+            // サムネイルの場合
+            // setThumbnailJudgement(value);
+            workImagesArray.unshift(value); //unshift 配列の先頭に追加
+            workImagesArray[0].image = workImagesArray[0].imageSrc;
+          } else {
+            // サムネイル以外の場合
+            // setNotThumbnail((prevState) => [...prevState, value]);
+            workImagesArray.push(value); // push 配列の末尾に追加
+            workImagesArray[workImagesArray.length - 1].image = workImagesArray[workImagesArray.length - 1].imageSrc;
+          }
+        });
 
-        // setWorkSlide(workImagesArray);
+        console.log("workImagesArray:", workImagesArray);
+        setWorkSlide(workImagesArray);
 
         // setWorkSlide(
         //   { image: "/assets/workImages/thumbnail/cover_1.jpg" },
@@ -112,7 +120,6 @@ const WorkDetail = () => {
         // );
 
         // console.log("setWorkSlide(ThumbnailJudgement, NotThumbnail)", response.data[0]);
-        console.log("response:", response.data[0]);
       } catch (err) {
         console.log("err:", err);
       }
@@ -166,7 +173,6 @@ const WorkDetail = () => {
         ref={mainSplideRef}
         options={options}
         aria-labelledby="autoplay-example-heading"
-        autoplay="pause"
         hasTrack={false}
         onMoved={(splide, newIndex) => setCurrentSlideIndex(newIndex)}
       >

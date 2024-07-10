@@ -56,7 +56,7 @@ export default function AccountPopover() {
     }
   }
 
-  // 登録項目確認の際に利用
+  // セッションデータを取得
   const sessionData = sessionStorage.getItem('accountData');
   let user_name = "";
   let mail = "";

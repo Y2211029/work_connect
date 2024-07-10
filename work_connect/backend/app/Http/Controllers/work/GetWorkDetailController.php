@@ -30,7 +30,8 @@ class GetWorkDetailController extends Controller
             
             $workImageSrc = "";
             foreach ($workImageList as $key => $imageList) {
-                $workImageSrc = Storage::url($imageList->image);
+                // $workImageSrc = Storage::url($imageList->image);
+                $workImageSrc = asset("/storage/images/" . "$imageList->image");
                 // $workImageSrc = "aaa";
                 $workImageList[$key]->imageSrc = $workImageSrc;
             }

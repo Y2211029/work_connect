@@ -74,6 +74,7 @@ const WorkDetail = () => {
       try {
         // Laravel側から作品一覧データを取得
         const response = await axios.get(url, {
+          // params: { id: id },
           params: { id: id },
         });
 

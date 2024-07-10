@@ -1,25 +1,34 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
+import Modal from "react-modal";
+
 import axios from "axios";
 import { Splide, SplideSlide, SplideTrack } from "@splidejs/react-splide";
-import CreateTagElements from "src/components/tag/CreateTagElements";
-import Modal from "react-modal";
 import "@splidejs/react-splide/css";
+
+import CreateTagElements from "src/components/tag/CreateTagElements";
+
+//------------------------------------------------------------------------------------
 
 // ここでアプリケーションのルートエレメントを設定
 Modal.setAppElement("#root");
 
 const WorkDetail = () => {
+  // 作品IDの取得
   const { id } = useParams();
-
+  // 作品の項目
   const [workDetail, setWorkDetail] = useState([]);
-
+  // スライドの位置
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  // モーダルスライドの開閉
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  // ギャラリーモーダルの開閉
   const [galleryIsOpen, setGalleryIsOpen] = useState(false);
+  // メインスライドとモーダルスライドの連携
   const mainSplideRef = useRef(null);
   const modalSplideRef = useRef(null);
 
+  // デモスライドデータ
   const WorkSlide = [
     { image: "/assets/workImages/thumbnail/cover_1.jpg", annotation: "作品スライドの紹介文です。1" },
     { image: "/assets/workImages/thumbnail/cover_2.jpg", annotation: "作品スライドの紹介文です。2" },
@@ -27,22 +36,25 @@ const WorkDetail = () => {
     // 他のスライドも同様に追加
   ];
 
+  // メインスライドのCSS
   const options = {
     type: "loop",
     gap: "1rem",
-    autoplay: true,
+    // 自動再生off
+    autoplay: false,
     pauseOnHover: false,
     resetProgress: false,
-    height: "15rem",
+    height: "35rem",
   };
 
+  // モーダルスライドのCSS
   const modalOptions = {
     type: "loop",
     gap: "1rem",
     autoplay: false, // モーダル内のスライドショーは自動再生しないようにする
     pauseOnHover: false,
     resetProgress: false,
-    height: "15rem",
+    height: "35rem",
     start: currentSlideIndex,
   };
 
@@ -50,11 +62,12 @@ const WorkDetail = () => {
 
   // console.log("currentSlideIndex", currentSlideIndex);
 
+  // Laravel側から作品一覧データを取得
   useEffect(() => {
     async function workListFunction() {
       // let workImagesArray = [];
       try {
-        // Laravel側かaら作品一覧データを取得
+        // Laravel側から作品一覧データを取得
         const response = await axios.get(url, {
           params: { id: id },
         });
@@ -147,10 +160,13 @@ const WorkDetail = () => {
   return (
     <div className="wrapper">
       <h2 className="WorkDetail-title">{workDetail.work_name}</h2>
+
+      {/* メインスライドここから */}
       <Splide
         ref={mainSplideRef}
         options={options}
         aria-labelledby="autoplay-example-heading"
+        autoplay="pause"
         hasTrack={false}
         onMoved={(splide, newIndex) => setCurrentSlideIndex(newIndex)}
       >
@@ -173,8 +189,9 @@ const WorkDetail = () => {
           <span className="splide__toggle__pause">Pause</span>
         </button> */}
       </Splide>
+      {/* メインスライドここまで */}
 
-      {/* スライドモーダル */}
+      {/* モーダルスライドここから */}
       <Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Image Modal" className="modal" overlayClassName="overlay">
         <div className="Modal">
           <div>
@@ -215,8 +232,9 @@ const WorkDetail = () => {
           </div>
         </div>
       </Modal>
+      {/* モーダルスライドここまで */}
 
-      {/* ギャラリーモーダル */}
+      {/* ギャラリーモーダルここから */}
       <Modal isOpen={galleryIsOpen} onRequestClose={closeModal} contentLabel="Image Modal" className="modal" overlayClassName="overlay">
         <div className="Modal">
           <div>
@@ -234,11 +252,13 @@ const WorkDetail = () => {
           </div>
         </div>
       </Modal>
+      {/* ギャラリーモーダルここまで */}
 
-      {/* 各項目の表示 */}
-      <div>
-          
-      </div>
+      {/* 各項目の表示、ここから */}
+      <Box>
+        
+      </Box>
+      {/* 各項目の表示、ここまで */}
     </div>
   );
 };

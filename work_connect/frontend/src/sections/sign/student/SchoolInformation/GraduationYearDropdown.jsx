@@ -68,7 +68,7 @@ const GraduationYearDropdown = (props) => {
 };
 
 GraduationYearDropdown.propTypes = {
-  coleSetRequiredCheck: PropTypes.func.isRequired,
+  coleSetRequiredCheck: PropTypes.func,
 };
 
 export default GraduationYearDropdown;

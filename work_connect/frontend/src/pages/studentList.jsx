@@ -4,7 +4,7 @@ import { StudentListView } from 'src/sections/StudentList/view';
 
 // ----------------------------------------------------------------------
 
-export default function StudentListPage() {
+export default function studentListPage() {
   return (
     <>
       <Helmet>

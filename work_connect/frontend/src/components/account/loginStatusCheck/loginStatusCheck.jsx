@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-import { useSessionStorage } from "../../../hooks/use-sessionStorage";
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
 /*--------------------------------------------*/
 /* ログイン状態をチェックする処理を追加しました。 */
 /*--------------------------------------------*/
@@ -22,15 +22,15 @@ function LoginStatusCheck() {
 
     var loginStatusCheckResponse = { data: "false" };
 
+    const data = {
+      id: accountData.id,
+    };
+    
     if (accountData != undefined) {
       if (accountData.id != undefined) {
-        loginStatusCheckResponse = await axios.get(
+        loginStatusCheckResponse = await axios.post(
           "http://localhost:8000/login_status_check",
-          {
-            params: {
-              id: accountData.id,
-            },
-          }
+          data
         );
       }
     }

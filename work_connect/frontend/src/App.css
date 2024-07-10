@@ -279,3 +279,80 @@ button:hover {
   font-weight: 600;
   margin-bottom: 3px;
 }
+
+/* 作品投稿画面 ここから */
+
+.WorkPostingFormContainer {
+  height: 80vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.WorkPostingFormContainer form {
+  background-color: white;
+  width: 100%;
+  max-width: 600px;
+  padding: 30px;
+  border-radius: 50px;
+  float: left;
+  border: 1px solid #dfdfdf;
+  font-weight: 700;
+}
+
+.WorkPostingUiForm {
+  display: flex;
+  float: left;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: scroll;
+  float: left;
+  justify-content: space-evenly;
+  height: 600px;
+  width: 100%;
+  padding-right: 10px;
+}
+
+.WorkPostingUiForm::-webkit-scrollbar {
+  background: white;
+  width: 10px;
+  height: 5px;
+}
+
+.WorkPostingUiForm::-webkit-scrollbar-thumb {
+  background-color: #8b8b8b;
+}
+
+
+.WorkPostingFormField {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.WorkPostingFormField input {
+  border: 1px solid grey;
+  padding: 15px;
+  width: 88%;
+  border-radius: 10px;
+}
+
+textarea {
+  resize: none;
+}
+
+/* 作品投稿画面 ここまで */
+
+
+/* 作品一覧画面　ここから */
+.link {
+  color: white;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+/* 作品一覧画面　ここまで */

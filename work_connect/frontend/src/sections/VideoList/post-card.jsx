@@ -1,7 +1,8 @@
+import { Link } from "react-router-dom";
+import "src/App.css";
 import PropTypes from "prop-types";
 
 import Box from "@mui/material/Box";
-import Link from "@mui/material/Link";
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
@@ -18,7 +19,7 @@ import SvgColor from "src/components/svg-color";
 // ----------------------------------------------------------------------
 
 export default function PostCard({ post, index }) {
-  const { cover, title, intro, thumbnail, view, comment, author, userName, createdAt } = post;
+  const { cover, title, genre, intro, thumbnail, view, comment, author, userName, createdAt } = post;
 
   const latestPostLarge = index === 0;
 
@@ -44,22 +45,22 @@ export default function PostCard({ post, index }) {
   // タイトル
   const renderTitle = (
     <Link
+      to="VideoDetail"
       color="inherit"
       variant="subtitle2"
-      underline="hover"
-      sx={{
-        height: 44,
-        overflow: "hidden",
-        WebkitLineClamp: 2,
-        display: "-webkit-box",
-        WebkitBoxOrient: "vertical",
+      underline="none" // デフォルトで下線を消す
+      className="link"
+      style={{
+        height: 30,
         typography: "h5",
-        color: "common.white",
       }}
     >
       {title}
     </Link>
   );
+
+  // ジャンル
+  const renderGenre = genre !== null ? <Typography>{genre}</Typography> : null;
 
   // サムネイル
   const renderThumbnail = <img src={thumbnail} alt="" width="100%" height="100" />;
@@ -180,7 +181,6 @@ export default function PostCard({ post, index }) {
         color: "common.white",
       }}
     >
-      
       {intro}
     </Typography>
   );
@@ -221,6 +221,7 @@ export default function PostCard({ post, index }) {
           }}
         >
           {renderThumbnail}
+          {renderGenre}
           {renderTitle}
           {/* ここに紹介文配置、配置語にこのコメントを削除する */}
           {renderIntro}

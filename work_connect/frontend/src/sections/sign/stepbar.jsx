@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -33,7 +33,6 @@ export default function HorizontalLinearStepper({ Stepbar }) {
     // 必須項目がすべて入力されている場合のみfalseになる
     required: false,
   });
-
   // 作品一覧に飛ばす。
   let navigation = useNavigate();
 
@@ -75,12 +74,12 @@ export default function HorizontalLinearStepper({ Stepbar }) {
 
   // setActiveStep(getSessionData("ActiveStep"));
 
+  const childRef = useRef(null);
+
   // 次へボタン押されたとき
   const handleNext = () => {
     console.log("userAccountCheck: ", userAccountCheck);
-    if (userAccountCheck.user_name == false && userAccountCheck.password == false && userAccountCheck.passwordCheck == false) {
-      if(userAccountCheck.required == false) {
-
+    if (userAccountCheck.user_name == false && userAccountCheck.password == false && userAccountCheck.passwordCheck == false && userAccountCheck.required == false) {
         console.log("重複あり!!");
         
         // activeStepが3未満(次へをクリックした場合の処理)
@@ -108,16 +107,46 @@ export default function HorizontalLinearStepper({ Stepbar }) {
           // thenで成功した場合の処理
           .then((response) => {
             console.log("レスポンス:", response);
-            
+            alert("新規登録が完了しました。");
             // ここで作品一覧ページに飛ばす処理 //////////////////////////
             navigation("/");
           })
           // catchでエラー時の挙動を定義
           .catch((err) => {
+            alert("新規登録できませんでした。");
             console.log("err:", err);
           });
         }
-      }
+      } else {
+        // データ取得
+        const accountData = getSessionData("accountData");
+        // 各項目が空だった場合、バリデーションを実行(AccountRegistration.jsxへ)
+        if(accountData.student_surname == undefined || accountData.student_surname == ""){ 
+          childRef.current?.NULL_validation(1);
+        }
+        if(accountData.student_name == undefined || accountData.student_name == ""){
+          childRef.current?.NULL_validation(2);
+        }
+        if(accountData.student_kanasurname == undefined || accountData.student_kanasurname == ""){
+          childRef.current?.NULL_validation(3);
+        }
+        if(accountData.student_kananame == undefined || accountData.student_kananame == ""){
+          childRef.current?.NULL_validation(4);
+        }
+        if(accountData.user_name == undefined || accountData.user_name == ""){
+          childRef.current?.NULL_validation(5);
+        }
+        if(accountData.password == undefined || accountData.password == ""){
+          childRef.current?.NULL_validation(6);
+        }
+        if(accountData.passwordCheck == undefined || accountData.passwordCheck == ""){
+          childRef.current?.NULL_validation(7);
+        }
+        
+        alert("エラー：未入力項目があります");
+  
+        
+  
     }
   };
 
@@ -172,7 +201,7 @@ export default function HorizontalLinearStepper({ Stepbar }) {
       {/*ーーーーーーーーーーーーーーーーーーーーーー 入力フォーム表示位置 ーーーーーーーーーーーーーーーーーーーーーー*/}
 
       {/* handleValueChange 入力した値を */}
-      {activeStep === 0 ? <AccountRegistar coleSetUserNameCheck={coleSetUserNameCheck} /> : ""}
+      {activeStep === 0 ? <AccountRegistar coleSetUserNameCheck={coleSetUserNameCheck} ref={childRef} /> : ""}
       {activeStep === 1 ? <SchoolInformation coleSetUserNameCheck={coleSetUserNameCheck} /> : ""}
       {activeStep === 2 ? <MoreInformation /> : ""}
       {activeStep === 3 ? <Confirmation /> : ""}

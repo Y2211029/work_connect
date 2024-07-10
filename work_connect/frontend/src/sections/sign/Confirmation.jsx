@@ -3,6 +3,12 @@ import PropTypes from "prop-types";
 import { Container, RegistarCard } from "./css/RegistarStyled";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
+import TextField from "@mui/material/TextField";
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+
 function CreateTagElements({ itemContents }) {
   return <button className="greeting">{itemContents}</button>;
 }
@@ -57,7 +63,20 @@ const SessionDataList = ({ sessionData }) => {
   const acquisitionQualification = useTagListShow("acquisition_qualification", sessionData);
   const software = useTagListShow("software", sessionData);
 
-  let itemContentValues = [];
+  // パスワード表示/非表示の切り替え(パスワード)
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleMouseDownPassword = (e) => {
+    e.preventDefault();
+  };
+
+  // 名前を結合
+  const full_name = `${sessionData["student_surname"] || ''} ${sessionData["student_name"] || ''}`.trim();
+  const full_kananame = `${sessionData["student_kanasurname"] || ''} ${sessionData["student_kananame"] || ''}`.trim();
 
   return (
     <>
@@ -68,7 +87,83 @@ const SessionDataList = ({ sessionData }) => {
           // developmentEnvironmentこの作成したタグを入れ替えたい。
           // sessionDataから取り出した値が空でないものを表示する。
           if (value !== null && value !== "" && value !== undefined) {
-            if (label === "開発環境") {
+            let itemContentValues;
+            if (label === "メールアドレス" || 
+              label === "ユーザーネーム" ||
+              label === "学校名"||
+              label === "学部"||
+              label === "学科") {
+                // テキストに普通に表示
+              itemContentValues = (
+                <TextField
+                fullWidth
+                InputProps={{
+                  readOnly: true,
+                }}
+                  value={value}
+                />
+              );
+            } else if (label === "姓"){
+              // 姓と名を結合して表示。
+              itemContentValues = (
+                <TextField
+                fullWidth
+                InputProps={{
+                  readOnly: true,
+                }}
+                value={full_name}
+                />
+              );
+            } else if (label === "セイ"){
+              // セイとメイを結合して表示。
+              itemContentValues = (
+                <TextField
+                fullWidth
+                InputProps={{
+                  readOnly: true,
+                }}
+                value={full_kananame}
+                />
+              );
+            } else if (label === "卒業年度"){
+              // 「年」をつけて表示。
+              itemContentValues = (
+                <TextField
+                fullWidth
+                InputProps={{
+                  readOnly: true,
+                }}
+                value={`${value}年`}
+                />
+              );
+            } else if (label === "パスワード") {
+              // パスワード表示切替ボタンを右に表示。
+              itemContentValues = (
+                <TextField
+                fullWidth
+                  key={key}
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  value={value}
+                  InputProps={{
+                    readOnly: true,
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              );
+            } else if (label === "開発環境") {
+              // タグを表示。以下同じ。
               itemContentValues = <span>{developmentEnvironment}</span>;
             } else if (label === "趣味") {
               itemContentValues = <span>{hobby}</span>;
@@ -82,12 +177,13 @@ const SessionDataList = ({ sessionData }) => {
               itemContentValues = <span>{acquisitionQualification}</span>;
             } else if (label === "ソフトウェア") {
               itemContentValues = <span>{software}</span>;
-            } else {
-              itemContentValues = value;
+            } else if (label === "名" || label === "メイ"){
+              // 結合済みなので表示させない。
+              return null;
             }
             return (
               <li key={key}>
-                <p>{label}</p>
+                <p>{label === "姓" ? "名前": label === "セイ" ? "名前(カタカナ)": label}</p>
                 {itemContentValues}
               </li>
             );

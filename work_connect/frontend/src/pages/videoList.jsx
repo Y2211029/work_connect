@@ -4,7 +4,7 @@ import { VideoListView } from 'src/sections/VideoList/view';
 
 // ----------------------------------------------------------------------
 
-export default function VideoList() {
+export default function VideoListPage() {
   return (
     <>
       <Helmet>

@@ -1,6 +1,11 @@
-import { faker } from "@faker-js/faker";
 import { useEffect, useState } from "react";
 import axios from "axios";
+
+import { faker } from "@faker-js/faker";
+
+// タグボタン作成コンポーネント
+import CreateTagElements from "src/components/tag/CreateTagElements";
+
 // ----------------------------------------------------------------------
 /*--------------------------------------------*/
 /* 動画一覧のデータを取得する処理を追加しました。 */
@@ -9,17 +14,17 @@ import axios from "axios";
 // ! 注意 ! titleやuserNamaなどのキーはDBのカラム名になっています。
 
 export const VideoListItem = () => {
-  // 作品一覧のデータを保持するステート
+  // 動画一覧のデータを保持するステート
   const [MovieOfList, setMovieOfList] = useState([]);
 
-  // 作品の一覧データを取得する用URL
+  // 動画の一覧データを取得する用URL
   const url = "http://localhost:8000/get_movie_list";
 
   useEffect(() => {
     // 非同期関数
     async function MovieListFunction() {
       try {
-        // Laravel側から作品一覧データを取得
+        // Laravel側から動画一覧データを取得
         const response = await axios.get(url, {
           params: {},
         });
@@ -29,7 +34,9 @@ export const VideoListItem = () => {
 
         // ジャンルはタグのため、カンマ区切りの文字列を配列に変換する
         response.data.forEach((element) => {
-          element.genre = element.genre.split(",");
+          element.genre !== null
+            ? (element.genre = element.genre.split(",").map((item) => <CreateTagElements key={item} itemContents={item} />))
+            : "";
         });
 
         setMovieOfList(response.data);
@@ -41,18 +48,18 @@ export const VideoListItem = () => {
     MovieListFunction();
   }, []); // 空の依存配列を渡すことで初回のみ実行されるようにする
 
-  const posts = MovieOfList.map((index, key) => ({
+  const posts = MovieOfList.map((_, key) => ({
     id: MovieOfList[key].movie_id,
     cover: `/assets/images/covers/cover_${5 + 1}.jpg`,
-    thumbnail: `"../../../public/assets/videoImages/thumbnail/cover_${index + 1}.jpg"`,
+    thumbnail: `/assets/videoImages/thumbnail/cover_${key + 1}.jpg`,
     title: MovieOfList[key].title,
-
+    genre: MovieOfList[key].genre,
     // substring(0, 200) 第一引数：文字列の開始位置。第二引数：開始位置から何文字目を取得する。
     // introの文字数が200文字以上の時、「...」を表示する。
     intro: MovieOfList[key].intro.length > 200 ? MovieOfList[key].intro.substring(0, 200) + "..." : MovieOfList[key].intro,
 
     author: {
-      avatarUrl: `/assets/images/avatars/avatar_${index + 1}.jpg`,
+      avatarUrl: `/assets/images/avatars/avatar_${key + 1}.jpg`,
     },
     view: faker.number.int(99999),
     comment: faker.number.int(99999),

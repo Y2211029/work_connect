@@ -1,8 +1,13 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, forwardRef,useImperativeHandle } from "react";
 import PropTypes from "prop-types";
 // import { useNavigation } from "react-router-dom";
 
 import TextField from "@mui/material/TextField";
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+
 import { Container, RegistarCard } from "./css/RegistarStyled";
 
 // 仮登録からemailに届いたURLをクリックしたアカウントのemailを表示するための準備
@@ -13,9 +18,38 @@ import { useSessionStorage } from "../../hooks/use-sessionStorage";
 
 // Laravelとの通信用
 import axios from "axios";
+let NULL_validation1 = false;
+let NULL_validation2 = false;
+let NULL_validation3 = false;
+let NULL_validation4 = false;
+let NULL_validation5 = false;
+let NULL_validation6 = false;
+let NULL_validation7 = false;
 // import { prepareCssVars } from "@mui/system";
 
-const AccountRegistar = (props) => {
+const AccountRegistar = forwardRef((props, ref) => {
+  
+  // 「次へ」を押したときに企業名・企業名(カナ)が空だったらバリデーションを実行
+  // ./stepbar.jsx から呼び出し
+  useImperativeHandle(ref, () => ({
+    NULL_validation(num) {
+      if(num == 1){
+        NULL_validation1 = true;
+      } else if(num == 2){
+        NULL_validation2 = true;
+      } else if(num == 3){
+        NULL_validation3 = true;
+      } else if(num == 4){
+        NULL_validation4 = true;
+      } else if(num == 5){
+        NULL_validation5 = true;
+      } else if(num == 6){
+        NULL_validation6 = true;
+      } else if(num == 7){
+        NULL_validation7 = true;
+      }
+    }
+  }));
   // ユーザー名重複時のhelperTextの内容を宣言
   const [userNameHelperText, setUserNameHelperText] = useState("");
 
@@ -32,15 +66,62 @@ const AccountRegistar = (props) => {
 
   // 入力エラーの状態管理
   const [inputError, setInputError] = useState({
+    student_surname: false,
+    student_name: false,
+    student_kanasurname: false,
+    student_kananame: false,
     user_name: false,
     password: false,
     // trueだった時にエラーを表示
     passwordCheck: false,
   });
+  // パスワード表示/非表示の切り替え(パスワード)
+  const [showPassword, setShowPassword] = useState("");
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleMouseDownPassword = (e) => {
+    e.preventDefault();
+  };
+
+  // パスワード表示/非表示の切り替え(パスワード確認)
+  const [showPassword2, setShowPassword2] = useState("");
+
+  const handleClickShowPassword2 = () => {
+    setShowPassword2(!showPassword2);
+  };
+
+  const handleMouseDownPassword2 = (e) => {
+    e.preventDefault();
+  };
 
   // 登録項目確認の際に利用
   const { getSessionData, updateSessionData, updateObjectSessionData } =
     useSessionStorage();
+
+    // セイのバリデーションチェック
+  const student_kanasurnameCheck = (student_kanasurnameElement) => {
+    // 条件が一致していない場合はエラーを表示
+    console.log("props: ", props);
+    if (!student_kanasurnameElement.checkValidity()) {
+      setInputError((prev) => ({ ...prev, student_kanasurname: true }));
+    } else {
+      setInputError((prev) => ({ ...prev, student_kanasurname: false }));
+    }
+  };
+
+  // メイのバリデーションチェック
+  const student_kananameCheck = (student_kananameElement) => {
+    // 条件が一致していない場合はエラーを表示
+    console.log("props: ", props);
+    if (!student_kananameElement.checkValidity()) {
+      setInputError((prev) => ({ ...prev, student_kananame: true }));
+    } else {
+      setInputError((prev) => ({ ...prev, student_kananame: false }));
+    }
+  };
 
   // ユーザー名の重複チェック
   const inviteUserNameCheck = (user_name) => {
@@ -160,6 +241,17 @@ const AccountRegistar = (props) => {
       props.coleSetUserNameCheck("required", false);
     }
 
+    
+    // セイのhtmlオブジェクトを取得
+    const student_kanasurnameElement = document.querySelector('[name="student_kanasurname"]');
+    // セイのバリデーションチェック
+    student_kanasurnameCheck(student_kanasurnameElement);
+
+    // メイのhtmlオブジェクトを取得
+    const student_kananameElement = document.querySelector('[name="student_kananame"]');
+    // メイのバリデーションチェック
+    student_kananameCheck(student_kananameElement);
+
     // ユーザー名の重複チェック
     inviteUserNameCheck(accountData.user_name);
 
@@ -175,12 +267,96 @@ const AccountRegistar = (props) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
+      // 未入力バリデーションに伴う処理を追加
+      console.log("name--->>>"+name);
+      console.log("value--->>>"+value);
+
+      if(name == "student_surname" && value.trim() === ''){
+        // バリデーションを実行
+        NULL_validation1 = true;
+      } else if(name == "student_name" && value.trim() === ''){
+        // バリデーションを実行
+        NULL_validation2 = true;
+      } else if(name == "student_kanasurname" && value.trim() === ''){
+        // バリデーションを実行
+        NULL_validation3 = true;
+      } else if(name == "student_kananame" && value.trim() === ''){
+        // バリデーションを実行
+        NULL_validation4 = true;
+      } else if(name == "user_name" && value.trim() === ''){
+        // バリデーションを実行
+        NULL_validation5 = true;
+      } else if(name == "password" && value.trim() === ''){
+        // バリデーションを実行
+        NULL_validation6 = true;
+      } else if(name == "passwordCheck" && value.trim() === ''){
+        // バリデーションを実行
+        NULL_validation7 = true;
+      } else if(name == "student_surname" && value.trim() !== ''){
+        // バリデーションを解除
+        NULL_validation1 = false;
+      } else if(name == "student_name" && value.trim() !== ''){
+        // バリデーションを解除
+        NULL_validation2 = false;
+      } else if(name == "student_kanasurname" && value.trim() !== ''){
+        // バリデーションを解除
+        NULL_validation3 = false;
+      } else if(name == "student_kananame" && value.trim() !== ''){
+        // バリデーションを解除
+        NULL_validation4 = false;
+      } else if(name == "user_name" && value.trim() !== ''){
+        // バリデーションを解除
+        NULL_validation5 = false;
+      } else if(name == "password" && value.trim() !== ''){
+        // バリデーションを解除
+        NULL_validation6 = false;
+      } else if(name == "passwordCheck" && value.trim() !== ''){
+        // バリデーションを解除
+        NULL_validation7 = false;
+      } 
+
     setAccountData((prev) => ({ ...prev, [name]: value }));
 
     console.log("処理準確認用: 3");
 
     console.log("処理準確認用: 4");
   };
+
+  /*-------------------------------------------------------------------------------*/
+/* セイがカタカナじゃないときに次へ行かない処理を追加しました */
+/*-------------------------------------------------------------------------------*/
+// inputError.company_nameCanaの値が変化したときの処理
+useEffect(() => {
+  console.log("e.error", inputError.student_kanasurname);
+
+  // パスワードがバリデーションに違反しているときstepbar.jsxのuserAccountCheck.passwordをtrueにする
+  if (inputError.student_kanasurname) {
+    // パスワードがバリデーションに違反している場合
+    console.log("パスワードの条件に当てはまっていません");
+    props.coleSetUserNameCheck("student_kanasurname", true);
+  } else {
+    // パスワードがバリデーションに違反していない場合
+    props.coleSetUserNameCheck("student_kanasurname", false);
+  }
+}, [inputError.student_kanasurname]);
+
+/*-------------------------------------------------------------------------------*/
+/* メイがカタカナじゃないときに次へ行かない処理を追加しました */
+/*-------------------------------------------------------------------------------*/
+// inputError.company_nameCanaの値が変化したときの処理
+useEffect(() => {
+  console.log("e.error", inputError.student_kananame);
+
+  // パスワードがバリデーションに違反しているときstepbar.jsxのuserAccountCheck.passwordをtrueにする
+  if (inputError.student_kananame) {
+    // パスワードがバリデーションに違反している場合
+    console.log("パスワードの条件に当てはまっていません");
+    props.coleSetUserNameCheck("student_kananame", true);
+  } else {
+    // パスワードがバリデーションに違反していない場合
+    props.coleSetUserNameCheck("student_kananame", false);
+  }
+}, [inputError.student_kananame]);
 
   /*-------------------------------------------------------------------------------*/
   /* パスワードがバリデーションに違反している場合に次へ行かない処理を追加しました */
@@ -251,6 +427,7 @@ const AccountRegistar = (props) => {
             />
             <div style={{ display: "flex" }}>
               <TextField
+                error={NULL_validation1 == true || inputError.student_surname}
                 fullWidth
                 label="姓"
                 margin="normal"
@@ -262,6 +439,7 @@ const AccountRegistar = (props) => {
                 variant="outlined"
               />
               <TextField
+                error={NULL_validation2 == true || inputError.student_name}
                 fullWidth
                 label="名"
                 margin="normal"
@@ -275,7 +453,11 @@ const AccountRegistar = (props) => {
             </div>
             <div style={{ display: "flex" }}>
               <TextField
+                error={NULL_validation3 == true || (accountData.student_kanasurname != undefined && accountData.student_kanasurname != "") && inputError.student_kanasurname}
                 fullWidth
+                helperText={
+                  (accountData.student_kanasurname == undefined || accountData.student_kanasurname == "" ? "" : inputError.student_kanasurname ? "カタカナで入力してください" : "")
+                }
                 label="セイ"
                 margin="normal"
                 name="student_kanasurname"
@@ -283,10 +465,21 @@ const AccountRegistar = (props) => {
                 required
                 type="text"
                 value={accountData.student_kanasurname}
+                inputProps={{
+                  pattern: "^[ァ-ヶ]+$",
+                  // ^      : 文字列の開始
+                  // [ァ-ヶ]: 一文字のカタカナ文字（ァからヶまでの範囲）
+                  // +      : 1回以上の繰り返し
+                  // $      : 文字列の終了
+                }}
                 variant="outlined"
               />
               <TextField
+                error={NULL_validation4 == true || (accountData.student_kananame != undefined && accountData.student_kananame != "") && inputError.student_kananame}
                 fullWidth
+                helperText={
+                  (accountData.student_kananame == undefined || accountData.student_kananame == "" ? "" : inputError.student_kananame ? "カタカナで入力してください" : "")
+                }
                 label="メイ"
                 margin="normal"
                 name="student_kananame"
@@ -294,12 +487,19 @@ const AccountRegistar = (props) => {
                 required
                 type="text"
                 value={accountData.student_kananame}
+                inputProps={{
+                  pattern: "^[ァ-ヶ]+$",
+                  // ^      : 文字列の開始
+                  // [ァ-ヶ]: 一文字のカタカナ文字（ァからヶまでの範囲）
+                  // +      : 1回以上の繰り返し
+                  // $      : 文字列の終了
+                }}
                 variant="outlined"
               />
             </div>
 
             <TextField
-              error={inputError.user_name}
+              error={NULL_validation5 == true || inputError.user_name}
               fullWidth
               helperText={userNameHelperText}
               // helperText={
@@ -317,24 +517,23 @@ const AccountRegistar = (props) => {
             />
 
             <TextField
-              error={inputError.password}
+              // パスワードが空の時にもエラー表示出てたので修正しました。
+              error={NULL_validation6 == true || (accountData.password != undefined && accountData.password != "") && inputError.password}
               fullWidth
               helperText={
-                (inputError.password
-                  ? "パスワードが条件に合致していません"
-                  : "") +
-                "※大文字・小文字・英数字・記号すべて含め、8文字以上30文字以内"
+                // パスワードが空の時にもエラー表示出てたので修正しました。
+                (accountData.password == undefined || accountData.password == "" ? "" : inputError.password ? "パスワードが条件を満たしていません" : "") + 
+                " ※大文字・小文字・英数字・記号・8文字以上30文字以内"
               }
               label="パスワード"
               margin="normal"
               name="password"
               onChange={handleChange}
               required
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={accountData.password}
               inputProps={{
-                pattern:
-                  "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,30}$",
+                pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,30}$",
                 // ^                : 文字列の開始
                 // (?=.*[a-z])      : 少なくとも一つの小文字の英字が含まれていること
                 // (?=.*[A-Z])      : 少なくとも一つの大文字の英字が含まれていること
@@ -344,36 +543,72 @@ const AccountRegistar = (props) => {
                 // $                : 文字列の終了
               }}
               variant="outlined"
+              // パスワード表示/非表示の切り替え
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             <TextField
               disabled={
                 !accountData.password ||
-                !new RegExp(
-                  "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,30}$"
-                ).test(accountData.password)
+                !new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,30}$").test(
+                  accountData.password
+                )
               }
-              error={inputError.passwordCheck}
+              // パスワード確認が空の時にもエラー表示出てたので修正しました。
+              error={NULL_validation7 == true || (accountData.passwordCheck != undefined && accountData.passwordCheck != "") && inputError.passwordCheck}
               fullWidth
               helperText={
-                inputError.passwordCheck
-                  ? "パスワードが一致しません"
-                  : "パスワードが一致しました"
+                // パスワード確認が空の時にもエラー表示出てたので修正しました。
+                accountData.passwordCheck == undefined || accountData.passwordCheck == "" ? "" : inputError.passwordCheck ? "パスワードが一致しません" : "パスワードが一致しました"
               }
               label="パスワード確認"
               margin="normal"
               name="passwordCheck"
               onChange={handleChange}
               required
-              type="password"
+              type={showPassword2 ? "text" : "password"}
               value={accountData.passwordCheck}
               variant="outlined"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword2}
+                      onMouseDown={handleMouseDownPassword2}
+                      edge="end"
+                      disabled={
+                        !accountData.password ||
+                        !new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,30}$").test(
+                          accountData.password
+                        )
+                      }
+                    >
+                      {showPassword2 ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
           </div>
         </RegistarCard>
       </Container>
     </>
   );
-};
+});
+
 
 AccountRegistar.propTypes = {
   accountData: PropTypes.shape({
@@ -389,6 +624,8 @@ AccountRegistar.propTypes = {
 };
 
 export default AccountRegistar;
+
+AccountRegistar.displayName = 'Child';
 
 // 以下のコードは絶対消さないでへへ
 // const AccountData = useContext(emailContext);

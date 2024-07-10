@@ -15,8 +15,8 @@ import PostSort from "src/sections/CompanyList/post-sort";
 // ----------------------------------------------------------------------
 
 export default function CompanyListView() {
-  const postsFromBlog = CompanyListItem();
-  console.log("postsFromBlog", postsFromBlog);
+  const postsFromCompany = CompanyListItem();
+  console.log("postsFromCompany", postsFromCompany);
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
@@ -39,7 +39,7 @@ export default function CompanyListView() {
       </Stack>
 
       <Grid container spacing={3}>
-        {postsFromBlog.map((post, index) => (
+        {postsFromCompany.map((post, index) => (
           <PostCard key={post.id} post={post} index={index} />
         ))}
       </Grid>

@@ -2,10 +2,10 @@ import PropTypes from "prop-types";
 
 import { Container, RegistarCard } from "./css/RegistarStyled";
 
-import SchoolNameDropdown from "./SchoolInfomation/SchoolNameDropdown";
-import GraduationYearDropdown from "./SchoolInfomation/GraduationYearDropdown";
-import DepartmentNameDropdown from "./SchoolInfomation/DepartmentNameDropdown";
-import FacultyName from "./SchoolInfomation/FacultyName";
+import GraduationYearDropdown from "./SchoolInformation/GraduationYearDropdown";
+import SchoolNameDropdown from "./SchoolInformation/SchoolNameDropdown";
+import DepartmentNameDropdown from "./SchoolInformation/DepartmentNameDropdown";
+import FacultyName from "./SchoolInformation/FacultyName";
 
 import { useEffect, useState } from "react";
 
@@ -44,8 +44,8 @@ const SchoolInformation = (props) => {
         <SchoolNameDropdown  coleSetRequiredCheck={coleSetRequiredCheck}/>
         <DepartmentNameDropdown />
         <FacultyName />
-        <p>専攻</p>
-        <p>コース</p>
+        {/* <p>専攻</p>
+        <p>コース</p> */}
       </RegistarCard>
     </Container>
   );
@@ -53,7 +53,7 @@ const SchoolInformation = (props) => {
 
 SchoolInformation.propTypes = {
   SessionSaveTrigger: PropTypes.string, // ここでSessionSaveTriggerの型を定義
-  coleSetUserNameCheck: PropTypes.func.isRequired,
+  coleSetUserNameCheck: PropTypes.func,
 };
 
 export default SchoolInformation;

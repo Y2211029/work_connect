@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+
+import { faker } from "@faker-js/faker";
+
+// タグボタン作成コンポーネント
+import CreateTagElements from "src/components/tag/CreateTagElements";
+
 // ----------------------------------------------------------------------
 /*--------------------------------------------*/
 /* 企業一覧のデータを取得する処理を追加しました。 */
@@ -12,7 +18,7 @@ export const CompanyListItem = () => {
   const [CompanyOfList, setCompanyOfList] = useState([]);
 
   // 企業の一覧データを取得する用URL
-  const url = "http://localhost:8000/get_Company_list";
+  const url = "http://localhost:8000/get_company_list";
 
   useEffect(() => {
     async function CompanyListFunction() {
@@ -25,12 +31,18 @@ export const CompanyListItem = () => {
         // response.dataは配列の中にオブジェクトがある形になっています
         // console.log("response.data:", response.data);
 
-        // 希望職業、希望勤務地、取得資格、プログラミング言語、開発環境、ソフトウェア、趣味、その他
-        // はタグのため、カンマ区切りの文字列を配列に変換する
+        // 職業(職種)はタグのため、カンマ区切りの文字列を配列に変換する
         response.data.forEach((element) => {
-          element.selected_occupation !== null ? (element.selected_occupation = element.selected_occupation.split(",")) : "";
-          element.desired_work_region !== null ? (element.desired_work_region = element.desired_work_region.split(",")) : "";
-          element.acquisition_qualification !== null ? (element.acquisition_qualification = element.acquisition_qualification.split(",")) : "";
+          element.selected_occupation !== null
+            ? (element.selected_occupation = element.selected_occupation
+                .split(",")
+                .map((item) => <CreateTagElements key={item} itemContents={item} />))
+            : "";
+          element.prefecture !== null
+            ? (element.prefecture = element.prefecture
+                .split(",")
+                .map((item) => <CreateTagElements key={item} itemContents={item} />))
+            : "";
         });
 
         setCompanyOfList(response.data);
@@ -42,19 +54,18 @@ export const CompanyListItem = () => {
     CompanyListFunction();
   }, []); // 空の依存配列を渡すことで初回のみ実行されるようにする
 
-  const posts = CompanyOfList.map((index, key) => ({
+  const posts = CompanyOfList.map((_, key) => ({
     id: CompanyOfList[key].id,
-    cover: `/assets/images/covers/cover_${index + 1}.jpg`,
+    cover: `/assets/images/covers/cover_${key + 1}.jpg`,
     title: CompanyOfList[key].company_name,
-    // createdAt: CompanyOfList[key].post_datetime,
-
-    // view: CompanyOfList[key].title,
-    // comment: CompanyOfList[key].title,
-    // share: CompanyOfList[key].title,
-    // favorite: CompanyOfList[key].title,
+    selectedOccupation: CompanyOfList[key].selected_occupation,
+    prefecture: CompanyOfList[key].prefecture,
+    view: faker.number.int(99999),
+    comment: faker.number.int(99999),
+    favorite: faker.number.int(99999),
     author: {
-    //   name: "",
-      avatarUrl: `/assets/images/avatars/avatar_${index + 1}.jpg`,
+      //   name: "",
+      avatarUrl: `/assets/images/avatars/avatar_${key + 1}.jpg`,
     },
   }));
 

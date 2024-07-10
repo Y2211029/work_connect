@@ -16,8 +16,8 @@ import PostCard from "src/sections/VideoList/post-card";
 // ----------------------------------------------------------------------
 
 export default function VideoListView() {
-  const postsFromBlog = VideoListItem();
-  console.log("postsFromBlog", postsFromBlog);
+  const postsFromVideo = VideoListItem();
+  console.log("postsFromVideo", postsFromVideo);
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
@@ -44,7 +44,7 @@ export default function VideoListView() {
       </Stack>
 
       <Grid container spacing={3}>
-        {postsFromBlog.map((post, index) => (
+        {postsFromVideo.map((post, index) => (
           <PostCard key={post.id} post={post} index={index} />
         ))}
       </Grid>

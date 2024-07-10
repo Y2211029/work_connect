@@ -3,6 +3,12 @@ import PropTypes from "prop-types";
 import { Container, RegistarCard } from "../css/RegistarStyled";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
+import TextField from "@mui/material/TextField";
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+
 function CreateTagElements({ itemContents }) {
   return <button className="greeting">{itemContents}</button>;
 }
@@ -68,30 +74,77 @@ const SessionDataList = ({ sessionData }) => {
   const Occupation = useTagListShow("selectedOccupation", sessionData, 1);
   const Prefecture = useTagListShow("Prefecture", sessionData, 1);
   const HP_URL = useTagListShow("HP_URL", sessionData, 0);
-  let itemContentValues = [];
+  
+
+  // パスワード表示/非表示の切り替え(パスワード)
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleMouseDownPassword = (e) => {
+    e.preventDefault();
+  };
 
   return (
     <>
       <ul>
-        {/* entriesはオブジェクト内のkeyとvalueをセットで"配列"にして渡してくれる。 */}
         {Object.entries(displayContentsName).map(([key, label]) => {
           const value = sessionData[key];
-          // Occupationこの作成したタグを入れ替えたい。
-          // sessionDataから取り出した値が空でないものを表示する。
+
           if (value !== null && value !== "" && value !== undefined) {
-            if (label === "職種") {
-              itemContentValues = <span>{Occupation}</span>;
+            let itemContentValues;
+
+            if (label === "メールアドレス" || label === "企業名" || label === "企業名(カタカナ)" || label === "ユーザーネーム") {
+              itemContentValues = (
+                <TextField
+                fullWidth
+                InputProps={{
+                  readOnly: true,
+                }}
+                  value={value}
+                />
+              );
+            } else if (label === "パスワード") {
+              itemContentValues = (
+                <TextField
+                fullWidth
+                  key={key}
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  value={value}
+                  InputProps={{
+                    readOnly: true,
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              );
+            } else if (label === "職種") {
+              itemContentValues = <span key={key}>{Occupation}</span>;
             } else if (label === "勤務地") {
-              itemContentValues = <span>{Prefecture}</span>;
+              itemContentValues = <span key={key}>{Prefecture}</span>;
             } else if (label === "ホームページURL") {
-              itemContentValues = <span>{HP_URL}</span>;
+              itemContentValues = <span key={key}>{HP_URL}</span>;
             } else {
-              itemContentValues = value;
+              itemContentValues = <span key={key}>{value}</span>;
             }
+
             return (
               <li key={key}>
                 <p>{label}</p>
-                {itemContentValues}
+                {itemContentValues} {/* ここでitemContentValuesを表示 */}
               </li>
             );
           }
@@ -100,6 +153,7 @@ const SessionDataList = ({ sessionData }) => {
       </ul>
     </>
   );
+
 };
 
 SessionDataList.propTypes = {

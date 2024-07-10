@@ -7,6 +7,7 @@ use App\Http\Controllers\EditorController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\login\loginController;
+use App\Http\Controllers\login\LoginStatusCheckController;
 use App\Http\Controllers\register\pre_registerController;
 use App\Http\Controllers\register\preRegisterCheckController;
 use App\Http\Controllers\register\registerController;

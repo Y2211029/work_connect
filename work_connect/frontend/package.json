@@ -40,6 +40,7 @@
     "@rxpm/editor-js-code": "^0.0.1",
     "@sotaproject/strikethrough": "^1.0.1",
     "@splidejs/react-splide": "^0.7.12",
+    "@splidejs/vue-splide": "^0.6.12",
     "@vitejs/plugin-react-swc": "^3.7.0",
     "@vtchinh/gallery-editorjs": "^1.2.3",
     "axios": "^1.7.2",

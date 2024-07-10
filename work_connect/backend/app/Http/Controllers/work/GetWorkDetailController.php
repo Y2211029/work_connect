@@ -27,10 +27,10 @@ class GetWorkDetailController extends Controller
 
 
             $workImageList = w_images::select('*')->where('work_id', $id)->get();
-            
+
             $workImageSrc = "";
             foreach ($workImageList as $key => $imageList) {
-                $workImageSrc = Storage::url($imageList->image);
+                $workImageSrc = asset("/storage/images/work/". "$imageList->image");
                 // $workImageSrc = "aaa";
                 $workImageList[$key]->imageSrc = $workImageSrc;
             }
@@ -39,8 +39,8 @@ class GetWorkDetailController extends Controller
                 $workList[0]->images = $workImageList;
             }
 
-            \Log::info('GetWorkDetailController:$$workList[0]:');
-        \Log::info( json_decode(json_encode($workList[0]), true));
+            \Log::info('GetWorkDetailController:$workList[0]:');
+            \Log::info(json_decode(json_encode($workList[0]), true));
             $workListArray = json_decode(json_encode($workList), true);
 
             // $workListがnullでない場合に$workImageListを結合する

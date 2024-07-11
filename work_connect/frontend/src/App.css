@@ -297,7 +297,7 @@ h1 {
 
 .WorkPostingFormContainer {
   height: 80vh;
-  width: 100%;
+  width: 70%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -360,11 +360,12 @@ textarea {
 .ImageUpload {
   display: flex;
   flex-direction: column;
-  background-color: #8b8b8b;
+  /* background-color: #8b8b8b; */
   overflow-y: auto;
   padding: 20px;
   flex: 1 1 0%;
   height: 100%;
+  max-width: 600px;
 }
 
 .Information {
@@ -372,9 +373,9 @@ textarea {
   flex-direction: column;
   position: relative;
   overflow-y: scroll;
-  background-color: #8b8b8b;
+  /* background-color: #8b8b8b; */
   border-radius: 5px;
-  width: 50%;
+  max-width: 600px;
   flex: 1 1 0%;
   padding: 20px;
   height: 100%;
@@ -382,6 +383,9 @@ textarea {
   box-sizing: border-box;
 }
 
+.submit {
+  float: right;
+}
 
 /* 作品投稿画面 ここまで */
 

@@ -11,6 +11,7 @@ import Environment from "../../../sections/work/WorkPosting/Environment";
 // import { useNavigate } from "react-router-dom";
 
 import "../../../App.css";
+import { useEffect, useState } from "react";
 
 // ログインのモーダル CSS設定
 // const modalStyle = {
@@ -38,23 +39,43 @@ const WorkPosting = () => {
   //   // setFormErrors({}); // エラーメッセージをリセット
   // };
 
+  const [workData,setWorkData] = useState({
+    YoutubeURL: "",
+    WorkTitle: "",
+    WorkGenre: "",
+    Introduction: "",
+    Obsession: "",
+    Language: "",
+    Environment: "",
+  })
+
+  useEffect(() => {
+    console.log(workData);
+  }, [workData])
+
+  const callSetWorkData = (key, value) => {
+    setWorkData({
+      ...workData, [key]: value
+    })
+  }
+
+  const WorkSubmit = (e) => {
+    e.preventDefault();
+    console.log("e" ,e.target);
+    // e.target.map
+    
+  }
+
   return (
     <div>
-      {/* <button>作品投稿</button> */}
-      {/* <Modal
-        isOpen={showModal}
-        contentLabel="Example Modal"
-        ariaHideApp={false}
-        style={modalStyle}
-      > */}
       <div className="WorkPostingFormContainer">
-        <form action="" method="post" id="youtubeForm">
+        <form onSubmit={WorkSubmit} method="post" id="youtubeForm">
           <h3>作品投稿</h3>
           <hr />
           <div className="WorkPostingUiForm">
             <div className="ImageUpload">
               <div className="WorkPostingFormField">
-                <YoutubeURL />
+                <YoutubeURL callSetWorkData={callSetWorkData} />
               </div>
               <div className="WorkPostingFormField">
                 <ImageUpload />
@@ -62,7 +83,7 @@ const WorkPosting = () => {
             </div>
             <div className="Information">
               <div className="WorkPostingFormField">
-                <WorkTitle />
+                <WorkTitle callSetWorkData={callSetWorkData} />
               </div>
               {/* ジャンル */}
               <div className="WorkPostingFormField">
@@ -74,22 +95,22 @@ const WorkPosting = () => {
                       タグを入れてください
                     </span>
                   </p>
-                  <WorkGenre />
+                  <WorkGenre callSetWorkData={callSetWorkData} />
                 </div>
               </div>
               <div className="WorkPostingFormField">
-                <Introduction />
+                <Introduction callSetWorkData={callSetWorkData} />
               </div>
               <div className="WorkPostingFormField">
-                <Obsession />
+                <Obsession callSetWorkData={callSetWorkData} />
               </div>
               <div className="WorkPostingFormField">
                 <p>プログラミング言語</p>
-                <Language />
+                <Language callSetWorkData={callSetWorkData} />
               </div>
               <div className="WorkPostingFormField">
                 <p>開発環境</p>
-                <Environment />
+                <Environment callSetWorkData={callSetWorkData} />
               </div>
             </div>
           </div>

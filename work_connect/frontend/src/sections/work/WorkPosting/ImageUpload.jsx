@@ -29,18 +29,19 @@ const SortableItem = ({ id, image, onDelete }) => {
   };
 
   const imgStyle = {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    aspectRatio: '16 / 9',
   };
 
   const containerStyle = {
-    width: "100%",
-    height: "auto",
-    overflow: "hidden",
-    position: "relative",
-    boxSizing: "border-box",
-    zIndex: 1,
+    width: '450px',
+    height: '253px', // 320 * 9 / 16 = 180
+    overflow: 'hidden',
+    position: 'relative',
+    boxSizing: 'border-box',
+    zIndex: 1, // 他の要素の上に表示されるように設定
   };
 
   const buttonStyle = {

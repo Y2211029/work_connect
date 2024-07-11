@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import CreatableSelect from 'react-select/creatable';
 import InsertTag from 'src/components/tag/InsertTag';
 import axios from 'axios';
+import PropTypes from "prop-types";
 
-const Environment = () => {
+const Environment = (props) => {
   const {InsertTagFunction} = InsertTag();
   const url = 'http://localhost:8000/get_environment_tag'
   const [options, setOptions] = useState([]);
@@ -49,10 +50,20 @@ const Environment = () => {
       // 13は作品投稿の開発環境です。 
       InsertTagFunction(inputValue.option.value, 13);
     }
+    let valueArray = [];
+    selectedOption.map((value) => {
+      valueArray.push(value.value)
+    })
+    props.callSetWorkData("Environment", valueArray.join(","));
   };
 
   return(
     <CreatableSelect options={options} isClearable isMulti onChange={handleChange}/>
   );
 };
+
+Environment.propTypes = {
+  callSetWorkData: PropTypes.func,
+};
+
 export default Environment;

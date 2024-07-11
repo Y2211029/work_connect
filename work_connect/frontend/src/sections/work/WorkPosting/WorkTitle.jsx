@@ -1,6 +1,9 @@
+import PropTypes from "prop-types";
 
-
-const WorkTitle = () => {
+const WorkTitle = (props) => {
+  const handleChange = (e) =>{
+    props.callSetWorkData("WorkTitle", e.target.value)
+  }
   return (
     <div>
       <p>
@@ -12,9 +15,13 @@ const WorkTitle = () => {
           使えない文字が含まれています
         </span>
       </p>
-      <input type="text" name="title" id="title" className="kadomaru" />
+      <input type="text" name="title" id="title" className="kadomaru" onChange={handleChange} />
     </div>
   );
+};
+
+WorkTitle.propTypes = {
+  callSetWorkData: PropTypes.func,
 };
 
 export default WorkTitle;

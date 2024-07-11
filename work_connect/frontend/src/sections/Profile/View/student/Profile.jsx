@@ -4,6 +4,10 @@ import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
+import ProfileMypage from './Mypage';
+import ProfileWorks from './Works';
+import ProfileVideos from './Videos';
+
 function samePageLinkNavigation(event) {
   if (
     event.defaultPrevented ||
@@ -59,10 +63,13 @@ export default function NavTabs() {
         aria-label="nav tabs example"
         role="navigation"
       >
-        <LinkTab label="マイページ" href="/drafts" />
-        <LinkTab label="作品" href="/trash" />
-        <LinkTab label="動画" href="/spam" />
+        <Tab label="マイページ" />
+        <Tab label="作品" />
+        <Tab label="動画" />
       </Tabs>
+      {value === 0 && <ProfileMypage />}
+      {value === 1 && <ProfileWorks />}
+      {value === 2 && <ProfileVideos />}
     </Box>
   );
 }

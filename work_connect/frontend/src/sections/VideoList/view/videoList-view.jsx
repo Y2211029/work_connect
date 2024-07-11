@@ -3,7 +3,7 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 
-import VideoListItem from "src/_mock/videoListItem";
+import VideoListItem from "src/_mock/video/videoListItem";
 
 import PostCard from "src/sections/VideoList/post-card";
 

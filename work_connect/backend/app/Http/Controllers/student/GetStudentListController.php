@@ -14,9 +14,10 @@ class GetStudentListController extends Controller
             $userList = w_users::select()->get();
             $userListArray = json_decode(json_encode($userList), true);
 
-            echo json_encode($userListArray);
             \Log::info('GetStudentListController:$userListArray:');
             \Log::info(json_encode($userListArray));
+            // echo json_encode($userListArray);
+            return json_encode($userListArray);
         } catch (\Exception $e) {
             \Log::info('GetStudentListController:user_name重複チェックエラー');
             \Log::info($e);

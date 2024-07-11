@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 
 import Modal from "react-modal";
-import Box from '@mui/material/Box';
+import Box from "@mui/material/Box";
 
 import { Splide, SplideSlide, SplideTrack } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
@@ -20,6 +20,11 @@ const WorkDetail = () => {
   const { id } = useParams();
   // 作品の項目
   // const { id } = useParams();
+
+  // メインスライドのパス
+  const [WorkSlide, setWorkSlide] = useState([]);
+  //
+  const [WorkSlideCheck, setWorkSlideCheck] = useState(false);
 
   const [workDetail, setWorkDetail] = useState([]);
   // スライドの位置
@@ -38,8 +43,6 @@ const WorkDetail = () => {
   //   { image: "/assets/workImages/thumbnail/cover_3.jpg", annotation: "作品スライドの紹介文です。3" },
   //   // 他のスライドも同様に追加
   // ];
-
-  const [WorkSlide, setWorkSlide] = useState([]);
 
   // メインスライドのCSS
   const options = {
@@ -74,8 +77,10 @@ const WorkDetail = () => {
       try {
         // Laravel側から作品一覧データを取得
         const response = await axios.get(url, {
-          // params: { id: id },
           params: { id: id },
+          headers: {
+            "Content-Type": "json",
+          },
         });
 
         // response.dataは配列の中にオブジェクトがある形になっています
@@ -97,7 +102,7 @@ const WorkDetail = () => {
         // console.log(NotThumbnail);
 
         response.data[0].images.forEach((value) => {
-          console.log("valuevalue", value);
+          // console.log("valuevalue", value);
           if (value.thumbnail_judgement === 1) {
             // サムネイルの場合
             // setThumbnailJudgement(value);
@@ -111,8 +116,11 @@ const WorkDetail = () => {
           }
         });
 
-        console.log("workImagesArray:", workImagesArray);
+        // console.log("workImagesArray:", workImagesArray);
+
         setWorkSlide(workImagesArray);
+        // スライド画像をセットしてから表示するためのステート
+        setWorkSlideCheck(true);
 
         // setWorkSlide(
         //   { image: "/assets/workImages/thumbnail/cover_1.jpg" },
@@ -165,37 +173,53 @@ const WorkDetail = () => {
     }
   }, [modalIsOpen, currentSlideIndex]);
 
+  // 作品ジャンル
+
+  console.log("workDetail", workDetail);
+  let renderGenre = [];
+  useEffect(() => {
+    renderGenre = workDetail.work_genre;
+    console.log("renderGenre", renderGenre);
+  }, [workDetail]);
+
+  console.log(renderGenre);
+  // const post = workDetail.map((_, key)) => ({
+  //   workDetail[key].work_genre,
+  // })
   return (
     <div className="wrapper">
       <h2 className="WorkDetail-title">{workDetail.work_name}</h2>
 
       {/* メインスライドここから */}
-      <Splide
-        ref={mainSplideRef}
-        options={options}
-        aria-labelledby="autoplay-example-heading"
-        hasTrack={false}
-        onMoved={(splide, newIndex) => setCurrentSlideIndex(newIndex)}
-      >
-        <div style={{ position: "relative" }}>
-          <SplideTrack>
-            {WorkSlide.map((slide, index) => (
-              <SplideSlide key={slide.image} onClick={() => openModal(index)}>
-                <img src={slide.image} alt={slide.image} />
-              </SplideSlide>
-            ))}
-          </SplideTrack>
-        </div>
+      {WorkSlideCheck && (
+        <Splide
+          ref={mainSplideRef}
+          options={options}
+          aria-labelledby="autoplay-example-heading"
+          hasTrack={false}
+          onMoved={(splide, newIndex) => setCurrentSlideIndex(newIndex)}
+        >
+          <div style={{ position: "relative" }}>
+            <SplideTrack>
+              {WorkSlide.map((slide, index) => (
+                <SplideSlide key={slide.image} onClick={() => openModal(index)}>
+                  <img src={slide.image} alt={slide.image} />
+                </SplideSlide>
+              ))}
+            </SplideTrack>
+          </div>
 
-        <div className="splide__progress">
-          <div className="splide__progress__bar" />
-        </div>
-        {/* 
+          <div className="splide__progress">
+            <div className="splide__progress__bar" />
+          </div>
+          {/* 
         <button className="splide__toggle">
           <span className="splide__toggle__play">Play</span>
           <span className="splide__toggle__pause">Pause</span>
         </button> */}
-      </Splide>
+        </Splide>
+      )}
+
       {/* メインスライドここまで */}
 
       {/* モーダルスライドここから */}
@@ -240,7 +264,6 @@ const WorkDetail = () => {
         </div>
       </Modal>
       {/* モーダルスライドここまで */}
-
       {/* ギャラリーモーダルここから */}
       <Modal isOpen={galleryIsOpen} onRequestClose={closeModal} contentLabel="Image Modal" className="modal" overlayClassName="overlay">
         <div className="Modal">
@@ -263,7 +286,22 @@ const WorkDetail = () => {
 
       {/* 各項目の表示、ここから */}
       <Box>
-        
+        {/* {renderWorkGenre} */}
+        {/* {test && test} */}
+        {workDetail.work_intro && (
+          <textarea
+            style={{
+              width: "100%",
+              height: "300px",
+            }}
+            value={workDetail.work_intro}
+            readOnly // 読み取り専用にする場合
+          />
+        )}
+
+        {renderGenre.map((value) => (
+          <p>{value}</p>
+        ))}
       </Box>
       {/* 各項目の表示、ここまで */}
     </div>

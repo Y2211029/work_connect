@@ -236,3 +236,4 @@ PostCard.propTypes = {
   post: PropTypes.object.isRequired,
   index: PropTypes.number,
 };
+

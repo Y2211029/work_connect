@@ -19,7 +19,7 @@ import SvgColor from "src/components/svg-color";
 // ----------------------------------------------------------------------
 
 export default function PostCard({ post, index }) {
-  const { cover, title, genre, intro, thumbnail, view, comment, author, userName, createdAt } = post;
+  const { id, cover, title, genre, intro, thumbnail, view, comment, author, userName, createdAt } = post;
 
   const latestPostLarge = index === 0;
 
@@ -45,7 +45,7 @@ export default function PostCard({ post, index }) {
   // タイトル
   const renderTitle = (
     <Link
-      to="VideoDetail"
+      to={`/VideoDetail/${id}`}
       color="inherit"
       variant="subtitle2"
       underline="none" // デフォルトで下線を消す
@@ -236,4 +236,3 @@ PostCard.propTypes = {
   post: PropTypes.object.isRequired,
   index: PropTypes.number,
 };
-

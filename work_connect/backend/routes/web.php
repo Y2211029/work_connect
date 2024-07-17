@@ -15,6 +15,7 @@ use App\Http\Controllers\register\userNameCheckController;
 use App\Http\Controllers\work\GetWorkListController;
 use App\Http\Controllers\movie\GetMovieListController;
 use App\Http\Controllers\work\GetWorkDetailController;
+use App\Http\Controllers\movie\GetMovieDetailController;
 use App\Http\Controllers\student\GetStudentListController;
 use App\Http\Controllers\company\GetCompanyListController;
 use App\Http\Controllers\tag\GetGenreTagController;
@@ -33,14 +34,14 @@ Route::get('/', function () {
 // Route::get('list',[ListController::class, 'index']);
 // =======
 // タグ作成
-Route::post('/insert_tag',[InsertTagController::class, 'InsertTagController']);
+Route::post('/insert_tag', [InsertTagController::class, 'InsertTagController']);
 // 作品ジャンルタグ取得
-Route::get('/get_genre_tag',[GetGenreTagController::class, 'GetGenreTagController']);
+Route::get('/get_genre_tag', [GetGenreTagController::class, 'GetGenreTagController']);
 // プログラミング言語タグ取得
 
-Route::get('/get_language_tag',[GetLanguageTagController::class, 'GetLanguageTagController']);
+Route::get('/get_language_tag', [GetLanguageTagController::class, 'GetLanguageTagController']);
 // 開発環境タグ取得w
-Route::get('/get_environment_tag',[GetEnvironmentTagController::class, 'GetEnvironmentTagController']);
+Route::get('/get_environment_tag', [GetEnvironmentTagController::class, 'GetEnvironmentTagController']);
 // ログイン状態のチェック
 Route::post('/login_status_check', [LoginStatusCheckController::class, 'LoginStatusCheckController']);
 
@@ -55,8 +56,8 @@ Route::get('/get_company_list', [GetCompanyListController::class, 'GetCompanyLis
 
 // 作品詳細取得
 Route::get('/get_work_detail', [GetWorkDetailController::class, 'GetWorkDetailController']);
-// // 動画詳細取得
-// Route::get('/get_movie_list',[GetMovieListController::class, 'GetMovieListController']);
+// 動画詳細取得
+Route::get('/get_movie_detail', [GetMovieDetailController::class, 'GetMovieDetailController']);
 // // 学生詳細取得
 // Route::get('/get_student_list',[GetStudentListController::class, 'GetStudentListController']);
 // // 企業詳細取得
@@ -80,16 +81,16 @@ Route::get('/s_pre_register', [pre_registerController::class, 'pre_registerContr
 
 
 //ニュース編集・投稿・閲覧機能
-Route::get('/news_save',[EditorController::class, 'news_save']);
-Route::get('/news_upload',[EditorController::class, 'news_upload']);
-Route::post('/image_save',[EditorController::class, 'image_save']);
-Route::get('/Internship_JobOffer',[EditorController::class, 'editor_get']);
+Route::get('/news_save', [EditorController::class, 'news_save']);
+Route::get('/news_upload', [EditorController::class, 'news_upload']);
+Route::post('/image_save', [EditorController::class, 'image_save']);
+Route::get('/Internship_JobOffer', [EditorController::class, 'editor_get']);
 Route::get('/Internship_JobOffer/news_detail/{id}', [NewsController::class, 'news_detail_get']);
-Route::post('/news_bookmark',[NewsController::class, 'news_bookmark']);
+Route::post('/news_bookmark', [NewsController::class, 'news_bookmark']);
 
 
 //設定機能
-Route::get('/color_save',[SettingController::class, 'color_save']);
+Route::get('/color_save', [SettingController::class, 'color_save']);
 
 
 // ミドルウェア

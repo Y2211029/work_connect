@@ -59,7 +59,7 @@ export const VideoListItem = () => {
     intro: MovieOfList[key].intro.length > 200 ? MovieOfList[key].intro.substring(0, 200) + "..." : MovieOfList[key].intro,
 
     author: {
-      avatarUrl: `/assets/images/avatars/avatar_${key + 1}.jpg`,
+      avatarUrl: `/assets/images/avatars/avatar_${MovieOfList[key].icon}.jpg`,
     },
     view: faker.number.int(99999),
     comment: faker.number.int(99999),

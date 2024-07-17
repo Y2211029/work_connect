@@ -2,16 +2,8 @@ import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
-
-import VideoListItem from "src/_mock/video/videoListItem";
-
+import VideoListItem from "src/_mock/videoListItem";
 import PostCard from "src/sections/VideoList/post-card";
-
-// import PostSort from "src/sections/VideoList/post-sort";
-
-// import Button from '@mui/material/Button';
-// import Iconify from 'src/components/iconify';
-// import PostSearch from 'src/sections/VideoList/post-search';
 
 // ----------------------------------------------------------------------
 

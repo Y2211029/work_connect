@@ -6,6 +6,7 @@ import Modal from "react-modal";
 import Box from "@mui/material/Box";
 
 import { useCreateTagbutton } from "src/hooks/use-createTagbutton";
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 import { Splide, SplideSlide, SplideTrack } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
@@ -17,7 +18,9 @@ import "@splidejs/react-splide/css";
 // ここでアプリケーションのルートエレメントを設定
 Modal.setAppElement("#root");
 
-const DetailItem = () => {
+const WorkDetailItem = () => {
+  // ログイン情報の取得
+  const { getSessionData } = useSessionStorage();
   // 作品IDの取得
   const { id } = useParams();
 
@@ -31,6 +34,13 @@ const DetailItem = () => {
 
   // -----作品データ-----
   const [workDetail, setWorkDetail] = useState([]);
+  const [workComment, setWorkComment] = useState([]);
+  const [AccountData, setAccountData] = useState({});
+  // const [Comment, setComment] = useState([
+  //   {
+  //     display: "none",
+  //   },
+  // ]);
 
   // -----タグ-----
   const { tagCreate } = useCreateTagbutton();
@@ -76,12 +86,15 @@ const DetailItem = () => {
 
   // console.log("currentSlideIndex", currentSlideIndex);
 
-  // Laravel側から作品一覧データを取得
+  // Laravel側から作品詳細データを取得
   useEffect(() => {
+    setAccountData(getSessionData("accountData"));
+
+    // console.log("accountData", accountData);
     async function workListFunction() {
       let workImagesArray = [];
       try {
-        // Laravel側から作品一覧データを取得
+        // Laravel側から作品詳細データを取得
         const response = await axios.get(url, {
           params: { id: id },
           headers: {
@@ -89,10 +102,9 @@ const DetailItem = () => {
           },
         });
 
-        setWorkDetail(response.data[0]);
-        // console.log("response.data", response.data[0]);
-
-        response.data[0].images.forEach((value) => {
+        setWorkDetail(response.data["作品"][0]);
+        setWorkComment(response.data["作品コメント"]);
+        response.data["作品"][0].images.forEach((value) => {
           // console.log("valuevalue", value);
           if (value.thumbnail_judgement === 1) {
             // サムネイルの場合
@@ -119,7 +131,7 @@ const DetailItem = () => {
       }
     }
     workListFunction();
-  }, [id]); // 空の依存配列を渡すことで初回のみ実行されるようにする
+  }, [id]);
 
   // スライドモーダル
   const openModal = (index) => {
@@ -157,6 +169,7 @@ const DetailItem = () => {
     }
   }, [modalIsOpen, currentSlideIndex]);
 
+  // タグ作成
   useEffect(() => {
     //ジャンル
     setWorkGenre(tagCreate(workDetail.work_genre));
@@ -165,23 +178,34 @@ const DetailItem = () => {
     // 開発環境
     setWorkDevelopmentEnvironment(tagCreate(workDetail.development_environment));
     console.log("workDetail", workDetail);
+    console.log("workComment", workComment);
   }, [workDetail]);
 
-  const renderTitle = (
-    <div>
-      {/* 作品タイトル */}
+  // 作品タイトル
+  const renderTitle = workDetail.work_name && workDetail.work_name.length > 0 && (
+    <>
       <h2 className="WorkDetail-title">{workDetail.work_name}</h2>
-      {workDetail.icon && workDetail.user_name && (
-        <div>
-          <img src={`/assets/images/avatars/avatar_${workDetail.icon}.jpg`} alt="" />
-          <span>{workDetail.user_name}</span>
-        </div>
-      )}
-      {/* 作品制作者アイコン */}
-    </div>
+    </>
   );
 
-  const renderIntro = workDetail.work_intro && (
+  // 作品投稿者アイコン
+  const renderIcon = workDetail.icon && workDetail.icon.length > 0 && (
+    <>
+      <Link to="/">
+        <img src={`/assets/images/avatars/avatar_${workDetail.icon}.jpg`} alt="" />
+      </Link>
+    </>
+  );
+
+  // 作品投稿者ユーザーネーム
+  const renderUserName = workDetail.user_name && workDetail.user_name.length > 0 && (
+    <>
+      <span>{workDetail.user_name}</span>
+    </>
+  );
+
+  // 作品紹介文
+  const renderIntro = workDetail.work_intro && workDetail.work_intro.length > 0 && (
     <>
       <p>紹介文</p>
       <textarea
@@ -195,6 +219,7 @@ const DetailItem = () => {
     </>
   );
 
+  // 作品ジャンル
   const renderGenre = WorkGenre && WorkGenre.length > 0 && (
     <>
       <p>ジャンル</p>
@@ -202,12 +227,101 @@ const DetailItem = () => {
     </>
   );
 
+  // 作品の開発言語
+  const renderProgrammingLang = WorkProgrammingLanguage && WorkProgrammingLanguage.length > 0 && (
+    <>
+      <p>開発言語</p>
+      {WorkProgrammingLanguage}
+    </>
+  );
+
+  // 作品の開発環境
+  const renderDevelopmentEnv = WorkDevelopmentEnvironment && WorkDevelopmentEnvironment.length > 0 && (
+    <>
+      <p>開発環境</p>
+
+      {WorkDevelopmentEnvironment}
+    </>
+  );
+
+  const renderWorkURL = workDetail.work_url && workDetail.work_url.length > 0 && (
+    <>
+      <p>作品URL</p>
+      <a target="_blank" href={workDetail.work_url}>
+        {workDetail.work_url}
+      </a>
+    </>
+  );
+
+  // const handleClick = (commentId) => {
+  //   setComment({
+
+  //     ...Comment[commentId], {
+  //       display: "block",
+  //     });
+  //   }
+  // };
+
+  const renderComment =
+    workComment &&
+    (console.log("akadnlnanfknna", AccountData),
+    (
+      <>
+        <h3>コメント一覧</h3>
+        {workComment.map((item, index) =>
+          (item.commenter_id === AccountData.id && item.commenter_user_name === AccountData.user_name) ||
+          (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
+            <div key={index}>
+              <hr />
+              {/* <button onClick={() => handleClick(item.id)}>編集</button>
+              <button className={`comment_${item.id}`} style={{ display: Comment[item.id].display }}>
+                キャンセル
+              </button>
+              <button className={`comment_${item.id}`} style={{ display: Comment[item.id].display }}>
+                保存
+              </button> */}
+              <p>{item.commenter_user_name || item.commenter_company_name}</p>
+              <textarea
+                style={{
+                  width: "50%",
+                  height: "100px",
+                }}
+                value={item.content}
+                readOnly={false} // 読み取り専用にする場合
+              />
+            </div>
+          ) : (
+            <div key={index}>
+              <hr />
+              <p>{item.commenter_user_name || item.commenter_company_name}</p>
+              <textarea
+                style={{
+                  width: "50%",
+                  height: "100px",
+                }}
+                value={item.content}
+                readOnly // 読み取り専用にする場合
+              />
+              {/* <p>Commenter ID: {item.commenter_id}</p> */}
+              {/* <p>Genre: {item.genre}</p> */}
+              {/* <p>ID: {item.id}</p> */}
+              {/* <p>Various ID: {item.various_id}</p> */}
+              {/* <p>Comment DateTime: {item.commentDateTime}</p> */}
+            </div>
+          )
+        )}
+      </>
+    ));
   return (
     <>
       <Link to="/">作品一覧に戻る</Link>
-
-      {renderTitle}
-
+      <div>
+        {renderTitle}
+        <div>
+          {renderIcon}
+          {renderUserName}
+        </div>
+      </div>
       {/* メインスライドここから */}
       {WorkSlideCheck && (
         <Splide
@@ -277,6 +391,7 @@ const DetailItem = () => {
         </div>
       </Modal>
       {/* モーダルスライドここまで */}
+
       {/* ギャラリーモーダルここから */}
       <Modal isOpen={galleryIsOpen} onRequestClose={closeModal} contentLabel="Image Modal" className="modal" overlayClassName="overlay">
         <div className="Modal">
@@ -301,34 +416,14 @@ const DetailItem = () => {
       <Box>
         {renderIntro}
         {renderGenre}
-
-        {WorkProgrammingLanguage && WorkProgrammingLanguage.length > 0 && (
-          <>
-            <p>開発言語</p>
-            {WorkProgrammingLanguage}
-          </>
-        )}
-
-        {WorkDevelopmentEnvironment && WorkDevelopmentEnvironment.length > 0 && (
-          <>
-            <p>開発環境</p>
-
-            {WorkDevelopmentEnvironment}
-          </>
-        )}
-
-        {workDetail.work_url && (
-          <>
-            <p>作品URL</p>
-            <a target="_blank" href={workDetail.work_url}>
-              {workDetail.work_url}
-            </a>
-          </>
-        )}
+        {renderProgrammingLang}
+        {renderDevelopmentEnv}
+        {renderWorkURL}
+        {renderComment}
       </Box>
       {/* 各項目の表示、ここまで */}
     </>
   );
 };
 
-export default DetailItem;
+export default WorkDetailItem;

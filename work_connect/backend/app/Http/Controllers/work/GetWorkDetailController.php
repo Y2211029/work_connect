@@ -42,10 +42,10 @@ class GetWorkDetailController extends Controller
             \Log::info(json_decode(json_encode($workList[0]), true));
             $workListArray = json_decode(json_encode($workList), true);
 
-            // $workListがnullでない場合に$workImageListを結合する
-            echo json_encode($workListArray);
             \Log::info('GetWorkDetailController:$workListArray:');
             \Log::info(json_encode($workListArray));
+            // $workListがnullでない場合に$workImageListを結合する
+            return json_encode($workListArray);
         } catch (\Exception $e) {
             \Log::info('GetWorkDetailController:user_name重複チェックエラー');
             \Log::info($e);

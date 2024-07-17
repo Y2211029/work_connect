@@ -42,6 +42,7 @@ export default function PostCard({ post, index }) {
 
   const renderTitle = (
     <Link
+      top="/workDetail"
       color="inherit"
       variant="subtitle2"
       underline="hover"

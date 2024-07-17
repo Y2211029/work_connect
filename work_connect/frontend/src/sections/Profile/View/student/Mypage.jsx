@@ -1,11 +1,24 @@
 //import * as React from 'react';
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import PropTypes from "prop-types";
+import { Link } from 'react-router-dom';
+
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { styled } from '@mui/material/styles';
+import { styled , useTheme } from '@mui/material/styles';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardMedia from '@mui/material/CardMedia';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import IconButton from '@mui/material/IconButton';import Tooltip from '@mui/material/Tooltip';
+
+// import MypageEdit from '';
+
+
 
 // Itemのスタイルを定義
 const Item = styled(Paper)(({ theme }) => ({
@@ -22,7 +35,6 @@ const Showmore = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing(1),
     textAlign: 'center',
-    color: '#5956FF',
     fontSize: '20px',
   }));
 
@@ -47,7 +59,54 @@ const useTagListShow = (tagName, sessionData) => {
     return tags;
   };
 
+// 初期化
+let close = true;
+
 const ProfileMypage = () => {
+
+  // 「さらに表示」ボタンの初期設定
+  const [showMoreText, setShowMoreText] = useState(
+    <><KeyboardArrowDownIcon /> さらに表示</>
+  );
+  // 初期化
+  const theme = useTheme();
+  const detail = useRef([]);
+  const showmore = useRef(null);
+
+
+  // デフォルトで詳細項目を非表示にする
+  useEffect(() => {
+    detail.current.forEach(ref => {
+      if (ref) ref.style.display = 'none';
+    });
+  }, []);
+  
+  // 「さらに表示」が押された時の処理
+  const ShowmoreClick = () => {
+    
+    if(close == false){
+      // 「閉じる」のとき、詳細項目を非表示にして、ボタンを「さらに表示」に変更
+      close = true;
+      detail.current.forEach(ref => {
+        if (ref){
+          ref.style.display = 'none';
+        }
+      });
+      setShowMoreText(<><KeyboardArrowDownIcon /> さらに表示</>);
+      
+    } else if(close == true){
+      // 「さらに表示」のとき、詳細項目を表示して、ボタンを「閉じる」に変更
+      close = false;
+      detail.current.forEach(ref => {
+        if (ref){
+          ref.style.display = '';
+        }
+      });
+      setShowMoreText(<><KeyboardArrowUpIcon /> 閉じる</>);
+      
+    }
+    
+  };
 
     const tag_1 = useTagListShow("1", {"1":"プログラマー,システムエンジニア"});// sessiondata
     const tag_2 = useTagListShow("2", {"2":"windows"});// sessiondata
@@ -58,9 +117,46 @@ const ProfileMypage = () => {
     const tag_7 = useTagListShow("7", {"7":"Figma"});// sessiondata
 
     return (
-        <Box sx={{ marginLeft: '25%', width: '50%' }}>
+        <Box sx={{ marginLeft: '25%', width: '50%' , marginTop: '30px',}}>
           <Stack spacing={3}>
-          {/* ModeEdit 編集 */}
+            {/* 編集ボタン */}
+            
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', }} >
+              <Link to="/profile/edit" style={{ textDecoration: 'none' }}>
+                <Tooltip title="編集する">
+                  <IconButton
+                    sx={{ marginLeft: 'auto', // 右揃え
+                      '&:hover': { backgroundColor: '#f0f0f0', title:'a' },
+                    }}
+                  >
+                    <ModeEditIcon sx={{ fontSize: 40 }} />
+                  </IconButton>
+                </Tooltip>
+              </Link>
+            </Box>
+            
+            
+            <Card sx={{
+              textAlign: 'center',
+              display: 'flex',
+              justifyContent: 'center',
+              backgroundColor: theme.palette.background.default,
+              boxShadow: 'none'
+            }}>
+              <CardMedia
+                component="img"
+                sx={{
+                  height: 350,
+                  width: 350,
+                  objectFit: 'cover', // 画像をカード内でカバーするように設定
+                  borderRadius: '50%', // 画像を丸くする
+                }}
+                image="/assets/workImages/thumbnail/cover_19.jpg"
+                alt="Placeholder"
+              />
+              
+            </Card>
+            
             <Box>
               <Typography variant="h6">名前</Typography>
               <Item>坂東 航希</Item>
@@ -71,10 +167,7 @@ const ProfileMypage = () => {
             </Box>
             <Box>
               <Typography variant="h6">自己紹介</Typography>
-              <Item>清風情報工科学院の坂東です。私はコミュニケーション能力を活かして、テニスサークルで渉外係をしていました。外部のサークルとの練習試合を企画することが主な仕事で、調整の窓口としてたくさんの人とやり取りをしました。
-
-                    特に大会の前は準備の忙しい中で練習試合をすることになるので、自分のサークルと相手のサークルの両方にとって良い試合ができるよう、スケジュール管理にも気を配りました。
-                    スムーズに交渉をする力と、この経験で身につけたマネジメントの力を活かして御社でも活躍したいです。</Item>
+              <Item>情報処理・ネットワーク専攻3年の坂東航希です。よろしくお願いいたします。</Item>
             </Box>
             <Box>
               <Typography variant="h6">卒業年度</Typography>
@@ -89,42 +182,47 @@ const ProfileMypage = () => {
               <Item>清風情報工科学院</Item>
             </Box>
             <Box>
-              <Showmore>さらに表示</Showmore>
+              <Showmore>
+                <Button variant="outlined" ref={showmore} onClick={ShowmoreClick} 
+                sx={{ borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
+                  {showMoreText}
+                </Button>
+              </Showmore>
             </Box>
-            {/* mui:KeyboardArrowDown さらに表示 */}
-            {/* mui:KeyboardArrowUp 閉じる */}
-            <Box>
+            <Box ref={el => (detail.current[0] = el)} id="detail">
+
               <Typography variant="h6">学部</Typography>
               <Item>情報学部</Item>
             </Box>
-            <Box>
+            <Box ref={el => (detail.current[1] = el)} id="detail">
               <Typography variant="h6">学科</Typography>
               <Item>電子工学科</Item>
             </Box>
-            <Box>
+            <Box ref={el => (detail.current[2] = el)} id="detail">
               <Typography variant="h6">開発環境</Typography>
               <Item><span>{tag_2}</span></Item>
             </Box>
-            <Box>
+            <Box ref={el => (detail.current[3] = el)} id="detail">
               <Typography variant="h6">趣味</Typography>
               <Item><span>{tag_3}</span></Item>
             </Box>
-            <Box>
+            <Box ref={el => (detail.current[4] = el)} id="detail">
               <Typography variant="h6">希望勤務地</Typography>
               <Item><span>{tag_4}</span></Item>
             </Box>
-            <Box>
+            <Box ref={el => (detail.current[5] = el)} id="detail">
               <Typography variant="h6">プログラミング言語</Typography>
               <Item><span>{tag_5}</span></Item>
             </Box>
-            <Box>
+            <Box ref={el => (detail.current[6] = el)} id="detail">
               <Typography variant="h6">取得資格</Typography>
               <Item><span>{tag_6}</span></Item>
             </Box>
-            <Box>
+            <Box ref={el => (detail.current[7] = el)} id="detail">
               <Typography variant="h6">ソフトウェア</Typography>
               <Item><span>{tag_7}</span></Item>
             </Box>
+            {/* </span> */}
           </Stack>
         </Box>
       );

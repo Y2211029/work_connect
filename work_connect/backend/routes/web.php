@@ -21,17 +21,20 @@ use App\Http\Controllers\tag\GetGenreTagController;
 use App\Http\Controllers\tag\GetLanguageTagController;
 use App\Http\Controllers\tag\GetEnvironmentTagController;
 use App\Http\Controllers\tag\InsertTagController;
+use App\Http\Controllers\search\SearchWorkController;
 
 
 // トップ画面
 Route::get('/', function () {
     return view('welcome');
 });
-// <<<<<<< HEAD
 
 // /list
 // Route::get('list',[ListController::class, 'index']);
 // =======
+
+// 作品検索
+Route::get('/search_work',[SearchWorkController::class, 'SearchWorkController']);
 // タグ作成
 Route::post('/insert_tag',[InsertTagController::class, 'InsertTagController']);
 // 作品ジャンルタグ取得

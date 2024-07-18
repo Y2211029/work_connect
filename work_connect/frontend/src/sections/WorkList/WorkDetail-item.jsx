@@ -34,13 +34,14 @@ const WorkDetailItem = () => {
 
   // -----作品データ-----
   const [workDetail, setWorkDetail] = useState([]);
+  const [CommentPost, setCommentPost] = useState({
+    display: "none",
+    text: "",
+  });
   const [workComment, setWorkComment] = useState([]);
   const [AccountData, setAccountData] = useState({});
-  // const [Comment, setComment] = useState([
-  //   {
-  //     display: "none",
-  //   },
-  // ]);
+  const [Comment, setComment] = useState({});
+  const [CommentCancel, setCommentCancel] = useState("");
 
   // -----タグ-----
   const { tagCreate } = useCreateTagbutton();
@@ -82,7 +83,12 @@ const WorkDetailItem = () => {
     start: currentSlideIndex,
   };
 
-  const url = "http://localhost:8000/get_work_detail";
+  // 作品データ
+  const workDetailUrl = "http://localhost:8000/get_work_detail";
+  // 作品コメント投稿
+  const workCommentPostUrl = "http://localhost:8000/post_work_comment_post";
+  // 作品コメントデータ
+  const workCommentUrl = "http://localhost:8000/post_work_comment";
 
   // console.log("currentSlideIndex", currentSlideIndex);
 
@@ -95,7 +101,7 @@ const WorkDetailItem = () => {
       let workImagesArray = [];
       try {
         // Laravel側から作品詳細データを取得
-        const response = await axios.get(url, {
+        const response = await axios.get(workDetailUrl, {
           params: { id: id },
           headers: {
             "Content-Type": "json",
@@ -104,6 +110,8 @@ const WorkDetailItem = () => {
 
         setWorkDetail(response.data["作品"][0]);
         setWorkComment(response.data["作品コメント"]);
+
+        // console.log("response.data[作品コメント]", response.data["作品コメント"]);
         response.data["作品"][0].images.forEach((value) => {
           // console.log("valuevalue", value);
           if (value.thumbnail_judgement === 1) {
@@ -132,6 +140,22 @@ const WorkDetailItem = () => {
     }
     workListFunction();
   }, [id]);
+
+  useEffect(() => {
+    const initialCommentState = {};
+    workComment.forEach((value) => {
+      initialCommentState[value.id] = {
+        display: "none",
+        text: value.content,
+        readOnly: true,
+      };
+    });
+    setComment(initialCommentState);
+  }, [workComment]);
+
+  useEffect(() => {
+    console.log("commentが変更されました。", Comment);
+  }, [Comment]);
 
   // スライドモーダル
   const openModal = (index) => {
@@ -177,8 +201,8 @@ const WorkDetailItem = () => {
     setWorkProgrammingLanguage(tagCreate(workDetail.programming_language));
     // 開発環境
     setWorkDevelopmentEnvironment(tagCreate(workDetail.development_environment));
-    console.log("workDetail", workDetail);
-    console.log("workComment", workComment);
+    // console.log("workDetail", workDetail);
+    // console.log("workComment", workComment);
   }, [workDetail]);
 
   // 作品タイトル
@@ -253,65 +277,174 @@ const WorkDetailItem = () => {
     </>
   );
 
-  // const handleClick = (commentId) => {
-  //   setComment({
+  // コメント欄表示
+  const handleTextOpen = () => {
+    setCommentPost({ ...CommentPost, display: "block" });
+  };
 
-  //     ...Comment[commentId], {
-  //       display: "block",
-  //     });
-  //   }
-  // };
+  // コメント投稿キャンセル
+  const handlePostCancel = () => {
+    setCommentPost({ ...CommentPost, display: "none", text: "" });
+  };
 
-  const renderComment =
-    workComment &&
-    (console.log("akadnlnanfknna", AccountData),
-    (
-      <>
-        <h3>コメント一覧</h3>
-        {workComment.map((item, index) =>
-          (item.commenter_id === AccountData.id && item.commenter_user_name === AccountData.user_name) ||
-          (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
-            <div key={index}>
-              <hr />
-              {/* <button onClick={() => handleClick(item.id)}>編集</button>
-              <button className={`comment_${item.id}`} style={{ display: Comment[item.id].display }}>
-                キャンセル
-              </button>
-              <button className={`comment_${item.id}`} style={{ display: Comment[item.id].display }}>
-                保存
-              </button> */}
-              <p>{item.commenter_user_name || item.commenter_company_name}</p>
-              <textarea
-                style={{
-                  width: "50%",
-                  height: "100px",
-                }}
-                value={item.content}
-                readOnly={false} // 読み取り専用にする場合
-              />
-            </div>
-          ) : (
-            <div key={index}>
-              <hr />
-              <p>{item.commenter_user_name || item.commenter_company_name}</p>
-              <textarea
-                style={{
-                  width: "50%",
-                  height: "100px",
-                }}
-                value={item.content}
-                readOnly // 読み取り専用にする場合
-              />
-              {/* <p>Commenter ID: {item.commenter_id}</p> */}
-              {/* <p>Genre: {item.genre}</p> */}
-              {/* <p>ID: {item.id}</p> */}
-              {/* <p>Various ID: {item.various_id}</p> */}
-              {/* <p>Comment DateTime: {item.commentDateTime}</p> */}
-            </div>
-          )
-        )}
-      </>
-    ));
+  // コメント投稿内容
+  const handlePostChange = (value) => {
+    console.log("valuevaluevaluevalue", value);
+    setCommentPost({ ...CommentPost, text: value });
+  };
+
+  // コメント投稿
+  const handlePost = () => {
+    setCommentPost({ ...CommentPost, display: "block" });
+
+    async function workCommentSave() {
+      try {
+        // Laravel側から作品詳細データを取得
+        await axios.post(workCommentPostUrl, {
+          workCommentContent: CommentPost.text,
+          work_id: id,
+          user_id: AccountData.id,
+        });
+      } catch (err) {
+        console.log("err:", err);
+      }
+    }
+    workCommentSave();
+  };
+
+  // コメント編集ボタンクリック
+  const handleClick = (commentId) => {
+    setComment({
+      ...Comment,
+      [commentId]: {
+        ...Comment[commentId],
+        display: "block",
+        readOnly: false,
+      },
+    });
+
+    setCommentCancel(Comment[commentId].text);
+  };
+
+  const handleCancel = (commentId) => {
+    setComment({
+      ...Comment,
+      [commentId]: {
+        ...Comment[commentId],
+        display: "none",
+        text: CommentCancel,
+        readOnly: true,
+      },
+    });
+  };
+
+  // コメント入力内容変更
+  const handleChenge = (text, commentId) => {
+    setComment({
+      ...Comment,
+      [commentId]: {
+        ...Comment[commentId],
+        text: text,
+      },
+    });
+  };
+
+  // コメント保存
+  const handleSave = (commentId) => {
+    setComment({
+      ...Comment,
+      [commentId]: {
+        ...Comment[commentId],
+        display: "none",
+        readOnly: true,
+      },
+    });
+
+    async function workCommentSave() {
+      try {
+        // Laravel側から作品詳細データを取得
+        await axios.post(workCommentUrl, {
+          workCommentContent: Comment[commentId].text,
+          commentId: commentId,
+        });
+      } catch (err) {
+        console.log("err:", err);
+      }
+    }
+    workCommentSave();
+  };
+
+  const renderComment = workComment && Object.keys(Comment).length > 0 && (
+    <>
+      <div>
+        <button onClick={handleTextOpen}>コメントする</button>
+        <br />
+        <div
+          style={{
+            display: CommentPost.display,
+          }}
+        >
+          <textarea
+            style={{
+              width: "50%",
+              height: "100px",
+            }}
+            value={CommentPost.text}
+            onChange={(e) => handlePostChange(e.target.value)}
+          />
+          <br />
+          <button onClick={() => handlePostCancel()}>キャンセル</button>
+          <button onClick={() => handlePost()}>投稿</button>
+        </div>
+      </div>
+
+      <h3>コメント一覧</h3>
+      {workComment.map((item, index) =>
+        (item.commenter_id === AccountData.id && item.commenter_user_name === AccountData.user_name) ||
+        (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
+          <div key={index}>
+            <hr />
+            {/* {console.log("comment", Comment)} */}
+            <button onClick={() => handleClick(item.id)}>編集</button>
+            <button onClick={() => handleCancel(item.id)} className={`comment_${item.id}`} style={{ display: Comment[item.id]?.display }}>
+              キャンセル
+            </button>
+            <button onClick={() => handleSave(item.id)} className={`comment_${item.id}`} style={{ display: Comment[item.id]?.display }}>
+              保存
+            </button>
+            <p>{item.commenter_user_name || item.commenter_company_name}</p>
+            <textarea
+              style={{
+                width: "50%",
+                height: "100px",
+              }}
+              value={Comment[item.id].text}
+              readOnly={Comment[item.id].readOnly} // 読み取り専用にする場合
+              onChange={(e) => handleChenge(e.target.value, item.id)}
+            />
+          </div>
+        ) : (
+          <div key={index}>
+            <hr />
+            <p>{item.commenter_user_name || item.commenter_company_name}</p>
+            <textarea
+              style={{
+                width: "50%",
+                height: "100px",
+              }}
+              value={item.content}
+              readOnly // 読み取り専用にする場合
+            />
+            {/* <p>Commenter ID: {item.commenter_id}</p> */}
+            {/* <p>Genre: {item.genre}</p> */}
+            {/* <p>ID: {item.id}</p> */}
+            {/* <p>Various ID: {item.various_id}</p> */}
+            {/* <p>Comment DateTime: {item.commentDateTime}</p> */}
+          </div>
+        )
+      )}
+    </>
+  );
   return (
     <>
       <Link to="/">作品一覧に戻る</Link>

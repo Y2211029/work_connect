@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\work\PostWorkCommentPostController;
+use App\Http\Controllers\work\PostWorkCommentSaveController;
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ListController;
 use App\Http\Controllers\EditorController;
@@ -68,6 +71,13 @@ Route::get('/get_movie_detail', [GetMovieDetailController::class, 'GetMovieDetai
 // // 企業詳細取得
 // Route::get('/get_company_list',[GetCompanyListController::class, 'GetCompanyListController']);
 // >>>>>>> f74bb114622c2917b98d0449d67e8b7e25daac84
+
+// 作品コメント投稿
+Route::post('/post_work_comment_post', [PostWorkCommentPostController::class, 'PostWorkCommentPostController']);
+// 作品コメント更新
+Route::post('/post_work_comment', [PostWorkCommentSaveController::class, 'PostWorkCommentSaveController']);
+
+
 
 
 

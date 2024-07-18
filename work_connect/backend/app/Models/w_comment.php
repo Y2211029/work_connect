@@ -20,5 +20,7 @@ class w_comment extends Model
         'commenter_id',
         'content',
         'commentDateTime',
+        'created_at',
+        'updated_at',
     ];
 }

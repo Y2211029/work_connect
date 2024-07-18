@@ -46,6 +46,10 @@ export default function Header({ onOpenNav }) {
     // setShowModal(true);
     navigation("WorkPosting");
   };
+  const handleOpenModal2 = () => {
+    // setShowModal(true);
+    navigation("VideoPosting");
+  };
 
 
   const callSetModalChange = (newValue) => {
@@ -123,6 +127,7 @@ export default function Header({ onOpenNav }) {
       {/* ログイン、新規登録、本登録、チャット、通知、アカウントプロフィール */}
       <Stack direction="row" alignItems="center" spacing={1}>
         <button onClick={handleOpenModal}>作品投稿</button>
+        <button onClick={handleOpenModal2}>動画投稿</button>
         <SignUp1 />
 
         <button id="LoginButton" onClick={handleChange}>

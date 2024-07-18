@@ -21,27 +21,32 @@ use App\Http\Controllers\company\GetCompanyListController;
 use App\Http\Controllers\tag\GetGenreTagController;
 use App\Http\Controllers\tag\GetLanguageTagController;
 use App\Http\Controllers\tag\GetEnvironmentTagController;
+use App\Http\Controllers\tag\GetVideoGenreTagController;
 use App\Http\Controllers\tag\InsertTagController;
+use App\Http\Controllers\search\SearchWorkController;
 
 
 // トップ画面
 Route::get('/', function () {
     return view('welcome');
 });
-// <<<<<<< HEAD
 
 // /list
 // Route::get('list',[ListController::class, 'index']);
 // =======
+
+// 作品検索
+Route::get('/search_work',[SearchWorkController::class, 'SearchWorkController']);
 // タグ作成
 Route::post('/insert_tag', [InsertTagController::class, 'InsertTagController']);
 // 作品ジャンルタグ取得
 Route::get('/get_genre_tag', [GetGenreTagController::class, 'GetGenreTagController']);
 // プログラミング言語タグ取得
-
-Route::get('/get_language_tag', [GetLanguageTagController::class, 'GetLanguageTagController']);
+Route::get('/get_language_tag',[GetLanguageTagController::class, 'GetLanguageTagController']);
 // 開発環境タグ取得w
-Route::get('/get_environment_tag', [GetEnvironmentTagController::class, 'GetEnvironmentTagController']);
+Route::get('/get_environment_tag',[GetEnvironmentTagController::class, 'GetEnvironmentTagController']);
+// 動画ジャンルタグ取得
+Route::get('/get_video_genre_tag',[GetVideoGenreTagController::class, 'GetVideoGenreTagController']);
 // ログイン状態のチェック
 Route::post('/login_status_check', [LoginStatusCheckController::class, 'LoginStatusCheckController']);
 

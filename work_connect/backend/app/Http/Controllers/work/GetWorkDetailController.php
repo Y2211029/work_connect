@@ -5,7 +5,7 @@ namespace App\Http\Controllers\work;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\w_work;
+use App\Models\w_works;
 use App\Models\w_images;
 
 class GetWorkDetailController extends Controller
@@ -14,7 +14,7 @@ class GetWorkDetailController extends Controller
     {
         $id = $request->input('id');
         try {
-            $workList = w_work::join('w_users', 'w_works.creator_id', '=', 'w_users.id')
+            $workList = w_works::join('w_users', 'w_works.creator_id', '=', 'w_users.id')
                 ->select(
                     'w_users.programming_language AS users_programming_language',
                     'w_users.development_environment AS users_development_environment',

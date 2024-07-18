@@ -20,6 +20,7 @@ use App\Http\Controllers\company\GetCompanyListController;
 use App\Http\Controllers\tag\GetGenreTagController;
 use App\Http\Controllers\tag\GetLanguageTagController;
 use App\Http\Controllers\tag\GetEnvironmentTagController;
+use App\Http\Controllers\work\WorkPostingController;
 use App\Http\Controllers\tag\GetVideoGenreTagController;
 use App\Http\Controllers\tag\InsertTagController;
 use App\Http\Controllers\search\SearchWorkController;
@@ -42,8 +43,10 @@ Route::post('/insert_tag',[InsertTagController::class, 'InsertTagController']);
 Route::get('/get_genre_tag',[GetGenreTagController::class, 'GetGenreTagController']);
 // プログラミング言語タグ取得
 Route::get('/get_language_tag',[GetLanguageTagController::class, 'GetLanguageTagController']);
-// 開発環境タグ取得w
+// 開発環境タグ取得
 Route::get('/get_environment_tag',[GetEnvironmentTagController::class, 'GetEnvironmentTagController']);
+// 作品投稿
+Route::post('/work_posting',[WorkPostingController::class, 'WorkPostingController']);
 // 動画ジャンルタグ取得
 Route::get('/get_video_genre_tag',[GetVideoGenreTagController::class, 'GetVideoGenreTagController']);
 // ログイン状態のチェック

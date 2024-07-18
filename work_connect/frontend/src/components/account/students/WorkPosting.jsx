@@ -12,6 +12,7 @@ import Environment from "../../../sections/work/WorkPosting/Environment";
 
 import "../../../App.css";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 // ログインのモーダル CSS設定
 // const modalStyle = {
@@ -49,8 +50,11 @@ const WorkPosting = () => {
     Environment: "",
   })
 
+  const [imageFiles, setImageFiles] = useState([]);
+  const [message, setMessage] = useState('');
+
   useEffect(() => {
-    console.log(workData);
+    console.log("workData",workData);
   }, [workData])
 
   const callSetWorkData = (key, value) => {
@@ -59,11 +63,37 @@ const WorkPosting = () => {
     })
   }
 
-  const WorkSubmit = (e) => {
+  const handleImageChange = (e) => {
+    setImageFiles(e.target.files);
+    console.log("bbbb");
+  };
+
+  const WorkSubmit = async (e) => {
     e.preventDefault();
     console.log("e" ,e.target);
+
+    const formData = new FormData();
+    console.log(imageFiles);
+    Array.from(imageFiles).forEach((file, index) => {
+      formData.append(`images[${index}]`, file);
+      console.log("aaaa");
+    });
+    for (const key in workData) {
+      formData.append(key, workData[key]);
+    }
+
+    try {
+      const response = await axios.post('http://localhost:8000/work_posting', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      console.log(formData);
+      setMessage(response.data.message);
+    } catch (error) {
+      setMessage(error.message);
+    }
     // e.target.map
-    
   }
 
   return (
@@ -78,7 +108,7 @@ const WorkPosting = () => {
                 <YoutubeURL callSetWorkData={callSetWorkData} />
               </div>
               <div className="WorkPostingFormField">
-                <ImageUpload />
+                <ImageUpload onChange={handleImageChange} />
               </div>
             </div>
             <div className="Information">
@@ -116,6 +146,7 @@ const WorkPosting = () => {
           </div>
           <input type="submit" value="送信" className="submit" />
         </form>
+        {message && <p>{message}</p>}
       </div>
       {/* </Modal> */}
     </div>

@@ -4,14 +4,14 @@ namespace App\Http\Controllers\work;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\w_work;
+use App\Models\w_works;
 
 class GetWorkListController extends Controller
 {
     public function GetWorkListController(Request $request)
     {
         try {
-            $workList = w_work::select(
+            $workList = w_works::select(
                 'w_works.*',
                 'w_users.user_name',
                 'w_users.programming_language AS users_programming_language',

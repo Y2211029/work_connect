@@ -4,7 +4,7 @@ namespace App\Http\Controllers\search;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\w_work;
+use App\Models\w_works;
 
 class SearchWorkController extends Controller
 {
@@ -20,7 +20,7 @@ class SearchWorkController extends Controller
             // \Log::info('GetWorkListController:$development_environment_array:');
             // \Log::info($development_environment_array);
 
-            $query = w_work::query();
+            $query = w_works::query();
 
             $query->select(
                 'w_users.programming_language AS users_programming_language',

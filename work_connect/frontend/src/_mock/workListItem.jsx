@@ -38,7 +38,7 @@ const WorkListItem = () => {
         });
 
         setWorkOfList(response.data);
-        // console.log("response:", response);
+        console.log("response:", response);
       } catch (err) {
         console.log("err:", err);
       }
@@ -57,7 +57,7 @@ const WorkListItem = () => {
     intro: WorkOfList[key].work_intro.length > 200 ? WorkOfList[key].work_intro.substring(0, 200) + "..." : WorkOfList[key].work_intro,
 
     author: {
-      avatarUrl: `/assets/images/avatars/avatar_${key + 1}.jpg`,
+      avatarUrl: `/assets/images/avatars/avatar_${WorkOfList[key].icon}.jpg`,
     },
     view: faker.number.int(99999),
     comment: faker.number.int(99999),
@@ -66,7 +66,6 @@ const WorkListItem = () => {
     createdAt: WorkOfList[key].post_datetime,
   }));
 
-  // console.log("posts:", posts);
   return posts;
 };
 

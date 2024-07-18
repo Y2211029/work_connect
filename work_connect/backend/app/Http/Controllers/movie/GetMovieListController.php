@@ -14,6 +14,7 @@ class GetMovieListController extends Controller
             $movieList = w_movie::select(
                 'w_movies.*',
                 'w_users.user_name',
+                'w_users.icon',
             )->join('w_users', 'w_movies.creator_id', '=', 'w_users.id')->get();
             $movieListArray = json_decode(json_encode($movieList), true);
 

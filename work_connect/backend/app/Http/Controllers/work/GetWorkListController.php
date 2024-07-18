@@ -14,6 +14,7 @@ class GetWorkListController extends Controller
             $workList = w_works::select(
                 'w_works.*',
                 'w_users.user_name',
+                'w_users.icon',
                 'w_users.programming_language AS users_programming_language',
                 'w_users.development_environment AS users_development_environment',
                 'w_users.other AS users_other',

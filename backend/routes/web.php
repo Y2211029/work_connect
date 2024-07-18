@@ -20,35 +20,36 @@ Route::get('/', function () {
 
 
 // /list
-// Route::get('list',[ListController::class, 'index']);
+
+Route::get('list',[ListController::class, 'index']);
 // タグ作成
-// Route::post('/insert_tag',[InsertTagController::class, 'InsertTagController']);
-// // 作品ジャンルタグ取得
-// Route::get('/get_genre_tag',[GetGenreTagController::class, 'GetGenreTagController']);
-// // プログラミング言語タグ取得
-// Route::get('/get_language_tag',[GetLanguageTagController::class, 'GetLanguageTagController']);
-// // 開発環境タグ取得
-// Route::get('/get_environment_tag',[GetEnvironmentTagController::class, 'GetEnvironmentTagController']);
-// // ログイン状態のチェック
-// Route::post('/login_status_check', [LoginStatusCheckController::class, 'LoginStatusCheckController']);
+Route::post('/insert_tag',[InsertTagController::class, 'InsertTagController']);
+// 作品ジャンルタグ取得
+Route::get('/get_genre_tag',[GetGenreTagController::class, 'GetGenreTagController']);
+// プログラミング言語タグ取得
+Route::get('/get_language_tag',[GetLanguageTagController::class, 'GetLanguageTagController']);
+// 開発環境タグ取得
+Route::get('/get_environment_tag',[GetEnvironmentTagController::class, 'GetEnvironmentTagController']);
+// ログイン状態のチェック
+Route::post('/login_status_check', [LoginStatusCheckController::class, 'LoginStatusCheckController']);
 
-// // 作品一覧取得
-// Route::get('/get_work_list', [GetWorkListController::class, 'GetWorkListController']);
-// // 動画一覧取得
-// Route::get('/get_movie_list', [GetMovieListController::class, 'GetMovieListController']);
-// // 学生一覧取得
-// Route::get('/get_student_list', [GetStudentListController::class, 'GetStudentListController']);
-// // 企業一覧取得
-// Route::get('/get_company_list', [GetCompanyListController::class, 'GetCompanyListController']);
+// 作品一覧取得
+Route::get('/get_work_list', [GetWorkListController::class, 'GetWorkListController']);
+// 動画一覧取得
+Route::get('/get_movie_list', [GetMovieListController::class, 'GetMovieListController']);
+// 学生一覧取得
+Route::get('/get_student_list', [GetStudentListController::class, 'GetStudentListController']);
+// 企業一覧取得
+Route::get('/get_company_list', [GetCompanyListController::class, 'GetCompanyListController']);
 
-// // 作品詳細取得
-// Route::get('/get_work_detail', [GetWorkDetailController::class, 'GetWorkDetailController']);
-// // 動画詳細取得
-// Route::get('/get_movie_list',[GetMovieListController::class, 'GetMovieListController']);
-// // 学生詳細取得
-// Route::get('/get_student_list',[GetStudentListController::class, 'GetStudentListController']);
-// // 企業詳細取得
-// Route::get('/get_company_list',[GetCompanyListController::class, 'GetCompanyListController']);
+// 作品詳細取得
+Route::get('/get_work_detail', [GetWorkDetailController::class, 'GetWorkDetailController']);
+// 動画詳細取得
+Route::get('/get_movie_list',[GetMovieListController::class, 'GetMovieListController']);
+// 学生詳細取得
+Route::get('/get_student_list',[GetStudentListController::class, 'GetStudentListController']);
+// 企業詳細取得
+Route::get('/get_company_list',[GetCompanyListController::class, 'GetCompanyListController']);
 
 
 

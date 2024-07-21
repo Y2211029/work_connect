@@ -89,6 +89,8 @@ const WorkDetailItem = () => {
   const workCommentPostUrl = "http://localhost:8000/post_work_comment_post";
   // 作品コメントデータ
   const workCommentUrl = "http://localhost:8000/post_work_comment";
+  // 作品コメント削除
+  const workCommentDelete = "http://localhost:8000/post_work_comment_delete";
 
   // console.log("currentSlideIndex", currentSlideIndex);
 
@@ -293,23 +295,29 @@ const WorkDetailItem = () => {
     setCommentPost({ ...CommentPost, text: value });
   };
 
+  const workCommentSave = async (text, workId, userId) => {
+    try {
+      // Laravel側から作品詳細データを取得
+      await axios.post(workCommentPostUrl, {
+        workCommentContent: text,
+        work_id: workId,
+        user_id: userId,
+      });
+      // コメント投稿後にページを再読み込み
+      window.location.reload();
+    } catch (err) {
+      console.log("err:", err);
+    }
+  };
+
   // コメント投稿
   const handlePost = () => {
-    setCommentPost({ ...CommentPost, display: "block" });
-
-    async function workCommentSave() {
-      try {
-        // Laravel側から作品詳細データを取得
-        await axios.post(workCommentPostUrl, {
-          workCommentContent: CommentPost.text,
-          work_id: id,
-          user_id: AccountData.id,
-        });
-      } catch (err) {
-        console.log("err:", err);
-      }
+    setCommentPost({ ...CommentPost, display: "none" });
+    if (CommentPost.text.trim() !== "") {
+      workCommentSave(CommentPost.text, id, AccountData.id);
+    } else {
+      alert("空白のまま投稿はできません。");
     }
-    workCommentSave();
   };
 
   // コメント編集ボタンクリック
@@ -374,6 +382,24 @@ const WorkDetailItem = () => {
     workCommentSave();
   };
 
+  // コメント削除
+  const handleDelete = (commentId) => {
+    async function workCommentDeletefunc() {
+      try {
+        // Laravel側から作品詳細データを取得
+        await axios.post(workCommentDelete, {
+          commentId: commentId,
+        });
+        alert("コメントを削除しました。")
+        // コメント削除にページを再読み込み
+        window.location.reload();
+      } catch (err) {
+        console.log("err:", err);
+      }
+    }
+    workCommentDeletefunc();
+  };
+
   const renderComment = workComment && Object.keys(Comment).length > 0 && (
     <>
       <div>
@@ -397,8 +423,7 @@ const WorkDetailItem = () => {
           <button onClick={() => handlePost()}>投稿</button>
         </div>
       </div>
-
-      <h3>コメント一覧</h3>
+      {workComment && Object.keys(Comment).length > 0 && <h3>コメント一覧</h3>}
       {workComment.map((item, index) =>
         (item.commenter_id === AccountData.id && item.commenter_user_name === AccountData.user_name) ||
         (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
@@ -411,6 +436,9 @@ const WorkDetailItem = () => {
             </button>
             <button onClick={() => handleSave(item.id)} className={`comment_${item.id}`} style={{ display: Comment[item.id]?.display }}>
               保存
+            </button>
+            <button onClick={() => handleDelete(item.id)} className={`comment_${item.id}`} style={{ display: Comment[item.id]?.display }}>
+              削除
             </button>
             <p>{item.commenter_user_name || item.commenter_company_name}</p>
             <textarea
@@ -435,11 +463,6 @@ const WorkDetailItem = () => {
               value={item.content}
               readOnly // 読み取り専用にする場合
             />
-            {/* <p>Commenter ID: {item.commenter_id}</p> */}
-            {/* <p>Genre: {item.genre}</p> */}
-            {/* <p>ID: {item.id}</p> */}
-            {/* <p>Various ID: {item.various_id}</p> */}
-            {/* <p>Comment DateTime: {item.commentDateTime}</p> */}
           </div>
         )
       )}

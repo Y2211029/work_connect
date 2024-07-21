@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\work\PostWorkCommentPostController;
 use App\Http\Controllers\work\PostWorkCommentSaveController;
+use App\Http\Controllers\work\PostWorkCommentDeleteController;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Route;
@@ -40,19 +41,19 @@ Route::get('/', function () {
 // =======
 
 // 作品検索
-Route::get('/search_work',[SearchWorkController::class, 'SearchWorkController']);
+Route::get('/search_work', [SearchWorkController::class, 'SearchWorkController']);
 // タグ作成
 Route::post('/insert_tag', [InsertTagController::class, 'InsertTagController']);
 // 作品ジャンルタグ取得
 Route::get('/get_genre_tag', [GetGenreTagController::class, 'GetGenreTagController']);
 // プログラミング言語タグ取得
-Route::get('/get_language_tag',[GetLanguageTagController::class, 'GetLanguageTagController']);
+Route::get('/get_language_tag', [GetLanguageTagController::class, 'GetLanguageTagController']);
 // 開発環境タグ取得
-Route::get('/get_environment_tag',[GetEnvironmentTagController::class, 'GetEnvironmentTagController']);
+Route::get('/get_environment_tag', [GetEnvironmentTagController::class, 'GetEnvironmentTagController']);
 // 作品投稿
-Route::post('/work_posting',[WorkPostingController::class, 'WorkPostingController']);
+Route::post('/work_posting', [WorkPostingController::class, 'WorkPostingController']);
 // 動画ジャンルタグ取得
-Route::get('/get_video_genre_tag',[GetVideoGenreTagController::class, 'GetVideoGenreTagController']);
+Route::get('/get_video_genre_tag', [GetVideoGenreTagController::class, 'GetVideoGenreTagController']);
 // ログイン状態のチェック
 Route::post('/login_status_check', [LoginStatusCheckController::class, 'LoginStatusCheckController']);
 
@@ -79,6 +80,8 @@ Route::get('/get_movie_detail', [GetMovieDetailController::class, 'GetMovieDetai
 Route::post('/post_work_comment_post', [PostWorkCommentPostController::class, 'PostWorkCommentPostController']);
 // 作品コメント更新
 Route::post('/post_work_comment', [PostWorkCommentSaveController::class, 'PostWorkCommentSaveController']);
+// 作品コメント削除
+Route::post('/post_work_comment_delete', [PostWorkCommentDeleteController::class, 'PostWorkCommentDeleteController']);
 
 
 

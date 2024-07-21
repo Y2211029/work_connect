@@ -57,13 +57,14 @@ export default function Searchbar() {
       const url = "http://localhost:8000/search_work";
       // const programmingLanguageArray = ['PHP', 'Java'];
       const programmingLanguageArray = searchWork.programming_language.split(",");
-      const response = await axios.get(url, {
+      // const response = 
+      await axios.get(url, {
         params: {
           programming_language: programmingLanguageArray,
           development_environment: ["XAMPP", "MySQL"]
         },
       });
-      console.log("response.data", response.data);
+      // console.log("response.data", response.data);
     } catch (err) {
       console.log("err:", err);
     }

@@ -22,7 +22,7 @@ class PostWorkCommentSaveController extends Controller
             // echo json_encode($workListArray);
             return json_encode($comments);
         } catch (\Exception $e) {
-            \Log::info('PostWorkCommentSaveController:user_name重複チェックエラー');
+            \Log::info('PostWorkCommentSaveController:エラーPostWorkCommentSaveController');
             \Log::info($e);
             /*reactに返す*/
             echo json_encode($e);

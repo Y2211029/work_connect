@@ -390,7 +390,7 @@ const WorkDetailItem = () => {
         await axios.post(workCommentDelete, {
           commentId: commentId,
         });
-        alert("コメントを削除しました。")
+        alert("コメントを削除しました。");
         // コメント削除にページを再読み込み
         window.location.reload();
       } catch (err) {
@@ -402,27 +402,6 @@ const WorkDetailItem = () => {
 
   const renderComment = workComment && Object.keys(Comment).length > 0 && (
     <>
-      <div>
-        <button onClick={handleTextOpen}>コメントする</button>
-        <br />
-        <div
-          style={{
-            display: CommentPost.display,
-          }}
-        >
-          <textarea
-            style={{
-              width: "50%",
-              height: "100px",
-            }}
-            value={CommentPost.text}
-            onChange={(e) => handlePostChange(e.target.value)}
-          />
-          <br />
-          <button onClick={() => handlePostCancel()}>キャンセル</button>
-          <button onClick={() => handlePost()}>投稿</button>
-        </div>
-      </div>
       {workComment && Object.keys(Comment).length > 0 && <h3>コメント一覧</h3>}
       {workComment.map((item, index) =>
         (item.commenter_id === AccountData.id && item.commenter_user_name === AccountData.user_name) ||
@@ -575,6 +554,27 @@ const WorkDetailItem = () => {
         {renderProgrammingLang}
         {renderDevelopmentEnv}
         {renderWorkURL}
+        <div>
+          <button onClick={handleTextOpen}>コメントする</button>
+          <br />
+          <div
+            style={{
+              display: CommentPost.display,
+            }}
+          >
+            <textarea
+              style={{
+                width: "50%",
+                height: "100px",
+              }}
+              value={CommentPost.text}
+              onChange={(e) => handlePostChange(e.target.value)}
+            />
+            <br />
+            <button onClick={() => handlePostCancel()}>キャンセル</button>
+            <button onClick={() => handlePost()}>投稿</button>
+          </div>
+        </div>
         {renderComment}
       </Box>
       {/* 各項目の表示、ここまで */}

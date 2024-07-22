@@ -12,7 +12,8 @@ PostSort.propTypes = {
 
 export default function PostSort({ options, onSort }) {
   return (
-    <TextField select size="small" value="latest" onChange={onSort}>
+    // valueの部分に並び替えデータを差し替える。
+    <TextField select size="small" value="orderNewPostsDate" onChange={onSort}>
       {options.map((option) => (
         <MenuItem key={option.value} value={option.value}>
           {option.label}

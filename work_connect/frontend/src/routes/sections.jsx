@@ -66,7 +66,7 @@ export default function Router() {
         { path: "Internship_JobOffer", element: <InternshipJobOfferPage /> },
 
         { path: "WorkDetail/:id", element: <WorkDetail /> },
-        { path: "VideoDetail", element: <VideoDetail /> },
+        { path: "VideoDetail/:id", element: <VideoDetail /> },
 
         //20240619 金田追加
         { path: "Settings", element: <SettingsPage /> },

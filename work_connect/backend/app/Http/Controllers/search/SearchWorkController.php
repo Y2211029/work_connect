@@ -4,7 +4,7 @@ namespace App\Http\Controllers\search;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\w_work;
+use App\Models\w_works;
 
 class SearchWorkController extends Controller
 {
@@ -16,16 +16,16 @@ class SearchWorkController extends Controller
             $searchText = $request->input('searchText', "");
             
             // 絞り込まれた作品ジャンルを配列で取得
-            $work_genre_array = $request->input('work_genre', [""]);
+            $work_genre_array = $request->input('work_genre', []);
             // 絞り込まれたプログラミング言語を配列で取得
-            $programming_language_array = $request->input('programming_language', [""]);
+            $programming_language_array = $request->input('programming_language', []);
             // 絞り込まれた開発環境を配列で取得
-            $development_environment_array = $request->input('development_environment', [""]);
+            $development_environment_array = $request->input('development_environment', []);
 
-            // \Log::info('GetWorkListController:$development_environment_array:');
-            // \Log::info($development_environment_array);
+            \Log::info('GetWorkListController:$work_genre_array:');
+            \Log::info($work_genre_array);
 
-            $query = w_work::query();
+            $query = w_works::query();
 
             $query->select(
                 'w_users.programming_language AS users_programming_language',
@@ -37,21 +37,21 @@ class SearchWorkController extends Controller
             );
 
             // 作品ジャンルで絞り込み
-            if ($work_genre_array[0] != "") {
+            if (isset($work_genre_array)) {
                 foreach ($work_genre_array as $work_genre) {
                     $query->where('w_works.work_genre', 'REGEXP', '(^|,)' . preg_quote($work_genre) . '($|,)');
                 }
             }
 
             // プログラミング言語で絞り込み
-            if ($programming_language_array[0] != "") {
+            if (isset($programming_language_array)) {
                 foreach ($programming_language_array as $programming_language) {
                     $query->where('w_works.programming_language', 'REGEXP', '(^|,)' . preg_quote($programming_language) . '($|,)');
                 }
             }
 
             // 開発環境で絞り込み
-            if ($development_environment_array[0] != "") {
+            if (isset($development_environment_array)) {
                 foreach ($development_environment_array as $development_environment) {
                     $query->where('w_works.development_environment', 'REGEXP', '(^|,)' . preg_quote($development_environment) . '($|,)');
                 }
@@ -65,7 +65,12 @@ class SearchWorkController extends Controller
 
             \Log::info('GetWorkListController:$resultsArray:');
             \Log::info($resultsArray);
-            return json_encode($resultsArray);
+
+            if (count($resultsArray) == 0) {
+                return json_encode("検索結果0件");
+            } else {
+                return json_encode($resultsArray);
+            }
         } catch (\Exception $e) {
             \Log::info('GetWorkListController:user_name重複チェックエラー');
             \Log::info($e);

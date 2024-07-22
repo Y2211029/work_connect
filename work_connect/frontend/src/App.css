@@ -384,7 +384,24 @@ textarea {
 }
 
 .submit {
+  position: relative;
   float: right;
+  right: 3%;
+  margin-top: 1%;
+  border-radius: 5%;         
+  font-size: 16pt;
+  text-align: center;
+  cursor: pointer;
+  padding: 9px 32px;
+  background: #6666ff;
+  color: #ffffff;
+  line-height: 1em;
+  transition: .3s;
+  border: 2px solid #6666ff;
+}
+.submit:hover {
+  color: #6666ff;
+  background: #ffffff;
 }
 
 /* 作品投稿画面 ここまで */

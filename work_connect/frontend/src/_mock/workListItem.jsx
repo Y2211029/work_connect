@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 
 import { faker } from "@faker-js/faker";
 
 // タグボタン作成コンポーネント
 import CreateTagElements from "src/components/tag/CreateTagElements";
+
+import { DataListContext } from "src/layouts/dashboard/index";
 
 // ----------------------------------------------------------------------
 /*--------------------------------------------*/
@@ -13,6 +15,10 @@ import CreateTagElements from "src/components/tag/CreateTagElements";
 // 下のWorkOfListの形に合わせたオブジェクト(WorkItem～:の形)にしたresponse.dataが入ります
 // ! 注意 ! titleやuserNameなどのキーはDBのカラム名になっています。
 const WorkListItem = () => {
+
+  // 検索結果を反映させるためのContext
+  const {DataList} = useContext(DataListContext);
+
   // 作品一覧のデータを保持するステート
   const [WorkOfList, setWorkOfList] = useState([]);
 
@@ -38,13 +44,17 @@ const WorkListItem = () => {
         });
 
         setWorkOfList(response.data);
-        // console.log("response:", response);
+        console.log("response:", response);
       } catch (err) {
         console.log("err:", err);
       }
     }
     workListFunction();
   }, []); // 空の依存配列を渡すことで初回のみ実行されるようにする
+
+  useEffect(() => {
+    setWorkOfList(DataList);
+  }, [DataList])
 
   const posts = WorkOfList.map((_, key) => ({
     id: WorkOfList[key].work_id,
@@ -57,7 +67,7 @@ const WorkListItem = () => {
     intro: WorkOfList[key].work_intro.length > 200 ? WorkOfList[key].work_intro.substring(0, 200) + "..." : WorkOfList[key].work_intro,
 
     author: {
-      avatarUrl: `/assets/images/avatars/avatar_${key + 1}.jpg`,
+      avatarUrl: `/assets/images/avatars/avatar_${WorkOfList[key].icon}.jpg`,
     },
     view: faker.number.int(99999),
     comment: faker.number.int(99999),
@@ -66,7 +76,6 @@ const WorkListItem = () => {
     createdAt: WorkOfList[key].post_datetime,
   }));
 
-  // console.log("posts:", posts);
   return posts;
 };
 

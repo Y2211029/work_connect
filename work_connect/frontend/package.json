@@ -67,6 +67,7 @@
     "react-color": "^2.19.3",
     "react-dom": "^18.2.0",
     "react-helmet-async": "^2.0.5",
+    "react-iframe": "^1.8.5",
     "react-modal": "^3.16.1",
     "react-router-dom": "^6.23.1",
     "react-select": "^5.8.0",

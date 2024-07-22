@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import Slide from "@mui/material/Slide";
 import Input from "@mui/material/Input";
@@ -15,6 +15,9 @@ import { bgBlur } from "src/theme/css";
 import Iconify from "src/components/iconify";
 
 import axios from "axios";
+import GetTagList from "../../../components/tag/GetTagList";
+
+import { DataListContext } from "src/layouts/dashboard/index";
 
 // ----------------------------------------------------------------------
 
@@ -44,6 +47,10 @@ const StyledSearchbar = styled("div")(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function Searchbar() {
+
+  // 検索結果を反映させるためのContext
+  const {setDataList} = useContext(DataListContext);
+
   const [open, setOpen] = useState(false);
 
   const [searchWork, setSearchWork] = useState({
@@ -54,44 +61,36 @@ export default function Searchbar() {
   });
 
   const [options, setOptions] = useState({
-    work_genre: "",
-    programming_language: "",
-    development_environment: "",
+    work_genre: [],
+    programming_language: [],
+    development_environment: [],
     searchText: "",
   });
 
+
+  const { GetTagListFunction } = GetTagList();
+
   // プログラミング言語のタグ一覧を取得
   useEffect(()=>{
-    async function WorkGenreFunction() {
-      try {
-        const url = 'http://localhost:8000/get_language_tag';
+    let WorkProgrammingLanguageArray = [];
+    const resolvePromise = GetTagListFunction("language");
 
-        // Laravel側から企業一覧データを取得
-        const response = await axios.get(url, {
-          params: {},
-        });
-
-        // response.dataは配列の中にオブジェクトがある形になっています
-        // console.log("response.data:", response.data);
-
-        // 希望職業、希望勤務地、取得資格、プログラミング言語、開発環境、ソフトウェア、趣味、その他
-        // はタグのため、カンマ区切りの文字列を配列に変換する
-
-        const responseData = response.data;
-        const WorkGenreArray = [];
-        console.log(responseData);
-        responseData.map((value) => {
-          WorkGenreArray.push({value:value.name,label:value.name});
-        });
-        setOptions(WorkGenreArray);
-        console.log(WorkGenreArray);
-        console.log("CompanyListObject:", response.data);
-      } catch (err) {
-        console.log("err:", err);
-      }
-    }
-    WorkGenreFunction();
+    resolvePromise.then(result => {
+      result.map((value) => {
+        WorkProgrammingLanguageArray.push({value:value.name,label:value.name});
+      });
+  
+      console.log("result: ",result);
+      console.log("WorkProgrammingLanguageArray: ",WorkProgrammingLanguageArray);
+      setOptions({...options, 
+        programming_language: WorkProgrammingLanguageArray
+      });
+    })
   },[])
+
+  useEffect(() => {
+    console.log("options: ", options);
+  }, [options]);
 
   const handleOpen = () => {
     setOpen(!open);
@@ -102,25 +101,33 @@ export default function Searchbar() {
     try {
       const url = "http://localhost:8000/search_work";
       // const programmingLanguageArray = ['PHP', 'Java'];
-      const work_genre_array = searchWork.work_genre.split(",");
-      const programming_language_array = searchWork.programming_language.split(",");
-      const development_environment_array = searchWork.development_environment.split(",");
+      // const work_genre_array = searchWork.work_genre.split(",");
+      // const programming_language_array = searchWork.programming_language.split(",");
+      // const development_environment_array = searchWork.development_environment.split(",");
       const response = await axios.get(url, {
         params: {
-          work_genre: work_genre_array,
-          programming_language: programming_language_array,
-          development_environment: development_environment_array,
+          work_genre: searchWork.work_genre,
+          programming_language: searchWork.programming_language,
+          development_environment: searchWork.development_environment,
           searchText: searchWork.searchText,
         },
       });
       console.log("response.data", response.data);
+
+      // WorkListItem.jsxにデータを渡す
+      setDataList(response.data);
     } catch (err) {
       console.log("err:", err);
     }
   }
 
-  // 検索ボタンを押したとき
+  // 検索バーを閉じる
   const handleClose = () => {
+    setOpen(false);
+  };
+  
+  // 検索ボタンを押したとき
+  const handleSearch = () => {
     SearchWorkList();
     setOpen(false);
   };
@@ -139,14 +146,21 @@ export default function Searchbar() {
   // プログラミング言語のタグを操作したとき
   const handleChangeProgrammingLanguage = (selectedOption) => {
     // console.log("e.target.value", e.target.value);
+    let programming_language_array = [];
+    selectedOption.map((value) => {
+      programming_language_array.push(value.value);
+    });
     setSearchWork(
       {
         ...searchWork,
-        programming_language: selectedOption
+        programming_language: programming_language_array
       }
     );
   };
 
+  useEffect(() => {
+    console.log("searchWork: ", searchWork);
+  }, [searchWork])
 
 
   return (
@@ -177,12 +191,12 @@ export default function Searchbar() {
               value={searchWork.searchText}
               onChange={handleChangeText}
             />
-            <Button variant="contained" onClick={handleClose}>
+            <Button variant="contained" onClick={handleSearch}>
               Search
             </Button>
+            <div>プログラミング言語</div>
+            <CreatableSelect options={options.programming_language} isClearable isMulti onChange={handleChangeProgrammingLanguage}/>
           </StyledSearchbar>
-          <div>プログラミング言語</div>
-          <CreatableSelect options={options.programming_language} isClearable isMulti onChange={handleChangeProgrammingLanguage}/>
         </Slide>
       </div>
     </ClickAwayListener>

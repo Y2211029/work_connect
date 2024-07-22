@@ -5,8 +5,9 @@ namespace App\Http\Controllers\work;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\w_work;
+use App\Models\w_works;
 use App\Models\w_images;
+use App\Models\w_comment;
 
 class GetWorkDetailController extends Controller
 {
@@ -14,7 +15,7 @@ class GetWorkDetailController extends Controller
     {
         $id = $request->input('id');
         try {
-            $workList = w_work::join('w_users', 'w_works.creator_id', '=', 'w_users.id')
+            $workList = w_works::join('w_users', 'w_works.creator_id', '=', 'w_users.id')
                 ->select(
                     'w_users.programming_language AS users_programming_language',
                     'w_users.development_environment AS users_development_environment',
@@ -25,8 +26,8 @@ class GetWorkDetailController extends Controller
 
                 )->where('work_id', $id)->get();
 
-                \Log::info('GetWorkDetailController:$id:');
-                \Log::info($id);
+            \Log::info('GetWorkDetailController:$id:');
+            \Log::info($id);
 
             $workImageList = w_images::select('*')->where('work_id', $id)->get();
 
@@ -34,7 +35,7 @@ class GetWorkDetailController extends Controller
             \Log::info(json_decode(json_encode($workList[0]), true));
             $workImageSrc = "";
             foreach ($workImageList as $key => $imageList) {
-                $workImageSrc = asset("/storage/images/work/". "$imageList->image");
+                $workImageSrc = asset("/storage/images/work/" . "$imageList->image");
                 $workImageList[$key]->imageSrc = $workImageSrc;
             }
 
@@ -42,7 +43,28 @@ class GetWorkDetailController extends Controller
                 $workList[0]->images = $workImageList;
             }
 
-            $workListArray = json_decode(json_encode($workList), true);
+            $comments = w_comment::select('w_comments.*')
+                ->leftJoin('w_users', function ($join) {
+                    $join->on('w_comments.commenter_id', '=', 'w_users.id')
+                        ->whereRaw('LEFT(w_comments.commenter_id, 1) = "S"');
+                })
+                ->leftJoin('w_companies', function ($join) {
+                    $join->on('w_comments.commenter_id', '=', 'w_companies.id')
+                        ->whereRaw('LEFT(w_comments.commenter_id, 1) = "C"');
+                })
+                ->select(
+                    'w_comments.*',
+                    'w_users.user_name AS commenter_user_name',
+                    'w_companies.company_name AS commenter_company_name'
+                )
+                ->where('w_comments.various_id', $id)
+                ->where('w_comments.genre', 'works')
+                ->get();
+
+            $workListArray = [];
+            $workListArray["作品"] = json_decode(json_encode($workList), true);
+            $workListArray["作品コメント"] = json_decode(json_encode($comments), true);
+
 
             // $workListがnullでない場合に$workImageListを結合する
             \Log::info('GetWorkDetailController:$workListArray:');

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('work_name')->nullable(); // 作品名
             $table->text('work_genre')->nullable(); // 作品ジャンル
             $table->text('youtube_url')->nullable(); // YouTube URL
-            $table->text('thumbnail')->nullable(); // サムネイル
+            $table->json('thumbnail')->nullable(); // サムネイル
             $table->text('work_intro')->nullable(); // 作品紹介
             $table->text('obsession')->nullable(); // こだわり
             $table->text('programming_language')->nullable(); // プログラミング言語

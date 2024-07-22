@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { createContext, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import Box from '@mui/material/Box';
@@ -9,13 +9,23 @@ import Header from './header';
 
 // ----------------------------------------------------------------------
 
+export const DataListContext = createContext();
+
 export default function DashboardLayout({ children }) {
   const [openNav, setOpenNav] = useState(false);
 
+  const [DataList, setDataList] = useState([]);
+
+  const value = {
+    DataList,
+    setDataList,
+  }
+
   return (
     <>
-      <Header onOpenNav={() => setOpenNav(true)} />
-
+      <DataListContext.Provider value={value}>
+        <Header onOpenNav={() => setOpenNav(true)} />
+      </DataListContext.Provider>
       <Box
         sx={{
           minHeight: 1,
@@ -25,7 +35,9 @@ export default function DashboardLayout({ children }) {
       >
         <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} />
 
-        <Main>{children}</Main>
+        <DataListContext.Provider value={value}>
+          <Main>{children}</Main>
+        </DataListContext.Provider>
       </Box>
     </>
   );

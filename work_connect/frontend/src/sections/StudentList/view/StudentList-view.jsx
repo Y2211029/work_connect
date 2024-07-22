@@ -3,7 +3,7 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 
-import StudentListItem from "src/_mock/student/studentListItem";
+import StudentListItem from "src/_mock/studentListItem";
 
 import PostCard from "src/sections/StudentList/post-card";
 import PostSort from "src/sections/StudentList/post-sort";

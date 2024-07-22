@@ -52,6 +52,7 @@ const WorkPosting = () => {
 
   const [imageFiles, setImageFiles] = useState([]);
   const [message, setMessage] = useState('');
+  const [imagesName, setImagesName] = useState('');
 
   useEffect(() => {
     console.log("workData",workData);
@@ -63,9 +64,17 @@ const WorkPosting = () => {
     })
   }
 
-  const handleImageChange = (e) => {
-    setImageFiles(e.target.files);
+  const handleImageChange = (images) => {
+    console.log(images);
+    setImagesName(images.map(item => item.name).join(', '));
+    console.log(imagesName);
+    images.forEach(image => {
+      console.log(`File name: ${image.name}, URL: ${image.image}`);
+    });
     console.log("bbbb");
+    
+    setImageFiles(Array.from(images));
+    
   };
 
   const WorkSubmit = async (e) => {
@@ -74,14 +83,14 @@ const WorkPosting = () => {
 
     const formData = new FormData();
     console.log(imageFiles);
-    Array.from(imageFiles).forEach((file, index) => {
-      formData.append(`images[${index}]`, file);
-      console.log("aaaa");
+    imageFiles.forEach((file) => {
+      formData.append(`images`, file);
+      console.log(file);
     });
     for (const key in workData) {
       formData.append(key, workData[key]);
     }
-
+    formData.append("imagesName", imagesName);  
     try {
       const response = await axios.post('http://localhost:8000/work_posting', formData, {
         headers: {
@@ -108,7 +117,7 @@ const WorkPosting = () => {
                 <YoutubeURL callSetWorkData={callSetWorkData} />
               </div>
               <div className="WorkPostingFormField">
-                <ImageUpload onChange={handleImageChange} />
+                <ImageUpload onImagesUploaded={handleImageChange} />
               </div>
             </div>
             <div className="Information">

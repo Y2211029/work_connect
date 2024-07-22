@@ -52,7 +52,7 @@ Route::get('/get_language_tag', [GetLanguageTagController::class, 'GetLanguageTa
 // 開発環境タグ取得
 Route::get('/get_environment_tag', [GetEnvironmentTagController::class, 'GetEnvironmentTagController']);
 // 作品投稿
-Route::post('/work_posting', [WorkPostingController::class, 'WorkPostingController']);
+Route::post('/work_posting', [WorkPostingController::class, 'store']);
 // 動画ジャンルタグ取得
 Route::get('/get_video_genre_tag', [GetVideoGenreTagController::class, 'GetVideoGenreTagController']);
 // ログイン状態のチェック

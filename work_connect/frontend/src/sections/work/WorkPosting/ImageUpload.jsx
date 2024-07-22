@@ -37,11 +37,11 @@ const SortableItem = ({ id, image, onDelete }) => {
 
   const containerStyle = {
     width: '450px',
-    height: '253px', // 320 * 9 / 16 = 180
+    height: '253px',
     overflow: 'hidden',
     position: 'relative',
     boxSizing: 'border-box',
-    zIndex: 1, // 他の要素の上に表示されるように設定
+    zIndex: 1,
   };
 
   const buttonStyle = {
@@ -81,7 +81,7 @@ SortableItem.propTypes = {
   onDelete: PropTypes.func.isRequired,
 };
 
-const ImageUpload = () => {
+const ImageUpload = ({ onImagesUploaded }) => {
   const [items, setItems] = useState([]);
   const fileInputRef = useRef(null);
 
@@ -101,13 +101,23 @@ const ImageUpload = () => {
     const newItems = files.map((file, index) => ({
       id: `${file.name}-${index}-${Date.now()}`,
       image: URL.createObjectURL(file),
+      name: file.name,
     }));
-    setItems((prevItems) => [...prevItems, ...newItems]);
+
+    setItems((prevItems) => {
+      const updatedItems = [...prevItems, ...newItems];
+      onImagesUploaded(updatedItems); // 新しい項目リスト全体を渡す
+      return updatedItems;
+    });
   };
 
   const handleDelete = (id) => {
     console.log(`Deleting item with id: ${id}`);
-    setItems((items) => items.filter((item) => item.id !== id));
+    setItems((items) => {
+      const updatedItems = items.filter((item) => item.id !== id);
+      onImagesUploaded(updatedItems); // 削除後の項目リスト全体を渡す
+      return updatedItems;
+    });
   };
 
   const handleDragEnd = (event) => {
@@ -118,18 +128,18 @@ const ImageUpload = () => {
         const oldIndex = items.findIndex((item) => item.id === active.id);
         const newIndex = items.findIndex((item) => item.id === over.id);
 
-        return arrayMove(items, oldIndex, newIndex);
+        const updatedItems = arrayMove(items, oldIndex, newIndex);
+        onImagesUploaded(updatedItems); // 並べ替え後の項目リスト全体を渡す
+        return updatedItems;
       });
     }
   };
 
-  // useSensors と PointerSensor を使用
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
         distance: 10,
       },
-      // ボタンの上ではドラッグアンドドロップを無効にする
       filter: (event) => !event.target.closest("button"),
     })
   );
@@ -164,7 +174,7 @@ const ImageUpload = () => {
       <p>画像</p>
       <input
         type="file"
-        multiple
+        // multiple
         onChange={handleImageUpload}
         ref={fileInputRef}
         style={inputStyle}
@@ -201,6 +211,10 @@ const ImageUpload = () => {
       </DndContext>
     </div>
   );
+};
+
+ImageUpload.propTypes = {
+  onImagesUploaded: PropTypes.func.isRequired,
 };
 
 export default ImageUpload;

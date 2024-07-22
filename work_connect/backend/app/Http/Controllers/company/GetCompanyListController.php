@@ -16,9 +16,10 @@ class GetCompanyListController extends Controller
             $companyList = w_company::select()->get();
             $companyListArray = json_decode(json_encode($companyList), true);
 
-            echo json_encode($companyListArray);
             \Log::info('GetCompanyListController:$companyListArray:');
             \Log::info(json_encode($companyListArray));
+            // echo json_encode($companyListArray);
+            return json_encode($companyListArray);
         } catch (\Exception $e) {
             \Log::info('GetCompanyListController:company_name重複チェックエラー');
             \Log::info($e);

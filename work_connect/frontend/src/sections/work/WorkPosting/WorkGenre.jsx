@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import CreatableSelect from 'react-select/creatable';
 import InsertTag from 'src/components/tag/InsertTag';
 import axios from 'axios';
+import PropTypes from "prop-types";
 
-const WorkGenre = () => {
+const WorkGenre = (props) => {
   const {InsertTagFunction} = InsertTag();
-  const url = 'http://localhost:8000/get_genre_tag'
+  const url = 'http://localhost:8000/get_work_genre_tag'
   const [options, setOptions] = useState([]);
   useEffect(()=>{
     async function WorkGenreFunction() {
@@ -40,6 +41,7 @@ const WorkGenre = () => {
 
   const handleChange = (selectedOption, actionMeta) => {
     console.log(actionMeta);
+    console.log(selectedOption);
     if (actionMeta && actionMeta.action === 'create-option') {
 
       const inputValue = actionMeta;
@@ -49,10 +51,20 @@ const WorkGenre = () => {
       // 11は作品投稿の作品ジャンルです。 
       InsertTagFunction(inputValue.option.value, 11);
     }
+    let valueArray = [];
+    selectedOption.map((value) => {
+      valueArray.push(value.value)
+    })
+    props.callSetWorkData("WorkGenre", valueArray.join(","));
   };
 
   return(
     <CreatableSelect options={options} isClearable isMulti onChange={handleChange}/>
   );
 };
+
+WorkGenre.propTypes = {
+  callSetWorkData: PropTypes.func,
+};
+
 export default WorkGenre;

@@ -25,9 +25,13 @@ class GetWorkDetailController extends Controller
 
                 )->where('work_id', $id)->get();
 
+                \Log::info('GetWorkDetailController:$id:');
+                \Log::info($id);
 
             $workImageList = w_images::select('*')->where('work_id', $id)->get();
 
+            \Log::info('GetWorkDetailController:$workList[0]:');
+            \Log::info(json_decode(json_encode($workList[0]), true));
             $workImageSrc = "";
             foreach ($workImageList as $key => $imageList) {
                 $workImageSrc = asset("/storage/images/work/". "$imageList->image");
@@ -38,13 +42,12 @@ class GetWorkDetailController extends Controller
                 $workList[0]->images = $workImageList;
             }
 
-            \Log::info('GetWorkDetailController:$workList[0]:');
-            \Log::info(json_decode(json_encode($workList[0]), true));
             $workListArray = json_decode(json_encode($workList), true);
 
+            // $workListがnullでない場合に$workImageListを結合する
             \Log::info('GetWorkDetailController:$workListArray:');
             \Log::info(json_encode($workListArray));
-            // $workListがnullでない場合に$workImageListを結合する
+            // echo json_encode($workListArray);
             return json_encode($workListArray);
         } catch (\Exception $e) {
             \Log::info('GetWorkDetailController:user_name重複チェックエラー');

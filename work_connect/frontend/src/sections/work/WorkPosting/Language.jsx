@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import CreatableSelect from 'react-select/creatable';
 import InsertTag from 'src/components/tag/InsertTag';
 import axios from 'axios';
+import PropTypes from "prop-types";
 
-const Language = () => {
+const Language = (props) => {
   const {InsertTagFunction} = InsertTag();
-  const url = 'http://localhost:8000/get_language_tag'
+  const url = 'http://localhost:8000/get_work_language_tag'
   const [options, setOptions] = useState([]);
   useEffect(()=>{
     async function LanguageFunction() {
@@ -49,6 +50,11 @@ const Language = () => {
       // 12は作品投稿のプログラミング言語です。 
       InsertTagFunction(inputValue.option.value, 12);
     }
+    let valueArray = [];
+    selectedOption.map((value) => {
+      valueArray.push(value.value)
+    })
+    props.callSetWorkData("Language", valueArray.join(","));
   };
 
   return(
@@ -56,4 +62,9 @@ const Language = () => {
   );
 
 };
+
+Language.propTypes = {
+  callSetWorkData: PropTypes.func,
+};
+
 export default Language;

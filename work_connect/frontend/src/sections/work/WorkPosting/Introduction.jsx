@@ -1,4 +1,9 @@
-const Introduction = () => {
+import PropTypes from "prop-types";
+
+const Introduction = (props) => {
+  const handleChange = (e) =>{
+    props.callSetWorkData("Introduction", e.target.value)
+  }
   return (
     <div>
       <p>
@@ -17,9 +22,13 @@ const Introduction = () => {
         className="kadomaru"
         rows="10"
         cols="60"
+        onChange={handleChange}
       ></textarea>
     </div>
   );
 };
 
+Introduction.propTypes = {
+  callSetWorkData: PropTypes.func,
+};
 export default Introduction;

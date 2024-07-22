@@ -1,12 +1,12 @@
 import axios from "axios";
 
 /*--------------------------------------------*/
-/* ログイン状態をチェックする処理を追加しました。 */
+/*               タグ作成処理                  */
 /*--------------------------------------------*/
 /* 
-import LoginStatusCheck from "～/loginStatusCheck";
-const { loginStatusCheckFunction } = LoginStatusCheck();
-loginStatusCheckFunction();
+import InsertTag from "～/InsertTag";
+const { InsertTagFunction } = InsertTag();
+InsertTagFunction();
 */
 /* ↑この3行でこの関数を使用可能です */
 /*--------------------------------------------*/

@@ -4,12 +4,12 @@ import InsertTag from 'src/components/tag/InsertTag';
 import axios from 'axios';
 import PropTypes from "prop-types";
 
-const Environment = (props) => {
+const WorkGenre = (props) => {
   const {InsertTagFunction} = InsertTag();
-  const url = 'http://localhost:8000/get_work_environment_tag'
+  const url = 'http://localhost:8000/get_video_genre_tag'
   const [options, setOptions] = useState([]);
   useEffect(()=>{
-    async function EnvironmentFunction() {
+    async function WorkGenreFunction() {
       try {
         // Laravel側から企業一覧データを取得
         const response = await axios.get(url, {
@@ -23,38 +23,39 @@ const Environment = (props) => {
         // はタグのため、カンマ区切りの文字列を配列に変換する
 
         const responseData = response.data;
-        const EnvironmentArray = [];
+        const WorkGenreArray = [];
         console.log(responseData);
         responseData.map((value) => {
-          EnvironmentArray.push({value:value.name,label:value.name});
+          WorkGenreArray.push({value:value.name,label:value.name});
         });
-        setOptions(EnvironmentArray);
-        console.log(EnvironmentArray);
+        setOptions(WorkGenreArray);
+        console.log(WorkGenreArray);
         console.log("CompanyListObject:", response.data);
       } catch (err) {
         console.log("err:", err);
       }
     }
-    EnvironmentFunction();
+    WorkGenreFunction();
     axios.get(url)
   },[])
 
   const handleChange = (selectedOption, actionMeta) => {
     console.log(actionMeta);
+    console.log(selectedOption);
     if (actionMeta && actionMeta.action === 'create-option') {
 
       const inputValue = actionMeta;
       console.log(inputValue);  
       const newOption = { value: inputValue.option.value, label: inputValue.option.label };
       setOptions([...options, newOption]);
-      // 13は作品投稿の開発環境です。 
-      InsertTagFunction(inputValue.option.value, 13);
+      // 11は作品投稿の作品ジャンルです。 
+      InsertTagFunction(inputValue.option.value, 10);
     }
     let valueArray = [];
     selectedOption.map((value) => {
       valueArray.push(value.value)
     })
-    props.callSetWorkData("Environment", valueArray.join(","));
+    props.callSetWorkData("WorkGenre", valueArray.join(","));
   };
 
   return(
@@ -62,8 +63,8 @@ const Environment = (props) => {
   );
 };
 
-Environment.propTypes = {
+WorkGenre.propTypes = {
   callSetWorkData: PropTypes.func,
 };
 
-export default Environment;
+export default WorkGenre;

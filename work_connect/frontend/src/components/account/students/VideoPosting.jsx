@@ -1,11 +1,8 @@
 import YoutubeURL from "../../../sections/work/WorkPosting/YoutubeURL";
 import ImageUpload from "../../../sections/work/WorkPosting/ImageUpload";
 import WorkTitle from "../../../sections/work/WorkPosting/WorkTitle";
-import WorkGenre from "../../../sections/work/WorkPosting/WorkGenre";
+import WorkGenre from "../../../sections/video/VideoGenre";
 import Introduction from "../../../sections/work/WorkPosting/Introduction";
-import Obsession from "../../../sections/work/WorkPosting/Obsession";
-import Language from "../../../sections/work/WorkPosting/Language";
-import Environment from "../../../sections/work/WorkPosting/Environment";
 // import Modal from "react-modal";
 // import { useState } from "react";
 // import { useNavigate } from "react-router-dom";
@@ -25,7 +22,7 @@ import { useEffect, useState } from "react";
 //   },
 // };
 
-const WorkPosting = () => {
+const VideoPosting = () => {
   // const [showModal, setShowModal] = useState(false);
   // let navigation = useNavigate();
 
@@ -101,17 +98,6 @@ const WorkPosting = () => {
               <div className="WorkPostingFormField">
                 <Introduction callSetWorkData={callSetWorkData} />
               </div>
-              <div className="WorkPostingFormField">
-                <Obsession callSetWorkData={callSetWorkData} />
-              </div>
-              <div className="WorkPostingFormField">
-                <p>プログラミング言語</p>
-                <Language callSetWorkData={callSetWorkData} />
-              </div>
-              <div className="WorkPostingFormField">
-                <p>開発環境</p>
-                <Environment callSetWorkData={callSetWorkData} />
-              </div>
             </div>
           </div>
           <input type="submit" value="送信" className="submit" />
@@ -122,4 +108,4 @@ const WorkPosting = () => {
   );
 };
 
-export default WorkPosting;
+export default VideoPosting;

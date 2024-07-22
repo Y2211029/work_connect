@@ -1,5 +1,9 @@
+import PropTypes from "prop-types";
 
-const Obsession = () => {
+const Obsession = (props) => {
+  const handleChange = (e) =>{
+    props.callSetWorkData("Obsession", e.target.value)
+  }
   return (
     <div>
       <p>
@@ -18,9 +22,14 @@ const Obsession = () => {
         className="kadomaru"
         rows="10"
         cols="60"
+        onChange={handleChange}
       ></textarea>
     </div>
   );
+};
+
+Obsession.propTypes = {
+  callSetWorkData: PropTypes.func,
 };
 
 export default Obsession;

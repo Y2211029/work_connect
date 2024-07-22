@@ -7,10 +7,10 @@ use Illuminate\Http\Request;
 use App\Models\w_tags;
 
 
-class GetLanguageTagController extends Controller
+class GetWorkLanguageTagController extends Controller
 {
     //
-    public function GetLanguageTagController(Request $request){
+    public function GetWorkLanguageTagController(Request $request){
         $language_tag = w_tags::where("item_id",12)->get();
         return json_encode($language_tag);
     }

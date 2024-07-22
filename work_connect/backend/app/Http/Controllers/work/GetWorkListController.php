@@ -21,9 +21,10 @@ class GetWorkListController extends Controller
             )->join('w_users', 'w_works.creator_id', '=', 'w_users.id')->get();
             $workListArray = json_decode(json_encode($workList), true);
 
-            echo json_encode($workListArray);
             \Log::info('GetWorkListController:$workListArray:');
             \Log::info(json_encode($workListArray));
+            // echo json_encode($workListArray);
+            return json_encode($workListArray);
         } catch (\Exception $e) {
             \Log::info('GetWorkListController:user_name重複チェックエラー');
             \Log::info($e);

@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 
 const WorkGenre = (props) => {
   const {InsertTagFunction} = InsertTag();
-  const url = 'http://localhost:8000/get_genre_tag'
+  const url = 'http://localhost:8000/get_work_genre_tag'
   const [options, setOptions] = useState([]);
   useEffect(()=>{
     async function WorkGenreFunction() {

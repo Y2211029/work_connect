@@ -1,6 +1,7 @@
 //import * as React from 'react';
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, forwardRef,useImperativeHandle } from "react";
 import PropTypes from "prop-types";
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 // muiインポート
 import Box from '@mui/material/Box';
@@ -25,18 +26,17 @@ import StudentKanaName from "./EditRequiredFields/StudentKanaName";
 import Intro from "./EditRequiredFields/Intro";
 import GraduationYear from "./EditRequiredFields/GraduationYear";
 import DesiredOccupation from "./EditDetailFields/DesiredOccupation";
+import SchoolName from "./EditRequiredFields/SchoolName";
+import DepartmentName from "./EditDetailFields/DepartmentName";
+import FacultyName from "./EditDetailFields/FacultyName";
+import Environment from "./EditDetailFields/Environment";
+import Hobby from "./EditDetailFields/Hobby";
+import Prefecture from "./EditDetailFields/Prefecture";
+import ProgrammingLanguage from "./EditDetailFields/ProgrammingLanguage";
+import Qualification from "./EditDetailFields/Qualification";
+import Software from "./EditDetailFields/Software";
 
 
-
-// Itemのスタイルを定義
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'left',
-  color: theme.palette.text.secondary,
-  fontSize: '25px',
-}));
 
 // Showmoreのスタイルを定義
 const Showmore = styled(Paper)(({ theme }) => ({
@@ -46,66 +46,67 @@ const Showmore = styled(Paper)(({ theme }) => ({
     fontSize: '20px',
   }));
 
-function CreateTagElements({ itemContents }) {
-    return <button className="greeting">{itemContents}</button>;
-  }
-  CreateTagElements.propTypes = {
-    itemContents: PropTypes.string.isRequired,
-  };
-  // 複数選択タグを表示するための関数
-const useTagListShow = (tagName, sessionData) => {
-    const [tags, setTags] = useState([]);
-    useEffect(() => {
-      if (sessionData && sessionData[tagName]) {
-        const commaArray = sessionData[tagName].split(",");
-        const devtagComponents = commaArray.map((item) => (
-          <CreateTagElements key={item} itemContents={item} />
-        ));
-        setTags(devtagComponents);
-      }
-    }, []);
-    return tags;
-  };
-
 // 初期化
 let close = true;
 
-const ProfileMypageEdit = () => {
+const ProfileMypageEdit = forwardRef((props,ref) => {
 
-    
+  
+  // 親コンポーネント(Mypage.jsx)から渡されたデータ
+  useImperativeHandle(ref, () => ({
+    openEdit(){
+      Edit.current.style.display = '';
+    }
+  }));
 
   // 「さらに表示」ボタンの初期設定
   const [showMoreText, setShowMoreText] = useState(
     <><KeyboardArrowDownIcon /> さらに表示</>
   );
   
-
-  // 初期化
+  // useTheme,useRef初期化
   const theme = useTheme();
+  const Edit = useRef(null);
   const detail = useRef([]);
   const showmore = useRef(null);
 
-  // デフォルトで詳細項目を非表示にする
+
+  // 編集状態のチェック
+  const { getSessionData, updateSessionData } = useSessionStorage();
+  const [EditCheck, setEditCheck] = useState(0);
   useEffect(() => {
+    //const sessionData = getSessionData("accountData");
+    if (Edit.current) {
+      if (EditCheck === 0) {
+        Edit.current.style.display = 'none';
+      } else if (EditCheck === 1) {
+        Edit.current.style.display = '';
+      }
+    }
+  }, [EditCheck]);
+  useEffect(() => {
+    updateSessionData("accountData", "EditCheck", EditCheck);
+  }, [EditCheck]);
+
+
+  // デフォルトで非表示にする項目
+  useEffect(() => {
+    if (Edit.current) {
+      Edit.current.style.display = 'none';
+    }
     detail.current.forEach(ref => {
       if (ref) ref.style.display = 'none';
     });
   }, []);
-  
 
-  // // 文字数カウントの初期設定
-//    const [intro, setIntro] = useState('');
-//   // const textAreaRef = useRef(null);
-// // import MypageEdit from '';
-// const handleChangeIntro = (e) => {
-//   //const { value, selectionStart, selectionEnd } = event.target;
-//   setIntro(e.target.value);
-
-//   // カーソル位置を設定する
-//   // textAreaRef.current.selectionStart = selectionStart;
-//   // textAreaRef.current.selectionEnd = selectionEnd;
-// };
-  
+  // 戻るボタンを押したときの処理
+  const handleBackClick = () => {
+      // マイページ編集画面のとき
+      console.log("click!");
+      //setEditCheck(prev => (prev === 0 ? 1 : 0));
+      setEditCheck(0);
+      
+  };
 
   // 「さらに表示」が押された時の処理
   const ShowmoreClick = () => {
@@ -133,23 +134,16 @@ const ProfileMypageEdit = () => {
     }
     
   };
-
-    //const tag_1 = useTagListShow("1", {"1":"プログラマー,システムエンジニア"});// sessiondata
-    const tag_2 = useTagListShow("2", {"2":"windows"});// sessiondata
-    const tag_3 = useTagListShow("3", {"3":"ゲーム"});// sessiondata
-    const tag_4 = useTagListShow("4", {"4":"大阪府,東京都"});// sessiondata
-    const tag_5 = useTagListShow("5", {"5":"php,js"});// sessiondata
-    const tag_6 = useTagListShow("6", {"6":"ITパスポート,基本情報技術者試験"});// sessiondata
-    const tag_7 = useTagListShow("7", {"7":"Figma"});// sessiondata
-
+  
     return (
         
-          <Stack spacing={3}>
-            {/* 編集ボタン */}
+          <Stack spacing={3} ref={Edit}>
+            {/* 戻るボタン */}
             
             <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
                 <Tooltip title="戻る">
                     <IconButton
+                    onClick={handleBackClick}
                     sx={{
                         '&:hover': { backgroundColor: '#f0f0f0' },
                     }}
@@ -191,18 +185,6 @@ const ProfileMypageEdit = () => {
             </Box>
             <Box>
               <Typography variant="h6">自己紹介</Typography>
-              {/* <Textarea
-                //ref={textAreaRef}
-                maxRows={12}
-                aria-label="maximum height"
-                placeholder="500字以内"
-                defaultValue="よろしくお願いいたします。"
-                // maxLength={500}
-                // onChange={handleChangeIntro}
-                /> */}
-                {/* <Typography variant="body2" color="textSecondary" align="right">
-                  {intro.length} / 500
-                </Typography> */}
                 <Intro />
             </Box>
             <Box>
@@ -210,12 +192,8 @@ const ProfileMypageEdit = () => {
               <GraduationYear />
             </Box>
             <Box>
-              <Typography variant="h6">希望職種</Typography>
-              <DesiredOccupation />
-            </Box>
-            <Box>
               <Typography variant="h6">学校名(大学名)</Typography>
-              <Item>清風情報工科学院</Item>
+              <SchoolName />
             </Box>
             <Box>
               <Showmore>
@@ -228,41 +206,54 @@ const ProfileMypageEdit = () => {
             <Box ref={el => (detail.current[0] = el)} id="detail">
 
               <Typography variant="h6">学部</Typography>
-              <Item>情報学部</Item>
+              <DepartmentName />
             </Box>
             <Box ref={el => (detail.current[1] = el)} id="detail">
               <Typography variant="h6">学科</Typography>
-              <Item>電子工学科</Item>
+              <FacultyName />
             </Box>
             <Box ref={el => (detail.current[2] = el)} id="detail">
               <Typography variant="h6">開発環境</Typography>
-              <Item><span>{tag_2}</span></Item>
+              <Environment />
             </Box>
             <Box ref={el => (detail.current[3] = el)} id="detail">
               <Typography variant="h6">趣味</Typography>
-              <Item><span>{tag_3}</span></Item>
+              <Hobby />
             </Box>
             <Box ref={el => (detail.current[4] = el)} id="detail">
               <Typography variant="h6">希望勤務地</Typography>
-              <Item><span>{tag_4}</span></Item>
+              <Prefecture />
             </Box>
             <Box ref={el => (detail.current[5] = el)} id="detail">
-              <Typography variant="h6">プログラミング言語</Typography>
-              <Item><span>{tag_5}</span></Item>
+              <Typography variant="h6">希望職種</Typography>
+              <DesiredOccupation />
             </Box>
             <Box ref={el => (detail.current[6] = el)} id="detail">
-              <Typography variant="h6">取得資格</Typography>
-              <Item><span>{tag_6}</span></Item>
+              <Typography variant="h6">プログラミング言語</Typography>
+              <ProgrammingLanguage />
             </Box>
             <Box ref={el => (detail.current[7] = el)} id="detail">
+              <Typography variant="h6">取得資格</Typography>
+              <Qualification />
+            </Box>
+            <Box ref={el => (detail.current[8] = el)} id="detail">
               <Typography variant="h6">ソフトウェア</Typography>
-              <Item><span>{tag_7}</span></Item>
+              <Software />
             </Box>
             {/* </span> */}
           </Stack>
         
       );
 
+});
+
+ProfileMypageEdit.propTypes = {
+  Profile: PropTypes.shape({
+    current: PropTypes.instanceOf(Element),
+  }).isRequired,
 };
 
+
+
 export default ProfileMypageEdit;
+ProfileMypageEdit.displayName = 'Child';

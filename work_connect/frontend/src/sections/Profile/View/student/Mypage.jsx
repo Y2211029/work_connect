@@ -1,6 +1,7 @@
 //import * as React from 'react';
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef} from "react";
 import PropTypes from "prop-types";
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -63,29 +64,68 @@ let close = true;
 
 const ProfileMypage = () => {
 
+
+
   // 「さらに表示」ボタンの初期設定
   const [showMoreText, setShowMoreText] = useState(
     <><KeyboardArrowDownIcon /> さらに表示</>
   );
-  //const [showEdit, setShowEdit] = useState(false);
 
-  // 初期化
+  // useTheme,useRef初期化
   const theme = useTheme();
+  const Profile = useRef(null);
+  const Edit = useRef(null);
   const detail = useRef([]);
   const showmore = useRef(null);
+  const childRef = useRef(null);
 
-
-  // デフォルトで詳細項目を非表示にする
+  // 編集状態のチェック
+  const { getSessionData, updateSessionData } = useSessionStorage();
+  // セッションストレージからaccountDataを取得し、EditCheckを初期値として設定
+  const getInitialEditCheck = () => {
+    const accountData = JSON.parse(sessionStorage.getItem('accountData'));
+    return accountData ? accountData.EditCheck : 0;
+  };
+  const [EditCheck, setEditCheck] = useState(getInitialEditCheck);
   useEffect(() => {
+    //const sessionData = getSessionData("accountData");
+    if (Edit.current) {
+      if (EditCheck === 0) {
+        Profile.current.style.display = '';
+        
+      } else if (EditCheck === 1) {
+        // 編集画面をオープン
+        childRef.current?.openEdit();
+        // プロフィール画面を閉じる
+        Profile.current.style.display = 'none';
+      }
+    }
+  }, [EditCheck]);
+  useEffect(() => {
+    updateSessionData("accountData", "EditCheck", EditCheck);
+  }, [EditCheck]);
+
+  // デフォルトで非表示にする項目(プロフィール編集と、「さらに表示」の項目)
+  useEffect(() => {
+    // if (Edit.current && EditCheck == 0) {
+    //   Edit.current.style.display = 'none';
+    // } else if (Edit.current && EditCheck == 1) {
+    //   Edit.current.style.display = '';
+    // }
     detail.current.forEach(ref => {
       if (ref) ref.style.display = 'none';
     });
   }, []);
 
-  // 編集ボタン
-  // const handleEditClick = () => {
-  //   setShowEdit(true);
-  // };
+  // 編集ボタンを押したときの処理
+  const handleEditClick = () => {
+      // 編集画面をオープン
+      childRef.current?.openEdit();
+      // プロフィール画面を閉じる
+      Profile.current.style.display = 'none';
+
+      setEditCheck(1);
+  };
   
   // 「さらに表示」が押された時の処理
   const ShowmoreClick = () => {
@@ -114,6 +154,8 @@ const ProfileMypage = () => {
     
   };
 
+
+    // タグを仮で入れてます
     const tag_1 = useTagListShow("1", {"1":"プログラマー,システムエンジニア"});// sessiondata
     const tag_2 = useTagListShow("2", {"2":"windows"});// sessiondata
     const tag_3 = useTagListShow("3", {"3":"ゲーム"});// sessiondata
@@ -126,14 +168,14 @@ const ProfileMypage = () => {
       
         <Box sx={{ marginLeft: '25%', width: '50%' , marginTop: '30px',}}>
           {/* 編集のコンポーネントをここで呼び出し */}
-          <ProfileMypageEdit />
-          <Stack spacing={3}>
+          <ProfileMypageEdit ref={childRef} />
+          <Stack spacing={3} ref={Profile}>
             {/* 編集ボタン */}
             
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', }} >
                 <Tooltip title="編集する">
                   <IconButton
-                    // onClick={handleEditClick}
+                    onClick={handleEditClick}
                     sx={{ marginLeft: 'auto', // 右揃え
                       '&:hover': { backgroundColor: '#f0f0f0', title:'a' },
                     }}
@@ -183,10 +225,7 @@ const ProfileMypage = () => {
               <Typography variant="h6">卒業年度</Typography>
               <Item>2025年</Item>
             </Box>
-            <Box>
-              <Typography variant="h6">希望職種</Typography>
-              <Item><span>{tag_1}</span></Item>
-            </Box>
+            
             <Box>
               <Typography variant="h6">学校名(大学名)</Typography>
               <Item>清風情報工科学院</Item>
@@ -221,14 +260,18 @@ const ProfileMypage = () => {
               <Item><span>{tag_4}</span></Item>
             </Box>
             <Box ref={el => (detail.current[5] = el)} id="detail">
+              <Typography variant="h6">希望職種</Typography>
+              <Item><span>{tag_1}</span></Item>
+            </Box>
+            <Box ref={el => (detail.current[6] = el)} id="detail">
               <Typography variant="h6">プログラミング言語</Typography>
               <Item><span>{tag_5}</span></Item>
             </Box>
-            <Box ref={el => (detail.current[6] = el)} id="detail">
+            <Box ref={el => (detail.current[7] = el)} id="detail">
               <Typography variant="h6">取得資格</Typography>
               <Item><span>{tag_6}</span></Item>
             </Box>
-            <Box ref={el => (detail.current[7] = el)} id="detail">
+            <Box ref={el => (detail.current[8] = el)} id="detail">
               <Typography variant="h6">ソフトウェア</Typography>
               <Item><span>{tag_7}</span></Item>
             </Box>
@@ -241,4 +284,5 @@ const ProfileMypage = () => {
 };
 
 export default ProfileMypage;
+ProfileMypage.displayName = 'Parent';
 

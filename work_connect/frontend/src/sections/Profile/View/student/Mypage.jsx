@@ -1,7 +1,6 @@
 //import * as React from 'react';
 import { useEffect, useState, useRef } from "react";
 import PropTypes from "prop-types";
-import { Link } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -14,10 +13,10 @@ import CardMedia from '@mui/material/CardMedia';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
-import IconButton from '@mui/material/IconButton';import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 
-// import MypageEdit from '';
-
+import ProfileMypageEdit from './MypageEdit';
 
 
 // Itemのスタイルを定義
@@ -68,6 +67,8 @@ const ProfileMypage = () => {
   const [showMoreText, setShowMoreText] = useState(
     <><KeyboardArrowDownIcon /> さらに表示</>
   );
+  //const [showEdit, setShowEdit] = useState(false);
+
   // 初期化
   const theme = useTheme();
   const detail = useRef([]);
@@ -80,6 +81,11 @@ const ProfileMypage = () => {
       if (ref) ref.style.display = 'none';
     });
   }, []);
+
+  // 編集ボタン
+  // const handleEditClick = () => {
+  //   setShowEdit(true);
+  // };
   
   // 「さらに表示」が押された時の処理
   const ShowmoreClick = () => {
@@ -117,14 +123,17 @@ const ProfileMypage = () => {
     const tag_7 = useTagListShow("7", {"7":"Figma"});// sessiondata
 
     return (
+      
         <Box sx={{ marginLeft: '25%', width: '50%' , marginTop: '30px',}}>
+          {/* 編集のコンポーネントをここで呼び出し */}
+          <ProfileMypageEdit />
           <Stack spacing={3}>
             {/* 編集ボタン */}
             
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', }} >
-              <Link to="/profile/edit" style={{ textDecoration: 'none' }}>
                 <Tooltip title="編集する">
                   <IconButton
+                    // onClick={handleEditClick}
                     sx={{ marginLeft: 'auto', // 右揃え
                       '&:hover': { backgroundColor: '#f0f0f0', title:'a' },
                     }}
@@ -132,8 +141,9 @@ const ProfileMypage = () => {
                     <ModeEditIcon sx={{ fontSize: 40 }} />
                   </IconButton>
                 </Tooltip>
-              </Link>
+                {/* {showEdit ? <ProfileMypageEdit /> : <ProfileMypage />} */}
             </Box>
+            
             
             
             <Card sx={{
@@ -225,8 +235,10 @@ const ProfileMypage = () => {
             {/* </span> */}
           </Stack>
         </Box>
+        
       );
 
 };
 
 export default ProfileMypage;
+

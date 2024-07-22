@@ -9,6 +9,7 @@ import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
 import { useTheme } from "@mui/material/styles";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import Button from "@mui/material/Button";
 
 import StudentLoginModal from "src/components/account/students/StudentLoginModal";
 import CompanyLoginModal from "src/components/account/company/CompanyLoginModal";
@@ -112,7 +113,7 @@ export default function Header({ onOpenNav }) {
   const renderContent = (
     <>
       {!lgUp && (
-        <IconButton onClick={onOpenNav} sx={{ mr: 1 }}>
+        <IconButton onClick={onOpenNav} sx={{ mr: 1, display: Display }}>
           {/* ハンバーガーメニュー */}
           <Iconify icon="eva:menu-2-fill" />
         </IconButton>
@@ -133,13 +134,13 @@ export default function Header({ onOpenNav }) {
         </button>
         {/* <SignUp1 /> */}
 
-        <button id="LoginButton" onClick={handleChange}>
+        <Button id="LoginButton" onClick={handleChange} style={{ display: Display === "" ? "none" : "block" }}>
           ログイン
-        </button>
+        </Button>
 
-        <button id="PreSignButton" onClick={handleChange}>
+        <Button id="PreSignButton" onClick={handleChange} style={{ display: Display === "" ? "none" : "block" }}>
           新規登録
-        </button>
+        </Button>
 
         {ModalChange === "学生" ? (
           <StudentLoginModal callSetModalChange={callSetModalChange} />

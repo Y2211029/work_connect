@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 
 import { faker } from "@faker-js/faker";
 
 // タグボタン作成コンポーネント
 import CreateTagElements from "src/components/tag/CreateTagElements";
+
+import { DataListContext } from "src/layouts/dashboard/index";
 
 // ----------------------------------------------------------------------
 /*--------------------------------------------*/
@@ -13,6 +15,10 @@ import CreateTagElements from "src/components/tag/CreateTagElements";
 // 下のWorkOfListの形に合わせたオブジェクト(WorkItem～:の形)にしたresponse.dataが入ります
 // ! 注意 ! titleやuserNameなどのキーはDBのカラム名になっています。
 const WorkListItem = () => {
+
+  // 検索結果を反映させるためのContext
+  const {DataList} = useContext(DataListContext);
+
   // 作品一覧のデータを保持するステート
   const [WorkOfList, setWorkOfList] = useState([]);
 
@@ -45,6 +51,10 @@ const WorkListItem = () => {
     }
     workListFunction();
   }, []); // 空の依存配列を渡すことで初回のみ実行されるようにする
+
+  useEffect(() => {
+    setWorkOfList(DataList);
+  }, [DataList])
 
   const posts = WorkOfList.map((_, key) => ({
     id: WorkOfList[key].work_id,

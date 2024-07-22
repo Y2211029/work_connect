@@ -5,5 +5,11 @@ export default function TopPageListView() {
   const { deleteSessionData } = useSessionStorage();
   deleteSessionData("accountData");
 
-  return <>ここはトップページです！！！</>;
+  return (
+    <>
+      <h1>topPageです。</h1>
+      <h1>ログインしていないときの画面です。</h1>
+      <h1>作品投稿・動画投稿・本登録（テスト表示）・本登録ボタン・通知、検索。ハンバーガーボタンを非表示にします。</h1>
+    </>
+  );
 }

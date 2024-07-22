@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\movie\PostMovieCommentPostController;
 use App\Http\Controllers\work\PostWorkCommentPostController;
 use App\Http\Controllers\work\PostWorkCommentSaveController;
 use App\Http\Controllers\work\PostWorkCommentDeleteController;

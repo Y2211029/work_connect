@@ -126,7 +126,7 @@ const VideoDetailItem = () => {
     setCommentPost({ ...CommentPost, text: value });
   };
 
-  const workCommentSave = async (text, movieId, userId) => {
+  const videoCommentSave = async (text, movieId, userId) => {
     try {
       // Laravel側から作品詳細データを取得
       await axios.post(videoCommentPostUrl, {
@@ -145,7 +145,7 @@ const VideoDetailItem = () => {
   const handlePost = () => {
     setCommentPost({ ...CommentPost, display: "none" });
     if (CommentPost.text.trim() !== "") {
-      workCommentSave(CommentPost.text, id, AccountData.id);
+      videoCommentSave(CommentPost.text, id, AccountData.id);
     } else {
       alert("空白のまま投稿はできません。");
     }
@@ -199,23 +199,22 @@ const VideoDetailItem = () => {
       },
     });
 
-    async function workCommentSave() {
+    async function videoCommentSave() {
       try {
-        // Laravel側から作品詳細データを取得
         await axios.post(videoCommentUrl, {
-          workCommentContent: Comment[commentId].text,
+          movieCommentContent: Comment[commentId].text,
           commentId: commentId,
         });
       } catch (err) {
         console.log("err:", err);
       }
     }
-    workCommentSave();
+    videoCommentSave();
   };
 
   // コメント削除
   const handleDelete = (commentId) => {
-    async function workCommentDeletefunc() {
+    async function videoCommentDeletefunc() {
       try {
         // Laravel側から作品詳細データを取得
         await axios.post(videoCommentDelete, {
@@ -228,7 +227,7 @@ const VideoDetailItem = () => {
         console.log("err:", err);
       }
     }
-    workCommentDeletefunc();
+    videoCommentDeletefunc();
   };
   // 動画URL
   const renderYoutubeFrame = (

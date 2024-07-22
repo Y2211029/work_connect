@@ -40,7 +40,7 @@ class GetMovieDetailController extends Controller
                     'w_companies.company_name AS commenter_company_name'
                 )
                 ->where('w_comments.various_id', $id)
-                ->where('w_comments.genre', 'works')
+                ->where('w_comments.genre', 'movies')
                 ->get();
 
             $movieListArray = [];
@@ -49,6 +49,9 @@ class GetMovieDetailController extends Controller
 
             \Log::info('GetMovieDetailController:$id:');
             \Log::info($id);
+
+            \Log::info('GetMovieDetailController:$comments:');
+            \Log::info($comments);
 
             \Log::info('GetMovieDetailController:$movieListArray:');
             \Log::info(json_decode(json_encode($movieListArray), true));

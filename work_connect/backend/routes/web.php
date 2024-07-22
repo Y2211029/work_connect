@@ -83,6 +83,13 @@ Route::post('/post_work_comment', [PostWorkCommentSaveController::class, 'PostWo
 // 作品コメント削除
 Route::post('/post_work_comment_delete', [PostWorkCommentDeleteController::class, 'PostWorkCommentDeleteController']);
 
+// 動画コメント投稿
+Route::post('/post_movie_comment_post', [PostMovieCommentPostController::class, 'PostMovieCommentPostController']);
+// 動画コメント更新
+Route::post('/post_movie_comment', [PostMovieCommentSaveController::class, 'PostMovieCommentSaveController']);
+// 動画コメント削除
+Route::post('/post_movie_comment_delete', [PostMovieCommentDeleteController::class, 'PostMovieCommentDeleteController']);
+
 
 
 

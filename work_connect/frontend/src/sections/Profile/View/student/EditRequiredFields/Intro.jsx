@@ -88,6 +88,7 @@ const IntroComponent = () => {
         placeholder="500字以内"
         value={intro}
         onChange={handleChange}
+        maxLength={500}
       />
       
       <Typography variant="body2" color="textSecondary" align="right">

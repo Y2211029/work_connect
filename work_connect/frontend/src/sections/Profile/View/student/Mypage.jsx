@@ -1,6 +1,8 @@
 //import * as React from 'react';
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef} from "react";
+import axios from "axios";
 import PropTypes from "prop-types";
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -31,35 +33,32 @@ const Item = styled(Paper)(({ theme }) => ({
 
 // Showmoreのスタイルを定義
 const Showmore = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.background.default,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    fontSize: '20px',
-  }));
+  backgroundColor: theme.palette.background.default,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  fontSize: '20px',
+}));
 
 function CreateTagElements({ itemContents }) {
-    return <button className="greeting">{itemContents}</button>;
-  }
-  CreateTagElements.propTypes = {
-    itemContents: PropTypes.string.isRequired,
-  };
+  return <button className="greeting">{itemContents}</button>;
+}
+CreateTagElements.propTypes = {
+  itemContents: PropTypes.string.isRequired,
+};
   // 複数選択タグを表示するための関数
 const useTagListShow = (tagName, sessionData) => {
-    const [tags, setTags] = useState([]);
-    useEffect(() => {
-      if (sessionData && sessionData[tagName]) {
-        const commaArray = sessionData[tagName].split(",");
-        const devtagComponents = commaArray.map((item) => (
-          <CreateTagElements key={item} itemContents={item} />
-        ));
-        setTags(devtagComponents);
-      }
-    }, []);
-    return tags;
-  };
-
-// 初期化
-let close = true;
+  const [tags, setTags] = useState([]);
+  useEffect(() => {
+    if (sessionData && sessionData[tagName]) {
+      const commaArray = sessionData[tagName].split(",");
+      const devtagComponents = commaArray.map((item) => (
+        <CreateTagElements key={item} itemContents={item} />
+      ));
+      setTags(devtagComponents);
+    }
+  }, []);
+  return tags;
+};
 
 const ProfileMypage = () => {
 
@@ -67,53 +66,114 @@ const ProfileMypage = () => {
   const [showMoreText, setShowMoreText] = useState(
     <><KeyboardArrowDownIcon /> さらに表示</>
   );
-  //const [showEdit, setShowEdit] = useState(false);
 
-  // 初期化
+  // useTheme,useRef初期化
   const theme = useTheme();
+  const Profile = useRef(null);
   const detail = useRef([]);
   const showmore = useRef(null);
+  const childRef = useRef(null);
+  const [close, setClose] = useState(true);
+  const url = "http://localhost:8000/get_profile_mypage";
+  const ProfileId = useState("S_000000000001");
 
-
-  // デフォルトで詳細項目を非表示にする
+  // 編集状態のチェック
+  const { getSessionData, updateSessionData } = useSessionStorage();
+  // セッションストレージからaccountDataを取得し、MypageEditStateを初期値として設定
+  const getInitialMypageEditState = () => {
+    const accountData = getSessionData("accountData");
+    return accountData.MypageEditState ? accountData.MypageEditState : 0;
+  };
+  const [MypageEditState, setMypageEditState] = useState(getInitialMypageEditState);
+    
+  // MypageEditStateが変化したとき
   useEffect(() => {
+    if (Profile.current) {
+      if (MypageEditState === 0) {
+        Profile.current.style.display = '';
+      } else if (MypageEditState === 1) {
+        // 編集画面をオープン
+        childRef.current?.openEdit();
+        // プロフィール画面を閉じる
+        Profile.current.style.display = 'none';
+      }
+    }
+    updateSessionData("accountData", "MypageEditState", MypageEditState);
+  }, [MypageEditState]);
+
+  // 初回レンダリング時の一度だけ実行させる
+  useEffect(() => {
+    async function GetData(ProfileId) {
+      try {
+        // Laravel側からデータを取得
+        const response = await axios.get(url, {
+          params: {
+            ProfileId: ProfileId,
+          },
+        });
+
+        // response.dataは配列の中にオブジェクトがある形になっています
+        // console.log("response.data:", response.data);
+
+        // ジャンルはタグのため、カンマ区切りの文字列を配列に変換する
+        // response.data.forEach((element) => {
+        //   element.genre !== null
+        //     ? (element.genre = element.genre.split(",").map((item) => <CreateTagElements key={item} itemContents={item} />))
+        //     : "";
+        // });
+
+        // setMovieOfList(response.data);
+        console.log("MovieListObject:", response.data);
+      } catch (err) {
+        console.log("err:", err);
+      }
+    }
+    // DBからデータを取得
+    GetData(ProfileId);
+
+    // 詳細項目の非表示
     detail.current.forEach(ref => {
       if (ref) ref.style.display = 'none';
     });
   }, []);
 
-  // 編集ボタン
-  // const handleEditClick = () => {
-  //   setShowEdit(true);
-  // };
+  // 編集ボタンを押したときの処理
+  const handleEditClick = () => {
+      // 編集画面をオープン
+      childRef.current?.openEdit();
+      // プロフィール画面を閉じる
+      Profile.current.style.display = 'none';
+      setMypageEditState(1);
+     
+  };
   
   // 「さらに表示」が押された時の処理
   const ShowmoreClick = () => {
-    
-    if(close == false){
-      // 「閉じる」のとき、詳細項目を非表示にして、ボタンを「さらに表示」に変更
-      close = true;
-      detail.current.forEach(ref => {
-        if (ref){
-          ref.style.display = 'none';
-        }
-      });
-      setShowMoreText(<><KeyboardArrowDownIcon /> さらに表示</>);
-      
-    } else if(close == true){
+    if(close){
       // 「さらに表示」のとき、詳細項目を表示して、ボタンを「閉じる」に変更
-      close = false;
+      setClose(false);
       detail.current.forEach(ref => {
         if (ref){
           ref.style.display = '';
         }
       });
       setShowMoreText(<><KeyboardArrowUpIcon /> 閉じる</>);
-      
+    } else {
+      // 「閉じる」のとき、詳細項目を非表示にして、ボタンを「さらに表示」に変更
+      setClose(true);
+      detail.current.forEach(ref => {
+        if (ref){
+          ref.style.display = 'none';
+        }
+      });
+      setShowMoreText(<><KeyboardArrowDownIcon /> さらに表示</>);
     }
-    
   };
 
+
+
+
+    // タグを仮で入れてます
     const tag_1 = useTagListShow("1", {"1":"プログラマー,システムエンジニア"});// sessiondata
     const tag_2 = useTagListShow("2", {"2":"windows"});// sessiondata
     const tag_3 = useTagListShow("3", {"3":"ゲーム"});// sessiondata
@@ -124,16 +184,16 @@ const ProfileMypage = () => {
 
     return (
       
-        <Box sx={{ marginLeft: '25%', width: '50%' , marginTop: '30px',}}>
+        <Box sx={{ marginLeft: '18%', width: '64%' , marginTop: '30px',}}>
           {/* 編集のコンポーネントをここで呼び出し */}
-          <ProfileMypageEdit />
-          <Stack spacing={3}>
+          <ProfileMypageEdit ref={childRef} />
+          <Stack spacing={3} ref={Profile}>
             {/* 編集ボタン */}
             
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', }} >
                 <Tooltip title="編集する">
                   <IconButton
-                    // onClick={handleEditClick}
+                    onClick={handleEditClick}
                     sx={{ marginLeft: 'auto', // 右揃え
                       '&:hover': { backgroundColor: '#f0f0f0', title:'a' },
                     }}
@@ -143,9 +203,6 @@ const ProfileMypage = () => {
                 </Tooltip>
                 {/* {showEdit ? <ProfileMypageEdit /> : <ProfileMypage />} */}
             </Box>
-            
-            
-            
             <Card sx={{
               textAlign: 'center',
               display: 'flex',
@@ -183,10 +240,7 @@ const ProfileMypage = () => {
               <Typography variant="h6">卒業年度</Typography>
               <Item>2025年</Item>
             </Box>
-            <Box>
-              <Typography variant="h6">希望職種</Typography>
-              <Item><span>{tag_1}</span></Item>
-            </Box>
+            
             <Box>
               <Typography variant="h6">学校名(大学名)</Typography>
               <Item>清風情報工科学院</Item>
@@ -221,14 +275,18 @@ const ProfileMypage = () => {
               <Item><span>{tag_4}</span></Item>
             </Box>
             <Box ref={el => (detail.current[5] = el)} id="detail">
+              <Typography variant="h6">希望職種</Typography>
+              <Item><span>{tag_1}</span></Item>
+            </Box>
+            <Box ref={el => (detail.current[6] = el)} id="detail">
               <Typography variant="h6">プログラミング言語</Typography>
               <Item><span>{tag_5}</span></Item>
             </Box>
-            <Box ref={el => (detail.current[6] = el)} id="detail">
+            <Box ref={el => (detail.current[7] = el)} id="detail">
               <Typography variant="h6">取得資格</Typography>
               <Item><span>{tag_6}</span></Item>
             </Box>
-            <Box ref={el => (detail.current[7] = el)} id="detail">
+            <Box ref={el => (detail.current[8] = el)} id="detail">
               <Typography variant="h6">ソフトウェア</Typography>
               <Item><span>{tag_7}</span></Item>
             </Box>
@@ -241,4 +299,5 @@ const ProfileMypage = () => {
 };
 
 export default ProfileMypage;
+ProfileMypage.displayName = 'Parent';
 

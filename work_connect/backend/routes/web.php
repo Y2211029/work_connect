@@ -32,6 +32,8 @@ use App\Http\Controllers\work\WorkPostingController;
 use App\Http\Controllers\tag\GetVideoGenreTagController;
 use App\Http\Controllers\tag\InsertTagController;
 use App\Http\Controllers\search\SearchWorkController;
+use App\Http\Controllers\profile\GetMypageController;
+use App\Http\Controllers\profile\PostMypageController;
 
 
 // トップ画面
@@ -42,6 +44,11 @@ Route::get('/', function () {
 // /list
 // Route::get('list',[ListController::class, 'index']);
 // =======
+
+// プロフィールのマイページ(get)
+Route::get('/get_profile_mypage', [GetMypageController::class, 'GetMypageController']);
+// プロフィールのマイページ(post)
+Route::post('/post_profile_mypage', [PostMypageController::class, 'PostMypageController']);
 
 // 作品検索
 Route::get('/search_work', [SearchWorkController::class, 'SearchWorkController']);
@@ -54,7 +61,7 @@ Route::get('/get_language_tag', [GetLanguageTagController::class, 'GetLanguageTa
 // 開発環境タグ取得
 Route::get('/get_environment_tag', [GetEnvironmentTagController::class, 'GetEnvironmentTagController']);
 // 作品投稿
-Route::post('/work_posting', [WorkPostingController::class, 'WorkPostingController']);
+Route::post('/work_posting', [WorkPostingController::class, 'store']);
 // 動画ジャンルタグ取得
 Route::get('/get_video_genre_tag', [GetVideoGenreTagController::class, 'GetVideoGenreTagController']);
 // ログイン状態のチェック

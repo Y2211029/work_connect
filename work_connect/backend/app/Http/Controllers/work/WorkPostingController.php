@@ -20,15 +20,17 @@ class WorkPostingController extends Controller
         $Language = $request->input('Language');
         $Environment = $request->input('Environment');
         $images = $request->input('imagesName'); // 画像のバリデーション
-        \Log::info(json_decode(json_encode($request->input('images'))));
-        if ($request->hasFile('images')) {
-            \Log::info(json_encode("aaaaaaaaaaaaaaaaa"));
-            // foreach ($request->file('images') as $image) {
-            //     \Log::info(json_encode("fssdfsd"));
-            //     $imagePath = $image->store('public');
-            // }
-            $imagePath = $request->files("images")->store('public');
+        $imagesArray = $request->file('images');
+    
+        $pathArray = [];
+
+        foreach ($imagesArray as $value) {
+            // \Log::info('$value: ', $value);
+            $pathArray[] = explode('/', $value->store('public/images/work'))[3];
         }
+        
+        \Log::info('$pathArray: ', $pathArray);
+
 
         // データ保存 (例: DBに保存)
         w_works::create([
@@ -39,7 +41,7 @@ class WorkPostingController extends Controller
             'obsession' => $Obsession,
             'programming_language' => $Language,
             'development_environment' => $Environment,
-            'thumbnail' => $images
+            'thumbnail' => implode(',', $pathArray)
         ]);
 
 

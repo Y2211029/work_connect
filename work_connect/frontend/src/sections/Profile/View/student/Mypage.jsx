@@ -59,12 +59,7 @@ const useTagListShow = (tagName, sessionData) => {
     return tags;
   };
 
-// 初期化
-let close = true;
-
 const ProfileMypage = () => {
-
-
 
   // 「さらに表示」ボタンの初期設定
   const [showMoreText, setShowMoreText] = useState(
@@ -74,44 +69,39 @@ const ProfileMypage = () => {
   // useTheme,useRef初期化
   const theme = useTheme();
   const Profile = useRef(null);
-  const Edit = useRef(null);
   const detail = useRef([]);
   const showmore = useRef(null);
   const childRef = useRef(null);
+  const [close, setClose] = useState(true);
 
   // 編集状態のチェック
   const { getSessionData, updateSessionData } = useSessionStorage();
-  // セッションストレージからaccountDataを取得し、EditCheckを初期値として設定
-  const getInitialEditCheck = () => {
-    const accountData = JSON.parse(sessionStorage.getItem('accountData'));
-    return accountData ? accountData.EditCheck : 0;
+  // セッションストレージからaccountDataを取得し、MypageEditStateを初期値として設定
+  const getInitialMypageEditState = () => {
+    const accountData = getSessionData("accountData");
+    return accountData ? accountData.MypageEditState : 0;
   };
-  const [EditCheck, setEditCheck] = useState(getInitialEditCheck);
+  const [MypageEditState, setMypageEditState] = useState(getInitialMypageEditState);
+    
+  // MypageEditStateが変化したとき
   useEffect(() => {
-    //const sessionData = getSessionData("accountData");
-    if (Edit.current) {
-      if (EditCheck === 0) {
+    if (Profile.current) {
+      if (MypageEditState === 0) {
         Profile.current.style.display = '';
-        
-      } else if (EditCheck === 1) {
+      } else if (MypageEditState === 1) {
         // 編集画面をオープン
         childRef.current?.openEdit();
         // プロフィール画面を閉じる
         Profile.current.style.display = 'none';
       }
     }
-  }, [EditCheck]);
+  }, [MypageEditState]);
   useEffect(() => {
-    updateSessionData("accountData", "EditCheck", EditCheck);
-  }, [EditCheck]);
+    updateSessionData("accountData", "MypageEditState", MypageEditState);
+  }, [MypageEditState]);
 
-  // デフォルトで非表示にする項目(プロフィール編集と、「さらに表示」の項目)
+  // デフォルトで非表示にする項目
   useEffect(() => {
-    // if (Edit.current && EditCheck == 0) {
-    //   Edit.current.style.display = 'none';
-    // } else if (Edit.current && EditCheck == 1) {
-    //   Edit.current.style.display = '';
-    // }
     detail.current.forEach(ref => {
       if (ref) ref.style.display = 'none';
     });
@@ -123,33 +113,31 @@ const ProfileMypage = () => {
       childRef.current?.openEdit();
       // プロフィール画面を閉じる
       Profile.current.style.display = 'none';
-
-      setEditCheck(1);
+      setMypageEditState(1);
+     
   };
   
   // 「さらに表示」が押された時の処理
   const ShowmoreClick = () => {
     
-    if(close == false){
-      // 「閉じる」のとき、詳細項目を非表示にして、ボタンを「さらに表示」に変更
-      close = true;
-      detail.current.forEach(ref => {
-        if (ref){
-          ref.style.display = 'none';
-        }
-      });
-      setShowMoreText(<><KeyboardArrowDownIcon /> さらに表示</>);
-      
-    } else if(close == true){
+    if(close){
       // 「さらに表示」のとき、詳細項目を表示して、ボタンを「閉じる」に変更
-      close = false;
+      setClose(false);
       detail.current.forEach(ref => {
         if (ref){
           ref.style.display = '';
         }
       });
       setShowMoreText(<><KeyboardArrowUpIcon /> 閉じる</>);
-      
+    } else {
+      // 「閉じる」のとき、詳細項目を非表示にして、ボタンを「さらに表示」に変更
+      setClose(true);
+      detail.current.forEach(ref => {
+        if (ref){
+          ref.style.display = 'none';
+        }
+      });
+      setShowMoreText(<><KeyboardArrowDownIcon /> さらに表示</>);
     }
     
   };
@@ -166,7 +154,7 @@ const ProfileMypage = () => {
 
     return (
       
-        <Box sx={{ marginLeft: '25%', width: '50%' , marginTop: '30px',}}>
+        <Box sx={{ marginLeft: '18%', width: '64%' , marginTop: '30px',}}>
           {/* 編集のコンポーネントをここで呼び出し */}
           <ProfileMypageEdit ref={childRef} />
           <Stack spacing={3} ref={Profile}>
@@ -185,9 +173,6 @@ const ProfileMypage = () => {
                 </Tooltip>
                 {/* {showEdit ? <ProfileMypageEdit /> : <ProfileMypage />} */}
             </Box>
-            
-            
-            
             <Card sx={{
               textAlign: 'center',
               display: 'flex',

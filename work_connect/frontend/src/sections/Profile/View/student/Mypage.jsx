@@ -45,20 +45,20 @@ function CreateTagElements({ itemContents }) {
 CreateTagElements.propTypes = {
   itemContents: PropTypes.string.isRequired,
 };
-  // 複数選択タグを表示するための関数
-const useTagListShow = (tagName, sessionData) => {
-  const [tags, setTags] = useState([]);
-  useEffect(() => {
-    if (sessionData && sessionData[tagName]) {
-      const commaArray = sessionData[tagName].split(",");
-      const devtagComponents = commaArray.map((item) => (
-        <CreateTagElements key={item} itemContents={item} />
-      ));
-      setTags(devtagComponents);
-    }
-  }, []);
-  return tags;
-};
+  //複数選択タグを表示するための関数
+// const useTagListShow = (tagName, sessionData) => {
+//   const [tags, setTags] = useState([]);
+//   useEffect(() => {
+//     if (sessionData && sessionData[tagName]) {
+//       const commaArray = sessionData[tagName].split(",");
+//       const devtagComponents = commaArray.map((item) => (
+//         <CreateTagElements key={item} itemContents={item} />
+//       ));
+//       setTags(devtagComponents);
+//     }
+//   }, []);
+//   return tags;
+// };
 
 const ProfileMypage = () => {
 
@@ -74,8 +74,11 @@ const ProfileMypage = () => {
   const showmore = useRef(null);
   const childRef = useRef(null);
   const [close, setClose] = useState(true);
+  // Laravelとの通信用URL
   const url = "http://localhost:8000/get_profile_mypage";
+  // ユーザーIDとは別のマイページのデータ取得用のID
   const ProfileId = useState("S_000000000001");
+  const [ResponseData, setResponseData] = useState([]);
 
   // 編集状態のチェック
   const { getSessionData, updateSessionData } = useSessionStorage();
@@ -101,36 +104,31 @@ const ProfileMypage = () => {
     updateSessionData("accountData", "MypageEditState", MypageEditState);
   }, [MypageEditState]);
 
-  // 初回レンダリング時の一度だけ実行させる
+  // ProfileIdが変化したとき
   useEffect(() => {
     async function GetData(ProfileId) {
+      
       try {
         // Laravel側からデータを取得
         const response = await axios.get(url, {
           params: {
-            ProfileId: ProfileId,
+            ProfileId: ProfileId[0],
           },
         });
-
-        // response.dataは配列の中にオブジェクトがある形になっています
-        // console.log("response.data:", response.data);
-
-        // ジャンルはタグのため、カンマ区切りの文字列を配列に変換する
-        // response.data.forEach((element) => {
-        //   element.genre !== null
-        //     ? (element.genre = element.genre.split(",").map((item) => <CreateTagElements key={item} itemContents={item} />))
-        //     : "";
-        // });
-
-        // setMovieOfList(response.data);
-        console.log("MovieListObject:", response.data);
+        if(response){
+          setResponseData(response.data[0]);
+        }
+        console.log("ResponseData:", ResponseData);
       } catch (err) {
         console.log("err:", err);
       }
     }
     // DBからデータを取得
     GetData(ProfileId);
-
+  }, [ProfileId]);
+  
+  // 初回レンダリング時の一度だけ実行させる
+  useEffect(() => {
     // 詳細項目の非表示
     detail.current.forEach(ref => {
       if (ref) ref.style.display = 'none';
@@ -174,13 +172,20 @@ const ProfileMypage = () => {
 
 
     // タグを仮で入れてます
-    const tag_1 = useTagListShow("1", {"1":"プログラマー,システムエンジニア"});// sessiondata
-    const tag_2 = useTagListShow("2", {"2":"windows"});// sessiondata
-    const tag_3 = useTagListShow("3", {"3":"ゲーム"});// sessiondata
-    const tag_4 = useTagListShow("4", {"4":"大阪府,東京都"});// sessiondata
-    const tag_5 = useTagListShow("5", {"5":"php,js"});// sessiondata
-    const tag_6 = useTagListShow("6", {"6":"ITパスポート,基本情報技術者試験"});// sessiondata
-    const tag_7 = useTagListShow("7", {"7":"Figma"});// sessiondata
+    //const tag_3 = useTagListShow("desired_work_region", { desired_work_region: ResponseData?.desired_work_region });
+    // const tag_1 = useTagListShow("2", {"2":"windows"});// sessiondata
+    // const tag_2 = useTagListShow("3", {"3":"ゲーム"});// sessiondata
+    // console.log("desired_work_region"+ResponseData.desired_work_region);
+    // ResponseData.desired_work_region = useTagListShow("desired_work_region", ResponseData.desired_work_region);// sessiondata
+    //useTagListShow("desired_work_region", sessionData);
+    // const tag_4 = useTagListShow("1", {"1":"プログラマー,システムエンジニア"});// sessiondata   
+    // const tag_5 = useTagListShow("5", {"5":"php,js"});// sessiondata
+    // const tag_6 = useTagListShow("6", {"6":"ITパスポート,基本情報技術者試験"});// sessiondata
+    // const tag_7 = useTagListShow("7", {"7":"Figma"});// sessiondata
+    // カンマ区切りの文字列を配列に変換
+    const desiredWorkRegions = ResponseData?.desired_work_region
+        ? ResponseData.desired_work_region.split(',').map(region => region.trim())
+        : [];
 
     return (
       
@@ -226,25 +231,35 @@ const ProfileMypage = () => {
             
             <Box>
               <Typography variant="h6">名前</Typography>
-              <Item>坂東 航希</Item>
+              <Item>{ResponseData.student_surname ? ResponseData.student_surname : "Loading..."} {ResponseData.student_name}</Item>
             </Box>
             <Box>
               <Typography variant="h6">名前(カタカナ)</Typography>
-              <Item>バンドウ コウキ</Item>
+              <Item>{ResponseData.student_kanasurname ? ResponseData.student_kanasurname : "Loading..."} {ResponseData.student_kananame}</Item>
             </Box>
             <Box>
               <Typography variant="h6">自己紹介</Typography>
-              <Item>情報処理・ネットワーク専攻3年の坂東航希です。よろしくお願いいたします。</Item>
+              <Item>{ResponseData.intro ? ResponseData.intro : "Loading..."}</Item>
             </Box>
             <Box>
               <Typography variant="h6">卒業年度</Typography>
-              <Item>2025年</Item>
+              <Item>{ResponseData.graduation_year ? ResponseData.graduation_year+"年" : "Loading..."}</Item>
             </Box>
             
             <Box>
               <Typography variant="h6">学校名(大学名)</Typography>
-              <Item>清風情報工科学院</Item>
+              <Item>{ResponseData.school_name ? ResponseData.school_name : "Loading..."}</Item>
             </Box>
+            {/* 詳細項目がない場合「さらに表示」を表示しない */}
+            {(ResponseData.department_name || 
+            ResponseData.faculty_name || 
+            ResponseData.development_environment || 
+            ResponseData.hobby || 
+            ResponseData.desired_work_region || 
+            ResponseData.desired_occupation || 
+            ResponseData.programming_language || 
+            ResponseData.acquisition_qualification || 
+            ResponseData.software) && (
             <Box>
               <Showmore>
                 <Button variant="outlined" ref={showmore} onClick={ShowmoreClick} 
@@ -253,43 +268,82 @@ const ProfileMypage = () => {
                 </Button>
               </Showmore>
             </Box>
+            )}
+            {/* ResponseData.department_nameがあるときのみ表示 */}
+            {ResponseData.department_name && !close && (
             <Box ref={el => (detail.current[0] = el)} id="detail">
 
               <Typography variant="h6">学部</Typography>
-              <Item>情報学部</Item>
+              <Item>{ResponseData.department_name}</Item>
             </Box>
+            )}
+            {/* ResponseData.faculty_nameがあるときのみ表示 */}
+            {ResponseData.faculty_name && !close && (
             <Box ref={el => (detail.current[1] = el)} id="detail">
               <Typography variant="h6">学科</Typography>
-              <Item>電子工学科</Item>
+              <Item>{ResponseData.faculty_name}</Item>
             </Box>
+            )}
+            {/* ResponseData.development_environmentがあるときのみ表示 */}
+            {ResponseData.development_environment && !close && (
             <Box ref={el => (detail.current[2] = el)} id="detail">
               <Typography variant="h6">開発環境</Typography>
-              <Item><span>{tag_2}</span></Item>
+              <Item>{ResponseData.development_environment}</Item>
             </Box>
+            )}
+            {/* ResponseData.hobbyがあるときのみ表示 */}
+            {ResponseData.hobby && !close && (
             <Box ref={el => (detail.current[3] = el)} id="detail">
               <Typography variant="h6">趣味</Typography>
-              <Item><span>{tag_3}</span></Item>
+              <Item>{ResponseData.hobby}</Item>
             </Box>
+            )}
+            {/* ResponseData.desired_work_regionがあるときのみ表示 */}
+            {ResponseData.desired_work_region && !close && (
             <Box ref={el => (detail.current[4] = el)} id="detail">
               <Typography variant="h6">希望勤務地</Typography>
-              <Item><span>{tag_4}</span></Item>
+                <Item>
+                {desiredWorkRegions.map((region, index) => (
+                        <Button
+                            key={index}
+                            variant="outlined"
+                            onClick={() => console.log(`Clicked region: ${region}`)}
+                        >
+                            {region}
+                        </Button>
+                    ))}
+                </Item>
             </Box>
+            )}
+            {/* ResponseData.desired_occupationがあるときのみ表示 */}
+            {ResponseData.desired_occupation && !close && (
             <Box ref={el => (detail.current[5] = el)} id="detail">
               <Typography variant="h6">希望職種</Typography>
-              <Item><span>{tag_1}</span></Item>
+              <Item>{ResponseData.desired_occupation}</Item>
             </Box>
+            )}
+            {/* ResponseData.programming_languageがあるときのみ表示 */}
+            {ResponseData.programming_language && !close && (
             <Box ref={el => (detail.current[6] = el)} id="detail">
               <Typography variant="h6">プログラミング言語</Typography>
-              <Item><span>{tag_5}</span></Item>
+              <Item>{ResponseData.programming_language}</Item>
             </Box>
+            )}
+            {/* ResponseData.acquisition_qualificationがあるときのみ表示 */}
+            {ResponseData.acquisition_qualification && !close && (
             <Box ref={el => (detail.current[7] = el)} id="detail">
               <Typography variant="h6">取得資格</Typography>
-              <Item><span>{tag_6}</span></Item>
+              <Item>{ResponseData.acquisition_qualification}</Item>
             </Box>
+            )}
+            {/* ResponseData.softwareがあるときのみ表示 */}
+            {ResponseData.software && !close && (
             <Box ref={el => (detail.current[8] = el)} id="detail">
               <Typography variant="h6">ソフトウェア</Typography>
-              <Item><span>{tag_7}</span></Item>
+              <Item>{ResponseData.software}</Item>
             </Box>
+            )}
+            
             {/* </span> */}
           </Stack>
         </Box>

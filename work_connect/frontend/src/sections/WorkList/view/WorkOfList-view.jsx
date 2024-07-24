@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { ColorRing } from "react-loader-spinner";
 import useSWR from "swr";
 import { faker } from "@faker-js/faker";
 
@@ -58,8 +59,8 @@ export default function WorkOfListView() {
 
       if (data && data.length > 0) {
         setWorkOfList((r) => {
-          const uniqueRepoIds = new Set(r.map((WorkOfList) => WorkOfList.id));
-          const uniqueRepos = data.filter((item) => !uniqueRepoIds.has(item.id));
+          const uniqueRepoIds = new Set(r.map((WorkOfList) => WorkOfList.work_id));
+          const uniqueRepos = data.filter((item) => !uniqueRepoIds.has(item.work_id));
           uniqueRepos.map((element) => {
             if (typeof element.work_genre === "string" && element.work_genre !== null) {
               element.work_genre = element.work_genre.split(",").map((item) => <CreateTagElements key={item} itemContents={item} />);
@@ -83,7 +84,6 @@ export default function WorkOfListView() {
   }, [DataList]);
 
   const posts = WorkOfList.map((_, key) => ({
-    id: WorkOfList[key].id,
     work_id: WorkOfList[key].work_id,
     cover: `/assets/images/covers/cover_${key + 1}.jpg`,
     thumbnail: `/assets/workImages/thumbnail/cover_${key + 1}.jpg`,
@@ -132,7 +132,7 @@ export default function WorkOfListView() {
       <Grid container spacing={3}>
         {posts.map((post, index) => (
           // WorkOfList内にあるデータの一番最後の時に、useRefでスクロールした際に反応させる。
-          <PostCard ref={index === WorkOfList.length - 1 ? ref : null} key={`${post.id}-${post.userName}`} post={post} index={index} />
+          <PostCard ref={index === WorkOfList.length - 1 ? ref : null} key={`${post.work_id}-${post.userName}`} post={post} index={index} />
         ))}
       </Grid>
     </Container>

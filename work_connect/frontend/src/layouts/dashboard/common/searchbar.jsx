@@ -22,7 +22,8 @@ import { DataListContext } from "src/layouts/dashboard/index";
 // ----------------------------------------------------------------------
 
 const HEADER_MOBILE = 64;
-const HEADER_DESKTOP = 92;
+// const HEADER_DESKTOP = 92;
+const HEADER_DESKTOP = "auto";
 
 const StyledSearchbar = styled("div")(({ theme }) => ({
   ...bgBlur({
@@ -42,6 +43,10 @@ const StyledSearchbar = styled("div")(({ theme }) => ({
     height: HEADER_DESKTOP,
     padding: theme.spacing(0, 5),
   },
+  marginTop: 20,
+  marginBottom: 20,
+  paddingTop: 20,
+  paddingBottom: 20,
 }));
 
 // ----------------------------------------------------------------------
@@ -54,9 +59,9 @@ export default function Searchbar() {
   const [open, setOpen] = useState(false);
 
   const [searchWork, setSearchWork] = useState({
-    work_genre: "",
-    programming_language: "",
-    development_environment: "",
+    work_genre: [],
+    programming_language: [],
+    development_environment: [],
     searchText: "",
   });
 
@@ -70,21 +75,52 @@ export default function Searchbar() {
 
   const { GetTagListFunction } = GetTagList();
 
-  // プログラミング言語のタグ一覧を取得
   useEffect(()=>{
-    let WorkProgrammingLanguageArray = [];
-    const resolvePromise = GetTagListFunction("language");
-
-    resolvePromise.then(result => {
+    // タグ一覧取得
+    
+    // 作品ジャンルのタグ一覧を取得
+    let work_genre = [];
+    let work_genre_promise = GetTagListFunction("genre");
+    work_genre_promise.then(result => {
       result.map((value) => {
-        WorkProgrammingLanguageArray.push({value:value.name,label:value.name});
+        work_genre.push({value:value.name,label:value.name});
       });
-  
-      console.log("result: ",result);
-      console.log("WorkProgrammingLanguageArray: ",WorkProgrammingLanguageArray);
-      setOptions({...options, 
-        programming_language: WorkProgrammingLanguageArray
+      // console.log("result: ",result);
+      // console.log("tempArray: ",tempArray);
+      setOptions(prevOptions => ({
+        ...prevOptions,
+        work_genre: work_genre
+      }));
+    })
+
+    // プログラミング言語のタグ一覧を取得
+    let programming_language = [];
+    let programming_language_promise = GetTagListFunction("language");
+    programming_language_promise.then(result => {
+      result.map((value) => {
+        programming_language.push({value:value.name,label:value.name});
       });
+      // console.log("result: ",result);
+      // console.log("tempArray: ",tempArray);
+      setOptions(prevOptions => ({
+        ...prevOptions,
+        programming_language: programming_language
+      }));
+    })
+
+    // 開発環境のタグ一覧を取得
+    let development_environment = [];
+    let development_environment_promise = GetTagListFunction("environment");
+    development_environment_promise.then(result => {
+      result.map((value) => {
+        development_environment.push({value:value.name,label:value.name});
+      });
+      // console.log("result: ",result);
+      // console.log("tempArray: ",tempArray);
+      setOptions(prevOptions => ({
+        ...prevOptions,
+        development_environment: development_environment
+      }));
     })
   },[])
 
@@ -100,15 +136,26 @@ export default function Searchbar() {
   async function SearchWorkList() {
     try {
       const url = "http://localhost:8000/search_work";
-      // const programmingLanguageArray = ['PHP', 'Java'];
-      // const work_genre_array = searchWork.work_genre.split(",");
-      // const programming_language_array = searchWork.programming_language.split(",");
-      // const development_environment_array = searchWork.development_environment.split(",");
+
+      let work_genre = [];
+      let programming_language = [];
+      let development_environment = [];
+
+      searchWork.work_genre.map((value) => {
+        work_genre.push(value.value);
+      });
+      searchWork.programming_language.map((value) => {
+        programming_language.push(value.value);
+      });
+      searchWork.development_environment.map((value) => {
+        development_environment.push(value.value);
+      });
+
       const response = await axios.get(url, {
         params: {
-          work_genre: searchWork.work_genre,
-          programming_language: searchWork.programming_language,
-          development_environment: searchWork.development_environment,
+          work_genre: work_genre,
+          programming_language: programming_language,
+          development_environment: development_environment,
           searchText: searchWork.searchText,
         },
       });
@@ -143,24 +190,52 @@ export default function Searchbar() {
     );
   };
 
+  // 作品ジャンルのタグを操作したとき
+  const handleChangeWorkGenre = (selectedOption) => {
+    let tagArray = [];
+    selectedOption.map((value) => {
+      tagArray.push(value.value);
+    });
+    setSearchWork(prevOptions => ({
+      ...prevOptions,
+        work_genre: selectedOption
+      }
+    ));
+  };
+
   // プログラミング言語のタグを操作したとき
   const handleChangeProgrammingLanguage = (selectedOption) => {
-    // console.log("e.target.value", e.target.value);
-    let programming_language_array = [];
+    let tagArray = [];
     selectedOption.map((value) => {
-      programming_language_array.push(value.value);
+      tagArray.push(value.value);
     });
-    setSearchWork(
-      {
-        ...searchWork,
-        programming_language: programming_language_array
+    setSearchWork(prevOptions => ({
+      ...prevOptions,
+        programming_language: selectedOption
       }
-    );
+    ));
+  };
+
+  // 開発環境のタグを操作したとき
+  const handleChangeDevelopmentEnvironment = (selectedOption) => {
+    let tagArray = [];
+    selectedOption.map((value) => {
+      tagArray.push(value.value);
+    });
+    setSearchWork(prevOptions => ({
+      ...prevOptions,
+        development_environment: selectedOption
+      }
+    ));
   };
 
   useEffect(() => {
     console.log("searchWork: ", searchWork);
-  }, [searchWork])
+  }, [searchWork]);
+
+  useEffect(() => {
+    console.log("options: ", options);
+  }, [options]);
 
 
   return (
@@ -174,28 +249,48 @@ export default function Searchbar() {
 
         <Slide direction="down" in={open} mountOnEnter unmountOnExit>
           <StyledSearchbar>
-            <Input
-              autoFocus
-              fullWidth
-              disableUnderline
-              placeholder="Search…"
-              startAdornment={
-                <InputAdornment position="start">
-                  <Iconify
-                    icon="eva:search-fill"
-                    sx={{ color: "text.disabled", width: 20, height: 20 }}
-                  />
-                </InputAdornment>
-              }
-              sx={{ mr: 1, fontWeight: "fontWeightBold" }}
-              value={searchWork.searchText}
-              onChange={handleChangeText}
-            />
-            <Button variant="contained" onClick={handleSearch}>
-              Search
-            </Button>
-            <div>プログラミング言語</div>
-            <CreatableSelect options={options.programming_language} isClearable isMulti onChange={handleChangeProgrammingLanguage}/>
+            <div style={{display: ""}}>
+              <div style={{display: "flex"}}>
+                <Input
+                  autoFocus
+                  fullWidth
+                  disableUnderline
+                  placeholder="Search…"
+                  startAdornment={
+                    <InputAdornment position="start">
+                      <Iconify
+                        icon="eva:search-fill"
+                        sx={{ color: "text.disabled", width: 20, height: 20 }}
+                      />
+                    </InputAdornment>
+                  }
+                  sx={{ mr: 1, fontWeight: "fontWeightBold" }}
+                  value={searchWork.searchText}
+                  onChange={handleChangeText}
+                />
+                <Button variant="contained" onClick={handleSearch}>
+                  Search
+                </Button>
+              </div>
+              <div style={{display: "", marginTop: "20px", marginBottom: "10px"}}>
+                <div style={{fontWeight: "Bold", color: "#666"}}>ジャンル</div>
+                <div style={{color: "#444"}}>
+                  <CreatableSelect options={options.work_genre} value={searchWork.work_genre} isClearable isMulti onChange={handleChangeWorkGenre}/>
+                </div>
+              </div>
+              <div style={{display: "", marginTop: "20px", marginBottom: "10px"}}>
+                <div style={{fontWeight: "Bold", color: "#666"}}>プログラミング言語</div>
+                <div style={{color: "#444"}}>
+                  <CreatableSelect options={options.programming_language} value={searchWork.programming_language} isClearable isMulti onChange={handleChangeProgrammingLanguage}/>
+                </div>
+              </div>
+              <div style={{display: "", marginTop: "20px", marginBottom: "10px"}}>
+                <div style={{fontWeight: "Bold", color: "#666"}}>開発環境</div>
+                <div style={{color: "#444"}}>
+                  <CreatableSelect options={options.development_environment} value={searchWork.development_environment} isClearable isMulti onChange={handleChangeDevelopmentEnvironment}/>
+                </div>
+              </div>
+            </div>
           </StyledSearchbar>
         </Slide>
       </div>

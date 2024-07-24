@@ -32,6 +32,8 @@ use App\Http\Controllers\work\WorkPostingController;
 use App\Http\Controllers\tag\GetVideoGenreTagController;
 use App\Http\Controllers\tag\InsertTagController;
 use App\Http\Controllers\search\SearchWorkController;
+use App\Http\Controllers\profile\GetMypageController;
+use App\Http\Controllers\profile\PostMypageController;
 
 
 // トップ画面
@@ -42,6 +44,11 @@ Route::get('/', function () {
 // /list
 // Route::get('list',[ListController::class, 'index']);
 // =======
+
+// プロフィールのマイページ(get)
+Route::get('/get_profile_mypage', [GetMypageController::class, 'GetMypageController']);
+// プロフィールのマイページ(post)
+Route::post('/post_profile_mypage', [PostMypageController::class, 'PostMypageController']);
 
 // 作品検索
 Route::get('/search_work', [SearchWorkController::class, 'SearchWorkController']);

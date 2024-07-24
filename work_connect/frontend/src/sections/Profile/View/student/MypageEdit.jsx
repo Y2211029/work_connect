@@ -84,7 +84,7 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
   // セッションストレージからaccountDataを取得し、MypageEditStateを初期値として設定
   const getInitialMypageEditState = () => {
     const accountData = getSessionData("accountData");
-    return accountData ? accountData.MypageEditState : 0;
+    return accountData.MypageEditState ? accountData.MypageEditState : 0;
   };
 
   const [MypageEditState] = useState(getInitialMypageEditState);
@@ -99,9 +99,6 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
         Edit.current.style.display = '';
       }
     }
-  }, [MypageEditState]);
-
-  useEffect(() => {
     updateSessionData("accountData", "MypageEditState", MypageEditState);
   }, [MypageEditState]);
 

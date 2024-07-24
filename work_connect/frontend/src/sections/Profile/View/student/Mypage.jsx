@@ -1,5 +1,6 @@
 //import * as React from 'react';
 import { useEffect, useState, useRef} from "react";
+import axios from "axios";
 import PropTypes from "prop-types";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
@@ -32,32 +33,32 @@ const Item = styled(Paper)(({ theme }) => ({
 
 // Showmoreのスタイルを定義
 const Showmore = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.background.default,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    fontSize: '20px',
-  }));
+  backgroundColor: theme.palette.background.default,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  fontSize: '20px',
+}));
 
 function CreateTagElements({ itemContents }) {
-    return <button className="greeting">{itemContents}</button>;
-  }
-  CreateTagElements.propTypes = {
-    itemContents: PropTypes.string.isRequired,
-  };
+  return <button className="greeting">{itemContents}</button>;
+}
+CreateTagElements.propTypes = {
+  itemContents: PropTypes.string.isRequired,
+};
   // 複数選択タグを表示するための関数
 const useTagListShow = (tagName, sessionData) => {
-    const [tags, setTags] = useState([]);
-    useEffect(() => {
-      if (sessionData && sessionData[tagName]) {
-        const commaArray = sessionData[tagName].split(",");
-        const devtagComponents = commaArray.map((item) => (
-          <CreateTagElements key={item} itemContents={item} />
-        ));
-        setTags(devtagComponents);
-      }
-    }, []);
-    return tags;
-  };
+  const [tags, setTags] = useState([]);
+  useEffect(() => {
+    if (sessionData && sessionData[tagName]) {
+      const commaArray = sessionData[tagName].split(",");
+      const devtagComponents = commaArray.map((item) => (
+        <CreateTagElements key={item} itemContents={item} />
+      ));
+      setTags(devtagComponents);
+    }
+  }, []);
+  return tags;
+};
 
 const ProfileMypage = () => {
 
@@ -73,13 +74,15 @@ const ProfileMypage = () => {
   const showmore = useRef(null);
   const childRef = useRef(null);
   const [close, setClose] = useState(true);
+  const url = "http://localhost:8000/get_profile_mypage";
+  const ProfileId = useState("S_000000000001");
 
   // 編集状態のチェック
   const { getSessionData, updateSessionData } = useSessionStorage();
   // セッションストレージからaccountDataを取得し、MypageEditStateを初期値として設定
   const getInitialMypageEditState = () => {
     const accountData = getSessionData("accountData");
-    return accountData ? accountData.MypageEditState : 0;
+    return accountData.MypageEditState ? accountData.MypageEditState : 0;
   };
   const [MypageEditState, setMypageEditState] = useState(getInitialMypageEditState);
     
@@ -95,13 +98,40 @@ const ProfileMypage = () => {
         Profile.current.style.display = 'none';
       }
     }
-  }, [MypageEditState]);
-  useEffect(() => {
     updateSessionData("accountData", "MypageEditState", MypageEditState);
   }, [MypageEditState]);
 
-  // デフォルトで非表示にする項目
+  // 初回レンダリング時の一度だけ実行させる
   useEffect(() => {
+    async function GetData(ProfileId) {
+      try {
+        // Laravel側からデータを取得
+        const response = await axios.get(url, {
+          params: {
+            ProfileId: ProfileId,
+          },
+        });
+
+        // response.dataは配列の中にオブジェクトがある形になっています
+        // console.log("response.data:", response.data);
+
+        // ジャンルはタグのため、カンマ区切りの文字列を配列に変換する
+        // response.data.forEach((element) => {
+        //   element.genre !== null
+        //     ? (element.genre = element.genre.split(",").map((item) => <CreateTagElements key={item} itemContents={item} />))
+        //     : "";
+        // });
+
+        // setMovieOfList(response.data);
+        console.log("MovieListObject:", response.data);
+      } catch (err) {
+        console.log("err:", err);
+      }
+    }
+    // DBからデータを取得
+    GetData(ProfileId);
+
+    // 詳細項目の非表示
     detail.current.forEach(ref => {
       if (ref) ref.style.display = 'none';
     });
@@ -119,7 +149,6 @@ const ProfileMypage = () => {
   
   // 「さらに表示」が押された時の処理
   const ShowmoreClick = () => {
-    
     if(close){
       // 「さらに表示」のとき、詳細項目を表示して、ボタンを「閉じる」に変更
       setClose(false);
@@ -139,8 +168,9 @@ const ProfileMypage = () => {
       });
       setShowMoreText(<><KeyboardArrowDownIcon /> さらに表示</>);
     }
-    
   };
+
+
 
 
     // タグを仮で入れてます

@@ -4,14 +4,14 @@ namespace App\Http\Controllers\movie;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\w_movie;
+use App\Models\w_movies;
 
 class GetMovieListController extends Controller
 {
     public function GetMovieListController(Request $request)
     {
         try {
-            $movieList = w_movie::select(
+            $movieList = w_movies::select(
                 'w_movies.*',
                 'w_users.user_name',
                 'w_users.icon',

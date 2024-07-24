@@ -5,7 +5,7 @@ namespace App\Http\Controllers\movie;
 use App\Http\Controllers\Controller;
 use App\Models\w_comment;
 use Illuminate\Http\Request;
-use App\Models\w_movie;
+use App\Models\w_movies;
 
 class GetMovieDetailController extends Controller
 {
@@ -13,7 +13,7 @@ class GetMovieDetailController extends Controller
     {
         $id = $request->input('id');
         try {
-            $movieList = w_movie::join('w_users', 'w_movies.creator_id', '=', 'w_users.id')
+            $movieList = w_movies::join('w_users', 'w_movies.creator_id', '=', 'w_users.id')
                 ->select(
                     'w_users.programming_language AS users_programming_language',
                     'w_users.development_environment AS users_development_environment',

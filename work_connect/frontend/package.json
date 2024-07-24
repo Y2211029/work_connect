@@ -74,6 +74,7 @@
     "react-select": "^5.8.0",
     "react-stepper-horizontal": "^1.0.11",
     "react-tag-autocomplete": "^7.2.0",
+    "react-youtube": "^10.1.0",
     "rimraf": "^5.0.7",
     "sanitize.css": "^13.0.0",
     "simplebar-react": "^3.2.5",

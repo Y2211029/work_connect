@@ -29,6 +29,7 @@ use App\Http\Controllers\tag\GetGenreTagController;
 use App\Http\Controllers\tag\GetLanguageTagController;
 use App\Http\Controllers\tag\GetEnvironmentTagController;
 use App\Http\Controllers\work\WorkPostingController;
+use App\Http\Controllers\movie\VideoPostingController;
 use App\Http\Controllers\tag\GetVideoGenreTagController;
 use App\Http\Controllers\tag\InsertTagController;
 use App\Http\Controllers\search\SearchWorkController;
@@ -62,6 +63,8 @@ Route::get('/get_language_tag', [GetLanguageTagController::class, 'GetLanguageTa
 Route::get('/get_environment_tag', [GetEnvironmentTagController::class, 'GetEnvironmentTagController']);
 // 作品投稿
 Route::post('/work_posting', [WorkPostingController::class, 'store']);
+// 動画ジャンルタグ取得
+Route::post('/video_posting', [VideoPostingController::class, 'VideoPostingController']);
 // 動画ジャンルタグ取得
 Route::get('/get_video_genre_tag', [GetVideoGenreTagController::class, 'GetVideoGenreTagController']);
 // ログイン状態のチェック

@@ -1,14 +1,15 @@
 import YoutubeURL from "../../../sections/work/WorkPosting/YoutubeURL";
-import ImageUpload from "../../../sections/work/WorkPosting/ImageUpload";
-import WorkTitle from "../../../sections/work/WorkPosting/WorkTitle";
-import WorkGenre from "../../../sections/video/VideoGenre";
+import VideoTitle from "../../../sections/work/WorkPosting/WorkTitle";
+import VideoGenre from "../../../sections/video/VideoGenre";
 import Introduction from "../../../sections/work/WorkPosting/Introduction";
+import Youtube from "react-youtube";
 // import Modal from "react-modal";
 // import { useState } from "react";
 // import { useNavigate } from "react-router-dom";
 
 import "../../../App.css";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 // ログインのモーダル CSS設定
 // const modalStyle = {
@@ -36,7 +37,7 @@ const VideoPosting = () => {
   //   // setFormErrors({}); // エラーメッセージをリセット
   // };
 
-  const [workData,setWorkData] = useState({
+  const [workData, setWorkData] = useState({
     YoutubeURL: "",
     WorkTitle: "",
     WorkGenre: "",
@@ -44,43 +45,89 @@ const VideoPosting = () => {
     Obsession: "",
     Language: "",
     Environment: "",
-  })
+  });
+  const [videoUrl, setVideoUrl] = useState("");
+  const [videoId, setVideoId] = useState("");
 
   useEffect(() => {
     console.log(workData);
-  }, [workData])
+  }, [workData]);
 
   const callSetWorkData = (key, value) => {
     setWorkData({
-      ...workData, [key]: value
-    })
-  }
+      ...workData,
+      [key]: value,
+    });
+  };
 
-  const WorkSubmit = (e) => {
+  const handleChange = (event) => {
+    const url = event.target.value;
+    setVideoUrl(url);
+    callSetWorkData("YoutubeURL", url);
+
+    // YouTubeの動画IDを抽出
+    const urlPattern =
+      /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^&]+)|youtu\.be\/([^?&]+)/;
+    const match = url.match(urlPattern);
+    if (match) {
+      const id = match[1] || match[2];
+      setVideoId(id);
+    } else {
+      setVideoId("");
+    }
+  };
+
+  const opts = {
+    height: "390",
+    width: "640",
+    playerVars: {
+      autoplay: 1,
+    },
+  };
+
+  const WorkSubmit = async (e) => {
     e.preventDefault();
-    console.log("e" ,e.target);
+    console.log("e", e.target);
+
+    const formData = new FormData();
+    for (const key in workData) {
+      formData.append(key, workData[key]);
+    }
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/video_posting",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log(formData);
+      console.log(response.data.message);
+    } catch (error) {
+      console.log(error.message);
+    }
+
     // e.target.map
-    
-  }
+  };
 
   return (
     <div>
       <div className="WorkPostingFormContainer">
         <form onSubmit={WorkSubmit} method="post" id="youtubeForm">
-          <h3>作品投稿</h3>
+          <h3>動画投稿</h3>
           <hr />
           <div className="WorkPostingUiForm">
             <div className="ImageUpload">
               <div className="WorkPostingFormField">
-                <YoutubeURL callSetWorkData={callSetWorkData} />
-              </div>
-              <div className="WorkPostingFormField">
-                <ImageUpload />
+                <YoutubeURL onChange={handleChange} value={videoUrl} />
+                 <YouTube videoId={videoId} opts={opts} />
               </div>
             </div>
             <div className="Information">
               <div className="WorkPostingFormField">
-                <WorkTitle callSetWorkData={callSetWorkData} />
+                <VideoTitle callSetWorkData={callSetWorkData} />
               </div>
               {/* ジャンル */}
               <div className="WorkPostingFormField">
@@ -92,7 +139,7 @@ const VideoPosting = () => {
                       タグを入れてください
                     </span>
                   </p>
-                  <WorkGenre callSetWorkData={callSetWorkData} />
+                  <VideoGenre callSetWorkData={callSetWorkData} />
                 </div>
               </div>
               <div className="WorkPostingFormField">

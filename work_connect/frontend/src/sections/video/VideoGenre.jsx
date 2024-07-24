@@ -4,12 +4,12 @@ import InsertTag from 'src/components/tag/InsertTag';
 import axios from 'axios';
 import PropTypes from "prop-types";
 
-const WorkGenre = (props) => {
+const VideoGenre = (props) => {
   const {InsertTagFunction} = InsertTag();
   const url = 'http://localhost:8000/get_video_genre_tag'
   const [options, setOptions] = useState([]);
   useEffect(()=>{
-    async function WorkGenreFunction() {
+    async function VideoGenreFunction() {
       try {
         // Laravel側から企業一覧データを取得
         const response = await axios.get(url, {
@@ -23,19 +23,19 @@ const WorkGenre = (props) => {
         // はタグのため、カンマ区切りの文字列を配列に変換する
 
         const responseData = response.data;
-        const WorkGenreArray = [];
+        const VideoGenreArray = [];
         console.log(responseData);
         responseData.map((value) => {
-          WorkGenreArray.push({value:value.name,label:value.name});
+          VideoGenreArray.push({value:value.name,label:value.name});
         });
-        setOptions(WorkGenreArray);
-        console.log(WorkGenreArray);
+        setOptions(VideoGenreArray);
+        console.log(VideoGenreArray);
         console.log("CompanyListObject:", response.data);
       } catch (err) {
         console.log("err:", err);
       }
     }
-    WorkGenreFunction();
+    VideoGenreFunction();
     axios.get(url)
   },[])
 
@@ -48,14 +48,14 @@ const WorkGenre = (props) => {
       console.log(inputValue);  
       const newOption = { value: inputValue.option.value, label: inputValue.option.label };
       setOptions([...options, newOption]);
-      // 11は作品投稿の作品ジャンルです。 
+      // 10は動画投稿の作品ジャンルです。 
       InsertTagFunction(inputValue.option.value, 10);
     }
     let valueArray = [];
     selectedOption.map((value) => {
       valueArray.push(value.value)
     })
-    props.callSetWorkData("WorkGenre", valueArray.join(","));
+    props.callSetWorkData("VideoGenre", valueArray.join(","));
   };
 
   return(
@@ -63,8 +63,8 @@ const WorkGenre = (props) => {
   );
 };
 
-WorkGenre.propTypes = {
+VideoGenre.propTypes = {
   callSetWorkData: PropTypes.func,
 };
 
-export default WorkGenre;
+export default VideoGenre;

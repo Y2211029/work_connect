@@ -21,7 +21,7 @@ import SvgColor from "src/components/svg-color";
 export default function PostCard({ post, index }) {
   const { cover, title, selectedOccupation, prefecture, view, comment, author } = post;
 
-  const latestPostLarge = index === 0;
+  const latestPostLarge = index === -1;
 
   // const latestPost = index === 1 || index === 2;
 
@@ -93,12 +93,14 @@ export default function PostCard({ post, index }) {
         <Stack
           key={_index}
           direction="row"
-          sx={{
-            // ...((latestPostLarge || latestPost) && {
-            //   opacity: 0.48,
-            //   color: "common.white",
-            // }),
-          }}
+          sx={
+            {
+              // ...((latestPostLarge || latestPost) && {
+              //   opacity: 0.48,
+              //   color: "common.white",
+              // }),
+            }
+          }
         >
           <Iconify width={16} icon={info.icon} sx={{ mr: 0.5 }} />
           <Typography variant="caption">{fShortenNumber(info.number)}</Typography>

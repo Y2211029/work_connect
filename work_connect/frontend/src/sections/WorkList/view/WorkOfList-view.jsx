@@ -1,55 +1,170 @@
+import { useContext, useEffect, useState } from "react";
+import useSWR from "swr";
+import { faker } from "@faker-js/faker";
+
 import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 
-import WorkListItem from "src/_mock/workListItem";
-
+import { useIntersection } from "/src/routes/hooks/use-intersection";
 import PostCard from "src/sections/WorkList/post-card";
 import PostSort from "src/sections/WorkList/post-sort";
-
-import LoginStatusCheck from "../../../components/account/loginStatusCheck/loginStatusCheck";
+import LoginStatusCheck from "src/components/account/loginStatusCheck/loginStatusCheck";
+import CreateTagElements from "src/components/tag/CreateTagElements";
+import { DataListContext } from "src/layouts/dashboard/index";
 
 // import AppCurrentVisits from "src/sections/overview/app-current-visits";
-// ----------------------------------------------------------------------
+
+/*------------------------------------------------------------------------------------------------*/
+const fetcher = (url) => fetch(url).then((res) => res.json());
+
+// コンポーネント内で定義するとレンダリングの度に新しいオブジェクトが生成されるので外に定義
+// もしくはuseStateやuseRefの初期値として定義
+
+const setting = {
+  rootMargin: "40px",
+};
 
 export default function WorkOfListView() {
   const { loginStatusCheckFunction } = LoginStatusCheck();
-  loginStatusCheckFunction();
 
-  const postsFromWork = WorkListItem();
-  // console.log("postsFromBlog", postsFromWork);
-  /*--------------------------------------------*/
+  // スクロールした際に次のデータを取得するために必要
+  const [page, setPage] = useState(1);
+  // 作品一覧のデータを保持するステート
+  const [WorkOfList, setWorkOfList] = useState([]);
+  // 検索結果を反映させるためのContext
+  const { DataList } = useContext(DataListContext);
+  // スクロールされたら新しいデータを取得
+  const [isIntersecting, ref] = useIntersection(setting);
+
+  // 無駄なレンダリングを回避する。
+  useEffect(() => {
+    loginStatusCheckFunction();
+  }, []);
+
+  // 今表示されているアイテムの一番下までスクロールしたら次のデータを取得する。
+  useEffect(() => {
+    if (isIntersecting) {
+      setPage((p) => p + 1);
+    }
+  }, [isIntersecting]);
+
+  //useSWRの解説：https://swr.vercel.app/ja  |  https://qiita.com/musenmai/items/e09c0b798a05522a33cf
+  // レスポンス情報を常に持っておくことで、毎回API通信がされるのを防ぐhooks
+  useSWR(`http://localhost:8000/get_work_list?page=${page}`, fetcher, {
+    onSuccess: (data) => {
+      // console.log("onSuccess:data", data);
+
+      if (data && data.length > 0) {
+        setWorkOfList((r) => {
+          const uniqueRepoIds = new Set(r.map((WorkOfList) => WorkOfList.id));
+          const uniqueRepos = data.filter((item) => !uniqueRepoIds.has(item.id));
+          uniqueRepos.map((element) => {
+            if (typeof element.work_genre === "string" && element.work_genre !== null) {
+              element.work_genre = element.work_genre.split(",").map((item) => <CreateTagElements key={item} itemContents={item} />);
+              console.log("aaaaa");
+            }
+            return element;
+          });
+
+          console.log("workItems:", uniqueRepos);
+          return [...r, ...uniqueRepos];
+        });
+      }
+    },
+    onError: (err) => {
+      console.log("err", err);
+    },
+  });
+
+  useEffect(() => {
+    setWorkOfList(DataList);
+  }, [DataList]);
+
+  const posts = WorkOfList.map((_, key) => ({
+    id: WorkOfList[key].id,
+    work_id: WorkOfList[key].work_id,
+    cover: `/assets/images/covers/cover_${key + 1}.jpg`,
+    thumbnail: `/assets/workImages/thumbnail/cover_${key + 1}.jpg`,
+    title: WorkOfList[key].work_name,
+    genre: WorkOfList[key].work_genre,
+    // substring(0, 200) 第一引数：文字列の開始位置。第二引数：開始位置から何文字目を取得する。
+    // introの文字数が200文字以上の時、「...」を表示する。
+    intro: WorkOfList[key].work_intro.length > 200 ? WorkOfList[key].work_intro.substring(0, 200) + "..." : WorkOfList[key].work_intro,
+
+    author: {
+      avatarUrl: `/assets/images/avatars/avatar_${WorkOfList[key].icon}.jpg`,
+    },
+    view: faker.number.int(99999),
+    comment: faker.number.int(99999),
+    favorite: faker.number.int(99999),
+    userName: WorkOfList[key].user_name,
+    createdAt: WorkOfList[key].created_at,
+  }));
+
   return (
+    // Container 真ん中にコンテンツを寄せて表示したいときに使う
     <Container>
+      <ColorRing
+        visible={true}
+        height="80"
+        width="80"
+        ariaLabel="color-ring-loading"
+        wrapperStyle={{}}
+        wrapperClass="color-ring-wrapper"
+        colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+      />
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+        {/* Typography 注釈みたいなもの */}
         <Typography variant="h4">作品一覧</Typography>
       </Stack>
       {/* 並べ替えボタン */}
       <Stack mb={5} direction="row" alignItems="center" justifyContent="space-between">
-        {/* <PostSearch posts={posts} /> */}
-
-        {/* 変なエラー出るんで一旦コメントアウトしてます。 */}
         <PostSort
-          // style={{ dispaly: "flex", justifyContent: "flex-end" }}
-          // options={[
-          //   { value: "投稿日が新しい順", label: "投稿日が新しい順" },
-          //   { value: "投稿日が古い順", label: "投稿日が古い順" },
-          //   { value: "おすすめ順", label: "おすすめ順" },
-          // ]}
           options={[
             { value: "orderNewPostsDate", label: "投稿日が新しい順" },
             { value: "orderOldPostsDate", label: "投稿日が古い順" },
-            // { value: "oldest", label: "Oldest" },
           ]}
         />
       </Stack>
 
       <Grid container spacing={3}>
-        {postsFromWork.map((post, index) => (
-          <PostCard key={post.id} post={post} index={index} />
+        {posts.map((post, index) => (
+          // WorkOfList内にあるデータの一番最後の時に、useRefでスクロールした際に反応させる。
+          <PostCard ref={index === WorkOfList.length - 1 ? ref : null} key={`${post.id}-${post.userName}`} post={post} index={index} />
         ))}
       </Grid>
     </Container>
   );
 }
+
+// 作品の一覧データを取得する用URL
+// const url = "http://localhost:8000/get_work_list";
+
+// useEffect(() => {
+//   async function workListFunction() {
+//     try {
+//       // Laravel側かaら作品一覧データを取得
+//       const response = await axios.get(url, {
+//         params: {},
+//       });
+
+//       // response.dataは配列の中にオブジェクトがある形になっています
+//       // console.log("response.data:", response.data);
+
+//       // プログラミング言語、開発環境、その他はタグのため、カンマ区切りの文字列を配列に変換する
+//       response.data.forEach((element) => {
+//         element.work_genre !== null
+//           ? (element.work_genre = element.work_genre.split(",").map((item) => <CreateTagElements key={item} itemContents={item} />))
+//           : "";
+//       });
+
+//       setWorkOfList(response.data);
+//       console.log("response:", response);
+//     } catch (err) {
+//       console.log("err:", err);
+//     }
+//   }
+//   workListFunction();
+// }, []); // 空の依存配列を渡すことで初回のみ実行されるようにする

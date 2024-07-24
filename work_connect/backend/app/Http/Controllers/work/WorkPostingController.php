@@ -21,14 +21,10 @@ class WorkPostingController extends Controller
         $Environment = $request->input('Environment');
         $images = $request->input('imagesName'); // 画像のバリデーション
         \Log::info(json_decode(json_encode($request->input('images'))));
-        if ($request->hasFile('images')) {
-            \Log::info(json_encode("aaaaaaaaaaaaaaaaa"));
-            // foreach ($request->file('images') as $image) {
-            //     \Log::info(json_encode("fssdfsd"));
-            //     $imagePath = $image->store('public');
-            // }
-            $imagePath = $request->files("images")->store('public');
-        }
+        $filename = $request->photo->name;
+        // blobデータをstorageに保存する
+        // diskの指定を特にしなければ、例の場合。`storage/app/images/`に画像が保存される
+        $path = $request->photo->storeAs('public/images', $filename);
 
         // データ保存 (例: DBに保存)
         w_works::create([

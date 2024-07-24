@@ -40,7 +40,7 @@ const WorkPosting = () => {
   //   // setFormErrors({}); // エラーメッセージをリセット
   // };
 
-  const [workData,setWorkData] = useState({
+  const [workData, setWorkData] = useState({
     YoutubeURL: "",
     WorkTitle: "",
     WorkGenre: "",
@@ -55,7 +55,7 @@ const WorkPosting = () => {
   const [imagesName, setImagesName] = useState('');
 
   useEffect(() => {
-    console.log("workData",workData);
+    console.log("workData", workData);
   }, [workData])
 
   const callSetWorkData = (key, value) => {
@@ -72,25 +72,29 @@ const WorkPosting = () => {
       console.log(`File name: ${image.name}, URL: ${image.image}`);
     });
     console.log("bbbb");
-    
-    setImageFiles(Array.from(images));
-    
+
+    // Canvasのデータをblob化
+    const type = 'image/png';
+    const dataurl = this.canvas.toDataURL(type); // this.canvasは用途に合わせて書き換え
+    const bin = atob(dataurl.split(',')[1]);
+    const buffer = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) {
+      buffer[i] = bin.charCodeAt(i);
+    }
+    setImageFiles(Blob([buffer.buffer], { type: type }));
   };
 
   const WorkSubmit = async (e) => {
     e.preventDefault();
-    console.log("e" ,e.target);
+    console.log("e", e.target);
 
     const formData = new FormData();
     console.log(imageFiles);
-    imageFiles.forEach((file) => {
-      formData.append(`images`, file);
-      console.log(file);
-    });
+    formData.append('photo', imageFiles, 'image.png');
     for (const key in workData) {
       formData.append(key, workData[key]);
     }
-    formData.append("imagesName", imagesName);  
+    formData.append("imagesName", imagesName);
     try {
       const response = await axios.post('http://localhost:8000/work_posting', formData, {
         headers: {

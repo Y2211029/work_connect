@@ -73,7 +73,7 @@ const WorkListItem = () => {
     comment: faker.number.int(99999),
     favorite: faker.number.int(99999),
     userName: WorkOfList[key].user_name,
-    createdAt: WorkOfList[key].post_datetime,
+    createdAt: WorkOfList[key].created_at,
   }));
 
   return posts;

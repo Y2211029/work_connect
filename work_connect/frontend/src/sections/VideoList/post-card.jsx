@@ -18,12 +18,12 @@ import SvgColor from "src/components/svg-color";
 
 // ----------------------------------------------------------------------
 
-export default function PostCard({ post, index }) {
+export default function PostCard({ post /*index*/ }) {
   const { id, cover, title, genre, intro, thumbnail, view, comment, author, userName, createdAt } = post;
 
-  const latestPostLarge = index === 0;
+  // const latestPostLarge = index === -1;
 
-  const latestPost = index === 1 || index === 2;
+  // const latestPost = index === 1 || index === 2;
 
   // アイコン
   const renderAvatar = (
@@ -186,7 +186,8 @@ export default function PostCard({ post, index }) {
   );
 
   return (
-    <Grid xs={12} sm={latestPostLarge ? 12 : 6} md={latestPostLarge ? 6 : 3}>
+    <Grid xs={12} sm={6} md={4}>
+      {/* // <Grid xs={12} sm={latestPostLarge ? 12 : 6} md={latestPostLarge ? 6 : 3}> */}
       <Card>
         <Box
           sx={{
@@ -200,7 +201,7 @@ export default function PostCard({ post, index }) {
               bgcolor: (theme) => alpha(theme.palette.grey[900], 0.72),
             },
             pt: {
-              xs: "calc(100% * 4 / 3)",
+              // xs: "calc(100% * 4 / 3)",
               sm: "calc(100% * 3 / 4.66)",
             },
           }}
@@ -213,11 +214,11 @@ export default function PostCard({ post, index }) {
         <Box
           sx={{
             p: (theme) => theme.spacing(4, 3, 3, 3),
-            ...((latestPostLarge || latestPost) && {
-              width: 1,
-              bottom: 0,
-              position: "absolute",
-            }),
+            // ...((latestPostLarge || latestPost) && {
+            width: 1,
+            bottom: 0,
+            position: "absolute",
+            // }),
           }}
         >
           {renderThumbnail}

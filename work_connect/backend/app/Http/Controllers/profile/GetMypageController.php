@@ -11,15 +11,13 @@ class GetMypageController extends Controller
     public function GetMypageController(Request $request)
     {
         try {
-            // idを取得 
+            // ProfileIdを取得 
             $profileId = $request->input('ProfileId');
             $userList = w_users::where('id', $profileId)->get();
-            $userListArray = json_decode(json_encode($userList), true);
+            //$userListArray = json_decode(json_encode($userList), true);
+            \Log::info($userList);
 
-            \Log::info('GetMypageController:$userListArray:');
-            \Log::info(json_encode($userListArray));
-            // echo json_encode($userListArray);
-            return json_encode($userListArray);
+            return json_encode($userList);
         } catch (\Exception $e) {
             \Log::info('GetMypageController:user_name重複チェックエラー');
             \Log::info($e);

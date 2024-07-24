@@ -21,7 +21,7 @@ export default function PostCard({ post, index }) {
     desiredWorkRegion, desiredOccupation,
      view, comment, author } = post;
 
-  const latestPostLarge = index === 0;
+  const latestPostLarge = index === -1;
 
   // const latestPost = index === 1 || index === 2;
 

@@ -20,11 +20,17 @@ class WorkPostingController extends Controller
         $Language = $request->input('Language');
         $Environment = $request->input('Environment');
         $images = $request->input('imagesName'); // 画像のバリデーション
-        \Log::info(json_decode(json_encode($request->input('images'))));
-        $filename = $request->photo->name;
-        // blobデータをstorageに保存する
-        // diskの指定を特にしなければ、例の場合。`storage/app/images/`に画像が保存される
-        $path = $request->photo->storeAs('public/images', $filename);
+        $imagesArray = $request->file('images');
+    
+        $pathArray = [];
+
+        foreach ($imagesArray as $value) {
+            // \Log::info('$value: ', $value);
+            $pathArray[] = explode('/', $value->store('public/images/work'))[3];
+        }
+        
+        \Log::info('$pathArray: ', $pathArray);
+
 
         // データ保存 (例: DBに保存)
         w_works::create([
@@ -35,7 +41,7 @@ class WorkPostingController extends Controller
             'obsession' => $Obsession,
             'programming_language' => $Language,
             'development_environment' => $Environment,
-            'thumbnail' => $images
+            'thumbnail' => implode(',', $pathArray)
         ]);
 
 

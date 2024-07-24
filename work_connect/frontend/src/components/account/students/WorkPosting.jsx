@@ -54,6 +54,12 @@ const WorkPosting = () => {
   const [message, setMessage] = useState('');
   const [imagesName, setImagesName] = useState('');
 
+  const [Image, setImage] = useState();
+
+  const coleSetImage = (e) => {
+    setImage(e);
+  }
+
   useEffect(() => {
     console.log("workData", workData);
   }, [workData])
@@ -68,20 +74,14 @@ const WorkPosting = () => {
     console.log(images);
     setImagesName(images.map(item => item.name).join(', '));
     console.log(imagesName);
-    images.forEach(image => {
-      console.log(`File name: ${image.name}, URL: ${image.image}`);
-    });
-    console.log("bbbb");
-
-    // Canvasのデータをblob化
-    const type = 'image/png';
-    const dataurl = this.canvas.toDataURL(type); // this.canvasは用途に合わせて書き換え
-    const bin = atob(dataurl.split(',')[1]);
-    const buffer = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; i++) {
-      buffer[i] = bin.charCodeAt(i);
-    }
-    setImageFiles(Blob([buffer.buffer], { type: type }));
+    // images.forEach(image => {
+    //   console.log(`File name: ${image.name}, URL: ${image.image}`);
+    // });
+    // console.log("bbbb");
+    
+    setImageFiles(images);
+    console.log(imageFiles);
+    
   };
 
   const WorkSubmit = async (e) => {
@@ -89,12 +89,23 @@ const WorkPosting = () => {
     console.log("e", e.target);
 
     const formData = new FormData();
-    console.log(imageFiles);
-    formData.append('photo', imageFiles, 'image.png');
+    console.log("Image: ", Image);
+    // imageFiles.forEach((file) => {
+    //   formData.append(`images[]`, file);
+    //   console.log(file);
+    // });
+
+    // formDataに画像データを1個追加
+    // Imageに入っているデータの形がfileListのため、mapやforEachでループできない
+    for (let i = 0; i < Image.length; i++) {
+      formData.append("images[]", Image[i]);
+    }
+
     for (const key in workData) {
       formData.append(key, workData[key]);
     }
-    formData.append("imagesName", imagesName);
+    formData.append("imagesName", imagesName);  
+    console.log("...formData.entries(): ", ...formData.entries());
     try {
       const response = await axios.post('http://localhost:8000/work_posting', formData, {
         headers: {
@@ -121,7 +132,7 @@ const WorkPosting = () => {
                 <YoutubeURL callSetWorkData={callSetWorkData} />
               </div>
               <div className="WorkPostingFormField">
-                <ImageUpload onImagesUploaded={handleImageChange} />
+                <ImageUpload onImagesUploaded={handleImageChange} coleSetImage={coleSetImage}/>
               </div>
             </div>
             <div className="Information">

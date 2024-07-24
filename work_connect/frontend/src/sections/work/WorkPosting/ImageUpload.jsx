@@ -81,7 +81,7 @@ SortableItem.propTypes = {
   onDelete: PropTypes.func.isRequired,
 };
 
-const ImageUpload = ({ onImagesUploaded }) => {
+const ImageUpload = ({ onImagesUploaded, coleSetImage }) => {
   const [items, setItems] = useState([]);
   const fileInputRef = useRef(null);
 
@@ -97,6 +97,7 @@ const ImageUpload = ({ onImagesUploaded }) => {
   }, [items]);
 
   const handleImageUpload = (event) => {
+    coleSetImage(event.target.files);
     const files = Array.from(event.target.files);
     const newItems = files.map((file, index) => ({
       id: `${file.name}-${index}-${Date.now()}`,
@@ -174,7 +175,7 @@ const ImageUpload = ({ onImagesUploaded }) => {
       <p>画像</p>
       <input
         type="file"
-        // multiple
+        multiple
         onChange={handleImageUpload}
         ref={fileInputRef}
         style={inputStyle}
@@ -215,6 +216,7 @@ const ImageUpload = ({ onImagesUploaded }) => {
 
 ImageUpload.propTypes = {
   onImagesUploaded: PropTypes.func.isRequired,
+  coleSetImage: PropTypes.func.isRequired,
 };
 
 export default ImageUpload;

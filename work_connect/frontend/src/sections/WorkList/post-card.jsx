@@ -1,9 +1,8 @@
+import { forwardRef } from "react";
 import { Link } from "react-router-dom";
-import "src/App.css";
 import PropTypes from "prop-types";
 
 import Box from "@mui/material/Box";
-
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
@@ -11,22 +10,18 @@ import { alpha } from "@mui/material/styles";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 
+import "src/App.css";
+
 import { fDate } from "src/utils/format-time";
 import { fShortenNumber } from "src/utils/format-number";
-
 import Iconify from "src/components/iconify";
 import SvgColor from "src/components/svg-color";
 
 // ----------------------------------------------------------------------
 
-export default function PostCard({ post, index }) {
-  const { id, cover, title, genre, intro, thumbnail, view, comment, author, userName, createdAt } = post;
+const PostCard = forwardRef(({ post }, ref) => {
+  const { work_id, genre, cover, title, intro, thumbnail, view, comment, author, userName, createdAt } = post;
 
-  const latestPostLarge = index === 0;
-
-  const latestPost = index === 1 || index === 2;
-
-  // アイコン
   const renderAvatar = (
     <Avatar
       alt={author.name}
@@ -43,12 +38,15 @@ export default function PostCard({ post, index }) {
     />
   );
 
+  // ジャンル
+  const renderGenre = genre !== null ? <Typography>{genre}</Typography> : null;
+
   const renderTitle = (
     <Link
-      to={`/WorkDetail/${id}`}
+      to={`/WorkDetail/${work_id}`}
       color="inherit"
       variant="subtitle2"
-      underline="none" // デフォルトで下線を消す
+      underline="none"
       className="link"
       style={{
         height: 30,
@@ -59,33 +57,24 @@ export default function PostCard({ post, index }) {
     </Link>
   );
 
-  // ジャンル
-  const renderGenre = genre !== null ? <Typography>{genre}</Typography> : null;
-
-  // サムネイル
   const renderThumbnail = (
     <Box
       component="img"
-      // alt=""
       src={thumbnail}
       sx={{
-        // top: ,
         width: 1,
         height: 200,
         objectFit: "cover",
-        // position: "absolute",
       }}
     />
   );
 
-  /* 投稿日 */
   const renderDate = (
     <Typography
       variant="caption"
       component="div"
       sx={{
         mb: 2,
-
         opacity: 0.48,
         color: "common.white",
       }}
@@ -94,15 +83,12 @@ export default function PostCard({ post, index }) {
     </Typography>
   );
 
-  /*  ユーザー名 */
   const renderUserName = (
     <Typography
-      // キャプションは通常、小さいサイズで補足情報や注釈などを表示するために使われます。
       variant="caption"
       component="div"
       sx={{
         mb: 2,
-
         opacity: 0.48,
         color: "common.white",
       }}
@@ -111,7 +97,6 @@ export default function PostCard({ post, index }) {
     </Typography>
   );
 
-  /* 表示：ユーザー名、コメント数、閲覧数、投稿日 */
   const renderInfo = (
     <Stack
       direction="row"
@@ -123,7 +108,6 @@ export default function PostCard({ post, index }) {
         color: "text.disabled",
       }}
     >
-      {/* 学生名前 */}
       {renderUserName}
       {[
         { number: comment, icon: "eva:message-circle-fill" },
@@ -137,15 +121,10 @@ export default function PostCard({ post, index }) {
             color: "common.white",
           }}
         >
-          {/* コメント数 */}
           <Iconify width={16} icon={info.icon} sx={{ mr: 0.5 }} />
-
-          {/* 閲覧数 */}
           <Typography variant="caption">{fShortenNumber(info.number)}</Typography>
         </Stack>
       ))}
-
-      {/* 投稿日 */}
       {renderDate}
     </Stack>
   );
@@ -165,7 +144,6 @@ export default function PostCard({ post, index }) {
     />
   );
 
-  // アイコンのCSSを変更してる。
   const renderShape = (
     <SvgColor
       color="paper"
@@ -182,10 +160,8 @@ export default function PostCard({ post, index }) {
     />
   );
 
-  // 動画紹介文
   const renderIntro = (
     <Typography
-      //  variant="caption"、キャプションは通常、小さいサイズで補足情報や注釈などを表示するために使われます。
       variant="caption"
       component="div"
       sx={{
@@ -199,52 +175,54 @@ export default function PostCard({ post, index }) {
   );
 
   return (
-    <Grid xs={12} sm={latestPostLarge ? 12 : 6} md={latestPostLarge ? 6 : 3}>
-      <Card>
-        <Box
-          sx={{
-            position: "relative",
-            "&:after": {
-              top: 0,
-              content: "''",
-              width: "100%",
-              height: "100%",
-              position: "absolute",
-              bgcolor: (theme) => alpha(theme.palette.grey[900], 0.72),
-            },
-            pt: {
-              xs: "calc(100% * 4 / 3)",
-              sm: "calc(100% * 3 / 4.66)",
-            },
-          }}
-        >
-          {renderShape}
-          {renderAvatar}
-          {renderCover}
-        </Box>
-
-        <Box
-          sx={{
-            p: (theme) => theme.spacing(4, 3, 3, 3),
-            ...((latestPostLarge || latestPost) && {
+    <Grid xs={12} sm={6} md={4}>
+      <div ref={ref}>
+        <Card>
+          <Box
+            sx={{
+              position: "relative",
+              "&:after": {
+                top: 0,
+                content: "''",
+                width: "100%",
+                height: "100%",
+                position: "absolute",
+                bgcolor: (theme) => alpha(theme.palette.grey[900], 0.72),
+              },
+              pt: {
+                sm: "calc(100% * 3 / 4.66)",
+              },
+            }}
+          >
+            {renderShape}
+            {renderAvatar}
+            {renderCover}
+          </Box>
+          <Box
+            sx={{
+              p: (theme) => theme.spacing(4, 3, 3, 3),
               width: 1,
               bottom: 0,
               position: "absolute",
-            }),
-          }}
-        >
-          {renderThumbnail}
-          {renderGenre}
-          {renderTitle}
-          {renderIntro}
-          {renderInfo}
-        </Box>
-      </Card>
+            }}
+          >
+            {renderThumbnail}
+            {renderGenre}
+            {renderTitle}
+            {renderIntro}
+            {renderInfo}
+          </Box>
+        </Card>
+      </div>
     </Grid>
   );
-}
+});
+
+// `displayName` の追加
+PostCard.displayName = "PostCard";
 
 PostCard.propTypes = {
   post: PropTypes.object.isRequired,
-  index: PropTypes.number,
 };
+
+export default PostCard;

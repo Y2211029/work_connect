@@ -33,6 +33,7 @@ class GetWorkDetailController extends Controller
 
             \Log::info('GetWorkDetailController:$workList[0]:');
             \Log::info(json_decode(json_encode($workList[0]), true));
+            
             $workImageSrc = "";
             foreach ($workImageList as $key => $imageList) {
                 $workImageSrc = asset("/storage/images/work/" . "$imageList->image");

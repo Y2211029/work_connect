@@ -40,7 +40,7 @@ const WorkPosting = () => {
   //   // setFormErrors({}); // エラーメッセージをリセット
   // };
 
-  const [workData,setWorkData] = useState({
+  const [workData, setWorkData] = useState({
     YoutubeURL: "",
     WorkTitle: "",
     WorkGenre: "",
@@ -61,7 +61,7 @@ const WorkPosting = () => {
   }
 
   useEffect(() => {
-    console.log("workData",workData);
+    console.log("workData", workData);
   }, [workData])
 
   const callSetWorkData = (key, value) => {
@@ -86,7 +86,7 @@ const WorkPosting = () => {
 
   const WorkSubmit = async (e) => {
     e.preventDefault();
-    console.log("e" ,e.target);
+    console.log("e", e.target);
 
     const formData = new FormData();
     console.log("Image: ", Image);

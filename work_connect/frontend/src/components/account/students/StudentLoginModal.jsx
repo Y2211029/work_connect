@@ -280,7 +280,10 @@ const StudentLoginModal = (props) => {
   );
 };
 StudentLoginModal.propTypes = {
-  FromCompanyPage: PropTypes.bool.isRequired,
+  // --------2024 07 24 13:51 藤田がコメントアウト--------
+  // FromCompanyPage: PropTypes.bool.isRequired,
+  // --------2024 07 24 13:51 藤田がコメントアウト--------
+  FromCompanyPage: PropTypes.bool,
   callSetModalChange: PropTypes.func.isRequired,
 };
 

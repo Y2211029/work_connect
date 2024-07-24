@@ -63,7 +63,7 @@ class SearchWorkController extends Controller
 
             $resultsArray = json_decode(json_encode($results), true);
 
-            \Log::info('GetWorkListController:$resultsArray:');
+            \Log::info('SearchWorkController:$resultsArray:');
             \Log::info($resultsArray);
 
             if (count($resultsArray) == 0) {
@@ -72,7 +72,7 @@ class SearchWorkController extends Controller
                 return json_encode($resultsArray);
             }
         } catch (\Exception $e) {
-            \Log::info('GetWorkListController:user_name重複チェックエラー');
+            \Log::info('SearchWorkController:user_name重複チェックエラー');
             \Log::info($e);
             /*reactに返す*/
             return json_encode($e);

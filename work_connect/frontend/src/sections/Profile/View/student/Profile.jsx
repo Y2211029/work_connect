@@ -1,8 +1,12 @@
 import * as React from 'react';
+import { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
+
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+
 
 import ProfileMypage from './Mypage';
 import ProfileWorks from './Works';
@@ -43,9 +47,27 @@ LinkTab.propTypes = {
 };
 
 export default function NavTabs() {
-  const [value, setValue] = React.useState(0);
+
+  // タブ状態のチェック
+  const { getSessionData, updateSessionData } = useSessionStorage();
+
+  /* セッションストレージからaccountDataを取得し、ProfileTabStateを初期値として設定
+     ProfileTabStateがない場合は0をセットする */
+  const getInitialProfileTabState = () => {
+    const accountData = getSessionData("accountData");
+    return accountData.ProfileTabState ? accountData.ProfileTabState : 0;
+  };
+  
+  const [ProfileTabState, setProfileTabState] = useState(getInitialProfileTabState);
+  const [value, setValue] = React.useState(getInitialProfileTabState);
+
+  // ProfileTabStateが変化したとき
+  useEffect(() => {
+    updateSessionData("accountData", "ProfileTabState", ProfileTabState);
+  }, [ProfileTabState]);
 
   const handleChange = (event, newValue) => {
+
     // event.type can be equal to focus with selectionFollowsFocus.
     if (
       event.type !== 'click' ||
@@ -53,6 +75,17 @@ export default function NavTabs() {
     ) {
       setValue(newValue);
     }
+    if(newValue === 0){
+      // マイページが押されたとき
+      setProfileTabState(0);
+    } else if(newValue === 1){
+      // 作品が押されたとき
+      setProfileTabState(1);
+    } else if(newValue === 2){
+      // 動画が押されたとき
+      setProfileTabState(2);
+    }
+
   };
 
   return (

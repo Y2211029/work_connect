@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class WorkPostingController extends Controller
 {
-    public function WorkPostingController(Request $request)
+    public function store(Request $request)
     {
 
         $WorkTitle = $request->input('WorkTitle');
@@ -19,18 +19,12 @@ class WorkPostingController extends Controller
         $Obsession = $request->input('Obsession');
         $Language = $request->input('Language');
         $Environment = $request->input('Environment');
-        $images = $request->validate(['images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048']); // 画像のバリデーション
-
-        $imagePaths = [];
-        if ($request->hasFile('images')) {
-            \Log::info(json_encode("aaaaa"));
-            foreach ($request->file('images') as $image) {
-                $imagePath = $image->WorkPostingController('images', 'public');
-                $imagePaths[] = $imagePath;
-            }
-        }
-
-        \Log::info(json_encode($imagePaths));
+        $images = $request->input('imagesName'); // 画像のバリデーション
+        \Log::info(json_decode(json_encode($request->input('images'))));
+        $filename = $request->photo->name;
+        // blobデータをstorageに保存する
+        // diskの指定を特にしなければ、例の場合。`storage/app/images/`に画像が保存される
+        $path = $request->photo->storeAs('public/images', $filename);
 
         // データ保存 (例: DBに保存)
         w_works::create([
@@ -41,10 +35,9 @@ class WorkPostingController extends Controller
             'obsession' => $Obsession,
             'programming_language' => $Language,
             'development_environment' => $Environment,
-            'thumbnail' => json_encode($imagePaths)
+            'thumbnail' => $images
         ]);
 
-        \Log::info(json_encode("aaaaa"));
 
         return response()->json(['message' => 'Work data saved successfully'], 200);
     }

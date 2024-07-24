@@ -1,7 +1,15 @@
-// ;
+import { useContext } from "react";
+import ChatIcon from "@mui/icons-material/Chat";
 
-import ChatIcon from '@mui/icons-material/Chat';
+import { MyContext } from "src/layouts/dashboard/index";
+const ChatPng = () => {
+  const Display = useContext(MyContext);
 
-const ChatPng = () => <ChatIcon />;
+  return (
+    <>
+      <ChatIcon color="action" style={{ display: Display }} />
+    </>
+  );
+};
 
 export default ChatPng;

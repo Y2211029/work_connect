@@ -12,11 +12,11 @@ import LoginStatusCheck from "src/components/account/loginStatusCheck/loginStatu
 import "src/App.css";
 
 import TextField from "@mui/material/TextField";
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import Button from "@mui/material/Button";
 // ログインのモーダル CSS設定
 const modalStyle = {
   content: {
@@ -205,7 +205,12 @@ const StudentLoginModal = (props) => {
 
     return errors;
   };
-  
+
+  // 開発環境のみ使用
+  const fillDemoCredentials = () => {
+    setFormValues({ user_name: "yoshioka", password: "2023gakusei" });
+  };
+
   return (
     <div>
       {/* 条件付きレンダリングを使用 */}
@@ -216,51 +221,54 @@ const StudentLoginModal = (props) => {
             <hr />
             <div className="loginUiForm">
               <TextField
-              fullWidth
-              label="ユーザー名またはメールアドレス"
-              margin="normal"
-              name="user_name"
-              onChange={handleChange}
-              required
-              type= "text"
-              value={formValues.user_name}
-              variant="outlined"
-            />
+                fullWidth
+                label="ユーザー名またはメールアドレス"
+                margin="normal"
+                name="user_name"
+                onChange={handleChange}
+                required
+                type="text"
+                value={formValues.user_name}
+                variant="outlined"
+              />
               <TextField
-              fullWidth
-              label="パスワード"
-              margin="normal"
-              name="password"
-              onChange={handleChange}
-              required
-              type={showPassword ? "text" : "password"}
-              value={formValues.password}
-              variant="outlined"
-              // パスワード表示/非表示の切り替え
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                      sx={{
-                        
-                      }}
-                      variant="outlined"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
+                fullWidth
+                label="パスワード"
+                margin="normal"
+                name="password"
+                onChange={handleChange}
+                required
+                type={showPassword ? "text" : "password"}
+                value={formValues.password}
+                variant="outlined"
+                // パスワード表示/非表示の切り替え
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                        sx={{}}
+                        variant="outlined"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <Button type="button" onClick={fillDemoCredentials} className="submitButton">
+                ユーザーネーム:yoshioka パスワード:2023gakusei
+              </Button>
               <button type="submit" className="submitButton">
                 ログイン
               </button>
               {Object.keys(formErrors).length === 0 && isSubmit && handleCloseModal}
-              <button onClick={handleCloseModal} className="submitButton">閉じる</button>
+              <button onClick={handleCloseModal} className="submitButton">
+                閉じる
+              </button>
               <div href="" onClick={handleOpenCompanyModal} id="loginCompanyModalLink">
                 企業の方はこちら
               </div>

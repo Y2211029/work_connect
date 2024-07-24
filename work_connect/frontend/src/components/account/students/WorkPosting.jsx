@@ -40,7 +40,7 @@ const WorkPosting = () => {
   //   // setFormErrors({}); // エラーメッセージをリセット
   // };
 
-  const [workData,setWorkData] = useState({
+  const [workData, setWorkData] = useState({
     YoutubeURL: "",
     WorkTitle: "",
     WorkGenre: "",
@@ -52,9 +52,10 @@ const WorkPosting = () => {
 
   const [imageFiles, setImageFiles] = useState([]);
   const [message, setMessage] = useState('');
+  const [imagesName, setImagesName] = useState('');
 
   useEffect(() => {
-    console.log("workData",workData);
+    console.log("workData", workData);
   }, [workData])
 
   const callSetWorkData = (key, value) => {
@@ -63,25 +64,37 @@ const WorkPosting = () => {
     })
   }
 
-  const handleImageChange = (e) => {
-    setImageFiles(e.target.files);
+  const handleImageChange = (images) => {
+    console.log(images);
+    setImagesName(images.map(item => item.name).join(', '));
+    console.log(imagesName);
+    images.forEach(image => {
+      console.log(`File name: ${image.name}, URL: ${image.image}`);
+    });
     console.log("bbbb");
+
+    // Canvasのデータをblob化
+    const type = 'image/png';
+    const dataurl = this.canvas.toDataURL(type); // this.canvasは用途に合わせて書き換え
+    const bin = atob(dataurl.split(',')[1]);
+    const buffer = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) {
+      buffer[i] = bin.charCodeAt(i);
+    }
+    setImageFiles(Blob([buffer.buffer], { type: type }));
   };
 
   const WorkSubmit = async (e) => {
     e.preventDefault();
-    console.log("e" ,e.target);
+    console.log("e", e.target);
 
     const formData = new FormData();
     console.log(imageFiles);
-    Array.from(imageFiles).forEach((file, index) => {
-      formData.append(`images[${index}]`, file);
-      console.log("aaaa");
-    });
+    formData.append('photo', imageFiles, 'image.png');
     for (const key in workData) {
       formData.append(key, workData[key]);
     }
-
+    formData.append("imagesName", imagesName);
     try {
       const response = await axios.post('http://localhost:8000/work_posting', formData, {
         headers: {
@@ -108,7 +121,7 @@ const WorkPosting = () => {
                 <YoutubeURL callSetWorkData={callSetWorkData} />
               </div>
               <div className="WorkPostingFormField">
-                <ImageUpload onChange={handleImageChange} />
+                <ImageUpload onImagesUploaded={handleImageChange} />
               </div>
             </div>
             <div className="Information">

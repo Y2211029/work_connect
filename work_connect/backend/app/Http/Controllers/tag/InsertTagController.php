@@ -8,7 +8,6 @@ use App\Models\w_tags;
 
 class InsertTagController extends Controller
 {
-    //
     public function InsertTagController(Request $request)
     {
         $name = $request->input("name");

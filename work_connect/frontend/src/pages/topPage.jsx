@@ -8,7 +8,7 @@ export default function TopPage() {
   return (
     <>
       <Helmet>
-        <title> 動画一覧 | Work&Connect </title>
+        <title> トップページ | Work&Connect </title>
       </Helmet>
 
       <TopPageListView />

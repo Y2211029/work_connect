@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import WorkListItem from "src/_mock/workListItem";
 
 import PostCard from "src/sections/WorkList/post-card";
+import PostSort from "src/sections/WorkList/post-sort";
 
 import LoginStatusCheck from "../../../components/account/loginStatusCheck/loginStatusCheck";
 
@@ -13,7 +14,7 @@ import LoginStatusCheck from "../../../components/account/loginStatusCheck/login
 // ----------------------------------------------------------------------
 
 export default function WorkOfListView() {
-  const {loginStatusCheckFunction} = LoginStatusCheck();
+  const { loginStatusCheckFunction } = LoginStatusCheck();
   loginStatusCheckFunction();
 
   const postsFromWork = WorkListItem();
@@ -29,14 +30,19 @@ export default function WorkOfListView() {
         {/* <PostSearch posts={posts} /> */}
 
         {/* 変なエラー出るんで一旦コメントアウトしてます。 */}
-        {/* <PostSort
-    options={[
-      // （仮）
-      { value: "投稿日が新しい順", label: "投稿日が新しい順" },
-      { value: "投稿日が古い順", label: "投稿日が古い順" },
-      { value: "おすすめ順", label: "おすすめ順" },
-    ]}
-  /> */}
+        <PostSort
+          // style={{ dispaly: "flex", justifyContent: "flex-end" }}
+          // options={[
+          //   { value: "投稿日が新しい順", label: "投稿日が新しい順" },
+          //   { value: "投稿日が古い順", label: "投稿日が古い順" },
+          //   { value: "おすすめ順", label: "おすすめ順" },
+          // ]}
+          options={[
+            { value: "orderNewPostsDate", label: "投稿日が新しい順" },
+            { value: "orderOldPostsDate", label: "投稿日が古い順" },
+            // { value: "oldest", label: "Oldest" },
+          ]}
+        />
       </Stack>
 
       <Grid container spacing={3}>

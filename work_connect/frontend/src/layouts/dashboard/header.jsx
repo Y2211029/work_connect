@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import PropTypes from "prop-types";
 import $ from "jquery";
 
@@ -8,13 +8,14 @@ import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
 import { useTheme } from "@mui/material/styles";
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import Button from "@mui/material/Button";
 
 import StudentLoginModal from "src/components/account/students/StudentLoginModal";
 import CompanyLoginModal from "src/components/account/company/CompanyLoginModal";
 
-import SignUp from "src/components/account/students/SignUp";
-import SignUp1 from "src/components/account/students/SignUp1";
+// import SignUp from "src/components/account/students/SignUp";
+// import SignUp1 from "src/components/account/students/SignUp1";
 import { useResponsive } from "src/hooks/use-responsive";
 
 import { bgBlur } from "src/theme/css";
@@ -30,6 +31,9 @@ import NotificationsPopover from "./common/notifications-popover";
 
 import { useNavigate } from "react-router-dom";
 
+// ゲストモード時、作品投稿・動画投稿・通知
+import { MyContext } from "src/layouts/dashboard/index";
+
 import StudentPreSignModal from "../../components/account/students/StudentPreSignModal";
 import CompanyPreSignModal from "../../components/account/company/CompanyPreSignModal";
 
@@ -38,6 +42,7 @@ import CompanyPreSignModal from "../../components/account/company/CompanyPreSign
 export default function Header({ onOpenNav }) {
   const [ModalChange, setModalChange] = useState("");
   const [PreModalChange, setPreModalChange] = useState("");
+  const Display = useContext(MyContext);
 
   const theme = useTheme();
   const lgUp = useResponsive("up", "lg");
@@ -50,7 +55,6 @@ export default function Header({ onOpenNav }) {
     // setShowModal(true);
     navigation("VideoPosting");
   };
-
 
   const callSetModalChange = (newValue) => {
     setModalChange(newValue);
@@ -71,12 +75,8 @@ export default function Header({ onOpenNav }) {
 
   //クリックすると一番上まで戻るボタン
   const handleScrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
-
-
-
 
   // ログインのform内以外をクリックしたときにモーダルを閉じる処理
   $("*").click(function (e) {
@@ -113,7 +113,7 @@ export default function Header({ onOpenNav }) {
   const renderContent = (
     <>
       {!lgUp && (
-        <IconButton onClick={onOpenNav} sx={{ mr: 1 }}>
+        <IconButton onClick={onOpenNav} sx={{ mr: 1, display: Display }}>
           {/* ハンバーガーメニュー */}
           <Iconify icon="eva:menu-2-fill" />
         </IconButton>
@@ -126,17 +126,21 @@ export default function Header({ onOpenNav }) {
 
       {/* ログイン、新規登録、本登録、チャット、通知、アカウントプロフィール */}
       <Stack direction="row" alignItems="center" spacing={1}>
-        <button onClick={handleOpenModal}>作品投稿</button>
-        <button onClick={handleOpenModal2}>動画投稿</button>
-        <SignUp1 />
+        <button onClick={handleOpenModal} style={{ display: Display }}>
+          作品投稿
+        </button>
+        <button onClick={handleOpenModal2} style={{ display: Display }}>
+          動画投稿
+        </button>
+        {/* <SignUp1 /> */}
 
-        <button id="LoginButton" onClick={handleChange}>
+        <Button id="LoginButton" onClick={handleChange} style={{ display: Display === "" ? "none" : "block" }}>
           ログイン
-        </button>
+        </Button>
 
-        <button id="PreSignButton" onClick={handleChange}>
+        <Button id="PreSignButton" onClick={handleChange} style={{ display: Display === "" ? "none" : "block" }}>
           新規登録
-        </button>
+        </Button>
 
         {ModalChange === "学生" ? (
           <StudentLoginModal callSetModalChange={callSetModalChange} />
@@ -150,7 +154,7 @@ export default function Header({ onOpenNav }) {
           <CompanyPreSignModal callSetPreModalChange={callSetPreModalChange} />
         ) : null}
 
-        <SignUp />
+        {/* <SignUp /> */}
         <ChatPng />
         <NotificationsPopover />
         <AccountPopover />
@@ -188,18 +192,18 @@ export default function Header({ onOpenNav }) {
         <ArrowUpwardIcon
           onClick={handleScrollToTop}
           style={{
-            cursor: 'pointer',
-            width: '50px',
-            height: '50px',
-            position: 'fixed',
-            top: '800px',
-            right: '20px',
-            color: 'black',
-            borderRadius: '50%',
-            boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)'
+            cursor: "pointer",
+            width: "50px",
+            height: "50px",
+            position: "fixed",
+            top: "800px",
+            right: "20px",
+            color: "black",
+            borderRadius: "50%",
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
           }}
         />
-        </AppBar>
+      </AppBar>
     </>
   );
 }

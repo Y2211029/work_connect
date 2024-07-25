@@ -29,11 +29,6 @@ use App\Http\Controllers\tag\InsertTagController;
 use App\Http\Controllers\tag\GetGenreTagController;
 use App\Http\Controllers\tag\GetLanguageTagController;
 use App\Http\Controllers\tag\GetEnvironmentTagController;
-<<<<<<< HEAD
-use App\Http\Controllers\work\WorkPostingController;
-use App\Http\Controllers\movie\VideoPostingController;
-=======
->>>>>>> 790e43915be5d0443aa681d91d964e6c25ef7c4e
 use App\Http\Controllers\tag\GetVideoGenreTagController;
 use App\Http\Controllers\tag\GetStudentProgrammingLanguageTagController;
 use App\Http\Controllers\tag\GetStudentDevelopmentEnvironmentTagController;

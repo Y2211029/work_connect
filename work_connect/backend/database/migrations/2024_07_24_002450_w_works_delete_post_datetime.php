@@ -11,12 +11,23 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('w_works', function (BluePrint $table) {
-            $table->dropColumn('post_datetime');
-            // id カラムが存在する場合は削除する
-            $table->dropColumn('id');
-            // 主キーに設定するカラムを指定
-            $table->primary('work_id');
+            if (Schema::hasColumn('w_works', 'post_datetime')) {
+                $table->dropColumn('post_datetime');
+            }
+            if (Schema::hasColumn('w_works', 'id')) {
+                $table->dropColumn('id');
+            }
+            if (Schema::hasColumn('w_works', 'work_id')) {
+                $table->dropColumn('work_id');
+            }
+            // else {
 
+            // }
+        });
+
+        Schema::table('w_works', function (BluePrint $table) {
+            // 主キーに設定するカラムを指定
+            $table->id('work_id');
         });
 
     }

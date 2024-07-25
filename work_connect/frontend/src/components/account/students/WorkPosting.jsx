@@ -125,7 +125,6 @@ const WorkPosting = () => {
       <div className="WorkPostingFormContainer">
         <form onSubmit={WorkSubmit} method="post" id="youtubeForm">
           <h3>作品投稿</h3>
-          <hr />
           <div className="WorkPostingUiForm">
             <div className="ImageUpload">
               <div className="WorkPostingFormField">

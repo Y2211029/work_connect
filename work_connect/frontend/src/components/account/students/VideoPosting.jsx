@@ -2,7 +2,7 @@ import YoutubeURL from "../../../sections/work/WorkPosting/YoutubeURL";
 import VideoTitle from "../../../sections/work/WorkPosting/WorkTitle";
 import VideoGenre from "../../../sections/video/VideoGenre";
 import Introduction from "../../../sections/work/WorkPosting/Introduction";
-import Youtube from "react-youtube";
+import YouTube from "react-youtube";
 // import Modal from "react-modal";
 // import { useState } from "react";
 // import { useNavigate } from "react-router-dom";
@@ -63,23 +63,44 @@ const VideoPosting = () => {
   const handleChange = (event) => {
     const url = event.target.value;
     setVideoUrl(url);
-    callSetWorkData("YoutubeURL", url);
 
     // YouTubeの動画IDを抽出
-    const urlPattern =
-      /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^&]+)|youtu\.be\/([^?&]+)/;
-    const match = url.match(urlPattern);
-    if (match) {
-      const id = match[1] || match[2];
-      setVideoId(id);
-    } else {
-      setVideoId("");
+    // iframe入力時
+    if (url.includes("iframe")) {
+      const srcMatch = url.match(
+        /src="https:\/\/www\.youtube\.com\/embed\/([^"]+)?/
+      );
+      const srcMatch2 = srcMatch[1].match(/([^?]+)?/);
+
+      if (srcMatch && srcMatch2[1]) {
+        setVideoId(srcMatch2[1]);
+        console.log("videoId :", videoId);
+        callSetWorkData("YoutubeURL", videoId);
+      }
+    }
+    // URL入力時
+    else if (url.includes("youtube.com/watch?v=")) {
+      const urlObj = new URL(url);
+      const params = new URLSearchParams(urlObj.search);
+      setVideoId(params.get("v"));
+      callSetWorkData("YoutubeURL", videoId);
+    }
+    // 短縮URL入力時
+    else if (url.includes("youtu.be/")) {
+      const urlObj = new URL(url);
+      setVideoId(urlObj.pathname.substring(1));
+      callSetWorkData("YoutubeURL", videoId);
+    }
+    // 動画ID入力時
+    else {
+      setVideoId(url);
+      callSetWorkData("YoutubeURL", videoId);
     }
   };
 
   const opts = {
-    height: "390",
-    width: "640",
+    height: "283",
+    width: "450",
     playerVars: {
       autoplay: 1,
     },
@@ -117,13 +138,12 @@ const VideoPosting = () => {
       <div className="WorkPostingFormContainer">
         <form onSubmit={WorkSubmit} method="post" id="youtubeForm">
           <h3>動画投稿</h3>
-          <hr />
           <div className="WorkPostingUiForm">
             <div className="ImageUpload">
               <div className="WorkPostingFormField">
                 <YoutubeURL onChange={handleChange} value={videoUrl} />
-                 <YouTube videoId={videoId} opts={opts} />
               </div>
+              {videoId ? <YouTube videoId={videoId} opts={opts} /> : <p>Please enter a valid YouTube URL, ID, or iframe code</p>}
             </div>
             <div className="Information">
               <div className="WorkPostingFormField">

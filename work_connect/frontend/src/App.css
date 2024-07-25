@@ -304,13 +304,13 @@ h1 {
 }
 
 .WorkPostingFormContainer form {
-  background-color: white;
+  /* background-color: white; */
   width: 100%;
   /* max-width: 600px; */
   padding: 30px;
   border-radius: 50px;
   float: left;
-  border: 1px solid #dfdfdf;
+  /* border: 1px solid #dfdfdf; */
   font-weight: 700;
 }
 

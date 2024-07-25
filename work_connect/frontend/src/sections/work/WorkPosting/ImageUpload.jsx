@@ -32,6 +32,7 @@ const SortableItem = ({ id, image, onDelete }) => {
     width: '100%',
     height: '100%',
     objectFit: 'cover',
+    zindex: 100000,
     aspectRatio: '16 / 9',
   };
 

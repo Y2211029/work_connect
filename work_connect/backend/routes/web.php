@@ -29,18 +29,14 @@ use App\Http\Controllers\tag\InsertTagController;
 use App\Http\Controllers\tag\GetGenreTagController;
 use App\Http\Controllers\tag\GetLanguageTagController;
 use App\Http\Controllers\tag\GetEnvironmentTagController;
-<<<<<<< HEAD
 use App\Http\Controllers\work\WorkPostingController;
 use App\Http\Controllers\movie\VideoPostingController;
-=======
->>>>>>> 790e43915be5d0443aa681d91d964e6c25ef7c4e
 use App\Http\Controllers\tag\GetVideoGenreTagController;
 use App\Http\Controllers\tag\GetStudentProgrammingLanguageTagController;
 use App\Http\Controllers\tag\GetStudentDevelopmentEnvironmentTagController;
 use App\Http\Controllers\tag\GetSoftwareTagController;
 use App\Http\Controllers\tag\GetAcquisitionQualificationTagController;
 use App\Http\Controllers\tag\GetHobbyTagController;
-use App\Http\Controllers\work\WorkPostingController;
 use App\Http\Controllers\search\SearchWorkController;
 use App\Http\Controllers\search\SearchVideoController;
 use App\Http\Controllers\profile\GetMypageController;
@@ -71,11 +67,11 @@ Route::get('/search_video', [SearchVideoController::class, 'SearchVideoControlle
 // タグ作成
 Route::post('/insert_tag', [InsertTagController::class, 'InsertTagController']);
 // 作品ジャンルタグ取得
-Route::get('/get_genre_tag', [GetGenreTagController::class, 'GetGenreTagController']);
+Route::get('/get_work_genre_tag', [GetGenreTagController::class, 'GetGenreTagController']);
 // 作品のプログラミング言語タグ取得
-Route::get('/get_language_tag', [GetLanguageTagController::class, 'GetLanguageTagController']);
+Route::get('/get_work_language_tag', [GetLanguageTagController::class, 'GetLanguageTagController']);
 // 作品の開発環境タグ取得
-Route::get('/get_environment_tag', [GetEnvironmentTagController::class, 'GetEnvironmentTagController']);
+Route::get('/get_work_environment_tag', [GetEnvironmentTagController::class, 'GetEnvironmentTagController']);
 // 動画ジャンルタグ取得
 Route::post('/video_posting', [VideoPostingController::class, 'VideoPostingController']);
 // 動画ジャンルタグ取得

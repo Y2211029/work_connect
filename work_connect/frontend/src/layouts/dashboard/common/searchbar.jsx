@@ -85,6 +85,7 @@ export default function Searchbar() {
     other: [],
     graduation_year: [],
     desired_occupation: [],
+    selected_occupation: [],
   });
 
   const [options, setOptions] = useState({
@@ -107,6 +108,7 @@ export default function Searchbar() {
     other: [],
     graduation_year: [],
     desired_occupation: [],
+    selected_occupation: [],
   });
 
   const { GetTagListFunction } = GetTagList();
@@ -160,6 +162,11 @@ export default function Searchbar() {
 
       // 趣味のタグ一覧を取得
       getTag("hobby", "hobby");
+
+    } else if (PathName == "/CompanyList") { // 学生一覧の場合
+      // プログラミング言語のタグ一覧を取得
+      getTag("selected_occupation", "selected_occupation");
+
     }
   },[PathName])
   
@@ -204,7 +211,7 @@ export default function Searchbar() {
 
         // WorkListItem.jsxにデータを渡す
         setDataList(response.data);
-      } else if (PathName == "/VideoList") {
+      } else if (PathName == "/VideoList") { // 動画一覧の場合
         const url = "http://localhost:8000/search_video";
 
         let video_genre = [];
@@ -222,6 +229,64 @@ export default function Searchbar() {
         console.log("response.data", response.data);
 
         // VideoListItem.jsxにデータを渡す
+        setDataList(response.data);
+      } else if (PathName == "/StudentList") { // 学生一覧の場合
+        const url = "http://localhost:8000/search_student";
+
+        let student_programming_language = [];
+        let student_development_environment = [];
+        let software = [];
+        let acquisition_qualification = [];
+        let hobby = [];
+
+        searchSource.student_programming_language.map((value) => {
+          student_programming_language.push(value.value);
+        });
+        searchSource.student_development_environment.map((value) => {
+          student_development_environment.push(value.value);
+        });
+        searchSource.software.map((value) => {
+          software.push(value.value);
+        });
+        searchSource.acquisition_qualification.map((value) => {
+          acquisition_qualification.push(value.value);
+        });
+        searchSource.hobby.map((value) => {
+          hobby.push(value.value);
+        });
+
+        const response = await axios.get(url, {
+          params: {
+            searchText: searchSource.searchText,
+            student_programming_language: student_programming_language,
+            student_development_environment: student_development_environment,
+            software: software,
+            acquisition_qualification: acquisition_qualification,
+            hobby: hobby,
+          },
+        });
+        console.log("response.data", response.data);
+
+        // StudentListItem.jsxにデータを渡す
+        setDataList(response.data);
+      } else if (PathName == "/CompanyList") { // 学生一覧の場合
+        const url = "http://localhost:8000/search_company";
+
+        let selected_occupation = [];
+
+        searchSource.selected_occupation.map((value) => {
+          selected_occupation.push(value.value);
+        });
+
+        const response = await axios.get(url, {
+          params: {
+            searchText: searchSource.searchText,
+            selected_occupation: selected_occupation,
+          },
+        });
+        console.log("response.data", response.data);
+
+        // StudentListItem.jsxにデータを渡す
         setDataList(response.data);
       }
     } catch (err) {
@@ -303,6 +368,11 @@ export default function Searchbar() {
   // 趣味のタグを操作したとき
   const handleChangeHobby = (selectedOption) => {
     tagAction("hobby", selectedOption);
+  };
+
+  // 企業の勤務地のタグを操作したとき
+  const handleChangeSelectedOccupation = (selectedOption) => {
+    tagAction("selected_occupation", selectedOption);
   };
 
   useEffect(() => {
@@ -406,6 +476,14 @@ export default function Searchbar() {
                 <div style={{fontWeight: "Bold", color: "#666"}}>趣味</div>
                 <div style={{color: "#444"}}>
                   <CreatableSelect options={options.hobby} value={searchSource.hobby} isClearable isMulti onChange={handleChangeHobby}/>
+                </div>
+              </div>
+              </> : PathName === "/CompanyList" ?
+              <>
+              <div style={{display: "", marginTop: "20px", marginBottom: "10px"}}>
+                <div style={{fontWeight: "Bold", color: "#666"}}>職種</div>
+                <div style={{color: "#444"}}>
+                  <CreatableSelect options={options.selected_occupation} value={searchSource.selected_occupation} isClearable isMulti onChange={handleChangeSelectedOccupation}/>
                 </div>
               </div>
               </> : ""

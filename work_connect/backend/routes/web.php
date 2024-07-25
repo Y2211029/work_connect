@@ -29,20 +29,19 @@ use App\Http\Controllers\tag\InsertTagController;
 use App\Http\Controllers\tag\GetGenreTagController;
 use App\Http\Controllers\tag\GetLanguageTagController;
 use App\Http\Controllers\tag\GetEnvironmentTagController;
-<<<<<<< HEAD
-use App\Http\Controllers\work\WorkPostingController;
 use App\Http\Controllers\movie\VideoPostingController;
-=======
->>>>>>> 790e43915be5d0443aa681d91d964e6c25ef7c4e
 use App\Http\Controllers\tag\GetVideoGenreTagController;
 use App\Http\Controllers\tag\GetStudentProgrammingLanguageTagController;
 use App\Http\Controllers\tag\GetStudentDevelopmentEnvironmentTagController;
 use App\Http\Controllers\tag\GetSoftwareTagController;
 use App\Http\Controllers\tag\GetAcquisitionQualificationTagController;
 use App\Http\Controllers\tag\GetHobbyTagController;
+use App\Http\Controllers\tag\GetSelectedOccupationTagController;
 use App\Http\Controllers\work\WorkPostingController;
 use App\Http\Controllers\search\SearchWorkController;
 use App\Http\Controllers\search\SearchVideoController;
+use App\Http\Controllers\search\SearchStudentController;
+use App\Http\Controllers\search\SearchCompanyController;
 use App\Http\Controllers\profile\GetMypageController;
 use App\Http\Controllers\profile\PostMypageController;
 
@@ -66,6 +65,10 @@ Route::post('/post_profile_mypage', [PostMypageController::class, 'PostMypageCon
 Route::get('/search_work', [SearchWorkController::class, 'SearchWorkController']);
 // 動画検索
 Route::get('/search_video', [SearchVideoController::class, 'SearchVideoController']);
+// 学生検索
+Route::get('/search_student', [SearchStudentController::class, 'SearchStudentController']);
+// 企業検索
+Route::get('/search_company', [SearchCompanyController::class, 'SearchCompanyController']);
 
 /* タグ関係 */
 // タグ作成
@@ -90,6 +93,8 @@ Route::get('/get_software_tag', [GetSoftwareTagController::class, 'GetSoftwareTa
 Route::get('/get_acquisition_qualification_tag', [GetAcquisitionQualificationTagController::class, 'GetAcquisitionQualificationTagController']);
 // 趣味タグ取得
 Route::get('/get_hobby_tag', [GetHobbyTagController::class, 'GetHobbyTagController']);
+// 趣味タグ取得
+Route::get('/get_selected_occupation_tag', [GetSelectedOccupationTagController::class, 'GetSelectedOccupationTagController']);
 
 
 // 作品投稿

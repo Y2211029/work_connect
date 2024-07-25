@@ -10,7 +10,7 @@ use App\Models\w_tags;
 class GetGenreTagController extends Controller
 {
     public function GetGenreTagController(Request $request){
-        $genre_tag = w_tags::where("item_id",11)->get();
-        return json_encode($genre_tag);
+        $tag = w_tags::where("item_id",11)->get();
+        return json_encode($tag);
     }
 }

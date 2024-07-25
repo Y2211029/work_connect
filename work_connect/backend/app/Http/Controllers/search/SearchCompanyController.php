@@ -3,39 +3,36 @@
 namespace App\Http\Controllers\search;
 
 use App\Http\Controllers\Controller;
+use App\Models\w_company;
 use Illuminate\Http\Request;
-use App\Models\w_movies;
 
-class SearchVideoController extends Controller
+class SearchCompanyController extends Controller
 {
-    /* 動画の検索処理 */
-    public function SearchVideoController(Request $request)
+    /* 企業の検索処理 */
+    public function SearchCompanyController(Request $request)
     {
         try {
             // 検索文字列を取得
             $searchText = $request->input('searchText', "");
             
-            // 絞り込まれた動画ジャンルを配列で取得
-            $video_genre_array = $request->input('video_genre', []);
+            // 絞り込まれた職種を配列で取得
+            $selected_occupation_array = $request->input('selected_occupation', []);
 
-            \Log::info('GetVideoListController:$video_genre_array:');
-            \Log::info($video_genre_array);
+            \Log::info('SearchCompanyController:$selected_occupation_array:');
+            \Log::info($selected_occupation_array);
 
-            $query = w_movies::query();
+            $query = w_company::query();
 
             $query->select(
-                'w_users.*',
-                'w_movies.*',
+                'w_companies.*',
             );
 
-            // 動画ジャンルで絞り込み
-            if (isset($video_genre_array)) {
-                foreach ($video_genre_array as $video_genre) {
-                    $query->where('w_movies.genre', 'REGEXP', '(^|,)' . preg_quote($video_genre) . '($|,)');
+            // 職種で絞り込み
+            if (isset($selected_occupation_array)) {
+                foreach ($selected_occupation_array as $selected_occupation) {
+                    $query->where('w_companies.selected_occupation', 'REGEXP', '(^|,)' . preg_quote($selected_occupation) . '($|,)');
                 }
             }
-
-            $query->join('w_users', 'w_movies.creator_id', '=', 'w_users.id');
 
             $results = $query->get();
 

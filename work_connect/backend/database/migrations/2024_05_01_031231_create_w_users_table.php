@@ -49,7 +49,7 @@ return new class extends Migration
 
         \DB::table('w_users')->insert(
             [
-                'id' => 'C_000000000001',
+                'id' => 'S_000000000001',
                 'student_surname' => '吉岡',
                 'student_name' => '佑馬',
                 'student_kanasurname' => 'ヨシオカ',
@@ -63,7 +63,7 @@ return new class extends Migration
         );
         \DB::table('w_users')->insert(
             [
-                'id' => 'C_000000000002',
+                'id' => 'S_000000000002',
                 'student_surname' => '坂東',
                 'student_name' => '航希',
                 'student_kanasurname' => 'バンドウ',

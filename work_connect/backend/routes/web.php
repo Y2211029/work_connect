@@ -30,22 +30,14 @@ use App\Http\Controllers\tag\GetGenreTagController;
 use App\Http\Controllers\tag\GetLanguageTagController;
 use App\Http\Controllers\tag\GetEnvironmentTagController;
 use App\Http\Controllers\movie\VideoPostingController;
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 32f7c307f5f2a6b95d73f34631d802d59735a96f
->>>>>>> 4b27bfb5bd44ea59f532decbdf6ee74deb2b6d6a
 use App\Http\Controllers\tag\GetVideoGenreTagController;
 use App\Http\Controllers\tag\GetStudentProgrammingLanguageTagController;
 use App\Http\Controllers\tag\GetStudentDevelopmentEnvironmentTagController;
 use App\Http\Controllers\tag\GetSoftwareTagController;
 use App\Http\Controllers\tag\GetAcquisitionQualificationTagController;
 use App\Http\Controllers\tag\GetHobbyTagController;
-<<<<<<< HEAD
 use App\Http\Controllers\tag\GetSelectedOccupationTagController;
 use App\Http\Controllers\work\WorkPostingController;
-=======
->>>>>>> 4b27bfb5bd44ea59f532decbdf6ee74deb2b6d6a
 use App\Http\Controllers\search\SearchWorkController;
 use App\Http\Controllers\search\SearchVideoController;
 use App\Http\Controllers\search\SearchStudentController;

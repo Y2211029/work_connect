@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
@@ -11,24 +11,11 @@ import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
 
 import { account } from "src/_mock/account";
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 // ----------------------------------------------------------------------
 
-const MENU_OPTIONS = [
-  // {
-  //   label: 'Home',
-  //   icon: 'eva:home-fill',
-  // },
-  {
-    label: "プロフィール",
-    path: "/Profile",
-    icon: "eva:person-fill",
-  },
-  {
-    label: "設定",
-    icon: "eva:settings-2-fill",
-  },
-];
+
 
 // ----------------------------------------------------------------------
 
@@ -63,19 +50,44 @@ export default function AccountPopover() {
     }
   };
 
-  // セッションデータを取得
-  const sessionData = sessionStorage.getItem("accountData");
-  let user_name = "";
-  let mail = "";
-  let login_state = false;
-  if (sessionData) {
-    const accountData = JSON.parse(sessionData);
-    user_name = accountData.user_name;
-    mail = accountData.mail;
-    if (user_name && mail) {
-      login_state = true;
-    }
-  }
+   // セッションストレージ取得
+   const { getSessionData } = useSessionStorage();
+   const accountData = getSessionData("accountData");
+ 
+   const [UserName, setUserName] = useState("");
+   const [Mail, setMail] = useState("");
+   const [login_state, setLoginState] = useState(false);
+ 
+   useEffect(() => {
+    
+     if (accountData) {
+      
+       setUserName(accountData.user_name);
+       setMail(accountData.mail);
+       if (UserName && Mail) {
+         setLoginState(true);
+         
+       }
+     }
+   }, [accountData]);
+ 
+   // MENU_OPTIONSの設定
+   const MENU_OPTIONS = [
+    // {
+    //   label: 'Home',
+    //   icon: 'eva:home-fill',
+    // },
+    {
+      label: "プロフィール",
+      path: `/Profile/${UserName}`,
+      icon: "eva:person-fill",
+    },
+    {
+      label: "設定",
+      icon: "eva:settings-2-fill",
+    },
+  ];
+  
 
   return (
     <>
@@ -121,11 +133,11 @@ export default function AccountPopover() {
         <Box sx={{ my: 1.5, px: 2 }}>
           <Typography variant="subtitle2" noWrap>
             {/* セッションストレージからユーザーネームを取得、なければデフォルト */}
-            {user_name != "" && login_state == true ? user_name : account.displayName}
+            {UserName !== "" && login_state ? UserName : account.displayName}
           </Typography>
           <Typography variant="body2" sx={{ color: "text.secondary" }} noWrap>
             {/* セッションストレージからメールアドレスを取得、なければデフォルト */}
-            {mail != "" && login_state == true ? mail : ""}
+            {Mail != "" && login_state ? Mail : ""}
           </Typography>
         </Box>
 

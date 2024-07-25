@@ -11,9 +11,9 @@ class GetMypageController extends Controller
     public function GetMypageController(Request $request)
     {
         try {
-            // ProfileIdを取得 
-            $profileId = $request->input('ProfileId');
-            $userList = w_users::where('id', $profileId)->get();
+            // ProfileUserNameを取得 
+            $profileId = $request->input('ProfileUserName');
+            $userList = w_users::where('user_name', $profileId)->get();
             //$userListArray = json_decode(json_encode($userList), true);
             \Log::info($userList);
 

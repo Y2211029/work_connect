@@ -82,7 +82,8 @@ export default function Router() {
         { path: "VideoPosting", element: <VideoPosting /> },
 
         //プロフィール
-        { path: "Profile", element: <ProfilePage /> },
+        // Profile/の後ろにユーザーネームを指定
+        { path: "Profile/:user_name", element: <ProfilePage /> },
       ],
     },
     {

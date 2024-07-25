@@ -16,16 +16,10 @@ class userNameCheckController extends Controller
 
 
         try {
-            if($kind == "s"){
-                $userNameExists = w_users::where('user_name', $user_name)->exists();
-            } else if($kind == "c") {
-                $userNameExists = w_company::where('user_name', $user_name)->exists();
-            } else {
-                \Log::info("error");
-            }
-            
-
-            if(!$userNameExists) {
+            $userNameExists = w_users::where('user_name', $user_name)->exists();
+            $userNameExists2 = w_company::where('user_name', $user_name)->exists();
+           
+            if(!$userNameExists && !$userNameExists2) {
                 echo json_encode("重複なし");
             } else {
                 echo json_encode("重複あり");

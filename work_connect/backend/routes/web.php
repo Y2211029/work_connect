@@ -30,14 +30,22 @@ use App\Http\Controllers\tag\GetGenreTagController;
 use App\Http\Controllers\tag\GetLanguageTagController;
 use App\Http\Controllers\tag\GetEnvironmentTagController;
 use App\Http\Controllers\movie\VideoPostingController;
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 32f7c307f5f2a6b95d73f34631d802d59735a96f
+>>>>>>> 4b27bfb5bd44ea59f532decbdf6ee74deb2b6d6a
 use App\Http\Controllers\tag\GetVideoGenreTagController;
 use App\Http\Controllers\tag\GetStudentProgrammingLanguageTagController;
 use App\Http\Controllers\tag\GetStudentDevelopmentEnvironmentTagController;
 use App\Http\Controllers\tag\GetSoftwareTagController;
 use App\Http\Controllers\tag\GetAcquisitionQualificationTagController;
 use App\Http\Controllers\tag\GetHobbyTagController;
+<<<<<<< HEAD
 use App\Http\Controllers\tag\GetSelectedOccupationTagController;
 use App\Http\Controllers\work\WorkPostingController;
+=======
+>>>>>>> 4b27bfb5bd44ea59f532decbdf6ee74deb2b6d6a
 use App\Http\Controllers\search\SearchWorkController;
 use App\Http\Controllers\search\SearchVideoController;
 use App\Http\Controllers\search\SearchStudentController;
@@ -74,11 +82,11 @@ Route::get('/search_company', [SearchCompanyController::class, 'SearchCompanyCon
 // タグ作成
 Route::post('/insert_tag', [InsertTagController::class, 'InsertTagController']);
 // 作品ジャンルタグ取得
-Route::get('/get_genre_tag', [GetGenreTagController::class, 'GetGenreTagController']);
+Route::get('/get_work_genre_tag', [GetGenreTagController::class, 'GetGenreTagController']);
 // 作品のプログラミング言語タグ取得
-Route::get('/get_language_tag', [GetLanguageTagController::class, 'GetLanguageTagController']);
+Route::get('/get_work_language_tag', [GetLanguageTagController::class, 'GetLanguageTagController']);
 // 作品の開発環境タグ取得
-Route::get('/get_environment_tag', [GetEnvironmentTagController::class, 'GetEnvironmentTagController']);
+Route::get('/get_work_environment_tag', [GetEnvironmentTagController::class, 'GetEnvironmentTagController']);
 // 動画ジャンルタグ取得
 Route::post('/video_posting', [VideoPostingController::class, 'VideoPostingController']);
 // 動画ジャンルタグ取得

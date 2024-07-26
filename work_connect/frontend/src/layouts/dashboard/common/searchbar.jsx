@@ -117,6 +117,7 @@ export default function Searchbar() {
     let optionArray = [];
     let optionArrayPromise = GetTagListFunction(urlIn);
     optionArrayPromise.then(result => {
+      console.log("result: ", result);
       result.map((value) => {
         optionArray.push({value:value.name,label:value.name});
       });
@@ -134,14 +135,15 @@ export default function Searchbar() {
     // タグ一覧取得
     
     if (PathName == "/") { // 作品一覧の場合
+      console.log("aaaaaaaaaaaaaaaaaaaaaaaa");
       // 作品ジャンルのタグ一覧を取得
-      getTag("genre", "work_genre");
+      getTag("work_genre", "work_genre");
     
       // プログラミング言語のタグ一覧を取得
-      getTag("language", "programming_language");
+      getTag("work_language", "programming_language");
       
       // 開発環境のタグ一覧を取得
-      getTag("environment", "development_environment");
+      getTag("work_environment", "development_environment");
 
     } else if (PathName == "/VideoList") { // 動画一覧の場合
       // 動画ジャンルのタグ一覧を取得

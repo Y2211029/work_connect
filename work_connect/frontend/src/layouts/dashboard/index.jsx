@@ -15,7 +15,10 @@ export const DataListContext = createContext();
 export default function DashboardLayout({ children }) {
   const [openNav, setOpenNav] = useState(false);
 
-  // ユーザーが開いているページがTopだった時、headerコンポーネントに一部表示しない
+  /**
+   * ユーザーが開いているページが"localhost5174/Top"だった時
+   * headerに表示されている不必要なボタンなどを表示しない
+   */
   const HomePage = location.pathname === "/Top" ? "none" : "";
 
   const [DataList, setDataList] = useState([]);

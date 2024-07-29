@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import YoutubeURL from "../../../sections/work/WorkPosting/YoutubeURL";
 import VideoTitle from "../../../sections/work/WorkPosting/WorkTitle";
 import VideoGenre from "../../../sections/video/VideoGenre";
@@ -7,16 +6,6 @@ import YouTube from "react-youtube";
 // import Modal from "react-modal";
 // import { useState } from "react";
 // import { useNavigate } from "react-router-dom";
-=======
-// import YoutubeURL from "../../../sections/work/WorkPosting/YoutubeURL";
-// import VideoTitle from "../../../sections/work/WorkPosting/WorkTitle";
-// import VideoGenre from "../../../sections/video/VideoGenre";
-// import Introduction from "../../../sections/work/WorkPosting/Introduction";
-// import Youtube from "react-youtube";
-// // import Modal from "react-modal";
-// // import { useState } from "react";
-// // import { useNavigate } from "react-router-dom";
->>>>>>> 32f7c307f5f2a6b95d73f34631d802d59735a96f
 
 // import "../../../App.css";
 // import { useEffect, useState } from "react";
@@ -166,7 +155,6 @@ import YouTube from "react-youtube";
 //   );
 // };
 
-<<<<<<< HEAD
 const VideoPosting = () => {
   // const [showModal, setShowModal] = useState(false);
   // let navigation = useNavigate();
@@ -320,6 +308,3 @@ const VideoPosting = () => {
 };
 
 export default VideoPosting;
-=======
-// export default VideoPosting;
->>>>>>> 32f7c307f5f2a6b95d73f34631d802d59735a96f

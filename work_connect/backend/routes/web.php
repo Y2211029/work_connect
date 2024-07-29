@@ -44,6 +44,7 @@ use App\Http\Controllers\search\SearchStudentController;
 use App\Http\Controllers\search\SearchCompanyController;
 use App\Http\Controllers\profile\GetMypageController;
 use App\Http\Controllers\profile\PostMypageController;
+use App\Http\Controllers\profile\GetMypageKindController;
 
 
 // トップ画面
@@ -59,6 +60,8 @@ Route::get('/', function () {
 Route::get('/get_profile_mypage', [GetMypageController::class, 'GetMypageController']);
 // プロフィールのマイページ(post)
 Route::post('/post_profile_mypage', [PostMypageController::class, 'PostMypageController']);
+// プロフィールのマイページルーティング設定(get)
+Route::get('/get_profile_mypage_kind', [GetMypageKindController::class, 'GetMypageKindController']);
 
 /* 検索 */
 // 作品検索

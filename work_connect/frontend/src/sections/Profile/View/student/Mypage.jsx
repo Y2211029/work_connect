@@ -65,15 +65,15 @@ const ProfileMypage = () => {
   const [ResponseData, setResponseData] = useState([]);
 
   // セッションストレージ取得
-  const { getSessionData, updateSessionData } = useSessionStorage();
+  const { getSessionData } = useSessionStorage();
 
-  // セッションストレージからaccountDataを取得し、MypageEditStateを初期値として設定
-  // マイページ編集時なら"1",マイページ時なら"0"
-  const getInitialMypageEditState = () => {
-    const accountData = getSessionData("accountData");
-    return accountData.MypageEditState ? accountData.MypageEditState : 0;
-  };
-  const [MypageEditState, setMypageEditState] = useState(getInitialMypageEditState);
+  // // セッションストレージからaccountDataを取得し、MypageEditStateを初期値として設定
+  // // マイページ編集時なら"1",マイページ時なら"0"
+  // const getInitialMypageEditState = () => {
+  //   const accountData = getSessionData("accountData");
+  //   return accountData.MypageEditState ? accountData.MypageEditState : 0;
+  // };
+  // const [MypageEditState, setMypageEditState] = useState(getInitialMypageEditState);
 
   // セッションストレージからaccountDataを取得し、idを初期値として設定(ログイン中のIDを取得)
   const getUserId = () => {
@@ -82,20 +82,20 @@ const ProfileMypage = () => {
   };
   const MyUserId = useState(getUserId);
     
-  // MypageEditStateが変化したとき
-  useEffect(() => {
-    if (Profile.current) {
-      if (MypageEditState === 0) {
-        Profile.current.style.display = '';
-      } else if (MypageEditState === 1) {
-        // 編集画面をオープン
-        childRef.current?.openEdit();
-        // プロフィール画面を閉じる
-        Profile.current.style.display = 'none';
-      }
-    }
-    updateSessionData("accountData", "MypageEditState", MypageEditState);
-  }, [MypageEditState]);
+  // // MypageEditStateが変化したとき
+  // useEffect(() => {
+  //   if (Profile.current) {
+  //     if (MypageEditState === 0) {
+  //       Profile.current.style.display = '';
+  //     } else if (MypageEditState === 1) {
+  //       // 編集画面をオープン
+  //       childRef.current?.openEdit();
+  //       // プロフィール画面を閉じる
+  //       Profile.current.style.display = 'none';
+  //     }
+  //   }
+  //   updateSessionData("accountData", "MypageEditState", MypageEditState);
+  // }, [MypageEditState]);
 
   // ProfileUserNameが変化したとき
   useEffect(() => {
@@ -134,7 +134,7 @@ const ProfileMypage = () => {
       childRef.current?.openEdit();
       // プロフィール画面を閉じる
       Profile.current.style.display = 'none';
-      setMypageEditState(1);
+      //setMypageEditState(1);
      
   };
   

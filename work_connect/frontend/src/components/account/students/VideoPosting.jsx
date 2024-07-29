@@ -4,12 +4,11 @@ import VideoGenre from "../../../sections/video/VideoGenre";
 import Introduction from "../../../sections/work/WorkPosting/Introduction";
 import YouTube from "react-youtube";
 // import Modal from "react-modal";
-// import { useState } from "react";
 // import { useNavigate } from "react-router-dom";
 
-// import "../../../App.css";
-// import { useEffect, useState } from "react";
-// import axios from "axios";
+import "../../../App.css";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 // // ログインのモーダル CSS設定
 // // const modalStyle = {
@@ -199,9 +198,7 @@ const VideoPosting = () => {
     // YouTubeの動画IDを抽出
     // iframe入力時
     if (url.includes("iframe")) {
-      const srcMatch = url.match(
-        /src="https:\/\/www\.youtube\.com\/embed\/([^"]+)?/
-      );
+      const srcMatch = url.match(/src="https:\/\/www\.youtube\.com\/embed\/([^"]+)?/);
       const srcMatch2 = srcMatch[1].match(/([^?]+)?/);
 
       if (srcMatch && srcMatch2[1]) {
@@ -247,15 +244,11 @@ const VideoPosting = () => {
       formData.append(key, workData[key]);
     }
     try {
-      const response = await axios.post(
-        "http://localhost:8000/video_posting",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axios.post("http://localhost:8000/video_posting", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       console.log(formData);
       console.log(response.data.message);
     } catch (error) {

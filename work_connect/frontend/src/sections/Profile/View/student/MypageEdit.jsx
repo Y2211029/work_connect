@@ -1,7 +1,7 @@
 //import * as React from 'react';
 import { useEffect, useState, useRef, forwardRef,useImperativeHandle } from "react";
 import PropTypes from "prop-types";
-import { useSessionStorage } from "src/hooks/use-sessionStorage";
+//import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 // muiインポート
 import Box from '@mui/material/Box';
@@ -79,34 +79,35 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
 
 
   // 編集状態のチェック
-  const { getSessionData, updateSessionData } = useSessionStorage();
+  //const { updateSessionData } = useSessionStorage();
 
-  // セッションストレージからaccountDataを取得し、MypageEditStateを初期値として設定
-  const getInitialMypageEditState = () => {
-    const accountData = getSessionData("accountData");
-    return accountData.MypageEditState ? accountData.MypageEditState : 0;
-  };
+  // // セッションストレージからaccountDataを取得し、MypageEditStateを初期値として設定
+  // const getInitialMypageEditState = () => {
+  //   const accountData = getSessionData("accountData");
+  //   return accountData.MypageEditState ? accountData.MypageEditState : 0;
+  // };
 
-  const [MypageEditState] = useState(getInitialMypageEditState);
+  //const [MypageEditState] = useState(getInitialMypageEditState);
   
   // MypageEditStateが変化したとき
-  useEffect(() => {
-    //const sessionData = getSessionData("accountData");
-    if (Edit.current) {
-      if (MypageEditState === 0) {
-        Edit.current.style.display = 'none';
-      } else if (MypageEditState === 1) {
-        Edit.current.style.display = '';
-      }
-    }
-    updateSessionData("accountData", "MypageEditState", MypageEditState);
-  }, [MypageEditState]);
+  // useEffect(() => {
+  //   //const sessionData = getSessionData("accountData");
+  //   if (Edit.current) {
+  //     if (MypageEditState === 0) {
+  //       Edit.current.style.display = 'none';
+  //     } else if (MypageEditState === 1) {
+  //       Edit.current.style.display = '';
+  //     }
+  //   }
+  //   updateSessionData("accountData", "MypageEditState", MypageEditState);
+  // }, [MypageEditState]);
 
   // デフォルトで非表示にする項目
   useEffect(() => {
     detail.current.forEach(ref => {
       if (ref) ref.style.display = 'none';
     });
+    Edit.current.style.display = 'none';
   }, []);
 
   // 戻るボタンを押したときの処理
@@ -114,7 +115,7 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
       // マイページ編集画面のとき
       console.log("click!");
       //MypageEditStateを0に更新
-      updateSessionData("accountData", "MypageEditState", 0);
+      //updateSessionData("accountData", "MypageEditState", 0);
       // リロード
       window.location.reload();
   };

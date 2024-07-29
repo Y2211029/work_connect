@@ -57,11 +57,12 @@ export default function Searchbar() {
   const location = useLocation();
 
   const [PathName, setPathName] = useState("");
+  const [SearchCheck, setSearchCheck] = useState(false);
 
   // Topページであれば検索ボタンを非表示にする。
   const Display = useContext(MyContext);
 
-  const { Page } = useContext(PageContext);
+  const { Page, setPage } = useContext(PageContext);
 
   // 検索結果を反映させるためのContext
   const { setDataList } = useContext(DataListContext);
@@ -190,7 +191,7 @@ export default function Searchbar() {
         // 作品一覧の場合
         // const url = `http://localhost:8000/search_work`;
         const url = `http://localhost:8000/search_work?page=${Page}`;
-        console.log("searchbar : Page = ", Page)
+        console.log("searchbar : Page = ", Page);
         let work_genre = [];
         let programming_language = [];
         let development_environment = [];
@@ -213,7 +214,7 @@ export default function Searchbar() {
             development_environment: development_environment,
           },
         });
-        console.log("response.data", response.data);
+        console.log("search.response.data", response.data);
 
         // WorkListItem.jsxにデータを渡す
         setDataList(response.data);
@@ -302,16 +303,32 @@ export default function Searchbar() {
       console.log("err:", err);
     }
   }
+  useEffect(() => {
+    console.log("akaakakakakaa");
+    if (SearchCheck) {
+      if (Page !== 1) {
+        searchSourceList();
+      }
+    }
+  }, [Page]);
 
   // 検索バーを閉じる
   const handleClose = () => {
     setOpen(false);
   };
 
+  const isAllEmpty = (obj) => Object.values(obj).every((value) => value.length === 0);
+
   // 検索ボタンを押したとき
   const handleSearch = () => {
-    searchSourceList();
+    setSearchCheck(!isAllEmpty(searchSource));
+    console.log("searchSource", !isAllEmpty(searchSource));
+    setDataList([]);
+    if (!isAllEmpty(searchSource)) {
+      searchSourceList();
+    }
     setOpen(false);
+    setPage(1);
   };
 
   // 検索欄に入力したとき
@@ -506,13 +523,7 @@ export default function Searchbar() {
                   <div style={{ display: "", marginTop: "20px", marginBottom: "10px" }}>
                     <div style={{ fontWeight: "Bold", color: "#666" }}>ソフトウェア</div>
                     <div style={{ color: "#444" }}>
-                      <CreatableSelect
-                        options={options.software}
-                        value={searchSource.software}
-                        isClearable
-                        isMulti
-                        onChange={handleChangeSoftware}
-                      />
+                      <CreatableSelect options={options.software} value={searchSource.software} isClearable isMulti onChange={handleChangeSoftware} />
                     </div>
                   </div>
                   <div style={{ display: "", marginTop: "20px", marginBottom: "10px" }}>
@@ -530,13 +541,7 @@ export default function Searchbar() {
                   <div style={{ display: "", marginTop: "20px", marginBottom: "10px" }}>
                     <div style={{ fontWeight: "Bold", color: "#666" }}>趣味</div>
                     <div style={{ color: "#444" }}>
-                      <CreatableSelect
-                        options={options.hobby}
-                        value={searchSource.hobby}
-                        isClearable
-                        isMulti
-                        onChange={handleChangeHobby}
-                      />
+                      <CreatableSelect options={options.hobby} value={searchSource.hobby} isClearable isMulti onChange={handleChangeHobby} />
                     </div>
                   </div>
                 </>

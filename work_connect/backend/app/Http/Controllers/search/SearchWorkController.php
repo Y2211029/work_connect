@@ -13,7 +13,7 @@ class SearchWorkController extends Controller
     {
         try {
             $page = (int) $request->query('page', 1);
-            $perPage = 20; //一ページ当たりのアイテム数
+            $perPage = 10; //一ページ当たりのアイテム数
 
             // すでに取得したデータをスキップするためのオフセット計算
             $offset = ($page - 1) * $perPage;

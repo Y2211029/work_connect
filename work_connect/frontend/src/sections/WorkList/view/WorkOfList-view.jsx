@@ -35,6 +35,7 @@ const createTagElements = (genreString) => {
 
 const generatePosts = (WorkOfList) => {
   return WorkOfList.map((_, key) => ({
+    work_number: key,
     work_id: WorkOfList[key].work_id,
     cover: `/assets/images/covers/cover_${key + 1}.jpg`,
     thumbnail: `/assets/workImages/thumbnail/cover_${key + 1}.jpg`,
@@ -42,10 +43,7 @@ const generatePosts = (WorkOfList) => {
     genre: WorkOfList[key].work_genre,
     // substring(0, 200) 第一引数：文字列の開始位置。第二引数：開始位置から何文字目を取得する。
     // introの文字数が200文字以上の時、「...」を表示する。
-    intro:
-      WorkOfList[key].work_intro.length > 200
-        ? WorkOfList[key].work_intro.substring(0, 200) + "..."
-        : WorkOfList[key].work_intro,
+    intro: WorkOfList[key].work_intro.length > 200 ? WorkOfList[key].work_intro.substring(0, 200) + "..." : WorkOfList[key].work_intro,
     author: {
       avatarUrl: `/assets/images/avatars/avatar_${WorkOfList[key].icon}.jpg`,
     },
@@ -105,18 +103,25 @@ export default function WorkOfListView() {
   // レスポンス情報を常に持っておくことで、毎回API通信がされるのを防ぐhooks
 
   // 何も検索されていない、素の状態。
+  console.log("WorkOfList-view.jsx", DataList);
   const url = DataList.length === 0 ? `http://localhost:8000/get_work_list?page=${Page}` : null;
-
   const { data, error } = useSWR(url, fetcher);
 
   useEffect(() => {
     console.log("WorkOfList-view.jsx", DataList);
-
     if (DataList.length === 0) {
+      if (searchInitiated) {
+        setWorkOfList([]); // 初回のみリセット
+        setSearchInitiated(false);
+        console.log("リセットしました。");
+      }
+
       if (data) {
+        //
+        console.log("data通りました。");
         const uniqueRepoIds = new Set(WorkOfList.map((WorkOfList) => WorkOfList.work_id));
         const uniqueRepos = data.filter((item) => !uniqueRepoIds.has(item.work_id));
-        console.log("WorkOfList-view.jsx:data", data);
+        // console.log("WorkOfList-view.jsx:uniqueRepos", uniqueRepos);
 
         uniqueRepos.forEach((element) => {
           if (typeof element.work_genre === "string" && element.work_genre !== null) {
@@ -145,23 +150,26 @@ export default function WorkOfListView() {
 
   // 検索されたら実行
   useEffect(() => {
-    if (DataList.length !== 0) {
+    if (DataList.length !== 0 && typeof DataList !== "string") {
       if (!searchInitiated) {
         setWorkOfList([]); // 初回のみリセット
         setSearchInitiated(true);
         console.log("リセットしました。");
       }
       // デバッグ用ログ
-      console.log("WorkOfList before uniqueRepoIds:", WorkOfList);
-      console.log("DataList:", DataList);
+      // console.log("WorkOfList before uniqueRepoIds:", WorkOfList);
+      // console.log("DataList:", DataList);
 
-      const uniqueRepoIds = new Set(WorkOfList.map((WorkOfList) => WorkOfList.work_id));
-      const uniqueRepos = DataList.filter((item) => !uniqueRepoIds.has(item.work_id));
+      // const uniqueRepoIds = new Set(WorkOfList.map((WorkOfList) => WorkOfList.work_id));
+      // console.log("uniqueRepoIdsとuniqueReposの間");
+      // const uniqueRepos = DataList.filter((item) => uniqueRepoIds.has(item.work_id));
 
-      console.log("uniqueRepoIds", uniqueRepoIds);
-      console.log("uniqueRepos", uniqueRepos);
+      // console.log("uniqueRepoIds", uniqueRepoIds);
+      // console.log("uniqueRepos", uniqueRepos);
 
-      uniqueRepos.forEach((element) => {
+      console.log("DataList.length", DataList.length);
+
+      DataList.forEach((element) => {
         if (typeof element.work_genre === "string" && element.work_genre !== null) {
           element.work_genre = createTagElements(element.work_genre, element.work_genre);
         }
@@ -183,10 +191,22 @@ export default function WorkOfListView() {
       }
       // }
     }
+    
+    if(DataList === "検索結果0件") {
+      console.log("setIsLoadItemColorLing",isLoadItemColorLing);
+      setIsLoadItemColorLing(false);
+    }
   }, [data, error, DataList]);
 
   // 検索結果0件の場合、WorkOfListに"検索結果0件"が入ってるのでそのまま表示する。
   const workItems = WorkOfList !== "検索結果0件" ? generatePosts(WorkOfList) : WorkOfList;
+  const currentTime = new Intl.DateTimeFormat("ja-JP", {
+    dateStyle: "medium",
+    timeStyle: "medium",
+    timeZone: "Asia/Tokyo",
+  }).format(new Date());
+
+  console.log("currentTime", currentTime);
 
   return (
     // Container 真ん中にコンテンツを寄せて表示したいときに使う
@@ -222,12 +242,7 @@ export default function WorkOfListView() {
           {workItems !== "検索結果0件"
             ? workItems.map((post, index) => (
                 // WorkOfList内にあるデータの一番最後の時に、useRefでスクロールした際に反応させる。
-                <PostCard
-                  ref={index === WorkOfList.length - 1 ? ref : null}
-                  key={`${post.work_id}-${post.userName}`}
-                  post={post}
-                  index={index}
-                />
+                <PostCard ref={index === WorkOfList.length - 1 ? ref : null} key={`${post.work_id}-${currentTime}`} post={post} index={index} />
               ))
             : workItems}
           {/* ローディング */}

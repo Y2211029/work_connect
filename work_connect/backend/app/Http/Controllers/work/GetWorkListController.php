@@ -12,7 +12,7 @@ class GetWorkListController extends Controller
     {
         try {
             $page = (int) $request->query('page', 1);
-            $perPage = 50; //一ページ当たりのアイテム数
+            $perPage = 20; //一ページ当たりのアイテム数
 
 
             // すでに取得したデータをスキップするためのオフセット計算

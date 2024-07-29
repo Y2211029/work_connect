@@ -1,6 +1,8 @@
 import { createContext, useState } from "react";
 import PropTypes from "prop-types";
+
 export const MyContext = createContext();
+export const PageContext = createContext();
 
 import Box from "@mui/material/Box";
 
@@ -21,9 +23,17 @@ export default function DashboardLayout({ children }) {
    */
   const HomePage = location.pathname === "/Top" ? "none" : "";
 
+  const [Page, setPage] = useState(1);
   const [DataList, setDataList] = useState([]);
 
-  const value = {
+  // 一覧画面でスクロールされた時にデータ〇〇件取得するための処理
+  const value1 = {
+    Page,
+    setPage,
+  };
+
+  // 検索結果を保存
+  const value2 = {
     DataList,
     setDataList,
   };
@@ -31,9 +41,11 @@ export default function DashboardLayout({ children }) {
   return (
     <>
       <MyContext.Provider value={HomePage}>
-        <DataListContext.Provider value={value}>
-          <Header onOpenNav={() => setOpenNav(true)} />
-        </DataListContext.Provider>
+        <PageContext.Provider value={value1}>
+          <DataListContext.Provider value={value2}>
+            <Header onOpenNav={() => setOpenNav(true)} />
+          </DataListContext.Provider>
+        </PageContext.Provider>
         <Box
           sx={{
             minHeight: 1,
@@ -43,9 +55,11 @@ export default function DashboardLayout({ children }) {
         >
           <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} />
 
-          <DataListContext.Provider value={value}>
-            <Main>{children}</Main>
-          </DataListContext.Provider>
+          <PageContext.Provider value={value1}>
+            <DataListContext.Provider value={value2}>
+              <Main>{children}</Main>
+            </DataListContext.Provider>
+          </PageContext.Provider>
         </Box>
       </MyContext.Provider>
     </>

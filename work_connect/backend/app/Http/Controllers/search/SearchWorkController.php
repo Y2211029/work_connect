@@ -12,9 +12,15 @@ class SearchWorkController extends Controller
     public function SearchWorkController(Request $request)
     {
         try {
+            $page = (int) $request->query('page', 1);
+            $perPage = 20; //一ページ当たりのアイテム数
+
+            // すでに取得したデータをスキップするためのオフセット計算
+            $offset = ($page - 1) * $perPage;
+
             // 検索文字列を取得
             $searchText = $request->input('searchText', "");
-            
+
             // 絞り込まれた作品ジャンルを配列で取得
             $work_genre_array = $request->input('work_genre', []);
             // 絞り込まれたプログラミング言語を配列で取得
@@ -57,7 +63,9 @@ class SearchWorkController extends Controller
                 }
             }
 
-            $query->join('w_users', 'w_works.creator_id', '=', 'w_users.id');
+            $query->join('w_users', 'w_works.creator_id', '=', 'w_users.id')
+                ->skip($offset) //オフセット
+                ->take($perPage); //件数;
 
             $results = $query->get();
 

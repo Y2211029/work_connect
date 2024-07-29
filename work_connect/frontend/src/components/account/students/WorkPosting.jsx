@@ -48,40 +48,40 @@ const WorkPosting = () => {
     Obsession: "",
     Language: "",
     Environment: "",
-  })
+  });
 
   const [imageFiles, setImageFiles] = useState([]);
-  const [message, setMessage] = useState('');
-  const [imagesName, setImagesName] = useState('');
+  const [message, setMessage] = useState("");
+  const [imagesName, setImagesName] = useState("");
 
   const [Image, setImage] = useState();
 
   const coleSetImage = (e) => {
     setImage(e);
-  }
+  };
 
   useEffect(() => {
     console.log("workData", workData);
-  }, [workData])
+  }, [workData]);
 
   const callSetWorkData = (key, value) => {
     setWorkData({
-      ...workData, [key]: value
-    })
-  }
+      ...workData,
+      [key]: value,
+    });
+  };
 
   const handleImageChange = (images) => {
     console.log(images);
-    setImagesName(images.map(item => item.name).join(', '));
+    setImagesName(images.map((item) => item.name).join(", "));
     console.log(imagesName);
     // images.forEach(image => {
     //   console.log(`File name: ${image.name}, URL: ${image.image}`);
     // });
     // console.log("bbbb");
-    
+
     setImageFiles(images);
     console.log(imageFiles);
-    
   };
 
   const WorkSubmit = async (e) => {
@@ -104,21 +104,25 @@ const WorkPosting = () => {
     for (const key in workData) {
       formData.append(key, workData[key]);
     }
-    formData.append("imagesName", imagesName);  
+    formData.append("imagesName", imagesName);
     console.log("...formData.entries(): ", ...formData.entries());
     try {
-      const response = await axios.post('http://localhost:8000/work_posting', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await axios.post(
+        "http://localhost:8000/work_posting",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       console.log(formData);
       setMessage(response.data.message);
     } catch (error) {
       setMessage(error.message);
     }
     // e.target.map
-  }
+  };
 
   return (
     <div>
@@ -127,11 +131,16 @@ const WorkPosting = () => {
           <h3>作品投稿</h3>
           <div className="WorkPostingUiForm">
             <div className="ImageUpload">
-              <div className="WorkPostingFormField">
-                <YoutubeURL callSetWorkData={callSetWorkData} />
-              </div>
-              <div className="WorkPostingFormField">
-                <ImageUpload onImagesUploaded={handleImageChange} coleSetImage={coleSetImage}/>
+              <div className="Image">
+                <div className="WorkPostingFormField">
+                  <YoutubeURL callSetWorkData={callSetWorkData} />
+                </div>
+                <div className="WorkPostingImageFormField">
+                  <ImageUpload
+                    onImagesUploaded={handleImageChange}
+                    coleSetImage={coleSetImage}
+                  />
+                </div>
               </div>
             </div>
             <div className="Information">

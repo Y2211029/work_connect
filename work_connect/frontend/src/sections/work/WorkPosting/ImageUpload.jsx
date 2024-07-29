@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import {
   DndContext,
+  DragOverlay,
   closestCenter,
   PointerSensor,
   useSensor,
@@ -13,9 +14,12 @@ import {
   useSortable,
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
+import {
+  restrictToWindowEdges,
+} from "@dnd-kit/modifiers";
 import { CSS } from "@dnd-kit/utilities";
 
-const SortableItem = ({ id, image, onDelete }) => {
+const SortableItem = ({ id, image, onDelete, activeId }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id });
 
@@ -26,23 +30,27 @@ const SortableItem = ({ id, image, onDelete }) => {
     textAlign: "center",
     boxSizing: "border-box",
     position: "relative",
+    opacity: id === activeId ? 0 : 1,
   };
 
   const imgStyle = {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-    zindex: 100000,
-    aspectRatio: '16 / 9',
+    // position: 'absolute',
+    // float: 'left',
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    // zindex: 100000,
+    aspectRatio: "16 / 9",
   };
 
   const containerStyle = {
-    width: '450px',
-    height: '253px',
-    overflow: 'hidden',
-    position: 'relative',
-    boxSizing: 'border-box',
-    zIndex: 1,
+    width: "100%",
+    maxWidth: "400px",
+    height: "225px",
+    overflow: "hidden",
+    position: "relative",
+    boxSizing: "border-box",
+    zIndex: 10000,
   };
 
   const buttonStyle = {
@@ -80,10 +88,12 @@ SortableItem.propTypes = {
   id: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
   onDelete: PropTypes.func.isRequired,
+  activeId: PropTypes.string,
 };
 
 const ImageUpload = ({ onImagesUploaded, coleSetImage }) => {
   const [items, setItems] = useState([]);
+  const [activeId, setActiveId] = useState(null);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -122,8 +132,14 @@ const ImageUpload = ({ onImagesUploaded, coleSetImage }) => {
     });
   };
 
+  const handleDragStart = (event) => {
+    setActiveId(event.active.id);
+  };
+
   const handleDragEnd = (event) => {
     const { active, over } = event;
+
+    setActiveId(null);
 
     if (active.id !== over.id) {
       setItems((items) => {
@@ -171,6 +187,25 @@ const ImageUpload = ({ onImagesUploaded, coleSetImage }) => {
     width: "100%",
   };
 
+  const activeItem = items.find((item) => item.id === activeId);
+
+  const overlayStyle = {
+    width: "100%",
+    maxWidth: "400px", // 縮小された幅
+    height: "225px", // 縮小された高さ (16/9 アスペクト比)
+    overflow: "hidden",
+    position: "relative",
+    boxSizing: "border-box",
+    zIndex: 9999,
+  };
+
+  const overlayImgStyle = {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    aspectRatio: "16 / 9",
+  };
+
   return (
     <div>
       <p>画像</p>
@@ -187,29 +222,39 @@ const ImageUpload = ({ onImagesUploaded, coleSetImage }) => {
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
+        modifiers={[restrictToWindowEdges]}
       >
-        <SortableContext
-          items={items.map((item) => item.id)}
-          strategy={rectSortingStrategy}
-        >
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
-              gap: "10px",
-            }}
+          <SortableContext
+            items={items.map((item) => item.id)}
+            strategy={rectSortingStrategy}
           >
-            {items.map((item) => (
-              <SortableItem
-                key={item.id}
-                id={item.id}
-                image={item.image}
-                onDelete={handleDelete}
-              />
-            ))}
-          </div>
-        </SortableContext>
+            <div
+              style={{
+                // display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
+                gap: "10px",
+              }}
+            >
+              {items.map((item) => (
+                <SortableItem
+                  key={item.id}
+                  id={item.id}
+                  image={item.image}
+                  onDelete={handleDelete}
+                  activeId={activeId}
+                />
+              ))}
+            </div>
+          </SortableContext>
+          <DragOverlay>
+          {activeItem ? (
+            <div style={overlayStyle}>
+              <img src={activeItem.image} alt="" style={overlayImgStyle} />
+            </div>
+          ) : null}
+        </DragOverlay>
       </DndContext>
     </div>
   );

@@ -1,32 +1,67 @@
-import { useState } from 'react';
-import PropTypes from 'prop-types';
+import { createContext, useState } from "react";
+import PropTypes from "prop-types";
 
-import Box from '@mui/material/Box';
+export const MyContext = createContext();
+export const PageContext = createContext();
 
-import Nav from './nav';
-import Main from './main';
-import Header from './header';
+import Box from "@mui/material/Box";
+
+import Nav from "./nav";
+import Main from "./main";
+import Header from "./header";
 
 // ----------------------------------------------------------------------
+
+export const DataListContext = createContext();
 
 export default function DashboardLayout({ children }) {
   const [openNav, setOpenNav] = useState(false);
 
+  /**
+   * ユーザーが開いているページが"localhost5174/Top"だった時
+   * headerに表示されている不必要なボタンなどを表示しない
+   */
+  const HomePage = location.pathname === "/Top" ? "none" : "";
+
+  const [Page, setPage] = useState(1);
+  const [DataList, setDataList] = useState([]);
+
+  // 一覧画面でスクロールされた時にデータ〇〇件取得するための処理
+  const value1 = {
+    Page,
+    setPage,
+  };
+
+  // 検索結果を保存
+  const value2 = {
+    DataList,
+    setDataList,
+  };
+
   return (
     <>
-      <Header onOpenNav={() => setOpenNav(true)} />
+      <MyContext.Provider value={HomePage}>
+        <PageContext.Provider value={value1}>
+          <DataListContext.Provider value={value2}>
+            <Header onOpenNav={() => setOpenNav(true)} />
+          </DataListContext.Provider>
+        </PageContext.Provider>
+        <Box
+          sx={{
+            minHeight: 1,
+            display: "flex",
+            flexDirection: { xs: "column", lg: "row" },
+          }}
+        >
+          <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} />
 
-      <Box
-        sx={{
-          minHeight: 1,
-          display: 'flex',
-          flexDirection: { xs: 'column', lg: 'row' },
-        }}
-      >
-        <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} />
-
-        <Main>{children}</Main>
-      </Box>
+          <PageContext.Provider value={value1}>
+            <DataListContext.Provider value={value2}>
+              <Main>{children}</Main>
+            </DataListContext.Provider>
+          </PageContext.Provider>
+        </Box>
+      </MyContext.Provider>
     </>
   );
 }

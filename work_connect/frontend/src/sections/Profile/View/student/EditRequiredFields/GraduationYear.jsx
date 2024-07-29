@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Select from "react-select";
-import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import PropTypes from 'prop-types';
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 // 現在の年とその前後5年間の年度を生成する関数
 const generateYearOptions = (range) => {
@@ -13,39 +13,56 @@ const generateYearOptions = (range) => {
   return options;
 };
 
-const GraduationYearDropdown = () => {
-  const yearOptions = generateYearOptions(5);
-  const [selectedGraduation, setSelectedGraduation] = useState("");
+const GraduationYearDropdown = ({GraduationData}) => {
 
-  // 登録項目確認の際に利用
+  // 卒業年度を表示する範囲を設定(引数が5なら現在~5年後まで)
+  const yearOptions = generateYearOptions(5);
+
+  const [ Graduation, setGraduation ] = useState( GraduationData );
   const { getSessionData, updateSessionData } = useSessionStorage();
 
-  // 外部URLから本アプリにアクセスした際に、sessionStrageに保存する
+  // valueの初期値をセット
   useEffect(() => {
-    if (getSessionData("accountData") !== undefined) {
-      let SessionData = getSessionData("accountData");
-
-      if (SessionData.graduation_year !== undefined && SessionData.graduation_year !== "") {
-        setSelectedGraduation({
-          value: SessionData.graduation_year,
-          label: `${SessionData.graduation_year}年`,
-        });
+    // セッションデータ取得
+      const SessionData = getSessionData("accountData");
+      console.log("SessionData.Graduation:::"+SessionData.Graduation);
+      if (GraduationData !== undefined) {
+        // DBからのデータをオブジェクト化する
+        const ObjectGraduationData = { value: GraduationData, label: `${GraduationData}年` };
+        if (SessionData.Graduation === undefined) {
+          console.log("SessionData.Graduation === undefined");
+          
+        }
+        if (SessionData.Graduation !== undefined && SessionData.Graduation !== "") {
+          console.log("qqqqqqqqqqqqqqqqq");
+          // セッションストレージから最新のデータを取得
+          setGraduation(SessionData.Graduation);
+        } else {
+          console.log("rrrrrrrrrrrrrrrrrrr");
+          // DBから最新のデータを取得
+          setGraduation(ObjectGraduationData);
+        }
       }
-    }
-  }, []);
+    
+  }, [GraduationData]);
 
-  const handleChange = (selectedOption) => {
-    setSelectedGraduation(selectedOption);
-    console.log("selectedOption", selectedOption);
+  const handleChange = (Option) => {
+    setGraduation(Option);
+    console.log("Option", Option);
 
-    updateSessionData("accountData", "graduation_year", `${selectedOption.value}`);
+    updateSessionData("accountData", "Graduation", `${Option.value}`);
   };
+
+    // 編集中のデータを保存しておく
+    useEffect(() => {
+      updateSessionData("accountData", "Graduation", Graduation);
+    }, [Graduation]);
 
   return (
       <Select
         name="yearOptions"
         options={yearOptions}
-        value={selectedGraduation}
+        value={Graduation}
         onChange={handleChange}
         placeholder="Select..."
         required
@@ -54,8 +71,7 @@ const GraduationYearDropdown = () => {
 };
 
 GraduationYearDropdown.propTypes = {
-  coleSetRequiredCheck: PropTypes.func,
+  GraduationData: PropTypes.func,
 };
 
 export default GraduationYearDropdown;
-

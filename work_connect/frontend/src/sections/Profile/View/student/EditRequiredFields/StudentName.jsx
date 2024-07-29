@@ -1,38 +1,54 @@
 import { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
+import PropTypes from 'prop-types'; // prop-types をインポート
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
-const StudentName = () => {
-
-  const [StudentSurName, setStudentSurName] = useState('');
-  const [StudentName, setStudentName] = useState('');
+const StudentName = ({StudentSurnameData, StudentnameData}) => {
+  
+  const [StudentSurName, setStudentSurName] = useState(StudentSurnameData);
+  const [StudentName, setStudentName] = useState(StudentnameData);
   const { getSessionData, updateSessionData } = useSessionStorage();
 
-  // 外部URLから本アプリにアクセスした際に、sessionStorageに保存する
+  // valueの初期値をセット
   useEffect(() => {
+    // セッションデータ取得
     const SessionData = getSessionData("accountData");
+    
+    /// 編集の途中ならセッションストレージからデータを取得する。
+    /// (リロードした時も、データが残った状態にする。)
     if (SessionData.StudentSurName !== undefined && SessionData.StudentSurName !== "") {
+      // セッションストレージから最新のデータを取得
       setStudentSurName(SessionData.StudentSurName);
+    } else {
+      // DBから最新のデータを取得
+      setStudentSurName(StudentSurnameData);
     }
+
     if (SessionData.StudentName !== undefined && SessionData.StudentName !== "") {
+      // セッションストレージから最新のデータを取得
       setStudentName(SessionData.StudentName);
+    } else {
+      // DBから最新のデータを取得
+      setStudentName(StudentnameData);
     }
-  }, []); // 初回マウント時のみ実行
+    
+  }, [StudentSurnameData, StudentnameData]);
 
   const handleChange = (e) => {
     const newValue = e.target.value;
-    if(e.target.name === "StudentSurName"){
+    if (e.target.name === "StudentSurName") {
       setStudentSurName(newValue);
-    } else if(e.target.name === "StudentName"){
+    } else if (e.target.name === "StudentName") {
       setStudentName(newValue);
     }
-    
   };
 
+  // 編集中のデータを保存しておく
   useEffect(() => {
     updateSessionData("accountData", "StudentSurName", StudentSurName);
     updateSessionData("accountData", "StudentName", StudentName);
   }, [StudentSurName,StudentName]);
+
 
   return (
     <div style={{ display: "flex" }}>
@@ -74,6 +90,12 @@ const StudentName = () => {
         />
         </div>
   );
+};
+
+// プロパティの型を定義
+StudentName.propTypes = {
+  StudentSurnameData: PropTypes.string.isRequired,
+  StudentnameData: PropTypes.string.isRequired,
 };
 
 export default StudentName;

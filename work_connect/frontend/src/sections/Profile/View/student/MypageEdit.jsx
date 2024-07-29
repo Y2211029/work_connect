@@ -1,6 +1,8 @@
 //import * as React from 'react';
 import { useEffect, useState, useRef, forwardRef,useImperativeHandle } from "react";
+import axios from "axios";
 import PropTypes from "prop-types";
+import { useParams } from 'react-router-dom';
 //import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 // muiインポート
@@ -76,6 +78,16 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
   const detail = useRef([]);
   const showmore = useRef(null);
   const [close, setClose] = useState(true);
+  // Laravelとの通信用URL
+  const url = "http://localhost:8000/get_profile_mypage";
+
+  // ログイン中のuser_nameではない
+  // ＊＊＊他ルートからアクセスしたときに表示したいユーザのuser_nameをここで指定＊＊＊
+  const { user_name } = useParams();
+  const ProfileUserName = useState({user_name});
+
+  // DBからのレスポンスが入る変数
+  const [ResponseData, setResponseData] = useState([]);
 
 
   // 編集状態のチェック
@@ -102,7 +114,30 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
   //   updateSessionData("accountData", "MypageEditState", MypageEditState);
   // }, [MypageEditState]);
 
-  // デフォルトで非表示にする項目
+  // ProfileUserNameが変化したとき
+  useEffect(() => {
+    async function GetData(ProfileUserName) {
+      
+      try {
+        // Laravel側からデータを取得
+        const response = await axios.get(url, {
+          params: {
+            ProfileUserName: ProfileUserName[0],
+          },
+        });
+        if(response){
+          setResponseData(response.data[0]);
+        }
+        console.log("ResponseData:", ResponseData);
+      } catch (err) {
+        console.log("err:", err);
+      }
+    }
+    // DBからデータを取得
+    GetData(ProfileUserName);
+  }, [ProfileUserName]);
+
+  // 初回レンダリング時の一度だけ実行させる
   useEffect(() => {
     detail.current.forEach(ref => {
       if (ref) ref.style.display = 'none';
@@ -143,7 +178,7 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
       setShowMoreText(<><KeyboardArrowDownIcon /> さらに表示</>);
     }
   };
-  
+
     return (
           <Stack spacing={3} ref={Edit}>
             {/* 戻るボタン */}
@@ -164,19 +199,19 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
             
             <Box>
               <Typography variant="h6">名前</Typography>
-              <StudentName />
+              <StudentName StudentSurnameData={ResponseData.student_surname} StudentnameData={ResponseData.student_name}/>
             </Box>
             <Box>
               <Typography variant="h6">名前(カタカナ)</Typography>
-              <StudentKanaName />
+              <StudentKanaName StudentKanaSurnameData={ResponseData.student_kanasurname} StudentKananameData={ResponseData.student_kananame}/>
             </Box>
             <Box>
               <Typography variant="h6">自己紹介</Typography>
-                <Intro />
+                <Intro IntroData={ResponseData.intro}/>
             </Box>
             <Box>
               <Typography variant="h6">卒業年度</Typography>
-              <GraduationYear />
+              <GraduationYear GraduationData={ResponseData.graduation_year}/>
             </Box>
             <Box>
               <Typography variant="h6">学校名(大学名)</Typography>

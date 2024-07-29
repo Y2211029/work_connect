@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { TextareaAutosize as BaseTextareaAutosize } from '@mui/base/TextareaAutosize';
+import PropTypes from 'prop-types'; // prop-types をインポート
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
+
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 
@@ -57,18 +59,25 @@ const Textarea = styled(BaseTextareaAutosize)(
 `,
 );
 
-const IntroComponent = () => {
-  const [intro, setIntro] = useState('');
+const IntroComponent = ({IntroData}) => {
+
+  const [Intro, setIntro] = useState(IntroData);
   const { getSessionData, updateSessionData } = useSessionStorage();
 
+  // valueの初期値をセット
   useEffect(() => {
-    const sessionData = getSessionData("accountData");
-    if (sessionData?.Intro) {
-      setIntro(sessionData.Intro);
+    // セッションデータ取得
+    const SessionData = getSessionData("accountData");
+    /// 編集の途中ならセッションストレージからデータを取得する。
+    /// (リロードした時も、データが残った状態にする。)
+    if (SessionData.Intro !== undefined && SessionData.Intro !== "") {
+      // セッションストレージから最新のデータを取得
+      setIntro(SessionData.Intro);
     } else {
-      setIntro("よろしくお願いいたします。");
+      // DBから最新のデータを取得
+      setIntro(IntroData);
     }
-  }, []);
+  }, [IntroData]);
 
   const handleChange = (e) => {
     const newValue = e.target.value;
@@ -76,8 +85,8 @@ const IntroComponent = () => {
   };
 
   useEffect(() => {
-    updateSessionData("accountData", "Intro", intro);
-  }, [intro]);
+    updateSessionData("accountData", "Intro", Intro);
+  }, [Intro]);
 
   return (
     <div>
@@ -86,16 +95,22 @@ const IntroComponent = () => {
         maxRows={12}
         aria-label="maximum height"
         placeholder="500字以内"
-        value={intro}
+        value={Intro}
         onChange={handleChange}
         maxLength={500}
       />
       
-      <Typography variant="body2" color="textSecondary" align="right">
-        {intro.length} / 500
+      <Typography variant="body2" color="textSecondary" align="right" sx={{ marginTop: 0 }}>
+        {/* 文字数カウント */}
+        {Intro ? Intro.length : ""} / 500
       </Typography>
     </div>
   );
+};
+
+// プロパティの型を定義
+IntroComponent.propTypes = {
+  IntroData: PropTypes.string.isRequired,
 };
 
 export default IntroComponent;

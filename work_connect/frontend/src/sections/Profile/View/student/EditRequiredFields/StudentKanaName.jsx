@@ -1,23 +1,37 @@
 import { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
+import PropTypes from 'prop-types'; // prop-types をインポート
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
-const StudentKanaName = () => {
+const StudentKanaName = ({StudentKanaSurnameData, StudentKananameData}) => {
 
-  const [StudentKanaSurName, setStudentKanaSurName] = useState('');
-  const [StudentKanaName, setStudentKanaName] = useState('');
+  const [StudentKanaSurName, setStudentKanaSurName] = useState(StudentKanaSurnameData);
+  const [StudentKanaName, setStudentKanaName] = useState(StudentKananameData);
   const { getSessionData, updateSessionData } = useSessionStorage();
 
-  // 外部URLから本アプリにアクセスした際に、sessionStorageに保存する
+  // valueの初期値をセット
   useEffect(() => {
+    // セッションデータ取得
     const SessionData = getSessionData("accountData");
+    
+    /// 編集の途中ならセッションストレージからデータを取得する。
+    /// (リロードした時も、データが残った状態にする。)
     if (SessionData.StudentKanaSurName !== undefined && SessionData.StudentKanaSurName !== "") {
+      // セッションストレージから最新のデータを取得
       setStudentKanaSurName(SessionData.StudentKanaSurName);
+    } else {
+      // DBから最新のデータを取得
+      setStudentKanaSurName(StudentKanaSurnameData);
     }
+
     if (SessionData.StudentKanaName !== undefined && SessionData.StudentKanaName !== "") {
+      // セッションストレージから最新のデータを取得
       setStudentKanaName(SessionData.StudentKanaName);
+    } else {
+      // DBから最新のデータを取得
+      setStudentKanaName(StudentKananameData);
     }
-  }, []); // 初回マウント時のみ実行
+  }, [StudentKanaSurnameData, StudentKananameData]);
 
   const handleChange = (e) => {
     const newValue = e.target.value;
@@ -26,13 +40,14 @@ const StudentKanaName = () => {
     } else if(e.target.name === "StudentKanaName"){
       setStudentKanaName(newValue);
     }
-    
   };
 
+  // 編集中のデータを保存しておく
   useEffect(() => {
     updateSessionData("accountData", "StudentKanaSurName", StudentKanaSurName);
     updateSessionData("accountData", "StudentKanaName", StudentKanaName);
   }, [StudentKanaSurName,StudentKanaName]);
+
 
   return (
     <div style={{ display: "flex" }}>
@@ -74,6 +89,12 @@ const StudentKanaName = () => {
         />
         </div>
   );
+};
+
+// プロパティの型を定義
+StudentKanaName.propTypes = {
+  StudentKanaSurnameData: PropTypes.string.isRequired,
+  StudentKananameData: PropTypes.string.isRequired,
 };
 
 export default StudentKanaName;

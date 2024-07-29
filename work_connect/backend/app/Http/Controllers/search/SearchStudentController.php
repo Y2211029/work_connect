@@ -15,6 +15,10 @@ class SearchStudentController extends Controller
             // 検索文字列を取得
             $searchText = $request->input('searchText', "");
             
+            // 絞り込まれた希望職種を配列で取得
+            $desired_occupation_array = $request->input('desired_occupation', []);
+            // 絞り込まれた希望勤務地を配列で取得
+            $desired_work_region_array = $request->input('desired_work_region', []);
             // 絞り込まれたプログラミング言語を配列で取得
             $student_programming_language_array = $request->input('student_programming_language', []);
             // 絞り込まれた開発環境を配列で取得
@@ -35,11 +39,24 @@ class SearchStudentController extends Controller
                 'w_users.*',
             );
 
+            // 希望職種で絞り込み
+            if (isset($desired_occupation_array)) {
+                foreach ($desired_occupation_array as $desired_occupation) {
+                    $query->where('w_users.desired_occupation', 'REGEXP', '(^|,)' . preg_quote($desired_occupation) . '($|,)');
+                }
+            }
+
+            // 希望勤務地で絞り込み
+            if (isset($desired_work_region_array)) {
+                foreach ($desired_work_region_array as $desired_work_region) {
+                    $query->where('w_users.desired_work_region', 'REGEXP', '(^|,)' . preg_quote($desired_work_region) . '($|,)');
+                }
+            }
+
             // プログラミング言語で絞り込み
             if (isset($student_programming_language_array)) {
                 foreach ($student_programming_language_array as $student_programming_language) {
                     $query->where('w_users.programming_language', 'REGEXP', '(^|,)' . preg_quote($student_programming_language) . '($|,)');
-
                 }
             }
 

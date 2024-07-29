@@ -36,7 +36,10 @@ use App\Http\Controllers\tag\GetStudentDevelopmentEnvironmentTagController;
 use App\Http\Controllers\tag\GetSoftwareTagController;
 use App\Http\Controllers\tag\GetAcquisitionQualificationTagController;
 use App\Http\Controllers\tag\GetHobbyTagController;
+use App\Http\Controllers\tag\GetDesiredOccupationTagController;
+use App\Http\Controllers\tag\GetDesiredWorkRegionTagController;
 use App\Http\Controllers\tag\GetSelectedOccupationTagController;
+use App\Http\Controllers\tag\GetPrefectureTagController;
 use App\Http\Controllers\work\WorkPostingController;
 use App\Http\Controllers\search\SearchWorkController;
 use App\Http\Controllers\search\SearchVideoController;
@@ -96,8 +99,14 @@ Route::get('/get_software_tag', [GetSoftwareTagController::class, 'GetSoftwareTa
 Route::get('/get_acquisition_qualification_tag', [GetAcquisitionQualificationTagController::class, 'GetAcquisitionQualificationTagController']);
 // 趣味タグ取得
 Route::get('/get_hobby_tag', [GetHobbyTagController::class, 'GetHobbyTagController']);
-// 趣味タグ取得
+// 学生の希望職種タグ取得
+Route::get('/get_desired_occupation_tag', [GetDesiredOccupationTagController::class, 'GetDesiredOccupationTagController']);
+// 学生の希望職種タグ取得
+Route::get('/get_desired_work_region_tag', [GetDesiredWorkRegionTagController::class, 'GetDesiredWorkRegionTagController']);
+// 企業の職種タグ取得
 Route::get('/get_selected_occupation_tag', [GetSelectedOccupationTagController::class, 'GetSelectedOccupationTagController']);
+// 企業の勤務地タグ取得
+Route::get('/get_prefecture_tag', [GetPrefectureTagController::class, 'GetPrefectureTagController']);
 
 
 // 作品投稿

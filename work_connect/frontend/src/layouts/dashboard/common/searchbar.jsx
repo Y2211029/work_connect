@@ -80,12 +80,13 @@ export default function Searchbar() {
     student_development_environment: [],
     software: [],
     acquisition_qualification: [],
-    desired_work_region: [],
     hobby: [],
     other: [],
     graduation_year: [],
     desired_occupation: [],
+    desired_work_region: [],
     selected_occupation: [],
+    prefecture: [],
   });
 
   const [options, setOptions] = useState({
@@ -103,12 +104,13 @@ export default function Searchbar() {
     student_development_environment: [],
     software: [],
     acquisition_qualification: [],
-    desired_work_region: [],
     hobby: [],
     other: [],
     graduation_year: [],
     desired_occupation: [],
+    desired_work_region: [],
     selected_occupation: [],
+    prefecture: [],
   });
 
   const { GetTagListFunction } = GetTagList();
@@ -150,6 +152,12 @@ export default function Searchbar() {
       getTag("video_genre", "video_genre");
       
     } else if (PathName == "/StudentList") { // 学生一覧の場合
+      // 希望職種のタグ一覧を取得
+      getTag("desired_occupation", "desired_occupation");
+
+      // 希望勤務地のタグ一覧を取得
+      getTag("desired_work_region", "desired_work_region");
+
       // プログラミング言語のタグ一覧を取得
       getTag("student_programming_language", "student_programming_language");
 
@@ -166,8 +174,11 @@ export default function Searchbar() {
       getTag("hobby", "hobby");
 
     } else if (PathName == "/CompanyList") { // 学生一覧の場合
-      // プログラミング言語のタグ一覧を取得
+      // 職種のタグ一覧を取得
       getTag("selected_occupation", "selected_occupation");
+
+      // 勤務地のタグ一覧を取得
+      getTag("prefecture", "prefecture");
 
     }
   },[PathName])
@@ -235,12 +246,20 @@ export default function Searchbar() {
       } else if (PathName == "/StudentList") { // 学生一覧の場合
         const url = "http://localhost:8000/search_student";
 
+        let desired_occupation = [];
+        let desired_work_region = [];
         let student_programming_language = [];
         let student_development_environment = [];
         let software = [];
         let acquisition_qualification = [];
         let hobby = [];
 
+        searchSource.desired_occupation.map((value) => {
+          desired_occupation.push(value.value);
+        });
+        searchSource.desired_work_region.map((value) => {
+          desired_work_region.push(value.value);
+        });
         searchSource.student_programming_language.map((value) => {
           student_programming_language.push(value.value);
         });
@@ -260,6 +279,8 @@ export default function Searchbar() {
         const response = await axios.get(url, {
           params: {
             searchText: searchSource.searchText,
+            desired_occupation: desired_occupation,
+            desired_work_region: desired_work_region,
             student_programming_language: student_programming_language,
             student_development_environment: student_development_environment,
             software: software,
@@ -275,15 +296,20 @@ export default function Searchbar() {
         const url = "http://localhost:8000/search_company";
 
         let selected_occupation = [];
+        let prefecture = [];
 
         searchSource.selected_occupation.map((value) => {
           selected_occupation.push(value.value);
+        });
+        searchSource.prefecture.map((value) => {
+          prefecture.push(value.value);
         });
 
         const response = await axios.get(url, {
           params: {
             searchText: searchSource.searchText,
             selected_occupation: selected_occupation,
+            prefecture: prefecture,
           },
         });
         console.log("response.data", response.data);
@@ -347,6 +373,16 @@ export default function Searchbar() {
     tagAction("video_genre", selectedOption);
   };
   
+  // 希望職種タグを操作したとき
+  const handleChangeDesiredOccupation = (selectedOption) => {
+    tagAction("desired_occupation", selectedOption);
+  };
+  
+  // 希望勤務地タグを操作したとき
+  const handleChangeDesiredWorkRegion = (selectedOption) => {
+    tagAction("desired_work_region", selectedOption);
+  };
+  
   // 学生のプログラミング言語のタグを操作したとき
   const handleChangeStudentProgrammingLanguage = (selectedOption) => {
     tagAction("student_programming_language", selectedOption);
@@ -375,6 +411,11 @@ export default function Searchbar() {
   // 企業の勤務地のタグを操作したとき
   const handleChangeSelectedOccupation = (selectedOption) => {
     tagAction("selected_occupation", selectedOption);
+  };
+
+  // 企業の勤務地のタグを操作したとき
+  const handleChangePrefecture = (selectedOption) => {
+    tagAction("prefecture", selectedOption);
   };
 
   useEffect(() => {
@@ -451,6 +492,18 @@ export default function Searchbar() {
               </> : PathName === "/StudentList" ?
               <>
               <div style={{display: "", marginTop: "20px", marginBottom: "10px"}}>
+                <div style={{fontWeight: "Bold", color: "#666"}}>希望職種</div>
+                <div style={{color: "#444"}}>
+                  <CreatableSelect options={options.desired_occupation} value={searchSource.desired_occupation} isClearable isMulti onChange={handleChangeDesiredOccupation}/>
+                </div>
+              </div>
+              <div style={{display: "", marginTop: "20px", marginBottom: "10px"}}>
+                <div style={{fontWeight: "Bold", color: "#666"}}>希望勤務地</div>
+                <div style={{color: "#444"}}>
+                  <CreatableSelect options={options.desired_work_region} value={searchSource.desired_work_region} isClearable isMulti onChange={handleChangeDesiredWorkRegion}/>
+                </div>
+              </div>
+              <div style={{display: "", marginTop: "20px", marginBottom: "10px"}}>
                 <div style={{fontWeight: "Bold", color: "#666"}}>プログラミング言語</div>
                 <div style={{color: "#444"}}>
                   <CreatableSelect options={options.student_programming_language} value={searchSource.student_programming_language} isClearable isMulti onChange={handleChangeStudentProgrammingLanguage}/>
@@ -486,6 +539,12 @@ export default function Searchbar() {
                 <div style={{fontWeight: "Bold", color: "#666"}}>職種</div>
                 <div style={{color: "#444"}}>
                   <CreatableSelect options={options.selected_occupation} value={searchSource.selected_occupation} isClearable isMulti onChange={handleChangeSelectedOccupation}/>
+                </div>
+              </div>
+              <div style={{display: "", marginTop: "20px", marginBottom: "10px"}}>
+                <div style={{fontWeight: "Bold", color: "#666"}}>勤務地</div>
+                <div style={{color: "#444"}}>
+                  <CreatableSelect options={options.prefecture} value={searchSource.prefecture} isClearable isMulti onChange={handleChangePrefecture}/>
                 </div>
               </div>
               </> : ""

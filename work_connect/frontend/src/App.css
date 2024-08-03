@@ -388,7 +388,7 @@ textarea {
   float: right;
   right: 3%;
   margin-top: 1%;
-  border-radius: 5%;         
+  border-radius: 5%;
   font-size: 16pt;
   text-align: center;
   cursor: pointer;
@@ -399,6 +399,7 @@ textarea {
   transition: .3s;
   border: 2px solid #6666ff;
 }
+
 .submit:hover {
   color: #6666ff;
   background: #ffffff;
@@ -415,6 +416,25 @@ textarea {
 
 .link:hover {
   text-decoration: underline;
+}
+
+.custom-color-ring-wrapper {
+  --spinner-animation-duration: 1s;
+  /* デフォルトより速くする */
+}
+
+@keyframes color-ring-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.custom-color-ring-wrapper .color-ring {
+  animation: color-ring-spin var(--spinner-animation-duration) linear infinite;
 }
 
 /* 作品一覧画面　ここまで */

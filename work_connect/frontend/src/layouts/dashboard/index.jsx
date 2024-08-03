@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 
 export const MyContext = createContext();
 export const PageContext = createContext();
+export const DataListContext = createContext();
+export const SearchCheckContext = createContext();
 
 import Box from "@mui/material/Box";
 
@@ -11,8 +13,6 @@ import Main from "./main";
 import Header from "./header";
 
 // ----------------------------------------------------------------------
-
-export const DataListContext = createContext();
 
 export default function DashboardLayout({ children }) {
   const [openNav, setOpenNav] = useState(false);
@@ -25,6 +25,7 @@ export default function DashboardLayout({ children }) {
 
   const [Page, setPage] = useState(1);
   const [DataList, setDataList] = useState([]);
+  const [IsSearch, setIsSearch] = useState({ searchToggle: 0, Check: false });
 
   // 一覧画面でスクロールされた時にデータ〇〇件取得するための処理
   const value1 = {
@@ -38,29 +39,37 @@ export default function DashboardLayout({ children }) {
     setDataList,
   };
 
+  // 検索チェック
+  const value3 = {
+    IsSearch,
+    setIsSearch,
+  };
+
   return (
     <>
       <MyContext.Provider value={HomePage}>
-        <PageContext.Provider value={value1}>
-          <DataListContext.Provider value={value2}>
-            <Header onOpenNav={() => setOpenNav(true)} />
-          </DataListContext.Provider>
-        </PageContext.Provider>
-        <Box
-          sx={{
-            minHeight: 1,
-            display: "flex",
-            flexDirection: { xs: "column", lg: "row" },
-          }}
-        >
-          <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} />
-
+        <SearchCheckContext.Provider value={value3}>
           <PageContext.Provider value={value1}>
             <DataListContext.Provider value={value2}>
-              <Main>{children}</Main>
+              <Header onOpenNav={() => setOpenNav(true)} />
             </DataListContext.Provider>
           </PageContext.Provider>
-        </Box>
+          <Box
+            sx={{
+              minHeight: 1,
+              display: "flex",
+              flexDirection: { xs: "column", lg: "row" },
+            }}
+          >
+            <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} />
+
+            <PageContext.Provider value={value1}>
+              <DataListContext.Provider value={value2}>
+                <Main>{children}</Main>
+              </DataListContext.Provider>
+            </PageContext.Provider>
+          </Box>
+        </SearchCheckContext.Provider>
       </MyContext.Provider>
     </>
   );

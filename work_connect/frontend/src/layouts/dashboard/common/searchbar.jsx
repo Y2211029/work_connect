@@ -20,6 +20,7 @@ import GetTagList from "../../../components/tag/GetTagList";
 import { MyContext } from "src/layouts/dashboard/index";
 import { DataListContext } from "src/layouts/dashboard/index";
 import { PageContext } from "src/layouts/dashboard/index";
+import { SearchCheckContext } from "src/layouts/dashboard/index";
 
 // ----------------------------------------------------------------------
 
@@ -57,7 +58,8 @@ export default function Searchbar() {
   const location = useLocation();
 
   const [PathName, setPathName] = useState("");
-  const [SearchCheck, setSearchCheck] = useState(false);
+  // const [IsSearch, setIsSearch] = useState(false);
+  const { IsSearch, setIsSearch } = useContext(SearchCheckContext);
 
   // Topページであれば検索ボタンを非表示にする。
   const Display = useContext(MyContext);
@@ -121,7 +123,7 @@ export default function Searchbar() {
     let optionArray = [];
     let optionArrayPromise = GetTagListFunction(urlIn);
     optionArrayPromise.then((result) => {
-      console.log("result: ", result);
+      // console.log("result: ", result);
       result.map((value) => {
         optionArray.push({ value: value.name, label: value.name });
       });
@@ -132,14 +134,18 @@ export default function Searchbar() {
     });
   };
 
+  // useEffect(() => {
+  //   console.log("searchSource", searchSource);
+  // }, [searchSource]);
+
   useEffect(() => {
     setPathName(location.pathname);
-    console.log(PathName);
+    // console.log(PathName);
     // タグ一覧取得
 
     if (PathName == "/") {
       // 作品一覧の場合
-      console.log("aaaaaaaaaaaaaaaaaaaaaaaa");
+      // console.log("aaaaaaaaaaaaaaaaaaaaaaaa");
       // 作品ジャンルのタグ一覧を取得
       getTag("work_genre", "work_genre");
 
@@ -175,9 +181,9 @@ export default function Searchbar() {
     }
   }, [PathName]);
 
-  useEffect(() => {
-    console.log("options: ", options);
-  }, [options]);
+  // useEffect(() => {
+  //   console.log("options: ", options);
+  // }, [options]);
 
   const handleOpen = () => {
     setPathName(location.pathname);
@@ -191,7 +197,7 @@ export default function Searchbar() {
         // 作品一覧の場合
         // const url = `http://localhost:8000/search_work`;
         const url = `http://localhost:8000/search_work?page=${Page}`;
-        console.log("searchbar : Page = ", Page);
+        // console.log("searchbar : Page = ", Page);
         let work_genre = [];
         let programming_language = [];
         let development_environment = [];
@@ -303,14 +309,6 @@ export default function Searchbar() {
       console.log("err:", err);
     }
   }
-  useEffect(() => {
-    console.log("akaakakakakaa");
-    if (SearchCheck) {
-      if (Page !== 1) {
-        searchSourceList();
-      }
-    }
-  }, [Page]);
 
   // 検索バーを閉じる
   const handleClose = () => {
@@ -321,15 +319,25 @@ export default function Searchbar() {
 
   // 検索ボタンを押したとき
   const handleSearch = () => {
-    setSearchCheck(!isAllEmpty(searchSource));
-    console.log("searchSource", !isAllEmpty(searchSource));
-    setDataList([]);
-    if (!isAllEmpty(searchSource)) {
+    // 検索ボタンを押したときにPageをリセット
+    setPage(1);
+    setIsSearch((prev) => ({
+      // 検索ボタンが押された初めだけsetWorkOfListをリセットするためのトリガー
+      searchToggle: prev.searchToggle === 0 ? 1 : 0,
+      // 検索タグが選ばれていた場合 true
+      Check: !isAllEmpty(searchSource),
+    }));
+    // 検索バーを閉じる
+    setOpen(false);
+  };
+
+  // ページが変更された時に次のデータを取得する
+  useEffect(() => {
+    // 検索タグが入力されているかつ、pageが変更されたて値があれば検索する
+    if (IsSearch.Check && Page) {
       searchSourceList();
     }
-    setOpen(false);
-    setPage(1);
-  };
+  }, [IsSearch.Check, Page]);
 
   // 検索欄に入力したとき
   const handleChangeText = (e) => {
@@ -401,13 +409,13 @@ export default function Searchbar() {
     tagAction("selected_occupation", selectedOption);
   };
 
-  useEffect(() => {
-    console.log("searchSource: ", searchSource);
-  }, [searchSource]);
+  // useEffect(() => {
+  //   console.log("searchSource: ", searchSource);
+  // }, [searchSource]);
 
-  useEffect(() => {
-    console.log("options: ", options);
-  }, [options]);
+  // useEffect(() => {
+  //   console.log("options: ", options);
+  // }, [options]);
 
   return (
     <ClickAwayListener onClickAway={handleClose}>
@@ -523,7 +531,13 @@ export default function Searchbar() {
                   <div style={{ display: "", marginTop: "20px", marginBottom: "10px" }}>
                     <div style={{ fontWeight: "Bold", color: "#666" }}>ソフトウェア</div>
                     <div style={{ color: "#444" }}>
-                      <CreatableSelect options={options.software} value={searchSource.software} isClearable isMulti onChange={handleChangeSoftware} />
+                      <CreatableSelect
+                        options={options.software}
+                        value={searchSource.software}
+                        isClearable
+                        isMulti
+                        onChange={handleChangeSoftware}
+                      />
                     </div>
                   </div>
                   <div style={{ display: "", marginTop: "20px", marginBottom: "10px" }}>
@@ -541,7 +555,13 @@ export default function Searchbar() {
                   <div style={{ display: "", marginTop: "20px", marginBottom: "10px" }}>
                     <div style={{ fontWeight: "Bold", color: "#666" }}>趣味</div>
                     <div style={{ color: "#444" }}>
-                      <CreatableSelect options={options.hobby} value={searchSource.hobby} isClearable isMulti onChange={handleChangeHobby} />
+                      <CreatableSelect
+                        options={options.hobby}
+                        value={searchSource.hobby}
+                        isClearable
+                        isMulti
+                        onChange={handleChangeHobby}
+                      />
                     </div>
                   </div>
                 </>

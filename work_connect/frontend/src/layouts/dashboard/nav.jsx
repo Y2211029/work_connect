@@ -23,6 +23,7 @@ import Scrollbar from "src/components/scrollbar/scrollbar";
 import { NAV } from "./config-layout";
 import navConfig from "./config-navigation";
 import { MyContext } from "src/layouts/dashboard/index";
+import { AllItemsContext } from "src/layouts/dashboard/index";
 
 // ----------------------------------------------------------------------
 
@@ -190,6 +191,23 @@ function NavItem({ item }) {
 
   const active = item.path === pathname;
 
+  const { setAllItems } = useContext(AllItemsContext);
+  // const { setIsSearch } = useContext(SearchCheckContext);
+  // const { setPage } = useContext(PageContext);
+
+  // Page1にしてもworkOfListは初期化されていないので表示は変わらない
+  // IsSearch Check がfalseの時は検索タグを初期化
+  // selectedOption の初期化は正常に動いている。
+
+  // サイドバークリック 一覧アイテム・並び替え・検索タグ 初期化
+  const handleReset = () => {
+    setAllItems((prevItems) => ({
+      ...prevItems,//既存のパラメータ値を変更するためにスプレッド演算子を使用
+      ResetItem: true,
+    }));
+    // 必要に応じて、スクロール位置や他の状態もリセット
+  };
+
   return (
     <ListItemButton
       component={RouterLink}
@@ -210,6 +228,7 @@ function NavItem({ item }) {
           },
         }),
       }}
+      onClick={handleReset}
     >
       <Box component="span" sx={{ width: 24, height: 24, mr: 2 }}>
         {item.icon}

@@ -12,6 +12,8 @@ class SearchWorkController extends Controller
     public function SearchWorkController(Request $request)
     {
         try {
+            $sortOption = $request->query('sort');
+
             // 検索文字列を取得
             $searchText = $request->input('searchText', "");
 
@@ -59,6 +61,15 @@ class SearchWorkController extends Controller
 
             $query->join('w_users', 'w_works.creator_id', '=', 'w_users.id');
 
+
+            if ($sortOption === 'orderNewPostsDate') {
+                $query->orderBy('w_works.created_at', 'desc');
+            }
+            if ($sortOption === 'orderOldPostsDate') {
+                $query->orderBy('w_works.created_at', 'asc');
+            }
+
+
             $results = $query->get();
 
             $resultsArray = json_decode(json_encode($results), true);
@@ -66,11 +77,12 @@ class SearchWorkController extends Controller
             \Log::info('SearchWorkController:$resultsArray:');
             \Log::info($resultsArray);
 
-            if (count($resultsArray) == 0) {
-                return json_encode("検索結果は0件です");
-            } else {
-                return json_encode($resultsArray);
-            }
+            return json_encode($resultsArray);
+            // if (count($resultsArray) == 0) {
+            //     return json_encode("検索結果は0件です");
+            // } else {
+            //     return json_encode($resultsArray);
+            // }
         } catch (\Exception $e) {
             \Log::info('SearchWorkController:user_name重複チェックエラー');
             \Log::info($e);

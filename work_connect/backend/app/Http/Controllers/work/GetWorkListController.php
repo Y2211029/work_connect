@@ -53,7 +53,7 @@ class GetWorkListController extends Controller
 
             \Log::info('GetWorkListController:$response:');
             \Log::info(json_encode($workListArray));
-            \Log::info('GetWorkListController:$sortOption:');
+            \Log::info('GetWorkListController:$:');
             \Log::info(json_encode($sortOption));
             // echo json_encode($response);
             return json_encode($workListArray);

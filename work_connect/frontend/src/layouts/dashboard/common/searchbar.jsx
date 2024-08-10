@@ -18,9 +18,10 @@ import Iconify from "src/components/iconify";
 import axios from "axios";
 import GetTagList from "../../../components/tag/GetTagList";
 import { MyContext } from "src/layouts/dashboard/index";
-import { DataListContext } from "src/layouts/dashboard/index";
-import { PageContext } from "src/layouts/dashboard/index";
-import { SearchCheckContext } from "src/layouts/dashboard/index";
+import { AllItemsContext } from "src/layouts/dashboard/index";
+// import { PageContext } from "src/layouts/dashboard/index";
+// import { SearchCheckContext } from "src/layouts/dashboard/index";
+// import { SortOption } from "src/layouts/dashboard/index";
 
 // ----------------------------------------------------------------------
 
@@ -56,21 +57,16 @@ const StyledSearchbar = styled("div")(({ theme }) => ({
 
 export default function Searchbar() {
   const location = useLocation();
-
   const [PathName, setPathName] = useState("");
-  // const [IsSearch, setIsSearch] = useState(false);
-  const { IsSearch, setIsSearch } = useContext(SearchCheckContext);
-
   // Topページであれば検索ボタンを非表示にする。
   const Display = useContext(MyContext);
-
-  const { Page, setPage } = useContext(PageContext);
+  // AllItemsContextから状態を取得
+  const { AllItems, setAllItems } = useContext(AllItemsContext);
+  const { Page, IsSearch, ResetItem, sortOption } = AllItems;
 
   // 検索結果を反映させるためのContext
-  const { setDataList } = useContext(DataListContext);
-
+  // const { setDataList } = useContext(DataListContext);
   const [open, setOpen] = useState(false);
-
   const [searchSource, setsearchSource] = useState({
     searchText: "",
     work_genre: [],
@@ -196,8 +192,10 @@ export default function Searchbar() {
       if (PathName == "/") {
         // 作品一覧の場合
         // const url = `http://localhost:8000/search_work`;
-        const url = `http://localhost:8000/search_work?page=${Page}`;
+        const url = `http://localhost:8000/search_work?page=${Page}&sort=${sortOption}`;
+        // const url = `http://localhost:8000/search_work?page=${Page}&sort=${`;
         // console.log("searchbar : Page = ", Page);
+
         let work_genre = [];
         let programming_language = [];
         let development_environment = [];
@@ -205,9 +203,11 @@ export default function Searchbar() {
         searchSource.work_genre.map((value) => {
           work_genre.push(value.value);
         });
+
         searchSource.programming_language.map((value) => {
           programming_language.push(value.value);
         });
+
         searchSource.development_environment.map((value) => {
           development_environment.push(value.value);
         });
@@ -220,10 +220,26 @@ export default function Searchbar() {
             development_environment: development_environment,
           },
         });
-        console.log("search.response.data", response.data);
+
+        // console.log("search.response.data", response.data);
 
         // WorkListItem.jsxにデータを渡す
-        setDataList(response.data);
+        const responseData = response.data;
+
+        if (responseData.length > 0) {
+          console.log("検索結果はいくつかあります。");
+          setAllItems((prevItems) => ({
+            ...prevItems,
+            DataList: response.data,
+            IsSearch: { ...prevItems.IsSearch, searchResultEmpty: false },
+          }));
+        } else {
+          console.log("検索結果は0件です。");
+          setAllItems((prevItems) => ({
+            ...prevItems,
+            IsSearch: { ...prevItems.IsSearch, searchResultEmpty: true },
+          }));
+        }
       } else if (PathName == "/VideoList") {
         // 動画一覧の場合
         const url = "http://localhost:8000/search_video";
@@ -243,7 +259,10 @@ export default function Searchbar() {
         console.log("response.data", response.data);
 
         // VideoListItem.jsxにデータを渡す
-        setDataList(response.data);
+        setAllItems((prevItems) => ({
+          ...prevItems,
+          DataList: [response.data],
+        }));
       } else if (PathName == "/StudentList") {
         // 学生一覧の場合
         const url = "http://localhost:8000/search_student";
@@ -283,7 +302,10 @@ export default function Searchbar() {
         console.log("response.data", response.data);
 
         // StudentListItem.jsxにデータを渡す
-        setDataList(response.data);
+        setAllItems((prevItems) => ({
+          ...prevItems,
+          DataList: response.data,
+        }));
       } else if (PathName == "/CompanyList") {
         // 学生一覧の場合
         const url = "http://localhost:8000/search_company";
@@ -303,29 +325,67 @@ export default function Searchbar() {
         console.log("response.data", response.data);
 
         // StudentListItem.jsxにデータを渡す
-        setDataList(response.data);
+        setAllItems((prevItems) => ({
+          ...prevItems,
+          DataList: response.data,
+        }));
       }
     } catch (err) {
       console.log("err:", err);
     }
   }
 
+  // サイドバーが押されたらログインされて一番初めに表示される作品一覧の状態にするために、
+  // 検索させないよう初期化する。
+  useEffect(() => {
+    if (ResetItem) {
+      setsearchSource((prevSearchtags) => ({
+        ...prevSearchtags,
+        searchText: "",
+        work_genre: [],
+        programming_language: [],
+        development_environment: [],
+        video_genre: [],
+        school_name: [],
+        department_name: [],
+        faculty_name: [],
+        major_name: [],
+        course_name: [],
+        student_programming_language: [],
+        student_development_environment: [],
+        software: [],
+        acquisition_qualification: [],
+        desired_work_region: [],
+        hobby: [],
+        other: [],
+        graduation_year: [],
+        desired_occupation: [],
+        selected_occupation: [],
+      }));
+    }
+  }, [ResetItem]);
+
   // 検索バーを閉じる
   const handleClose = () => {
     setOpen(false);
   };
 
+  // 空だったらtrue
   const isAllEmpty = (obj) => Object.values(obj).every((value) => value.length === 0);
 
   // 検索ボタンを押したとき
   const handleSearch = () => {
-    // 検索ボタンを押したときにPageをリセット
-    setPage(1);
-    setIsSearch((prev) => ({
-      // 検索ボタンが押された初めだけsetWorkOfListをリセットするためのトリガー
-      searchToggle: prev.searchToggle === 0 ? 1 : 0,
-      // 検索タグが選ばれていた場合 true
-      Check: !isAllEmpty(searchSource),
+    setAllItems((prevItems) => ({
+      ...prevItems,
+      DataList: [],
+      IsSearch: {
+        ...prevItems.IsSearch,
+        searchToggle: prevItems.IsSearch.searchToggle === 0 ? 1 : 0,
+        Check: !isAllEmpty(searchSource), // Checkがfalseになることを確認
+        searchResultEmpty: false,
+      },
+      Page: 1,
+      sortOption: "orderNewPostsDate",
     }));
     // 検索バーを閉じる
     setOpen(false);
@@ -337,7 +397,7 @@ export default function Searchbar() {
     if (IsSearch.Check && Page) {
       searchSourceList();
     }
-  }, [IsSearch.Check, Page]);
+  }, [IsSearch.Check, Page, IsSearch.searchToggle]);
 
   // 検索欄に入力したとき
   const handleChangeText = (e) => {

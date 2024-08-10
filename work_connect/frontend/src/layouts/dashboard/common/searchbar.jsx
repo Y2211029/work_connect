@@ -186,6 +186,10 @@ export default function Searchbar() {
     setOpen(!open);
   };
 
+  useEffect(() => {
+    console.log("sortOption", sortOption);
+  }, [sortOption]);
+
   // Laravel側から絞り込んだ作品一覧データを取得
   async function searchSourceList() {
     try {
@@ -397,7 +401,7 @@ export default function Searchbar() {
     if (IsSearch.Check && Page) {
       searchSourceList();
     }
-  }, [IsSearch.Check, Page, IsSearch.searchToggle]);
+  }, [IsSearch.Check, Page, IsSearch.searchToggle, sortOption]);
 
   // 検索欄に入力したとき
   const handleChangeText = (e) => {

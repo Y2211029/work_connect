@@ -63,10 +63,10 @@ class SearchWorkController extends Controller
 
 
             if ($sortOption === 'orderNewPostsDate') {
-                $query->orderBy('w_works.created_at', 'desc');
+                $query->orderBy('w_works.created_at', 'DESC');
             }
             if ($sortOption === 'orderOldPostsDate') {
-                $query->orderBy('w_works.created_at', 'asc');
+                $query->orderBy('w_works.created_at', 'ASC');
             }
 
 
@@ -76,6 +76,8 @@ class SearchWorkController extends Controller
 
             \Log::info('SearchWorkController:$resultsArray:');
             \Log::info($resultsArray);
+            \Log::info('SearchWorkController:$sortOption:');
+            \Log::info($sortOption);
 
             return json_encode($resultsArray);
             // if (count($resultsArray) == 0) {

@@ -10,6 +10,7 @@ PostSort.propTypes = {
 };
 
 export default function PostSort({ options, sortOption, onSort }) {
+  // console.log("sortOption", sortOption);
   return (
     <TextField
       select

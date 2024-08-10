@@ -111,6 +111,7 @@ export default function WorkOfListView() {
     setIsLoadColorLing(true);
     // 無駄なアイテム追加を防ぐために一度綺麗にする
     setWorkOfList([]);
+    // console.log("一度リセとされました。");
   };
 
   // useSWR = Pageが変更されたら作品データを取得し、その取得したデータはキャッシュデータに残る。
@@ -127,6 +128,13 @@ export default function WorkOfListView() {
       }));
     }
   }, [isIntersecting]);
+
+  useEffect(() => {
+    // 検索が行われたときの初期処理
+    if (IsSearch.Check) {
+      setWorkOfList([]);
+    }
+  }, [IsSearch.searchToggle]);
 
   useEffect(() => {
     /* ----- サイドバー「💡作品一覧」が押されたときに正常に再表示するための処理 ここから -----*/
@@ -147,7 +155,6 @@ export default function WorkOfListView() {
 
     /*----- 検索されていないかつ作品データがあるとき ここから-----*/
     if (!IsSearch.Check && data) {
-      
       setAllItems((prevItems) => ({
         ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
         ResetItem: false, //リセットされ作品一覧データを際代入するこのタイミングでリセットされないように変更
@@ -160,25 +167,17 @@ export default function WorkOfListView() {
     // 検索されたか確認
     if (IsSearch.Check) {
       if (DataList.length !== 0) {
+        console.log("あああ");
         funcSetWorksItem(WorkOfList, setWorkOfList, DataList, setIsLoadColorLing, setIsLoadItemColorLing, error);
       }
     }
     /*----- 検索されたかつ、検索結果が帰ってきたとき ここまで -----*/
-
-  }, [data, error, DataList, IsSearch.Check, IsSearch.searchResultEmpty, sortOption, ResetItem]);
-
-  useEffect(() => {
-    // 検索が行われたときの初期処理
-    if (IsSearch.Check) {
-      setWorkOfList([]);
-    }
-  }, [IsSearch.searchToggle]);
+  }, [data, error, DataList, IsSearch.Check, IsSearch.searchResultEmpty, ResetItem]);
 
   // useEffect(() => {
   //   // 検索が行われたときの初期処理
-  //   console.log("WorkOfList", WorkOfList);
   //   console.log("AllItems", AllItems);
-  // }, [WorkOfList]);
+  // }, [AllItems]);
 
   const workItems = IsSearch.searchResultEmpty
     ? "検索結果は0件です" // フラグに基づいて表示

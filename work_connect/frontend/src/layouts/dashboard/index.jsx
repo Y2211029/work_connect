@@ -1,6 +1,11 @@
 import { createContext, useState } from "react";
 import PropTypes from "prop-types";
+
 export const MyContext = createContext();
+export const AllItemsContext = createContext();
+// export const DataListContext = createContext();
+// export const SearchCheckContext = createContext();
+// export const SortOption = createContext();
 
 import Box from "@mui/material/Box";
 
@@ -10,8 +15,6 @@ import Header from "./header";
 
 // ----------------------------------------------------------------------
 
-export const DataListContext = createContext();
-
 export default function DashboardLayout({ children }) {
   const [openNav, setOpenNav] = useState(false);
 
@@ -19,34 +22,38 @@ export default function DashboardLayout({ children }) {
    * ユーザーが開いているページが"localhost5174/Top"だった時
    * headerに表示されている不必要なボタンなどを表示しない
    */
+
   const HomePage = location.pathname === "/Top" ? "none" : "";
 
-  const [DataList, setDataList] = useState([]);
+  const [AllItems, setAllItems] = useState({
+    DataList: [],
+    IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
+    Page: 1,
+    ResetItem: false,
+    sortOption: "orderNewPostsDate",
+  });
 
-  const value = {
-    DataList,
-    setDataList,
+  const value1 = {
+    AllItems,
+    setAllItems,
   };
 
   return (
     <>
       <MyContext.Provider value={HomePage}>
-        <DataListContext.Provider value={value}>
+        <AllItemsContext.Provider value={value1}>
           <Header onOpenNav={() => setOpenNav(true)} />
-        </DataListContext.Provider>
-        <Box
-          sx={{
-            minHeight: 1,
-            display: "flex",
-            flexDirection: { xs: "column", lg: "row" },
-          }}
-        >
-          <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} />
-
-          <DataListContext.Provider value={value}>
+          <Box
+            sx={{
+              minHeight: 1,
+              display: "flex",
+              flexDirection: { xs: "column", lg: "row" },
+            }}
+          >
+            <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} />
             <Main>{children}</Main>
-          </DataListContext.Provider>
-        </Box>
+          </Box>
+        </AllItemsContext.Provider>
       </MyContext.Provider>
     </>
   );

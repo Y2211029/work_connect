@@ -8,136 +8,197 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 
-import { useIntersection } from "/src/routes/hooks/use-intersection";
+import LoginStatusCheck from "src/components/account/loginStatusCheck/loginStatusCheck";
+import { useIntersection } from "src/routes/hooks/use-intersection";
+import CreateTagElements from "src/components/tag/CreateTagElements";
+import { AllItemsContext } from "src/layouts/dashboard";
 import PostCard from "src/sections/WorkList/post-card";
 import PostSort from "src/sections/WorkList/post-sort";
-import LoginStatusCheck from "src/components/account/loginStatusCheck/loginStatusCheck";
-import CreateTagElements from "src/components/tag/CreateTagElements";
-import { DataListContext } from "src/layouts/dashboard/index";
-// import AppCurrentVisits from "src/sections/overview/app-current-visits";
-
-/*------------------------------------------------------------------------------------------------*/
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
-// コンポーネント内で定義するとレンダリングの度に新しいオブジェクトが生成されるので外に定義
-// もしくはuseStateやuseRefの初期値として定義
 const setting = {
   rootMargin: "40px",
 };
 
-// w_worksのカンマ繋がりの文字列をタグボタンに変換
+//
+const funcSetWorksItem = (currentWorkList, setWorkList, newWorks, setLoading, setItemLoading, error) => {
+  // Laravelでw_worksテーブルから取得し、データがあればtrue
+  if (newWorks) {
+    // w_works.work_id IDを取り出す。
+    const uniqueRepoIds = new Set(currentWorkList.map((work) => work.work_id));
+
+    // ※ 【filter】 条件に合うものを探して取り出す。 【has】 特定の値が存在する場合は trueを返す
+    // newWorks = data または DataListが代入されている。
+    // data または DataListの中にwork.work_idが被っているものは排除して新しいデータだけを代入
+    const uniqueRepos = newWorks.filter((item) => !uniqueRepoIds.has(item.work_id));
+
+    uniqueRepos.forEach((element) => {
+      if (typeof element.work_genre === "string" && element.work_genre !== null) {
+        element.work_genre = createTagElements(element.work_genre);
+      }
+    });
+
+    setWorkList((prev) => [...prev, ...uniqueRepos]);
+    setLoading(false);
+    setItemLoading(false);
+  }
+
+  if (error) {
+    console.error(error);
+    setLoading(false);
+    setItemLoading(false);
+  }
+};
+
 const createTagElements = (genreString) => {
   return genreString.split(",").map((item) => <CreateTagElements key={item} itemContents={item} />);
 };
 
 const generatePosts = (WorkOfList) => {
-  return WorkOfList.map((_, key) => ({
-    work_id: WorkOfList[key].work_id,
+  return WorkOfList.map((work, key) => ({
+    work_number: key,
+    work_id: work.work_id,
     cover: `/assets/images/covers/cover_${key + 1}.jpg`,
     thumbnail: `/assets/workImages/thumbnail/cover_${key + 1}.jpg`,
-    title: WorkOfList[key].work_name,
-    genre: WorkOfList[key].work_genre,
-    // substring(0, 200) 第一引数：文字列の開始位置。第二引数：開始位置から何文字目を取得する。
-    // introの文字数が200文字以上の時、「...」を表示する。
-    intro:
-      WorkOfList[key].work_intro.length > 200
-        ? WorkOfList[key].work_intro.substring(0, 200) + "..."
-        : WorkOfList[key].work_intro,
+    title: work.work_name,
+    genre: work.work_genre,
+    intro: work.work_intro.length > 200 ? work.work_intro.substring(0, 200) + "..." : work.work_intro,
     author: {
-      avatarUrl: `/assets/images/avatars/avatar_${WorkOfList[key].icon}.jpg`,
+      avatarUrl: `/assets/images/avatars/avatar_${work.icon}.jpg`,
     },
     view: faker.number.int(99999),
     comment: faker.number.int(99999),
     favorite: faker.number.int(99999),
-    userName: WorkOfList[key].user_name,
-    createdAt: WorkOfList[key].created_at,
+    userName: work.user_name,
+    createdAt: work.created_at,
   }));
 };
 
 export default function WorkOfListView() {
   // ログインチェック
   const { loginStatusCheckFunction } = LoginStatusCheck();
-  // スクロールした際に次のデータを取得するために必要
-  const [page, setPage] = useState(1);
-  // 作品一覧のデータを保持するステート
+  // 作品アイテム格納
   const [WorkOfList, setWorkOfList] = useState([]);
-  // 検索結果を反映させるためのContext
-  const { DataList } = useContext(DataListContext);
-  // スクロールされたら新しいデータを取得
-  const [isIntersecting, ref] = useIntersection(setting);
-  // 全体画面ローディング
+  // 画面全体ローディング
   const [isLoadColorLing, setIsLoadColorLing] = useState(true);
-  // 作品アイテムスクロール時ローディング
+  // 作品アイテム最後尾ローディング
   const [isLoadItemColorLing, setIsLoadItemColorLing] = useState(false);
+  // AllItemsContextから状態を取得
+  const { AllItems, setAllItems } = useContext(AllItemsContext);
+  const { DataList, IsSearch, Page, ResetItem, sortOption } = AllItems;
+  // スクロールされたらtrueを返す。
+  const [isIntersecting, ref] = useIntersection(setting);
 
-  // 無駄なレンダリングを回避する。
   useEffect(() => {
     loginStatusCheckFunction();
   }, [loginStatusCheckFunction]);
 
-  // 今表示されているアイテムの一番下までスクロールしたら次のデータを取得する。
+  // 並べ替え
+  const handleSortChange = (event) => {
+    // 並べ替え内容「例：投稿日が新しい順」を取得
+    const newValue = event.target.value;
+    // URLパラメータにセットしてLaravel側でデータを1取得するための準備
+
+    // console.log("newValue", newValue);
+
+    setAllItems((prevItems) => ({
+      ...prevItems,
+      Page: 1,
+      sortOption: newValue,
+    }));
+    // ローディング表示
+    setIsLoadColorLing(true);
+    // 無駄なアイテム追加を防ぐために一度綺麗にする
+    setWorkOfList([]);
+    // console.log("一度リセとされました。");
+  };
+
+  // useSWR = Pageが変更されたら作品データを取得し、その取得したデータはキャッシュデータに残る。
+  const url = DataList.length > 0 ? null : `http://localhost:8000/get_work_list?page=${Page}&sort=${sortOption}`;
+  const { data, error } = useSWR(url, fetcher);
+
+  // 作品アイテムの一番最後までスクロールされたらデータを取得する。
   useEffect(() => {
     if (isIntersecting) {
       setIsLoadItemColorLing(true);
-      setPage((p) => p + 1);
+      setAllItems((prevItems) => ({
+        ...prevItems,
+        Page: prevItems.Page + 1,
+      }));
     }
-    // if(WorkOfList.length - 1)
   }, [isIntersecting]);
 
-  /**
-   *---------- useSWR--------------
-   * 概要：取得したデータを保持（キャッシュ）し、再レンダリング時にその保持したデータを使用する。
-   * useSWRの解説：https://swr.vercel.app/ja  |  https://qiita.com/musenmai/items/e09c0b798a05522a33cf
-   * 
-   * 現在の使用状況：スクロールされたら、データを取得し、キャッシュデータを使用してスクロールする前に表示されていた作品アイテムに追加する。
-   */
- 
-  // レスポンス情報を常に持っておくことで、毎回API通信がされるのを防ぐhooks
-
-  // 何も検索されていない、素の状態。
-  useSWR(`http://localhost:8000/get_work_list?page=${page}`, fetcher, {
-    onSuccess: (data) => {
-      if (data && data.length > 0) {
-        setWorkOfList((r) => {
-          const uniqueRepoIds = new Set(r.map((WorkOfList) => WorkOfList.work_id));
-          // 重複データを省く
-          const uniqueRepos = data.filter((item) => !uniqueRepoIds.has(item.work_id));
-          // ジャンルボタンの作成
-          uniqueRepos.map((element) => {
-            if (typeof element.work_genre === "string" && element.work_genre !== null) {
-              element.work_genre = createTagElements(element.work_genre);
-            }
-            return element;
-          });
-          // 作品アイテムがスクロールされてデータが表示されたら、ローディングアニメーションをOFFにする。
-          setIsLoadColorLing(false);
-          // 現在表示している作品アイテムに新しいデータを追加。
-          return [...r, ...uniqueRepos];
-        });
-      } else {
-        // 作品アイテムがスクロールしてもデータが0件の場合、ローディングアニメーションをOFFにする。
-        setIsLoadItemColorLing(false);
-      }
-    },
-    onError: (err) => {
-      console.log("err", err);
-    },
-  });
-
-  // 検索されたら実行
   useEffect(() => {
-    setWorkOfList(DataList);
-    console.log("DataList:", DataList);
-  }, [DataList]);
+    // 検索が行われたときの初期処理
+    if (IsSearch.Check) {
+      setWorkOfList([]);
+    }
+  }, [IsSearch.searchToggle]);
 
-  // 検索結果0件の場合、WorkOfListに"検索結果0件"が入ってるのでそのまま表示する。
-  const workItems = WorkOfList !== "検索結果0件" ? generatePosts(WorkOfList) : WorkOfList;
+  useEffect(() => {
+    /* ----- サイドバー「💡作品一覧」が押されたときに正常に再表示するための処理 ここから -----*/
+    // リセット
+    if (ResetItem) {
+      setAllItems((prevItems) => ({
+        ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
+        DataList: [], //検索してない状態にするために初期化 //searchbar.jsxのsearchSourceも初期化
+        IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
+        Page: 1, //スクロールする前の状態にするために初期化
+        sortOption: "orderNewPostsDate", //並び替える前の状態にするために初期化
+      }));
+
+      setWorkOfList([]); //検索結果やスクロールした際に追加された作品データを一度初期化
+      setIsLoadColorLing(true); //ローディングアニメーションを表示
+    }
+    /*----- サイドバー「💡作品一覧」が押されたときに正常に再表示するための処理 ここまで -----*/
+
+    /*----- 検索されていないかつ作品データがあるとき ここから-----*/
+    if (!IsSearch.Check && data) {
+      setAllItems((prevItems) => ({
+        ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
+        ResetItem: false, //リセットされ作品一覧データを際代入するこのタイミングでリセットされないように変更
+      }));
+      funcSetWorksItem(WorkOfList, setWorkOfList, data, setIsLoadColorLing, setIsLoadItemColorLing, error);
+    }
+    /*----- 検索されていないかつ作品データがあるとき ここまで -----*/
+
+    /*----- 検索されたかつ、検索結果が帰ってきたとき -----*/
+    // 検索されたか確認
+    if (IsSearch.Check) {
+      if (DataList.length !== 0) {
+        console.log("あああ");
+        funcSetWorksItem(WorkOfList, setWorkOfList, DataList, setIsLoadColorLing, setIsLoadItemColorLing, error);
+      }
+    }
+    /*----- 検索されたかつ、検索結果が帰ってきたとき ここまで -----*/
+  }, [data, error, DataList, IsSearch.Check, IsSearch.searchResultEmpty, ResetItem]);
+
+  // useEffect(() => {
+  //   // 検索が行われたときの初期処理
+  //   console.log("AllItems", AllItems);
+  // }, [AllItems]);
+
+  const workItems = IsSearch.searchResultEmpty
+    ? "検索結果は0件です" // フラグに基づいて表示
+    : generatePosts(WorkOfList);
+
+  // 作品アイテムをHTML要素に当てはめて表示する準備
+  const renderWorkItems = Array.isArray(workItems) ? (
+    workItems.map((post, index) => (
+      <PostCard
+        ref={index === WorkOfList.length - 1 ? ref : null}
+        key={`${post.work_id}-${index}`}
+        post={post}
+        index={index}
+      />
+    ))
+  ) : (
+    <Typography>{workItems}</Typography>
+  ); // 検索結果が文字列の場合、その文字列を表示
 
   return (
-    // Container 真ん中にコンテンツを寄せて表示したいときに使う
     <>
-      {/* ローディング */}
       {isLoadColorLing && (
         <ColorRing
           visible={true}
@@ -145,38 +206,38 @@ export default function WorkOfListView() {
           width="100"
           ariaLabel="color-ring-loading"
           wrapperStyle={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
-          wrapperClass="color-ring-wrapper"
+          wrapperClass="custom-color-ring-wrapper" // カスタムクラスを指定
           colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
         />
       )}
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          {/* Typography 注釈みたいなもの */}
           <Typography variant="h4">作品一覧</Typography>
         </Stack>
-        {/* 並べ替えボタン */}
         <Stack mb={5} direction="row" alignItems="center" justifyContent="flex-end">
-          <PostSort
-            options={[
-              { value: "orderNewPostsDate", label: "投稿日が新しい順" },
-              { value: "orderOldPostsDate", label: "投稿日が古い順" },
-            ]}
-          />
+          {/*
+          IsSearch.searchResultEmpty = false 作品データあり
+          IsSearch.searchResultEmpty = true 作品データなし
+          
+          IsSearch.searchResultEmpty !== true
+          「検索結果が0件でない場合に表示」
+          */}
+          {IsSearch.searchResultEmpty !== true && (
+            <PostSort
+              options={[
+                { value: "orderNewPostsDate", label: "投稿日が新しい順" },
+                { value: "orderOldPostsDate", label: "投稿日が古い順" },
+              ]}
+              sortOption={sortOption}
+              onSort={handleSortChange}
+            />
+          )}
         </Stack>
 
         <Grid container spacing={3}>
-          {workItems !== "検索結果0件"
-            ? workItems.map((post, index) => (
-                // WorkOfList内にあるデータの一番最後の時に、useRefでスクロールした際に反応させる。
-                <PostCard
-                  ref={index === WorkOfList.length - 1 ? ref : null}
-                  key={`${post.work_id}-${post.userName}`}
-                  post={post}
-                  index={index}
-                />
-              ))
-            : workItems}
-          {/* ローディング */}
+          {/* 作品アイテムの表示 */}
+          {renderWorkItems}
+
           {isLoadItemColorLing && (
             <ColorRing
               visible={true}

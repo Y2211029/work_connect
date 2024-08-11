@@ -51,8 +51,7 @@ const InternshipJobOfferPage = () => {
     const [bookmarked, setBookmarked] = useState(false);
     const [isHover, SetFavoriteIcon_hover] = useState(false);  //ホバーしたら「クリックするとブックマークできます」というテキストが出現
     const [sessionId, setSessionId] = useState(null);
-    const [userName, setUserName] = useState(null);
-    const [email, setEmail] = useState(null);
+    const [isSessionLoaded, setIsSessionLoaded] = useState(false); //セッションデータから情報を取得できたかどうか
 
     const csrf_url = "http://localhost:8000/csrf-token";
     const news_bookmark_url = "http://localhost:8000/news_bookmark";
@@ -66,7 +65,7 @@ const InternshipJobOfferPage = () => {
         async function fetchData() {
             try {
                 const response = await axios.get(
-                    `http://127.0.0.1:8000/Internship_JobOffer/news_detail/${parameter.id}`
+                    `http://localhost:8000/Internship_JobOffer/news_detail/${parameter.id}`
                 );
                 console.log(response.data);
                 SetNewsDetail(response.data);
@@ -94,16 +93,20 @@ const InternshipJobOfferPage = () => {
     }, []);
 
     useEffect(() => {
-    // sessionStorage に保存したデータを取得
-    let dataString = sessionStorage.getItem("accountData");
-    // JSON 文字列を JavaScript オブジェクトに変換
-    let dataObject = JSON.parse(dataString);
-        setSessionId(dataObject.id);
-        setUserName(dataObject.user_name);
-        setEmail(dataObject.mail);
+        // sessionStorage に保存したデータを取得
+        let dataString = sessionStorage.getItem("accountData");
+        if (dataString) {
+            // JSON 文字列を JavaScript オブジェクトに変換
+            let dataObject = JSON.parse(dataString);
+            if (dataObject) {
+                setSessionId(dataObject.id);
+            }
+        }
+        setIsSessionLoaded(true); // データ取得が完了したことを示す
     }, []);
 
-    //日付をYY/MM/DDに変換する
+
+   //日付をYY/MM/DDに変換する
     const formatDate = (dateString) => {
         const dateObj = new Date(dateString);
         const year = dateObj.getFullYear();
@@ -152,34 +155,33 @@ const InternshipJobOfferPage = () => {
                     {/* NewsDetailHeader要素 サムネイルと会社名・お気に入りボタンを一括りにする */}
                     <div style={NewsDetailHeader}>
                         <img
-                            src={NewsDetail.header_img}
+                            src={`./header_img/${NewsDetail.header_img}`}
                             style={news_img}
                             alt={NewsDetail.article_title}
                         />
 
                         <div style={genre_update}>
                             <p>{NewsDetail.genre}</p>
-                            <p>{formatDate(NewsDetail.updated_at)}</p>
-                            <p>シナジーマーケティング株式会社</p>
-                            <p>session_idは{sessionId}</p>
-                            <p>userNameは{userName}</p>
-                            <p>メールアドレスは{email}</p>
-                            <p>データ{sessionId}</p>
+                            <p>{formatDate(NewsDetail.news_created_at)}</p>
+                            <p>{NewsDetail.company_name}</p>
 
-                            {bookmarked ? (
-                                <FavoriteIcon
-                                    style={{ fontSize: '24px' }}
-                                    onClick={news_bookmark}
-                                    onMouseEnter={() => SetFavoriteIcon_hover(true)}
-                                    onMouseLeave={() => SetFavoriteIcon_hover(false)}
-                                />
-                            ) : (
-                                <FavoriteBorderIcon
-                                    style={{ fontSize: '24px' }}
-                                    onClick={news_bookmark}
-                                    onMouseEnter={() => SetFavoriteIcon_hover(true)}
-                                    onMouseLeave={() => SetFavoriteIcon_hover(false)}
-                                />
+                            {/* //ログインしていない場合非表示 */}
+                            {isSessionLoaded && sessionId && (
+                                bookmarked ? (
+                                    <FavoriteIcon
+                                        style={{ fontSize: '24px' }}
+                                        onClick={news_bookmark}
+                                        onMouseEnter={() => SetFavoriteIcon_hover(true)}
+                                        onMouseLeave={() => SetFavoriteIcon_hover(false)}
+                                    />
+                                ) : (
+                                    <FavoriteBorderIcon
+                                        style={{ fontSize: '24px' }}
+                                        onClick={news_bookmark}
+                                        onMouseEnter={() => SetFavoriteIcon_hover(true)}
+                                        onMouseLeave={() => SetFavoriteIcon_hover(false)}
+                                    />
+                                )
                             )}
                             {isHover && <div style={{ position: 'absolute', top: '30px', left: '10px', color: 'red' }}>クリックするとブックマークできます</div>}
                         </div>

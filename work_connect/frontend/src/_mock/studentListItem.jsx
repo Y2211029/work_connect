@@ -6,6 +6,7 @@ import { faker } from "@faker-js/faker";
 
 // タグボタン作成コンポーネント
 import CreateTagElements from "src/components/tag/CreateTagElements";
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
 // ----------------------------------------------------------------------
 /*--------------------------------------------*/
 /* 学生一覧のデータを取得する処理を追加しました。 */
@@ -16,9 +17,21 @@ import CreateTagElements from "src/components/tag/CreateTagElements";
 export const StudentListItem = () => {
   // 学生一覧のデータを保持するステート
   const [StudentOfList, setStudentOfList] = useState([]);
+  const { getSessionData } = useSessionStorage();
+
+  const accountData = getSessionData("accountData");
+  const data = {
+    id: accountData.id,
+  };
+
+  // dataオブジェクトの中のidを使ってURLを作成
+  const url = `http://localhost:8000/get_student_list/${data.id}`;
+
+  // URLをコンソールに出力して確認
+  console.log("urlは", url);
+
 
   // 学生の一覧データを取得する用URL
-  const url = "http://localhost:8000/get_student_list";
 
   useEffect(() => {
     async function StudentListFunction() {
@@ -54,6 +67,7 @@ export const StudentListItem = () => {
 
   console.log("posts:", StudentOfList[0]);
   const posts = StudentOfList.map((_, key) => ({
+    id: StudentOfList[key].id,
     cover: `/assets/images/covers/cover_${key + 1}.jpg`,
     graduationYear: StudentOfList[key].graduation_year,
     title: StudentOfList[key].student_surname + StudentOfList[key].student_name,
@@ -61,6 +75,7 @@ export const StudentListItem = () => {
     desiredWorkRegion: StudentOfList[key].desired_work_region,
     desiredOccupation: StudentOfList[key].desired_occupation,
     view: faker.number.int(99999),
+    followStatus: StudentOfList[key].follow_status,
     comment: faker.number.int(99999),
     favorite: faker.number.int(99999),
     author: {

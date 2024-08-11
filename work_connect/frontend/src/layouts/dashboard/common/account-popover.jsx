@@ -53,24 +53,24 @@ export default function AccountPopover() {
    // セッションストレージ取得
    const { getSessionData } = useSessionStorage();
    const accountData = getSessionData("accountData");
- 
+
    const [UserName, setUserName] = useState("");
    const [Mail, setMail] = useState("");
    const [login_state, setLoginState] = useState(false);
- 
+
    useEffect(() => {
-    
+
      if (accountData) {
-      
+
        setUserName(accountData.user_name);
        setMail(accountData.mail);
        if (UserName && Mail) {
          setLoginState(true);
-         
+
        }
      }
    }, [accountData]);
- 
+
    // MENU_OPTIONSの設定
    const MENU_OPTIONS = [
     // {
@@ -83,11 +83,12 @@ export default function AccountPopover() {
       icon: "eva:person-fill",
     },
     {
-      label: "設定",
-      icon: "eva:settings-2-fill",
+      label: '設定',
+      path: '/Settings',
+      icon: 'eva:settings-2-fill',
     },
   ];
-  
+
 
   return (
     <>

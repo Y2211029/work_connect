@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'paths' => ['api/*'], // CORSを適用するパス
+    'paths' => ['*'], // CORSを適用するパス
     'allowed_methods' => ['*'], // 許可するHTTPメソッド
     'allowed_origins' => ['*'], // 許可するオリジン
     'allowed_origins_patterns' => [], // 許可するオリジンのパターン

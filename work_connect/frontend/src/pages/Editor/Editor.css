@@ -21,18 +21,22 @@
 }
 
   .editor .ce-block__content {
-    min-height: 100px; /* Adjust based on your needs */
+    min-height: 100px;
   }
 
   .ce-popover__items {
     width: 100%;
   }
 
-.cover_img_upload{
-  width:10%;
-  height:10%;
-  margin-left: 12%;
-}
+  .cover_img_upload {
+    width: 100px;
+    height: 100px;
+    box-sizing: border-box; 
+    padding: 0;
+    margin: 0;
+    border: none;
+  }
+
 
 .uploaded-image {
   position: relative;
@@ -53,9 +57,11 @@
 }
 
 .news_button {
+  position: relative;
+  width: 1000px;
   display: flex;
   justify-content: center;
-  margin-left:auto;
+  margin-left:20px;
   gap: 10px; /* ボタン間の間隔を設定 */
 }
 
@@ -105,7 +111,7 @@ figcaption {
       height:100%;
       background-color:rgba(0,0,0,0.5);
       z-index:10;
-    
+
       /*　画面の中央に要素を表示させる設定　*/
       display: flex;
       align-items: center;
@@ -117,7 +123,7 @@ figcaption {
   width:70%;
   padding: 1em;
   background:#fff;
-}    
+}
 
 /* エディター　公開設定　ラジオボタン */
 input[type=radio] {

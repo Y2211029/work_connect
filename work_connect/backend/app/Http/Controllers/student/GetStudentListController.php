@@ -13,6 +13,7 @@ class GetStudentListController extends Controller
     public function GetStudentListController(Request $request, $id)
     {
         try {
+
             $page = (int) $request->query('page', 1);
             $perPage = 20; //一ページ当たりのアイテム数
             $offset = ($page - 1) * $perPage;

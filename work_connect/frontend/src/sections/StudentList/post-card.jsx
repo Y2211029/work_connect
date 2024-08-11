@@ -27,6 +27,8 @@ const PostCard = forwardRef(({ post, index }, ref) => {
     view,
     comment,
     author,
+    followStatus: initialFollowStatus,
+    id,
   } = post;
 
   const [followStatus, setFollowStatus] = useState(initialFollowStatus);
@@ -46,6 +48,24 @@ const PostCard = forwardRef(({ post, index }, ref) => {
       }
     } catch (error) {
       console.error('フォロー処理中にエラーが発生しました！', error);
+    }
+  };
+
+  const [followStatus, setFollowStatus] = useState(initialFollowStatus);
+  const { getSessionData } = useSessionStorage();
+  const accountData = getSessionData("accountData");
+  const data = {
+    account_id: accountData.id,
+  };
+
+  const handleFollowClick = async () => {
+    try {
+      const updatedFollowStatus = await follow(data.account_id, id);
+      if (updatedFollowStatus) {
+        setFollowStatus(updatedFollowStatus);
+      }
+    } catch (error) {
+      console.error("フォロー処理中にエラーが発生しました！", error);
     }
   };
 
@@ -185,6 +205,8 @@ const PostCard = forwardRef(({ post, index }, ref) => {
               p: (theme) => theme.spacing(4, 3, 3, 3),
             }}
           >
+            {renderFollow}
+            
             {renderUserName}
 
             {renderGraduationYear}

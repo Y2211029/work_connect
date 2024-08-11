@@ -36,13 +36,15 @@ import 'cropperjs/dist/cropper.css';
 
 
 //画像
-import { Instagram, Twitter } from "@mui/icons-material";
 import ImageSearchIcon from '@mui/icons-material/ImageSearch';
 import CancelIcon from '@mui/icons-material/Cancel';
 
 //データ保存
 import axios from "axios";
-import $ from "jquery";
+
+//ルーティング
+import { useNavigate } from 'react-router-dom';
+
 
 
 
@@ -50,55 +52,103 @@ import $ from "jquery";
 const Editor = () => {
 
   const editorInstance = useRef(null);
+  const fileInputRef = useRef(null); // ファイル入力の参照を定義
   const editorHolder = useRef(null);
   const [imageUrl, setImageUrl] = useState(null); // 画像のURLを保持するステート
   const [displayInput, setDisplayInput] = useState(true); // input要素の表示状態を管理するステート
   const [textValue, setTextValue] = useState('');
   const [csrfToken, setCsrfToken] = useState("");
-  const [show, setShow] = useState(false)
-  const [news_id, setNewsId] = useState(0); //ニュースの情報が格納されているDBのidを格納する
+  const [sessionId, setSessionId] = useState(null);
+  const [show, setShow] = useState(false);
+  const [news_id, setNewsId] = useState(0); // ニュースの情報が格納されているDBのidを格納する
+  const [draft_list, setDraftList] = useState([]); // ニュースの下書きリストを保持するステート
+  const [selected_draft, setSelectedDraft] = useState(null); // 選択された下書きを保持するステート
+
+
   const news_save_url = "http://127.0.0.1:8000/news_save";
-  const image_save_url = "http://127.0.0.1:8000/image_save";
-  const news_upload_url = "http://127.0.0.1:8000/news_upload";
-  const csrf_url = "http://127.0.0.1:8000/csrf-token";
+  const thumbnail_image_save_url = "http://127.0.0.1:8000/thumbnail_image_save";
+  const news_upload_url = "http://localhost:8000/news_upload";
+  const csrf_url = "http://localhost:8000/csrf-token";
+  const navigate = useNavigate();
+
+    //ニュースを投稿した際の処理
+    const news_upload = async () => {
+      alert("ニュースを投稿しました");
+      const newsContent = document.getElementById('news_textarea').value;
+      const radioButtons = document.getElementsByName('news_genre');
+      let selectedGenre = '';
+
+      for (let i = 0; i < radioButtons.length; i++) {
+        if (radioButtons[i].checked) {
+          selectedGenre = radioButtons[i].value;
+          break;
+        }
+      }
+
+      try {
+        const response = await axios.post(news_upload_url, {
+          news_id: news_id,
+          message: newsContent,
+          genre: selectedGenre,
+        }, {
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+          }
+        });
+
+        console.log(response.data.id);
+        setNewsId(response.data.id);
+        console.log("成功");
+        navigate('/Internship_JobOffer');
+      } catch (error) {
+        console.log("Error:", error);
+      }
+    };
 
   const titlechange = (event) => {
     setTextValue(event.target.value); // テキストエリアの値をstateに反映
   };
 
+  const handleNavigation = () => {
+    navigate('/Internship_JobOffer'); // ルートパスに基づいた指定
+  };
 
+
+  // 下書きを新規保存・更新する処理
   const news_save = () => {
     alert("下書きを保存しました!");
-    console.log(textValue)
+    console.log(textValue);
     if (editorInstance.current && typeof editorInstance.current.save === "function") {
       editorInstance.current
         .save()
         .then((outputData) => {
           console.log("Article data: ", outputData);
-          // ajax
-          $.ajax({
+          console.log(sessionId);
+          axios({
+            method: "post",
             url: news_save_url, // アクセスするURL
-            type: "GET", // POST または GET
-            cache: false, // cacheを使うか使わないかを設定
-            dataType: "json", // データタイプ (script, xmlDocument, jsonなど)
-            data: {
-              value: outputData,  //ニュース記事
-              title: textValue,   //タイトル
-              news_id: news_id,   //ID
+            params: {
+              value: outputData,  // ニュース記事
+              title: textValue,   // タイトル
+              news_id: news_id,   // ID
+              company_id: sessionId // 企業ID
             },
             headers: {
               "X-CSRF-TOKEN": csrfToken,
             },
           })
-            .done(function (response) {
-              // ajax成功時の処理
-              console.log(response.id);
-              setNewsId(response.id); // news_idを更新する
+            .then((response) => {
+              // axios成功時の処理
+              console.log(response.data.id);
+              const news_draft_list = response.data.news_draft_list;
+              setDraftList(news_draft_list); //下書きリスト最新に更新
+              setNewsId(response.data.id); // news_idを更新する
               console.log("成功");
             })
-            .fail(function (textStatus, errorThrown) {
-              // ajax失敗時の処理
-              console.log("Error:", textStatus, errorThrown);
+            .catch((error) => {
+              // axios失敗時の処理
+              console.error("Error:", error);
             });
         })
         .catch((error) => {
@@ -109,47 +159,7 @@ const Editor = () => {
     }
   };
 
-  const news_upload = () => {
-    alert("ニュースを投稿しました");
-    const newsContent = document.getElementById('news_textarea').value;
-    const radioButtons = document.getElementsByName('news_genre');
-    let selectedGenre = '';
 
-    for (let i = 0; i < radioButtons.length; i++) {
-      if (radioButtons[i].checked) {
-        selectedGenre = radioButtons[i].value;
-        break;
-      }
-    }
-    console.log(newsContent);
-    console.log(selectedGenre);
-    console.log(news_id);
-    // ajax
-    $.ajax({
-      url: news_upload_url, // アクセスするURL
-      type: "GET", // POST または GET
-      cache: false, // cacheを使うか使わないかを設定
-      dataType: "json", // データタイプ (script, xmlDocument, jsonなど)
-      data: {
-        news_id: news_id,    //ID
-        message: newsContent,  //企業の方からのメッセージ
-        genre: selectedGenre,   //ジャンル
-      },
-      headers: {
-        "X-CSRF-TOKEN": csrfToken,
-      },
-    })
-      .done(function (response) {
-        // ajax成功時の処理
-        console.log(response.id);
-        setNewsId(response.id); // news_idを更新する
-        console.log("成功");
-      })
-      .fail(function (textStatus, errorThrown) {
-        // ajax失敗時の処理
-        console.log("Error:", textStatus, errorThrown);
-      });
-  }
 
   const news_release_setting = () => {
     setShow(true);
@@ -161,24 +171,29 @@ const Editor = () => {
     document.body.style.overflow = 'auto';
   };
 
+
   const handleImageUpload = async (file) => {
-    const toBase64 = (file) =>
-      new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = (error) => reject(error);
+    const formData = new FormData();
+    formData.append('file', file);
+    const contents_image_save_url = "http://localhost:8000/contents_image_save";
+    try {
+      const response = await axios.post(contents_image_save_url, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
 
-    try {
-      const base64Image = await toBase64(file);
-      console.log(base64Image);
-      return { success: 1, file: { url: base64Image } };
+      if (response.data.success) {
+        return { success: 1, file: { url: response.data.url } };
+      } else {
+        return { success: 0, message: 'Failed to upload image' };
+      }
     } catch (error) {
       console.error(error);
-      return { success: 0, message: "Failed to upload image", error };
+      return { success: 0, message: 'Failed to upload image', error };
     }
   };
+
 
   const handleFileSelect = async (event) => {
     const file = event.target.files[0];
@@ -186,13 +201,14 @@ const Editor = () => {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('news_id', news_id);
+      formData.append('session_id', sessionId);
 
-      console.log('FormData:', formData);
       console.log('file', file);
       console.log('news_id', news_id);
+      console.log('session_id', sessionId);
 
       try {
-        const response = await axios.post(image_save_url, formData, {
+        const response = await axios.post(thumbnail_image_save_url, formData, {
           headers: {
             "X-CSRF-TOKEN": csrfToken,
             'Content-Type': 'multipart/form-data',
@@ -201,8 +217,10 @@ const Editor = () => {
         console.log(response.data);
         const path = `./header_img/${response.data.image}`;
         const id = response.data.id;
+        const news_draft_list = response.data.news_draft_list;
         console.log(path);
-        console.log(id);
+        console.log(id)
+        setDraftList(news_draft_list); //下書きリスト最新に更新
         setNewsId(id);
         setImageUrl(path);
         setDisplayInput(false);
@@ -213,11 +231,69 @@ const Editor = () => {
     }
   };
 
+  const rewrite_news = (id) => {
+    // ドラフトリストから選択したIDのアイテムを取得
+    const select_draft_list = draft_list.find(d => d.id === id);
+    console.log('Selected draft:', select_draft_list);
+    if (!select_draft_list) {
+      console.error("Draft not found for ID:", id);
+      console.log('Selected draft:', selected_draft); // デバッグ用
+      return;
+    }
+
+    // 取得したアイテムを状態にセット
+    setSelectedDraft(select_draft_list);
+    // タイトルや画像URLを状態にセット
+    setTextValue(select_draft_list.article_title); // タイトル上書き
+    if (!select_draft_list.header_img || select_draft_list.header_img.trim() === '') {
+      // header_img が null、undefined、または空文字列の場合
+      setDisplayInput(true);
+      console.log("画像NULL");
+    } else {
+      // header_img が空でない場合
+      setImageUrl(`./header_img/${select_draft_list.header_img}`); // ヘッダー画像上書き
+      setDisplayInput(false);
+      console.log("画像NULLじゃない");
+    }
+
+    // エディタの内容を更新
+    if (editorInstance.current && typeof editorInstance.current.render === "function") {
+      try {
+        // select_draft_list.summaryがエディタが理解できる形式であることを確認
+        const content = select_draft_list.summary ? JSON.parse(select_draft_list.summary) : {};
+        editorInstance.current.render(content); // エディタにデータをセット
+      } catch (error) {
+        console.error("Error parsing or rendering content:", error);
+      }
+    } else {
+      console.log("Editor instance or render function not available");
+    }
+
+    // news_idをセット
+    setNewsId(select_draft_list.id);
+  };
+
 
 
   useEffect(() => {
 
-    console.log(news_id); // news_idの値が変更されたときに実行される処理
+
+    async function getSessionId() {
+      try {
+        // Get data from sessionStorage
+        const dataString = sessionStorage.getItem("accountData");
+        if (dataString) {
+          const dataObject = JSON.parse(dataString);
+          if (dataObject) {
+            setSessionId(dataObject.id);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching CSRF token:", error);
+      }
+    }
+    getSessionId(); // ページがロードされた時点でsessionstorageからidを取得
+
     async function fetchCsrfToken() {
       try {
         const response = await axios.get(csrf_url); // CSRFトークンを取得するAPIエンドポイント
@@ -231,35 +307,8 @@ const Editor = () => {
     }
     fetchCsrfToken(); // ページがロードされた時点でCSRFトークンを取得
 
-
-    const handleUrlUpload = async (fileUrl) => {
-      try {
-        const response = await fetch(fileUrl);
-        const blob = await response.blob();
-        const base64Image = await blobToBase64(blob);
-        return { success: 1, file: { url: base64Image } };
-      } catch (error) {
-        console.error(error);
-        return { success: 0, message: "Failed to upload image", error };
-      }
-    };
-
-    const blobToBase64 = (blob) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(blob);
-        reader.onloadend = () => {
-          const base64data = reader.result;
-          resolve(base64data);
-        };
-        reader.onerror = reject;
-      });
-    };
-
     if (editorHolder.current) {
       editorInstance.current = new EditorJS({
-
-
         holder: editorHolder.current,
         placeholder: "コンテンツを入力してください",
         tools: {
@@ -365,7 +414,6 @@ const Editor = () => {
             config: {
               uploader: {
                 uploadByFile: handleImageUpload,
-                uploadByURL: handleUrlUpload,
               },
             },
           },
@@ -374,7 +422,6 @@ const Editor = () => {
             config: {
               uploader: {
                 uploadByFile: handleImageUpload,
-                uploadByURL: handleUrlUpload,
               },
             },
           },
@@ -563,11 +610,15 @@ const Editor = () => {
                 toggler: {
                   "Click to tune": "クリックして調整",
                   "or drag to move": "またはドラッグして移動",
+                  "Move up": "上に移動する",
+                  "Move down": "下に移動する",
+                  "Delete": "削除"
                 },
               },
               inlineToolbar: {
                 converter: {
                   "Convert to": "変換",
+
                 },
               },
               toolbar: {
@@ -593,33 +644,41 @@ const Editor = () => {
               },
             },
             toolNames: {
+              //メニュー
               Text: "テキスト",
-              "Nested Checklist": "リスト",
-              Heading: "見出し",
-              Embed: "埋め込み",
-              Checklist: "チェックリスト",
-              Title: "タイトル",
-              Quote: "引用",
-              Code: "コード",
-              Alert: "警告",
-              Delimiter: "区切り",
-              "Raw HTML": "HTML",
               Table: "テーブル",
-              Hyperlink: 'ハイパーリンク',
-              Bold: "太字",
-              Underline: "下線",
-              Italic: "斜体",
-              InlineCode: "インラインコード",
+              Code: "コード",
+              Carousel: "カルーセル",
               Image: "画像",
-              Toggle: "折りたたみメニュー",
-              Strikethrough: "取り消し線",
-              Tooltip: "ツールチップ",
-              ChangeCase: "大文字:小文字 変換",
-              Button: "ボタン",
               FlipBox: "スライド(テキストのみ)",
               AudioPlayer: "オーディオ",
               "Image Gallery": "画像ギャラリー",
-              Carousel: "カルーセル",
+              "Raw HTML": "HTML",
+              Heading: "見出し",
+              Title: "タイトル",
+              Alert: "警告",
+              Quote: "引用",
+              Checklist: "チェックリスト",
+              Delimiter: "区切り",
+              Toggle: "折りたたみメニュー",
+              Button: "ボタン",
+              "Nested Checklist": "リスト",
+
+              Embed: "埋め込み",
+
+              //サブメニュー
+              Bold: "太字",
+              Italic: "斜体",
+              Link: "リンク",
+              Color: "カラー",
+              Marker: "マーカー",
+              InlineCode: "インラインコード",
+              Underline: "下線",
+              Tooltip: "ツールチップ",
+              Strikethrough: "取り消し線",
+              ChangeCase: "大文字:小文字 変換",
+              Hyperlink: 'ハイパーリンク',
+
             },
           },
         },
@@ -628,10 +687,69 @@ const Editor = () => {
 
   }, []); // 空の依存配列を渡して初回のみ実行
 
+  useEffect(() => {
+    async function newsDraftList() {
+      if (sessionId) {
+        const news_draft_list_url = `http://localhost:8000/news_draft_list/${sessionId}`;
+        console.log(news_draft_list_url);
+        try {
+          const response = await axios.get(news_draft_list_url);
+          console.log("ドラフトリスト:", response.data); // 配列そのものが返ってくる
+          setDraftList(response.data); // 直接配列をセット
+        } catch (error) {
+          console.error("Error fetching news draft list:", error);
+        }
+      }
+    }
 
+    newsDraftList();
+  }, [sessionId]); // sessionIdが変更されたときに実行される
+
+
+  // 画像を削除する処理
+  const thumbnail_img_delete = async () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = null; // ファイル入力の値をリセット
+      const header_img_delete_url = `http://localhost:8000/thumbnail_img_delete/${news_id}`;
+      console.log(news_id);
+      console.log(header_img_delete_url);
+      console.log(sessionId);
+      try {
+        const response = await axios.get(header_img_delete_url, {
+          params: {
+            Company_Id: sessionId,
+          },
+        });
+        if (response.data.success) {
+          setImageUrl(null); // 画像URLをリセット
+          setDisplayInput(true); // ファイルアップロードアイコン表示
+
+          // ドラフトリストを更新する
+          setDraftList(prevDraftList =>
+            prevDraftList.map(draft =>
+              draft.id === news_id ? { ...draft, header_img: null } : draft
+            )
+          );
+        }
+      } catch (error) {
+        console.error("画像削除中にエラーが発生しました:", error);
+      }
+    }
+  };
 
   return (
     <div className="editor">
+
+      <p>Draft List: </p>
+      {draft_list.length > 0 ? (
+        draft_list.map(draft => (
+          <p key={draft.id} onClick={() => rewrite_news(draft.id)}>
+            {draft.article_title}
+          </p>
+        ))
+      ) : (
+        <p>下書き中の記事はありません</p>
+      )}
 
       <div className="news_button">
         <button id="save" className="save" onClick={news_save}>下書きを保存する</button>
@@ -668,12 +786,11 @@ const Editor = () => {
       {
         imageUrl && (
           <div className="uploaded-image" id="uploaded-image">
-            <img src={imageUrl} alt="Uploaded" style={{ width: '100%', height: '300px' }} />
-            <CancelIcon
-              className="cancelIcon"
-            />
+            <img src={`${imageUrl}`} alt="Uploaded" style={{ width: '100%', height: '300px' }} />
+            <CancelIcon onClick={thumbnail_img_delete} />
           </div>
         )
+
       }
 
       {/* 画像を選ぶ */}
@@ -682,10 +799,14 @@ const Editor = () => {
           id="fileInput"
           type="file"
           accept="image/*"
-          style={{ display: 'none' }} // displayInput の状態によって表示を制御
-          onChange={handleFileSelect} // ファイル選択時の処理
+          style={{ display: 'none' }}
+          ref={fileInputRef}
+          onChange={handleFileSelect}
         />
+
       </form>
+
+      <button onClick={handleNavigation}>Go to Internship/Job Offer</button>
 
       <ImageSearchIcon
         className="cover_img_upload"
@@ -705,8 +826,6 @@ const Editor = () => {
       <div className="editor-wrapper">
         <div ref={editorHolder} id="editor" className="editor" />
       </div>
-      <Instagram />
-      <Twitter />
     </div >
   );
 };

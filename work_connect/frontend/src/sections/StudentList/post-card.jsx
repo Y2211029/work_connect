@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-
+import { useState } from "react";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
@@ -9,13 +9,11 @@ import Avatar from "@mui/material/Avatar";
 // import { alpa } from "@mui/material/styles";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
-
-// import { fDate } from "src/utils/format-time";
+import { follow } from "src/_mock/follow";
 import { fShortenNumber } from "src/utils/format-number";
-
 import Iconify from "src/components/iconify";
 import SvgColor from "src/components/svg-color";
-
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef(({ post, index }, ref) => {
@@ -29,11 +27,31 @@ const PostCard = forwardRef(({ post, index }, ref) => {
     view,
     comment,
     author,
+    followStatus: initialFollowStatus,
+    id,
   } = post;
 
   const latestPostLarge = index === -1;
 
   // const latestPost = index === 1 || index === 2;
+
+  const [followStatus, setFollowStatus] = useState(initialFollowStatus);
+  const { getSessionData } = useSessionStorage();
+  const accountData = getSessionData("accountData");
+  const data = {
+    account_id: accountData.id,
+  };
+
+  const handleFollowClick = async () => {
+    try {
+      const updatedFollowStatus = await follow(data.account_id, id);
+      if (updatedFollowStatus) {
+        setFollowStatus(updatedFollowStatus);
+      }
+    } catch (error) {
+      console.error("フォロー処理中にエラーが発生しました！", error);
+    }
+  };
 
   const renderAvatar = (
     <Avatar
@@ -69,6 +87,11 @@ const PostCard = forwardRef(({ post, index }, ref) => {
     </Link>
   );
 
+  const renderFollow = (
+    <Typography opacity="0.48" onClick={handleFollowClick}>
+      {followStatus}
+    </Typography>
+  );
   const renderGraduationYear = <Typography opacity="0.48">卒業年度:{graduationYear}</Typography>;
   const renderSchoolName = <Typography>学校名:{schoolName}</Typography>;
   const renderDesiredWorkRegion =
@@ -166,6 +189,8 @@ const PostCard = forwardRef(({ post, index }, ref) => {
               p: (theme) => theme.spacing(4, 3, 3, 3),
             }}
           >
+            {renderFollow}
+            
             {renderUserName}
 
             {renderGraduationYear}

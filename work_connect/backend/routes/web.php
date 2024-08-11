@@ -25,6 +25,7 @@ use App\Http\Controllers\work\GetWorkDetailController;
 use App\Http\Controllers\movie\GetMovieDetailController;
 use App\Http\Controllers\student\GetStudentListController;
 use App\Http\Controllers\company\GetCompanyListController;
+use App\Http\Controllers\follow\FollowController;
 use App\Http\Controllers\tag\InsertTagController;
 use App\Http\Controllers\tag\GetGenreTagController;
 use App\Http\Controllers\tag\GetLanguageTagController;
@@ -119,7 +120,7 @@ Route::get('/get_work_list', [GetWorkListController::class, 'GetWorkListControll
 // 動画一覧取得
 Route::get('/get_movie_list', [GetMovieListController::class, 'GetMovieListController']);
 // 学生一覧取得
-Route::get('/get_student_list', [GetStudentListController::class, 'GetStudentListController']);
+Route::get('/get_student_list/{id}', [GetStudentListController::class, 'GetStudentListController']);
 // 企業一覧取得
 Route::get('/get_company_list', [GetCompanyListController::class, 'GetCompanyListController']);
 
@@ -147,7 +148,8 @@ Route::post('/post_movie_comment', [PostMovieCommentSaveController::class, 'Post
 // 動画コメント削除
 Route::post('/post_movie_comment_delete', [PostMovieCommentDeleteController::class, 'PostMovieCommentDeleteController']);
 
-
+// フォロー
+Route::post('/follow', [FollowController::class, 'FollowController']);
 
 
 
@@ -166,12 +168,16 @@ Route::get('/s_pre_register', [pre_registerController::class, 'pre_registerContr
 
 
 //ニュース編集・投稿・閲覧機能
-Route::get('/news_save', [EditorController::class, 'news_save']);
-Route::get('/news_upload', [EditorController::class, 'news_upload']);
-Route::post('/image_save', [EditorController::class, 'image_save']);
+Route::post('/news_save', [EditorController::class, 'news_save']);
+Route::post('/news_upload', [EditorController::class, 'news_upload']);
+Route::post('/thumbnail_image_save', [EditorController::class, 'thumbnail_image_save']);
+Route::post('/contents_image_save', [EditorController::class, 'contents_image_save']);
+Route::post('/contents_url_image_save', [EditorController::class, 'contents_url_image_save']);
+Route::get('/news_draft_list/{id}', [EditorController::class, 'news_draft_list']);
 Route::get('/Internship_JobOffer', [EditorController::class, 'editor_get']);
 Route::get('/Internship_JobOffer/news_detail/{id}', [NewsController::class, 'news_detail_get']);
 Route::post('/news_bookmark', [NewsController::class, 'news_bookmark']);
+Route::get('/thumbnail_img_delete/{id}', [EditorController::class, 'thumbnail_img_delete']);
 
 
 //設定機能
@@ -190,7 +196,6 @@ Route::group(['middleware' => ['api', 'cors']], function () {
 Route::get('/csrf-token', function () {
     return response()->json(['csrf_token' => csrf_token()]);
 });
-
 
 Auth::routes();
 

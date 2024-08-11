@@ -40,7 +40,7 @@ export const Page404 = lazy(() => import("src/pages/page-not-found"));
 //プロフィール
 export const ProfilePage = lazy(() => import("src/pages/Profile"));
 
-//20240704 金田追加
+//20240704
 export const NewsDetailPage = lazy(() => import('src/sections/InternshipJobOffer/news_detail'));
 
 
@@ -68,10 +68,10 @@ export default function Router() {
         { path: "WorkDetail/:id", element: <WorkDetail /> },
         { path: "VideoDetail/:id", element: <VideoDetail /> },
 
-        //20240619 金田追加
+        //20240619 
         { path: "Settings", element: <SettingsPage /> },
         { path: "Editor", element: <EditorPage /> },
-        //20240704 金田追加
+        //20240704
         { path: "news_detail", element: <NewsDetailPage /> },
 
         // トップ画面追加

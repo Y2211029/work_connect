@@ -57,7 +57,6 @@ const createTagElements = (genreString) => {
 
 const generatePosts = (WorkOfList) => {
   return WorkOfList.map((work, key) => ({
-    work_number: key,
     work_id: work.work_id,
     cover: `/assets/images/covers/cover_${key + 1}.jpg`,
     thumbnail: `/assets/workImages/thumbnail/cover_${key + 1}.jpg`,

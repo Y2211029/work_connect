@@ -13,8 +13,13 @@ class GetStudentListController extends Controller
     public function GetStudentListController(Request $request, $id)
     {
         try {
-            // 全ユーザーリストを取得
-            $StudentOfList = w_users::select()->get();
+            $page = (int) $request->query('page', 1);
+            $perPage = 20; //一ページ当たりのアイテム数
+            $offset = ($page - 1) * $perPage;
+
+            $StudentOfList = w_users::skip($offset)
+                ->take($perPage)
+                ->get();
 
             // 各ユーザーのフォロー状態を確認して更新
             $StudentOfList = $StudentOfList->map(function ($user) use ($id) {
@@ -47,8 +52,8 @@ class GetStudentListController extends Controller
             // 結果をJSON形式で返す
             return response()->json($StudentOfList);
         } catch (\Exception $e) {
-            Log::info('GetStudentListController: エラー');
-            Log::info($e);
+            Log::error('GetStudentListController: エラー');
+            Log::error($e);
 
             // エラーメッセージをJSON形式で返す
             return response()->json(['error' => $e->getMessage()], 500);

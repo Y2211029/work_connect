@@ -11,19 +11,24 @@ class GetStudentListController extends Controller
     public function GetStudentListController(Request $request)
     {
         try {
-            $userList = w_users::select()->get();
+            $page = (int) $request->query('page', 1);
+            $perPage = 20; //一ページ当たりのアイテム数
+            $offset = ($page - 1) * $perPage;
+
+            $userList = w_users::skip($offset)
+                ->take($perPage)
+                ->get();
             $userListArray = json_decode(json_encode($userList), true);
 
             \Log::info('GetStudentListController:$userListArray:');
             \Log::info(json_encode($userListArray));
-            // echo json_encode($userListArray);
+
             return json_encode($userListArray);
         } catch (\Exception $e) {
-            \Log::info('GetStudentListController:user_name重複チェックエラー');
-            \Log::info($e);
+            \Log::error('GetStudentListController:user_name重複チェックエラー');
+            \Log::error($e);
 
-            /*reactに返す*/
-            echo json_encode($e);
+            return response()->json($e->getMessage(), 500);
         }
     }
 }

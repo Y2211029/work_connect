@@ -12,9 +12,11 @@ class SearchVideoController extends Controller
     public function SearchVideoController(Request $request)
     {
         try {
+            $sortOption = $request->query('sort');
+
             // 検索文字列を取得
             $searchText = $request->input('searchText', "");
-            
+
             // 絞り込まれた動画ジャンルを配列で取得
             $video_genre_array = $request->input('video_genre', []);
 
@@ -37,18 +39,27 @@ class SearchVideoController extends Controller
 
             $query->join('w_users', 'w_movies.creator_id', '=', 'w_users.id');
 
+            if ($sortOption === 'orderNewPostsDate') {
+                $query->orderBy('w_movies.created_at', 'desc');
+            }
+            if ($sortOption === 'orderOldPostsDate') {
+                $query->orderBy('w_movies.created_at', 'asc');
+            }
             $results = $query->get();
 
             $resultsArray = json_decode(json_encode($results), true);
 
             \Log::info('SearchVideoController:$resultsArray:');
             \Log::info($resultsArray);
-
-            if (count($resultsArray) == 0) {
-                return json_encode("検索結果0件");
-            } else {
-                return json_encode($resultsArray);
-            }
+            \Log::info('SearchVideoController:$sortOption:');
+            \Log::info($sortOption);
+            
+            return json_encode($resultsArray);
+            // if (count($resultsArray) == 0) {
+            //     return json_encode("検索結果0件");
+            // } else {
+            //     return json_encode($resultsArray);
+            // }
         } catch (\Exception $e) {
             \Log::info('SearchVideoController:user_name重複チェックエラー');
             \Log::info($e);

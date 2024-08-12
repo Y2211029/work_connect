@@ -1,10 +1,12 @@
+import { forwardRef } from "react";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import Box from "@mui/material/Box";
-import Link from "@mui/material/Link";
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
+// import { alpa } from "@mui/material/styles";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 
@@ -16,10 +18,18 @@ import SvgColor from "src/components/svg-color";
 
 // ----------------------------------------------------------------------
 
-export default function PostCard({ post, index }) {
-  const { cover, title, graduationYear, schoolName, 
-    desiredWorkRegion, desiredOccupation,
-     view, comment, author } = post;
+const PostCard = forwardRef(({ post, index }, ref) => {
+  const {
+    cover,
+    userName,
+    graduationYear,
+    schoolName,
+    desiredWorkRegion,
+    desiredOccupation,
+    view,
+    comment,
+    author,
+  } = post;
 
   const latestPostLarge = index === -1;
 
@@ -40,9 +50,9 @@ export default function PostCard({ post, index }) {
     />
   );
 
-  const renderTitle = (
+  const renderUserName = (
     <Link
-      top="/workDetail"
+      to={`/Profile/${userName}`}
       color="inherit"
       variant="subtitle2"
       underline="hover"
@@ -55,14 +65,16 @@ export default function PostCard({ post, index }) {
         height: 60,
       }}
     >
-      {title}
+      {userName}
     </Link>
   );
 
   const renderGraduationYear = <Typography opacity="0.48">卒業年度:{graduationYear}</Typography>;
   const renderSchoolName = <Typography>学校名:{schoolName}</Typography>;
-  const renderDesiredWorkRegion = desiredWorkRegion !== null ? <Typography>希望勤務地:{desiredWorkRegion}</Typography> : null;
-  const renderDesiredOccupation = desiredOccupation !== null ? <Typography>希望職種: {desiredOccupation}</Typography> : null;
+  const renderDesiredWorkRegion =
+    desiredWorkRegion !== null ? <Typography>希望勤務地:{desiredWorkRegion}</Typography> : null;
+  const renderDesiredOccupation =
+    desiredOccupation !== null ? <Typography>希望職種: {desiredOccupation}</Typography> : null;
 
   const renderInfo = (
     <Stack
@@ -134,45 +146,50 @@ export default function PostCard({ post, index }) {
 
   return (
     <Grid xs={12} sm={latestPostLarge ? 12 : 6} md={latestPostLarge ? 6 : 3}>
-      <Card>
-        <Box
-          sx={{
-            position: "relative",
-            pt: "calc(100% * 3 / 4)",
-          }}
-        >
-          {renderShape}
+      <div ref={ref}>
+        <Card>
+          <Box
+            sx={{
+              position: "relative",
+              pt: "calc(100% * 3 / 4)",
+            }}
+          >
+            {renderShape}
 
-          {renderAvatar}
+            {renderAvatar}
 
-          {renderCover}
-        </Box>
+            {renderCover}
+          </Box>
 
-        <Box
-          sx={{
-            p: (theme) => theme.spacing(4, 3, 3, 3),
-          }}
-        >
-          {/* {renderDate} */}
+          <Box
+            sx={{
+              p: (theme) => theme.spacing(4, 3, 3, 3),
+            }}
+          >
+            {renderUserName}
 
-          {renderTitle}
+            {renderGraduationYear}
 
-          {renderGraduationYear}
+            {renderSchoolName}
 
-          {renderSchoolName}
+            {renderDesiredWorkRegion}
 
-          {renderDesiredWorkRegion}
+            {renderDesiredOccupation}
 
-          {renderDesiredOccupation}
-
-          {renderInfo}
-        </Box>
-      </Card>
+            {renderInfo}
+          </Box>
+        </Card>
+      </div>
     </Grid>
   );
-}
+});
+
+// `displayName` の追加
+PostCard.displayName = "PostCard";
 
 PostCard.propTypes = {
   post: PropTypes.object.isRequired,
-  index: PropTypes.number,
+  index: PropTypes.number.isRequired,
 };
+
+export default PostCard;

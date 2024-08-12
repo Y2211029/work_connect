@@ -54,6 +54,7 @@ export const StudentListItem = () => {
 
   console.log("posts:", StudentOfList[0]);
   const posts = StudentOfList.map((_, key) => ({
+    id: StudentOfList[key].id,
     cover: `/assets/images/covers/cover_${key + 1}.jpg`,
     graduationYear: StudentOfList[key].graduation_year,
     title: StudentOfList[key].student_surname + StudentOfList[key].student_name,

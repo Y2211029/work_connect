@@ -56,40 +56,22 @@ const createTagElements = (genreString) => {
 };
 
 const generatePosts = (WorkOfList) => {
-  return WorkOfList.map((movie) => ({
-    movie_id: movie.movie_id,
-    title: movie.title,
-    genre: movie.genre,
-    intro: movie.intro.length > 200 ? movie.intro.substring(0, 200) + "..." : movie.intro,
-    author: {
-      avatarUrl: `/assets/images/avatars/avatar_${movie.icon}.jpg`,
-    },
+  return WorkOfList.map((student, key) => ({
+    student_id: student.id,
+    cover: `/assets/images/covers/cover_${key + 1}.jpg`,
+    userName: student.user_name,
+    schoolName: student.school_name,
+    desiredWorkRegion: student.desired_work_region,
+    desiredOccupation: student.desired_occupation,
     view: faker.number.int(99999),
     comment: faker.number.int(99999),
     favorite: faker.number.int(99999),
-    userName: movie.user_name,
-    createdAt: movie.created_at,
+    createdAt: student.created_at,
+    author: {
+      avatarUrl: `/assets/images/avatars/avatar_${student.icon}.jpg`,
+    },
   }));
 };
-// const generatePosts = (WorkOfList) => {
-//   return WorkOfList.map((work, key) => ({
-//     work_number: key,
-//     work_id: work.work_id,
-//     cover: `/assets/images/covers/cover_${key + 1}.jpg`,
-//     thumbnail: `/assets/workImages/thumbnail/cover_${key + 1}.jpg`,
-//     title: work.work_name,
-//     genre: work.genre,
-//     intro: work.intro.length > 200 ? work.intro.substring(0, 200) + "..." : work.work_intro,
-//     author: {
-//       avatarUrl: `/assets/images/avatars/avatar_${work.icon}.jpg`,
-//     },
-//     view: faker.number.int(99999),
-//     comment: faker.number.int(99999),
-//     favorite: faker.number.int(99999),
-//     userName: work.user_name,
-//     createdAt: work.created_at,
-//   }));
-// };
 
 export default function WorkOfListView() {
   // ログインチェック
@@ -204,7 +186,7 @@ export default function WorkOfListView() {
     workItems.map((post, index) => (
       <PostCard
         ref={index === WorkOfList.length - 1 ? ref : null}
-        key={`${post.movie_id}-${index}`}
+        key={`${post.id}-${index}`}
         post={post}
         index={index}
       />
@@ -270,49 +252,3 @@ export default function WorkOfListView() {
     </>
   );
 }
-
-// import Stack from "@mui/material/Stack";
-// import Container from "@mui/material/Container";
-// import Grid from "@mui/material/Unstable_Grid2";
-// import Typography from "@mui/material/Typography";
-// import VideoListItem from "src/_mock/videoListItem";
-// import PostCard from "src/sections/VideoList/post-card";
-
-// // ----------------------------------------------------------------------
-
-// export default function VideoListView() {
-//   const postsFromVideo = VideoListItem();
-//   console.log("postsFromVideo", postsFromVideo);
-//   return (
-//     <Container>
-//       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-//         <Typography variant="h4">動画一覧</Typography>
-//         {/*
-//         <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />}>
-//           New Post
-//         </Button> */}
-//       </Stack>
-
-//       {/* 並べ替えボタン */}
-//       <Stack mb={5} direction="row" alignItems="center" justifyContent="space-between">
-//         {/* <PostSearch posts={posts} /> */}
-
-//         {/* 変なエラー出るんで一旦コメントアウトしてます。 */}
-//         {/* <PostSort
-//           options={[
-//             // （仮）
-//             { value: "投稿日が新しい順", label: "投稿日が新しい順" },
-//             { value: "投稿日が古い順", label: "投稿日が古い順" },
-//             { value: "おすすめ順", label: "おすすめ順" },
-//           ]}
-//         /> */}
-//       </Stack>
-
-//       <Grid container spacing={3}>
-//         {postsFromVideo.map((post, index) => (
-//           <PostCard key={post.id} post={post} index={index} />
-//         ))}
-//       </Grid>
-//     </Container>
-//   );
-// }

@@ -20,7 +20,7 @@ import SvgColor from "src/components/svg-color";
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef(({ post }, ref) => {
-  const { work_number, work_id, genre, cover, title, intro, thumbnail, view, comment, author, userName, createdAt } = post;
+  const {  work_id, genre, cover, title, intro, thumbnail, view, comment, author, userName, createdAt } = post;
 
   const renderAvatar = (
     <Avatar
@@ -54,21 +54,6 @@ const PostCard = forwardRef(({ post }, ref) => {
       }}
     >
       {title}
-    </Link>
-  );
-  const renderNumberdemo = (
-    <Link
-      to={`/WorkDetail/${work_id}`}
-      color="inherit"
-      variant="subtitle2"
-      underline="none"
-      className="link"
-      style={{
-        height: 30,
-        typography: "h5",
-      }}
-    >
-      {work_number}
     </Link>
   );
 
@@ -223,7 +208,6 @@ const PostCard = forwardRef(({ post }, ref) => {
           >
             {renderThumbnail}
             {renderGenre}
-            {renderNumberdemo}
             {renderTitle}
             {renderIntro}
             {renderInfo}

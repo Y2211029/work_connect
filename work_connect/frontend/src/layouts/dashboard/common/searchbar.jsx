@@ -257,7 +257,7 @@ export default function Searchbar() {
         }
       } else if (PathName == "/VideoList") {
         // 動画一覧の場合
-        const url = "http://localhost:8000/search_video";
+        const url = `http://localhost:8000/search_video?page=${Page}&sort=${sortOption}`;
 
         let video_genre = [];
 
@@ -274,13 +274,25 @@ export default function Searchbar() {
         console.log("response.data", response.data);
 
         // VideoListItem.jsxにデータを渡す
-        setAllItems((prevItems) => ({
-          ...prevItems,
-          DataList: [response.data],
-        }));
+        const responseData = response.data;
+
+        if (responseData.length > 0) {
+          console.log("検索結果はいくつかあります。");
+          setAllItems((prevItems) => ({
+            ...prevItems,
+            DataList: response.data,
+            IsSearch: { ...prevItems.IsSearch, searchResultEmpty: false },
+          }));
+        } else {
+          console.log("検索結果は0件です。");
+          setAllItems((prevItems) => ({
+            ...prevItems,
+            IsSearch: { ...prevItems.IsSearch, searchResultEmpty: true },
+          }));
+        }
       } else if (PathName == "/StudentList") {
         // 学生一覧の場合
-        const url = "http://localhost:8000/search_student";
+        const url = `http://localhost:8000/search_student?page=${Page}`;
 
         let desired_occupation = [];
         let desired_work_region = [];
@@ -327,10 +339,22 @@ export default function Searchbar() {
         console.log("response.data", response.data);
 
         // StudentListItem.jsxにデータを渡す
-        setAllItems((prevItems) => ({
-          ...prevItems,
-          DataList: response.data,
-        }));
+        const responseData = response.data;
+
+        if (responseData.length > 0) {
+          console.log("検索結果はいくつかあります。");
+          setAllItems((prevItems) => ({
+            ...prevItems,
+            DataList: response.data,
+            IsSearch: { ...prevItems.IsSearch, searchResultEmpty: false },
+          }));
+        } else {
+          console.log("検索結果は0件です。");
+          setAllItems((prevItems) => ({
+            ...prevItems,
+            IsSearch: { ...prevItems.IsSearch, searchResultEmpty: true },
+          }));
+        }
       } else if (PathName == "/CompanyList") {
         // 学生一覧の場合
         const url = "http://localhost:8000/search_company";

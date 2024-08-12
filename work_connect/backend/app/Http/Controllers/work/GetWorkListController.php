@@ -44,18 +44,11 @@ class GetWorkListController extends Controller
                 
             $workListArray = json_decode(json_encode($workList), true);
 
-            // レスポンスに全体のアイテム数を含める
-            // $response = [
-            //     'totalItems' => $totalItems,
-            //     'workList' => $workListArray
-            // ];
-
-
             \Log::info('GetWorkListController:$response:');
             \Log::info(json_encode($workListArray));
             \Log::info('GetWorkListController:$:');
             \Log::info(json_encode($sortOption));
-            // echo json_encode($response);
+            
             return json_encode($workListArray);
         } catch (\Exception $e) {
             \Log::info('GetWorkListController:user_name重複チェックエラー');

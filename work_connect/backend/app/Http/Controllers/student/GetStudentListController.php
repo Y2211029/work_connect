@@ -53,8 +53,8 @@ class GetStudentListController extends Controller
             // 結果をJSON形式で返す
             return response()->json($StudentOfList);
         } catch (\Exception $e) {
-            Log::info('GetStudentListController: エラー');
-            Log::info($e);
+            Log::error('GetStudentListController: エラー');
+            Log::error($e);
 
             // エラーメッセージをJSON形式で返す
             return response()->json(['error' => $e->getMessage()], 500);

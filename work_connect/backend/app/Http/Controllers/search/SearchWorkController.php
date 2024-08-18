@@ -89,7 +89,7 @@ class SearchWorkController extends Controller
             // if (count($resultsArray) == 0) {
             //     return json_encode("検索結果は0件です");
             // } else {
-            //     return json_encode($resultsArray);
+            //     return json_encode($resultsArray);p
             // }
         } catch (\Exception $e) {
             \Log::info('SearchWorkController:user_name重複チェックエラー');

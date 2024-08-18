@@ -18,6 +18,8 @@ class GetMovieListController extends Controller
 
             $sortOption = $request->query('sort');
 
+            $userName = $request->query('userName');
+
 
 
             $movieList = w_movies::select(
@@ -25,6 +27,11 @@ class GetMovieListController extends Controller
                 'w_users.user_name',
                 'w_users.icon',
             )->join('w_users', 'w_movies.creator_id', '=', 'w_users.id');
+
+            if ($userName !== null) {
+                // `userName` が指定されている場合のみフィルタリング
+                $movieList->where('w_users.user_name', $userName);
+            }
 
             if ($sortOption === 'orderNewPostsDate') {
                 $movieList->orderBy('w_movies.created_at', 'desc');

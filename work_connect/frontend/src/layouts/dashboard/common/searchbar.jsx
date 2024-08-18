@@ -16,7 +16,7 @@ import { bgBlur } from "src/theme/css";
 import Iconify from "src/components/iconify";
 
 import axios from "axios";
-import GetTagList from "../../../components/tag/GetTagList";
+import GetTagList from "src/components/tag/GetTagList";
 import { MyContext } from "src/layouts/dashboard/index";
 import { AllItemsContext } from "src/layouts/dashboard/index";
 // import { PageContext } from "src/layouts/dashboard/index";
@@ -118,13 +118,16 @@ export default function Searchbar() {
   const { GetTagListFunction } = GetTagList();
 
   const getTag = (urlIn, option) => {
+    console.log("urlIn", urlIn);
+    console.log("option", option);
     let optionArray = [];
     let optionArrayPromise = GetTagListFunction(urlIn);
     optionArrayPromise.then((result) => {
-      // console.log("result: ", result);
+      console.log("result: ", result);
       result.map((value) => {
         optionArray.push({ value: value.name, label: value.name });
       });
+      console.log("optionArray", optionArray);
       setOptions((prevOptions) => ({
         ...prevOptions,
         [option]: optionArray,
@@ -132,9 +135,9 @@ export default function Searchbar() {
     });
   };
 
-  // useEffect(() => {
-  //   console.log("searchSource", searchSource);
-  // }, [searchSource]);
+  useEffect(() => {
+    console.log("options", options);
+  }, [options]);
 
   useEffect(() => {
     setPathName(location.pathname);
@@ -197,9 +200,32 @@ export default function Searchbar() {
     setOpen(!open);
   };
 
-  useEffect(() => {
-    console.log("sortOption", sortOption);
-  }, [sortOption]);
+  const responseItems = (data) => {
+    // 作品などのデータがあるとき
+    if (data.length > 0) {
+      setAllItems((prevItems) => ({
+        ...prevItems,
+        DataList: data,
+        IsSearch: { ...prevItems.IsSearch, searchResultEmpty: false },
+      }));
+    }
+
+    //ローディングアニメーション止めるため
+    if (data.length === 0) {
+      setAllItems((prevItems) => ({
+        ...prevItems,
+        DataList: [],
+      }));
+    }
+
+    // ”検索結果0件だ”を表示するため
+    if (data.length === 0 && Page === 1) {
+      setAllItems((prevItems) => ({
+        ...prevItems,
+        IsSearch: { ...prevItems.IsSearch, searchResultEmpty: true },
+      }));
+    }
+  };
 
   // Laravel側から絞り込んだ作品一覧データを取得
   async function searchSourceList() {
@@ -238,23 +264,9 @@ export default function Searchbar() {
 
         // console.log("search.response.data", response.data);
 
-        // WorkListItem.jsxにデータを渡す
+        // WorkOfList-view.jsxにデータを渡す
         const responseData = response.data;
-
-        if (responseData.length > 0) {
-          console.log("検索結果はいくつかあります。");
-          setAllItems((prevItems) => ({
-            ...prevItems,
-            DataList: response.data,
-            IsSearch: { ...prevItems.IsSearch, searchResultEmpty: false },
-          }));
-        } else {
-          console.log("検索結果は0件です。");
-          setAllItems((prevItems) => ({
-            ...prevItems,
-            IsSearch: { ...prevItems.IsSearch, searchResultEmpty: true },
-          }));
-        }
+        responseItems(responseData);
       } else if (PathName == "/VideoList") {
         // 動画一覧の場合
         const url = `http://localhost:8000/search_video?page=${Page}&sort=${sortOption}`;
@@ -273,23 +285,9 @@ export default function Searchbar() {
         });
         console.log("response.data", response.data);
 
-        // VideoListItem.jsxにデータを渡す
+        // videoList-view.jsxにデータを渡す
         const responseData = response.data;
-
-        if (responseData.length > 0) {
-          console.log("検索結果はいくつかあります。");
-          setAllItems((prevItems) => ({
-            ...prevItems,
-            DataList: response.data,
-            IsSearch: { ...prevItems.IsSearch, searchResultEmpty: false },
-          }));
-        } else {
-          console.log("検索結果は0件です。");
-          setAllItems((prevItems) => ({
-            ...prevItems,
-            IsSearch: { ...prevItems.IsSearch, searchResultEmpty: true },
-          }));
-        }
+        responseItems(responseData);
       } else if (PathName == "/StudentList") {
         // 学生一覧の場合
         const url = `http://localhost:8000/search_student?page=${Page}`;
@@ -338,26 +336,12 @@ export default function Searchbar() {
         });
         console.log("response.data", response.data);
 
-        // StudentListItem.jsxにデータを渡す
+        // StudentList-view.jsxにデータを渡す
         const responseData = response.data;
-
-        if (responseData.length > 0) {
-          console.log("検索結果はいくつかあります。");
-          setAllItems((prevItems) => ({
-            ...prevItems,
-            DataList: response.data,
-            IsSearch: { ...prevItems.IsSearch, searchResultEmpty: false },
-          }));
-        } else {
-          console.log("検索結果は0件です。");
-          setAllItems((prevItems) => ({
-            ...prevItems,
-            IsSearch: { ...prevItems.IsSearch, searchResultEmpty: true },
-          }));
-        }
+        responseItems(responseData);
       } else if (PathName == "/CompanyList") {
         // 学生一覧の場合
-        const url = "http://localhost:8000/search_company";
+        const url = `http://localhost:8000/search_company?page=${Page}`;
 
         let selected_occupation = [];
         let prefecture = [];
@@ -378,11 +362,35 @@ export default function Searchbar() {
         });
         console.log("response.data", response.data);
 
-        // StudentListItem.jsxにデータを渡す
-        setAllItems((prevItems) => ({
-          ...prevItems,
-          DataList: response.data,
-        }));
+        // company-view.jsxにデータを渡す
+        const responseData = response.data;
+        responseItems(responseData);
+      } else if (PathName == "/Profile") {
+        // 学生一覧の場合
+        const url = `http://localhost:8000/search_company?page=${Page}`;
+
+        let selected_occupation = [];
+        let prefecture = [];
+
+        searchSource.selected_occupation.map((value) => {
+          selected_occupation.push(value.value);
+        });
+        searchSource.prefecture.map((value) => {
+          prefecture.push(value.value);
+        });
+
+        const response = await axios.get(url, {
+          params: {
+            searchText: searchSource.searchText,
+            selected_occupation: selected_occupation,
+            prefecture: prefecture,
+          },
+        });
+        console.log("response.data", response.data);
+
+        // company-view.jsxにデータを渡す
+        const responseData = response.data;
+        responseItems(responseData);
       }
     } catch (err) {
       console.log("err:", err);

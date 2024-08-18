@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 
 class GetStudentListController extends Controller
 {
-    public function GetStudentListController(Request $request, $id)
+    public function GetStudentListController(Request $request, /*$id*/)
     {
         try {
 
@@ -23,14 +23,21 @@ class GetStudentListController extends Controller
                 ->get();
 
             // 各ユーザーのフォロー状態を確認して更新
-            $StudentOfList = $StudentOfList->map(function ($user) use ($id) {
+            $StudentOfList = $StudentOfList->map(function ($user) {
+                // 藤田が変更：URLのGETパラメータ値(ID)を取得していたが、無限ロードの関係上一つのURLで20個アイテムを取得する使用なので、IDが不整合になる。
+                // そのため、w_usersからidを直接取得する。
+                // $StudentOfList = $StudentOfList->map(function ($user) use ($id) {
+
+                // ユーザーのIDを取得
+                $id = $user->id;
+
                 // ユーザーがログインしているアカウントをフォローしているかどうか
                 $isFollowing = w_follow::where('follow_sender_id', $id)
-                    ->where('follow_recipient_id', $user->id)
+                    ->where('follow_recipient_id', $id)
                     ->exists();
 
                 // ログインしているアカウントがユーザーをフォローしているかどうか
-                $isFollowedByUser = w_follow::where('follow_sender_id', $user->id)
+                $isFollowedByUser = w_follow::where('follow_sender_id', $id)
                     ->where('follow_recipient_id', $id)
                     ->exists();
 
@@ -51,7 +58,7 @@ class GetStudentListController extends Controller
             Log::info(json_encode($StudentOfList));
 
             // 結果をJSON形式で返す
-            return response()->json($StudentOfList);
+            return json_encode($StudentOfList);
         } catch (\Exception $e) {
             Log::error('GetStudentListController: エラー');
             Log::error($e);

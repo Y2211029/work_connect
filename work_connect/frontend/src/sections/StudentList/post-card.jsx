@@ -1,8 +1,9 @@
+import { useEffect, useState } from "react";
 import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-import { useState } from "react";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
@@ -28,11 +29,10 @@ const PostCard = forwardRef(({ post, index }, ref) => {
     comment,
     author,
     followStatus: initialFollowStatus,
-    id,
+    student_id,
   } = post;
 
   const latestPostLarge = index === -1;
-
 
   const [followStatus, setFollowStatus] = useState(initialFollowStatus);
   const { getSessionData } = useSessionStorage();
@@ -41,9 +41,13 @@ const PostCard = forwardRef(({ post, index }, ref) => {
     account_id: accountData.id,
   };
 
+  useEffect(() => {
+    console.log("student_id", student_id);
+  }, [student_id]);
+
   const handleFollowClick = async () => {
     try {
-      const updatedFollowStatus = await follow(data.account_id, id);
+      const updatedFollowStatus = await follow(data.account_id, student_id);
       if (updatedFollowStatus) {
         setFollowStatus(updatedFollowStatus);
       }
@@ -91,12 +95,93 @@ const PostCard = forwardRef(({ post, index }, ref) => {
       {followStatus}
     </Typography>
   );
-  const renderGraduationYear = <Typography opacity="0.48">卒業年度:{graduationYear}</Typography>;
-  const renderSchoolName = <Typography>学校名:{schoolName}</Typography>;
+  const renderGraduationYear =
+    graduationYear !== null ? (
+      <div>
+        卒業年度:
+        <Button
+          variant="contained"
+          // color="primary"
+          sx={{
+            padding: "2px",
+            margin: "2px",
+            // background: "#41A4FF",
+            background: "linear-gradient(#41A4FF, #9198e5)",
+            "&:hover": {
+              background: "linear-gradient(#c2c2c2, #e5ad91)",
+            },
+          }}
+        >
+          {graduationYear}
+        </Button>
+      </div>
+    ) : null;
+
+  const renderSchoolName =
+    schoolName !== null ? (
+      <div>
+        学校名:
+        <Button
+          variant="contained"
+          // color="primary"
+          sx={{
+            padding: "2px",
+            margin: "2px",
+            // background: "#41A4FF",
+            background: "linear-gradient(#41A4FF, #9198e5)",
+            "&:hover": {
+              background: "linear-gradient(#c2c2c2, #e5ad91)",
+            },
+          }}
+        >
+          {schoolName}
+        </Button>
+      </div>
+    ) : null;
+
   const renderDesiredWorkRegion =
-    desiredWorkRegion !== null ? <Typography>希望勤務地:{desiredWorkRegion}</Typography> : null;
+    desiredWorkRegion !== null ? (
+      <div>
+        希望勤務地:
+        <Button
+          variant="contained"
+          // color="primary"
+          sx={{
+            padding: "2px",
+            margin: "2px",
+            // background: "#41A4FF",
+            background: "linear-gradient(#41A4FF, #9198e5)",
+            "&:hover": {
+              background: "linear-gradient(#c2c2c2, #e5ad91)",
+            },
+          }}
+        >
+          {desiredWorkRegion}
+        </Button>
+      </div>
+    ) : null;
+
   const renderDesiredOccupation =
-    desiredOccupation !== null ? <Typography>希望職種: {desiredOccupation}</Typography> : null;
+    desiredOccupation !== null ? (
+      <div>
+        希望職種:
+        <Button
+          variant="contained"
+          // color="primary"
+          sx={{
+            padding: "2px",
+            margin: "2px",
+            // background: "#41A4FF",
+            background: "linear-gradient(#41A4FF, #9198e5)",
+            "&:hover": {
+              background: "linear-gradient(#c2c2c2, #e5ad91)",
+            },
+          }}
+        >
+          {desiredOccupation}
+        </Button>
+      </div>
+    ) : null;
 
   const renderInfo = (
     <Stack
@@ -189,7 +274,7 @@ const PostCard = forwardRef(({ post, index }, ref) => {
             }}
           >
             {renderFollow}
-            
+
             {renderUserName}
 
             {renderGraduationYear}

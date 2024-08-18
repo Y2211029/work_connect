@@ -111,7 +111,7 @@ const ProfileMypage = () => {
         if(response){
           setResponseData(response.data[0]);
         }
-        console.log("ResponseData:", ResponseData);
+        // console.log("ResponseData:", ResponseData);
       } catch (err) {
         console.log("err:", err);
       }

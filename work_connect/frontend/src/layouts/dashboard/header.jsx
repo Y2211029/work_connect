@@ -47,6 +47,17 @@ export default function Header({ onOpenNav }) {
   const theme = useTheme();
   const lgUp = useResponsive("up", "lg");
   let navigation = useNavigate();
+
+  // style CSS ここから
+  const buttonStyle = {
+    display: Display,
+    margin: 4,
+    "&:hover": {
+      backgroundColor: "#a9a9a9",
+    },
+  };
+  // style CSS ここまで
+
   const handleOpenModal = () => {
     // setShowModal(true);
     navigation("WorkPosting");
@@ -126,12 +137,12 @@ export default function Header({ onOpenNav }) {
 
       {/* ログイン、新規登録、本登録、チャット、通知、アカウントプロフィール */}
       <Stack direction="row" alignItems="center" spacing={1}>
-        <button onClick={handleOpenModal} style={{ display: Display }}>
+        <Button onClick={handleOpenModal} variant="contained" sx={buttonStyle}>
           作品投稿
-        </button>
-        <button onClick={handleOpenModal2} style={{ display: Display }}>
+        </Button>
+        <Button onClick={handleOpenModal2} variant="contained" sx={buttonStyle}>
           動画投稿
-        </button>
+        </Button>
         {/* <SignUp1 /> */}
 
         <Button id="LoginButton" onClick={handleChange} style={{ display: Display === "" ? "none" : "block" }}>

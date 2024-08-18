@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
@@ -16,11 +17,10 @@ import { fDate } from "src/utils/format-time";
 import { fShortenNumber } from "src/utils/format-number";
 import Iconify from "src/components/iconify";
 import SvgColor from "src/components/svg-color";
-
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef(({ post }, ref) => {
-  const {  work_id, genre, cover, title, intro, thumbnail, view, comment, author, userName, createdAt } = post;
+  const { work_id, genre, /* cover, */ title, intro, thumbnail, view, comment, author, userName, createdAt } = post;
 
   const renderAvatar = (
     <Avatar
@@ -28,10 +28,10 @@ const PostCard = forwardRef(({ post }, ref) => {
       src={author.avatarUrl}
       sx={{
         position: "absolute",
-        bottom: (theme) => theme.spacing(-2),
+        bottom: (theme) => theme.spacing(0),
         zIndex: 9,
-        top: 24,
-        left: 24,
+        top: 45,
+        left: 20,
         width: 40,
         height: 40,
       }}
@@ -39,18 +39,38 @@ const PostCard = forwardRef(({ post }, ref) => {
   );
 
   // ジャンル
-  const renderGenre = genre !== null ? <Typography>{genre}</Typography> : null;
-
+  const renderGenre =
+    genre !== null ? (
+      <div>
+        <Button
+          variant="contained"
+          // color="primary"
+          sx={{
+            padding: "2px",
+            margin: "2px",
+            // background: "#41A4FF",
+            background: "linear-gradient(#41A4FF, #9198e5)",
+            "&:hover": {
+              background: "linear-gradient(#c2c2c2, #e5ad91)",
+            },
+          }}
+        >
+          {genre}
+        </Button>
+      </div>
+    ) : null;
   const renderTitle = (
     <Link
       to={`/WorkDetail/${work_id}`}
-      color="inherit"
+      // color="inherit"
       variant="subtitle2"
       underline="none"
       className="link"
       style={{
+        color: "common.black",
         height: 30,
-        typography: "h5",
+        fontWeight: "Bold",
+        padding: "5px",
       }}
     >
       {title}
@@ -62,9 +82,12 @@ const PostCard = forwardRef(({ post }, ref) => {
       component="img"
       src={thumbnail}
       sx={{
-        width: 1,
-        height: 200,
-        objectFit: "cover",
+        aspectRatio: 16 / 9,
+        borderRadius: "10px",
+        // width: 1,
+        // height: 200,
+        // objectFit: "cover",
+        marginBottom: "10px",
       }}
     />
   );
@@ -90,7 +113,8 @@ const PostCard = forwardRef(({ post }, ref) => {
       sx={{
         mb: 2,
         opacity: 0.48,
-        color: "common.white",
+        // color: "common.white",
+        color: "common.black",
       }}
     >
       {userName}
@@ -105,7 +129,8 @@ const PostCard = forwardRef(({ post }, ref) => {
       justifyContent="center"
       sx={{
         mt: 3,
-        color: "text.disabled",
+        // color: "text.disabled",
+        color: "common.black",
       }}
     >
       {renderUserName}
@@ -118,7 +143,8 @@ const PostCard = forwardRef(({ post }, ref) => {
           direction="row"
           sx={{
             opacity: 0.48,
-            color: "common.white",
+            // color: "common.white",
+            color: "common.black",
           }}
         >
           <Iconify width={16} icon={info.icon} sx={{ mr: 0.5 }} />
@@ -129,20 +155,20 @@ const PostCard = forwardRef(({ post }, ref) => {
     </Stack>
   );
 
-  const renderCover = (
-    <Box
-      component="img"
-      alt={title}
-      src={cover}
-      sx={{
-        top: 0,
-        width: 1,
-        height: 1,
-        objectFit: "cover",
-        position: "absolute",
-      }}
-    />
-  );
+  // const renderCover = (
+  //   <Box
+  //     component="img"
+  //     alt={title}
+  //     src={cover}
+  //     sx={{
+  //       top: 0,
+  //       width: 1,
+  //       height: 1,
+  //       objectFit: "cover",
+  //       position: "absolute",
+  //     }}
+  //   />
+  // );
 
   const renderShape = (
     <SvgColor
@@ -167,7 +193,8 @@ const PostCard = forwardRef(({ post }, ref) => {
       sx={{
         mb: 2,
         opacity: 0.85,
-        color: "common.white",
+        // color: "common.white",
+        color: "common.black",
       }}
     >
       {intro}
@@ -187,20 +214,23 @@ const PostCard = forwardRef(({ post }, ref) => {
                 width: "100%",
                 height: "100%",
                 position: "absolute",
-                bgcolor: (theme) => alpha(theme.palette.grey[900], 0.72),
+                bgcolor: (theme) => alpha(theme.palette.grey[900], 0.1),
               },
               pt: {
-                sm: "calc(100% * 3 / 4.66)",
+                sm: "calc(100% * 3 / 3)",
               },
+              // "&:hover": {
+              //   borderStyle: "1px",
+              // },
             }}
           >
             {renderShape}
             {renderAvatar}
-            {renderCover}
+            {/* {renderCover} */}
           </Box>
           <Box
             sx={{
-              p: (theme) => theme.spacing(4, 3, 3, 3),
+              p: (theme) => theme.spacing(1, 1, 2, 1),
               width: 1,
               bottom: 0,
               position: "absolute",

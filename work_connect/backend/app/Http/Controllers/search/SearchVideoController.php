@@ -12,6 +12,11 @@ class SearchVideoController extends Controller
     public function SearchVideoController(Request $request)
     {
         try {
+            $page = (int) $request->query('page', 1);
+            $perPage = 20; //一ページ当たりのアイテム数
+            // すでに取得したデータをスキップするためのオフセット計算
+            $offset = ($page - 1) * $perPage;
+
             $sortOption = $request->query('sort');
 
             // 検索文字列を取得
@@ -45,7 +50,9 @@ class SearchVideoController extends Controller
             if ($sortOption === 'orderOldPostsDate') {
                 $query->orderBy('w_movies.created_at', 'asc');
             }
-            $results = $query->get();
+            $results = $query->skip($offset)
+                ->take($perPage) //件数
+                ->get();
 
             $resultsArray = json_decode(json_encode($results), true);
 
@@ -53,7 +60,7 @@ class SearchVideoController extends Controller
             \Log::info($resultsArray);
             \Log::info('SearchVideoController:$sortOption:');
             \Log::info($sortOption);
-            
+
             return json_encode($resultsArray);
             // if (count($resultsArray) == 0) {
             //     return json_encode("検索結果0件");

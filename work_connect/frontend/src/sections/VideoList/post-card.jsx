@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
@@ -62,7 +63,26 @@ const PostCard = forwardRef(({ post }, ref) => {
   );
 
   // ジャンル
-  const renderGenre = genre !== null ? <Typography>{genre}</Typography> : null;
+  const renderGenre =
+    genre !== null ? (
+      <div>
+        <Button
+          variant="contained"
+          // color="primary"
+          sx={{
+            padding: "2px",
+            margin: "2px",
+            // background: "#41A4FF",
+            background: "linear-gradient(#41A4FF, #9198e5)",
+            "&:hover": {
+              background: "linear-gradient(#c2c2c2, #e5ad91)",
+            },
+          }}
+        >
+          {genre}
+        </Button>
+      </div>
+    ) : null;
 
   /* 投稿日 */
   const renderDate = (

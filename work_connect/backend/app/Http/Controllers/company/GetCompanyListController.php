@@ -13,7 +13,13 @@ class GetCompanyListController extends Controller
     public function GetCompanyListController(Request $request)
     {
         try {
-            $companyList = w_company::select()->get();
+            $page = (int) $request->query('page', 1);
+            $perPage = 20; //一ページ当たりのアイテム数
+            $offset = ($page - 1) * $perPage;
+
+            $companyList = w_company::skip($offset)
+                ->take($perPage)
+                ->get();
             $companyListArray = json_decode(json_encode($companyList), true);
 
             \Log::info('GetCompanyListController:$companyListArray:');

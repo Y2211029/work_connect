@@ -10,9 +10,10 @@ use Illuminate\Support\Facades\Log;
 
 class GetStudentListController extends Controller
 {
-    public function GetStudentListController(Request $request, $id)
+    public function GetStudentListController(Request $request, /*$id*/)
     {
         try {
+<<<<<<< HEAD
             // 全ユーザーリストを取得
             $studentList = w_users::all();
 
@@ -31,6 +32,35 @@ class GetStudentListController extends Controller
                     $isFollowedByUser = w_follow::where('follow_sender_id', $user->id)
                         ->where('follow_recipient_id', $id)
                         ->exists();
+=======
+
+            $page = (int) $request->query('page', 1);
+            $perPage = 20; //一ページ当たりのアイテム数
+            $offset = ($page - 1) * $perPage;
+
+            $StudentOfList = w_users::skip($offset)
+                ->take($perPage)
+                ->get();
+
+            // 各ユーザーのフォロー状態を確認して更新
+            $StudentOfList = $StudentOfList->map(function ($user) {
+                // 藤田が変更：URLのGETパラメータ値(ID)を取得していたが、無限ロードの関係上一つのURLで20個アイテムを取得する使用なので、IDが不整合になる。
+                // そのため、w_usersからidを直接取得する。
+                // $StudentOfList = $StudentOfList->map(function ($user) use ($id) {
+
+                // ユーザーのIDを取得
+                $id = $user->id;
+
+                // ユーザーがログインしているアカウントをフォローしているかどうか
+                $isFollowing = w_follow::where('follow_sender_id', $id)
+                    ->where('follow_recipient_id', $id)
+                    ->exists();
+
+                // ログインしているアカウントがユーザーをフォローしているかどうか
+                $isFollowedByUser = w_follow::where('follow_sender_id', $id)
+                    ->where('follow_recipient_id', $id)
+                    ->exists();
+>>>>>>> b1cb22e56087783203dace346729860a7372dce3
 
                     if ($isFollowing && $isFollowedByUser) {
                         $user->follow_status = '相互フォローしています';
@@ -63,9 +93,16 @@ class GetStudentListController extends Controller
             Log::info(json_encode($studentList));
 
             // 結果をJSON形式で返す
+<<<<<<< HEAD
             return response()->json($studentList);
         } catch (\Exception $e) {
             Log::error('GetStudentListController: エラー', ['error' => $e->getMessage()]);
+=======
+            return json_encode($StudentOfList);
+        } catch (\Exception $e) {
+            Log::error('GetStudentListController: エラー');
+            Log::error($e);
+>>>>>>> b1cb22e56087783203dace346729860a7372dce3
 
             // エラーメッセージをJSON形式で返す
             return response()->json(['error' => $e->getMessage()], 500);

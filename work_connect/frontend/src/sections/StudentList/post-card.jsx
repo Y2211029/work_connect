@@ -1,10 +1,13 @@
+import { useEffect, useState } from "react";
+import { forwardRef } from "react";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-import { useState } from "react";
 import Box from "@mui/material/Box";
-import Link from "@mui/material/Link";
+import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
+// import { alpa } from "@mui/material/styles";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 import { follow } from "src/_mock/follow";
@@ -15,6 +18,7 @@ import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import { useNavigate } from "react-router-dom";
 // ----------------------------------------------------------------------
 
+<<<<<<< HEAD
 export default function PostCard({ post, index }) {
   const { cover, title, graduationYear, schoolName,
     desiredWorkRegion, desiredOccupation,
@@ -22,8 +26,26 @@ export default function PostCard({ post, index }) {
 
   const [followStatus, setFollowStatus] = useState(initialFollowStatus);
   const navigate = useNavigate();
+=======
+const PostCard = forwardRef(({ post, index }, ref) => {
+  const {
+    cover,
+    userName,
+    graduationYear,
+    schoolName,
+    desiredWorkRegion,
+    desiredOccupation,
+    view,
+    comment,
+    author,
+    followStatus: initialFollowStatus,
+    student_id,
+  } = post;
+
+>>>>>>> b1cb22e56087783203dace346729860a7372dce3
   const latestPostLarge = index === -1;
 
+  const [followStatus, setFollowStatus] = useState(initialFollowStatus);
   const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData");
 
@@ -31,14 +53,18 @@ export default function PostCard({ post, index }) {
     account_id: accountData.id,
   };
 
+  useEffect(() => {
+    console.log("student_id", student_id);
+  }, [student_id]);
+
   const handleFollowClick = async () => {
     try {
-      const updatedFollowStatus = await follow(data.account_id, id);
+      const updatedFollowStatus = await follow(data.account_id, student_id);
       if (updatedFollowStatus) {
         setFollowStatus(updatedFollowStatus);
       }
     } catch (error) {
-      console.error('フォロー処理中にエラーが発生しました！', error);
+      console.error("フォロー処理中にエラーが発生しました！", error);
     }
   };
 
@@ -61,10 +87,14 @@ export default function PostCard({ post, index }) {
     />
   );
 
-  const renderTitle = (
+  const renderUserName = (
     <Link
+<<<<<<< HEAD
       onClick={handleProfileJump}
       top="/workDetail"
+=======
+      to={`/Profile/${userName}`}
+>>>>>>> b1cb22e56087783203dace346729860a7372dce3
       color="inherit"
       variant="subtitle2"
       underline="hover"
@@ -77,10 +107,11 @@ export default function PostCard({ post, index }) {
         height: 60,
       }}
     >
-      {title}
+      {userName}
     </Link>
   );
 
+<<<<<<< HEAD
   const renderFollow = () => {
     if (followStatus === "フォローできません") {
       return (
@@ -100,6 +131,100 @@ export default function PostCard({ post, index }) {
   const renderSchoolName = <Typography>学校名:{schoolName}</Typography>;
   const renderDesiredWorkRegion = desiredWorkRegion !== null ? <Typography>希望勤務地:{desiredWorkRegion}</Typography> : null;
   const renderDesiredOccupation = desiredOccupation !== null ? <Typography>希望職種: {desiredOccupation}</Typography> : null;
+=======
+  const renderFollow = (
+    <Typography opacity="0.48" onClick={handleFollowClick}>
+      {followStatus}
+    </Typography>
+  );
+  const renderGraduationYear =
+    graduationYear !== null ? (
+      <div>
+        卒業年度:
+        <Button
+          variant="contained"
+          // color="primary"
+          sx={{
+            padding: "2px",
+            margin: "2px",
+            // background: "#41A4FF",
+            background: "linear-gradient(#41A4FF, #9198e5)",
+            "&:hover": {
+              background: "linear-gradient(#c2c2c2, #e5ad91)",
+            },
+          }}
+        >
+          {graduationYear}
+        </Button>
+      </div>
+    ) : null;
+
+  const renderSchoolName =
+    schoolName !== null ? (
+      <div>
+        学校名:
+        <Button
+          variant="contained"
+          // color="primary"
+          sx={{
+            padding: "2px",
+            margin: "2px",
+            // background: "#41A4FF",
+            background: "linear-gradient(#41A4FF, #9198e5)",
+            "&:hover": {
+              background: "linear-gradient(#c2c2c2, #e5ad91)",
+            },
+          }}
+        >
+          {schoolName}
+        </Button>
+      </div>
+    ) : null;
+
+  const renderDesiredWorkRegion =
+    desiredWorkRegion !== null ? (
+      <div>
+        希望勤務地:
+        <Button
+          variant="contained"
+          // color="primary"
+          sx={{
+            padding: "2px",
+            margin: "2px",
+            // background: "#41A4FF",
+            background: "linear-gradient(#41A4FF, #9198e5)",
+            "&:hover": {
+              background: "linear-gradient(#c2c2c2, #e5ad91)",
+            },
+          }}
+        >
+          {desiredWorkRegion}
+        </Button>
+      </div>
+    ) : null;
+
+  const renderDesiredOccupation =
+    desiredOccupation !== null ? (
+      <div>
+        希望職種:
+        <Button
+          variant="contained"
+          // color="primary"
+          sx={{
+            padding: "2px",
+            margin: "2px",
+            // background: "#41A4FF",
+            background: "linear-gradient(#41A4FF, #9198e5)",
+            "&:hover": {
+              background: "linear-gradient(#c2c2c2, #e5ad91)",
+            },
+          }}
+        >
+          {desiredOccupation}
+        </Button>
+      </div>
+    ) : null;
+>>>>>>> b1cb22e56087783203dace346729860a7372dce3
 
   const renderInfo = (
     <Stack
@@ -171,50 +296,59 @@ export default function PostCard({ post, index }) {
 
   return (
     <Grid xs={12} sm={latestPostLarge ? 12 : 6} md={latestPostLarge ? 6 : 3}>
-      <Card>
-        <Box
-          sx={{
-            position: "relative",
-            pt: "calc(100% * 3 / 4)",
-          }}
-        >
-          {renderShape}
+      <div ref={ref}>
+        <Card>
+          <Box
+            sx={{
+              position: "relative",
+              pt: "calc(100% * 3 / 4)",
+            }}
+          >
+            {renderShape}
 
-          {renderAvatar}
+            {renderAvatar}
 
-          {renderCover}
-        </Box>
+            {renderCover}
+          </Box>
 
-        <Box
-          sx={{
-            p: (theme) => theme.spacing(4, 3, 3, 3),
-          }}
-        >
-          {/* {renderDate} */}
+          <Box
+            sx={{
+              p: (theme) => theme.spacing(4, 3, 3, 3),
+            }}
+          >
+            {renderFollow}
 
+<<<<<<< HEAD
           <div>
           {renderFollow()}
           </div>
 
+=======
+            {renderUserName}
+>>>>>>> b1cb22e56087783203dace346729860a7372dce3
 
-          {renderTitle}
+            {renderGraduationYear}
 
-          {renderGraduationYear}
+            {renderSchoolName}
 
-          {renderSchoolName}
+            {renderDesiredWorkRegion}
 
-          {renderDesiredWorkRegion}
+            {renderDesiredOccupation}
 
-          {renderDesiredOccupation}
-
-          {renderInfo}
-        </Box>
-      </Card>
+            {renderInfo}
+          </Box>
+        </Card>
+      </div>
     </Grid>
   );
-}
+});
+
+// `displayName` の追加
+PostCard.displayName = "PostCard";
 
 PostCard.propTypes = {
   post: PropTypes.object.isRequired,
-  index: PropTypes.number,
+  index: PropTypes.number.isRequired,
 };
+
+export default PostCard;

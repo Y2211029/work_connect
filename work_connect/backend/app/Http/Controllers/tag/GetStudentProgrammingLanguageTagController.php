@@ -8,7 +8,8 @@ use App\Models\w_tags;
 
 class GetStudentProgrammingLanguageTagController extends Controller
 {
-    public function GetStudentProgrammingLanguageTagController(Request $request){
+    public function GetStudentProgrammingLanguageTagController(Request $request)
+    {
         $tag = \DB::table('w_tags')
             ->where('item_id', 4)
             ->whereExists(function ($query) {
@@ -17,6 +18,9 @@ class GetStudentProgrammingLanguageTagController extends Controller
                     ->whereRaw('w_users.programming_language REGEXP CONCAT("(^|,)", w_tags.name, "(,|$)")');
             })
             ->get();
+
+        \Log::info('GetStudentProgrammingLanguageTagController.php:$tag:');
+        \Log::info($tag);
         return json_encode($tag);
     }
 }

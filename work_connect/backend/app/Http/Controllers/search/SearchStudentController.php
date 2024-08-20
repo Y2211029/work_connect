@@ -12,9 +12,14 @@ class SearchStudentController extends Controller
     public function SearchStudentController(Request $request)
     {
         try {
+            $page = (int) $request->query('page', 1);
+            $perPage = 20; //一ページ当たりのアイテム数
+            // すでに取得したデータをスキップするためのオフセット計算
+            $offset = ($page - 1) * $perPage;
+
             // 検索文字列を取得
             $searchText = $request->input('searchText', "");
-            
+
             // 絞り込まれた希望職種を配列で取得
             $desired_occupation_array = $request->input('desired_occupation', []);
             // 絞り込まれた希望勤務地を配列で取得
@@ -87,19 +92,22 @@ class SearchStudentController extends Controller
                     $query->where('w_users.hobby', 'REGEXP', '(^|,)' . preg_quote($hobby) . '($|,)');
                 }
             }
-
-            $results = $query->get();
+            $results = $query->skip($offset)
+                ->take($perPage) //件数
+                ->get();
 
             $resultsArray = json_decode(json_encode($results), true);
 
             \Log::info('SearchStudentController:$resultsArray:');
             \Log::info($resultsArray);
 
-            if (count($resultsArray) == 0) {
-                return json_encode("検索結果0件");
-            } else {
-                return json_encode($resultsArray);
-            }
+            return json_encode($resultsArray);
+
+            // if (count($resultsArray) == 0) {
+            //     return json_encode("検索結果0件");
+            // } else {
+            //     return json_encode($resultsArray);
+            // }
         } catch (\Exception $e) {
             \Log::info('SearchStudentController:user_name重複チェックエラー');
             \Log::info($e);

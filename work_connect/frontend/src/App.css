@@ -426,7 +426,9 @@ textarea {
 
 /* 作品一覧画面　ここから */
 .link {
-  color: white;
+  /* color: white; */
+  color: black;
+
   text-decoration: none;
 }
 

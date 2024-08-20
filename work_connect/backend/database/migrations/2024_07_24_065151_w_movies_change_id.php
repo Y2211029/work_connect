@@ -9,11 +9,22 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table('w_movies', function (Blueprint $table) {
-            // id カラムが存在する場合は削除する
-            $table->dropColumn('id');
+
+        Schema::table('w_movies', function (BluePrint $table) {
+            if (Schema::hasColumn('w_movies', 'post_datetime')) {
+                $table->dropColumn('post_datetime');
+            }
+            if (Schema::hasColumn('w_movies', 'id')) {
+                $table->dropColumn('id');
+            }
+            if (Schema::hasColumn('w_movies', 'movie_id')) {
+                $table->dropColumn('movie_id');
+            }
+        });
+
+        Schema::table('w_movies', function (BluePrint $table) {
             // 主キーに設定するカラムを指定
-            $table->primary('movie_id');
+            $table->id('movie_id');
         });
     }
 

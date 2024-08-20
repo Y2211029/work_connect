@@ -20,9 +20,6 @@ return new class extends Migration {
             if (Schema::hasColumn('w_works', 'work_id')) {
                 $table->dropColumn('work_id');
             }
-            // else {
-
-            // }
         });
 
         Schema::table('w_works', function (BluePrint $table) {

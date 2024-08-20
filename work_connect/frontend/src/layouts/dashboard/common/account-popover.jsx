@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
@@ -12,16 +12,31 @@ import Box from "@mui/material/Box";
 
 import { account } from "src/_mock/account";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
-
+import { AllItemsContext } from "src/layouts/dashboard/index";
 // ----------------------------------------------------------------------
-
-
 
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
   const [open, setOpen] = useState(null);
   const navigate = useNavigate();
+  // セッションストレージ取得
+  const { getSessionData } = useSessionStorage();
+  const accountData = getSessionData("accountData");
+  const { setAllItems } = useContext(AllItemsContext);
+  const [UserName, setUserName] = useState("");
+  const [Mail, setMail] = useState("");
+  const [login_state, setLoginState] = useState(false);
+
+  useEffect(() => {
+    if (accountData) {
+      setUserName(accountData.user_name);
+      setMail(accountData.mail);
+      if (UserName && Mail) {
+        setLoginState(true);
+      }
+    }
+  }, [accountData]);
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -32,6 +47,18 @@ export default function AccountPopover() {
   };
 
   const handleMenuItemClick = (path) => {
+    if (path == `/Profile/${accountData.user_name}`) {
+      // console.log("path", path);
+      // 作品・動画一覧を正常に再表示するために必要な処理
+      setAllItems((prevItems) => ({
+        ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
+        ResetItem: true,
+        DataList: [], //検索してない状態にするために初期化 //searchbar.jsxのsearchSourceも初期化
+        IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
+        Page: 1, //スクロールする前の状態にするために初期化
+        sortOption: "orderNewPostsDate", //並び替える前の状態にするために初期化
+      }));
+    }
     handleClose();
     navigate(path);
   };
@@ -50,29 +77,8 @@ export default function AccountPopover() {
     }
   };
 
-   // セッションストレージ取得
-   const { getSessionData } = useSessionStorage();
-   const accountData = getSessionData("accountData");
-
-   const [UserName, setUserName] = useState("");
-   const [Mail, setMail] = useState("");
-   const [login_state, setLoginState] = useState(false);
-
-   useEffect(() => {
-
-     if (accountData) {
-
-       setUserName(accountData.user_name);
-       setMail(accountData.mail);
-       if (UserName && Mail) {
-         setLoginState(true);
-
-       }
-     }
-   }, [accountData]);
-
-   // MENU_OPTIONSの設定
-   const MENU_OPTIONS = [
+  // MENU_OPTIONSの設定
+  const MENU_OPTIONS = [
     // {
     //   label: 'Home',
     //   icon: 'eva:home-fill',
@@ -83,12 +89,11 @@ export default function AccountPopover() {
       icon: "eva:person-fill",
     },
     {
-      label: '設定',
-      path: '/Settings',
-      icon: 'eva:settings-2-fill',
+      label: "設定",
+      path: "/Settings",
+      icon: "eva:settings-2-fill",
     },
   ];
-
 
   return (
     <>
@@ -99,7 +104,8 @@ export default function AccountPopover() {
           height: 40,
           background: (theme) => alpha(theme.palette.grey[500], 0.08),
           ...(open && {
-            background: (theme) => `linear-gradient(135deg, ${theme.palette.primary.light} 0%, ${theme.palette.primary.main} 100%)`,
+            background: (theme) =>
+              `linear-gradient(135deg, ${theme.palette.primary.light} 0%, ${theme.palette.primary.main} 100%)`,
           }),
         }}
       >
@@ -145,7 +151,11 @@ export default function AccountPopover() {
         <Divider sx={{ borderStyle: "dashed", display: login_state ? "block" : "none" }} />
 
         {MENU_OPTIONS.map((option) => (
-          <MenuItem key={option.label} onClick={() => handleMenuItemClick(option.path)} sx={{ display: login_state ? "block" : "none" }}>
+          <MenuItem
+            key={option.label}
+            onClick={() => handleMenuItemClick(option.path)}
+            sx={{ display: login_state ? "block" : "none" }}
+          >
             {option.label}
           </MenuItem>
         ))}

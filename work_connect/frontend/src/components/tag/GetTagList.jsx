@@ -14,7 +14,6 @@ function GetTagList() {
   // セッションストレージのaccountData.idが正しいidでなければトップページに飛ばす
   const GetTagListFunction = async (kind) => {
     try {
-
       if (kind != undefined) {
         const url = `http://localhost:8000/get_${kind}_tag`;
         let result;

@@ -128,7 +128,7 @@ const CompanyLoginModal = (props) => {
         if (data != null) {
           console.log(data.id);
           console.log("login成功");
-          alert("ログインに成功しました。");
+          // alert("ログインに成功しました。");
 
           // データの保存(セッションストレージ)
           updateSessionData("accountData", "id", data.id);

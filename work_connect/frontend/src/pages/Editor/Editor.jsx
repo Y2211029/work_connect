@@ -32,7 +32,6 @@ import SKMFlipBox from 'skm-flipbox'; //画像のスライドができるカル�
 import AudioPlayer from 'editorjs-audio-player'; //音声を挿入できる
 import ImageGallery from '@rodrigoodhin/editorjs-image-gallery';
 import Carousel from 'editorjs-carousel';
-import 'cropperjs/dist/cropper.css';
 
 
 //画像
@@ -63,7 +62,8 @@ const Editor = () => {
   const [news_id, setNewsId] = useState(0); // ニュースの情報が格納されているDBのidを格納する
   const [draft_list, setDraftList] = useState([]); // ニュースの下書きリストを保持するステート
   const [selected_draft, setSelectedDraft] = useState(null); // 選択された下書きを保持するステート
-
+  const textareaRef = useRef(null);
+  const [selectedGenre, setSelectedGenre] = useState('');
 
   const news_save_url = "http://127.0.0.1:8000/news_save";
   const thumbnail_image_save_url = "http://127.0.0.1:8000/thumbnail_image_save";
@@ -71,93 +71,101 @@ const Editor = () => {
   const csrf_url = "http://localhost:8000/csrf-token";
   const navigate = useNavigate();
 
-    //ニュースを投稿した際の処理
-    const news_upload = async () => {
-      alert("ニュースを投稿しました");
-      const newsContent = document.getElementById('news_textarea').value;
-      const radioButtons = document.getElementsByName('news_genre');
-      let selectedGenre = '';
 
-      for (let i = 0; i < radioButtons.length; i++) {
-        if (radioButtons[i].checked) {
-          selectedGenre = radioButtons[i].value;
-          break;
+  // ラジオボタンの選択を変更する
+  const handleRadioChange = (event) => {
+    console.log(event.target.value);
+    setSelectedGenre(event.target.value);
+  };
+
+  //ニュースを投稿した際の処理
+  const news_upload = async () => {
+    alert("ニュースを投稿しました");
+
+    try {
+      if (!editorInstance.current || typeof editorInstance.current.save !== "function") {
+        console.error("Editor instance or save function not available");
+        return;
+      }
+
+      //採用担当者からの一言メッセージを変数に入れる
+      const newsContent = textareaRef.current.value;
+
+      const outputData = await editorInstance.current.save();
+
+      console.log("sessionId",sessionId);
+      console.log("news_id",news_id);
+      console.log("textValue",textValue);
+      console.log("header_img",imageUrl);
+      console.log("outputData",outputData);
+      console.log("newsContent",newsContent);
+      console.log("selectedGenre",selectedGenre);
+
+      const response = await axios.post(news_upload_url, {
+        company_id: sessionId, // 企業ID
+        news_id: news_id,     //ニュースid
+        title: textValue,     //ニュースタイトル
+        header_img: imageUrl, //ニュースサムネイル画像
+        value: outputData,  //ニュースの内容
+        message: newsContent, //採用担当者からの一言メッセージ
+        genre: selectedGenre, //インターンor求人orブログ
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken,
         }
-      }
+      });
 
-      try {
-        const response = await axios.post(news_upload_url, {
-          news_id: news_id,
-          message: newsContent,
-          genre: selectedGenre,
-        }, {
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': csrfToken,
-          }
-        });
-
-        console.log(response.data.id);
-        setNewsId(response.data.id);
-        console.log("成功");
-        navigate('/Internship_JobOffer');
-      } catch (error) {
-        console.log("Error:", error);
-      }
-    };
+      console.log(response.data.id);
+      setNewsId(response.data.id);
+      console.log("成功");
+      navigate('/Internship_JobOffer');
+    } catch (error) {
+      console.log("Error:", error);
+    }
+  };
 
   const titlechange = (event) => {
     setTextValue(event.target.value); // テキストエリアの値をstateに反映
   };
 
-  const handleNavigation = () => {
-    navigate('/Internship_JobOffer'); // ルートパスに基づいた指定
-  };
+
 
 
   // 下書きを新規保存・更新する処理
-  const news_save = () => {
-    alert("下書きを保存しました!");
-    console.log(textValue);
-    if (editorInstance.current && typeof editorInstance.current.save === "function") {
-      editorInstance.current
-        .save()
-        .then((outputData) => {
-          console.log("Article data: ", outputData);
-          console.log(sessionId);
-          axios({
-            method: "post",
-            url: news_save_url, // アクセスするURL
-            params: {
-              value: outputData,  // ニュース記事
-              title: textValue,   // タイトル
-              news_id: news_id,   // ID
-              company_id: sessionId // 企業ID
-            },
-            headers: {
-              "X-CSRF-TOKEN": csrfToken,
-            },
-          })
-            .then((response) => {
-              // axios成功時の処理
-              console.log(response.data.id);
-              const news_draft_list = response.data.news_draft_list;
-              setDraftList(news_draft_list); //下書きリスト最新に更新
-              setNewsId(response.data.id); // news_idを更新する
-              console.log("成功");
-            })
-            .catch((error) => {
-              // axios失敗時の処理
-              console.error("Error:", error);
-            });
-        })
-        .catch((error) => {
-          console.error("Error saving article:", error);
-        });
-    } else {
-      console.log("Editor instance or save function not available");
+  const news_save = async () => {
+    try {
+      alert("下書きを保存しました!");
+      console.log(textValue);
+
+      if (!editorInstance.current || typeof editorInstance.current.save !== "function") {
+        console.error("Editor instance or save function not available");
+        return;
+      }
+
+      const outputData = await editorInstance.current.save();
+      console.log("Article data: ", outputData);
+      console.log(sessionId);
+
+      const response = await axios.post(news_save_url, {
+        value: outputData,    // ニュース記事
+        title: textValue,     // タイトル
+        news_id: news_id,     // ID
+        company_id: sessionId // 企業ID
+      }, {
+        headers: {
+          "X-CSRF-TOKEN": csrfToken,
+        },
+      });
+
+      setDraftList(response.data.news_draft_list); // 下書きリスト最新に更新
+      setNewsId(response.data.id); // news_idを更新する
+      console.log("成功");
+    } catch (error) {
+      console.error("Error:", error);
     }
   };
+
 
 
 
@@ -273,8 +281,6 @@ const Editor = () => {
     setNewsId(select_draft_list.id);
   };
 
-
-
   useEffect(() => {
 
 
@@ -307,6 +313,8 @@ const Editor = () => {
     }
     fetchCsrfToken(); // ページがロードされた時点でCSRFトークンを取得
 
+
+
     if (editorHolder.current) {
       editorInstance.current = new EditorJS({
         holder: editorHolder.current,
@@ -321,10 +329,10 @@ const Editor = () => {
             class: Embed,
             config: {
               services: {
-                facebook: true,
-                Instagram: true,
-                youtube: true,
-                Twitter: true,
+                facebook: true,  //このfacebook投稿は利用できません。削除されたか、プライバシー設定が変更された可能性があります。と表示され埋め込みできない
+                instagram: true, //埋め込み可能
+                youtube: true,  //埋め込み可能
+                twitter: true,  //埋め込み可能
                 twitch: true,
                 miro: true,
                 vimeo: true,
@@ -332,15 +340,26 @@ const Editor = () => {
                 imgur: true,
                 vine: true,
                 aparat: true,
-                codepen: {
-                  regex: /https?:\/\/codepen.io\/([^/?&]*)\/pen\/([^/?&]*)/,
-                  embeddedUrl:
-                    "https://codepen.io/<%= remote_id %>?height=300&theme-id=0&default-tab=css,result&embed-version=2",
-                  html: "<iframe height='300' scrolling='no' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'></iframe>",
-                },
+                codepen: true,
                 pinterest: true,
                 github: true,
                 coub: true,
+                note: {
+                  regex: /https?:\/\/note\.com\/[^/]+\/n\/([^/?]+)/,
+                  embedUrl: '/api/embed/?url=<%= remote_id %>',
+                  html: "<iframe height='150' scrolling='no' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'></iframe>",
+                  height: 150,
+                  width: 600,
+                  id: (groups) => groups.join(''),
+                },
+                ogp: {
+                  regex: /(https?:\/\/[\w!?/+\-_~;.,*&@#$%()'[\]]+)/,
+                  embedUrl: '/api/embed/?url=<%= remote_id %>',
+                  html: "<iframe height='150' scrolling='no' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'></iframe>",
+                  height: 150,
+                  width: 600,
+                  id: (groups) => groups.join(''),
+                },
               },
             },
           },
@@ -363,7 +382,7 @@ const Editor = () => {
               ],
               defaultColor: "#FF1300",
               type: "text",
-              customPicker: true
+              customPicker: true,
             }
           },
           Marker: {
@@ -612,13 +631,12 @@ const Editor = () => {
                   "or drag to move": "またはドラッグして移動",
                   "Move up": "上に移動する",
                   "Move down": "下に移動する",
-                  "Delete": "削除"
+                  "Delete": "削除",
                 },
               },
               inlineToolbar: {
                 converter: {
                   "Convert to": "変換",
-
                 },
               },
               toolbar: {
@@ -642,6 +660,9 @@ const Editor = () => {
                 'Set': "設定する",
                 'Default Button': "デフォルト",
               },
+              textVariant: {
+                'Call-out': 'コールアウト',
+              },
             },
             toolNames: {
               //メニュー
@@ -663,7 +684,6 @@ const Editor = () => {
               Toggle: "折りたたみメニュー",
               Button: "ボタン",
               "Nested Checklist": "リスト",
-
               Embed: "埋め込み",
 
               //サブメニュー
@@ -678,7 +698,6 @@ const Editor = () => {
               Strikethrough: "取り消し線",
               ChangeCase: "大文字:小文字 変換",
               Hyperlink: 'ハイパーリンク',
-
             },
           },
         },
@@ -709,6 +728,8 @@ const Editor = () => {
   // 画像を削除する処理
   const thumbnail_img_delete = async () => {
     if (fileInputRef.current) {
+      console.log("fileInputRef.current",fileInputRef.current);
+      console.log("value",fileInputRef.current.value);
       fileInputRef.current.value = null; // ファイル入力の値をリセット
       const header_img_delete_url = `http://localhost:8000/thumbnail_img_delete/${news_id}`;
       console.log(news_id);
@@ -763,17 +784,40 @@ const Editor = () => {
               <p>公開設定</p>
 
               <p>どのジャンルで公開しますか?</p>
-              <input type="radio" name="news_genre" id="blog" value="ブログ" />
+              <input
+                type="radio"
+                name="news_genre"
+                id="blog"
+                value="ブログ"
+                checked={selectedGenre === 'ブログ'}
+                onChange={handleRadioChange }
+              />
               <label className="label" htmlFor="blog">ブログ</label>
 
-              <input type="radio" name="news_genre" id="internship" value="インターンシップ" />
+              <input
+                type="radio"
+                name="news_genre"
+                id="internship"
+                value="インターンシップ"
+                checked={selectedGenre === 'インターンシップ'}
+                onChange={handleRadioChange}
+              />
               <label className="label" htmlFor="internship">インターンシップ</label>
 
-              <input type="radio" name="news_genre" id="job" value="求人" />
-              <label className="label" htmlFor="job">求人</label>
-              <br></br><br></br><br></br>
+              <input
+                type="radio"
+                name="news_genre"
+                id="job"
+                value="求人"
+                checked={selectedGenre === '求人'}
+                onChange={handleRadioChange }
+              />
+              <label className="label" htmlFor="job">求人</label>              <br></br><br></br><br></br>
               <p>学生さんへのメッセージや記事の内容を一言でご記入ください!</p>
-              <textarea id="news_textarea" className="news_textarea">
+              <textarea id="news_textarea"
+                className="news_textarea"
+                ref={textareaRef}
+              >
               </textarea>
               <p>{news_id}</p>
               <p><button onClick={news_upload}>投稿</button></p>
@@ -806,7 +850,6 @@ const Editor = () => {
 
       </form>
 
-      <button onClick={handleNavigation}>Go to Internship/Job Offer</button>
 
       <ImageSearchIcon
         className="cover_img_upload"

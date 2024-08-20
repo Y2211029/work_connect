@@ -14,41 +14,58 @@ class GetStudentListController extends Controller
     {
         try {
             // 全ユーザーリストを取得
-            $StudentOfList = w_users::select()->get();
+            $studentList = w_users::all();
 
-            // 各ユーザーのフォロー状態を確認して更新
-            $StudentOfList = $StudentOfList->map(function ($user) use ($id) {
-                // ユーザーがログインしているアカウントをフォローしているかどうか
-                $isFollowing = w_follow::where('follow_sender_id', $id)
-                    ->where('follow_recipient_id', $user->id)
-                    ->exists();
+            // もしも$idが企業側の場合
+            if ("C" === $id[0]) {
+                Log::info($id[0]);
+                Log::info($id);
+                // 各ユーザーのフォロー状態を確認して更新
+                $studentList = $studentList->map(function ($user) use ($id) {
+                    // ユーザーがログインしているアカウントをフォローしているかどうか
+                    $isFollowing = w_follow::where('follow_sender_id', $id)
+                        ->where('follow_recipient_id', $user->id)
+                        ->exists();
 
-                // ログインしているアカウントがユーザーをフォローしているかどうか
-                $isFollowedByUser = w_follow::where('follow_sender_id', $user->id)
-                    ->where('follow_recipient_id', $id)
-                    ->exists();
+                    // ログインしているアカウントがユーザーをフォローしているかどうか
+                    $isFollowedByUser = w_follow::where('follow_sender_id', $user->id)
+                        ->where('follow_recipient_id', $id)
+                        ->exists();
 
-                if ($isFollowing && $isFollowedByUser) {
-                    $user->follow_status = '相互フォローしています';
-                } elseif ($isFollowing) {
-                    $user->follow_status = 'フォローしています';
-                } elseif ($isFollowedByUser) {
-                    $user->follow_status = 'フォローされています';
-                } else {
-                    $user->follow_status = 'フォローする';
-                }
+                    if ($isFollowing && $isFollowedByUser) {
+                        $user->follow_status = '相互フォローしています';
+                    } elseif ($isFollowing) {
+                        $user->follow_status = 'フォローしています';
+                    } elseif ($isFollowedByUser) {
+                        $user->follow_status = 'フォローされています';
+                    } else {
+                        $user->follow_status = 'フォローする';
+                    }
 
-                return $user;
-            });
+                    return $user;
+                });
+            } else {
+                // $idが学生の場合、フォローできないメッセージを設定
+                $studentList = $studentList->map(function ($user) {
+                    $user->follow_status = 'フォローできません';
+                    return $user;
+                });
+            }
 
-            Log::info('GetStudentListController:$StudentOfList:');
-            Log::info(json_encode($StudentOfList));
+            Log::info('IDの値:');
+            Log::info(var_export($id, true));
+
+            Log::info('ID[0]の値:');
+            Log::info(var_export($id[0], true));
+
+
+            Log::info('GetStudentListController: $studentList:');
+            Log::info(json_encode($studentList));
 
             // 結果をJSON形式で返す
-            return response()->json($StudentOfList);
+            return response()->json($studentList);
         } catch (\Exception $e) {
-            Log::info('GetStudentListController: エラー');
-            Log::info($e);
+            Log::error('GetStudentListController: エラー', ['error' => $e->getMessage()]);
 
             // エラーメッセージをJSON形式で返す
             return response()->json(['error' => $e->getMessage()], 500);

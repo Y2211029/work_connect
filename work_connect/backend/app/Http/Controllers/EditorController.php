@@ -38,6 +38,7 @@ class EditorController extends Controller
                 'created_at' => $now,
                 'public_status' => "0"
             ]);
+            Log::info("作成");
         } else {
             // 更新
             $w_news = w_news::find($news_id);
@@ -58,9 +59,13 @@ class EditorController extends Controller
 
 
         // IDを返す
-        return response()->json(['id' => $id,
-        'news_draft_list' => $newsDraftList],
-        200);
+        return response()->json(
+            [
+                'id' => $id,
+                'news_draft_list' => $newsDraftList
+            ],
+            200
+        );
     }
 
     public function thumbnail_image_save(Request $request)
@@ -75,6 +80,7 @@ class EditorController extends Controller
         // 画像を保存
         if ($request->hasFile('file')) {
             $image = $request->file('file');
+            Log::info($image);
             $originalFilename = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
             $extension = $image->getClientOriginalExtension();
             $timestamp = $now->format('Y-m-d_H-i-s'); // タイムスタンプのフォーマットを変更
@@ -90,7 +96,7 @@ class EditorController extends Controller
             if ($news_id == 0) {
                 // 新規作成
                 $w_news = w_news::create([
-                    'company_id' => "1",
+                    'company_id' => $Company_Id,
                     'header_img' => $filename, // ファイル名を保存
                     'created_at' => $now,
                     'public_status' => "0"
@@ -205,21 +211,33 @@ class EditorController extends Controller
         // 日本の現在時刻を取得
         $now = Carbon::now('Asia/Tokyo');
 
+        $company_id = $request->input('company_id');
         $news_id = $request->input('news_id');
+        $article_title = $request->input('title');
+        $header_img = $request->input('header_img');
+        $summary = $request->input('value');
         $message = $request->input('message');
         $genre = $request->input('genre');
         $public_status = 1;
 
+        Log::info($header_img);
+
         $w_news = w_news::find($news_id);
         if (!$w_news) {
             return response()->json(['error' => 'Record not found'], 404);
+        }else{
+            $w_news->company_id = $company_id;
+            $w_news->article_title = $article_title;
+            $w_news->genre = $genre;
+            $w_news->header_img = $header_img;
+            $w_news->summary = $summary;
+            $w_news->message = $message;
+            $w_news->public_status = $public_status;
+            $w_news->created_at = $now;
+            $w_news->updated_at = $now;
+            $w_news->save();
         }
-        $w_news->message = $message;
-        $w_news->summary = $genre;
-        $w_news->public_status = $public_status;
-        $w_news->created_at = $now;
-        $w_news->updated_at = $now;
-        $w_news->save();
+
     }
 
     public function news_draft_list(Request $request, $id)
@@ -245,11 +263,74 @@ class EditorController extends Controller
         }
     }
 
-    public function editor_get()
+    public function embed(Request $request)
     {
+        $url = $request->query('url'); // クエリパラメータとしてURLを取得
 
-        // ニュースのデータを取得する
-        $posts = w_news::where('public_status', 1)->get();
-        return response()->json($posts);
+        Log::info("Embed method has been called with URL: " . $url);
+
+        try {
+            // URLからHTMLを取得
+            $response = Http::get($url);
+            $html = $response->body();
+
+            Log::info("HTML fetched successfully.");
+
+            // DOMDocument を使って HTML をパース
+            $doc = new \DOMDocument();
+            @$doc->loadHTML($html);
+            $metaTags = $doc->getElementsByTagName('meta');
+            $ogp = [];
+
+            // 各 meta タグをループして OGP データを抽出
+            foreach ($metaTags as $metaTag) {
+                if ($metaTag instanceof \DOMElement) {
+                    $property = $metaTag->getAttribute('property');
+                    $content = $metaTag->getAttribute('content');
+
+                    if (preg_match('/^og:([^:]+)$/', $property, $match)) {
+                        $ogp[$match[1]] = $content;
+                    } elseif (preg_match('/^twitter:image/', $property)) {
+                        $ogp['image'] = $content;
+                    }
+                }
+            }
+
+            // URLに基づく埋め込みコードの生成
+            if (preg_match('/instagram\.com\/p\/([^\/]+)/', $url, $matches)) {
+                $ogp['embedHtml'] = "<iframe src='https://www.instagram.com/p/{$matches[1]}/embed' width='400' height='500' frameborder='0' scrolling='no' allowtransparency='true'></iframe>";
+                Log::info("Instagram embed generated.");
+
+            } elseif (preg_match('/twitter\.com\/[^\/]+\/status\/(\d+)/', $url, $matches)) {
+                $ogp['embedHtml'] = "<blockquote class='twitter-tweet'><a href='{$url}'></a></blockquote><script async src='https://platform.twitter.com/widgets.js' charset='utf-8'></script>";
+                Log::info("Twitter embed generated.");
+
+            } elseif (preg_match('/l\.facebook\.com\/l\.php\?u=([^&]+)/', $url, $matches)) {
+                $actualUrl = urldecode($matches[1]);
+                $ogp['embedHtml'] = "<iframe src='https://www.facebook.com/plugins/post.php?href={$actualUrl}' width='500' height='600' style='border:none;overflow:hidden' scrolling='no' frameborder='0' allowTransparency='true' allow='encrypted-media'></iframe>";
+                Log::info("Facebook embed generated.");
+
+
+            } elseif (preg_match('/github\.com\/([^\/]+\/[^\/\.]+)(\.git)?/', $url, $matches)) {
+                $repo = $matches[1];
+
+                $ogp['embedHtml'] = "<iframe src='https://github.com/{$repo}' width='800' height='600' frameborder='0' scrolling='yes' style='border:none;'></iframe>";
+                Log::info("GitHub embed generated.");
+
+            } elseif (preg_match('/note\.com\/n\/([^\/?]+)/', $url, $matches)) {
+                $noteId = $matches[1];
+                $ogp['embedHtml'] = "<iframe class='note-embed' src='https://note.com/embed/notes/{$noteId}' style='border: 0; display: block; max-width: 99%; width: 494px; padding: 0px; margin: 10px 0px; position: static; visibility: visible;' height='400'></iframe><script async src='https://note.com/scripts/embed.js' charset='utf-8'></script>";
+                Log::info("Note ID: " . $noteId); // ログにnoteIdを記録
+            } else {
+                Log::info("No matching patterns for embed.");
+            }
+
+            return response()->json($ogp);
+        } catch (\Exception $e) {
+            Log::error("Error in embed method: " . $e->getMessage());
+            return response()->json(['error' => 'Failed to fetch data'], 500);
+        }
     }
+
+
 }

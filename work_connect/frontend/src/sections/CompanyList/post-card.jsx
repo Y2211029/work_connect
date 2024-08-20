@@ -6,8 +6,12 @@ import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
 // import { alpha } from "@mui/material/styles";
+import { follow } from "src/_mock/follow";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // import { fDate } from "src/utils/format-time";
 
@@ -19,9 +23,48 @@ import SvgColor from "src/components/svg-color";
 // ----------------------------------------------------------------------
 
 export default function PostCard({ post, index }) {
-  const { cover, title, selectedOccupation, prefecture, view, comment, author } = post;
+  const { cover, title, selectedOccupation, prefecture, view, comment, author,followStatus:initialFollowStatus,id } = post;
 
+  const [followStatus, setFollowStatus] = useState(initialFollowStatus);
+  const navigate = useNavigate();
   const latestPostLarge = index === -1;
+
+  const { getSessionData } = useSessionStorage();
+  const accountData = getSessionData("accountData");
+  const data = {
+    account_id: accountData.id,
+  };
+
+  const handleFollowClick = async () => {
+    try {
+      const updatedFollowStatus = await follow(data.account_id, id);
+      if (updatedFollowStatus) {
+        setFollowStatus(updatedFollowStatus);
+      }
+    } catch (error) {
+      console.error('フォロー処理中にエラーが発生しました！', error);
+    }
+  };
+
+  const renderFollow = () => {
+    if (followStatus === "フォローできません") {
+      return (
+        <Typography opacity="0.48">
+        </Typography>
+      );
+    } else {
+      return (
+        <Typography opacity="0.48" onClick={handleFollowClick}>
+          {followStatus}
+        </Typography>
+      );
+    }
+  };
+
+  const handleProfileJump = () => {
+    navigate(`/Profile/${title}`);
+  }
+
 
   // const latestPost = index === 1 || index === 2;
 
@@ -47,8 +90,10 @@ export default function PostCard({ post, index }) {
     />
   );
 
+
   const renderTitle = (
     <Link
+      onClick={handleProfileJump}
       color="inherit"
       variant="subtitle2"
       underline="hover"
@@ -67,6 +112,7 @@ export default function PostCard({ post, index }) {
       {title}
     </Link>
   );
+
 
   // 募集職種
   const renderSelectedOccupation = selectedOccupation !== null ? <Typography opacity="0.48">募集職種: {selectedOccupation}</Typography> : null;
@@ -188,6 +234,8 @@ export default function PostCard({ post, index }) {
           {renderAvatar}
 
           {renderCover}
+
+
         </Box>
 
         <Box
@@ -200,6 +248,11 @@ export default function PostCard({ post, index }) {
             // }),
           }}
         >
+
+          <div>
+          {renderFollow()}
+          </div>
+
           {renderTitle}
 
           {renderSelectedOccupation}

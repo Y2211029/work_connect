@@ -77,4 +77,18 @@ public function special_company_news_get(Request $request, $id)
         return response()->json(['error' => 'ニュースが見つかりませんでした。'], 404);
     }
 }
+
+public function all_news_get()
+{
+    // ニュースのデータと関連する会社のデータを結合して取得する
+
+    $posts = w_news::where('w_news.public_status', 1)
+    ->join('w_companies', 'w_news.company_id', '=', 'w_companies.id')
+    ->select('w_news.*', 'w_companies.*', 'w_news.created_at as news_created_at', 'w_news.id as news_id')
+    ->get();
+
+    return response()->json($posts);
+}
+
+
 }

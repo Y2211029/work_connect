@@ -72,7 +72,7 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
   const [showMoreText, setShowMoreText] = useState(
     <><KeyboardArrowDownIcon /> さらに表示</>
   );
-  
+
   // useRef初期化
   const Edit = useRef(null);
   const detail = useRef([]);
@@ -84,7 +84,6 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
   // ログイン中のuser_nameではない
   // ＊＊＊他ルートからアクセスしたときに表示したいユーザのuser_nameをここで指定＊＊＊
   const { user_name } = useParams();
-  const ProfileUserName = useState({user_name});
 
   // DBからのレスポンスが入る変数
   const [ResponseData, setResponseData] = useState([]);
@@ -100,7 +99,7 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
   // };
 
   //const [MypageEditState] = useState(getInitialMypageEditState);
-  
+
   // MypageEditStateが変化したとき
   // useEffect(() => {
   //   //const sessionData = getSessionData("accountData");
@@ -116,13 +115,13 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
 
   // ProfileUserNameが変化したとき
   useEffect(() => {
-    async function GetData(ProfileUserName) {
-      
+    async function GetData(user_name) {
+
       try {
         // Laravel側からデータを取得
         const response = await axios.get(url, {
           params: {
-            ProfileUserName: ProfileUserName[0],
+            ProfileUserName: user_name,
           },
         });
         if(response){
@@ -134,8 +133,10 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
       }
     }
     // DBからデータを取得
-    GetData(ProfileUserName);
-  }, [ProfileUserName]);
+    if(user_name){
+      GetData(user_name);
+    }
+  }, [user_name]);
 
   // 初回レンダリング時の一度だけ実行させる
   useEffect(() => {
@@ -194,9 +195,9 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
                     </IconButton>
                 </Tooltip>
             </Box>
-            
+
             <UserIcon />
-            
+
             <Box>
               <Typography variant="h6">名前</Typography>
               <StudentName StudentSurnameData={ResponseData.student_surname} StudentnameData={ResponseData.student_name}/>
@@ -219,7 +220,7 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
             </Box>
             <Box>
               <Showmore>
-                <Button variant="outlined" ref={showmore} onClick={ShowmoreClick} 
+                <Button variant="outlined" ref={showmore} onClick={ShowmoreClick}
                 sx={{ borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
                   {showMoreText}
                 </Button>
@@ -264,7 +265,7 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
             </Box>
             <Box>
               <Save>
-                <Button variant="outlined"  
+                <Button variant="outlined"
                 sx={{ borderColor: '#1877F2', color: '#1877F2', '&:hover': { borderColor: '#1877F2' }, cursor: 'pointer' }}
                 size="large">
                   保存
@@ -273,7 +274,7 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
             </Box>
             {/* </span> */}
           </Stack>
-        
+
       );
 
 });

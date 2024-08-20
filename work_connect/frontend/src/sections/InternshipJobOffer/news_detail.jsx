@@ -21,9 +21,7 @@ const news_title = {
 };
 
 const news_font = {
-    fontSize: "15px",
     padding: "auto",
-    color: "black",
 };
 
 const news_summary = {
@@ -31,6 +29,7 @@ const news_summary = {
     minWidth: "299px",
     paddingTop: "5%",
     marginLeft: "5%",
+    marginBottom: "10%",
 };
 
 const NewsDetailHeader = {
@@ -106,7 +105,7 @@ const InternshipJobOfferPage = () => {
     }, []);
 
 
-   //日付をYY/MM/DDに変換する
+    //日付をYY/MM/DDに変換する
     const formatDate = (dateString) => {
         const dateObj = new Date(dateString);
         const year = dateObj.getFullYear();
@@ -155,7 +154,7 @@ const InternshipJobOfferPage = () => {
                     {/* NewsDetailHeader要素 サムネイルと会社名・お気に入りボタンを一括りにする */}
                     <div style={NewsDetailHeader}>
                         <img
-                            src={`./header_img/${NewsDetail.header_img}`}
+                            src={`${NewsDetail.header_img}`}
                             style={news_img}
                             alt={NewsDetail.article_title}
                         />
@@ -195,12 +194,11 @@ const InternshipJobOfferPage = () => {
                         {NewsDetail.summary.blocks.map((block, index) => {
                             switch (block.type) {
                                 case "paragraph":
-                                    return <p key={index} style={news_font}>{block.data.text}</p>;
+                                    return <p key={index} style={news_font} dangerouslySetInnerHTML={{ __html: block.data.text }} />;
                                 case "header":
                                     return React.createElement(
                                         `h${block.data.level}`,
-                                        { key: index, style: news_font },
-                                        block.data.text
+                                        { key: index, style: news_font, dangerouslySetInnerHTML: { __html: block.data.text } }
                                     );
                                 case "image":
                                     return (
@@ -222,7 +220,7 @@ const InternshipJobOfferPage = () => {
                                                 {block.data.content.map((row, rowIndex) => (
                                                     <tr key={rowIndex}>
                                                         {row.map((cell, cellIndex) => (
-                                                            <td key={cellIndex}>{cell}</td>
+                                                            <td key={cellIndex} dangerouslySetInnerHTML={{ __html: cell }} />
                                                         ))}
                                                     </tr>
                                                 ))}
@@ -233,9 +231,7 @@ const InternshipJobOfferPage = () => {
                                     return (
                                         <ul key={index} style={news_font}>
                                             {block.data.items.map((item, itemIndex) => (
-                                                <li key={itemIndex} style={{ textDecoration: item.checked ? "line-through" : "none" }}>
-                                                    {item.text}
-                                                </li>
+                                                <li key={itemIndex} style={{ textDecoration: item.checked ? "line-through" : "none" }} dangerouslySetInnerHTML={{ __html: item.text }} />
                                             ))}
                                         </ul>
                                     );
@@ -245,15 +241,14 @@ const InternshipJobOfferPage = () => {
                                     return <div key={index} dangerouslySetInnerHTML={{ __html: block.data.html }} />;
                                 case "quote":
                                     return (
-                                        <blockquote key={index} style={news_font}>
-                                            <p>{block.data.text}</p>
+                                        <blockquote key={index} style={news_font} dangerouslySetInnerHTML={{ __html: block.data.text }}>
                                             <cite>{block.data.caption}</cite>
                                         </blockquote>
                                     );
                                 case "inlineCode":
-                                    return <code key={index} style={news_font}>{block.data.text}</code>;
+                                    return <code key={index} style={news_font} dangerouslySetInnerHTML={{ __html: block.data.text }} />;
                                 case "alert":
-                                    return <div key={index} style={news_font}>{block.data.message}</div>;
+                                    return <div key={index} style={news_font} dangerouslySetInnerHTML={{ __html: block.data.message }} />;
                                 case "toggle":
                                     return (
                                         <details key={index} style={news_font}>

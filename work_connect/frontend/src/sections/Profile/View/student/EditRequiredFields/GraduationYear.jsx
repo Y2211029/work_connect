@@ -25,13 +25,14 @@ const GraduationYearDropdown = ({GraduationData}) => {
   useEffect(() => {
     // セッションデータ取得
       const SessionData = getSessionData("accountData");
+      console.log(SessionData);
       console.log("SessionData.Graduation:::"+SessionData.Graduation);
       if (GraduationData !== undefined) {
         // DBからのデータをオブジェクト化する
         const ObjectGraduationData = { value: GraduationData, label: `${GraduationData}年` };
         if (SessionData.Graduation === undefined) {
           console.log("SessionData.Graduation === undefined");
-          
+
         }
         if (SessionData.Graduation !== undefined && SessionData.Graduation !== "") {
           console.log("qqqqqqqqqqqqqqqqq");
@@ -43,7 +44,7 @@ const GraduationYearDropdown = ({GraduationData}) => {
           setGraduation(ObjectGraduationData);
         }
       }
-    
+
   }, [GraduationData]);
 
   const handleChange = (Option) => {

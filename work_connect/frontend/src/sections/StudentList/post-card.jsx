@@ -12,18 +12,21 @@ import { fShortenNumber } from "src/utils/format-number";
 import Iconify from "src/components/iconify";
 import SvgColor from "src/components/svg-color";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import { useNavigate } from "react-router-dom";
 // ----------------------------------------------------------------------
 
 export default function PostCard({ post, index }) {
   const { cover, title, graduationYear, schoolName,
     desiredWorkRegion, desiredOccupation,
-    view, comment, author, followStatus: initialFollowStatus, id } = post;
+    view, comment, author, followStatus: initialFollowStatus, id,user_name } = post;
 
   const [followStatus, setFollowStatus] = useState(initialFollowStatus);
+  const navigate = useNavigate();
   const latestPostLarge = index === -1;
 
   const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData");
+
   const data = {
     account_id: accountData.id,
   };
@@ -38,6 +41,10 @@ export default function PostCard({ post, index }) {
       console.error('フォロー処理中にエラーが発生しました！', error);
     }
   };
+
+  const handleProfileJump = () => {
+    navigate(`/Profile/${user_name}`);
+  }
 
   const renderAvatar = (
     <Avatar
@@ -56,6 +63,7 @@ export default function PostCard({ post, index }) {
 
   const renderTitle = (
     <Link
+      onClick={handleProfileJump}
       top="/workDetail"
       color="inherit"
       variant="subtitle2"
@@ -73,11 +81,21 @@ export default function PostCard({ post, index }) {
     </Link>
   );
 
-  const renderFollow = (
-    <Typography opacity="0.48" onClick={handleFollowClick}>
-      {followStatus}
-    </Typography>
-  );
+  const renderFollow = () => {
+    if (followStatus === "フォローできません") {
+      return (
+        <Typography opacity="0.48">
+        </Typography>
+      );
+    } else {
+      return (
+        <Typography opacity="0.48" onClick={handleFollowClick}>
+          {followStatus}
+        </Typography>
+      );
+    }
+  };
+
   const renderGraduationYear = <Typography opacity="0.48">卒業年度:{graduationYear}</Typography>;
   const renderSchoolName = <Typography>学校名:{schoolName}</Typography>;
   const renderDesiredWorkRegion = desiredWorkRegion !== null ? <Typography>希望勤務地:{desiredWorkRegion}</Typography> : null;
@@ -174,7 +192,10 @@ export default function PostCard({ post, index }) {
         >
           {/* {renderDate} */}
 
-          {renderFollow}
+          <div>
+          {renderFollow()}
+          </div>
+
 
           {renderTitle}
 

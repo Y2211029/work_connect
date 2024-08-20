@@ -6,6 +6,7 @@ import Tab from '@mui/material/Tab';
 
 import ProfileMypage from './Mypage';
 import ProfileNews from './News';
+import "../css/Profile.css";
 
 
 

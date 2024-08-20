@@ -7,6 +7,7 @@ use App\Http\Controllers\work\PostWorkCommentPostController;
 use App\Http\Controllers\work\PostWorkCommentSaveController;
 use App\Http\Controllers\work\PostWorkCommentDeleteController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ListController;
@@ -122,7 +123,7 @@ Route::get('/get_movie_list', [GetMovieListController::class, 'GetMovieListContr
 // 学生一覧取得
 Route::get('/get_student_list/{id}', [GetStudentListController::class, 'GetStudentListController']);
 // 企業一覧取得
-Route::get('/get_company_list', [GetCompanyListController::class, 'GetCompanyListController']);
+Route::get('/get_company_list/{id}', [GetCompanyListController::class, 'GetCompanyListController']);
 
 // 作品詳細取得
 Route::get('/get_work_detail', [GetWorkDetailController::class, 'GetWorkDetailController']);
@@ -174,11 +175,12 @@ Route::post('/thumbnail_image_save', [EditorController::class, 'thumbnail_image_
 Route::post('/contents_image_save', [EditorController::class, 'contents_image_save']);
 Route::post('/contents_url_image_save', [EditorController::class, 'contents_url_image_save']);
 Route::get('/news_draft_list/{id}', [EditorController::class, 'news_draft_list']);
-Route::get('/Internship_JobOffer', [EditorController::class, 'editor_get']);
+Route::get('/Internship_JobOffer', [NewsController::class, 'all_news_get']);
+Route::get('/Internship_JobOffer/special_company_news_get/{id}', [NewsController::class, 'special_company_news_get']);
 Route::get('/Internship_JobOffer/news_detail/{id}', [NewsController::class, 'news_detail_get']);
 Route::post('/news_bookmark', [NewsController::class, 'news_bookmark']);
 Route::get('/thumbnail_img_delete/{id}', [EditorController::class, 'thumbnail_img_delete']);
-
+Route::get('/api/embed', [EditorController::class, 'embed']);
 
 //設定機能
 Route::get('/color_save', [SettingController::class, 'color_save']);
@@ -197,7 +199,7 @@ Route::get('/csrf-token', function () {
     return response()->json(['csrf_token' => csrf_token()]);
 });
 
-Auth::routes();
+
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
@@ -205,3 +207,4 @@ Route::get('{any}', function () {
 
     return view('app');
 })->where('any', '.*');
+

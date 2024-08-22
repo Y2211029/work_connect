@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import $ from "jquery";
 
@@ -172,6 +172,10 @@ export default function Header({ onOpenNav }) {
       </Stack>
     </>
   );
+
+  useEffect(() => {
+    console.log("theme.zIndex",theme.zIndex);
+  }, [theme]);
 
   return (
     <>

@@ -2,17 +2,15 @@ import { useEffect, useState } from "react";
 import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
-import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
-// import { alpa } from "@mui/material/styles";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
+
 import { follow } from "src/_mock/follow";
-import { fShortenNumber } from "src/utils/format-number";
-import Iconify from "src/components/iconify";
 import SvgColor from "src/components/svg-color";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 // import { useNavigate } from "react-router-dom";
@@ -26,8 +24,8 @@ const PostCard = forwardRef(({ post, index }, ref) => {
     schoolName,
     desiredWorkRegion,
     desiredOccupation,
-    view,
-    comment,
+    // view,
+    // comment,
     author,
     followStatus: initialFollowStatus,
     student_id,
@@ -189,29 +187,29 @@ const PostCard = forwardRef(({ post, index }, ref) => {
       </div>
     ) : null;
 
-  const renderInfo = (
-    <Stack
-      direction="row"
-      flexWrap="wrap"
-      spacing={1.5}
-      justifyContent="flex-end"
-      sx={{
-        mt: 3,
-        color: "text.disabled",
-      }}
-    >
-      {[
-        { number: comment, icon: "eva:message-circle-fill" },
-        { number: view, icon: "eva:eye-fill" },
-        // { number: share, icon: "eva:share-fill" },
-      ].map((info, _index) => (
-        <Stack key={_index} direction="row">
-          <Iconify width={16} icon={info.icon} sx={{ mr: 0.5 }} />
-          <Typography variant="caption">{fShortenNumber(info.number)}</Typography>
-        </Stack>
-      ))}
-    </Stack>
-  );
+  // const renderInfo = (
+  //   <Stack
+  //     direction="row"
+  //     flexWrap="wrap"
+  //     spacing={1.5}
+  //     justifyContent="flex-end"
+  //     sx={{
+  //       mt: 3,
+  //       color: "text.disabled",
+  //     }}
+  //   >
+  //     {[
+  //       { number: comment, icon: "eva:message-circle-fill" },
+  //       { number: view, icon: "eva:eye-fill" },
+  //       // { number: share, icon: "eva:share-fill" },
+  //     ].map((info, _index) => (
+  //       <Stack key={_index} direction="row">
+  //         <Iconify width={16} icon={info.icon} sx={{ mr: 0.5 }} />
+  //         <Typography variant="caption">{fShortenNumber(info.number)}</Typography>
+  //       </Stack>
+  //     ))}
+  //   </Stack>
+  // );
 
   const renderCover = (
     <Box
@@ -291,7 +289,7 @@ const PostCard = forwardRef(({ post, index }, ref) => {
 
             {renderDesiredOccupation}
 
-            {renderInfo}
+            {/* {renderInfo} */}
           </Box>
         </Card>
       </div>

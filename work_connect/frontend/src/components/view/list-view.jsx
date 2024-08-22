@@ -373,7 +373,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
           colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
         />
       )}
-      <Container>
+      <Container maxWidth="xl">
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           {typeof ItemName === "string" ? (
             <>

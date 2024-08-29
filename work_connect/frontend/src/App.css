@@ -1,0 +1,436 @@
+.App {
+  width: 100%;
+  height: 100vh;
+  font-size: 18px
+}
+
+header {
+  display: flex;
+  justify-content: space-around;
+  background-color: #f3f6fc;
+  color: #696969;
+  /* position: fixed; */
+  width: 100%;
+  z-index: 10;
+  height: 60px;
+}
+
+header .logo {
+  font-size: 30px;
+}
+
+nav ul {
+  margin: 0px;
+}
+
+nav ul li {
+  list-style: none;
+  display: inline-block;
+  margin-right: 30px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #696969;
+  transition: all 0.2s;
+}
+
+nav ul li a:hover {
+  color: rgb(45, 214, 158);
+}
+
+
+
+/* 以下、出口記入 */
+.Modal {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+h1 {
+  text-align: center;
+}
+
+.Modal form {
+  background-color: white;
+  width: 70%;
+  max-width: 600px;
+  padding: 30px;
+  border-radius: 50px;
+  border: 1px solid #dfdfdf;
+  font-weight: 700;
+}
+
+.loginUiForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 500px;
+}
+
+.loginFormField {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.loginFormField input {
+  border: 1px solid grey;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.loginFormField input:focus {
+  outline: none;
+}
+
+.loginFormField label {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+/* .loginUiForm button {
+  background-color: #f3f6fc;
+  width: 100%;
+  //margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 30px;
+  color: black;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+} */
+
+.submitButton {
+  background-color: #f3f6fc;
+  width: 100%;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 30px;
+  color: black;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.preSignUpUiForm button {
+  background-color: #f3f6fc;
+  width: 100%;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 30px;
+  color: black;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.signUpUiForm button {
+  background-color: #f3f6fc;
+  width: 100%;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 30px;
+  color: black;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+/* button:hover {
+  background-color: #175892;
+} */
+
+.errorMsg {
+  color: red;
+  margin: 0;
+  align-self: flex-start;
+}
+
+.preSignUpFormContainer {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preSignUpFormContainer form {
+  background-color: white;
+  width: 70%;
+  max-width: 450px;
+  padding: 30px;
+  border-radius: 50px;
+  border: 1px solid #dfdfdf;
+  font-weight: 700;
+}
+
+.preSignUpUiForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 250px;
+}
+
+.preSignUpFormField {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.preSignUpFormField input {
+  border: 1px solid grey;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.preSignUpFormField input:focus {
+  outline: none;
+}
+
+.preSignUpFormField label {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+.signUpFormContainer {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.signUpFormContainer form {
+  background-color: white;
+  width: 700%;
+  max-width: 500px;
+  padding: 30px;
+  border-radius: 50px;
+  border: 1px solid #dfdfdf;
+  font-weight: 700;
+}
+
+.signUpUiForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: scroll;
+  float: left;
+  justify-content: space-evenly;
+  height: 500px;
+  width: 100%;
+  padding-right: 10px;
+}
+
+.signUpUiForm::-webkit-scrollbar {
+  background: white;
+  width: 10px;
+  height: 5px;
+}
+
+.signUpUiForm::-webkit-scrollbar-thumb {
+  background-color: #8b8b8b;
+}
+
+
+.signUpFormField {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.signUpFormField input {
+  border: 1px solid grey;
+  padding: 15px;
+  width: 88%;
+  border-radius: 10px;
+}
+
+.signUpFormField input:focus {
+  outline: none;
+}
+
+.signUpFormField label {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+
+.signUpUiForm .signUpFormField_name {
+  /* float: left; */
+  width: 100%;
+}
+
+.signUpFormField_name input {
+  border: 1px solid grey;
+  padding: 15px;
+  border-radius: 10px;
+  width: 40%;
+  margin-right: 10px;
+}
+
+.signUpFormField_name input:focus {
+  outline: none;
+}
+
+.signUpFormField_name label {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+/* 作品投稿画面 ここから */
+
+.WorkPostingFormContainer {
+  height: 80vh;
+  width: 70%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.WorkPostingFormContainer form {
+  /* background-color: white; */
+  width: 100%;
+  /* max-width: 600px; */
+  padding: 30px;
+  border-radius: 50px;
+  float: left;
+  /* border: 1px solid #dfdfdf; */
+  font-weight: 700;
+}
+
+.WorkPostingUiForm {
+  align-items: center;
+  float: left;
+  justify-content: space-evenly;
+  height: 600px;
+  width: 100%;
+  padding-right: 10px;
+}
+
+.WorkPostingUiForm::-webkit-scrollbar {
+  background: white;
+  width: 10px;
+  height: 5px;
+}
+
+.WorkPostingUiForm::-webkit-scrollbar-thumb {
+  background-color: #8b8b8b;
+}
+
+
+.WorkPostingFormField {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.WorkPostingFormField input {
+  border: 1px solid grey;
+  padding: 15px;
+  width: 88%;
+  border-radius: 10px;
+}
+
+.WorkPostingImageFormField {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+textarea {
+  resize: none;
+}
+
+.WorkPostingUiForm {
+  display: flex;
+  flex-direction: row;
+  /* float: left; */
+}
+
+.ImageUpload {
+  display: flex;
+    flex-direction: column;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    position: relative;
+    border-radius: 5px;
+    width: 50%;
+    padding: 20px;
+    margin-right: 6px;
+    max-height: 95.5%;
+}
+
+.Image {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex: 1 1 0%;
+  padding: 5px 0px;
+}
+
+.Information {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-y: auto;
+  /* background-color: #8b8b8b; */
+  border-radius: 5px;
+  max-width: 600px;
+  flex: 1 1 0%;
+  padding: 20px;
+  height: 100%;
+  margin-left: 6px;
+  box-sizing: border-box;
+}
+
+.submit {
+  position: relative;
+  float: right;
+  right: 3%;
+  margin-top: 1%;
+  border-radius: 5%;         
+  font-size: 16pt;
+  text-align: center;
+  cursor: pointer;
+  padding: 9px 32px;
+  background: #6666ff;
+  color: #ffffff;
+  line-height: 1em;
+  transition: .3s;
+  border: 2px solid #6666ff;
+}
+.submit:hover {
+  color: #6666ff;
+  background: #ffffff;
+}
+
+/* 作品投稿画面 ここまで */
+
+
+/* 作品一覧画面　ここから */
+.link {
+  color: white;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+/* 作品一覧画面　ここまで */

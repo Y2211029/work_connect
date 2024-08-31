@@ -120,11 +120,7 @@ const ProfileMypage = () => {
           setFollowStatus(response.data[0].follow_status);
           console.log("ResponseData:", response.data[0]);
         }
-<<<<<<< HEAD
-
-=======
         // console.log("ResponseData:", ResponseData);
->>>>>>> b1cb22e56087783203dace346729860a7372dce3
       } catch (err) {
         console.log("err:", err);
       }

@@ -19,7 +19,7 @@ export const StudentListItem = () => {
   const [StudentOfList, setStudentOfList] = useState([]);
   const { getSessionData } = useSessionStorage();
 
-  const accountData = getSessionData("accountData");
+const accountData = getSessionData("accountData");
   const data = {
     id: accountData.id,
   };

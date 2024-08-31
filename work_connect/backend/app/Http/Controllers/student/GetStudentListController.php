@@ -10,29 +10,9 @@ use Illuminate\Support\Facades\Log;
 
 class GetStudentListController extends Controller
 {
-    public function GetStudentListController(Request $request, /*$id*/)
+    public function GetStudentListController(Request $request, $id)
     {
         try {
-<<<<<<< HEAD
-            // 全ユーザーリストを取得
-            $studentList = w_users::all();
-
-            // もしも$idが企業側の場合
-            if ("C" === $id[0]) {
-                Log::info($id[0]);
-                Log::info($id);
-                // 各ユーザーのフォロー状態を確認して更新
-                $studentList = $studentList->map(function ($user) use ($id) {
-                    // ユーザーがログインしているアカウントをフォローしているかどうか
-                    $isFollowing = w_follow::where('follow_sender_id', $id)
-                        ->where('follow_recipient_id', $user->id)
-                        ->exists();
-
-                    // ログインしているアカウントがユーザーをフォローしているかどうか
-                    $isFollowedByUser = w_follow::where('follow_sender_id', $user->id)
-                        ->where('follow_recipient_id', $id)
-                        ->exists();
-=======
 
             $page = (int) $request->query('page', 1);
             $perPage = 20; //一ページ当たりのアイテム数
@@ -60,7 +40,6 @@ class GetStudentListController extends Controller
                 $isFollowedByUser = w_follow::where('follow_sender_id', $id)
                     ->where('follow_recipient_id', $id)
                     ->exists();
->>>>>>> b1cb22e56087783203dace346729860a7372dce3
 
                     if ($isFollowing && $isFollowedByUser) {
                         $user->follow_status = '相互フォローしています';
@@ -74,13 +53,13 @@ class GetStudentListController extends Controller
 
                     return $user;
                 });
-            } else {
-                // $idが学生の場合、フォローできないメッセージを設定
-                $studentList = $studentList->map(function ($user) {
-                    $user->follow_status = 'フォローできません';
-                    return $user;
-                });
-            }
+            // } else {
+            //     // $idが学生の場合、フォローできないメッセージを設定
+            //     $studentList = $studentList->map(function ($user) {
+            //         $user->follow_status = 'フォローできません';
+            //         return $user;
+            //     });
+            // }
 
             Log::info('IDの値:');
             Log::info(var_export($id, true));
@@ -89,20 +68,14 @@ class GetStudentListController extends Controller
             Log::info(var_export($id[0], true));
 
 
-            Log::info('GetStudentListController: $studentList:');
-            Log::info(json_encode($studentList));
+            // Log::info('GetStudentListController: $studentList:');
+            // Log::info(json_encode($studentList));
 
             // 結果をJSON形式で返す
-<<<<<<< HEAD
-            return response()->json($studentList);
-        } catch (\Exception $e) {
-            Log::error('GetStudentListController: エラー', ['error' => $e->getMessage()]);
-=======
             return json_encode($StudentOfList);
         } catch (\Exception $e) {
             Log::error('GetStudentListController: エラー');
             Log::error($e);
->>>>>>> b1cb22e56087783203dace346729860a7372dce3
 
             // エラーメッセージをJSON形式で返す
             return response()->json(['error' => $e->getMessage()], 500);

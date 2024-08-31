@@ -15,10 +15,8 @@ class GetCompanyListController extends Controller
     public function GetCompanyListController(Request $request, $id)
     {
         try {
-<<<<<<< HEAD
             // 全企業ユーザーリストを取得
             $CompanyOfList = w_company::select()->get();
-=======
             $page = (int) $request->query('page', 1);
             $perPage = 20; //一ページ当たりのアイテム数
             $offset = ($page - 1) * $perPage;
@@ -27,7 +25,6 @@ class GetCompanyListController extends Controller
                 ->take($perPage)
                 ->get();
             $companyListArray = json_decode(json_encode($companyList), true);
->>>>>>> b1cb22e56087783203dace346729860a7372dce3
 
             // もしも$idが学生側の場合
             if ("S" === $id[0]) {
@@ -64,6 +61,7 @@ class GetCompanyListController extends Controller
                 });
             }
 
+            Log::info('GetCompanyListController: $CompanyOfList: ');
             Log::info(json_encode($CompanyOfList));
 
             // 結果をJSON形式で返す

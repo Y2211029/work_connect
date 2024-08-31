@@ -118,22 +118,111 @@ export default function Searchbar() {
   const { GetTagListFunction } = GetTagList();
 
   const getTag = (urlIn, option) => {
-    console.log("urlIn", urlIn);
-    console.log("option", option);
+    // console.log("urlIn", urlIn);
+    // console.log("option", option);
     let optionArray = [];
     let optionArrayPromise = GetTagListFunction(urlIn);
     optionArrayPromise.then((result) => {
-      console.log("result: ", result);
+      // console.log("result: ", result);
       result.map((value) => {
         optionArray.push({ value: value.name, label: value.name });
       });
-      console.log("optionArray", optionArray);
+      // console.log("optionArray", optionArray);
       setOptions((prevOptions) => ({
         ...prevOptions,
         [option]: optionArray,
       }));
     });
   };
+
+  const getGraduationYearTag = async () => {
+    let optionArray = [];
+    let result = [
+      "2025年卒業",
+      "2026年卒業",
+      "2027年卒業",
+      "2028年卒業",
+      "2029年卒業",
+      "2030年卒業",
+    ];
+
+    // console.log("result: ", result);
+    result.map((value) => {
+      optionArray.push({ value: value, label: value });
+    });
+    console.log("optionArray", optionArray);
+    setOptions((prevOptions) => ({
+      ...prevOptions,
+      graduation_year: optionArray,
+    }));
+  };
+
+  const schoolTypeCodes = ["H1", "H2"]; // 複数のschool_type_codeを配列として定義
+  const fetchData = async () => {
+    let allSchools = [];
+    let page = 1;
+    let hasMore = true;
+    const accessToken = "268|G5fHGAGA7Col8FetXAQ6EMNHnjDIA5TInN2uByIB";
+
+    try {
+      for (const code of schoolTypeCodes) {
+        hasMore = true;
+        page = 1;
+
+        while (hasMore) {
+          const response = await axios.get(
+            `https://api.edu-data.jp/api/v1/school?school_type_code=${code}&pref_code=27&page=${page}&school_status_code=1,2`,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`, // アクセストークンをBearerトークンとしてヘッダーに含める
+                Accept: "application/json",
+              },
+            }
+          );
+
+          // console.log(`API response for code ${code} and page ${page}:`, response.data); // レスポンスデータを詳細にログ出力
+
+          console.log("allSchools response: ");
+          console.log(response.data.schools.data);
+
+          // allSchools = response.data.schools.data;
+
+          if (Array.isArray(response.data.schools.data)) {
+            allSchools = [...allSchools, ...response.data.schools.data]; // 取得したデータを蓄積
+            hasMore = response.data.schools.data.length > 0; // データが存在する限り繰り返す
+            page += 1; // 次のページを設定
+          } else {
+            console.error("Unexpected response format:", response.data);
+            hasMore = false;
+          }
+        }
+      }
+
+      // console.log("allSchools: ");
+      // console.log(allSchools);
+
+      return allSchools;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getSchoolNameTag = async () => {
+    let optionArray = [];
+    let result = await fetchData();
+
+    // console.log("result: ", result);
+    result.map((value) => {
+      optionArray.push({ value: value.school_name, label: value.school_name });
+    });
+    console.log("optionArray", optionArray);
+    setOptions((prevOptions) => ({
+      ...prevOptions,
+      school_name: optionArray,
+    }));
+  };
+
+  
 
   useEffect(() => {
     console.log("options", options);
@@ -147,6 +236,21 @@ export default function Searchbar() {
     if (PathName == "/") {
       // 作品一覧の場合
       // console.log("aaaaaaaaaaaaaaaaaaaaaaaa");
+      // 学校名のタグ一覧を取得
+      getSchoolNameTag();
+
+      // 学科のタグ一覧を取得
+      getTag("department_name", "department_name");
+
+      // 学部のタグ一覧を取得
+      getTag("faculty_name", "faculty_name");
+
+      // 専攻のタグ一覧を取得
+      getTag("major_name", "major_name");
+
+      // コースのタグ一覧を取得
+      getTag("course_name", "course_name");
+
       // 作品ジャンルのタグ一覧を取得
       getTag("work_genre", "work_genre");
 
@@ -157,10 +261,43 @@ export default function Searchbar() {
       getTag("work_environment", "development_environment");
     } else if (PathName == "/VideoList") {
       // 動画一覧の場合
+      // 学校名のタグ一覧を取得
+      getSchoolNameTag();
+
+      // 学科のタグ一覧を取得
+      getTag("department_name", "department_name");
+
+      // 学部のタグ一覧を取得
+      getTag("faculty_name", "faculty_name");
+
+      // 専攻のタグ一覧を取得
+      getTag("major_name", "major_name");
+
+      // コースのタグ一覧を取得
+      getTag("course_name", "course_name");
+
       // 動画ジャンルのタグ一覧を取得
       getTag("video_genre", "video_genre");
     } else if (PathName == "/StudentList") {
       // 学生一覧の場合
+      // 卒業年のタグ一覧を取得
+      getGraduationYearTag();
+
+      // 学校名のタグ一覧を取得
+      getSchoolNameTag();
+
+      // 学科のタグ一覧を取得
+      getTag("department_name", "department_name");
+
+      // 学部のタグ一覧を取得
+      getTag("faculty_name", "faculty_name");
+
+      // 専攻のタグ一覧を取得
+      getTag("major_name", "major_name");
+
+      // コースのタグ一覧を取得
+      getTag("course_name", "course_name");
+
       // 希望職種のタグ一覧を取得
       getTag("desired_occupation", "desired_occupation");
 
@@ -171,7 +308,10 @@ export default function Searchbar() {
       getTag("student_programming_language", "student_programming_language");
 
       // 開発環境のタグ一覧を取得
-      getTag("student_development_environment", "student_development_environment");
+      getTag(
+        "student_development_environment",
+        "student_development_environment"
+      );
 
       // ソフトウェアのタグ一覧を取得
       getTag("software", "software");
@@ -182,7 +322,7 @@ export default function Searchbar() {
       // 趣味のタグ一覧を取得
       getTag("hobby", "hobby");
     } else if (PathName == "/CompanyList") {
-      // 学生一覧の場合
+      // 企業一覧の場合
       // 職種のタグ一覧を取得
       getTag("selected_occupation", "selected_occupation");
 
@@ -237,10 +377,30 @@ export default function Searchbar() {
         // const url = `http://localhost:8000/search_work?page=${Page}&sort=${`;
         // console.log("searchbar : Page = ", Page);
 
+        let school_name = [];
+        let department_name = [];
+        let faculty_name = [];
+        let major_name = [];
+        let course_name = [];
         let work_genre = [];
         let programming_language = [];
         let development_environment = [];
 
+        searchSource.school_name.map((value) => {
+          school_name.push(value.value);
+        });
+        searchSource.department_name.map((value) => {
+          department_name.push(value.value);
+        });
+        searchSource.faculty_name.map((value) => {
+          faculty_name.push(value.value);
+        });
+        searchSource.major_name.map((value) => {
+          major_name.push(value.value);
+        });
+        searchSource.course_name.map((value) => {
+          course_name.push(value.value);
+        });
         searchSource.work_genre.map((value) => {
           work_genre.push(value.value);
         });
@@ -256,6 +416,11 @@ export default function Searchbar() {
         const response = await axios.get(url, {
           params: {
             searchText: searchSource.searchText,
+            school_name: school_name,
+            department_name: department_name,
+            faculty_name: faculty_name,
+            major_name: major_name,
+            course_name: course_name,
             work_genre: work_genre,
             programming_language: programming_language,
             development_environment: development_environment,
@@ -271,8 +436,28 @@ export default function Searchbar() {
         // 動画一覧の場合
         const url = `http://localhost:8000/search_video?page=${Page}&sort=${sortOption}`;
 
+        let school_name = [];
+        let department_name = [];
+        let faculty_name = [];
+        let major_name = [];
+        let course_name = [];
         let video_genre = [];
 
+        searchSource.school_name.map((value) => {
+          school_name.push(value.value);
+        });
+        searchSource.department_name.map((value) => {
+          department_name.push(value.value);
+        });
+        searchSource.faculty_name.map((value) => {
+          faculty_name.push(value.value);
+        });
+        searchSource.major_name.map((value) => {
+          major_name.push(value.value);
+        });
+        searchSource.course_name.map((value) => {
+          course_name.push(value.value);
+        });
         searchSource.video_genre.map((value) => {
           video_genre.push(value.value);
         });
@@ -280,6 +465,11 @@ export default function Searchbar() {
         const response = await axios.get(url, {
           params: {
             searchText: searchSource.searchText,
+            school_name: school_name,
+            department_name: department_name,
+            faculty_name: faculty_name,
+            major_name: major_name,
+            course_name: course_name,
             video_genre: video_genre,
           },
         });
@@ -292,6 +482,12 @@ export default function Searchbar() {
         // 学生一覧の場合
         const url = `http://localhost:8000/search_student?page=${Page}`;
 
+        let graduation_year = [];
+        let school_name = [];
+        let department_name = [];
+        let faculty_name = [];
+        let major_name = [];
+        let course_name = [];
         let desired_occupation = [];
         let desired_work_region = [];
         let student_programming_language = [];
@@ -300,6 +496,24 @@ export default function Searchbar() {
         let acquisition_qualification = [];
         let hobby = [];
 
+        searchSource.graduation_year.map((value) => {
+          graduation_year.push(value.value);
+        });
+        searchSource.school_name.map((value) => {
+          school_name.push(value.value);
+        });
+        searchSource.department_name.map((value) => {
+          department_name.push(value.value);
+        });
+        searchSource.faculty_name.map((value) => {
+          faculty_name.push(value.value);
+        });
+        searchSource.major_name.map((value) => {
+          major_name.push(value.value);
+        });
+        searchSource.course_name.map((value) => {
+          course_name.push(value.value);
+        });
         searchSource.desired_occupation.map((value) => {
           desired_occupation.push(value.value);
         });
@@ -325,6 +539,12 @@ export default function Searchbar() {
         const response = await axios.get(url, {
           params: {
             searchText: searchSource.searchText,
+            graduation_year: graduation_year,
+            school_name: school_name,
+            department_name: department_name,
+            faculty_name: faculty_name,
+            major_name: major_name,
+            course_name: course_name,
             desired_occupation: desired_occupation,
             desired_work_region: desired_work_region,
             student_programming_language: student_programming_language,
@@ -433,7 +653,8 @@ export default function Searchbar() {
   };
 
   // 空だったらtrue
-  const isAllEmpty = (obj) => Object.values(obj).every((value) => value.length === 0);
+  const isAllEmpty = (obj) =>
+    Object.values(obj).every((value) => value.length === 0);
 
   // 検索ボタンを押したとき
   const handleSearch = () => {
@@ -471,14 +692,31 @@ export default function Searchbar() {
   };
 
   const tagAction = (optionName, selectedOption) => {
-    let tagArray = [];
-    selectedOption.map((value) => {
-      tagArray.push(value.value);
-    });
-    setsearchSource((prevOptions) => ({
-      ...prevOptions,
-      [optionName]: selectedOption,
-    }));
+    console.log("selectedOption: ");
+    console.log(selectedOption);
+    if (selectedOption != null) {
+      let selectedOptionArray = [];
+      if(!Array.isArray(selectedOption)) {
+        selectedOptionArray[0] = selectedOption;
+        console.log("aaaaaaaaaaaaaaa");
+        console.log(selectedOptionArray);
+      } else {
+        selectedOptionArray = selectedOption;
+      }
+      let tagArray = [];
+      selectedOptionArray.map((value) => {
+        tagArray.push(value.value);
+      });
+      setsearchSource((prevOptions) => ({
+        ...prevOptions,
+        [optionName]: selectedOptionArray,
+      }));
+    } else {
+      setsearchSource((prevOptions) => ({
+        ...prevOptions,
+        [optionName]: [],
+      }));
+    }
   };
 
   // 作品ジャンルのタグを操作したとき
@@ -499,6 +737,36 @@ export default function Searchbar() {
   // 動画ジャンルのタグを操作したとき
   const handleChangeVideoGenre = (selectedOption) => {
     tagAction("video_genre", selectedOption);
+  };
+
+  // 卒業年タグを操作したとき
+  const handleChangeGraduationYear = (selectedOption) => {
+    tagAction("graduation_year", selectedOption);
+  };
+
+  // 学校名タグを操作したとき
+  const handleChangeSchoolName = (selectedOption) => {
+    tagAction("school_name", selectedOption);
+  };
+
+  // 学科名タグを操作したとき
+  const handleChangeDepartmentName = (selectedOption) => {
+    tagAction("department_name", selectedOption);
+  };
+
+  // 学部名タグを操作したとき
+  const handleChangeFacultyName = (selectedOption) => {
+    tagAction("faculty_name", selectedOption);
+  };
+
+  // 専攻名タグを操作したとき
+  const handleChangeMajorName = (selectedOption) => {
+    tagAction("major_name", selectedOption);
+  };
+
+  // コース名タグを操作したとき
+  const handleChangeCourseName = (selectedOption) => {
+    tagAction("course_name", selectedOption);
   };
 
   // 希望職種タグを操作したとき
@@ -581,7 +849,10 @@ export default function Searchbar() {
                   placeholder="Search…"
                   startAdornment={
                     <InputAdornment position="start">
-                      <Iconify icon="eva:search-fill" sx={{ color: "text.disabled", width: 20, height: 20 }} />
+                      <Iconify
+                        icon="eva:search-fill"
+                        sx={{ color: "text.disabled", width: 20, height: 20 }}
+                      />
                     </InputAdornment>
                   }
                   sx={{ mr: 1, fontWeight: "fontWeightBold" }}
@@ -592,177 +863,603 @@ export default function Searchbar() {
                   Search
                 </Button>
               </div>
-              {PathName === "/" ? (
-                <>
-                  <div style={{ display: "", marginTop: "20px", marginBottom: "10px" }}>
-                    <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
-                    <div style={{ color: "#444" }}>
-                      <CreatableSelect
-                        options={options.work_genre}
-                        value={searchSource.work_genre}
-                        isClearable
-                        isMulti
-                        onChange={handleChangeWorkGenre}
-                      />
+              <div style={{ overflowY: "scroll", minHeight: "40vh", maxHeight: "60vh", width: "100%" }}>
+                {PathName === "/" ? (
+                  <>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        学校名
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.school_name}
+                          value={searchSource.school_name}
+                          isClearable
+                          // isMulti
+                          onChange={handleChangeSchoolName}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div style={{ display: "", marginTop: "20px", marginBottom: "10px" }}>
-                    <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
-                    <div style={{ color: "#444" }}>
-                      <CreatableSelect
-                        options={options.programming_language}
-                        value={searchSource.programming_language}
-                        isClearable
-                        isMulti
-                        onChange={handleChangeProgrammingLanguage}
-                      />
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        学科名
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.department_name}
+                          value={searchSource.department_name}
+                          isClearable
+                          // isMulti
+                          onChange={handleChangeDepartmentName}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div style={{ display: "", marginTop: "20px", marginBottom: "10px" }}>
-                    <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
-                    <div style={{ color: "#444" }}>
-                      <CreatableSelect
-                        options={options.development_environment}
-                        value={searchSource.development_environment}
-                        isClearable
-                        isMulti
-                        onChange={handleChangeDevelopmentEnvironment}
-                      />
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        学部名
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.faculty_name}
+                          value={searchSource.faculty_name}
+                          isClearable
+                          // isMulti
+                          onChange={handleChangeFacultyName}
+                        />
+                      </div>
                     </div>
-                  </div>
-                </>
-              ) : PathName === "/VideoList" ? (
-                <>
-                  <div style={{ display: "", marginTop: "20px", marginBottom: "10px" }}>
-                    <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
-                    <div style={{ color: "#444" }}>
-                      <CreatableSelect
-                        options={options.video_genre}
-                        value={searchSource.video_genre}
-                        isClearable
-                        isMulti
-                        onChange={handleChangeVideoGenre}
-                      />
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        専攻名
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.major_name}
+                          value={searchSource.major_name}
+                          isClearable
+                          // isMulti
+                          onChange={handleChangeMajorName}
+                        />
+                      </div>
                     </div>
-                  </div>
-                </>
-              ) : PathName === "/StudentList" ? (
-                <>
-                  <div style={{ display: "", marginTop: "20px", marginBottom: "10px" }}>
-                    <div style={{ fontWeight: "Bold", color: "#666" }}>希望職種</div>
-                    <div style={{ color: "#444" }}>
-                      <CreatableSelect
-                        options={options.desired_occupation}
-                        value={searchSource.desired_occupation}
-                        isClearable
-                        isMulti
-                        onChange={handleChangeDesiredOccupation}
-                      />
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        コース名
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.course_name}
+                          value={searchSource.course_name}
+                          isClearable
+                          // isMulti
+                          onChange={handleChangeCourseName}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div style={{ display: "", marginTop: "20px", marginBottom: "10px" }}>
-                    <div style={{ fontWeight: "Bold", color: "#666" }}>希望勤務地</div>
-                    <div style={{ color: "#444" }}>
-                      <CreatableSelect
-                        options={options.desired_work_region}
-                        value={searchSource.desired_work_region}
-                        isClearable
-                        isMulti
-                        onChange={handleChangeDesiredWorkRegion}
-                      />
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        ジャンル
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.work_genre}
+                          value={searchSource.work_genre}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeWorkGenre}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div style={{ display: "", marginTop: "20px", marginBottom: "10px" }}>
-                    <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
-                    <div style={{ color: "#444" }}>
-                      <CreatableSelect
-                        options={options.student_programming_language}
-                        value={searchSource.student_programming_language}
-                        isClearable
-                        isMulti
-                        onChange={handleChangeStudentProgrammingLanguage}
-                      />
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        プログラミング言語
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.programming_language}
+                          value={searchSource.programming_language}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeProgrammingLanguage}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div style={{ display: "", marginTop: "20px", marginBottom: "10px" }}>
-                    <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
-                    <div style={{ color: "#444" }}>
-                      <CreatableSelect
-                        options={options.student_development_environment}
-                        value={searchSource.student_development_environment}
-                        isClearable
-                        isMulti
-                        onChange={handleChangeStudentDevelopmentEnvironment}
-                      />
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        開発環境
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.development_environment}
+                          value={searchSource.development_environment}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeDevelopmentEnvironment}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div style={{ display: "", marginTop: "20px", marginBottom: "10px" }}>
-                    <div style={{ fontWeight: "Bold", color: "#666" }}>ソフトウェア</div>
-                    <div style={{ color: "#444" }}>
-                      <CreatableSelect
-                        options={options.software}
-                        value={searchSource.software}
-                        isClearable
-                        isMulti
-                        onChange={handleChangeSoftware}
-                      />
+                  </>
+                ) : PathName === "/VideoList" ? (
+                  <>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        学校名
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.school_name}
+                          value={searchSource.school_name}
+                          isClearable
+                          // isMulti
+                          onChange={handleChangeSchoolName}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div style={{ display: "", marginTop: "20px", marginBottom: "10px" }}>
-                    <div style={{ fontWeight: "Bold", color: "#666" }}>取得資格</div>
-                    <div style={{ color: "#444" }}>
-                      <CreatableSelect
-                        options={options.acquisition_qualification}
-                        value={searchSource.acquisition_qualification}
-                        isClearable
-                        isMulti
-                        onChange={handleChangeAcquisitionQualification}
-                      />
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        学科名
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.department_name}
+                          value={searchSource.department_name}
+                          isClearable
+                          // isMulti
+                          onChange={handleChangeDepartmentName}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div style={{ display: "", marginTop: "20px", marginBottom: "10px" }}>
-                    <div style={{ fontWeight: "Bold", color: "#666" }}>趣味</div>
-                    <div style={{ color: "#444" }}>
-                      <CreatableSelect
-                        options={options.hobby}
-                        value={searchSource.hobby}
-                        isClearable
-                        isMulti
-                        onChange={handleChangeHobby}
-                      />
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        学部名
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.faculty_name}
+                          value={searchSource.faculty_name}
+                          isClearable
+                          // isMulti
+                          onChange={handleChangeFacultyName}
+                        />
+                      </div>
                     </div>
-                  </div>
-                </>
-              ) : PathName === "/CompanyList" ? (
-                <>
-                  <div style={{ display: "", marginTop: "20px", marginBottom: "10px" }}>
-                    <div style={{ fontWeight: "Bold", color: "#666" }}>職種</div>
-                    <div style={{ color: "#444" }}>
-                      <CreatableSelect
-                        options={options.selected_occupation}
-                        value={searchSource.selected_occupation}
-                        isClearable
-                        isMulti
-                        onChange={handleChangeSelectedOccupation}
-                      />
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        専攻名
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.major_name}
+                          value={searchSource.major_name}
+                          isClearable
+                          // isMulti
+                          onChange={handleChangeMajorName}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div style={{ display: "", marginTop: "20px", marginBottom: "10px" }}>
-                    <div style={{ fontWeight: "Bold", color: "#666" }}>勤務地</div>
-                    <div style={{ color: "#444" }}>
-                      <CreatableSelect
-                        options={options.prefecture}
-                        value={searchSource.prefecture}
-                        isClearable
-                        isMulti
-                        onChange={handleChangePrefecture}
-                      />
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        コース名
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.course_name}
+                          value={searchSource.course_name}
+                          isClearable
+                          // isMulti
+                          onChange={handleChangeCourseName}
+                        />
+                      </div>
                     </div>
-                  </div>
-                </>
-              ) : (
-                ""
-              )}
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        ジャンル
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.video_genre}
+                          value={searchSource.video_genre}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeVideoGenre}
+                        />
+                      </div>
+                    </div>
+                  </>
+                ) : PathName === "/StudentList" ? (
+                  <>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        卒業年
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.graduation_year}
+                          value={searchSource.graduation_year}
+                          isClearable
+                          // isMulti
+                          onChange={handleChangeGraduationYear}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        学校名
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.school_name}
+                          value={searchSource.school_name}
+                          isClearable
+                          // isMulti
+                          onChange={handleChangeSchoolName}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        学科名
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.department_name}
+                          value={searchSource.department_name}
+                          isClearable
+                          // isMulti
+                          onChange={handleChangeDepartmentName}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        学部名
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.faculty_name}
+                          value={searchSource.faculty_name}
+                          isClearable
+                          // isMulti
+                          onChange={handleChangeFacultyName}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        専攻名
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.major_name}
+                          value={searchSource.major_name}
+                          isClearable
+                          // isMulti
+                          onChange={handleChangeMajorName}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        コース名
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.course_name}
+                          value={searchSource.course_name}
+                          isClearable
+                          // isMulti
+                          onChange={handleChangeCourseName}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        希望職種
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.desired_occupation}
+                          value={searchSource.desired_occupation}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeDesiredOccupation}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        希望勤務地
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.desired_work_region}
+                          value={searchSource.desired_work_region}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeDesiredWorkRegion}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        プログラミング言語
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.student_programming_language}
+                          value={searchSource.student_programming_language}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeStudentProgrammingLanguage}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        開発環境
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.student_development_environment}
+                          value={searchSource.student_development_environment}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeStudentDevelopmentEnvironment}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        ソフトウェア
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.software}
+                          value={searchSource.software}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeSoftware}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        取得資格
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.acquisition_qualification}
+                          value={searchSource.acquisition_qualification}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeAcquisitionQualification}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        趣味
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.hobby}
+                          value={searchSource.hobby}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeHobby}
+                        />
+                      </div>
+                    </div>
+                  </>
+                ) : PathName === "/CompanyList" ? (
+                  <>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        職種
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.selected_occupation}
+                          value={searchSource.selected_occupation}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeSelectedOccupation}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        勤務地
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.prefecture}
+                          value={searchSource.prefecture}
+                          isClearable
+                          isMulti
+                          onChange={handleChangePrefecture}
+                        />
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  ""
+                )}
+              </div>
             </div>
           </StyledSearchbar>
         </Slide>

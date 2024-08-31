@@ -15,18 +15,9 @@ import { fShortenNumber } from "src/utils/format-number";
 import Iconify from "src/components/iconify";
 import SvgColor from "src/components/svg-color";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 // ----------------------------------------------------------------------
 
-<<<<<<< HEAD
-export default function PostCard({ post, index }) {
-  const { cover, title, graduationYear, schoolName,
-    desiredWorkRegion, desiredOccupation,
-    view, comment, author, followStatus: initialFollowStatus, id,user_name } = post;
-
-  const [followStatus, setFollowStatus] = useState(initialFollowStatus);
-  const navigate = useNavigate();
-=======
 const PostCard = forwardRef(({ post, index }, ref) => {
   const {
     cover,
@@ -42,7 +33,6 @@ const PostCard = forwardRef(({ post, index }, ref) => {
     student_id,
   } = post;
 
->>>>>>> b1cb22e56087783203dace346729860a7372dce3
   const latestPostLarge = index === -1;
 
   const [followStatus, setFollowStatus] = useState(initialFollowStatus);
@@ -68,9 +58,9 @@ const PostCard = forwardRef(({ post, index }, ref) => {
     }
   };
 
-  const handleProfileJump = () => {
-    navigate(`/Profile/${user_name}`);
-  }
+  // const handleProfileJump = () => {
+  //   navigate(`/Profile/${user_name}`);
+  // }
 
   const renderAvatar = (
     <Avatar
@@ -89,12 +79,7 @@ const PostCard = forwardRef(({ post, index }, ref) => {
 
   const renderUserName = (
     <Link
-<<<<<<< HEAD
-      onClick={handleProfileJump}
-      top="/workDetail"
-=======
       to={`/Profile/${userName}`}
->>>>>>> b1cb22e56087783203dace346729860a7372dce3
       color="inherit"
       variant="subtitle2"
       underline="hover"
@@ -111,27 +96,6 @@ const PostCard = forwardRef(({ post, index }, ref) => {
     </Link>
   );
 
-<<<<<<< HEAD
-  const renderFollow = () => {
-    if (followStatus === "フォローできません") {
-      return (
-        <Typography opacity="0.48">
-        </Typography>
-      );
-    } else {
-      return (
-        <Typography opacity="0.48" onClick={handleFollowClick}>
-          {followStatus}
-        </Typography>
-      );
-    }
-  };
-
-  const renderGraduationYear = <Typography opacity="0.48">卒業年度:{graduationYear}</Typography>;
-  const renderSchoolName = <Typography>学校名:{schoolName}</Typography>;
-  const renderDesiredWorkRegion = desiredWorkRegion !== null ? <Typography>希望勤務地:{desiredWorkRegion}</Typography> : null;
-  const renderDesiredOccupation = desiredOccupation !== null ? <Typography>希望職種: {desiredOccupation}</Typography> : null;
-=======
   const renderFollow = (
     <Typography opacity="0.48" onClick={handleFollowClick}>
       {followStatus}
@@ -224,7 +188,6 @@ const PostCard = forwardRef(({ post, index }, ref) => {
         </Button>
       </div>
     ) : null;
->>>>>>> b1cb22e56087783203dace346729860a7372dce3
 
   const renderInfo = (
     <Stack
@@ -318,14 +281,7 @@ const PostCard = forwardRef(({ post, index }, ref) => {
           >
             {renderFollow}
 
-<<<<<<< HEAD
-          <div>
-          {renderFollow()}
-          </div>
-
-=======
             {renderUserName}
->>>>>>> b1cb22e56087783203dace346729860a7372dce3
 
             {renderGraduationYear}
 

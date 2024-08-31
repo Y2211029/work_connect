@@ -154,7 +154,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
     },
     students: {
       ItemName: "学生一覧",
-      url: "http://localhost:8000/get_student_list",
+      url: "http://localhost:8000/get_student_list/S_000000000001",
       idKey: "id",
       tags: [
         "desired_occupation",
@@ -186,7 +186,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
     },
     companies: {
       ItemName: "企業一覧",
-      url: "http://localhost:8000/get_company_list",
+      url: "http://localhost:8000/get_company_list/S_000000000001",
       idKey: "id",
       tags: ["selected_occupation", "prefecture"],
       generatePosts: (WorkOfList) =>

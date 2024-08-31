@@ -13,13 +13,13 @@ class LoginStatusCheckController extends Controller
     {
         // idを取得 
         $id = $request->input('id');
-        \Log::info('LoginStatusCheckController: $id: ');
-        \Log::info($id);
+        // \Log::info('LoginStatusCheckController: $id: ');
+        // \Log::info($id);
 
         // idの一文字目を取得
         $kind = substr($id, 0, 1);
-        \Log::info('LoginStatusCheckController: $kind: ');
-        \Log::info($kind);
+        // \Log::info('LoginStatusCheckController: $kind: ');
+        // \Log::info($kind);
 
         // Reactに返す時用の変数を宣言
         $accountCheckString = "";
@@ -42,14 +42,14 @@ class LoginStatusCheckController extends Controller
                 $accountCheckString = "false";
             }
 
-            \Log::info('LoginStatusCheckController: $accountCheckString');
-            \Log::info($accountCheckString);
+            // \Log::info('LoginStatusCheckController: $accountCheckString');
+            // \Log::info($accountCheckString);
 
             // Reactに結果を返す
             echo json_encode($accountCheckString);
         } catch (\Exception $e) {
-            \Log::info('LoginStatusCheckControllerエラー: ');
-            \Log::info($e);
+            // \Log::info('LoginStatusCheckControllerエラー: ');
+            // \Log::info($e);
             // Reactに結果を返す
             echo json_encode($e);
         }

@@ -7,33 +7,16 @@ import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
-<<<<<<< HEAD
-// import { alpha } from "@mui/material/styles";
-import { follow } from "src/_mock/follow";
-import Grid from "@mui/material/Unstable_Grid2";
-import Typography from "@mui/material/Typography";
-import { useSessionStorage } from "src/hooks/use-sessionStorage";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-
-// import { fDate } from "src/utils/format-time";
-
-=======
 // import { alpa } from "@mui/material/styles";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 import { follow } from "src/_mock/follow";
->>>>>>> b1cb22e56087783203dace346729860a7372dce3
 import { fShortenNumber } from "src/utils/format-number";
 import Iconify from "src/components/iconify";
 import SvgColor from "src/components/svg-color";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 // ----------------------------------------------------------------------
 
-<<<<<<< HEAD
-export default function PostCard({ post, index }) {
-  const { cover, title, selectedOccupation, prefecture, view, comment, author,followStatus:initialFollowStatus,id } = post;
-=======
 const PostCard = forwardRef(({ post, index }, ref) => {
   const {
     company_id,
@@ -48,27 +31,18 @@ const PostCard = forwardRef(({ post, index }, ref) => {
     author,
     followStatus: initialFollowStatus,
   } = post;
->>>>>>> b1cb22e56087783203dace346729860a7372dce3
 
   const [followStatus, setFollowStatus] = useState(initialFollowStatus);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const latestPostLarge = index === -1;
 
-<<<<<<< HEAD
-=======
-  const [followStatus, setFollowStatus] = useState(initialFollowStatus);
->>>>>>> b1cb22e56087783203dace346729860a7372dce3
+  // const [followStatus, setFollowStatus] = useState(initialFollowStatus);
   const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData");
   const data = {
     account_id: accountData.id,
   };
 
-<<<<<<< HEAD
-  const handleFollowClick = async () => {
-    try {
-      const updatedFollowStatus = await follow(data.account_id, id);
-=======
   useEffect(() => {
     console.log("company_id", company_id);
   }, [company_id]);
@@ -76,42 +50,13 @@ const PostCard = forwardRef(({ post, index }, ref) => {
   const handleFollowClick = async () => {
     try {
       const updatedFollowStatus = await follow(data.account_id, company_id);
->>>>>>> b1cb22e56087783203dace346729860a7372dce3
       if (updatedFollowStatus) {
         setFollowStatus(updatedFollowStatus);
       }
     } catch (error) {
-<<<<<<< HEAD
-      console.error('フォロー処理中にエラーが発生しました！', error);
-    }
-  };
-
-  const renderFollow = () => {
-    if (followStatus === "フォローできません") {
-      return (
-        <Typography opacity="0.48">
-        </Typography>
-      );
-    } else {
-      return (
-        <Typography opacity="0.48" onClick={handleFollowClick}>
-          {followStatus}
-        </Typography>
-      );
-    }
-  };
-
-  const handleProfileJump = () => {
-    navigate(`/Profile/${title}`);
-  }
-
-
-  // const latestPost = index === 1 || index === 2;
-=======
       console.error("フォロー処理中にエラーが発生しました！", error);
     }
   };
->>>>>>> b1cb22e56087783203dace346729860a7372dce3
 
   const renderAvatar = (
     <Avatar
@@ -128,16 +73,9 @@ const PostCard = forwardRef(({ post, index }, ref) => {
     />
   );
 
-<<<<<<< HEAD
-
-  const renderTitle = (
-    <Link
-      onClick={handleProfileJump}
-=======
   const renderUserName = (
     <Link
       to={`/Profile/${userName}`}
->>>>>>> b1cb22e56087783203dace346729860a7372dce3
       color="inherit"
       variant="subtitle2"
       underline="hover"
@@ -154,14 +92,11 @@ const PostCard = forwardRef(({ post, index }, ref) => {
     </Link>
   );
 
-<<<<<<< HEAD
-=======
   const renderFollow = (
     <Typography opacity="0.48" onClick={handleFollowClick}>
       {followStatus}
     </Typography>
   );
->>>>>>> b1cb22e56087783203dace346729860a7372dce3
 
   // 募集職種
   const renderSelectedOccupation =
@@ -291,29 +226,6 @@ const PostCard = forwardRef(({ post, index }, ref) => {
 
             {renderAvatar}
 
-<<<<<<< HEAD
-          {renderCover}
-
-
-        </Box>
-
-        <Box
-          sx={{
-            p: (theme) => theme.spacing(4, 3, 3, 3),
-            // ...((latestPostLarge || latestPost) && {
-            //   width: 1,
-            //   bottom: 0,
-            //   position: "absolute",
-            // }),
-          }}
-        >
-
-          <div>
-          {renderFollow()}
-          </div>
-
-          {renderTitle}
-=======
             {renderCover}
           </Box>
 
@@ -323,7 +235,6 @@ const PostCard = forwardRef(({ post, index }, ref) => {
             }}
           >
             {renderFollow}
->>>>>>> b1cb22e56087783203dace346729860a7372dce3
 
             {renderUserName}
 

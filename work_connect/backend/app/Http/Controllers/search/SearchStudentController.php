@@ -20,6 +20,18 @@ class SearchStudentController extends Controller
             // 検索文字列を取得
             $searchText = $request->input('searchText', "");
 
+            // 絞り込まれた学校名を配列で取得
+            $graduation_year_array = $request->input('graduation_year', []);
+            // 絞り込まれた学校名を配列で取得
+            $school_name_array = $request->input('school_name', []);
+            // 絞り込まれた学科名を配列で取得
+            $department_name_array = $request->input('department_name', []);
+            // 絞り込まれた学部名を配列で取得
+            $faculty_name_array = $request->input('faculty_name', []);
+            // 絞り込まれた専攻名を配列で取得
+            $major_name_array = $request->input('major_name', []);
+            // 絞り込まれたコース名を配列で取得
+            $course_name_array = $request->input('course_name', []);
             // 絞り込まれた希望職種を配列で取得
             $desired_occupation_array = $request->input('desired_occupation', []);
             // 絞り込まれた希望勤務地を配列で取得
@@ -43,6 +55,48 @@ class SearchStudentController extends Controller
             $query->select(
                 'w_users.*',
             );
+
+            // 卒業年で絞り込み
+            if (isset($graduation_year_array)) {
+                foreach ($graduation_year_array as $graduation_year) {
+                    $query->where('w_users.graduation_year', 'REGEXP', '(^|,)' . preg_quote($graduation_year) . '($|,)');
+                }
+            }
+
+            // 学校名で絞り込み
+            if (isset($school_name_array)) {
+                foreach ($school_name_array as $school_name) {
+                    $query->where('w_users.school_name', 'REGEXP', '(^|,)' . preg_quote($school_name) . '($|,)');
+                }
+            }
+
+            // 学科名で絞り込み
+            if (isset($department_name_array)) {
+                foreach ($department_name_array as $department_name) {
+                    $query->where('w_users.department_name', 'REGEXP', '(^|,)' . preg_quote($department_name) . '($|,)');
+                }
+            }
+
+            // 学部名で絞り込み
+            if (isset($faculty_name_array)) {
+                foreach ($faculty_name_array as $faculty_name) {
+                    $query->where('w_users.faculty_name', 'REGEXP', '(^|,)' . preg_quote($faculty_name) . '($|,)');
+                }
+            }
+
+            // 専攻名で絞り込み
+            if (isset($major_name_array)) {
+                foreach ($major_name_array as $major_name) {
+                    $query->where('w_users.major_name', 'REGEXP', '(^|,)' . preg_quote($major_name) . '($|,)');
+                }
+            }
+
+            // コース名で絞り込み
+            if (isset($course_name_array)) {
+                foreach ($course_name_array as $course_name) {
+                    $query->where('w_users.course_name', 'REGEXP', '(^|,)' . preg_quote($course_name) . '($|,)');
+                }
+            }
 
             // 希望職種で絞り込み
             if (isset($desired_occupation_array)) {

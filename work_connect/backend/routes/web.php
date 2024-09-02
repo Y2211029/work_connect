@@ -61,7 +61,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// /list
+// /listaaa
 // Route::get('list',[ListController::class, 'index']);
 // =======
 

@@ -61,7 +61,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// /listaaa
+// /list
 // Route::get('list',[ListController::class, 'index']);
 // =======
 
@@ -69,8 +69,6 @@ Route::get('/', function () {
 Route::get('/get_profile_mypage', [GetMypageController::class, 'GetMypageController']);
 // プロフィールのマイページ(post)
 Route::post('/post_profile_mypage', [PostMypageController::class, 'PostMypageController']);
-// プロフィールのマイページアイコン(post)
-Route::post('/post_profile_mypage_upload', [PostMypageController::class, 'UploadImageController']);
 // プロフィールのマイページルーティング設定(get)
 Route::get('/get_profile_mypage_kind', [GetMypageKindController::class, 'GetMypageKindController']);
 

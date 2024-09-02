@@ -24,6 +24,7 @@ class w_company extends Model
     // マスアサインメント可能な属性
     protected $fillable = [
         'id',
+<<<<<<< HEAD
         'company_name',
         'company_namecana',
         'selectedOccupation',
@@ -42,6 +43,16 @@ class w_company extends Model
         'hp_url',
         'video_url',
         'background_color',
+=======
+        'mail',
+        'user_name',
+        'password',
+        'company_name',
+        'company_nameCana',
+        'selectedOccupation',
+        'Prefecture',
+        'hp_url',    
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
     ];
 
     // タイムスタンプのカラムが存在しない場合は、$timestampsをfalseに設定

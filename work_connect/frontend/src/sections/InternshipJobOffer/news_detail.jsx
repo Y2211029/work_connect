@@ -21,7 +21,13 @@ const news_title = {
 };
 
 const news_font = {
+<<<<<<< HEAD
     padding: "auto",
+=======
+    fontSize: "15px",
+    padding: "auto",
+    color: "black",
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 };
 
 const news_summary = {
@@ -29,7 +35,10 @@ const news_summary = {
     minWidth: "299px",
     paddingTop: "5%",
     marginLeft: "5%",
+<<<<<<< HEAD
     marginBottom: "10%",
+=======
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 };
 
 const NewsDetailHeader = {
@@ -50,7 +59,12 @@ const InternshipJobOfferPage = () => {
     const [bookmarked, setBookmarked] = useState(false);
     const [isHover, SetFavoriteIcon_hover] = useState(false);  //ホバーしたら「クリックするとブックマークできます」というテキストが出現
     const [sessionId, setSessionId] = useState(null);
+<<<<<<< HEAD
     const [isSessionLoaded, setIsSessionLoaded] = useState(false); //セッションデータから情報を取得できたかどうか
+=======
+    const [userName, setUserName] = useState(null);
+    const [email, setEmail] = useState(null);
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
     const csrf_url = "http://localhost:8000/csrf-token";
     const news_bookmark_url = "http://localhost:8000/news_bookmark";
@@ -64,7 +78,11 @@ const InternshipJobOfferPage = () => {
         async function fetchData() {
             try {
                 const response = await axios.get(
+<<<<<<< HEAD
                     `http://localhost:8000/Internship_JobOffer/news_detail/${parameter.id}`
+=======
+                    `http://127.0.0.1:8000/Internship_JobOffer/news_detail/${parameter.id}`
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
                 );
                 console.log(response.data);
                 SetNewsDetail(response.data);
@@ -92,6 +110,7 @@ const InternshipJobOfferPage = () => {
     }, []);
 
     useEffect(() => {
+<<<<<<< HEAD
         // sessionStorage に保存したデータを取得
         let dataString = sessionStorage.getItem("accountData");
         if (dataString) {
@@ -105,6 +124,17 @@ const InternshipJobOfferPage = () => {
     }, []);
 
 
+=======
+    // sessionStorage に保存したデータを取得
+    let dataString = sessionStorage.getItem("accountData");
+    // JSON 文字列を JavaScript オブジェクトに変換
+    let dataObject = JSON.parse(dataString);
+        setSessionId(dataObject.id);
+        setUserName(dataObject.user_name);
+        setEmail(dataObject.mail);
+    }, []);
+
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
     //日付をYY/MM/DDに変換する
     const formatDate = (dateString) => {
         const dateObj = new Date(dateString);
@@ -154,13 +184,18 @@ const InternshipJobOfferPage = () => {
                     {/* NewsDetailHeader要素 サムネイルと会社名・お気に入りボタンを一括りにする */}
                     <div style={NewsDetailHeader}>
                         <img
+<<<<<<< HEAD
                             src={`${NewsDetail.header_img}`}
+=======
+                            src={NewsDetail.header_img}
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
                             style={news_img}
                             alt={NewsDetail.article_title}
                         />
 
                         <div style={genre_update}>
                             <p>{NewsDetail.genre}</p>
+<<<<<<< HEAD
                             <p>{formatDate(NewsDetail.news_created_at)}</p>
                             <p>{NewsDetail.company_name}</p>
 
@@ -181,6 +216,29 @@ const InternshipJobOfferPage = () => {
                                         onMouseLeave={() => SetFavoriteIcon_hover(false)}
                                     />
                                 )
+=======
+                            <p>{formatDate(NewsDetail.updated_at)}</p>
+                            <p>シナジーマーケティング株式会社</p>
+                            <p>session_idは{sessionId}</p>
+                            <p>userNameは{userName}</p>
+                            <p>メールアドレスは{email}</p>
+                            <p>データ{sessionId}</p>
+
+                            {bookmarked ? (
+                                <FavoriteIcon
+                                    style={{ fontSize: '24px' }}
+                                    onClick={news_bookmark}
+                                    onMouseEnter={() => SetFavoriteIcon_hover(true)}
+                                    onMouseLeave={() => SetFavoriteIcon_hover(false)}
+                                />
+                            ) : (
+                                <FavoriteBorderIcon
+                                    style={{ fontSize: '24px' }}
+                                    onClick={news_bookmark}
+                                    onMouseEnter={() => SetFavoriteIcon_hover(true)}
+                                    onMouseLeave={() => SetFavoriteIcon_hover(false)}
+                                />
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
                             )}
                             {isHover && <div style={{ position: 'absolute', top: '30px', left: '10px', color: 'red' }}>クリックするとブックマークできます</div>}
                         </div>
@@ -194,11 +252,20 @@ const InternshipJobOfferPage = () => {
                         {NewsDetail.summary.blocks.map((block, index) => {
                             switch (block.type) {
                                 case "paragraph":
+<<<<<<< HEAD
                                     return <p key={index} style={news_font} dangerouslySetInnerHTML={{ __html: block.data.text }} />;
                                 case "header":
                                     return React.createElement(
                                         `h${block.data.level}`,
                                         { key: index, style: news_font, dangerouslySetInnerHTML: { __html: block.data.text } }
+=======
+                                    return <p key={index} style={news_font}>{block.data.text}</p>;
+                                case "header":
+                                    return React.createElement(
+                                        `h${block.data.level}`,
+                                        { key: index, style: news_font },
+                                        block.data.text
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
                                     );
                                 case "image":
                                     return (
@@ -220,7 +287,11 @@ const InternshipJobOfferPage = () => {
                                                 {block.data.content.map((row, rowIndex) => (
                                                     <tr key={rowIndex}>
                                                         {row.map((cell, cellIndex) => (
+<<<<<<< HEAD
                                                             <td key={cellIndex} dangerouslySetInnerHTML={{ __html: cell }} />
+=======
+                                                            <td key={cellIndex}>{cell}</td>
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
                                                         ))}
                                                     </tr>
                                                 ))}
@@ -231,7 +302,13 @@ const InternshipJobOfferPage = () => {
                                     return (
                                         <ul key={index} style={news_font}>
                                             {block.data.items.map((item, itemIndex) => (
+<<<<<<< HEAD
                                                 <li key={itemIndex} style={{ textDecoration: item.checked ? "line-through" : "none" }} dangerouslySetInnerHTML={{ __html: item.text }} />
+=======
+                                                <li key={itemIndex} style={{ textDecoration: item.checked ? "line-through" : "none" }}>
+                                                    {item.text}
+                                                </li>
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
                                             ))}
                                         </ul>
                                     );
@@ -241,14 +318,25 @@ const InternshipJobOfferPage = () => {
                                     return <div key={index} dangerouslySetInnerHTML={{ __html: block.data.html }} />;
                                 case "quote":
                                     return (
+<<<<<<< HEAD
                                         <blockquote key={index} style={news_font} dangerouslySetInnerHTML={{ __html: block.data.text }}>
+=======
+                                        <blockquote key={index} style={news_font}>
+                                            <p>{block.data.text}</p>
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
                                             <cite>{block.data.caption}</cite>
                                         </blockquote>
                                     );
                                 case "inlineCode":
+<<<<<<< HEAD
                                     return <code key={index} style={news_font} dangerouslySetInnerHTML={{ __html: block.data.text }} />;
                                 case "alert":
                                     return <div key={index} style={news_font} dangerouslySetInnerHTML={{ __html: block.data.message }} />;
+=======
+                                    return <code key={index} style={news_font}>{block.data.text}</code>;
+                                case "alert":
+                                    return <div key={index} style={news_font}>{block.data.message}</div>;
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
                                 case "toggle":
                                     return (
                                         <details key={index} style={news_font}>

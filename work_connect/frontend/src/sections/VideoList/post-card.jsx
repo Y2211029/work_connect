@@ -1,9 +1,17 @@
+<<<<<<< HEAD
 import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+=======
+import { Link } from "react-router-dom";
+import "src/App.css";
+import PropTypes from "prop-types";
+
+import Box from "@mui/material/Box";
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
@@ -11,8 +19,11 @@ import { alpha } from "@mui/material/styles";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 
+<<<<<<< HEAD
 import "src/App.css";
 
+=======
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 import { fDate } from "src/utils/format-time";
 import { fShortenNumber } from "src/utils/format-number";
 
@@ -21,8 +32,13 @@ import SvgColor from "src/components/svg-color";
 
 // ----------------------------------------------------------------------
 
+<<<<<<< HEAD
 const PostCard = forwardRef(({ post }, ref) => {
   const { movie_id, title, genre, intro, view, comment, author, userName, createdAt } = post;
+=======
+export default function PostCard({ post /*index*/ }) {
+  const { id, cover, title, genre, intro, thumbnail, view, comment, author, userName, createdAt } = post;
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
   // const latestPostLarge = index === -1;
 
@@ -48,7 +64,11 @@ const PostCard = forwardRef(({ post }, ref) => {
   // タイトル
   const renderTitle = (
     <Link
+<<<<<<< HEAD
       to={`/VideoDetail/${movie_id}`}
+=======
+      to={`/VideoDetail/${id}`}
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
       color="inherit"
       variant="subtitle2"
       underline="none" // デフォルトで下線を消す
@@ -63,6 +83,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   );
 
   // ジャンル
+<<<<<<< HEAD
   const renderGenre =
     genre !== null ? (
       <div>
@@ -83,6 +104,12 @@ const PostCard = forwardRef(({ post }, ref) => {
         </Button>
       </div>
     ) : null;
+=======
+  const renderGenre = genre !== null ? <Typography>{genre}</Typography> : null;
+
+  // サムネイル
+  const renderThumbnail = <img src={thumbnail} alt="" width="100%" height="100" />;
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
   /* 投稿日 */
   const renderDate = (
@@ -156,6 +183,24 @@ const PostCard = forwardRef(({ post }, ref) => {
     </Stack>
   );
 
+<<<<<<< HEAD
+=======
+  const renderCover = (
+    <Box
+      component="img"
+      alt={title}
+      src={cover}
+      sx={{
+        top: 0,
+        width: 1,
+        height: 1,
+        objectFit: "cover",
+        position: "absolute",
+      }}
+    />
+  );
+
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
   // アイコンのCSSを変更してる。
   const renderShape = (
     <SvgColor
@@ -191,6 +236,7 @@ const PostCard = forwardRef(({ post }, ref) => {
 
   return (
     <Grid xs={12} sm={6} md={4}>
+<<<<<<< HEAD
       <div ref={ref}>
         <Card>
           <Box
@@ -239,3 +285,55 @@ PostCard.propTypes = {
 };
 
 export default PostCard;
+=======
+      {/* // <Grid xs={12} sm={latestPostLarge ? 12 : 6} md={latestPostLarge ? 6 : 3}> */}
+      <Card>
+        <Box
+          sx={{
+            position: "relative",
+            "&:after": {
+              top: 0,
+              content: "''",
+              width: "100%",
+              height: "100%",
+              position: "absolute",
+              bgcolor: (theme) => alpha(theme.palette.grey[900], 0.72),
+            },
+            pt: {
+              // xs: "calc(100% * 4 / 3)",
+              sm: "calc(100% * 3 / 4.66)",
+            },
+          }}
+        >
+          {renderShape}
+          {renderAvatar}
+          {renderCover}
+        </Box>
+
+        <Box
+          sx={{
+            p: (theme) => theme.spacing(4, 3, 3, 3),
+            // ...((latestPostLarge || latestPost) && {
+            width: 1,
+            bottom: 0,
+            position: "absolute",
+            // }),
+          }}
+        >
+          {renderThumbnail}
+          {renderGenre}
+          {renderTitle}
+          {/* ここに紹介文配置、配置語にこのコメントを削除する */}
+          {renderIntro}
+          {renderInfo}
+        </Box>
+      </Card>
+    </Grid>
+  );
+}
+
+PostCard.propTypes = {
+  post: PropTypes.object.isRequired,
+  index: PropTypes.number,
+};
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3

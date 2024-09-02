@@ -5,11 +5,32 @@ namespace App\Http\Controllers\student;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\w_users;
+<<<<<<< HEAD
 use App\Models\w_follow;
 use Illuminate\Support\Facades\Log;
 
 class GetStudentListController extends Controller
 {
+=======
+
+class GetStudentListController extends Controller
+{
+<<<<<<< HEAD
+    public function GetStudentListController(Request $request)
+    {
+        try {
+            $userList = w_users::select()->get();
+            $userListArray = json_decode(json_encode($userList), true);
+
+            \Log::info('GetStudentListController:$userListArray:');
+            \Log::info(json_encode($userListArray));
+            // echo json_encode($userListArray);
+            return json_encode($userListArray);
+        } catch (\Exception $e) {
+            \Log::info('GetStudentListController:user_name重複チェックエラー');
+            \Log::info($e);
+=======
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
     public function GetStudentListController(Request $request, $id)
     {
         try {
@@ -76,9 +97,16 @@ class GetStudentListController extends Controller
         } catch (\Exception $e) {
             Log::error('GetStudentListController: エラー');
             Log::error($e);
+<<<<<<< HEAD
 
             // エラーメッセージをJSON形式で返す
             return response()->json(['error' => $e->getMessage()], 500);
+=======
+>>>>>>> 1251a7d83d65dbd03393e8f4b952d240f5d5c002
+
+            /*reactに返す*/
+            echo json_encode($e);
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
         }
     }
 }

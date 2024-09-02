@@ -32,18 +32,30 @@ import SKMFlipBox from 'skm-flipbox'; //画像のスライドができるカル�
 import AudioPlayer from 'editorjs-audio-player'; //音声を挿入できる
 import ImageGallery from '@rodrigoodhin/editorjs-image-gallery';
 import Carousel from 'editorjs-carousel';
+<<<<<<< HEAD
 
 
 //画像
+=======
+import 'cropperjs/dist/cropper.css';
+
+
+//画像
+import { Instagram, Twitter } from "@mui/icons-material";
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 import ImageSearchIcon from '@mui/icons-material/ImageSearch';
 import CancelIcon from '@mui/icons-material/Cancel';
 
 //データ保存
 import axios from "axios";
+<<<<<<< HEAD
 
 //ルーティング
 import { useNavigate } from 'react-router-dom';
 
+=======
+import $ from "jquery";
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
 
 
@@ -51,12 +63,16 @@ import { useNavigate } from 'react-router-dom';
 const Editor = () => {
 
   const editorInstance = useRef(null);
+<<<<<<< HEAD
   const fileInputRef = useRef(null); // ファイル入力の参照を定義
+=======
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
   const editorHolder = useRef(null);
   const [imageUrl, setImageUrl] = useState(null); // 画像のURLを保持するステート
   const [displayInput, setDisplayInput] = useState(true); // input要素の表示状態を管理するステート
   const [textValue, setTextValue] = useState('');
   const [csrfToken, setCsrfToken] = useState("");
+<<<<<<< HEAD
   const [sessionId, setSessionId] = useState(null);
   const [show, setShow] = useState(false);
   const [news_id, setNewsId] = useState(0); // ニュースの情報が格納されているDBのidを格納する
@@ -124,12 +140,21 @@ const Editor = () => {
       console.log("Error:", error);
     }
   };
+=======
+  const [show, setShow] = useState(false)
+  const [news_id, setNewsId] = useState(0); //ニュースの情報が格納されているDBのidを格納する
+  const news_save_url = "http://127.0.0.1:8000/news_save";
+  const image_save_url = "http://127.0.0.1:8000/image_save";
+  const news_upload_url = "http://127.0.0.1:8000/news_upload";
+  const csrf_url = "http://127.0.0.1:8000/csrf-token";
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
   const titlechange = (event) => {
     setTextValue(event.target.value); // テキストエリアの値をstateに反映
   };
 
 
+<<<<<<< HEAD
 
 
   // 下書きを新規保存・更新する処理
@@ -168,6 +193,91 @@ const Editor = () => {
 
 
 
+=======
+  const news_save = () => {
+    alert("下書きを保存しました!");
+    console.log(textValue)
+    if (editorInstance.current && typeof editorInstance.current.save === "function") {
+      editorInstance.current
+        .save()
+        .then((outputData) => {
+          console.log("Article data: ", outputData);
+          // ajax
+          $.ajax({
+            url: news_save_url, // アクセスするURL
+            type: "GET", // POST または GET
+            cache: false, // cacheを使うか使わないかを設定
+            dataType: "json", // データタイプ (script, xmlDocument, jsonなど)
+            data: {
+              value: outputData,  //ニュース記事
+              title: textValue,   //タイトル
+              news_id: news_id,   //ID
+            },
+            headers: {
+              "X-CSRF-TOKEN": csrfToken,
+            },
+          })
+            .done(function (response) {
+              // ajax成功時の処理
+              console.log(response.id);
+              setNewsId(response.id); // news_idを更新する
+              console.log("成功");
+            })
+            .fail(function (textStatus, errorThrown) {
+              // ajax失敗時の処理
+              console.log("Error:", textStatus, errorThrown);
+            });
+        })
+        .catch((error) => {
+          console.error("Error saving article:", error);
+        });
+    } else {
+      console.log("Editor instance or save function not available");
+    }
+  };
+
+  const news_upload = () => {
+    alert("ニュースを投稿しました");
+    const newsContent = document.getElementById('news_textarea').value;
+    const radioButtons = document.getElementsByName('news_genre');
+    let selectedGenre = '';
+
+    for (let i = 0; i < radioButtons.length; i++) {
+      if (radioButtons[i].checked) {
+        selectedGenre = radioButtons[i].value;
+        break;
+      }
+    }
+    console.log(newsContent);
+    console.log(selectedGenre);
+    console.log(news_id);
+    // ajax
+    $.ajax({
+      url: news_upload_url, // アクセスするURL
+      type: "GET", // POST または GET
+      cache: false, // cacheを使うか使わないかを設定
+      dataType: "json", // データタイプ (script, xmlDocument, jsonなど)
+      data: {
+        news_id: news_id,    //ID
+        message: newsContent,  //企業の方からのメッセージ
+        genre: selectedGenre,   //ジャンル
+      },
+      headers: {
+        "X-CSRF-TOKEN": csrfToken,
+      },
+    })
+      .done(function (response) {
+        // ajax成功時の処理
+        console.log(response.id);
+        setNewsId(response.id); // news_idを更新する
+        console.log("成功");
+      })
+      .fail(function (textStatus, errorThrown) {
+        // ajax失敗時の処理
+        console.log("Error:", textStatus, errorThrown);
+      });
+  }
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
   const news_release_setting = () => {
     setShow(true);
@@ -179,6 +289,7 @@ const Editor = () => {
     document.body.style.overflow = 'auto';
   };
 
+<<<<<<< HEAD
 
   const handleImageUpload = async (file) => {
     const formData = new FormData();
@@ -203,12 +314,34 @@ const Editor = () => {
   };
 
 
+=======
+  const handleImageUpload = async (file) => {
+    const toBase64 = (file) =>
+      new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+      });
+
+    try {
+      const base64Image = await toBase64(file);
+      console.log(base64Image);
+      return { success: 1, file: { url: base64Image } };
+    } catch (error) {
+      console.error(error);
+      return { success: 0, message: "Failed to upload image", error };
+    }
+  };
+
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
   const handleFileSelect = async (event) => {
     const file = event.target.files[0];
     if (file && csrfToken) {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('news_id', news_id);
+<<<<<<< HEAD
       formData.append('session_id', sessionId);
 
       console.log('file', file);
@@ -217,6 +350,15 @@ const Editor = () => {
 
       try {
         const response = await axios.post(thumbnail_image_save_url, formData, {
+=======
+
+      console.log('FormData:', formData);
+      console.log('file', file);
+      console.log('news_id', news_id);
+
+      try {
+        const response = await axios.post(image_save_url, formData, {
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
           headers: {
             "X-CSRF-TOKEN": csrfToken,
             'Content-Type': 'multipart/form-data',
@@ -225,10 +367,15 @@ const Editor = () => {
         console.log(response.data);
         const path = `./header_img/${response.data.image}`;
         const id = response.data.id;
+<<<<<<< HEAD
         const news_draft_list = response.data.news_draft_list;
         console.log(path);
         console.log(id)
         setDraftList(news_draft_list); //下書きリスト最新に更新
+=======
+        console.log(path);
+        console.log(id);
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
         setNewsId(id);
         setImageUrl(path);
         setDisplayInput(false);
@@ -239,6 +386,7 @@ const Editor = () => {
     }
   };
 
+<<<<<<< HEAD
   const rewrite_news = (id) => {
     // ドラフトリストから選択したIDのアイテムを取得
     const select_draft_list = draft_list.find(d => d.id === id);
@@ -300,6 +448,13 @@ const Editor = () => {
     }
     getSessionId(); // ページがロードされた時点でsessionstorageからidを取得
 
+=======
+
+
+  useEffect(() => {
+
+    console.log(news_id); // news_idの値が変更されたときに実行される処理
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
     async function fetchCsrfToken() {
       try {
         const response = await axios.get(csrf_url); // CSRFトークンを取得するAPIエンドポイント
@@ -314,9 +469,40 @@ const Editor = () => {
     fetchCsrfToken(); // ページがロードされた時点でCSRFトークンを取得
 
 
+<<<<<<< HEAD
 
     if (editorHolder.current) {
       editorInstance.current = new EditorJS({
+=======
+    const handleUrlUpload = async (fileUrl) => {
+      try {
+        const response = await fetch(fileUrl);
+        const blob = await response.blob();
+        const base64Image = await blobToBase64(blob);
+        return { success: 1, file: { url: base64Image } };
+      } catch (error) {
+        console.error(error);
+        return { success: 0, message: "Failed to upload image", error };
+      }
+    };
+
+    const blobToBase64 = (blob) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = () => {
+          const base64data = reader.result;
+          resolve(base64data);
+        };
+        reader.onerror = reject;
+      });
+    };
+
+    if (editorHolder.current) {
+      editorInstance.current = new EditorJS({
+
+
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
         holder: editorHolder.current,
         placeholder: "コンテンツを入力してください",
         tools: {
@@ -329,10 +515,17 @@ const Editor = () => {
             class: Embed,
             config: {
               services: {
+<<<<<<< HEAD
                 facebook: true,  //このfacebook投稿は利用できません。削除されたか、プライバシー設定が変更された可能性があります。と表示され埋め込みできない
                 instagram: true, //埋め込み可能
                 youtube: true,  //埋め込み可能
                 twitter: true,  //埋め込み可能
+=======
+                facebook: true,
+                Instagram: true,
+                youtube: true,
+                Twitter: true,
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
                 twitch: true,
                 miro: true,
                 vimeo: true,
@@ -340,6 +533,7 @@ const Editor = () => {
                 imgur: true,
                 vine: true,
                 aparat: true,
+<<<<<<< HEAD
                 codepen: true,
                 pinterest: true,
                 github: true,
@@ -360,6 +554,17 @@ const Editor = () => {
                   width: 600,
                   id: (groups) => groups.join(''),
                 },
+=======
+                codepen: {
+                  regex: /https?:\/\/codepen.io\/([^/?&]*)\/pen\/([^/?&]*)/,
+                  embeddedUrl:
+                    "https://codepen.io/<%= remote_id %>?height=300&theme-id=0&default-tab=css,result&embed-version=2",
+                  html: "<iframe height='300' scrolling='no' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'></iframe>",
+                },
+                pinterest: true,
+                github: true,
+                coub: true,
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
               },
             },
           },
@@ -382,7 +587,11 @@ const Editor = () => {
               ],
               defaultColor: "#FF1300",
               type: "text",
+<<<<<<< HEAD
               customPicker: true,
+=======
+              customPicker: true
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
             }
           },
           Marker: {
@@ -433,6 +642,10 @@ const Editor = () => {
             config: {
               uploader: {
                 uploadByFile: handleImageUpload,
+<<<<<<< HEAD
+=======
+                uploadByURL: handleUrlUpload,
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
               },
             },
           },
@@ -441,6 +654,10 @@ const Editor = () => {
             config: {
               uploader: {
                 uploadByFile: handleImageUpload,
+<<<<<<< HEAD
+=======
+                uploadByURL: handleUrlUpload,
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
               },
             },
           },
@@ -629,9 +846,12 @@ const Editor = () => {
                 toggler: {
                   "Click to tune": "クリックして調整",
                   "or drag to move": "またはドラッグして移動",
+<<<<<<< HEAD
                   "Move up": "上に移動する",
                   "Move down": "下に移動する",
                   "Delete": "削除",
+=======
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
                 },
               },
               inlineToolbar: {
@@ -660,6 +880,7 @@ const Editor = () => {
                 'Set': "設定する",
                 'Default Button': "デフォルト",
               },
+<<<<<<< HEAD
               textVariant: {
                 'Call-out': 'コールアウト',
               },
@@ -698,6 +919,37 @@ const Editor = () => {
               Strikethrough: "取り消し線",
               ChangeCase: "大文字:小文字 変換",
               Hyperlink: 'ハイパーリンク',
+=======
+            },
+            toolNames: {
+              Text: "テキスト",
+              "Nested Checklist": "リスト",
+              Heading: "見出し",
+              Embed: "埋め込み",
+              Checklist: "チェックリスト",
+              Title: "タイトル",
+              Quote: "引用",
+              Code: "コード",
+              Alert: "警告",
+              Delimiter: "区切り",
+              "Raw HTML": "HTML",
+              Table: "テーブル",
+              Hyperlink: 'ハイパーリンク',
+              Bold: "太字",
+              Underline: "下線",
+              Italic: "斜体",
+              InlineCode: "インラインコード",
+              Image: "画像",
+              Toggle: "折りたたみメニュー",
+              Strikethrough: "取り消し線",
+              Tooltip: "ツールチップ",
+              ChangeCase: "大文字:小文字 変換",
+              Button: "ボタン",
+              FlipBox: "スライド(テキストのみ)",
+              AudioPlayer: "オーディオ",
+              "Image Gallery": "画像ギャラリー",
+              Carousel: "カルーセル",
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
             },
           },
         },
@@ -706,6 +958,7 @@ const Editor = () => {
 
   }, []); // 空の依存配列を渡して初回のみ実行
 
+<<<<<<< HEAD
   useEffect(() => {
     async function newsDraftList() {
       if (sessionId) {
@@ -757,10 +1010,14 @@ const Editor = () => {
       }
     }
   };
+=======
+
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
   return (
     <div className="editor">
 
+<<<<<<< HEAD
       <p>Draft List: </p>
       {draft_list.length > 0 ? (
         draft_list.map(draft => (
@@ -772,6 +1029,8 @@ const Editor = () => {
         <p>下書き中の記事はありません</p>
       )}
 
+=======
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
       <div className="news_button">
         <button id="save" className="save" onClick={news_save}>下書きを保存する</button>
         <button id="news_release" className="news_release" onClick={news_release_setting}>公開へ進む</button>
@@ -784,6 +1043,7 @@ const Editor = () => {
               <p>公開設定</p>
 
               <p>どのジャンルで公開しますか?</p>
+<<<<<<< HEAD
               <input
                 type="radio"
                 name="news_genre"
@@ -818,6 +1078,19 @@ const Editor = () => {
                 className="news_textarea"
                 ref={textareaRef}
               >
+=======
+              <input type="radio" name="news_genre" id="blog" value="ブログ" />
+              <label className="label" htmlFor="blog">ブログ</label>
+
+              <input type="radio" name="news_genre" id="internship" value="インターンシップ" />
+              <label className="label" htmlFor="internship">インターンシップ</label>
+
+              <input type="radio" name="news_genre" id="job" value="求人" />
+              <label className="label" htmlFor="job">求人</label>
+              <br></br><br></br><br></br>
+              <p>学生さんへのメッセージや記事の内容を一言でご記入ください!</p>
+              <textarea id="news_textarea" className="news_textarea">
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
               </textarea>
               <p>{news_id}</p>
               <p><button onClick={news_upload}>投稿</button></p>
@@ -830,11 +1103,20 @@ const Editor = () => {
       {
         imageUrl && (
           <div className="uploaded-image" id="uploaded-image">
+<<<<<<< HEAD
             <img src={`${imageUrl}`} alt="Uploaded" style={{ width: '100%', height: '300px' }} />
             <CancelIcon onClick={thumbnail_img_delete} />
           </div>
         )
 
+=======
+            <img src={imageUrl} alt="Uploaded" style={{ width: '100%', height: '300px' }} />
+            <CancelIcon
+              className="cancelIcon"
+            />
+          </div>
+        )
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
       }
 
       {/* 画像を選ぶ */}
@@ -843,6 +1125,7 @@ const Editor = () => {
           id="fileInput"
           type="file"
           accept="image/*"
+<<<<<<< HEAD
           style={{ display: 'none' }}
           ref={fileInputRef}
           onChange={handleFileSelect}
@@ -851,6 +1134,13 @@ const Editor = () => {
       </form>
 
 
+=======
+          style={{ display: 'none' }} // displayInput の状態によって表示を制御
+          onChange={handleFileSelect} // ファイル選択時の処理
+        />
+      </form>
+
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
       <ImageSearchIcon
         className="cover_img_upload"
         style={{ display: displayInput ? 'block' : 'none' }}
@@ -869,6 +1159,11 @@ const Editor = () => {
       <div className="editor-wrapper">
         <div ref={editorHolder} id="editor" className="editor" />
       </div>
+<<<<<<< HEAD
+=======
+      <Instagram />
+      <Twitter />
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
     </div >
   );
 };

@@ -112,8 +112,20 @@ const ProfileMypage = () => {
         });
         if(response){
           setResponseData(response.data[0]);
+<<<<<<< HEAD
         } 
         console.log("ResponseData:", ResponseData);
+=======
+<<<<<<< HEAD
+        } 
+        console.log("ResponseData:", ResponseData);
+=======
+          setFollowStatus(response.data[0].follow_status);
+          console.log("ResponseData:", response.data[0]);
+        }
+        // console.log("ResponseData:", ResponseData);
+>>>>>>> 1251a7d83d65dbd03393e8f4b952d240f5d5c002
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
       } catch (err) {
         console.log("err:", err);
       }

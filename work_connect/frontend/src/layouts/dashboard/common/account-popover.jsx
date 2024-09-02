@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { useContext, useState, useEffect } from "react";
+=======
+import { useState, useEffect } from "react";
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 import { useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
@@ -12,14 +16,23 @@ import Box from "@mui/material/Box";
 
 import { account } from "src/_mock/account";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
+<<<<<<< HEAD
 import { AllItemsContext } from "src/layouts/dashboard/index";
 // ----------------------------------------------------------------------
 
+=======
+
+// ----------------------------------------------------------------------
+
+
+
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
   const [open, setOpen] = useState(null);
   const navigate = useNavigate();
+<<<<<<< HEAD
   // セッションストレージ取得
   const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData");
@@ -37,6 +50,8 @@ export default function AccountPopover() {
       }
     }
   }, [accountData]);
+=======
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -47,6 +62,7 @@ export default function AccountPopover() {
   };
 
   const handleMenuItemClick = (path) => {
+<<<<<<< HEAD
     if (path == `/Profile/${accountData.user_name}`) {
       // console.log("path", path);
       // 作品・動画一覧を正常に再表示するために必要な処理
@@ -59,6 +75,8 @@ export default function AccountPopover() {
         sortOption: "orderNewPostsDate", //並び替える前の状態にするために初期化
       }));
     }
+=======
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
     handleClose();
     navigate(path);
   };
@@ -77,8 +95,34 @@ export default function AccountPopover() {
     }
   };
 
+<<<<<<< HEAD
   // MENU_OPTIONSの設定
   const MENU_OPTIONS = [
+=======
+   // セッションストレージ取得
+   const { getSessionData } = useSessionStorage();
+   const accountData = getSessionData("accountData");
+ 
+   const [UserName, setUserName] = useState("");
+   const [Mail, setMail] = useState("");
+   const [login_state, setLoginState] = useState(false);
+ 
+   useEffect(() => {
+    
+     if (accountData) {
+      
+       setUserName(accountData.user_name);
+       setMail(accountData.mail);
+       if (UserName && Mail) {
+         setLoginState(true);
+         
+       }
+     }
+   }, [accountData]);
+ 
+   // MENU_OPTIONSの設定
+   const MENU_OPTIONS = [
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
     // {
     //   label: 'Home',
     //   icon: 'eva:home-fill',
@@ -90,10 +134,17 @@ export default function AccountPopover() {
     },
     {
       label: "設定",
+<<<<<<< HEAD
       path: "/Settings",
       icon: "eva:settings-2-fill",
     },
   ];
+=======
+      icon: "eva:settings-2-fill",
+    },
+  ];
+  
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
   return (
     <>
@@ -104,8 +155,12 @@ export default function AccountPopover() {
           height: 40,
           background: (theme) => alpha(theme.palette.grey[500], 0.08),
           ...(open && {
+<<<<<<< HEAD
             background: (theme) =>
               `linear-gradient(135deg, ${theme.palette.primary.light} 0%, ${theme.palette.primary.main} 100%)`,
+=======
+            background: (theme) => `linear-gradient(135deg, ${theme.palette.primary.light} 0%, ${theme.palette.primary.main} 100%)`,
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
           }),
         }}
       >
@@ -151,11 +206,15 @@ export default function AccountPopover() {
         <Divider sx={{ borderStyle: "dashed", display: login_state ? "block" : "none" }} />
 
         {MENU_OPTIONS.map((option) => (
+<<<<<<< HEAD
           <MenuItem
             key={option.label}
             onClick={() => handleMenuItemClick(option.path)}
             sx={{ display: login_state ? "block" : "none" }}
           >
+=======
+          <MenuItem key={option.label} onClick={() => handleMenuItemClick(option.path)} sx={{ display: login_state ? "block" : "none" }}>
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
             {option.label}
           </MenuItem>
         ))}

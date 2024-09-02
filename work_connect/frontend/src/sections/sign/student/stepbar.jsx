@@ -18,7 +18,11 @@ import Confirmation from "./Confirmation";
 import axios from "axios";
 
 // sessionStrage
+<<<<<<< HEAD
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
+=======
+import { useSessionStorage } from "../../../hooks/use-sessionStorage";
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
 const steps = ["アカウント", "学校情報", "詳細情報", "確認"];
 let stepConnectorLinesArray = [];
@@ -45,15 +49,25 @@ export default function HorizontalLinearStepper({ Stepbar }) {
       // passwordCheck: false,
     }));
   };
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
   // 登録項目確認の際に利用
   const { getSessionData, updateSessionData } = useSessionStorage();
 
   let sessionStep = 0;
   let sessionActiveStep = getSessionData("ActiveStep");
+<<<<<<< HEAD
   if (sessionActiveStep != undefined) {
     console.log("sessionActiveStep.step: ", sessionActiveStep.step);
     if (sessionActiveStep.step == 1 || sessionActiveStep.step == 2 || sessionActiveStep.step == 3) {
+=======
+  if(sessionActiveStep != undefined) {
+    console.log("sessionActiveStep.step: ", sessionActiveStep.step);
+    if(sessionActiveStep.step == 1 || sessionActiveStep.step == 2 || sessionActiveStep.step == 3) {
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
       console.log("aaaaaaaaaaaaaaa");
       sessionStep = sessionActiveStep.step;
     }
@@ -79,6 +93,7 @@ export default function HorizontalLinearStepper({ Stepbar }) {
   // 次へボタン押されたとき
   const handleNext = () => {
     console.log("userAccountCheck: ", userAccountCheck);
+<<<<<<< HEAD
     if (
       userAccountCheck.user_name == false &&
       userAccountCheck.password == false &&
@@ -103,6 +118,27 @@ export default function HorizontalLinearStepper({ Stepbar }) {
         console.log(sessionData);
 
         axios
+=======
+    if (userAccountCheck.user_name == false && userAccountCheck.password == false && userAccountCheck.passwordCheck == false && userAccountCheck.required == false) {
+        console.log("重複あり!!");
+        
+        // activeStepが3未満(次へをクリックした場合の処理)
+        if (activeStep < 3) {
+          console.log("activeStep", activeStep);
+          setActiveStep((prevActiveStep) => prevActiveStep + 1);
+          
+          // ステップバーの色を変える処理
+          stepConnectorLinesArray[activeStep].style.borderTop = "5px solid #1976d2";
+        } else {
+          // activeStepが3(保存をクリックした場合の処理)
+          const url = "http://localhost:8000/s_register";
+          
+          const sessionData = getSessionData("accountData");
+          const kind = "s";
+          console.log(sessionData);
+          
+          axios
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
           .get(url, {
             params: {
               sessionData,
@@ -115,7 +151,11 @@ export default function HorizontalLinearStepper({ Stepbar }) {
             alert("新規登録が完了しました。");
 
             // セキュリティ対策のため初期化
+<<<<<<< HEAD
             sessionStorage.removeItem("accountData");
+=======
+            sessionStorage.removeItem('accountData');
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
             // データの保存(セッションストレージ)
             updateSessionData("accountData", "id", response.data.id);
@@ -130,6 +170,7 @@ export default function HorizontalLinearStepper({ Stepbar }) {
             alert("新規登録できませんでした。");
             console.log("err:", err);
           });
+<<<<<<< HEAD
       }
     } else {
       // データ取得
@@ -158,6 +199,39 @@ export default function HorizontalLinearStepper({ Stepbar }) {
       }
 
       alert("エラー：未入力項目があります");
+=======
+        }
+      } else {
+        // データ取得
+        const accountData = getSessionData("accountData");
+        // 各項目が空だった場合、バリデーションを実行(AccountRegistration.jsxへ)
+        if(accountData.student_surname == undefined || accountData.student_surname == ""){ 
+          childRef.current?.NULL_validation(1);
+        }
+        if(accountData.student_name == undefined || accountData.student_name == ""){
+          childRef.current?.NULL_validation(2);
+        }
+        if(accountData.student_kanasurname == undefined || accountData.student_kanasurname == ""){
+          childRef.current?.NULL_validation(3);
+        }
+        if(accountData.student_kananame == undefined || accountData.student_kananame == ""){
+          childRef.current?.NULL_validation(4);
+        }
+        if(accountData.user_name == undefined || accountData.user_name == ""){
+          childRef.current?.NULL_validation(5);
+        }
+        if(accountData.password == undefined || accountData.password == ""){
+          childRef.current?.NULL_validation(6);
+        }
+        if(accountData.passwordCheck == undefined || accountData.passwordCheck == ""){
+          childRef.current?.NULL_validation(7);
+        }
+        
+        alert("エラー：未入力項目があります");
+  
+        
+  
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
     }
   };
 
@@ -243,7 +317,13 @@ export default function HorizontalLinearStepper({ Stepbar }) {
             <Button color="inherit" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
               戻る
             </Button>
+<<<<<<< HEAD
             <Button onClick={handleNext}>{activeStep === steps.length - 1 ? "保存" : "次へ"}</Button>
+=======
+            <Button onClick={handleNext}>
+              {activeStep === steps.length - 1 ? "保存" : "次へ"}
+            </Button>
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
           </Box>
         </React.Fragment>
       )}

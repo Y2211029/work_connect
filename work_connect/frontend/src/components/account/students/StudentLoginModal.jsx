@@ -147,7 +147,11 @@ const StudentLoginModal = (props) => {
         if (data != null) {
           console.log(data.id);
           console.log("login成功");
+<<<<<<< HEAD
           // alert("ログインに成功しました。");
+=======
+          alert("ログインに成功しました。");
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
           // データの保存(セッションストレージ)
           updateSessionData("accountData", "id", data.id);

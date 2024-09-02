@@ -404,7 +404,11 @@ textarea {
   float: right;
   right: 3%;
   margin-top: 1%;
+<<<<<<< HEAD
   border-radius: 5%;
+=======
+  border-radius: 5%;         
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
   font-size: 16pt;
   text-align: center;
   cursor: pointer;
@@ -415,7 +419,10 @@ textarea {
   transition: .3s;
   border: 2px solid #6666ff;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 .submit:hover {
   color: #6666ff;
   background: #ffffff;
@@ -426,9 +433,13 @@ textarea {
 
 /* 作品一覧画面　ここから */
 .link {
+<<<<<<< HEAD
   /* color: white; */
   color: black;
 
+=======
+  color: white;
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
   text-decoration: none;
 }
 
@@ -436,6 +447,7 @@ textarea {
   text-decoration: underline;
 }
 
+<<<<<<< HEAD
 .custom-color-ring-wrapper {
   --spinner-animation-duration: 1s;
   /* デフォルトより速くする */
@@ -455,4 +467,6 @@ textarea {
   animation: color-ring-spin var(--spinner-animation-duration) linear infinite;
 }
 
+=======
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 /* 作品一覧画面　ここまで */

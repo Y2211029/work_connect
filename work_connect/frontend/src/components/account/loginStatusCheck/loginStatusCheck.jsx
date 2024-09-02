@@ -36,7 +36,11 @@ function LoginStatusCheck() {
       }
     }
 
+<<<<<<< HEAD
     // console.log("loginStatusCheckResponse: ", loginStatusCheckResponse);
+=======
+    console.log("loginStatusCheckResponse: ", loginStatusCheckResponse);
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
     if (loginStatusCheckResponse.data == "false") {
       // もしログインチェックに失敗した場合は、404ページに飛ばす
       navigate("/Top");

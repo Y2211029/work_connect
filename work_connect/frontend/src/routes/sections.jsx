@@ -40,7 +40,11 @@ export const Page404 = lazy(() => import("src/pages/page-not-found"));
 //プロフィール
 export const ProfilePage = lazy(() => import("src/pages/Profile"));
 
+<<<<<<< HEAD
 //20240704
+=======
+//20240704 金田追加
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 export const NewsDetailPage = lazy(() => import('src/sections/InternshipJobOffer/news_detail'));
 
 
@@ -68,10 +72,17 @@ export default function Router() {
         { path: "WorkDetail/:id", element: <WorkDetail /> },
         { path: "VideoDetail/:id", element: <VideoDetail /> },
 
+<<<<<<< HEAD
         //20240619 
         { path: "Settings", element: <SettingsPage /> },
         { path: "Editor", element: <EditorPage /> },
         //20240704
+=======
+        //20240619 金田追加
+        { path: "Settings", element: <SettingsPage /> },
+        { path: "Editor", element: <EditorPage /> },
+        //20240704 金田追加
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
         { path: "news_detail", element: <NewsDetailPage /> },
 
         // トップ画面追加
@@ -80,7 +91,11 @@ export default function Router() {
         { path: "WorkPosting", element: <WorkPosting /> },
         // 動画投稿画面
         { path: "VideoPosting", element: <VideoPosting /> },
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
         //プロフィール
         // Profile/の後ろにユーザーネームを指定
         { path: "Profile/:user_name", element: <ProfilePage /> },

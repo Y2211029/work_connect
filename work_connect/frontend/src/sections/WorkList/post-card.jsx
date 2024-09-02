@@ -3,7 +3,10 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import Box from "@mui/material/Box";
+<<<<<<< HEAD
 import Button from "@mui/material/Button";
+=======
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
@@ -17,10 +20,18 @@ import { fDate } from "src/utils/format-time";
 import { fShortenNumber } from "src/utils/format-number";
 import Iconify from "src/components/iconify";
 import SvgColor from "src/components/svg-color";
+<<<<<<< HEAD
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef(({ post }, ref) => {
   const { work_id, genre, /* cover, */ title, intro, thumbnail, view, comment, author, userName, createdAt } = post;
+=======
+
+// ----------------------------------------------------------------------
+
+const PostCard = forwardRef(({ post }, ref) => {
+  const { work_id, genre, cover, title, intro, thumbnail, view, comment, author, userName, createdAt } = post;
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
   const renderAvatar = (
     <Avatar
@@ -28,10 +39,17 @@ const PostCard = forwardRef(({ post }, ref) => {
       src={author.avatarUrl}
       sx={{
         position: "absolute",
+<<<<<<< HEAD
         bottom: (theme) => theme.spacing(0),
         zIndex: 9,
         top: 45,
         left: 20,
+=======
+        bottom: (theme) => theme.spacing(-2),
+        zIndex: 9,
+        top: 24,
+        left: 24,
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
         width: 40,
         height: 40,
       }}
@@ -39,6 +57,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   );
 
   // ジャンル
+<<<<<<< HEAD
   const renderGenre =
     genre !== null ? (
       <div>
@@ -63,14 +82,27 @@ const PostCard = forwardRef(({ post }, ref) => {
     <Link
       to={`/WorkDetail/${work_id}`}
       // color="inherit"
+=======
+  const renderGenre = genre !== null ? <Typography>{genre}</Typography> : null;
+
+  const renderTitle = (
+    <Link
+      to={`/WorkDetail/${work_id}`}
+      color="inherit"
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
       variant="subtitle2"
       underline="none"
       className="link"
       style={{
+<<<<<<< HEAD
         color: "common.black",
         height: 30,
         fontWeight: "Bold",
         padding: "5px",
+=======
+        height: 30,
+        typography: "h5",
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
       }}
     >
       {title}
@@ -82,12 +114,18 @@ const PostCard = forwardRef(({ post }, ref) => {
       component="img"
       src={thumbnail}
       sx={{
+<<<<<<< HEAD
         aspectRatio: 16 / 9,
         borderRadius: "10px",
         // width: 1,
         // height: 200,
         // objectFit: "cover",
         marginBottom: "10px",
+=======
+        width: 1,
+        height: 200,
+        objectFit: "cover",
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
       }}
     />
   );
@@ -113,8 +151,12 @@ const PostCard = forwardRef(({ post }, ref) => {
       sx={{
         mb: 2,
         opacity: 0.48,
+<<<<<<< HEAD
         // color: "common.white",
         color: "common.black",
+=======
+        color: "common.white",
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
       }}
     >
       {userName}
@@ -129,8 +171,12 @@ const PostCard = forwardRef(({ post }, ref) => {
       justifyContent="center"
       sx={{
         mt: 3,
+<<<<<<< HEAD
         // color: "text.disabled",
         color: "common.black",
+=======
+        color: "text.disabled",
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
       }}
     >
       {renderUserName}
@@ -143,8 +189,12 @@ const PostCard = forwardRef(({ post }, ref) => {
           direction="row"
           sx={{
             opacity: 0.48,
+<<<<<<< HEAD
             // color: "common.white",
             color: "common.black",
+=======
+            color: "common.white",
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
           }}
         >
           <Iconify width={16} icon={info.icon} sx={{ mr: 0.5 }} />
@@ -155,6 +205,7 @@ const PostCard = forwardRef(({ post }, ref) => {
     </Stack>
   );
 
+<<<<<<< HEAD
   // const renderCover = (
   //   <Box
   //     component="img"
@@ -169,6 +220,22 @@ const PostCard = forwardRef(({ post }, ref) => {
   //     }}
   //   />
   // );
+=======
+  const renderCover = (
+    <Box
+      component="img"
+      alt={title}
+      src={cover}
+      sx={{
+        top: 0,
+        width: 1,
+        height: 1,
+        objectFit: "cover",
+        position: "absolute",
+      }}
+    />
+  );
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
   const renderShape = (
     <SvgColor
@@ -193,8 +260,12 @@ const PostCard = forwardRef(({ post }, ref) => {
       sx={{
         mb: 2,
         opacity: 0.85,
+<<<<<<< HEAD
         // color: "common.white",
         color: "common.black",
+=======
+        color: "common.white",
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
       }}
     >
       {intro}
@@ -214,6 +285,7 @@ const PostCard = forwardRef(({ post }, ref) => {
                 width: "100%",
                 height: "100%",
                 position: "absolute",
+<<<<<<< HEAD
                 bgcolor: (theme) => alpha(theme.palette.grey[900], 0.1),
               },
               pt: {
@@ -222,15 +294,30 @@ const PostCard = forwardRef(({ post }, ref) => {
               // "&:hover": {
               //   borderStyle: "1px",
               // },
+=======
+                bgcolor: (theme) => alpha(theme.palette.grey[900], 0.72),
+              },
+              pt: {
+                sm: "calc(100% * 3 / 4.66)",
+              },
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
             }}
           >
             {renderShape}
             {renderAvatar}
+<<<<<<< HEAD
             {/* {renderCover} */}
           </Box>
           <Box
             sx={{
               p: (theme) => theme.spacing(1, 1, 2, 1),
+=======
+            {renderCover}
+          </Box>
+          <Box
+            sx={{
+              p: (theme) => theme.spacing(4, 3, 3, 3),
+>>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
               width: 1,
               bottom: 0,
               position: "absolute",

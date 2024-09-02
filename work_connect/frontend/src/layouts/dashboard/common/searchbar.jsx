@@ -89,6 +89,7 @@ export default function Searchbar() {
     desired_work_region: [],
     selected_occupation: [],
     prefecture: [],
+    company_name: [],
   });
 
   const [options, setOptions] = useState({
@@ -113,6 +114,7 @@ export default function Searchbar() {
     desired_work_region: [],
     selected_occupation: [],
     prefecture: [],
+    company_name: [],
   });
 
   const { GetTagListFunction } = GetTagList();
@@ -158,7 +160,7 @@ export default function Searchbar() {
   };
 
   const schoolTypeCodes = ["H1", "H2"]; // 複数のschool_type_codeを配列として定義
-  const fetchData = async () => {
+  const fetchSchoolNameData = async () => {
     let allSchools = [];
     let page = 1;
     let hasMore = true;
@@ -209,7 +211,7 @@ export default function Searchbar() {
 
   const getSchoolNameTag = async () => {
     let optionArray = [];
-    let result = await fetchData();
+    let result = await fetchSchoolNameData();
 
     // console.log("result: ", result);
     result.map((value) => {
@@ -222,7 +224,51 @@ export default function Searchbar() {
     }));
   };
 
-  
+  const fetchCompanyNameData = async () => {
+    try {
+
+        const response = await axios.get(
+          `http://localhost:8000/get_company_name_list`,
+          {}
+        );
+
+        console.log("fetchCompanyNameData response: ");
+        console.log(response.data);
+
+        // allSchools = response.data.schools.data;
+
+        // if (Array.isArray(response.data.schools.data)) {
+        //   allSchools = [...allSchools, ...response.data.schools.data]; // 取得したデータを蓄積
+        //   hasMore = response.data.schools.data.length > 0; // データが存在する限り繰り返す
+        //   page += 1; // 次のページを設定
+        // } else {
+        //   console.error("Unexpected response format:", response.data);
+        //   hasMore = false;
+        // }
+
+      // console.log("allSchools: ");
+      // console.log(allSchools);
+
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getCompanyNameTag = async () => {
+    let optionArray = [];
+    let result = await fetchCompanyNameData();
+
+    // console.log("result: ", result);
+    result.map((value) => {
+      optionArray.push({ value: value.company_name, label: value.company_name });
+    });
+    console.log("optionArray", optionArray);
+    setOptions((prevOptions) => ({
+      ...prevOptions,
+      company_name: optionArray,
+    }));
+  };
 
   useEffect(() => {
     console.log("options", options);
@@ -325,6 +371,13 @@ export default function Searchbar() {
       // 企業一覧の場合
       // 職種のタグ一覧を取得
       getTag("selected_occupation", "selected_occupation");
+
+      // 勤務地のタグ一覧を取得
+      getTag("prefecture", "prefecture");
+    } else if (PathName == "/Internship_JobOffer") {
+      // 求人一覧の場合
+      // 企業名一覧を取得
+      getCompanyNameTag();
 
       // 勤務地のタグ一覧を取得
       getTag("prefecture", "prefecture");
@@ -560,7 +613,7 @@ export default function Searchbar() {
         const responseData = response.data;
         responseItems(responseData);
       } else if (PathName == "/CompanyList") {
-        // 学生一覧の場合
+        // 企業一覧の場合
         const url = `http://localhost:8000/search_company?page=${Page}`;
 
         let selected_occupation = [];
@@ -578,6 +631,27 @@ export default function Searchbar() {
             searchText: searchSource.searchText,
             selected_occupation: selected_occupation,
             prefecture: prefecture,
+          },
+        });
+        console.log("response.data", response.data);
+
+        // company-view.jsxにデータを渡す
+        const responseData = response.data;
+        responseItems(responseData);
+      } else if (PathName == "/Internship_JobOffer") {
+        // 企業一覧の場合
+        const url = `http://localhost:8000/search_internship_job_offer?page=${Page}`;
+
+        let company_name = [];
+
+        searchSource.company_name.map((value) => {
+          company_name.push(value.value);
+        });
+
+        const response = await axios.get(url, {
+          params: {
+            searchText: searchSource.searchText,
+            company_name: company_name,
           },
         });
         console.log("response.data", response.data);
@@ -811,6 +885,10 @@ export default function Searchbar() {
   // 企業の勤務地のタグを操作したとき
   const handleChangePrefecture = (selectedOption) => {
     tagAction("prefecture", selectedOption);
+  };
+  // 企業名のタグを操作したとき
+  const handleChangeCompanyName = (selectedOption) => {
+    tagAction("company_name", selectedOption);
   };
 
   useEffect(() => {
@@ -1452,6 +1530,29 @@ export default function Searchbar() {
                           isClearable
                           isMulti
                           onChange={handleChangePrefecture}
+                        />
+                      </div>
+                    </div>
+                  </>
+                ) : PathName === "/Internship_JobOffer" ? (
+                  <>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        企業名
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <CreatableSelect
+                          options={options.company_name}
+                          value={searchSource.company_name}
+                          isClearable
+                          // isMulti
+                          onChange={handleChangeCompanyName}
                         />
                       </div>
                     </div>

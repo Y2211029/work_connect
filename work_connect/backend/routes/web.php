@@ -46,11 +46,13 @@ use App\Http\Controllers\tag\GetDesiredOccupationTagController;
 use App\Http\Controllers\tag\GetDesiredWorkRegionTagController;
 use App\Http\Controllers\tag\GetSelectedOccupationTagController;
 use App\Http\Controllers\tag\GetPrefectureTagController;
+use App\Http\Controllers\tag\GetCompanyNameListController;
 use App\Http\Controllers\work\WorkPostingController;
 use App\Http\Controllers\search\SearchWorkController;
 use App\Http\Controllers\search\SearchVideoController;
 use App\Http\Controllers\search\SearchStudentController;
 use App\Http\Controllers\search\SearchCompanyController;
+use App\Http\Controllers\search\SearchInternshipJobOffer;
 use App\Http\Controllers\profile\GetMypageController;
 use App\Http\Controllers\profile\PostMypageController;
 use App\Http\Controllers\profile\GetMypageKindController;
@@ -81,6 +83,8 @@ Route::get('/search_video', [SearchVideoController::class, 'SearchVideoControlle
 Route::get('/search_student', [SearchStudentController::class, 'SearchStudentController']);
 // 企業検索
 Route::get('/search_company', [SearchCompanyController::class, 'SearchCompanyController']);
+// 求人・インターンシップ検索
+Route::get('/search_internship_job_offer', [SearchInternshipJobOffer::class, 'SearchInternshipJobOffer']);
 
 /* タグ関係 */
 // タグ作成
@@ -121,7 +125,8 @@ Route::get('/get_desired_work_region_tag', [GetDesiredWorkRegionTagController::c
 Route::get('/get_selected_occupation_tag', [GetSelectedOccupationTagController::class, 'GetSelectedOccupationTagController']);
 // 企業の勤務地タグ取得
 Route::get('/get_prefecture_tag', [GetPrefectureTagController::class, 'GetPrefectureTagController']);
-
+// 企業名一覧を取得
+Route::get('/get_company_name_list', [GetCompanyNameListController::class, 'GetCompanyNameListController']);
 
 // 作品投稿
 Route::post('/work_posting', [WorkPostingController::class, 'store']);

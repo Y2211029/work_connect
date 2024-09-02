@@ -3,6 +3,10 @@
 use App\Http\Controllers\movie\PostMovieCommentDeleteController;
 use App\Http\Controllers\movie\PostMovieCommentPostController;
 use App\Http\Controllers\movie\PostMovieCommentSaveController;
+use App\Http\Controllers\tag\GetCourseNameTagController;
+use App\Http\Controllers\tag\GetDepartmentNameTagController;
+use App\Http\Controllers\tag\GetFacultyNameTagController;
+use App\Http\Controllers\tag\GetMajorNameTagController;
 use App\Http\Controllers\work\PostWorkCommentPostController;
 use App\Http\Controllers\work\PostWorkCommentSaveController;
 use App\Http\Controllers\work\PostWorkCommentDeleteController;
@@ -93,6 +97,14 @@ Route::get('/get_work_environment_tag', [GetEnvironmentTagController::class, 'Ge
 Route::post('/video_posting', [VideoPostingController::class, 'VideoPostingController']);
 // 動画ジャンルタグ取得
 Route::get('/get_video_genre_tag', [GetVideoGenreTagController::class, 'GetVideoGenreTagController']);
+// 学科名タグ取得
+Route::get('/get_department_name_tag', [GetDepartmentNameTagController::class, 'GetDepartmentNameTagController']);
+// 学部名タグ取得
+Route::get('/get_faculty_name_tag', [GetFacultyNameTagController::class, 'GetFacultyNameTagController']);
+// 専攻名タグ取得
+Route::get('/get_major_name_tag', [GetMajorNameTagController::class, 'GetMajorNameTagController']);
+// コース名タグ取得
+Route::get('/get_course_name_tag', [GetCourseNameTagController::class, 'GetCourseNameTagController']);
 // 学生のプログラミング言語タグ取得
 Route::get('/get_student_programming_language_tag', [GetStudentProgrammingLanguageTagController::class, 'GetStudentProgrammingLanguageTagController']);
 // 学生の開発環境タグ取得
@@ -123,7 +135,7 @@ Route::get('/get_work_list', [GetWorkListController::class, 'GetWorkListControll
 // 動画一覧取得
 Route::get('/get_movie_list', [GetMovieListController::class, 'GetMovieListController']);
 // 学生一覧取得
-Route::get('/get_student_list', [GetStudentListController::class, 'GetStudentListController']);
+Route::get('/get_student_list/{id}', [GetStudentListController::class, 'GetStudentListController']);
 // 企業一覧取得
 Route::get('/get_company_list', [GetCompanyListController::class, 'GetCompanyListController']);
 

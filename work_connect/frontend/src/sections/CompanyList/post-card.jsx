@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
-import Stack from "@mui/material/Stack";
+// import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
 // import { alpa } from "@mui/material/styles";
 import Grid from "@mui/material/Unstable_Grid2";
@@ -13,8 +14,8 @@ import Typography from "@mui/material/Typography";
 import { follow } from "src/_mock/follow";
 import { fShortenNumber } from "src/utils/format-number";
 import Iconify from "src/components/iconify";
-import SvgColor from "src/components/svg-color";
-import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import SvgColor from "src/components/svg-color";  
+
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef(({ post, index }, ref) => {
@@ -24,10 +25,6 @@ const PostCard = forwardRef(({ post, index }, ref) => {
     selectedOccupation,
     prefecture,
     cover,
-    // createdAt,
-    view,
-    comment,
-    // favorite,
     author,
     followStatus: initialFollowStatus,
   } = post;
@@ -57,6 +54,20 @@ const PostCard = forwardRef(({ post, index }, ref) => {
       console.error("フォロー処理中にエラーが発生しました！", error);
     }
   };
+
+  const renderFollow = () => {
+    if (followStatus === "フォローできません") {
+      return <Typography opacity="0.48"></Typography>;
+    } else {
+      return (
+        <Typography opacity="0.48" onClick={handleFollowClick}>
+          {followStatus}
+        </Typography>
+      );
+    }
+  };
+
+  // const latestPost = index === 1 || index === 2;
 
   const renderAvatar = (
     <Avatar
@@ -90,12 +101,6 @@ const PostCard = forwardRef(({ post, index }, ref) => {
     >
       {userName}
     </Link>
-  );
-
-  const renderFollow = (
-    <Typography opacity="0.48" onClick={handleFollowClick}>
-      {followStatus}
-    </Typography>
   );
 
   // 募集職種

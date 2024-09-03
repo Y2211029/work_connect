@@ -68,7 +68,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
 
   useEffect(() => {
     setPathName(PathName);
-    console.log("PathName", PathName);
+    // console.log("PathName", PathName);
   }, [PathName]);
 
   useEffect(() => {
@@ -175,10 +175,6 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           desiredWorkRegion: student.desired_work_region,
           desiredOccupation: student.desired_occupation,
           followStatus: student.follow_status,
-          view: faker.number.int(99999),
-          comment: faker.number.int(99999),
-          favorite: faker.number.int(99999),
-          createdAt: student.created_at,
           author: {
             avatarUrl: `/assets/images/avatars/avatar_${student.icon}.jpg`,
           },
@@ -196,13 +192,10 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           selectedOccupation: company.selected_occupation,
           prefecture: company.prefecture,
           cover: `/assets/images/covers/cover_${key + 1}.jpg`,
-          createdAt: company.created_at,
-          view: faker.number.int(99999),
-          comment: faker.number.int(99999),
-          favorite: faker.number.int(99999),
           author: {
             avatarUrl: `/assets/images/avatars/avatar_${company.icon}.jpg`,
           },
+          followStatus: company.follow_status,
         })),
     },
   };
@@ -270,13 +263,13 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     url &&
     (PathName === "/" || PathName === "/VideoList" || PathName === "/StudentList" || PathName === "/CompanyList")
   ) {
-    console.log(" URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合");
+    // console.log(" URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合");
     lastUrl = `${url}?page=${Page}&sort=${sortOption}`;
   } else if (ParamUserName === SessionAccountData.user_name) {
-    console.log("ユーザーネームもセッションネームも同じ場合");
+    // console.log("ユーザーネームもセッションネームも同じ場合");
     lastUrl = `${url}?page=${Page}&sort=${sortOption}&userName=${SessionAccountData.user_name}`;
   } else if (ParamUserName && ParamUserName !== SessionAccountData.user_name) {
-    console.log("ユーザーネームとセッションネームが違う場合");
+    // console.log("ユーザーネームとセッションネームが違う場合");
     lastUrl = `${url}?page=${Page}&sort=${sortOption}&userName=${ParamUserName}`;
   }
 
@@ -313,7 +306,6 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     /*----- 検索されたかつ、検索結果が帰ってきたとき -----*/
     if (IsSearch.Check) {
       if (DataList.length !== 0) {
-        console.log("あああ");
         funcSetWorksItem(
           idKey,
           tags,
@@ -354,11 +346,11 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     ) : null; // 検索結果が文字列の場合、その文字列を表示
 
   useEffect(() => {
-    console.log("ParamUserName", ParamUserName);
-    console.log("urlMapping", urlMapping);
+    // console.log("ParamUserName", ParamUserName);
+    // console.log("urlMapping", urlMapping);
     console.log("workItems", workItems);
     console.log("renderWorkItems", renderWorkItems);
-  }, [ParamUserName, urlMapping, workItems, renderWorkItems]);
+  }, [/*ParamUserName, urlMapping,*/ workItems, renderWorkItems]);
 
   return (
     <>

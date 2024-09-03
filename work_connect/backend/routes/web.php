@@ -140,7 +140,7 @@ Route::get('/get_movie_list', [GetMovieListController::class, 'GetMovieListContr
 // 学生一覧取得
 Route::get('/get_student_list/{id}', [GetStudentListController::class, 'GetStudentListController']);
 // 企業一覧取得
-Route::get('/get_company_list/{id}', [GetCompanyListController::class, 'GetCompanyListController']);
+Route::get('/get_company_list', [GetCompanyListController::class, 'GetCompanyListController']);
 
 // 作品詳細取得
 Route::get('/get_work_detail', [GetWorkDetailController::class, 'GetWorkDetailController']);

@@ -12,63 +12,67 @@ use Illuminate\Support\Facades\Log;
 class GetCompanyListController extends Controller
 {
 
-    public function GetCompanyListController(Request $request, $id)
+    public function GetCompanyListController(Request $request)
     {
         try {
-            // 全企業ユーザーリストを取得
-            $CompanyOfList = w_company::select()->get();
             $page = (int) $request->query('page', 1);
-            $perPage = 20; //一ページ当たりのアイテム数
+            $perPage = 20; // 一ページ当たりのアイテム数
             $offset = ($page - 1) * $perPage;
 
+            // 企業リストを取得
             $companyList = w_company::skip($offset)
                 ->take($perPage)
                 ->get();
-            $companyListArray = json_decode(json_encode($companyList), true);
+            Log::info('GetCompanyListController:companyList');
+            Log::info(json_encode($companyList));
 
-            // もしも$idが学生側の場合
-            if ("S" === $id[0]) {
+            // 各企業のフォロー状態を確認して更新
+            $companyList = $companyList->map(function ($company) {
+                $id = $company->id;
 
-                // 各ユーザーのフォロー状態を確認して更新
-                $CompanyOfList = $CompanyOfList->map(function ($user) use ($id) {
+               
+                // IDの最初の文字が "S" の場合にフォロー状態を確認
+                if ($id[0] === "S") {
+                    Log::info('ID[0]が "S" の場合の処理を実行');
+                    Log::info('IDの値: ' . $id);
+
+                    // ログインしているユーザーのIDを取得する必要があります（例: auth()->id()）
+                    $currentUserId = auth()->id();
+
                     // ユーザーがログインしているアカウントをフォローしているかどうか
-                    $isFollowing = w_follow::where('follow_sender_id', $id)
-                        ->where('follow_recipient_id', $user->id)
-                        ->exists();
-
-                    // ログインしているアカウントがユーザーをフォローしているかどうか
-                    $isFollowedByUser = w_follow::where('follow_sender_id', $user->id)
+                    $isFollowing = w_follow::where('follow_sender_id', $currentUserId)
                         ->where('follow_recipient_id', $id)
                         ->exists();
 
+                    // ログインしているアカウントがユーザーをフォローしているかどうか
+                    $isFollowedByUser = w_follow::where('follow_sender_id', $id)
+                        ->where('follow_recipient_id', $currentUserId)
+                        ->exists();
+
+                    // フォロー状態を設定
                     if ($isFollowing && $isFollowedByUser) {
-                        $user->follow_status = '相互フォローしています';
+                        $company->follow_status = '相互フォローしています';
                     } elseif ($isFollowing) {
-                        $user->follow_status = 'フォローしています';
+                        $company->follow_status = 'フォローしています';
                     } elseif ($isFollowedByUser) {
-                        $user->follow_status = 'フォローされています';
+                        $company->follow_status = 'フォローされています';
                     } else {
-                        $user->follow_status = 'フォローする';
+                        $company->follow_status = 'フォローする';
                     }
+                } else {
+                    // IDの最初の文字が "S" でない場合はフォローできないメッセージを設定
+                    $company->follow_status = 'フォローできません';
+                }
 
-                    return $user;
-                });
-            } else {
-                // $idが学生の場合、フォローできないメッセージを設定
-                $CompanyOfList = $CompanyOfList->map(function ($user) {
-                    $user->follow_status = 'フォローできません';
-                    return $user;
-                });
-            }
+                return $company;
+            });
 
-            Log::info('GetCompanyListController: $CompanyOfList: ');
-            Log::info(json_encode($CompanyOfList));
+            Log::info(json_encode($companyList));
 
             // 結果をJSON形式で返す
-            return response()->json($CompanyOfList);
+            return response()->json($companyList);
         } catch (\Exception $e) {
-            Log::info('GetStudentListController: エラー');
-            Log::info($e);
+            Log::error('GetCompanyListController: エラー', ['exception' => $e]);
 
             // エラーメッセージをJSON形式で返す
             return response()->json(['error' => $e->getMessage()], 500);

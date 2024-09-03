@@ -18,22 +18,21 @@ import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 const PostCard = forwardRef(({ post, index }, ref) => {
   const {
+    student_id,
     cover,
     userName,
     graduationYear,
     schoolName,
     desiredWorkRegion,
     desiredOccupation,
-    // view,
-    // comment,
-    author,
     followStatus: initialFollowStatus,
-    student_id,
+    author,
   } = post;
 
   const latestPostLarge = index === -1;
 
   const [followStatus, setFollowStatus] = useState(initialFollowStatus);
+
   const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData");
 
@@ -43,7 +42,8 @@ const PostCard = forwardRef(({ post, index }, ref) => {
 
   useEffect(() => {
     console.log("student_id", student_id);
-  }, [student_id]);
+    console.log("followStatus", followStatus);
+  }, [student_id, followStatus]);
 
   const handleFollowClick = async () => {
     try {
@@ -94,11 +94,12 @@ const PostCard = forwardRef(({ post, index }, ref) => {
     </Link>
   );
 
-  const renderFollow = (
+  const renderFollow = followStatus !== "フォローできません" && (
     <Typography opacity="0.48" onClick={handleFollowClick}>
       {followStatus}
     </Typography>
   );
+
   const renderGraduationYear =
     graduationYear !== null ? (
       <div>

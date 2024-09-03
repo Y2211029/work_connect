@@ -14,10 +14,8 @@ export default function TopPageListView() {
       <Container>
         <h1 style={{ position: "fixed", textAlign: "center", color: "white" }}>Work&Connect</h1>
       </Container>
-      <img src="/assets/images/covers/cover_21.jpg" alt="" />
-      <img src="/assets/images/covers/cover_2.jpg" alt="" />
-      <img src="/assets/images/covers/cover_3.jpg" alt="" />
-      <img src="/assets/images/covers/cover_4.jpg" alt="" />
+      <img src="/assets/images/covers/cover_25_1Figma.jpg" alt="" />
+      <img src="/assets/images/covers/cover_25_2Figma.jpg" alt="" />
     </>
   );
 }

@@ -29,7 +29,7 @@ export default function DashboardLayout({ children }) {
     DataList: [],
     IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
     Page: 1,
-    // ResetItem: false,
+    ResetItem: false,
     sortOption: "orderNewPostsDate",
   });
 

@@ -29,7 +29,6 @@ class GetCompanyListController extends Controller
             // 各企業のフォロー状態を確認して更新
             $companyList = $companyList->map(function ($company) {
                 $id = $company->id;
-
                
                 // IDの最初の文字が "S" の場合にフォロー状態を確認
                 if ($id[0] === "S") {

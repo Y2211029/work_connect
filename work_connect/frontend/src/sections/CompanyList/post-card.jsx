@@ -6,16 +6,14 @@ import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
-// import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
 import { follow } from "src/_mock/follow";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
-// import { fShortenNumber } from "src/utils/format-number";
-// import Iconify from "src/components/iconify";
 import SvgColor from "src/components/svg-color";
+
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef(({ post, index }, ref) => {

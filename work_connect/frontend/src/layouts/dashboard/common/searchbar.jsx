@@ -139,14 +139,7 @@ export default function Searchbar() {
 
   const getGraduationYearTag = async () => {
     let optionArray = [];
-    let result = [
-      "2025年卒業",
-      "2026年卒業",
-      "2027年卒業",
-      "2028年卒業",
-      "2029年卒業",
-      "2030年卒業",
-    ];
+    let result = ["2025年卒業", "2026年卒業", "2027年卒業", "2028年卒業", "2029年卒業", "2030年卒業"];
 
     // console.log("result: ", result);
     result.map((value) => {
@@ -226,26 +219,20 @@ export default function Searchbar() {
 
   const fetchCompanyNameData = async () => {
     try {
+      const response = await axios.get(`http://localhost:8000/get_company_name_list`, {});
 
-        const response = await axios.get(
-          `http://localhost:8000/get_company_name_list`,
-          {}
-        );
+      console.log("fetchCompanyNameData response: ");
+      console.log(response.data);
 
-        console.log("fetchCompanyNameData response: ");
-        console.log(response.data);
-
-        // allSchools = response.data.schools.data;
-
-        // if (Array.isArray(response.data.schools.data)) {
-        //   allSchools = [...allSchools, ...response.data.schools.data]; // 取得したデータを蓄積
-        //   hasMore = response.data.schools.data.length > 0; // データが存在する限り繰り返す
-        //   page += 1; // 次のページを設定
-        // } else {
-        //   console.error("Unexpected response format:", response.data);
-        //   hasMore = false;
-        // }
-
+      // allSchools = response.data.schools.data;
+      // if (Array.isArray(response.data.schools.data)) {
+      //   allSchools = [...allSchools, ...response.data.schools.data]; // 取得したデータを蓄積
+      //   hasMore = response.data.schools.data.length > 0; // データが存在する限り繰り返す
+      //   page += 1; // 次のページを設定
+      // } else {
+      //   console.error("Unexpected response format:", response.data);
+      //   hasMore = false;
+      // }
       // console.log("allSchools: ");
       // console.log(allSchools);
 
@@ -354,10 +341,7 @@ export default function Searchbar() {
       getTag("student_programming_language", "student_programming_language");
 
       // 開発環境のタグ一覧を取得
-      getTag(
-        "student_development_environment",
-        "student_development_environment"
-      );
+      getTag("student_development_environment", "student_development_environment");
 
       // ソフトウェアのタグ一覧を取得
       getTag("software", "software");
@@ -439,6 +423,7 @@ export default function Searchbar() {
         let programming_language = [];
         let development_environment = [];
 
+        console.log("検証:searchSource", searchSource);
         searchSource.school_name.map((value) => {
           school_name.push(value.value);
         });
@@ -711,12 +696,23 @@ export default function Searchbar() {
         student_development_environment: [],
         software: [],
         acquisition_qualification: [],
-        desired_work_region: [],
         hobby: [],
         other: [],
         graduation_year: [],
         desired_occupation: [],
+        desired_work_region: [],
         selected_occupation: [],
+        prefecture: [],
+        company_name: [],
+      }));
+
+      // 検索結果をリセットして初期状態に戻す
+      setAllItems((prevItems) => ({
+        ...prevItems,
+        Page: 1,
+        IsSearch: { ...prevItems.IsSearch, Check: false, searchResultEmpty: false },
+        DataList: [], // 検索結果をリセット
+        ResetItem: false,
       }));
     }
   }, [ResetItem]);
@@ -727,8 +723,7 @@ export default function Searchbar() {
   };
 
   // 空だったらtrue
-  const isAllEmpty = (obj) =>
-    Object.values(obj).every((value) => value.length === 0);
+  const isAllEmpty = (obj) => Object.values(obj).every((value) => value.length === 0);
 
   // 検索ボタンを押したとき
   const handleSearch = () => {
@@ -738,7 +733,7 @@ export default function Searchbar() {
       IsSearch: {
         ...prevItems.IsSearch,
         searchToggle: prevItems.IsSearch.searchToggle === 0 ? 1 : 0,
-        Check: !isAllEmpty(searchSource), // Checkがfalseになることを確認
+        Check: !isAllEmpty(searchSource), // 検索タグが選択されていなければfalse
         searchResultEmpty: false,
       },
       Page: 1,
@@ -770,7 +765,7 @@ export default function Searchbar() {
     console.log(selectedOption);
     if (selectedOption != null) {
       let selectedOptionArray = [];
-      if(!Array.isArray(selectedOption)) {
+      if (!Array.isArray(selectedOption)) {
         selectedOptionArray[0] = selectedOption;
         console.log("aaaaaaaaaaaaaaa");
         console.log(selectedOptionArray);
@@ -899,14 +894,6 @@ export default function Searchbar() {
     console.log("options: ", options);
   }, [options]);
 
-  // useEffect(() => {
-  //   console.log("searchSource: ", searchSource);
-  // }, [searchSource]);
-
-  // useEffect(() => {
-  //   console.log("options: ", options);
-  // }, [options]);
-
   return (
     <ClickAwayListener onClickAway={handleClose}>
       <div>
@@ -927,10 +914,7 @@ export default function Searchbar() {
                   placeholder="Search…"
                   startAdornment={
                     <InputAdornment position="start">
-                      <Iconify
-                        icon="eva:search-fill"
-                        sx={{ color: "text.disabled", width: 20, height: 20 }}
-                      />
+                      <Iconify icon="eva:search-fill" sx={{ color: "text.disabled", width: 20, height: 20 }} />
                     </InputAdornment>
                   }
                   sx={{ mr: 1, fontWeight: "fontWeightBold" }}
@@ -951,9 +935,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        学校名
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>学校名</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.school_name}
@@ -971,9 +953,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        学科名
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>学科名</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.department_name}
@@ -991,9 +971,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        学部名
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>学部名</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.faculty_name}
@@ -1011,9 +989,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        専攻名
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>専攻名</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.major_name}
@@ -1031,9 +1007,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        コース名
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>コース名</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.course_name}
@@ -1051,9 +1025,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        ジャンル
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.work_genre}
@@ -1071,9 +1043,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        プログラミング言語
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.programming_language}
@@ -1091,9 +1061,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        開発環境
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.development_environment}
@@ -1114,9 +1082,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        学校名
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>学校名</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.school_name}
@@ -1134,9 +1100,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        学科名
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>学科名</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.department_name}
@@ -1154,9 +1118,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        学部名
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>学部名</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.faculty_name}
@@ -1174,9 +1136,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        専攻名
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>専攻名</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.major_name}
@@ -1194,9 +1154,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        コース名
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>コース名</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.course_name}
@@ -1214,9 +1172,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        ジャンル
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.video_genre}
@@ -1237,9 +1193,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        卒業年
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>卒業年</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.graduation_year}
@@ -1257,9 +1211,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        学校名
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>学校名</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.school_name}
@@ -1277,9 +1229,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        学科名
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>学科名</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.department_name}
@@ -1297,9 +1247,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        学部名
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>学部名</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.faculty_name}
@@ -1317,9 +1265,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        専攻名
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>専攻名</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.major_name}
@@ -1337,9 +1283,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        コース名
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>コース名</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.course_name}
@@ -1357,9 +1301,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        希望職種
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>希望職種</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.desired_occupation}
@@ -1377,9 +1319,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        希望勤務地
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>希望勤務地</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.desired_work_region}
@@ -1397,9 +1337,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        プログラミング言語
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.student_programming_language}
@@ -1417,9 +1355,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        開発環境
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.student_development_environment}
@@ -1437,9 +1373,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        ソフトウェア
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>ソフトウェア</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.software}
@@ -1457,9 +1391,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        取得資格
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>取得資格</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.acquisition_qualification}
@@ -1477,9 +1409,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        趣味
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>趣味</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.hobby}
@@ -1500,9 +1430,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        職種
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>職種</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.selected_occupation}
@@ -1520,9 +1448,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        勤務地
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>勤務地</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.prefecture}
@@ -1543,9 +1469,7 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>
-                        企業名
-                      </div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>企業名</div>
                       <div style={{ color: "#444" }}>
                         <CreatableSelect
                           options={options.company_name}

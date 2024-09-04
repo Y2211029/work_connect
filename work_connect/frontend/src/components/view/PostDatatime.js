@@ -30,6 +30,6 @@ export function postDateTimeDisplay(postDateTime) {
     datetime = "たった今";
   }
 
-  console.log(datetime);
+  // console.log(datetime);
   return datetime;
 }

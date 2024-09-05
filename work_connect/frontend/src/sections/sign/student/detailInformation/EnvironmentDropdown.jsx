@@ -1,24 +1,23 @@
 import { useState, useEffect } from "react";
 import Select from "react-select";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import GetTagAllList from "src/components/tag/GetTagAllList";
 
 const Environment = () => {
   const [selectedDevEnvironment, setSelectedDevEnvironment] = useState([]);
   // 登録項目確認の際に利用
   const { getSessionData, updateSessionData } = useSessionStorage();
 
-  const options = [
-    { value: "Visual Studio", label: "Visual Studio" },
-    { value: "Eclipse", label: "Eclipse" },
-    { value: "Xcode", label: "Xcode" },
-    { value: "Android Studio", label: "Android Studio" },
-    { value: "Claris FileMaker", label: "Claris FileMaker" },
-    { value: "Unity", label: "Unity" },
-    { value: "Visual Studio Code", label: "Visual Studio Code" },
-    { value: "MySQL", label: "MySQL" },
-    { value: "XAMMP", label: "XAMMP" },
-    { value: "ロリポップ", label: "ロリポップ" },
-  ];
+  const [options, setOptions] = useState([]);
+
+  const { GetTagAllListFunction } = GetTagAllList();
+
+  useEffect(() => {
+    let optionArrayPromise = GetTagAllListFunction("development_environment");
+    optionArrayPromise.then((result) => {
+      setOptions(result);
+    });
+  }, []);
 
   // 外部URLから本アプリにアクセスした際に、sessionStrageに保存する
   useEffect(() => {

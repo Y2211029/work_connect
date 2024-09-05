@@ -14,10 +14,9 @@ import {
   useSortable,
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
-import {
-  restrictToWindowEdges,
-} from "@dnd-kit/modifiers";
+import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { CSS } from "@dnd-kit/utilities";
+// import { minHeight, minWidth } from "@mui/system";
 
 const SortableItem = ({ id, image, onDelete, activeId }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -185,6 +184,7 @@ const ImageUpload = ({ onImagesUploaded, coleSetImage }) => {
     alignItems: "center",
     cursor: "pointer",
     width: "100%",
+    minWidth: "400px",
   };
 
   const activeItem = items.find((item) => item.id === activeId);
@@ -216,9 +216,6 @@ const ImageUpload = ({ onImagesUploaded, coleSetImage }) => {
         ref={fileInputRef}
         style={inputStyle}
       />
-      <button type="button" onClick={handleButtonClick} style={buttonStyle}>
-        アップロード
-      </button>
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
@@ -226,29 +223,29 @@ const ImageUpload = ({ onImagesUploaded, coleSetImage }) => {
         onDragEnd={handleDragEnd}
         modifiers={[restrictToWindowEdges]}
       >
-          <SortableContext
-            items={items.map((item) => item.id)}
-            strategy={rectSortingStrategy}
+        <SortableContext
+          items={items.map((item) => item.id)}
+          strategy={rectSortingStrategy}
+        >
+          <div
+            style={{
+              // display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
+              gap: "10px",
+            }}
           >
-            <div
-              style={{
-                // display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
-                gap: "10px",
-              }}
-            >
-              {items.map((item) => (
-                <SortableItem
-                  key={item.id}
-                  id={item.id}
-                  image={item.image}
-                  onDelete={handleDelete}
-                  activeId={activeId}
-                />
-              ))}
-            </div>
-          </SortableContext>
-          <DragOverlay>
+            {items.map((item) => (
+              <SortableItem
+                key={item.id}
+                id={item.id}
+                image={item.image}
+                onDelete={handleDelete}
+                activeId={activeId}
+              />
+            ))}
+          </div>
+        </SortableContext>
+        <DragOverlay>
           {activeItem ? (
             <div style={overlayStyle}>
               <img src={activeItem.image} alt="" style={overlayImgStyle} />
@@ -256,6 +253,9 @@ const ImageUpload = ({ onImagesUploaded, coleSetImage }) => {
           ) : null}
         </DragOverlay>
       </DndContext>
+      <button type="button" onClick={handleButtonClick} style={buttonStyle}>
+        アップロード
+      </button>
     </div>
   );
 };

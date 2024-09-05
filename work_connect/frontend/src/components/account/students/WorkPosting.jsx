@@ -135,6 +135,7 @@ const WorkPosting = () => {
                 <div className="WorkPostingFormField">
                   <YoutubeURL callSetWorkData={callSetWorkData} />
                 </div>
+                <br />
                 <div className="WorkPostingImageFormField">
                   <ImageUpload
                     onImagesUploaded={handleImageChange}
@@ -143,7 +144,7 @@ const WorkPosting = () => {
                 </div>
               </div>
             </div>
-            <div className="Information">
+            <div className="WorkInformation">
               <div className="WorkPostingFormField">
                 <WorkTitle callSetWorkData={callSetWorkData} />
               </div>
@@ -151,32 +152,36 @@ const WorkPosting = () => {
               <div className="WorkPostingFormField">
                 <div className="workGenre" id="workGenre">
                   <p className="work_genre">
-                    ジャンル&nbsp;<span className="red_txt">必須</span>
+                    ジャンル
+                    {/* ジャンル&nbsp;<span className="red_txt">必須</span>
                     &nbsp;
                     <span className="alert_red_txt" id="alert_a_3">
                       タグを入れてください
-                    </span>
+                    </span> */}
                   </p>
                   <WorkGenre callSetWorkData={callSetWorkData} />
                 </div>
               </div>
+              <br />
               <div className="WorkPostingFormField">
                 <Introduction callSetWorkData={callSetWorkData} />
               </div>
               <div className="WorkPostingFormField">
                 <Obsession callSetWorkData={callSetWorkData} />
               </div>
+              <br />
               <div className="WorkPostingFormField">
                 <p>プログラミング言語</p>
                 <Language callSetWorkData={callSetWorkData} />
               </div>
+              <br />
               <div className="WorkPostingFormField">
                 <p>開発環境</p>
                 <Environment callSetWorkData={callSetWorkData} />
               </div>
             </div>
           </div>
-          <input type="submit" value="送信" className="submit" />
+          <input type="submit" value="送信" className="WorkSubmit" />
         </form>
         {message && <p>{message}</p>}
       </div>

@@ -23,14 +23,17 @@ const setting = {
 const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, setLoading, setItemLoading, error) => {
   if (newWorks) {
     // w_works.work_id IDを取り出す。
-    const uniqueRepoIds = new Set(currentWorkList.map((work) => work[idKey]));
+    // const uniqueRepoIds = new Set(currentWorkList.map((work) => work[idKey]));
 
+    console.log("newWorks", newWorks);
     // ※ 【filter】 条件に合うものを探して取り出す。 【has】 特定の値が存在する場合は trueを返す
     // newWorks = data または DataListが代入されている。
     // data または DataListの中にwork.work_idが被っているものは排除して新しいデータだけを代入
-    const uniqueRepos = newWorks.filter((item) => !uniqueRepoIds.has(item[idKey]));
+    // const uniqueRepos = newWorks.filter((item) => !uniqueRepoIds.has(item[idKey]));
+    // const uniqueRepos = newWorks;
+    // console.log("uniqueRepos", uniqueRepos);
 
-    uniqueRepos.forEach((element) => {
+    newWorks.forEach((element) => {
       tags.forEach((tag) => {
         if (typeof element[tag] === "string" && element[tag] !== null) {
           element[tag] = createTagElements(element[tag]);
@@ -38,7 +41,8 @@ const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, s
       });
     });
 
-    setWorkList((prev) => [...prev, ...uniqueRepos]);
+
+    setWorkList((prev) => [...prev, ...newWorks]);
     setLoading(false);
     setItemLoading(false);
   }
@@ -68,27 +72,17 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
 
   useEffect(() => {
     setPathName(PathName);
-    console.log("PathName", PathName);
   }, [PathName]);
-
   useEffect(() => {
     // URLごとにpost-sort、post-card.jsxを各フォルダから取得
     const loadComponents = async () => {
-      if (
-        PathName === "/" ||
-        PathName === `/Profile/${SessionAccountData.user_name}` ||
-        PathName === `/Profile/${ParamUserName}`
-      ) {
+      if (PathName === "/" || PathName === `/Profile/${SessionAccountData.user_name}` || PathName === `/Profile/${ParamUserName}`) {
         const { default: WorkListPostCard } = await import("src/sections/WorkList/post-card");
         const { default: WorkListPostSort } = await import("src/sections/WorkList/post-sort");
         setPostCard(() => WorkListPostCard);
         setPostSort(() => WorkListPostSort);
         console.log("WorkListPostCard");
-      } else if (
-        PathName === "/VideoList" ||
-        PathName === `/Profile/${SessionAccountData.user_name}` ||
-        PathName === `/Profile/${ParamUserName}`
-      ) {
+      } else if (PathName === "/VideoList" || PathName === `/Profile/${SessionAccountData.user_name}` || PathName === `/Profile/${ParamUserName}`) {
         const { default: VideoListPostCard } = await import("src/sections/VideoList/post-card");
         const { default: VideoListPostSort } = await import("src/sections/VideoList/post-sort");
         setPostCard(() => VideoListPostCard);
@@ -124,8 +118,8 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           author: {
             avatarUrl: `/assets/images/avatars/avatar_${work.icon}.jpg`,
           },
-          view: faker.number.int(99999),
-          comment: faker.number.int(99999),
+          // view: faker.number.int(99999),
+          // comment: faker.number.int(99999),
           favorite: faker.number.int(99999),
           userName: work.user_name,
           createdAt: work.created_at,
@@ -145,8 +139,8 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           author: {
             avatarUrl: `/assets/images/avatars/avatar_${movie.icon}.jpg`,
           },
-          view: faker.number.int(99999),
-          comment: faker.number.int(99999),
+          // view: faker.number.int(99999),
+          // comment: faker.number.int(99999),
           favorite: faker.number.int(99999),
           userName: movie.user_name,
           createdAt: movie.created_at,
@@ -175,10 +169,6 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           desiredWorkRegion: student.desired_work_region,
           desiredOccupation: student.desired_occupation,
           followStatus: student.follow_status,
-          view: faker.number.int(99999),
-          comment: faker.number.int(99999),
-          favorite: faker.number.int(99999),
-          createdAt: student.created_at,
           author: {
             avatarUrl: `/assets/images/avatars/avatar_${student.icon}.jpg`,
           },
@@ -196,16 +186,14 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           selectedOccupation: company.selected_occupation,
           prefecture: company.prefecture,
           cover: `/assets/images/covers/cover_${key + 1}.jpg`,
-          createdAt: company.created_at,
-          view: faker.number.int(99999),
-          comment: faker.number.int(99999),
-          favorite: faker.number.int(99999),
           author: {
             avatarUrl: `/assets/images/avatars/avatar_${company.icon}.jpg`,
           },
+          followStatus: company.follow_status,
         })),
     },
   };
+  console.log("ループしてるか確認");
   return (
     <ListView
       SessionAccountData={SessionAccountData}
@@ -235,16 +223,15 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   const [isLoadItemColorLing, setIsLoadItemColorLing] = useState(false);
   // AllItemsContextから状態を取得
   const { AllItems, setAllItems } = useContext(AllItemsContext);
-  const { DataList, IsSearch, Page, sortOption } = AllItems;
+  const { DataList, IsSearch, Page, sortOption /*, ResetItem*/ } = AllItems;
   // スクロールされたらtrueを返す。
   const [isIntersecting, ref] = useIntersection(setting);
-  // 現在のURL取得
+
+  const { ItemName, url, idKey, tags, generatePosts } = urlMapping || {};
 
   useEffect(() => {
     loginStatusCheckFunction();
   }, [loginStatusCheckFunction]);
-
-  const { ItemName, url, idKey, tags, generatePosts } = urlMapping || {};
 
   // 並べ替え
   const handleSortChange = (event) => {
@@ -262,21 +249,38 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     setWorkOfList([]);
   };
 
+  // 検索時にsetWorkOfListをリセット
+  useEffect(() => {
+    // タグを選択した状態
+    if (IsSearch.Check) {
+      setWorkOfList([]);
+    }
+  }, [IsSearch.searchToggle, IsSearch.Check]);
+
+  useEffect(() => {
+    // タグを選択していない状態
+    if (!IsSearch.Check && DataList.length == 0) {
+      console.log("タグを選択していない状態");
+      setWorkOfList([]); // 検索結果をクリア
+      setAllItems((prevItems) => ({
+        ...prevItems,
+        Page: 1, // ページを初期化
+      }));
+    }
+  }, [IsSearch.Check, DataList.length]);
+
   //   一覧データ取得URL
   let lastUrl = "";
-
   // URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合
-  if (
-    url &&
-    (PathName === "/" || PathName === "/VideoList" || PathName === "/StudentList" || PathName === "/CompanyList")
-  ) {
-    console.log(" URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合");
+  if (url && (PathName === "/" || PathName === "/VideoList" || PathName === "/StudentList" || PathName === "/CompanyList")) {
+    // console.log(" URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合");
     lastUrl = `${url}?page=${Page}&sort=${sortOption}`;
+    console.log("lastUrl", lastUrl);
   } else if (ParamUserName === SessionAccountData.user_name) {
-    console.log("ユーザーネームもセッションネームも同じ場合");
+    // console.log("ユーザーネームもセッションネームも同じ場合");
     lastUrl = `${url}?page=${Page}&sort=${sortOption}&userName=${SessionAccountData.user_name}`;
   } else if (ParamUserName && ParamUserName !== SessionAccountData.user_name) {
-    console.log("ユーザーネームとセッションネームが違う場合");
+    // console.log("ユーザーネームとセッションネームが違う場合");
     lastUrl = `${url}?page=${Page}&sort=${sortOption}&userName=${ParamUserName}`;
   }
 
@@ -293,44 +297,32 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     }
   }, [isIntersecting]);
 
-  useEffect(() => {
-    // 検索が行われたときの初期処理
-    if (IsSearch.Check) {
-      setWorkOfList([]);
-    }
-  }, [IsSearch.searchToggle]);
+  // // サイドバーをクリックした際にリセット
+  // useEffect(() => {
+  //   // タグを選択した状態
+  //   if (ResetItem) {
+  //     setWorkOfList([]);
+  //   }
+  // }, [ResetItem]);
 
+  /*----- 検索されていないかつ作品データがあるとき -----*/
   useEffect(() => {
-    /*----- 検索されていないかつ作品データがあるとき -----*/
     if (!IsSearch.Check && data) {
-      setAllItems((prevItems) => ({
-        ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
-        ResetItem: false, //リセットされ作品一覧データを際代入するこのタイミングでリセットされないように変更
-      }));
+      console.log("data", data);
       funcSetWorksItem(idKey, tags, WorkOfList, setWorkOfList, data, setIsLoadColorLing, setIsLoadItemColorLing, error);
     }
+  }, [data, error, IsSearch.Check, IsSearch.searchResultEmpty]);
 
-    /*----- 検索されたかつ、検索結果が帰ってきたとき -----*/
-    if (IsSearch.Check) {
-      if (DataList.length !== 0) {
-        console.log("あああ");
-        funcSetWorksItem(
-          idKey,
-          tags,
-          WorkOfList,
-          setWorkOfList,
-          DataList,
-          setIsLoadColorLing,
-          setIsLoadItemColorLing,
-          error
-        );
-      } else {
-        setIsLoadItemColorLing(false);
-      }
+  /*----- 検索されたかつ、検索結果が帰ってきたとき -----*/
+  useEffect(() => {
+    if (IsSearch.Check && DataList) {
+      funcSetWorksItem(idKey, tags, WorkOfList, setWorkOfList, DataList, setIsLoadColorLing, setIsLoadItemColorLing, error);
     }
-  }, [data, error, DataList, IsSearch.Check, IsSearch.searchResultEmpty]);
+  }, [DataList, IsSearch.Check, IsSearch.searchResultEmpty]);
 
-  const workItems = IsSearch.searchResultEmpty
+  let workItems = [];
+
+  workItems = IsSearch.searchResultEmpty
     ? "検索結果は0件です" // フラグに基づいて表示
     : typeof generatePosts === "function"
       ? generatePosts(WorkOfList)
@@ -340,25 +332,13 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   const renderWorkItems =
     typeof workItems === "object" && Array.isArray(workItems) && PostCard ? (
       workItems.map((post, index) => (
-        <PostCard
-          ref={index === WorkOfList.length - 1 ? ref : null}
-          key={`${post}-${index}`}
-          post={post}
-          index={index}
-        />
+        <PostCard ref={index === WorkOfList.length - 1 ? ref : null} key={`${post}-${index}`} post={post} index={index} />
       ))
     ) : typeof workItems === "string" ? (
       <>
         <Typography variant="h4">{workItems}</Typography>
       </>
     ) : null; // 検索結果が文字列の場合、その文字列を表示
-
-  useEffect(() => {
-    console.log("ParamUserName", ParamUserName);
-    console.log("urlMapping", urlMapping);
-    console.log("workItems", workItems);
-    console.log("renderWorkItems", renderWorkItems);
-  }, [ParamUserName, urlMapping, workItems, renderWorkItems]);
 
   return (
     <>
@@ -373,7 +353,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
           colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
         />
       )}
-      <Container>
+      <Container maxWidth="xl">
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           {typeof ItemName === "string" ? (
             <>
@@ -392,19 +372,16 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
           // 学生・企業一覧の場合は並び替え必要ないので非表示にする。
           */}
 
-          {PostSort &&
-            PathName !== "CompanyList" &&
-            PathName !== "StudentList" &&
-            IsSearch.searchResultEmpty !== true && (
-              <PostSort
-                options={[
-                  { value: "orderNewPostsDate", label: "投稿日が新しい順" },
-                  { value: "orderOldPostsDate", label: "投稿日が古い順" },
-                ]}
-                sortOption={sortOption}
-                onSort={handleSortChange}
-              />
-            )}
+          {PostSort && PathName !== "CompanyList" && PathName !== "StudentList" && IsSearch.searchResultEmpty !== true && (
+            <PostSort
+              options={[
+                { value: "orderNewPostsDate", label: "投稿日が新しい順" },
+                { value: "orderOldPostsDate", label: "投稿日が古い順" },
+              ]}
+              sortOption={sortOption}
+              onSort={handleSortChange}
+            />
+          )}
         </Stack>
 
         <Grid container spacing={3}>

@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import $ from "jquery";
 
@@ -47,7 +47,6 @@ export default function Header({ onOpenNav }) {
   const theme = useTheme();
   const lgUp = useResponsive("up", "lg");
   let navigation = useNavigate();
-<<<<<<< HEAD
 
   // style CSS ここから
   const buttonStyle = {
@@ -59,8 +58,6 @@ export default function Header({ onOpenNav }) {
   };
   // style CSS ここまで
 
-=======
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
   const handleOpenModal = () => {
     // setShowModal(true);
     navigation("WorkPosting");
@@ -140,21 +137,12 @@ export default function Header({ onOpenNav }) {
 
       {/* ログイン、新規登録、本登録、チャット、通知、アカウントプロフィール */}
       <Stack direction="row" alignItems="center" spacing={1}>
-<<<<<<< HEAD
         <Button onClick={handleOpenModal} variant="contained" sx={buttonStyle}>
           作品投稿
         </Button>
         <Button onClick={handleOpenModal2} variant="contained" sx={buttonStyle}>
           動画投稿
         </Button>
-=======
-        <button onClick={handleOpenModal} style={{ display: Display }}>
-          作品投稿
-        </button>
-        <button onClick={handleOpenModal2} style={{ display: Display }}>
-          動画投稿
-        </button>
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
         {/* <SignUp1 /> */}
 
         <Button id="LoginButton" onClick={handleChange} style={{ display: Display === "" ? "none" : "block" }}>
@@ -184,6 +172,10 @@ export default function Header({ onOpenNav }) {
       </Stack>
     </>
   );
+
+  useEffect(() => {
+    console.log("theme.zIndex",theme.zIndex);
+  }, [theme]);
 
   return (
     <>

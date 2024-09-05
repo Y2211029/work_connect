@@ -13,13 +13,9 @@
   "dependencies": {
     "@calumk/editorjs-nested-checklist": "^1.1.0",
     "@dnd-kit/core": "^6.1.0",
-<<<<<<< HEAD
     "@dnd-kit/modifiers": "^7.0.0",
     "@dnd-kit/sortable": "^8.0.0",
     "@dnd-kit/utilities": "^3.2.2",
-=======
-    "@dnd-kit/sortable": "^8.0.0",
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
     "@editorjs/checklist": "^1.6.0",
     "@editorjs/code": "^2.9.0",
     "@editorjs/delimiter": "^1.4.0",
@@ -41,7 +37,6 @@
     "@mui/lab": "^5.0.0-alpha.170",
     "@mui/material": "^5.0.0",
     "@mui/system": "^5.0.0",
-<<<<<<< HEAD
     "@rxpm/editor-js-code": "^0.0.1",
     "@sotaproject/strikethrough": "^1.0.1",
     "@splidejs/react-splide": "^0.7.12",
@@ -57,15 +52,6 @@
     "editorjs-carousel": "^1.0.7",
     "editorjs-header-with-anchor": "^2.6.0",
     "editorjs-image-with-link": "^1.0.8",
-=======
-    "@sotaproject/strikethrough": "^1.0.1",
-    "@vitejs/plugin-react-swc": "^3.7.0",
-    "@vtchinh/gallery-editorjs": "^1.2.3",
-    "axios": "^1.7.2",
-    "date-fns": "^3.6.0",
-    "editorjs-alert": "^1.1.4",
-    "editorjs-header-with-anchor": "^2.6.0",
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
     "editorjs-indent-tune": "^1.3.0",
     "editorjs-inline-tool": "^0.4.0",
     "editorjs-notice": "^1.1.1",
@@ -81,48 +67,33 @@
     "react-color": "^2.19.3",
     "react-dom": "^18.2.0",
     "react-helmet-async": "^2.0.5",
-<<<<<<< HEAD
     "react-iframe": "^1.8.5",
     "react-infinite-scroller": "^1.2.6",
-=======
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
     "react-loader-spinner": "^6.1.6",
     "react-modal": "^3.16.1",
     "react-router-dom": "^6.23.1",
     "react-select": "^5.8.0",
     "react-stepper-horizontal": "^1.0.11",
     "react-tag-autocomplete": "^7.2.0",
-<<<<<<< HEAD
     "react-youtube": "^10.1.0",
     "rimraf": "^5.0.7",
     "sanitize.css": "^13.0.0",
     "simplebar-react": "^3.2.5",
     "skm-flipbox": "^1.0.3",
-=======
-    "rimraf": "^5.0.7",
-    "sanitize.css": "^13.0.0",
-    "simplebar-react": "^3.2.5",
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
     "styled-components": "^6.1.11",
     "swr": "^2.2.5",
     "title-editorjs": "^1.0.2",
     "wanakana": "^5.3.1"
   },
   "devDependencies": {
-<<<<<<< HEAD
     "@rodrigoodhin/editorjs-image-gallery": "^0.1.0",
-=======
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@vitejs/plugin-react": "^4.2.1",
     "editorjs-change-case": "^0.0.3",
     "editorjs-drag-drop": "^1.1.14",
-<<<<<<< HEAD
     "editorjs-hyperlink": "^1.0.6",
-=======
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
     "editorjs-text-color-plugin": "^2.0.4",
     "editorjs-toggle-block": "^0.3.16",
     "editorjs-tooltip": "^1.2.2",

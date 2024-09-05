@@ -4,15 +4,9 @@ import PropTypes from "prop-types";
 import Stack from "@mui/material/Stack";
 import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
-<<<<<<< HEAD
 // import Avatar from "@mui/material/Avatar";
 import { alpha } from "@mui/material/styles";
 // import Typography from "@mui/material/Typography";
-=======
-import Avatar from "@mui/material/Avatar";
-import { alpha } from "@mui/material/styles";
-import Typography from "@mui/material/Typography";
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 import ListItemButton from "@mui/material/ListItemButton";
 import Box from "@mui/material/Box";
 
@@ -21,11 +15,7 @@ import { RouterLink } from "src/routes/components";
 
 import { useResponsive } from "src/hooks/use-responsive";
 
-<<<<<<< HEAD
 // import { account } from "src/_mock/account";
-=======
-import { account } from "src/_mock/account";
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
 import Logo from "src/components/logo";
 import Scrollbar from "src/components/scrollbar/scrollbar";
@@ -33,10 +23,7 @@ import Scrollbar from "src/components/scrollbar/scrollbar";
 import { NAV } from "./config-layout";
 import navConfig from "./config-navigation";
 import { MyContext } from "src/layouts/dashboard/index";
-<<<<<<< HEAD
 import { AllItemsContext } from "src/layouts/dashboard/index";
-=======
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
 // ----------------------------------------------------------------------
 
@@ -48,7 +35,6 @@ export default function Nav({ openNav, onCloseNav }) {
   const upLg = useResponsive("up", "lg");
 
   // セッションデータを取得
-<<<<<<< HEAD
   // const sessionData = sessionStorage.getItem("accountData");
   // let user_name = "";
   // let login_state = false;
@@ -59,18 +45,6 @@ export default function Nav({ openNav, onCloseNav }) {
   //     login_state = true;
   //   }
   // }
-=======
-  const sessionData = sessionStorage.getItem("accountData");
-  let user_name = "";
-  let login_state = false;
-  if (sessionData) {
-    const accountData = JSON.parse(sessionData);
-    user_name = accountData.user_name;
-    if (user_name) {
-      login_state = true;
-    }
-  }
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
   useEffect(() => {
     if (openNav) {
@@ -79,7 +53,6 @@ export default function Nav({ openNav, onCloseNav }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
-<<<<<<< HEAD
   // const renderAccount = (
   //   <Box
   //     sx={{
@@ -107,35 +80,6 @@ export default function Nav({ openNav, onCloseNav }) {
   //     </Box>
   //   </Box>
   // );
-=======
-  const renderAccount = (
-    <Box
-      sx={{
-        my: 3,
-        mx: 2.5,
-        py: 2,
-        px: 2.5,
-        display: "flex",
-        borderRadius: 1.5,
-        alignItems: "center",
-        bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
-      }}
-    >
-      <Avatar src={account.photoURL} alt="photoURL" />
-
-      <Box sx={{ ml: 2 }}>
-        <Typography variant="subtitle2">
-          {/* セッションストレージからユーザーネームを取得、なければデフォルト */}
-          {user_name != "" && login_state == true ? user_name : account.displayName}
-        </Typography>
-
-        <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          {account.role}
-        </Typography>
-      </Box>
-    </Box>
-  );
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
   const renderMenu = (
     <Stack component="nav" spacing={0.5} sx={{ px: 2 }}>
@@ -188,11 +132,7 @@ export default function Nav({ openNav, onCloseNav }) {
     >
       <Logo sx={{ mt: 3, ml: 4 }} />
 
-<<<<<<< HEAD
       {/* {renderAccount} */}
-=======
-      {renderAccount}
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
       {renderMenu}
 
@@ -251,7 +191,6 @@ function NavItem({ item }) {
 
   const active = item.path === pathname;
 
-<<<<<<< HEAD
   const { setAllItems } = useContext(AllItemsContext);
   // const { setIsSearch } = useContext(SearchCheckContext);
   // const { setPage } = useContext(PageContext);
@@ -273,8 +212,6 @@ function NavItem({ item }) {
     // 必要に応じて、スクロール位置や他の状態もリセット
   };
 
-=======
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
   return (
     <ListItemButton
       component={RouterLink}
@@ -295,10 +232,7 @@ function NavItem({ item }) {
           },
         }),
       }}
-<<<<<<< HEAD
       onClick={handleReset}
-=======
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
     >
       <Box component="span" sx={{ width: 24, height: 24, mr: 2 }}>
         {item.icon}

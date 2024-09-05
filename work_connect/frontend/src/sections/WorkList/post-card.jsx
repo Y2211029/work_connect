@@ -3,61 +3,63 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import Box from "@mui/material/Box";
-<<<<<<< HEAD
 import Button from "@mui/material/Button";
-=======
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
-import { alpha } from "@mui/material/styles";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 
 import "src/App.css";
 
-import { fDate } from "src/utils/format-time";
-import { fShortenNumber } from "src/utils/format-number";
-import Iconify from "src/components/iconify";
 import SvgColor from "src/components/svg-color";
-<<<<<<< HEAD
+import { postDateTimeDisplay } from "src/components/view/PostDatatime";
+// import { alpha } from "@mui/material/styles";
+// import { fDate } from "src/utils/format-time";
+// import { fShortenNumber } from "src/utils/format-number";
+// import Iconify from "src/components/iconify";
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef(({ post }, ref) => {
-  const { work_id, genre, /* cover, */ title, intro, thumbnail, view, comment, author, userName, createdAt } = post;
-=======
+  const { work_id, genre, /* cover, */ title, intro, thumbnail, /*view, comment,*/ author, userName, createdAt } = post;
 
-// ----------------------------------------------------------------------
-
-const PostCard = forwardRef(({ post }, ref) => {
-  const { work_id, genre, cover, title, intro, thumbnail, view, comment, author, userName, createdAt } = post;
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
-
+  // アイコン
   const renderAvatar = (
     <Avatar
       alt={author.name}
       src={author.avatarUrl}
       sx={{
-        position: "absolute",
-<<<<<<< HEAD
-        bottom: (theme) => theme.spacing(0),
+        // position: "absolute",
+        // bottom: (theme) => theme.spacing(0),
         zIndex: 9,
-        top: 45,
-        left: 20,
-=======
-        bottom: (theme) => theme.spacing(-2),
-        zIndex: 9,
-        top: 24,
-        left: 24,
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
-        width: 40,
-        height: 40,
+        // top: 45,
+        // left: 20,
+        width: 30,
+        height: 30,
       }}
     />
   );
 
+  // タイトル
+  const renderTitle = (
+    <Link
+      to={`/WorkDetail/${work_id}`}
+      // color="inherit"
+      variant="subtitle2"
+      underline="none"
+      className="link"
+      style={{
+        color: "common.black",
+        height: 30,
+        fontWeight: "Bold",
+        padding: "5px",
+      }}
+    >
+      {title}
+    </Link>
+  );
+
   // ジャンル
-<<<<<<< HEAD
   const renderGenre =
     genre !== null ? (
       <div>
@@ -78,58 +80,23 @@ const PostCard = forwardRef(({ post }, ref) => {
         </Button>
       </div>
     ) : null;
-  const renderTitle = (
-    <Link
-      to={`/WorkDetail/${work_id}`}
-      // color="inherit"
-=======
-  const renderGenre = genre !== null ? <Typography>{genre}</Typography> : null;
-
-  const renderTitle = (
-    <Link
-      to={`/WorkDetail/${work_id}`}
-      color="inherit"
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
-      variant="subtitle2"
-      underline="none"
-      className="link"
-      style={{
-<<<<<<< HEAD
-        color: "common.black",
-        height: 30,
-        fontWeight: "Bold",
-        padding: "5px",
-=======
-        height: 30,
-        typography: "h5",
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
-      }}
-    >
-      {title}
-    </Link>
-  );
 
   const renderThumbnail = (
     <Box
       component="img"
       src={thumbnail}
       sx={{
-<<<<<<< HEAD
         aspectRatio: 16 / 9,
         borderRadius: "10px",
         // width: 1,
         // height: 200,
         // objectFit: "cover",
         marginBottom: "10px",
-=======
-        width: 1,
-        height: 200,
-        objectFit: "cover",
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
       }}
     />
   );
 
+  /* 投稿日 */
   const renderDate = (
     <Typography
       variant="caption"
@@ -137,10 +104,11 @@ const PostCard = forwardRef(({ post }, ref) => {
       sx={{
         mb: 2,
         opacity: 0.48,
-        color: "common.white",
+        color: "common.black",
       }}
     >
-      {fDate(createdAt, "yyyy MM dd")}
+      {/* {fDate(createdAt, "yyyy MM dd")} */}
+      {postDateTimeDisplay(createdAt)}
     </Typography>
   );
 
@@ -151,61 +119,69 @@ const PostCard = forwardRef(({ post }, ref) => {
       sx={{
         mb: 2,
         opacity: 0.48,
-<<<<<<< HEAD
         // color: "common.white",
         color: "common.black",
-=======
-        color: "common.white",
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
       }}
     >
       {userName}
     </Typography>
   );
 
+  /* 表示：ユーザー名、コメント数、閲覧数、投稿日 */
   const renderInfo = (
+    // 素を垂直または水平方向に整列
     <Stack
       direction="row"
-      flexWrap="wrap"
-      spacing={1.5}
-      justifyContent="center"
+      justifyContent="space-between"
+      alignItems="center"
+      spacing={1}
       sx={{
         mt: 3,
-<<<<<<< HEAD
         // color: "text.disabled",
         color: "common.black",
-=======
-        color: "text.disabled",
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
+        padding: "5px",
       }}
     >
-      {renderUserName}
-      {[
-        { number: comment, icon: "eva:message-circle-fill" },
-        { number: view, icon: "eva:eye-fill" },
-      ].map((info, _index) => (
-        <Stack
-          key={_index}
-          direction="row"
-          sx={{
-            opacity: 0.48,
-<<<<<<< HEAD
-            // color: "common.white",
-            color: "common.black",
-=======
-            color: "common.white",
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
-          }}
-        >
-          <Iconify width={16} icon={info.icon} sx={{ mr: 0.5 }} />
-          <Typography variant="caption">{fShortenNumber(info.number)}</Typography>
-        </Stack>
-      ))}
       {renderDate}
+      <Stack
+        direction="row"
+        justifyContent="flex-end"
+        alignItems="center"
+        spacing={1}
+        sx={{
+          mt: 3,
+          // color: "text.disabled",
+          color: "common.black",
+        }}
+      >
+        {renderAvatar}
+        {renderUserName}
+      </Stack>
     </Stack>
   );
 
-<<<<<<< HEAD
+  {
+    /* {[
+    { number: comment, icon: "eva:message-circle-fill" },
+    { number: view, icon: "eva:eye-fill" },
+    ].map((info, _index) => (
+      <Stack
+      key={_index}
+      direction="row"
+      justifyContent="center"
+      alignItems="center"
+      spacing={1}
+      sx={{
+        opacity: 0.48,
+        // color: "common.white",
+        color: "common.black",
+        }}
+        >
+        <Iconify width={16} icon={info.icon} sx={{ mr: 0.5 }} />
+        <Typography variant="caption">{fShortenNumber(info.number)}</Typography>
+        </Stack>
+        ))} */
+  }
   // const renderCover = (
   //   <Box
   //     component="img"
@@ -220,22 +196,6 @@ const PostCard = forwardRef(({ post }, ref) => {
   //     }}
   //   />
   // );
-=======
-  const renderCover = (
-    <Box
-      component="img"
-      alt={title}
-      src={cover}
-      sx={{
-        top: 0,
-        width: 1,
-        height: 1,
-        objectFit: "cover",
-        position: "absolute",
-      }}
-    />
-  );
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
   const renderShape = (
     <SvgColor
@@ -260,12 +220,8 @@ const PostCard = forwardRef(({ post }, ref) => {
       sx={{
         mb: 2,
         opacity: 0.85,
-<<<<<<< HEAD
         // color: "common.white",
         color: "common.black",
-=======
-        color: "common.white",
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
       }}
     >
       {intro}
@@ -273,56 +229,19 @@ const PostCard = forwardRef(({ post }, ref) => {
   );
 
   return (
-    <Grid xs={12} sm={6} md={4}>
+    //XS(Extra small) 0px以上 画面サイズがスマホ並みに狭いとき
+    //SM(Small) 600px以上
+    //MD(Medium) 960px以上
+    // グリッドは12分割されており、
+    <Grid xs={12} sm={6} md={3}>
       <div ref={ref}>
         <Card>
           <Box
             sx={{
-              position: "relative",
-              "&:after": {
-                top: 0,
-                content: "''",
-                width: "100%",
-                height: "100%",
-                position: "absolute",
-<<<<<<< HEAD
-                bgcolor: (theme) => alpha(theme.palette.grey[900], 0.1),
-              },
-              pt: {
-                sm: "calc(100% * 3 / 3)",
-              },
-              // "&:hover": {
-              //   borderStyle: "1px",
-              // },
-=======
-                bgcolor: (theme) => alpha(theme.palette.grey[900], 0.72),
-              },
-              pt: {
-                sm: "calc(100% * 3 / 4.66)",
-              },
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
+              padding: "5px 5px 5px 5px ",
             }}
           >
             {renderShape}
-            {renderAvatar}
-<<<<<<< HEAD
-            {/* {renderCover} */}
-          </Box>
-          <Box
-            sx={{
-              p: (theme) => theme.spacing(1, 1, 2, 1),
-=======
-            {renderCover}
-          </Box>
-          <Box
-            sx={{
-              p: (theme) => theme.spacing(4, 3, 3, 3),
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
-              width: 1,
-              bottom: 0,
-              position: "absolute",
-            }}
-          >
             {renderThumbnail}
             {renderGenre}
             {renderTitle}

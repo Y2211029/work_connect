@@ -12,7 +12,6 @@ class GetWorkListController extends Controller
     {
         try {
             $page = (int) $request->query('page', 1);
-<<<<<<< HEAD
             $perPage = 20; //一ページ当たりのアイテム数
             // すでに取得したデータをスキップするためのオフセット計算
             $offset = ($page - 1) * $perPage;
@@ -22,14 +21,6 @@ class GetWorkListController extends Controller
             $userName = $request->query('userName');
 
 
-=======
-            $perPage = 50; //一ページ当たりのアイテム数
-
-
-            // すでに取得したデータをスキップするためのオフセット計算
-            $offset = ($page - 1) * $perPage;
-
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
             $workList = w_works::select(
                 'w_works.*',
@@ -38,7 +29,6 @@ class GetWorkListController extends Controller
                 'w_users.programming_language AS users_programming_language',
                 'w_users.development_environment AS users_development_environment',
                 'w_users.other AS users_other',
-<<<<<<< HEAD
             )
                 ->join('w_users', 'w_works.creator_id', '=', 'w_users.id');
 
@@ -79,19 +69,6 @@ class GetWorkListController extends Controller
             \Log::info('GetWorkListController:$:');
             \Log::info(json_encode($sortOption));
 
-=======
-
-            )
-                ->join('w_users', 'w_works.creator_id', '=', 'w_users.id')
-                ->skip($offset) //オフセット
-                ->take($perPage) //件数
-                ->get();
-            $workListArray = json_decode(json_encode($workList), true);
-
-            \Log::info('GetWorkListController:$workListArray:');
-            \Log::info(json_encode($workListArray));
-            // echo json_encode($workListArray);
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
             return json_encode($workListArray);
         } catch (\Exception $e) {
             \Log::info('GetWorkListController:user_name重複チェックエラー');

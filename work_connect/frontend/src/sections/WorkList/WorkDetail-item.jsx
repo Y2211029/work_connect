@@ -4,19 +4,54 @@ import axios from "axios";
 
 import Modal from "react-modal";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import { useTheme } from "@mui/material/styles";
 
+import { SLIDER, AVATAR } from "src/layouts/dashboard/config-layout";
 import { useCreateTagbutton } from "src/hooks/use-createTagbutton";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 import { Splide, SplideSlide, SplideTrack } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
-
-// import CreateTagElements from "src/components/tag/CreateTagElements";
+import "src/App.css";
 
 //------------------------------------------------------------------------------------
 
 // ここでアプリケーションのルートエレメントを設定
 Modal.setAppElement("#root");
+
+const options = {
+  type: "loop",
+  gap: "1rem",
+  autoplay: false, //自動再生off
+  pauseOnHover: false, //スクロール停止するかどうか、自動再生と依存関係なので必要なし
+  resetProgress: false, //自動再生が中断されたのち再開する際、それまでの経過時間を維持するか破棄するかを決定
+  aspectRatio: "16 / 9", //アスペクト比
+};
+
+const ModalOptions = {
+  type: "loop",
+  gap: "1rem",
+  autoplay: false, //自動再生off
+  pauseOnHover: false, //スクロール停止するかどうか、自動再生と依存関係なので必要なし
+  resetProgress: false, //自動再生が中断されたのち再開する際、それまでの経過時間を維持するか破棄するかを決定
+  aspectRatio: "16 / 9", //アスペクト比
+};
+
+const thumbsOptions = {
+  type: "slide",
+  rewind: true,
+  gap: "1rem",
+  pagination: false,
+  fixedWidth: 110,
+  fixedHeight: 70,
+  cover: true,
+  focus: "center",
+  isNavigation: true,
+  aspectRatio: "16 / 9",
+};
 
 const WorkDetailItem = () => {
   // ログイン情報の取得
@@ -53,35 +88,20 @@ const WorkDetailItem = () => {
   const [WorkDevelopmentEnvironment, setWorkDevelopmentEnvironment] = useState("");
 
   // -----モーダル・ギャラリ-----
+  const theme = useTheme();
   // モーダルスライドの開閉
   const [modalIsOpen, setModalIsOpen] = useState(false);
   // ギャラリーモーダルの開閉
   const [galleryIsOpen, setGalleryIsOpen] = useState(false);
+
   // メインスライドとモーダルスライドの連携
   const mainSplideRef = useRef(null);
   const modalSplideRef = useRef(null);
+  const thumbnailSplideRef = useRef(null);
 
   // メインスライドのCSS
-  const options = {
-    type: "loop",
-    gap: "1rem",
-    // 自動再生off
-    autoplay: false,
-    pauseOnHover: false,
-    resetProgress: false,
-    height: "35rem",
-  };
 
   // モーダルスライドのCSS
-  const modalOptions = {
-    type: "loop",
-    gap: "1rem",
-    autoplay: false, // モーダル内のスライドショーは自動再生しないようにする
-    pauseOnHover: false,
-    resetProgress: false,
-    height: "35rem",
-    start: currentSlideIndex,
-  };
 
   // 作品データ
   const workDetailUrl = "http://localhost:8000/get_work_detail";
@@ -132,6 +152,7 @@ const WorkDetailItem = () => {
         // console.log("workImagesArray:", workImagesArray);
 
         setWorkSlide(workImagesArray);
+        console.log("workImagesArray", workImagesArray);
         // スライド画像をセットしてから表示するためのステート
         setWorkSlideCheck(true);
 
@@ -155,9 +176,21 @@ const WorkDetailItem = () => {
     setComment(initialCommentState);
   }, [workComment]);
 
+  // useEffect(() => {
+  //   console.log("commentが変更されました。", Comment);
+  // }, [Comment]);
+
+  // タグ作成
   useEffect(() => {
-    console.log("commentが変更されました。", Comment);
-  }, [Comment]);
+    //ジャンル
+    setWorkGenre(tagCreate(workDetail.work_genre));
+    // 開発言語
+    setWorkProgrammingLanguage(tagCreate(workDetail.programming_language));
+    // 開発環境
+    setWorkDevelopmentEnvironment(tagCreate(workDetail.development_environment));
+    // console.log("workDetail", workDetail);
+    // console.log("workComment", workComment);
+  }, [workDetail]);
 
   // スライドモーダル
   const openModal = (index) => {
@@ -179,6 +212,8 @@ const WorkDetailItem = () => {
 
   // ギャラリーモーダル
   const openGallery = () => {
+    // スライドモーダルを閉じる
+    setModalIsOpen(false);
     // ギャラリモーダルを開く
     setGalleryIsOpen(true);
   };
@@ -187,97 +222,6 @@ const WorkDetailItem = () => {
     // ギャラリモーダルを閉じる
     setGalleryIsOpen(false);
   };
-
-  // モーダルが開き、スライドが変更された場合、モーダルスライドの開始位置を変更する。
-  useEffect(() => {
-    if (modalIsOpen && modalSplideRef.current) {
-      modalSplideRef.current.go(currentSlideIndex);
-    }
-  }, [modalIsOpen, currentSlideIndex]);
-
-  // タグ作成
-  useEffect(() => {
-    //ジャンル
-    setWorkGenre(tagCreate(workDetail.work_genre));
-    // 開発言語
-    setWorkProgrammingLanguage(tagCreate(workDetail.programming_language));
-    // 開発環境
-    setWorkDevelopmentEnvironment(tagCreate(workDetail.development_environment));
-    // console.log("workDetail", workDetail);
-    // console.log("workComment", workComment);
-  }, [workDetail]);
-
-  // 作品タイトル
-  const renderTitle = workDetail.work_name && workDetail.work_name.length > 0 && (
-    <>
-      <h2 className="WorkDetail-title">{workDetail.work_name}</h2>
-    </>
-  );
-
-  // 作品投稿者アイコン
-  const renderIcon = workDetail.icon && workDetail.icon.length > 0 && (
-    <>
-      <Link to="/">
-        <img src={`/assets/images/avatars/avatar_${workDetail.icon}.jpg`} alt="" />
-      </Link>
-    </>
-  );
-
-  // 作品投稿者ユーザーネーム
-  const renderUserName = workDetail.user_name && workDetail.user_name.length > 0 && (
-    <>
-      <span>{workDetail.user_name}</span>
-    </>
-  );
-
-  // 作品紹介文
-  const renderIntro = workDetail.work_intro && workDetail.work_intro.length > 0 && (
-    <>
-      <p>紹介文</p>
-      <textarea
-        style={{
-          width: "100%",
-          height: "300px",
-        }}
-        value={workDetail.work_intro}
-        readOnly // 読み取り専用にする場合
-      />
-    </>
-  );
-
-  // 作品ジャンル
-  const renderGenre = WorkGenre && WorkGenre.length > 0 && (
-    <>
-      <p>ジャンル</p>
-      {WorkGenre}
-    </>
-  );
-
-  // 作品の開発言語
-  const renderProgrammingLang = WorkProgrammingLanguage && WorkProgrammingLanguage.length > 0 && (
-    <>
-      <p>開発言語</p>
-      {WorkProgrammingLanguage}
-    </>
-  );
-
-  // 作品の開発環境
-  const renderDevelopmentEnv = WorkDevelopmentEnvironment && WorkDevelopmentEnvironment.length > 0 && (
-    <>
-      <p>開発環境</p>
-
-      {WorkDevelopmentEnvironment}
-    </>
-  );
-
-  const renderWorkURL = workDetail.work_url && workDetail.work_url.length > 0 && (
-    <>
-      <p>作品URL</p>
-      <a target="_blank" href={workDetail.work_url}>
-        {workDetail.work_url}
-      </a>
-    </>
-  );
 
   // コメント欄表示
   const handleTextOpen = () => {
@@ -291,7 +235,7 @@ const WorkDetailItem = () => {
 
   // コメント投稿内容
   const handlePostChange = (value) => {
-    console.log("valuevaluevaluevalue", value);
+    // console.log("valuevaluevaluevalue", value);
     setCommentPost({ ...CommentPost, text: value });
   };
 
@@ -334,6 +278,7 @@ const WorkDetailItem = () => {
     setCommentCancel(Comment[commentId].text);
   };
 
+  // コメントキャンセル
   const handleCancel = (commentId) => {
     setComment({
       ...Comment,
@@ -400,6 +345,188 @@ const WorkDetailItem = () => {
     workCommentDeletefunc();
   };
 
+  // 作品タイトル
+  const renderTitle = workDetail.work_name && <h1 className="WorkDetail-title">{workDetail.work_name}</h1>;
+
+  // 作品投稿者アイコン
+  const renderIcon = workDetail.icon && (
+    <img
+      src={`/assets/images/avatars/${workDetail.icon}`}
+      alt=""
+      style={{ width: AVATAR.A_WIDTH, height: AVATAR.A_HEIGHT, borderRadius: AVATAR.A_RADIUS }}
+    />
+  );
+
+  // 作品投稿者ユーザーネーム
+  const renderUserName = workDetail.user_name && <Typography variant="h6">{workDetail.user_name}</Typography>;
+
+  // メインスライド
+  const renderMainSlider = WorkSlideCheck && (
+    <Splide
+      ref={mainSplideRef}
+      options={options}
+      aria-labelledby="autoplay-example-heading"
+      hasTrack={false}
+      onMoved={(splide, newIndex) => setCurrentSlideIndex(newIndex)}
+    >
+      <div style={{ position: "relative" }}>
+        <SplideTrack>
+          {WorkSlide.map((slide, index) => (
+            <SplideSlide key={slide.work_id + slide.id} onClick={() => openModal(index)}>
+              <img
+                src={slide.image}
+                alt={slide.image}
+                style={{ aspectRatio: "16 / 9", width: "100%", height: "100%" }}
+              />
+            </SplideSlide>
+          ))}
+        </SplideTrack>
+      </div>
+    </Splide>
+  );
+
+  // モーダルスライド
+  const renderModalSlider = modalIsOpen && WorkSlideCheck && (
+    <>
+      <div>
+        <Button onClick={closeModal} className="close-button">
+          <span className="close-button_text">閉じる</span>
+        </Button>
+        <Button onClick={openGallery} className="oepn-gallery">
+          ギャラリー
+        </Button>
+      </div>
+
+      <div style={{ zIndex: theme.zIndex.modal, display: "flex", height: "-webkit-fill-available" }}>
+        <Stack
+          direction="column"
+          justifyContent="left"
+          alignItems="center"
+          spacing={0}
+          style={{ width: SLIDER.MODAL_WIDTH }}
+        >
+          {modalIsOpen && WorkSlideCheck && (
+            <>
+              <Splide
+                ref={modalSplideRef}
+                options={ModalOptions}
+                onMoved={(splide, newIndex) => setCurrentSlideIndex(newIndex)}
+                aria-labelledby="modal-autoplay-example-heading"
+                hasTrack={false}
+              >
+                <SplideTrack>
+                  {WorkSlide.map((slide) => (
+                    <SplideSlide key={slide.work_id + slide.id}>
+                      <img src={slide.image} alt={slide.image} />
+                    </SplideSlide>
+                  ))}
+                </SplideTrack>
+              </Splide>
+
+              <Splide
+                ref={thumbnailSplideRef}
+                options={thumbsOptions}
+                aria-labelledby="thumbnail-slider-example"
+                onMoved={(splide, newIndex) => setCurrentSlideIndex(newIndex)}
+                hasTrack={false}
+                // sx={{ justifyContent: "center", alignItems: "center", display: "flex" }}
+              >
+                <SplideTrack>
+                  {WorkSlide.map((slide) => (
+                    <SplideSlide key={slide.work_id + slide.id}>
+                      <img src={slide.image} alt={slide.image} />
+                    </SplideSlide>
+                  ))}
+                </SplideTrack>
+              </Splide>
+            </>
+          )}
+        </Stack>
+
+        {/* overScroll 追加 */}
+        {modalIsOpen && (
+          <div
+            className="annotation-container"
+            style={{ width: SLIDER.ANOTATION, wordBreak: "break-word", marginLeft: "10px" }}
+          >
+            <div style={{ width: "inherit" }}>{WorkSlide[currentSlideIndex].annotation}</div>
+          </div>
+        )}
+      </div>
+    </>
+  );
+  // モーダルスライド
+  const renderGallery = (
+    <>
+      <div id="gallery">
+        <div className="gallery_header">
+          <div className="g_h_left"></div>
+          <div className="g_h_right">
+            <Button onClick={closeGallery} className="close-button">
+              <span className="close-button_text">閉じる</span>
+              {/* <span className="close-button_icon">&times;</span> */}
+            </Button>
+            <Button onClick={openGallery} className="oepn-gallery">
+              スライド
+            </Button>
+          </div>
+        </div>
+        <div className="gallery_images" id="gallery_images">
+          {WorkSlide.map((slide, index) => (
+            <img
+              className="gallery_img"
+              key={slide.work_id + slide.id}
+              src={slide.image}
+              alt={slide.image}
+              onClick={() => openModal(index)}
+            />
+          ))}
+        </div>
+      </div>
+    </>
+  );
+
+  // 作品紹介文
+  const renderIntro = workDetail.work_intro && (
+    <>
+      <Typography variant="h5">紹介文</Typography>
+      <div>{workDetail.work_intro}</div>
+    </>
+  );
+
+  // 作品ジャンル
+  const renderGenre = WorkGenre && (
+    <>
+      <Typography variant="h5">ジャンル</Typography>
+      {WorkGenre}
+    </>
+  );
+
+  // 作品の開発言語
+  const renderProgrammingLang = WorkProgrammingLanguage && (
+    <>
+      <Typography variant="h5">開発言語</Typography>
+      {WorkProgrammingLanguage}
+    </>
+  );
+
+  // 作品の開発環境
+  const renderDevelopmentEnv = WorkDevelopmentEnvironment && (
+    <>
+      <Typography variant="h5">開発環境</Typography>
+      {WorkDevelopmentEnvironment}
+    </>
+  );
+
+  const renderWorkURL = workDetail.work_url && (
+    <>
+      <div>
+        <Link target="_blank" to={workDetail.work_url}>
+          作品リンクはこちら
+        </Link>
+      </div>
+    </>
+  );
   const renderComment = workComment && Object.keys(Comment).length > 0 && (
     <>
       {workComment && Object.keys(Comment).length > 0 && <h3>コメント一覧</h3>}
@@ -410,13 +537,25 @@ const WorkDetailItem = () => {
             <hr />
             {/* {console.log("comment", Comment)} */}
             <button onClick={() => handleClick(item.id)}>編集</button>
-            <button onClick={() => handleCancel(item.id)} className={`comment_${item.id}`} style={{ display: Comment[item.id]?.display }}>
+            <button
+              onClick={() => handleCancel(item.id)}
+              className={`comment_${item.id}`}
+              style={{ display: Comment[item.id]?.display }}
+            >
               キャンセル
             </button>
-            <button onClick={() => handleSave(item.id)} className={`comment_${item.id}`} style={{ display: Comment[item.id]?.display }}>
+            <button
+              onClick={() => handleSave(item.id)}
+              className={`comment_${item.id}`}
+              style={{ display: Comment[item.id]?.display }}
+            >
               保存
             </button>
-            <button onClick={() => handleDelete(item.id)} className={`comment_${item.id}`} style={{ display: Comment[item.id]?.display }}>
+            <button
+              onClick={() => handleDelete(item.id)}
+              className={`comment_${item.id}`}
+              style={{ display: Comment[item.id]?.display }}
+            >
               削除
             </button>
             <p>{item.commenter_user_name || item.commenter_company_name}</p>
@@ -447,139 +586,100 @@ const WorkDetailItem = () => {
       )}
     </>
   );
-  return (
+  const renderCommentButton = (
     <>
-      <Link to="/">作品一覧に戻る</Link>
       <div>
-        {renderTitle}
-        <div>
-          {renderIcon}
-          {renderUserName}
+        <Button variant="contained" onClick={handleTextOpen}>
+          コメントする
+        </Button>
+        <br />
+        <div
+          style={{
+            display: CommentPost.display,
+          }}
+        >
+          <textarea
+            style={{
+              width: "50%",
+              height: "100px",
+            }}
+            value={CommentPost.text}
+            onChange={(e) => handlePostChange(e.target.value)}
+          />
+          <br />
+          <button onClick={() => handlePostCancel()}>キャンセル</button>
+          <button onClick={() => handlePost()}>投稿</button>
         </div>
       </div>
-      {/* メインスライドここから */}
-      {WorkSlideCheck && (
-        <Splide
-          ref={mainSplideRef}
-          options={options}
-          aria-labelledby="autoplay-example-heading"
-          hasTrack={false}
-          onMoved={(splide, newIndex) => setCurrentSlideIndex(newIndex)}
-        >
-          <div style={{ position: "relative" }}>
-            <SplideTrack>
-              {WorkSlide.map((slide, index) => (
-                <SplideSlide key={slide.image} onClick={() => openModal(index)}>
-                  <img src={slide.image} alt={slide.image} />
-                </SplideSlide>
-              ))}
-            </SplideTrack>
-          </div>
+    </>
+  );
 
-          <div className="splide__progress">
-            <div className="splide__progress__bar" />
-          </div>
-        </Splide>
-      )}
+  useEffect(() => {
+    if (modalIsOpen) {
+      setTimeout(() => {
+        if (modalIsOpen && modalSplideRef.current && thumbnailSplideRef.current) {
+          modalSplideRef.current.sync(thumbnailSplideRef.current.splide);
+          modalSplideRef.current.go(currentSlideIndex);
+        }
+      }, 100); // 少し遅延を増やして、非同期初期化を確認
+    }
+  }, [modalIsOpen]);
 
-      {/* メインスライドここまで */}
+  return (
+    <>
+      <div>
+        <Link to="/">
+          <Stack direction="row" justifyContent="left" alignItems="center" spacing={3}>
+            {renderIcon}
+            {renderUserName}
+          </Stack>
+        </Link>
+        {renderTitle}
+      </div>
 
-      {/* モーダルスライドここから */}
-      <Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Image Modal" className="modal" overlayClassName="overlay">
-        <div className="Modal">
-          <div>
-            <button onClick={closeModal} className="close-button">
-              Close
-            </button>
-            <button onClick={openGallery} className="oepn-gallery">
-              ギャラリー
-            </button>
-            <Splide
-              ref={modalSplideRef}
-              options={modalOptions}
-              aria-labelledby="modal-autoplay-example-heading"
-              hasTrack={false}
-              onMoved={(splide, newIndex) => setCurrentSlideIndex(newIndex)}
-              start={currentSlideIndex}
-            >
-              <div style={{ position: "relative" }}>
-                <SplideTrack>
-                  {WorkSlide.map((slide) => (
-                    <SplideSlide key={slide.image}>
-                      <img src={slide.image} alt={slide.image} />
-                    </SplideSlide>
-                  ))}
-                </SplideTrack>
-              </div>
+      {renderMainSlider}
 
-              <div className="splide__progress">
-                <div className="splide__progress__bar" />
-              </div>
-            </Splide>
-
-            {modalIsOpen && (
-              <div className="annotation-container">
-                <span>{WorkSlide[currentSlideIndex].annotation}</span>
-              </div>
-            )}
-          </div>
-        </div>
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Image Modal"
+        overlayClassName="custom-overlay"
+        style={{
+          content: {
+            zIndex: theme.zIndex.modal,
+          },
+        }}
+      >
+        {renderModalSlider}
       </Modal>
-      {/* モーダルスライドここまで */}
 
-      {/* ギャラリーモーダルここから */}
-      <Modal isOpen={galleryIsOpen} onRequestClose={closeModal} contentLabel="Image Modal" className="modal" overlayClassName="overlay">
-        <div className="Modal">
-          <div>
-            <button onClick={closeGallery} className="close-button">
-              Close
-            </button>
-            <button onClick={openGallery} className="oepn-gallery">
-              スライド
-            </button>
-            {WorkSlide.map((slide, index) => (
-              <SplideSlide key={slide.image}>
-                <img src={slide.image} alt={slide.image} onClick={() => openModal(index)} />
-              </SplideSlide>
-            ))}
-          </div>
-        </div>
+      <Modal
+        isOpen={galleryIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Image Modal"
+        overlayClassName="custom-overlay"
+        style={{
+          content: {
+            zIndex: theme.zIndex.modal,
+          },
+        }}
+      >
+        {renderGallery}
       </Modal>
-      {/* ギャラリーモーダルここまで */}
 
-      {/* 各項目の表示、ここから */}
       <Box>
         {renderIntro}
         {renderGenre}
         {renderProgrammingLang}
         {renderDevelopmentEnv}
         {renderWorkURL}
-        <div>
-          <button onClick={handleTextOpen}>コメントする</button>
-          <br />
-          <div
-            style={{
-              display: CommentPost.display,
-            }}
-          >
-            <textarea
-              style={{
-                width: "50%",
-                height: "100px",
-              }}
-              value={CommentPost.text}
-              onChange={(e) => handlePostChange(e.target.value)}
-            />
-            <br />
-            <button onClick={() => handlePostCancel()}>キャンセル</button>
-            <button onClick={() => handlePost()}>投稿</button>
-          </div>
-        </div>
+        {renderCommentButton}
         {renderComment}
       </Box>
-      {/* 各項目の表示、ここまで */}
     </>
   );
 };
 
 export default WorkDetailItem;
+
+

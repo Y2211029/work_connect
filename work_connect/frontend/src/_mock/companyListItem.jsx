@@ -5,11 +5,7 @@ import { faker } from "@faker-js/faker";
 
 // タグボタン作成コンポーネント
 import CreateTagElements from "src/components/tag/CreateTagElements";
-<<<<<<< HEAD
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
-=======
-
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 // ----------------------------------------------------------------------
 /*--------------------------------------------*/
 /* 企業一覧のデータを取得する処理を追加しました。 */
@@ -20,7 +16,6 @@ import { useSessionStorage } from "src/hooks/use-sessionStorage";
 export const CompanyListItem = () => {
   // 企業一覧のデータを保持するステート
   const [CompanyOfList, setCompanyOfList] = useState([]);
-<<<<<<< HEAD
   const { getSessionData } = useSessionStorage();
 
   const accountData = getSessionData("accountData");
@@ -31,11 +26,6 @@ export const CompanyListItem = () => {
 
   // 企業の一覧データを取得する用URL
   const url = `http://localhost:8000/get_company_list/${data.id}`;
-=======
-
-  // 企業の一覧データを取得する用URL
-  const url = "http://localhost:8000/get_company_list";
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
   useEffect(() => {
     async function CompanyListFunction() {
@@ -78,10 +68,7 @@ export const CompanyListItem = () => {
     selectedOccupation: CompanyOfList[key].selected_occupation,
     prefecture: CompanyOfList[key].prefecture,
     view: faker.number.int(99999),
-<<<<<<< HEAD
     followStatus: CompanyOfList[key].follow_status,
-=======
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
     comment: faker.number.int(99999),
     favorite: faker.number.int(99999),
     author: {

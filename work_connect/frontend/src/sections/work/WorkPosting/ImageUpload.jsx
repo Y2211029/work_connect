@@ -50,7 +50,7 @@ const SortableItem = ({ id, image, onDelete, activeId }) => {
     overflow: "hidden",
     position: "relative",
     boxSizing: "border-box",
-    zIndex: 10000,
+    zIndex: 4,
   };
 
   const buttonStyle = {
@@ -196,7 +196,7 @@ const ImageUpload = ({ onImagesUploaded, coleSetImage }) => {
     overflow: "hidden",
     position: "relative",
     boxSizing: "border-box",
-    zIndex: 9999,
+    zIndex: 3,
   };
 
   const overlayImgStyle = {

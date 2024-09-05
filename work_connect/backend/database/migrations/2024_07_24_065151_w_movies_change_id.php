@@ -9,7 +9,6 @@ return new class extends Migration {
      */
     public function up(): void
     {
-<<<<<<< HEAD
 
         Schema::table('w_movies', function (BluePrint $table) {
             if (Schema::hasColumn('w_movies', 'post_datetime')) {
@@ -26,13 +25,6 @@ return new class extends Migration {
         Schema::table('w_movies', function (BluePrint $table) {
             // 主キーに設定するカラムを指定
             $table->id('movie_id');
-=======
-        Schema::table('w_movies', function (Blueprint $table) {
-            // id カラムが存在する場合は削除する
-            $table->dropColumn('id');
-            // 主キーに設定するカラムを指定
-            $table->primary('movie_id');
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
         });
     }
 

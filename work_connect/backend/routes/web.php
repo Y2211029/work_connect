@@ -11,10 +11,7 @@ use App\Http\Controllers\work\PostWorkCommentPostController;
 use App\Http\Controllers\work\PostWorkCommentSaveController;
 use App\Http\Controllers\work\PostWorkCommentDeleteController;
 use Illuminate\Http\Request;
-<<<<<<< HEAD
 use Illuminate\Support\Facades\Http;
-=======
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ListController;
@@ -33,10 +30,7 @@ use App\Http\Controllers\work\GetWorkDetailController;
 use App\Http\Controllers\movie\GetMovieDetailController;
 use App\Http\Controllers\student\GetStudentListController;
 use App\Http\Controllers\company\GetCompanyListController;
-<<<<<<< HEAD
 use App\Http\Controllers\follow\FollowController;
-=======
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 use App\Http\Controllers\tag\InsertTagController;
 use App\Http\Controllers\tag\GetGenreTagController;
 use App\Http\Controllers\tag\GetLanguageTagController;
@@ -52,11 +46,13 @@ use App\Http\Controllers\tag\GetDesiredOccupationTagController;
 use App\Http\Controllers\tag\GetDesiredWorkRegionTagController;
 use App\Http\Controllers\tag\GetSelectedOccupationTagController;
 use App\Http\Controllers\tag\GetPrefectureTagController;
+use App\Http\Controllers\tag\GetCompanyNameListController;
 use App\Http\Controllers\work\WorkPostingController;
 use App\Http\Controllers\search\SearchWorkController;
 use App\Http\Controllers\search\SearchVideoController;
 use App\Http\Controllers\search\SearchStudentController;
 use App\Http\Controllers\search\SearchCompanyController;
+use App\Http\Controllers\search\SearchInternshipJobOffer;
 use App\Http\Controllers\profile\GetMypageController;
 use App\Http\Controllers\profile\PostMypageController;
 use App\Http\Controllers\profile\GetMypageKindController;
@@ -75,13 +71,8 @@ Route::get('/', function () {
 Route::get('/get_profile_mypage', [GetMypageController::class, 'GetMypageController']);
 // プロフィールのマイページ(post)
 Route::post('/post_profile_mypage', [PostMypageController::class, 'PostMypageController']);
-<<<<<<< HEAD
-=======
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// プロフィールのマイページ画像アップロード(post)
+// プロフィールのマイページ画像(post)
 Route::post('/post_profile_mypage_upload', [PostMypageController::class, 'UploadImageController']);
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 // プロフィールのマイページルーティング設定(get)
 Route::get('/get_profile_mypage_kind', [GetMypageKindController::class, 'GetMypageKindController']);
 
@@ -94,6 +85,8 @@ Route::get('/search_video', [SearchVideoController::class, 'SearchVideoControlle
 Route::get('/search_student', [SearchStudentController::class, 'SearchStudentController']);
 // 企業検索
 Route::get('/search_company', [SearchCompanyController::class, 'SearchCompanyController']);
+// 求人・インターンシップ検索
+Route::get('/search_internship_job_offer', [SearchInternshipJobOffer::class, 'SearchInternshipJobOffer']);
 
 /* タグ関係 */
 // タグ作成
@@ -134,7 +127,8 @@ Route::get('/get_desired_work_region_tag', [GetDesiredWorkRegionTagController::c
 Route::get('/get_selected_occupation_tag', [GetSelectedOccupationTagController::class, 'GetSelectedOccupationTagController']);
 // 企業の勤務地タグ取得
 Route::get('/get_prefecture_tag', [GetPrefectureTagController::class, 'GetPrefectureTagController']);
-
+// 企業名一覧を取得
+Route::get('/get_company_name_list', [GetCompanyNameListController::class, 'GetCompanyNameListController']);
 
 // 作品投稿
 Route::post('/work_posting', [WorkPostingController::class, 'store']);
@@ -148,11 +142,11 @@ Route::get('/get_movie_list', [GetMovieListController::class, 'GetMovieListContr
 // 学生一覧取得
 Route::get('/get_student_list/{id}', [GetStudentListController::class, 'GetStudentListController']);
 // 企業一覧取得
-<<<<<<< HEAD
+
 Route::get('/get_company_list/{id}', [GetCompanyListController::class, 'GetCompanyListController']);
-=======
+
 Route::get('/get_company_list', [GetCompanyListController::class, 'GetCompanyListController']);
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
+
 
 // 作品詳細取得
 Route::get('/get_work_detail', [GetWorkDetailController::class, 'GetWorkDetailController']);
@@ -178,12 +172,8 @@ Route::post('/post_movie_comment', [PostMovieCommentSaveController::class, 'Post
 // 動画コメント削除
 Route::post('/post_movie_comment_delete', [PostMovieCommentDeleteController::class, 'PostMovieCommentDeleteController']);
 
-<<<<<<< HEAD
 // フォロー
 Route::post('/follow', [FollowController::class, 'FollowController']);
-=======
-
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
 
 
@@ -202,7 +192,6 @@ Route::get('/s_pre_register', [pre_registerController::class, 'pre_registerContr
 
 
 //ニュース編集・投稿・閲覧機能
-<<<<<<< HEAD
 Route::post('/news_save', [EditorController::class, 'news_save']);
 Route::post('/news_upload', [EditorController::class, 'news_upload']);
 Route::post('/thumbnail_image_save', [EditorController::class, 'thumbnail_image_save']);
@@ -215,15 +204,6 @@ Route::get('/Internship_JobOffer/news_detail/{id}', [NewsController::class, 'new
 Route::post('/news_bookmark', [NewsController::class, 'news_bookmark']);
 Route::get('/thumbnail_img_delete/{id}', [EditorController::class, 'thumbnail_img_delete']);
 Route::get('/api/embed', [EditorController::class, 'embed']);
-=======
-Route::get('/news_save', [EditorController::class, 'news_save']);
-Route::get('/news_upload', [EditorController::class, 'news_upload']);
-Route::post('/image_save', [EditorController::class, 'image_save']);
-Route::get('/Internship_JobOffer', [EditorController::class, 'editor_get']);
-Route::get('/Internship_JobOffer/news_detail/{id}', [NewsController::class, 'news_detail_get']);
-Route::post('/news_bookmark', [NewsController::class, 'news_bookmark']);
-
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
 //設定機能
 Route::get('/color_save', [SettingController::class, 'color_save']);
@@ -243,10 +223,6 @@ Route::get('/csrf-token', function () {
 });
 
 
-<<<<<<< HEAD
-=======
-Auth::routes();
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
@@ -254,7 +230,3 @@ Route::get('{any}', function () {
 
     return view('app');
 })->where('any', '.*');
-<<<<<<< HEAD
-
-=======
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3

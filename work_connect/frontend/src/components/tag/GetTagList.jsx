@@ -3,7 +3,7 @@ import axios from "axios";
 /*--------------------------------------------*/
 /*          指定のタグ一覧取得処理              */
 /*--------------------------------------------*/
-/* 
+/*
 import GetTagList from "～/GetTagList";
 const { GetTagListFunction } = GetTagList();
 GetTagListFunction();
@@ -14,10 +14,6 @@ function GetTagList() {
   // セッションストレージのaccountData.idが正しいidでなければトップページに飛ばす
   const GetTagListFunction = async (kind) => {
     try {
-<<<<<<< HEAD
-=======
-
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
       if (kind != undefined) {
         const url = `http://localhost:8000/get_${kind}_tag`;
         let result;

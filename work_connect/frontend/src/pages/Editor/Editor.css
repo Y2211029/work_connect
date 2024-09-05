@@ -18,23 +18,13 @@
   margin-left:5%;
   top: 10px;
   padding: 4px;
-<<<<<<< HEAD
   margin-bottom:0;
 }
 
-=======
-}
-
-  .editor .ce-block__content {
-    min-height: 100px; /* Adjust based on your needs */
-  }
-
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
   .ce-popover__items {
     width: 100%;
   }
 
-<<<<<<< HEAD
   .cover_img_upload {
     width: 100px;
     height: 100px;
@@ -44,13 +34,6 @@
     border: none;
   }
 
-=======
-.cover_img_upload{
-  width:10%;
-  height:10%;
-  margin-left: 12%;
-}
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
 .uploaded-image {
   position: relative;
@@ -71,17 +54,11 @@
 }
 
 .news_button {
-<<<<<<< HEAD
   position: relative;
   width: 1000px;
   display: flex;
   justify-content: center;
   margin-left:20px;
-=======
-  display: flex;
-  justify-content: center;
-  margin-left:auto;
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
   gap: 10px; /* ボタン間の間隔を設定 */
 }
 
@@ -131,11 +108,6 @@ figcaption {
       height:100%;
       background-color:rgba(0,0,0,0.5);
       z-index:10;
-<<<<<<< HEAD
-
-=======
-    
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
       /*　画面の中央に要素を表示させる設定　*/
       display: flex;
       align-items: center;
@@ -147,11 +119,7 @@ figcaption {
   width:70%;
   padding: 1em;
   background:#fff;
-<<<<<<< HEAD
 }
-=======
-}    
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3
 
 /* エディター　公開設定　ラジオボタン */
 input[type=radio] {
@@ -190,7 +158,3 @@ input[type="radio"]:checked + .label {
 }
 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> a8f81805d7881191f4c8b687c9cc54c98922b3f3

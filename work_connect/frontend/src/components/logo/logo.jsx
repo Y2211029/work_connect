@@ -1,5 +1,6 @@
 // ;
-import styled from 'styled-components';
+import { Link } from "react-router-dom";
+import styled from "styled-components";
 
 const StyledH3 = styled.h3`
   margin-top: 24px;
@@ -10,8 +11,10 @@ const StyledH3 = styled.h3`
 
 const Logo = () => (
   <StyledH3>
-    <span style={{ color: '#4285f4' }}>W</span>ork&<span style={{ color: '#4285f4' }}>C</span>
-    onnect
+    <Link to="/">
+      <span style={{ color: "#4285f4" }}>W</span>ork&<span style={{ color: "#4285f4" }}>C</span>
+      onnect
+    </Link>
   </StyledH3>
 );
 

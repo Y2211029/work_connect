@@ -1,46 +1,49 @@
 import { useState, useEffect } from "react";
 import Select from "react-select";
+import PropTypes from 'prop-types';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
-const Environment = () => {
+const options = [
+  { value: "Visual Studio", label: "Visual Studio" },
+  { value: "Eclipse", label: "Eclipse" },
+  { value: "Xcode", label: "Xcode" },
+  { value: "Android Studio", label: "Android Studio" },
+  { value: "Claris FileMaker", label: "Claris FileMaker" },
+  { value: "Unity", label: "Unity" },
+  { value: "Visual Studio Code", label: "Visual Studio Code" },
+  { value: "MySQL", label: "MySQL" },
+  { value: "XAMMP", label: "XAMMP" },
+  { value: "ロリポップ", label: "ロリポップ" },
+];
+
+const Environment = ({EnvironmentData}) => {
   const [selectedDevEnvironment, setSelectedDevEnvironment] = useState([]);
-  // 登録項目確認の際に利用
+
   const { getSessionData, updateSessionData } = useSessionStorage();
 
-  const options = [
-    { value: "Visual Studio", label: "Visual Studio" },
-    { value: "Eclipse", label: "Eclipse" },
-    { value: "Xcode", label: "Xcode" },
-    { value: "Android Studio", label: "Android Studio" },
-    { value: "Claris FileMaker", label: "Claris FileMaker" },
-    { value: "Unity", label: "Unity" },
-    { value: "Visual Studio Code", label: "Visual Studio Code" },
-    { value: "MySQL", label: "MySQL" },
-    { value: "XAMMP", label: "XAMMP" },
-    { value: "ロリポップ", label: "ロリポップ" },
-  ];
-
-  // 外部URLから本アプリにアクセスした際に、sessionStrageに保存する
+  // valueの初期値をセット
   useEffect(() => {
-    // if (performance.navigation.type !== performance.navigation.TYPE_RELOAD) {
-    // console.log("外部URLからアクセスしたです。");
     if (getSessionData("accountData") !== undefined) {
-      let SessionData = getSessionData("accountData");
-
-      if (
-        SessionData.development_environment !== undefined &&
-        SessionData.development_environment !== ""
-      ) {
-        let commaArray = SessionData.development_environment.split(",");
-        let devtagArray = [];
-        commaArray.map((item) => {
-          devtagArray.push({ value: item, label: item });
-        });
+      const SessionData = getSessionData("accountData");
+      if(SessionData.EnvironmentEditing && SessionData.Environment){
+        // セッションストレージから最新のデータを取得
+        const devtagArray = SessionData.Environment.split(",").map(item => ({
+          value: item,
+          label: item,
+        }));
+        setSelectedDevEnvironment(devtagArray);
+      } else if(
+        (SessionData.EnvironmentEditing && SessionData.Environment && EnvironmentData)||
+        (!SessionData.EnvironmentEditing && EnvironmentData)
+      ){ // DBから最新のデータを取得
+        const devtagArray = EnvironmentData.split(",").map(item => ({
+          value: item,
+          label: item,
+        }));
         setSelectedDevEnvironment(devtagArray);
       }
     }
-    // }
-  }, []);
+  }, [EnvironmentData]);
 
   useEffect(() => {
     let devTag = "";
@@ -50,11 +53,14 @@ const Environment = () => {
     });
     devTag = devTagArray.join(",");
 
-    updateSessionData("accountData", "development_environment", devTag);
+    updateSessionData("accountData", "Environment", devTag);
   }, [selectedDevEnvironment]);
 
   const handleChange = (selectedOption) => {
+    // newValueをセット
     setSelectedDevEnvironment(selectedOption);
+    // 編集中状態をオン(保存もしくはログアウトされるまで保持)
+    updateSessionData("accountData", "EnvironmentEditing", true);
   };
 
   return (
@@ -69,6 +75,10 @@ const Environment = () => {
       />
     </div>
   );
+};
+
+Environment.propTypes = {
+  EnvironmentData: PropTypes.string ,
 };
 
 export default Environment;

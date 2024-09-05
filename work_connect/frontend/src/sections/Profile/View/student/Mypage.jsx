@@ -113,7 +113,7 @@ const ProfileMypage = () => {
           params: {
             kind: "s",
             ProfileUserName: user_name,    //プロフィールとして表示されている人のユーザーネーム
-            MyUserId : MyUserId,           //ログイン中のID
+            MyUserId: MyUserId,           //ログイン中のID
           },
         });
         if (response) {
@@ -281,35 +281,35 @@ const ProfileMypage = () => {
           </Box>
         )}
 
-<Card sx={{
-        textAlign: 'center',
-        display: 'flex',
-        justifyContent: 'center',
-        backgroundColor: theme.palette.background.default,
-        boxShadow: 'none',
-        position: 'relative'
-      }}>
-        <CardMedia
-          component="img"
-          sx={{
-            height: 'calc(100vw * 0.58)',
-            width: 'calc(100vw * 0.58)',
-            objectFit: 'cover',
-            borderRadius: '50%',
-            maxHeight: 350,
-            maxWidth: 350,
-            '@media (min-width: 600px)': {
-              height: 350,
-              width: 350,
-            }
-          }}
-          image={ResponseData.icon ?
-            ResponseData.icon :
-            ""}
-          alt="Loading..."
-        />
+        <Card sx={{
+          textAlign: 'center',
+          display: 'flex',
+          justifyContent: 'center',
+          backgroundColor: theme.palette.background.default,
+          boxShadow: 'none',
+          position: 'relative'
+        }}>
+          <CardMedia
+            component="img"
+            sx={{
+              height: 'calc(100vw * 0.58)',
+              width: 'calc(100vw * 0.58)',
+              objectFit: 'cover',
+              borderRadius: '50%',
+              maxHeight: 350,
+              maxWidth: 350,
+              '@media (min-width: 600px)': {
+                height: 350,
+                width: 350,
+              }
+            }}
+            image={ResponseData.icon ?
+              ResponseData.icon :
+              ""}
+            alt="Loading..."
+          />
 
-      </Card>
+        </Card>
 
         <Box>
           <Typography variant="h6">名前</Typography>
@@ -351,19 +351,19 @@ const ProfileMypage = () => {
               </Showmore>
             </Box>
           )}
-        {/* ResponseData.department_nameがあるときのみ表示 */}
-        {ResponseData.department_name && !close && (
-          <Box ref={el => (detail.current[0] = el)} id="detail">
-
-            <Typography variant="h6">学部</Typography>
-            <Item>{ShowTags(department_name_tag)}</Item>
-          </Box>
-        )}
         {/* ResponseData.faculty_nameがあるときのみ表示 */}
         {ResponseData.faculty_name && !close && (
-          <Box ref={el => (detail.current[1] = el)} id="detail">
-            <Typography variant="h6">学科</Typography>
+          <Box ref={el => (detail.current[0] = el)} id="detail">
+            <Typography variant="h6">学部</Typography>
             <Item>{ShowTags(faculty_name_tag)}</Item>
+          </Box>
+        )}
+        {/* ResponseData.department_nameがあるときのみ表示 */}
+        {ResponseData.department_name && !close && (
+          <Box ref={el => (detail.current[1] = el)} id="detail">
+
+            <Typography variant="h6"></Typography>
+            <Item>{ShowTags(department_name_tag)}</Item>
           </Box>
         )}
         {/* ResponseData.development_environmentがあるときのみ表示 */}

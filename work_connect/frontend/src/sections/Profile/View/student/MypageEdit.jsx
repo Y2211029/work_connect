@@ -186,9 +186,9 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
             Graduation:SessionData.Graduation,
             // 学校名
             SchoolName:SessionData.SchoolName,
-            // 学部
-            DepartmentName:SessionData.DepartmentName,
             // 学科
+            DepartmentName:SessionData.DepartmentName,
+            // 学部
             FacultyName:SessionData.FacultyName,
             // 開発環境
             Environment:SessionData.Environment,
@@ -341,11 +341,11 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
             <Box ref={el => (detail.current[0] = el)} id="detail">
 
               <Typography variant="h6">学部</Typography>
-              <DepartmentName DepartmentNameData={ResponseData.department_name}/>
+              <FacultyName FacultyNameData={ResponseData.faculty_name}/>
             </Box>
             <Box ref={el => (detail.current[1] = el)} id="detail">
               <Typography variant="h6">学科</Typography>
-              <FacultyName FacultyNameData={ResponseData.faculty_name}/>
+              <DepartmentName DepartmentNameData={ResponseData.department_name}/>
             </Box>
             <Box ref={el => (detail.current[2] = el)} id="detail">
               <Typography variant="h6">開発環境</Typography>

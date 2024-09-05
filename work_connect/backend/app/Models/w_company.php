@@ -26,7 +26,7 @@ class w_company extends Model
         'id',
         'company_name',
         'company_namecana',
-        'selectedOccupation',
+        'selected_occupation',
         'prefecture',
         'mail',
         'user_name',

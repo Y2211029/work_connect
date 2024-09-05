@@ -12,7 +12,7 @@ class GetMypageKindController extends Controller
     public function GetMypageKindController(Request $request)
     {
         try {
-            // どちらかのProfileUserNameを取得 
+            // どちらかのProfileUserNameを取得
             $profileUserName = $request->input('ProfileUserName');
 
             \Log::info("profileUserName:".$profileUserName);
@@ -31,7 +31,7 @@ class GetMypageKindController extends Controller
                 return json_encode("");
                 \Log::info("ユーザーが見つかりませんでした。");
             }
-           
+
         } catch (\Exception $e) {
             \Log::info('GetMypageKindController:user_name重複チェックエラー');
             \Log::info($e);

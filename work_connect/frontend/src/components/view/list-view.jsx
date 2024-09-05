@@ -148,7 +148,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
     },
     students: {
       ItemName: "学生一覧",
-      url: "http://localhost:8000/get_student_list/S_000000000001",
+      url: "http://localhost:8000/get_student_list",
       idKey: "id",
       tags: [
         "desired_occupation",
@@ -176,7 +176,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
     },
     companies: {
       ItemName: "企業一覧",
-      url: "http://localhost:8000/get_company_list/S_000000000001",
+      url: "http://localhost:8000/get_company_list",
       idKey: "id",
       tags: ["selected_occupation", "prefecture"],
       generatePosts: (WorkOfList) =>
@@ -193,7 +193,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
         })),
     },
   };
-  console.log("ループしてるか確認");
+  // console.log("ループしてるか確認");
   return (
     <ListView
       SessionAccountData={SessionAccountData}
@@ -219,7 +219,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   const [WorkOfList, setWorkOfList] = useState([]);
   // 画面全体ローディング
   const [isLoadColorLing, setIsLoadColorLing] = useState(true);
-  // 作品アイテム最後尾ローディング
+  // 一覧アイテム最後尾ローディング
   const [isLoadItemColorLing, setIsLoadItemColorLing] = useState(false);
   // AllItemsContextから状態を取得
   const { AllItems, setAllItems } = useContext(AllItemsContext);
@@ -232,6 +232,9 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   useEffect(() => {
     loginStatusCheckFunction();
   }, [loginStatusCheckFunction]);
+  // useEffect(() => {
+  //   loginStatusCheckFunction();
+  // }, []);
 
   // 並べ替え
   const handleSortChange = (event) => {

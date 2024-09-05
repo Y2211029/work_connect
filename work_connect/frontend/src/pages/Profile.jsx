@@ -24,7 +24,7 @@ export default function Profile() {
   useEffect(() => {
     // 受け取ったuser_nameが学生か企業か判断する
     async function GetData(ProfileUserName) {
-      
+
       try {
         // Laravel側からデータを取得
         const response = await axios.get(url, {
@@ -61,6 +61,6 @@ export default function Profile() {
         <Profile_router2 />
       </>
     );
-  } 
-  
+  }
+
 }

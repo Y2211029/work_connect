@@ -6,20 +6,41 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\w_users;
 use App\Models\w_company;
+<<<<<<< HEAD
 use App\Models\w_company_information;
 use App\Models\w_follow;
 use Illuminate\Support\Facades\Log;
+=======
+>>>>>>> 3c5789677e38c908589a20c4b753cb2d7d8e5230
 
 class GetMypageController extends Controller
 {
     public function GetMypageController(Request $request)
     {
         try {
+<<<<<<< HEAD
             $profileId = $request->input('ProfileUserName'); // プロフィールを見ている人のユーザーネーム
             $myuserId = $request->input('MyUserId'); // ログイン中のID
 
             // 学生のプロフィール取得
             $userList = w_users::where('user_name', $profileId)->get();
+=======
+            // 学生か企業か判断
+            $profileKind = $request->input('kind');
+            // ProfileUserNameを取得
+            $profileUserName = $request->input('ProfileUserName');
+            if($profileKind === "s"){
+                $userList = w_users::where('user_name', $profileUserName)->get();
+            } else if($profileKind === "c"){
+                $userList = w_company::where('user_name', $profileUserName)->get();
+            } else {
+                \Log::info('$profileKindエラー');
+            }
+
+            $userListIcon = $userList->first()->icon;
+            $userList->first()->icon = asset('storage/images/userIcon/' .$userListIcon);
+            //\Log::info("userIconUrl::".$userIconUrl);
+>>>>>>> 3c5789677e38c908589a20c4b753cb2d7d8e5230
 
             // 企業のプロフィール取得
             $companyList = w_company::where('user_name', $profileId)->get();

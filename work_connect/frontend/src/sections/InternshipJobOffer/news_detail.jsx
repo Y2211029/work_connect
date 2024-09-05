@@ -4,67 +4,45 @@ import { Helmet } from "react-helmet-async";
 import { useLocation } from "react-router-dom";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import Stack from "@mui/material/Stack";
+import { useNavigate } from "react-router-dom";
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import "./news_detail.css"
 
-const NewsDetailContainer = {
-    position: "relative",
-    marginTop: "5%",
-};
-
-const news_img = {
-    width: "400px",
-    height: "300px",
-    border: "solid 2px #329eff",
-};
-
-const news_title = {
-    textAlign: "left",
-};
-
-const news_font = {
-    padding: "auto",
-};
-
-const news_summary = {
-    maxWidth: "1000px",
-    minWidth: "299px",
-    paddingTop: "5%",
-    marginLeft: "5%",
-    marginBottom: "10%",
-};
-
-const NewsDetailHeader = {
-    display: "flex",
-    flexWrap: "wrap",
-};
-
-const genre_update = {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
-    paddingLeft: "10%",
-};
 
 const InternshipJobOfferPage = () => {
     const [csrfToken, setCsrfToken] = useState("");
     const [NewsDetail, SetNewsDetail] = useState(null);
     const [bookmarked, setBookmarked] = useState(false);
     const [isHover, SetFavoriteIcon_hover] = useState(false);  //ホバーしたら「クリックするとブックマークできます」というテキストが出現
-    const [sessionId, setSessionId] = useState(null);
-    const [isSessionLoaded, setIsSessionLoaded] = useState(false); //セッションデータから情報を取得できたかどうか
+    const [showNav, setShowNav] = useState(false); // ナビゲーションバーを表示するかどうかの状態を管理
 
     const csrf_url = "http://localhost:8000/csrf-token";
     const news_bookmark_url = "http://localhost:8000/news_bookmark";
     const location = useLocation();
     const parameter = location.state; // パラメータ(w_newsテーブルのidカラムの値)を代入
+    const navigate = useNavigate();
     console.log(csrfToken);
 
+    const { getSessionData } = useSessionStorage();
+    const accountData = getSessionData("accountData");
+    const data = {
+      id: accountData.id,
+    };
+
     useEffect(() => {
+
         console.log(parameter.id);
         //ニュースのデータを抽出する
         async function fetchData() {
             try {
                 const response = await axios.get(
-                    `http://localhost:8000/Internship_JobOffer/news_detail/${parameter.id}`
+                    `http://localhost:8000/Internship_JobOffer/news_detail/${parameter.id}`,
+                    {
+                        params: {
+                            MyId: data.id, //今ログインしている人のid
+                          },
+                    }
                 );
                 console.log(response.data);
                 SetNewsDetail(response.data);
@@ -91,18 +69,6 @@ const InternshipJobOfferPage = () => {
         fetchCsrfToken(); // ページがロードされた時点でCSRFトークンを取得
     }, []);
 
-    useEffect(() => {
-        // sessionStorage に保存したデータを取得
-        let dataString = sessionStorage.getItem("accountData");
-        if (dataString) {
-            // JSON 文字列を JavaScript オブジェクトに変換
-            let dataObject = JSON.parse(dataString);
-            if (dataObject) {
-                setSessionId(dataObject.id);
-            }
-        }
-        setIsSessionLoaded(true); // データ取得が完了したことを示す
-    }, []);
 
 
     //日付をYY/MM/DDに変換する
@@ -126,7 +92,7 @@ const InternshipJobOfferPage = () => {
                 {
                     id: parameter.id,              //bookmark_idカラムに入れる
                     category: NewsDetail.genre,   //categoryカラムに入れる
-                    sessionid: sessionId,         //企業or学生のid
+                    sessionid: data.Id,         //企業or学生のid
                 },
                 {
                     headers: {
@@ -141,6 +107,34 @@ const InternshipJobOfferPage = () => {
         }
     };
 
+    const handleProfileJump = () => {
+        navigate(`/Profile/${NewsDetail.company_name}`);
+    }
+
+    useEffect(() => {
+        // スクロールイベントのハンドラー関数
+        const handleScroll = () => {
+            // 現在のスクロール位置を取得
+            const ScrollPos = window.scrollY;
+            // 目的のスクロール位置を比較
+            const TargetPos = 350;
+
+            if (ScrollPos > TargetPos) {
+                setShowNav(true);
+            } else {
+                setShowNav(false);
+            }
+        };
+
+        // スクロールイベントを追加
+        window.addEventListener('scroll', handleScroll);
+
+        // クリーンアップ関数でスクロールイベントを削除
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
 
 
     return (
@@ -149,63 +143,82 @@ const InternshipJobOfferPage = () => {
                 <title>ニュース詳細 | Work&Connect</title>
             </Helmet>
 
+
             {NewsDetail ? (
-                <div style={NewsDetailContainer}>
+
+
+
+                <div className="NewsDetailContainer">
+
+                    {/* ある程度下へスクロールしたら出てくるメニュー */}
+                    {showNav &&
+                            <div className={`popup_menu ${showNav ? 'visible' : 'invisible'}`}>
+                                <Stack direction="row" spacing={2}>
+                                <p>{NewsDetail.article_title}</p>
+                                <p style={{ fontSize: '15px' }}>企業プロフィール</p>
+                                <p>{NewsDetail.follow_status}</p> 
+                                </Stack>
+                            </div>
+                    }
+
+                    <hr className="hr"></hr>
+                    <p className="news_genre">{NewsDetail.genre}</p>
+                    <hr className="hr"></hr>
+                    <h1 className="news_title">{NewsDetail.article_title}</h1>
+                    <p className="news_company_name" onClick={handleProfileJump}>{NewsDetail.company_name}</p>
                     {/* NewsDetailHeader要素 サムネイルと会社名・お気に入りボタンを一括りにする */}
-                    <div style={NewsDetailHeader}>
+                    <div className="NewsDetailHeader">
                         <img
                             src={`${NewsDetail.header_img}`}
-                            style={news_img}
+                            className="news_img"
                             alt={NewsDetail.article_title}
                         />
-
-                        <div style={genre_update}>
-                            <p>{NewsDetail.genre}</p>
-                            <p>{formatDate(NewsDetail.news_created_at)}</p>
-                            <p>{NewsDetail.company_name}</p>
-
-                            {/* //ログインしていない場合非表示 */}
-                            {isSessionLoaded && sessionId && (
-                                bookmarked ? (
-                                    <FavoriteIcon
-                                        style={{ fontSize: '24px' }}
-                                        onClick={news_bookmark}
-                                        onMouseEnter={() => SetFavoriteIcon_hover(true)}
-                                        onMouseLeave={() => SetFavoriteIcon_hover(false)}
-                                    />
-                                ) : (
-                                    <FavoriteBorderIcon
-                                        style={{ fontSize: '24px' }}
-                                        onClick={news_bookmark}
-                                        onMouseEnter={() => SetFavoriteIcon_hover(true)}
-                                        onMouseLeave={() => SetFavoriteIcon_hover(false)}
-                                    />
-                                )
-                            )}
-                            {isHover && <div style={{ position: 'absolute', top: '30px', left: '10px', color: 'red' }}>クリックするとブックマークできます</div>}
-                        </div>
-
                     </div>
 
-                    <h1 style={news_title}>{NewsDetail.article_title}</h1>
+                    <div className="genre_update">
+
+                        <p>{formatDate(NewsDetail.news_created_at)}</p>
+
+
+                        {/* //ログインしていない場合非表示 */}
+                        {data.id && (
+                            bookmarked ? (
+                                <FavoriteIcon
+                                    style={{ fontSize: '24px' }}
+                                    onClick={news_bookmark}
+                                    onMouseEnter={() => SetFavoriteIcon_hover(true)}
+                                    onMouseLeave={() => SetFavoriteIcon_hover(false)}
+                                />
+                            ) : (
+                                <FavoriteBorderIcon
+                                    style={{ fontSize: '24px' }}
+                                    onClick={news_bookmark}
+                                    onMouseEnter={() => SetFavoriteIcon_hover(true)}
+                                    onMouseLeave={() => SetFavoriteIcon_hover(false)}
+                                />
+                            )
+                        )}
+                        {isHover && <div style={{ position: 'absolute', top: '30px', left: '10px', color: 'red' }}>クリックするとブックマークできます</div>}
+                    </div>
+
 
                     {/* Editor.jsのプラグインによって内容を１行ずつ解釈し、それぞれにあった形でreturn */}
-                    <div className="news_summary" style={news_summary}>
+                    <div className="news_summary">
                         {NewsDetail.summary.blocks.map((block, index) => {
                             switch (block.type) {
                                 case "paragraph":
-                                    return <p key={index} style={news_font} dangerouslySetInnerHTML={{ __html: block.data.text }} />;
+                                    return <p key={index} className="news_font" dangerouslySetInnerHTML={{ __html: block.data.text }} />;
                                 case "header":
                                     return React.createElement(
                                         `h${block.data.level}`,
-                                        { key: index, style: news_font, dangerouslySetInnerHTML: { __html: block.data.text } }
+                                        { key: index, className: "news_font", dangerouslySetInnerHTML: { __html: block.data.text } }
                                     );
                                 case "image":
                                     return (
                                         <img
                                             key={index}
                                             src={block.data.file.url}
-                                            style={news_img}
+                                            className="news_img"
                                             alt={block.data.caption}
                                         />
                                     );
@@ -215,7 +228,7 @@ const InternshipJobOfferPage = () => {
                                     );
                                 case "table":
                                     return (
-                                        <table key={index} style={news_font}>
+                                        <table key={index} className="news_font">
                                             <tbody>
                                                 {block.data.content.map((row, rowIndex) => (
                                                     <tr key={rowIndex}>
@@ -229,7 +242,7 @@ const InternshipJobOfferPage = () => {
                                     );
                                 case "checklist":
                                     return (
-                                        <ul key={index} style={news_font}>
+                                        <ul key={index} className="news_font">
                                             {block.data.items.map((item, itemIndex) => (
                                                 <li key={itemIndex} style={{ textDecoration: item.checked ? "line-through" : "none" }} dangerouslySetInnerHTML={{ __html: item.text }} />
                                             ))}
@@ -241,17 +254,17 @@ const InternshipJobOfferPage = () => {
                                     return <div key={index} dangerouslySetInnerHTML={{ __html: block.data.html }} />;
                                 case "quote":
                                     return (
-                                        <blockquote key={index} style={news_font} dangerouslySetInnerHTML={{ __html: block.data.text }}>
+                                        <blockquote key={index} className="news_font" dangerouslySetInnerHTML={{ __html: block.data.text }}>
                                             <cite>{block.data.caption}</cite>
                                         </blockquote>
                                     );
                                 case "inlineCode":
-                                    return <code key={index} style={news_font} dangerouslySetInnerHTML={{ __html: block.data.text }} />;
+                                    return <code key={index} className="news_font" dangerouslySetInnerHTML={{ __html: block.data.text }} />;
                                 case "alert":
-                                    return <div key={index} style={news_font} dangerouslySetInnerHTML={{ __html: block.data.message }} />;
+                                    return <div key={index} className="news_font" dangerouslySetInnerHTML={{ __html: block.data.message }} />;
                                 case "toggle":
                                     return (
-                                        <details key={index} style={news_font}>
+                                        <details key={index} className="news_font">
                                             <summary>{block.data.title}</summary>
                                             <div dangerouslySetInnerHTML={{ __html: block.data.content }} />
                                         </details>
@@ -264,9 +277,9 @@ const InternshipJobOfferPage = () => {
                                     );
                                 case "carousel":
                                     return (
-                                        <div key={index} style={news_font}>
+                                        <div key={index} className="news_font">
                                             {block.data.slides.map((slide, slideIndex) => (
-                                                <img key={slideIndex} src={slide.url} alt={slide.caption} style={news_img} />
+                                                <img key={slideIndex} src={slide.url} alt={slide.caption} className="news_img" />
                                             ))}
                                         </div>
                                     );

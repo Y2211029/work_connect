@@ -18,7 +18,7 @@ import { useSessionStorage } from "src/hooks/use-sessionStorage";
 const ImageCard = ({IconData}) => {
 
   console.log("IconData"+IconData);
-  
+
   // 初期値
   const { getSessionData, updateSessionData } = useSessionStorage();
   const [selectedImage, setSelectedImage] = useState(IconData);
@@ -28,20 +28,20 @@ const ImageCard = ({IconData}) => {
   useEffect(() => {
     if (getSessionData("accountData") !== undefined) {
       const SessionData = getSessionData("accountData");
-    
+
       if(SessionData.IconEditing && SessionData.Icon){
         // セッションストレージから最新のデータを取得
         setSelectedImage("http://localhost:8000/storage/images/userIcon/"+SessionData.Icon);
       } else if(
         ((SessionData.IconEditing && SessionData.Icon && IconData)||
-        (!SessionData.IconEditing && IconData)) && 
+        (!SessionData.IconEditing && IconData)) &&
         IconData !== "http://localhost:8000/storage/images/userIcon"
       ){
          // DBから最新のデータを取得
          setSelectedImage(IconData);
       } else {
         // デフォルト(アイコン設定なし)
-        setSelectedImage("http://localhost:8000/storage/images/userIcon/cover_19.jpg");
+        setSelectedImage("/mypage_icon/cover_19.jpg");
       }
     }
   }, [IconData]);
@@ -56,7 +56,7 @@ const ImageCard = ({IconData}) => {
 
   // アイコンの初期化
   const handleImageReset = async () => {
-    setSelectedImage("http://localhost:8000/storage/images/userIcon/cover_19.jpg");
+    setSelectedImage("/mypage_icon/cover_19.jpg");
   }
 
   // アイコンの変更操作
@@ -65,7 +65,7 @@ const ImageCard = ({IconData}) => {
     if (file) {
       const formData = new FormData();
       formData.append('image', file);
-  
+
       try {
         // LaravelにPOSTで画像データを送信
         const response = await fetch('http://localhost:8000/post_profile_mypage_upload', {
@@ -75,7 +75,7 @@ const ImageCard = ({IconData}) => {
           },
           body: formData,
         });
-  
+
         if (response.ok) {
           // アップロードできた場合
           const data = await response.json();
@@ -95,7 +95,7 @@ const ImageCard = ({IconData}) => {
       }
     }
   };
-  
+
   return (
     <>
       <Card sx={{
@@ -109,15 +109,15 @@ const ImageCard = ({IconData}) => {
         <CardMedia
           component="img"
           sx={{
-            height: 'calc(100vw * 0.58)', 
+            height: 'calc(100vw * 0.58)',
             width: 'calc(100vw * 0.58)',
             objectFit: 'cover',
             borderRadius: '50%',
-            maxHeight: 350, 
-            maxWidth: 350,   
+            maxHeight: 350,
+            maxWidth: 350,
             '@media (min-width: 600px)': {
               height: 350,
-              width: 350, 
+              width: 350,
             }
           }}
           image={selectedImage}
@@ -134,32 +134,32 @@ const ImageCard = ({IconData}) => {
         <Tooltip title="アイコンを変更する">
           <IconButton aria-label="upload picture" component="span"
           sx={{
-            color: 'rgba(0, 0, 0, 0.8)',  
-            width: 'calc(10vw)', 
+            color: 'rgba(0, 0, 0, 0.8)',
+            width: 'calc(10vw)',
             height: 'calc(10vw)',
-            maxWidth: 60,  
-            maxHeight: 60, 
+            maxWidth: 60,
+            maxHeight: 60,
             '@media (min-width: 600px)': {
-              width: 60,  
-              height: 60, 
+              width: 60,
+              height: 60,
             }
           }}>
-            <PhotoCameraIcon 
+            <PhotoCameraIcon
             sx={{
-              width: 50, 
-              height: 50, 
+              width: 50,
+              height: 50,
             }}/>
           </IconButton>
           </Tooltip>
         </label>
       </Card>
       <Box>
-              
-        <Button variant="outlined" onClick={handleImageReset} 
+
+        <Button variant="outlined" onClick={handleImageReset}
         sx={{ borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
           <PersonIcon/>初期化
         </Button>
-      
+
     </Box>
     </>
   );

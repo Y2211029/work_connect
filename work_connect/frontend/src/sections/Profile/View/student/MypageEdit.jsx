@@ -70,7 +70,7 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
   const [showMoreText, setShowMoreText] = useState(
     <><KeyboardArrowDownIcon /> さらに表示</>
   );
-  
+
   // セッションストレージ取得
   const { getSessionData } = useSessionStorage();
   // useRef初期化
@@ -102,11 +102,13 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
         // Laravel側からデータを取得
         const response = await axios.get(Get_url, {
           params: {
+            kind: "s",
             ProfileUserName: ProfileUserName,
           },
         });
         if(response){
           setResponseData(response.data[0]);
+          console.log("ResponseData.company_name::::::::::::::::"+ResponseData.student_surname);
         }
         console.log("ResponseData:", ResponseData);
       } catch (err) {
@@ -159,11 +161,13 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
 
   // 保存ボタンを押したときの処理
   const handleSaveClick = () => {
-    
+
     async function PostData() {
       try {
         // Laravel側からデータを取得
         const response = await axios.post(Post_url, {
+            // 学生側で送信
+            kind: "s",
             // ユーザーネーム
             ProfileUserName: ProfileUserName,
             // アイコン
@@ -233,10 +237,10 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
 
           // 更新された SessionData を sessionStorage に保存
           sessionStorage.setItem('accountData', JSON.stringify(SessionData));
-         
+
           // アラート
           alert("マイページを更新しました。");
-          // リロード 
+          // リロード
           window.location.reload();
         }
         //console.log("ResponseData:", ResponseData);
@@ -244,7 +248,7 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
         console.log("err:", err);
       }
     }
-    
+
   // セッションデータ取得
   const SessionData = getSessionData("accountData");
   // カタカナ以外の文字が含まれているかチェック
@@ -255,8 +259,8 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
   if(
     !SessionData.StudentSurName ||
     !SessionData.StudentName ||
-    !SessionData.StudentKanaSurName || 
-    !SessionData.StudentKanaName || 
+    !SessionData.StudentKanaSurName ||
+    !SessionData.StudentKanaName ||
     !SessionData.Intro
   ){
     // 未入力項目がある場合
@@ -285,7 +289,7 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
     // それ以外(実行)
     PostData();
   }
-  
+
   };
 
     return (
@@ -303,9 +307,9 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
                     </IconButton>
                 </Tooltip>
             </Box>
-            
+
             <UserIcon IconData={ResponseData.icon} />
-            
+
             <Box ref={StudentNameBox}>
               <Typography variant="h6">名前*</Typography>
               <StudentName StudentSurnameData={ResponseData.student_surname} StudentnameData={ResponseData.student_name}/>
@@ -328,7 +332,7 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
             </Box>
             <Box>
               <Showmore>
-                <Button variant="outlined" ref={showmore} onClick={ShowmoreClick} 
+                <Button variant="outlined" ref={showmore} onClick={ShowmoreClick}
                 sx={{ borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
                   {showMoreText}
                 </Button>
@@ -373,7 +377,7 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
             </Box>
             <Box>
               <Save>
-                <Button variant="outlined"  
+                <Button variant="outlined"
                 sx={{ borderColor: '#1877F2', color: '#1877F2', '&:hover': { borderColor: '#1877F2' }, cursor: 'pointer' }}
                 size="large"
                 onClick={handleSaveClick}>
@@ -381,9 +385,9 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
                 </Button>
               </Save>
             </Box>
-            
+
           </Stack>
-        
+
       );
 
 });

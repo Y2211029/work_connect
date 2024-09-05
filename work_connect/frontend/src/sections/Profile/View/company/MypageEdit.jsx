@@ -1,9 +1,9 @@
 //import * as React from 'react';
-import { useEffect, useState, useRef, forwardRef,useImperativeHandle } from "react";
+import { useEffect, useState, useRef, forwardRef, useImperativeHandle } from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { useParams } from 'react-router-dom';
-//import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 // muiインポート
 import Box from '@mui/material/Box';
@@ -25,31 +25,40 @@ import Tooltip from '@mui/material/Tooltip';
 // --- アイコン --- //
 import UserIcon from "./EditDetailFields/UserIcon";
 // --- 必須項目 --- //
-import StudentName from "./EditRequiredFields/StudentName";
-import StudentKanaName from "./EditRequiredFields/StudentKanaName";
+import CompanyName from "./EditRequiredFields/CompanyName";
+import CompanyKanaName from "./EditRequiredFields/CompanyKanaName";
+<<<<<<< HEAD
+import CompanyUserName from "./EditRequiredFields/CompanyUserName";
+=======
+//import CompanyUserName from "./EditRequiredFields/CompanyUserName";
+>>>>>>> 3c5789677e38c908589a20c4b753cb2d7d8e5230
+import IntroVideo from "./EditRequiredFields/IntroVideo";
+import CompanyAddress from "./EditRequiredFields/CompanyAddress";
+import CompanyAddressMap from "./EditRequiredFields/CompanyAddressMap";
+
+
 import Intro from "./EditRequiredFields/Intro";
-import GraduationYear from "./EditRequiredFields/GraduationYear";
-import SchoolName from "./EditRequiredFields/SchoolName";
+// import GraduationYear from "./EditRequiredFields/GraduationYear";
 // --- 詳細項目 --- //
-import DepartmentName from "./EditDetailFields/DepartmentName";
-import FacultyName from "./EditDetailFields/FacultyName";
+import Industry from "./EditDetailFields/Industry";
+import Office from "./EditDetailFields/Prefecture";
+import SelectedOccupation from "./EditDetailFields/SelectedOccupation";
 import Environment from "./EditDetailFields/Environment";
-import Hobby from "./EditDetailFields/Hobby";
-import Prefecture from "./EditDetailFields/Prefecture";
-import DesiredOccupation from "./EditDetailFields/DesiredOccupation";
 import ProgrammingLanguage from "./EditDetailFields/ProgrammingLanguage";
 import Qualification from "./EditDetailFields/Qualification";
 import Software from "./EditDetailFields/Software";
+
+import CompanyHPMap from "./EditRequiredFields/CompanyHPMap";
 
 
 
 // Showmoreのスタイルを定義
 const Showmore = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.background.default,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    fontSize: '20px',
-  }));
+  backgroundColor: theme.palette.background.default,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  fontSize: '20px',
+}));
 
 // Saveのスタイルを定義
 const Save = styled(Paper)(({ theme }) => ({
@@ -59,11 +68,11 @@ const Save = styled(Paper)(({ theme }) => ({
   fontSize: '20px',
 }));
 
-const ProfileMypageEdit = forwardRef((props,ref) => {
+const ProfileMypageEdit = forwardRef((props, ref) => {
 
   // 親コンポーネント(Mypage.jsx)から渡されたデータ
   useImperativeHandle(ref, () => ({
-    openEdit(){
+    openEdit() {
       Edit.current.style.display = '';
     }
   }));
@@ -78,19 +87,33 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
   const detail = useRef([]);
   const showmore = useRef(null);
   const [close, setClose] = useState(true);
+  const CompanyNameBox = useRef(null);
+  const CompanyKanaNameBox = useRef(null);
+  const IntroBox = useRef(null);
+  // 編集状態のチェック
+  const { getSessionData } = useSessionStorage();
+
   // Laravelとの通信用URL
-  const url = "http://localhost:8000/get_profile_mypage";
+  const Get_url = "http://localhost:8000/get_profile_mypage";
+<<<<<<< HEAD
+  const Post_url = "http://localhost:8000/company_post_profile_mypage";
+=======
+  const Post_url = "http://localhost:8000/post_profile_mypage";
+>>>>>>> 3c5789677e38c908589a20c4b753cb2d7d8e5230
 
   // ログイン中のuser_nameではない
   // ＊＊＊他ルートからアクセスしたときに表示したいユーザのuser_nameをここで指定＊＊＊
   const { user_name } = useParams();
+<<<<<<< HEAD
+  const ProfileUserName = useState({ user_name });
+=======
+  const UserName = useState({user_name});
+  const ProfileUserName = UserName[0].user_name;
+>>>>>>> 3c5789677e38c908589a20c4b753cb2d7d8e5230
 
   // DBからのレスポンスが入る変数
   const [ResponseData, setResponseData] = useState([]);
 
-
-  // 編集状態のチェック
-  //const { updateSessionData } = useSessionStorage();
 
   // // セッションストレージからaccountDataを取得し、MypageEditStateを初期値として設定
   // const getInitialMypageEditState = () => {
@@ -115,29 +138,36 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
 
   // ProfileUserNameが変化したとき
   useEffect(() => {
-    async function GetData(ProfileUserName) {
+    async function GetData() {
 
       try {
         // Laravel側からデータを取得
-        console.log(ProfileUserName[0]);
-        const response = await axios.get(url, {
+        const response = await axios.get(Get_url, {
           params: {
-            ProfileUserName: user_name,
+<<<<<<< HEAD
+            ProfileUserName: ProfileUserName[0],
+=======
+            kind: "c",
+            ProfileUserName: ProfileUserName,
+>>>>>>> 3c5789677e38c908589a20c4b753cb2d7d8e5230
           },
         });
-        if(response){
+        if (response) {
           setResponseData(response.data[0]);
         }
-        console.log("ResponseData:", ResponseData);
+        // console.log("ResponseData:", ResponseData);
       } catch (err) {
         console.log("err:", err);
       }
     }
-    if(user_name){
-      GetData(user_name);
-    }
     // DBからデータを取得
-  }, [user_name]);
+<<<<<<< HEAD
+    GetData(ProfileUserName);
+  }, [ProfileUserName]);
+=======
+    GetData();
+  }, []);
+>>>>>>> 3c5789677e38c908589a20c4b753cb2d7d8e5230
 
   // 初回レンダリング時の一度だけ実行させる
   useEffect(() => {
@@ -147,24 +177,26 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
     Edit.current.style.display = 'none';
   }, []);
 
+
+
   // 戻るボタンを押したときの処理
   const handleBackClick = () => {
-      // マイページ編集画面のとき
-      console.log("click!");
-      //MypageEditStateを0に更新
-      //updateSessionData("accountData", "MypageEditState", 0);
-      // リロード
-      window.location.reload();
+    // マイページ編集画面のとき
+    console.log("click!");
+    //MypageEditStateを0に更新
+    //updateSessionData("accountData", "MypageEditState", 0);
+    // リロード
+    window.location.reload();
   };
 
   // 「さらに表示」が押された時の処理
   const ShowmoreClick = () => {
     console.log("「さらに表示」click!");
-    if(close){
+    if (close) {
       // 「さらに表示」のとき、詳細項目を表示して、ボタンを「閉じる」に変更
       setClose(false);
       detail.current.forEach(ref => {
-        if (ref){
+        if (ref) {
           ref.style.display = '';
         }
       });
@@ -173,7 +205,7 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
       // 「閉じる」のとき、詳細項目を非表示にして、ボタンを「さらに表示」に変更
       setClose(true);
       detail.current.forEach(ref => {
-        if (ref){
+        if (ref) {
           ref.style.display = 'none';
         }
       });
@@ -181,102 +213,294 @@ const ProfileMypageEdit = forwardRef((props,ref) => {
     }
   };
 
-    return (
-          <Stack spacing={3} ref={Edit}>
-            {/* 戻るボタン */}
-            <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
-                <Tooltip title="戻る">
-                    <IconButton
-                    onClick={handleBackClick}
-                    sx={{
-                        '&:hover': { backgroundColor: '#f0f0f0' },
-                    }}
-                    >
-                    <ArrowBackOutlinedIcon sx={{ fontSize: 40 }} />
-                    </IconButton>
-                </Tooltip>
-            </Box>
+  // 保存ボタンを押したときの処理
+  const handleSaveClick = () => {
 
-            <UserIcon />
+    async function PostData() {
+      try {
+        console.log(SessionData.CompanyName);
+        // Laravel側からデータを取得
+        const response = await axios.post(Post_url, {
+<<<<<<< HEAD
+=======
+          // 企業側で送信
+          kind: "c",
+          // ユーザーネーム
+          ProfileUserName: ProfileUserName,
+          // アイコン
+          Icon: SessionData.Icon,
+>>>>>>> 3c5789677e38c908589a20c4b753cb2d7d8e5230
+          // 企業名
+          CompanyName: SessionData.CompanyName,
+          // 企業名(カタカナ)
+          CompanyKanaName: SessionData.CompanyKanaName,
+          // 採用担当者
+<<<<<<< HEAD
+          UserName: SessionData.CompanyUserName,
+=======
+          //UserName: SessionData.CompanyUserName,
+>>>>>>> 3c5789677e38c908589a20c4b753cb2d7d8e5230
+          // 自己紹介
+          Intro: SessionData.Intro,
+          // 紹介動画
+          IntroVideo: SessionData.IntroVideo,
+          // 本社所在地
+          CompanyAddress: SessionData.CompanyAddress,
+          // 本社所在地マップ
+          CompanyAddressMap: SessionData.CompanyAddressMap,
+          // 勤務地
+          Prefecture: SessionData.Prefecture,
+          // 社員の職種・応募職種
+          SelectedOccupation: SessionData.SelectedOccupation,
+          // 業界キーワード
+          Industry: SessionData.Industry,
+          // 開発環境
+          Environment: SessionData.Environment,
+          // プログラミング言語
+          ProgrammingLanguage: SessionData.ProgrammingLanguage,
+          // 資格
+          Qualification: SessionData.Qualification,
+          // ソフトウェア
+          Software: SessionData.Software,
+          // ホームページURL
+          CompanyHPMap: SessionData.CompanyHPMap
+        });
+        if (response.data === true) {
 
-            <Box>
-              <Typography variant="h6">名前</Typography>
-              <StudentName StudentSurnameData={ResponseData.student_surname} StudentnameData={ResponseData.student_name}/>
-            </Box>
-            <Box>
-              <Typography variant="h6">名前(カタカナ)</Typography>
-              <StudentKanaName StudentKanaSurnameData={ResponseData.student_kanasurname} StudentKananameData={ResponseData.student_kananame}/>
-            </Box>
-            <Box>
-              <Typography variant="h6">自己紹介</Typography>
-                <Intro IntroData={ResponseData.intro}/>
-            </Box>
-            <Box>
-              <Typography variant="h6">卒業年度</Typography>
-              <GraduationYear GraduationData={ResponseData.graduation_year}/>
-            </Box>
-            <Box>
-              <Typography variant="h6">学校名(大学名)</Typography>
-              <SchoolName />
-            </Box>
-            <Box>
-              <Showmore>
-                <Button variant="outlined" ref={showmore} onClick={ShowmoreClick}
-                sx={{ borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
-                  {showMoreText}
-                </Button>
-              </Showmore>
-            </Box>
-            <Box ref={el => (detail.current[0] = el)} id="detail">
+          console.log("保存成功");
 
-              <Typography variant="h6">学部</Typography>
-              <DepartmentName />
-            </Box>
-            <Box ref={el => (detail.current[1] = el)} id="detail">
-              <Typography variant="h6">学科</Typography>
-              <FacultyName />
-            </Box>
-            <Box ref={el => (detail.current[2] = el)} id="detail">
-              <Typography variant="h6">開発環境</Typography>
-              <Environment />
-            </Box>
-            <Box ref={el => (detail.current[3] = el)} id="detail">
-              <Typography variant="h6">趣味</Typography>
-              <Hobby />
-            </Box>
-            <Box ref={el => (detail.current[4] = el)} id="detail">
-              <Typography variant="h6">希望勤務地</Typography>
-              <Prefecture />
-            </Box>
-            <Box ref={el => (detail.current[5] = el)} id="detail">
-              <Typography variant="h6">希望職種</Typography>
-              <DesiredOccupation />
-            </Box>
-            <Box ref={el => (detail.current[6] = el)} id="detail">
-              <Typography variant="h6">プログラミング言語</Typography>
-              <ProgrammingLanguage />
-            </Box>
-            <Box ref={el => (detail.current[7] = el)} id="detail">
-              <Typography variant="h6">取得資格</Typography>
-              <Qualification />
-            </Box>
-            <Box ref={el => (detail.current[8] = el)} id="detail">
-              <Typography variant="h6">ソフトウェア</Typography>
-              <Software />
-            </Box>
-            <Box>
-              <Save>
-                <Button variant="outlined"
-                sx={{ borderColor: '#1877F2', color: '#1877F2', '&:hover': { borderColor: '#1877F2' }, cursor: 'pointer' }}
-                size="large">
-                  保存
-                </Button>
-              </Save>
-            </Box>
-            {/* </span> */}
-          </Stack>
+          // 編集中状態をオフ(accountDataから削除)
+          const keysToDelete = [
+<<<<<<< HEAD
+            'CompanyNameEditing', //やった
+            'CompanyKanaNameEditing', //やった
+            'CompanyUserNameEditing',
+            'IntroEditing', //やった
+            'IntroVideoEditing',//やった
+            'CompanyAddressEditing', //やった
+            'CompanyAddressMapEditing', //やった
+            'OfficeEditing', //やった
+            'SelectedOccupationEditing', //やった
+            'IndustryEditing', //やった
+            'EnvironmentEditing', //やった
+            'ProgrammingLanguageEditing', //やった
+            'QualificationEditing', //やった
+            'SoftwareEditing', //やった
+            'CompanyHPMapEditing' //やった
+=======
+            'IconEditing',
+            'CompanyNameEditing',
+            'CompanyKanaNameEditing',
+            'CompanyUserNameEditing',
+            'IntroEditing',
+            'IntroVideoEditing',
+            'CompanyAddressEditing',
+            'CompanyAddressMapEditing',
+            'OfficeEditing',
+            'SelectedOccupationEditing',
+            'IndustryEditing',
+            'EnvironmentEditing',
+            'ProgrammingLanguageEditing',
+            'QualificationEditing',
+            'SoftwareEditing',
+            'CompanyHPMapEditing'
+>>>>>>> 3c5789677e38c908589a20c4b753cb2d7d8e5230
+          ];
 
-      );
+          // 編集中状態のSessionDataを削除
+          keysToDelete.forEach(key => {
+            delete SessionData[key];
+          });
+
+          // 更新された SessionData を sessionStorage に保存
+          sessionStorage.setItem('accountData', JSON.stringify(SessionData));
+
+          // アラート
+          alert("マイページを更新しました。");
+          // リロード
+          window.location.reload();
+        }
+        //console.log("ResponseData:", ResponseData);
+      } catch (err) {
+        console.log("err:", err);
+      }
+    }
+
+    // セッションデータ取得
+    const SessionData = getSessionData("accountData");
+
+    // カタカナ以外の文字が含まれているかチェック
+    const Kana = /^[ァ-ヶー]+$/;
+
+    // 必須項目が満たされている場合、PostDataメソッドを実行
+    // 満たされていない場合、アラートを出す。
+    if (
+      !SessionData.CompanyName ||
+      !SessionData.CompanyKanaName ||
+      !SessionData.Intro
+    ) {
+      // 未入力項目がある場合
+      if (!SessionData.Intro) {
+        // 自己紹介が未入力のとき<Box ref={IntroBox}>にスクロール
+        IntroBox.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      if (!SessionData.CompanyName) {
+        // 企業名が未入力のとき<Box ref={StudentKanaNameBox}>にスクロール
+        CompanyNameBox.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      if (!SessionData.CompanyKanaName) {
+        // 企業名(カタカナ)が未入力のとき<Box ref={StudentNameBox}>にスクロール
+        CompanyKanaNameBox.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      alert("エラー：未入力項目があります。");
+    } else if (
+      !Kana.test(SessionData.CompanyKanaName)
+    ) {
+      // カタカナがある場合
+      // <Box ref={StudentKanaNameBox}>にスクロール
+      CompanyKanaNameBox.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      alert("エラー：カタカナで入力してください");
+    } else {
+      // それ以外(実行)
+      PostData();
+    }
+
+  };
+
+  return (
+    <Stack spacing={3} ref={Edit}>
+      {/* 戻るボタン */}
+      <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+        <Tooltip title="戻る">
+          <IconButton
+            onClick={handleBackClick}
+            sx={{
+              '&:hover': { backgroundColor: '#f0f0f0' },
+            }}
+          >
+<<<<<<< HEAD
+            <ArrowBackOutlinedIcon sx={{ fontSize: 40 }} />
+=======
+            <ArrowBackOutlinedIcon sx={{ fontSize: 55 }} />
+>>>>>>> 3c5789677e38c908589a20c4b753cb2d7d8e5230
+          </IconButton>
+        </Tooltip>
+      </Box>
+
+<<<<<<< HEAD
+      <UserIcon />
+      <Box ref={CompanyNameBox}>
+        <Typography variant="h6">企業名</Typography>
+=======
+      <UserIcon IconData={ResponseData.icon} />
+      <Box ref={CompanyNameBox}>
+        <Typography variant="h6">企業名*</Typography>
+>>>>>>> 3c5789677e38c908589a20c4b753cb2d7d8e5230
+        <CompanyName CompanyNameData={ResponseData.company_name} />
+      </Box>
+      <Box ref={CompanyKanaNameBox}>
+        <Typography variant="h6">企業名(カタカナ)*</Typography>
+        <CompanyKanaName CompanyKanaNameData={ResponseData.company_namecana} />
+      </Box>
+<<<<<<< HEAD
+      <Box>
+        <Typography variant="h6">採用担当者</Typography>
+        <CompanyUserName CompanyUserNameData={ResponseData.user_name} />
+      </Box>
+      <Box ref={IntroBox}>
+        <Typography variant="h6">企業概要</Typography>
+        <Intro IntroData={ResponseData.intro} />
+      </Box>
+      <Box>
+        <Typography variant="h6">紹介動画</Typography>
+        <IntroVideo IntroVideoData={ResponseData.video_url} />
+      </Box>
+      <Box>
+        <Typography variant="h6">本社所在地</Typography>
+        <CompanyAddress CompanyAddressData={ResponseData.address} />
+      </Box>
+      <Box>
+        <Typography variant="h6">本社所在地マップ</Typography>
+=======
+      {/* <Box>
+        <Typography variant="h6">採用担当者</Typography>
+        <CompanyUserName CompanyUserNameData={ResponseData.user_name} />
+      </Box> */}
+      <Box ref={IntroBox}>
+        <Typography variant="h6">企業概要*</Typography>
+        <Intro IntroData={ResponseData.intro} />
+      </Box>
+
+      <Box>
+        <Typography variant="h6">本社所在地*</Typography>
+        <CompanyAddress CompanyAddressData={ResponseData.address} />
+      </Box>
+      <Box>
+        <Typography variant="h6">本社所在地マップ*</Typography>
+>>>>>>> 3c5789677e38c908589a20c4b753cb2d7d8e5230
+        <CompanyAddressMap CompanyAddressMapData={ResponseData.map_url} />
+      </Box>
+      <Box>
+        <Showmore>
+          <Button variant="outlined" ref={showmore} onClick={ShowmoreClick}
+            sx={{ borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
+            {showMoreText}
+          </Button>
+        </Showmore>
+      </Box>
+      <Box ref={el => (detail.current[1] = el)} id="detail">
+        <Typography variant="h6">勤務地</Typography>
+        <Office PrefectureData={ResponseData.office} />
+      </Box>
+      <Box ref={el => (detail.current[2] = el)} id="detail">
+        <Typography variant="h6">社員の職種・募集職種</Typography>
+        <SelectedOccupation SelectedOccupationData={ResponseData.selected_occupation} />
+      </Box>
+      <Box ref={el => (detail.current[3] = el)} id="detail">
+        <Typography variant="h6">業界キーワード</Typography>
+        <Industry IndustryData={ResponseData.industry} />
+      </Box>
+      <Box ref={el => (detail.current[4] = el)} id="detail">
+        <Typography variant="h6">開発環境</Typography>
+        <Environment EnvironmentData={ResponseData.development_environment} />
+      </Box>
+      <Box ref={el => (detail.current[5] = el)} id="detail">
+        <Typography variant="h6">プログラミング言語</Typography>
+        <ProgrammingLanguage ProgrammingLanguageData={ResponseData.programming_language} />
+      </Box>
+      <Box ref={el => (detail.current[6] = el)} id="detail">
+        <Typography variant="h6">社員が取得している資格・取得支援資格・歓迎資格・必須資格</Typography>
+        <Qualification QualificationData={ResponseData.qualification} />
+      </Box>
+      <Box ref={el => (detail.current[7] = el)} id="detail">
+        <Typography variant="h6">ソフトウェア</Typography>
+        <Software SoftwareData={ResponseData.software} />
+      </Box>
+      <Box ref={el => (detail.current[8] = el)} id="detail">
+        <Typography variant="h6">ホームページURL</Typography>
+        <CompanyHPMap CompanyHPMapData={ResponseData.hp_url} />
+      </Box>
+<<<<<<< HEAD
+=======
+      <Box ref={el => (detail.current[9] = el)} id="detail">
+        <Typography variant="h6">紹介動画</Typography>
+        <IntroVideo IntroVideoData={ResponseData.video_url} />
+      </Box>
+>>>>>>> 3c5789677e38c908589a20c4b753cb2d7d8e5230
+      <Box>
+        <Save>
+          <Button variant="outlined"
+            sx={{ borderColor: '#1877F2', color: '#1877F2', '&:hover': { borderColor: '#1877F2' }, cursor: 'pointer' }}
+            size="large"
+            onClick={handleSaveClick}>
+            保存
+          </Button>
+        </Save>
+      </Box>
+      {/* </span> */}
+    </Stack>
+
+  );
 
 });
 

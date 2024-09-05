@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import Select from "react-select";
 import axios from "axios";
+import PropTypes from 'prop-types';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
-const PrefectureSelect = () => {
-  const [prefectures, setPrefectures] = useState([]);
-  const [Prefectures, setPrefecture] = useState([]);
+const PrefectureDropdown = ({PrefectureData}) => {
+  const [APIs, setAPIs] = useState([]);
+  const [Prefecture, setPrefecture] = useState([]);
 
   const { getSessionData, updateSessionData } = useSessionStorage();
   useEffect(() => {
@@ -22,48 +23,58 @@ const PrefectureSelect = () => {
           value: pref.prefCode,
           label: pref.prefName,
         }));
-        setPrefectures(data);
+        setAPIs(data);
+        // console.log("data:::"+data.value);
       } catch (error) {
-        console.error("Failed to fetch prefectures", error);
+        console.error("Failed to fetch APIs", error);
       }
     };
 
     fetchPrefectures();
   }, []);
 
-  // 外部URLから本アプリにアクセスした際に、sessionStrageに保存する
-  useEffect(() => {
-    // if (performance.navigation.type !== performance.navigation.TYPE_RELOAD) {
-    // console.log("外部URLからアクセスしたです。");
-    if (getSessionData("accountData") !== undefined) {
-      let SessionData = getSessionData("accountData");
 
-      if (SessionData.desired_work_region !== undefined && SessionData.desired_work_region !== "") {
-        let commaArray = SessionData.desired_work_region.split(",");
-        let devtagArray = [];
-        commaArray.map((item) => {
-          devtagArray.push({ value: item, label: item });
-        });
+  // valueの初期値をセット
+  useEffect(() => {
+    if (getSessionData("accountData") !== undefined) {
+      const SessionData = getSessionData("accountData");
+      if(SessionData.PrefectureEditing && SessionData.Prefecture){
+        // セッションストレージから最新のデータを取得
+        const devtagArray = SessionData.Prefecture.split(",").map(item => ({
+          value: item,
+          label: item,
+        }));
+        setPrefecture(devtagArray);
+      } else if(
+        (SessionData.PrefectureEditing && SessionData.Prefecture && PrefectureData)||
+        (!SessionData.PrefectureEditing && PrefectureData)
+      ){ // DBから最新のデータを取得
+        const devtagArray = PrefectureData.split(",").map(item => ({
+          value: item,
+          label: item,
+        }));
         setPrefecture(devtagArray);
       }
     }
-    // }
-  }, []);
+  }, [PrefectureData]);
 
   useEffect(() => {
     let devTag = "";
     let devTagArray = [];
-    console.log("Prefectures", Prefectures);
-    Prefectures.map((item) => {
+    console.log("Prefecture", Prefecture);
+    Prefecture.map((item) => {
       devTagArray.push(item.label);
     });
     devTag = devTagArray.join(",");
 
-    updateSessionData("accountData", "desired_work_region", devTag);
-  }, [Prefectures]);
+    updateSessionData("accountData", "Prefecture", devTag);
+  }, [Prefecture]);
 
   const handleChange = (selectedOption) => {
+    // newValueをセット
     setPrefecture(selectedOption);
+    // 編集中状態をオン(保存もしくはログアウトされるまで保持)
+    updateSessionData("accountData", "PrefectureEditing", true);
   };
 
   return (
@@ -71,9 +82,9 @@ const PrefectureSelect = () => {
       <>
         <Select
           id="prefecturesDropdwon"
-          value={Prefectures}
+          value={Prefecture}
           onChange={handleChange}
-          options={prefectures}
+          options={APIs}
           placeholder="Select..."
           isMulti
         />
@@ -82,4 +93,8 @@ const PrefectureSelect = () => {
   );
 };
 
-export default PrefectureSelect;
+PrefectureDropdown.propTypes = {
+  PrefectureData: PropTypes.string ,
+};
+
+export default PrefectureDropdown;

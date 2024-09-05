@@ -25,6 +25,7 @@ import { follow } from "src/_mock/follow";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
+  border:'#DAE2ED 2px solid',
   padding: theme.spacing(1),
   textAlign: 'left',
   color: theme.palette.text.secondary,
@@ -110,6 +111,7 @@ const ProfileMypage = () => {
         // Laravel側からデータを取得
         const response = await axios.get(url, {
           params: {
+            kind: "s",
             ProfileUserName: user_name,    //プロフィールとして表示されている人のユーザーネーム
             MyUserId: MyUserId,           //ログイン中のID
           },
@@ -254,7 +256,7 @@ const ProfileMypage = () => {
                   '&:hover': { backgroundColor: '#f0f0f0', title: 'a' },
                 }}
               >
-                <ModeEditIcon sx={{ fontSize: 40 }} />
+                <ModeEditIcon sx={{ fontSize: 55 }} />
               </IconButton>
             </Tooltip>
             {/* {showEdit ? <ProfileMypageEdit /> : <ProfileMypage />} */}
@@ -319,7 +321,7 @@ const ProfileMypage = () => {
         </Box>
         <Box>
           <Typography variant="h6">自己紹介</Typography>
-          <Item>{ResponseData.intro ? ResponseData.intro : "Loading..."}</Item>
+          <Item sx={{fontSize: '20px'}}>{ResponseData.intro ? ResponseData.intro : "Loading..."}</Item>
         </Box>
         <Box>
           <Typography variant="h6">卒業年度</Typography>

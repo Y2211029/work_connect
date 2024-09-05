@@ -99,7 +99,7 @@ const IntroComponent = ({IntroData}) => {
         onChange={handleChange}
         maxLength={500}
       />
-      
+
       <Typography variant="body2" color="textSecondary" align="right" sx={{ marginTop: 0 }}>
         {/* 文字数カウント */}
         {Intro ? Intro.length : ""} / 500

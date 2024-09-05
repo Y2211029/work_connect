@@ -138,7 +138,7 @@ Route::get('/get_work_list', [GetWorkListController::class, 'GetWorkListControll
 // 動画一覧取得
 Route::get('/get_movie_list', [GetMovieListController::class, 'GetMovieListController']);
 // 学生一覧取得
-Route::get('/get_student_list/{id}', [GetStudentListController::class, 'GetStudentListController']);
+Route::get('/get_student_list', [GetStudentListController::class, 'GetStudentListController']);
 // 企業一覧取得
 Route::get('/get_company_list', [GetCompanyListController::class, 'GetCompanyListController']);
 

@@ -3,7 +3,7 @@ import { TextareaAutosize as BaseTextareaAutosize } from '@mui/base/TextareaAuto
 import PropTypes from 'prop-types'; // prop-types をインポート
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
-import { styled } from '@mui/material/styles';
+import { styled , useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 
 const blue = {
@@ -63,17 +63,25 @@ const IntroComponent = ({IntroData}) => {
 
   const [Intro, setIntro] = useState(IntroData);
   const { getSessionData, updateSessionData } = useSessionStorage();
+  const theme = useTheme();
+
+  // 入力エラーの状態管理
+  const [inputError, setInputError] = useState({
+    IntroError: false,
+  });
 
   // valueの初期値をセット
   useEffect(() => {
     // セッションデータ取得
     const SessionData = getSessionData("accountData");
+
     /// 編集の途中ならセッションストレージからデータを取得する。
     /// (リロードした時も、データが残った状態にする。)
-    if (SessionData.Intro !== undefined && SessionData.Intro !== "") {
+    if ((SessionData.Intro !== undefined && SessionData.Intro !== "") || 
+    SessionData.IntroEditing) {
       // セッションストレージから最新のデータを取得
       setIntro(SessionData.Intro);
-    } else {
+    } else if(IntroData !== undefined){
       // DBから最新のデータを取得
       setIntro(IntroData);
     }
@@ -81,16 +89,28 @@ const IntroComponent = ({IntroData}) => {
 
   const handleChange = (e) => {
     const newValue = e.target.value;
+    // newValueをセット
     setIntro(newValue);
+    // 編集中状態をオン(保存もしくはログアウトされるまで保持)
+    updateSessionData("accountData", "IntroEditing", true);
   };
 
   useEffect(() => {
     updateSessionData("accountData", "Intro", Intro);
+    // バリデーション
+    if(Intro === ""){
+      // 自己紹介が空だったら、error表示
+      setInputError((prev) => ({ ...prev, IntroError: true }));
+    } else if(Intro !== ""){
+      // 自己紹介が空でないなら、error非表示
+      setInputError((prev) => ({ ...prev, IntroError: false }));
+    }
   }, [Intro]);
 
   return (
     <div>
       <Textarea
+        error={inputError.IntroError}
         name="Intro"
         maxRows={12}
         aria-label="maximum height"
@@ -98,11 +118,14 @@ const IntroComponent = ({IntroData}) => {
         value={Intro}
         onChange={handleChange}
         maxLength={500}
+        sx={{
+          border: Intro === "" ? "1px red solid" : `1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]}`
+        }}
       />
       
       <Typography variant="body2" color="textSecondary" align="right" sx={{ marginTop: 0 }}>
         {/* 文字数カウント */}
-        {Intro ? Intro.length : ""} / 500
+        {Intro ? Intro.length : <span style={{ color:'red',opacity:0.7 }}>0</span>} / 500
       </Typography>
     </div>
   );
@@ -110,7 +133,7 @@ const IntroComponent = ({IntroData}) => {
 
 // プロパティの型を定義
 IntroComponent.propTypes = {
-  IntroData: PropTypes.string.isRequired,
+  IntroData: PropTypes.string,
 };
 
 export default IntroComponent;

@@ -71,6 +71,8 @@ Route::get('/', function () {
 Route::get('/get_profile_mypage', [GetMypageController::class, 'GetMypageController']);
 // プロフィールのマイページ(post)
 Route::post('/post_profile_mypage', [PostMypageController::class, 'PostMypageController']);
+// プロフィールのマイページ画像(post)
+Route::post('/post_profile_mypage_upload', [PostMypageController::class, 'UploadImageController']);
 // プロフィールのマイページルーティング設定(get)
 Route::get('/get_profile_mypage_kind', [GetMypageKindController::class, 'GetMypageKindController']);
 
@@ -140,7 +142,11 @@ Route::get('/get_movie_list', [GetMovieListController::class, 'GetMovieListContr
 // 学生一覧取得
 Route::get('/get_student_list', [GetStudentListController::class, 'GetStudentListController']);
 // 企業一覧取得
+
+Route::get('/get_company_list/{id}', [GetCompanyListController::class, 'GetCompanyListController']);
+
 Route::get('/get_company_list', [GetCompanyListController::class, 'GetCompanyListController']);
+
 
 // 作品詳細取得
 Route::get('/get_work_detail', [GetWorkDetailController::class, 'GetWorkDetailController']);
@@ -224,4 +230,3 @@ Route::get('{any}', function () {
 
     return view('app');
 })->where('any', '.*');
-

@@ -55,7 +55,7 @@ const CompanyLoginModal = (props) => {
       setShowPassword(!showPassword);
       e.stopPropagation();
     };
-  
+
     const handleMouseDownPassword = (e) => {
       setShowModal(true);
       e.preventDefault();
@@ -227,7 +227,7 @@ const CompanyLoginModal = (props) => {
                       onMouseDown={handleMouseDownPassword}
                       edge="end"
                       sx={{
-                        
+
                       }}
                       variant="outlined"
                     >

@@ -12,7 +12,7 @@ export const NAV = {
 
 export const SLIDER = {
   IMG: "16 / 9",
-  
+
   MODAL_WIDTH: "calc(100% - 25%)",
   ANOTATION: "calc(100% - 75%)",
 };

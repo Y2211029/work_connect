@@ -279,26 +279,35 @@ const ProfileMypage = () => {
           </Box>
         )}
 
-        <Card sx={{
-          textAlign: 'center',
-          display: 'flex',
-          justifyContent: 'center',
-          backgroundColor: theme.palette.background.default,
-          boxShadow: 'none'
-        }}>
-          <CardMedia
-            component="img"
-            sx={{
+<Card sx={{
+        textAlign: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        backgroundColor: theme.palette.background.default,
+        boxShadow: 'none',
+        position: 'relative'
+      }}>
+        <CardMedia
+          component="img"
+          sx={{
+            height: 'calc(100vw * 0.58)',
+            width: 'calc(100vw * 0.58)',
+            objectFit: 'cover',
+            borderRadius: '50%',
+            maxHeight: 350,
+            maxWidth: 350,
+            '@media (min-width: 600px)': {
               height: 350,
               width: 350,
-              objectFit: 'cover', // 画像をカード内でカバーするように設定
-              borderRadius: '50%', // 画像を丸くする
-            }}
-            image="/assets/workImages/thumbnail/cover_19.jpg"
-            alt="Placeholder"
-          />
+            }
+          }}
+          image={ResponseData.icon ?
+            ResponseData.icon :
+            ""}
+          alt="Loading..."
+        />
 
-        </Card>
+      </Card>
 
         <Box>
           <Typography variant="h6">名前</Typography>
@@ -415,4 +424,3 @@ const ProfileMypage = () => {
 
 export default ProfileMypage;
 ProfileMypage.displayName = 'Parent';
-

@@ -5,7 +5,7 @@ import { useSessionStorage } from "src/hooks/use-sessionStorage";
 /*--------------------------------------------*/
 /* ログイン状態をチェックする処理を追加しました。 */
 /*--------------------------------------------*/
-/* 
+/*
 import LoginStatusCheck from "～/loginStatusCheck";
 const { loginStatusCheckFunction } = LoginStatusCheck();
 loginStatusCheckFunction();
@@ -25,7 +25,7 @@ function LoginStatusCheck() {
     const data = {
       id: accountData.id,
     };
-    
+
     if (accountData != undefined) {
       if (accountData.id != undefined) {
         loginStatusCheckResponse = await axios.post(

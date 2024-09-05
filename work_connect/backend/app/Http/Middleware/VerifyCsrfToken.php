@@ -18,5 +18,4 @@ class VerifyCsrfToken
         // LaravelのCSRFトークン検証を無効化
         return $next($request);
     }
-
 }

@@ -28,6 +28,7 @@ class GetMypageKindController extends Controller
                 // 受け取ったデータが企業だった場合
                 return json_encode("c");
             } else {
+                return json_encode("");
                 \Log::info("ユーザーが見つかりませんでした。");
             }
            
@@ -36,7 +37,7 @@ class GetMypageKindController extends Controller
             \Log::info($e);
 
             /*reactに返す*/
-            echo json_encode($e);
+            return json_encode("");
         }
     }
 }

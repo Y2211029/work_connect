@@ -68,7 +68,7 @@ export default function Router() {
         { path: "WorkDetail/:id", element: <WorkDetail /> },
         { path: "VideoDetail/:id", element: <VideoDetail /> },
 
-        //20240619 
+        //20240619
         { path: "Settings", element: <SettingsPage /> },
         { path: "Editor", element: <EditorPage /> },
         //20240704
@@ -80,7 +80,6 @@ export default function Router() {
         { path: "WorkPosting", element: <WorkPosting /> },
         // 動画投稿画面
         { path: "VideoPosting", element: <VideoPosting /> },
-        
         //プロフィール
         // Profile/の後ろにユーザーネームを指定
         { path: "Profile/:user_name", element: <ProfilePage /> },

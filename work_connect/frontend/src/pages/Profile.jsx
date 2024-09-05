@@ -12,9 +12,10 @@ export default function Profile() {
   const url = "http://localhost:8000/get_profile_mypage_kind";
 
   const { user_name } = useParams();
+  const [ ProfileUserName ] = useState(user_name);
 
   // 表示したいプロフィールの人のuser_nameを取得
-  console.log("ProfileUserName:", user_name);
+  console.log("ProfileUserName:", ProfileUserName);
 
   // DBからのレスポンスが入る変数
   const [ResponseData, setResponseData] = useState([]);
@@ -22,17 +23,20 @@ export default function Profile() {
   // ProfileUserNameが変化したとき
   useEffect(() => {
     // 受け取ったuser_nameが学生か企業か判断する
-    async function GetData(user_name) {
-
+    async function GetData(ProfileUserName) {
+      
       try {
         // Laravel側からデータを取得
         const response = await axios.get(url, {
           params: {
-            ProfileUserName: user_name,
+            ProfileUserName: ProfileUserName,
           },
         });
-        if (response) {
+        if(response.data){
           setResponseData(response.data[0]);
+        } else {
+          // ユーザが見つからなかった場合
+          location.href = "/404";
         }
         console.log("response.data:", response.data);
       } catch (err) {
@@ -40,25 +44,23 @@ export default function Profile() {
       }
     }
     // DBからデータを取得
-    if (user_name) {
-      GetData(user_name);
-    }
-  }, [user_name]);
+    GetData(ProfileUserName);
+  }, [ProfileUserName]);
 
-  if (ResponseData === "s") {
+  if(ResponseData === "s"){
     // 学生側
     return (
       <>
         <Profile_router />
       </>
     );
-  } else if (ResponseData === "c") {
+  } else if(ResponseData === "c"){
     // 企業側
     return (
       <>
         <Profile_router2 />
       </>
     );
-  }
-
+  } 
+  
 }

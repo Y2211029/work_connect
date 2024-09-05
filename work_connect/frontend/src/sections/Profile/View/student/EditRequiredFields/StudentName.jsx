@@ -9,6 +9,12 @@ const StudentName = ({StudentSurnameData, StudentnameData}) => {
   const [StudentName, setStudentName] = useState(StudentnameData);
   const { getSessionData, updateSessionData } = useSessionStorage();
 
+  // 入力エラーの状態管理
+  const [inputError, setInputError] = useState({
+    StudentSurNameError: false,
+    StudentNameError: false,
+  });
+
   // valueの初期値をセット
   useEffect(() => {
     // セッションデータ取得
@@ -16,7 +22,8 @@ const StudentName = ({StudentSurnameData, StudentnameData}) => {
     
     /// 編集の途中ならセッションストレージからデータを取得する。
     /// (リロードした時も、データが残った状態にする。)
-    if (SessionData.StudentSurName !== undefined && SessionData.StudentSurName !== "") {
+    if ((SessionData.StudentSurName !== undefined && SessionData.StudentSurName !== "") || 
+    SessionData.StudentSurNameEditing) {
       // セッションストレージから最新のデータを取得
       setStudentSurName(SessionData.StudentSurName);
     } else {
@@ -24,7 +31,8 @@ const StudentName = ({StudentSurnameData, StudentnameData}) => {
       setStudentSurName(StudentSurnameData);
     }
 
-    if (SessionData.StudentName !== undefined && SessionData.StudentName !== "") {
+    if ((SessionData.StudentName !== undefined && SessionData.StudentName !== "") || 
+    SessionData.StudentNameEditing) {
       // セッションストレージから最新のデータを取得
       setStudentName(SessionData.StudentName);
     } else {
@@ -37,16 +45,41 @@ const StudentName = ({StudentSurnameData, StudentnameData}) => {
   const handleChange = (e) => {
     const newValue = e.target.value;
     if (e.target.name === "StudentSurName") {
+      // newValueをセット
       setStudentSurName(newValue);
+      // 編集中状態をオン(保存もしくはログアウトされるまで保持)
+      updateSessionData("accountData", "StudentSurNameEditing", true);
     } else if (e.target.name === "StudentName") {
+      // newValueをセット
       setStudentName(newValue);
+      // 編集中状態をオン(保存もしくはログアウトされるまで保持)
+      updateSessionData("accountData", "StudentNameEditing", true);
     }
+    
   };
 
-  // 編集中のデータを保存しておく
+  
   useEffect(() => {
+    // 編集中のデータを保存しておく
     updateSessionData("accountData", "StudentSurName", StudentSurName);
     updateSessionData("accountData", "StudentName", StudentName);
+    
+    // バリデーション
+    if(StudentSurName === ""){
+      // 姓が空だったら、error表示
+      setInputError((prev) => ({ ...prev, StudentSurNameError: true }));
+    } else if(StudentSurName !== ""){
+      // 姓が空でないなら、error非表示
+      setInputError((prev) => ({ ...prev, StudentSurNameError: false }));
+    }
+    if(StudentName === ""){
+      // 名が空だったら、error表示
+      setInputError((prev) => ({ ...prev, StudentNameError: true }));
+    } else if(StudentName !== ""){
+      // 名が空でないなら、error非表示
+      setInputError((prev) => ({ ...prev, StudentNameError: false }));
+    }
+
   }, [StudentSurName,StudentName]);
 
 
@@ -54,12 +87,13 @@ const StudentName = ({StudentSurnameData, StudentnameData}) => {
     <div style={{ display: "flex" }}>
         <TextField
             // error={NULL_validation1 == true || inputError.student_surname}
+            error={inputError.StudentSurNameError}
             fullWidth
             label="姓"
             margin="normal"
             name="StudentSurName"
             onChange={handleChange}
-            required
+            // required
             type="text"
             value={StudentSurName}
             variant="outlined"
@@ -72,12 +106,13 @@ const StudentName = ({StudentSurnameData, StudentnameData}) => {
         />
         <TextField
             // error={NULL_validation2 == true || inputError.student_name}
+            error={inputError.StudentNameError}
             fullWidth
             label="名"
             margin="normal"
             name="StudentName"
             onChange={handleChange}
-            required
+            // required
             type="text"
             value={StudentName}
             variant="outlined"
@@ -94,8 +129,8 @@ const StudentName = ({StudentSurnameData, StudentnameData}) => {
 
 // プロパティの型を定義
 StudentName.propTypes = {
-  StudentSurnameData: PropTypes.string.isRequired,
-  StudentnameData: PropTypes.string.isRequired,
+  StudentSurnameData: PropTypes.string,
+  StudentnameData: PropTypes.string,
 };
 
 export default StudentName;

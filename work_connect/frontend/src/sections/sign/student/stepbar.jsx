@@ -45,7 +45,6 @@ export default function HorizontalLinearStepper({ Stepbar }) {
       // passwordCheck: false,
     }));
   };
-
   // 登録項目確認の際に利用
   const { getSessionData, updateSessionData } = useSessionStorage();
 

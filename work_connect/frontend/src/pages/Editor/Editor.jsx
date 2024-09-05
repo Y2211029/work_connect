@@ -819,7 +819,7 @@ const Editor = () => {
                 ref={textareaRef}
               >
               </textarea>
-              <p>{news_id}</p>
+              {/* <p>{news_id}</p> */}
               <p><button onClick={news_upload}>投稿</button></p>
             </div>
           </div>

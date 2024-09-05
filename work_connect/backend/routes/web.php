@@ -71,6 +71,8 @@ Route::get('/', function () {
 Route::get('/get_profile_mypage', [GetMypageController::class, 'GetMypageController']);
 // プロフィールのマイページ(post)
 Route::post('/post_profile_mypage', [PostMypageController::class, 'PostMypageController']);
+// 企業プロフィールのマイページ(post)
+Route::post('/company_post_profile_mypage', [PostMypageController::class, 'CompanyPostMypageController']);
 // プロフィールのマイページ画像(post)
 Route::post('/post_profile_mypage_upload', [PostMypageController::class, 'UploadImageController']);
 // プロフィールのマイページルーティング設定(get)
@@ -199,7 +201,7 @@ Route::post('/contents_image_save', [EditorController::class, 'contents_image_sa
 Route::post('/contents_url_image_save', [EditorController::class, 'contents_url_image_save']);
 Route::get('/news_draft_list/{id}', [EditorController::class, 'news_draft_list']);
 Route::get('/Internship_JobOffer', [NewsController::class, 'all_news_get']);
-Route::get('/Internship_JobOffer/special_company_news_get/{id}', [NewsController::class, 'special_company_news_get']);
+Route::get('/Internship_JobOffer/special_company_news/{id}', [NewsController::class, 'special_company_news']);
 Route::get('/Internship_JobOffer/news_detail/{id}', [NewsController::class, 'news_detail_get']);
 Route::post('/news_bookmark', [NewsController::class, 'news_bookmark']);
 Route::get('/thumbnail_img_delete/{id}', [EditorController::class, 'thumbnail_img_delete']);

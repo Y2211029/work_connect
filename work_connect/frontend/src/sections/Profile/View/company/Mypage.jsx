@@ -209,7 +209,13 @@ const ProfileMypage = () => {
   const office_tag = ExtractTags(ResponseData, 'office');
   const selected_occupation_tag = ExtractTags(ResponseData, 'selected_occupation');
   const industry_tag = ExtractTags(ResponseData, 'industry');
+  const programming_language_tag = ExtractTags(ResponseData, 'programming_language');
+  const development_environment_tag = ExtractTags(ResponseData, 'development_environment');
+  const software_tag = ExtractTags(ResponseData, 'software');
+  const qualification_tag = ExtractTags(ResponseData, 'qualification');
+
   const profile_id = ResponseData.id;
+  const hp_url_button = `${ResponseData.company_name}さんのホームページはこちら`;
 
   const handleFollowClick = async () => {
     try {
@@ -233,7 +239,7 @@ const ProfileMypage = () => {
         <Typography opacity="0.48">
         </Typography>
       );
-    } else {
+    } else if(followStatus) {
       return (
         <Typography opacity="0.48" onClick={handleFollowClick}>
           {followStatus}
@@ -362,6 +368,11 @@ const ProfileMypage = () => {
         {(ResponseData.office ||
           ResponseData.selected_occupation ||
           ResponseData.industry ||
+          ResponseData.programming_language ||
+          ResponseData.development_environment ||
+          ResponseData.software ||
+          ResponseData.qualification ||
+          ResponseData.hp_url ||
           ResponseData.companyInformation) && (
             <Box>
               <Showmore>
@@ -375,7 +386,6 @@ const ProfileMypage = () => {
         {/* ResponseData.officeがあるときのみ表示 */}
         {ResponseData.office && !close && (
           <Box ref={el => (detail.current[0] = el)} id="detail">
-
             <Typography variant="h6">勤務地</Typography>
             <Item>{ShowTags(office_tag)}</Item>
           </Box>
@@ -390,10 +400,51 @@ const ProfileMypage = () => {
         {/* ResponseData.industryがあるときのみ表示 */}
         {ResponseData.industry && !close && (
           <Box ref={el => (detail.current[2] = el)} id="detail">
-            <Typography variant="h6">業種</Typography>
+            <Typography variant="h6">業界キーワード</Typography>
             <Item>{ShowTags(industry_tag)}</Item>
           </Box>
         )}
+        {/* ResponseData.programming_languageがあるときのみ表示 */}
+        {ResponseData.programming_language && !close && (
+          <Box ref={el => (detail.current[3] = el)} id="detail">
+            <Typography variant="h6">プログラミング言語</Typography>
+            <Item>{ShowTags(programming_language_tag)}</Item>
+          </Box>
+        )}
+
+        {/* ResponseData.development_environmentがあるときのみ表示 */}
+        {ResponseData.development_environment && !close && (
+          <Box ref={el => (detail.current[4] = el)} id="detail">
+            <Typography variant="h6">開発環境</Typography>
+            <Item>{ShowTags(development_environment_tag)}</Item>
+          </Box>
+        )}
+
+        {/* ResponseData.softwareがあるときのみ表示 */}
+        {ResponseData.software && !close && (
+          <Box ref={el => (detail.current[5] = el)} id="detail">
+            <Typography variant="h6">ソフトウェア</Typography>
+            <Item>{ShowTags(software_tag)}</Item>
+          </Box>
+        )}
+
+        {/* ResponseData.qualificationがあるときのみ表示 */}
+        {ResponseData.qualification && !close && (
+          <Box ref={el => (detail.current[5] = el)} id="detail">
+            <Typography variant="h6">資格</Typography>
+            <Item>{ShowTags(qualification_tag)}</Item>
+          </Box>
+        )}
+
+        {/* ResponseData.hp_urlがあるときのみ表示 */}
+        {ResponseData.hp_url && !close && (
+          <Box ref={el => (detail.current[6] = el)} id="detail">
+            <Typography variant="h6">ホームページURL</Typography>
+            <Item><a href={ResponseData.hp_url} target="_blank">{ShowTagsCompanyInformation(hp_url_button)}</a></Item>
+          </Box>
+        )}
+
+
         {ResponseData.companyInformation && !close && (
           <Box ref={el => (detail.current[3] = el)} id="detail">
             <Typography variant="h6">企業情報</Typography>

@@ -92,4 +92,62 @@ class PostMypageController extends Controller
         return response()->json(['error' => 'No file uploaded'], 400);
     }
 
+    public function CompanyPostMypageController(Request $request)
+    {
+        // reactからデータを取得
+        // 必須項目
+        $CompanyName = $request->input('CompanyName');
+        $CompanyKanaName = $request->input('CompanyKanaName');
+        $UserName = $request->input('UserName');
+        $Intro = $request->input('Intro');
+        $IntroVideo = $request->input('IntroVideo');
+        $CompanyAddress = $request->input('CompanyAddress');
+        $CompanyAddressMap = $request->input('CompanyAddressMap');
+
+        // 詳細項目(自動的にNULLを設定)
+        $Prefecture = $request->input('Prefecture') ? $request->input('Prefecture') : null;
+        $SelectedOccupation = $request->input('SelectedOccupation') ? $request->input('SelectedOccupation') : null;
+        $Industry = $request->input('Industry') ? $request->input('Industry') : null;
+        $Environment = $request->input('Environment') ? $request->input('Environment') : null;
+        $ProgrammingLanguage = $request->input('ProgrammingLanguage') ? $request->input('ProgrammingLanguage') : null;
+        $Qualification = $request->input('Qualification') ? $request->input('Qualification') : null;
+        $Software = $request->input('Software') ? $request->input('Software') : null;
+        $CompanyHPMap = $request->input('CompanyHPMap') ? $request->input('CompanyHPMap') : null;
+
+        try {
+            // updateする項目
+            $data = [
+                'company_name' => $CompanyName,
+                'company_namecana' => $CompanyKanaName,
+                'selected_occupation' => $SelectedOccupation,
+                'user_name' => $UserName,
+                'intro' => $Intro,
+                'office' => $Prefecture,
+                'industry' => $Industry,
+                'programming_language' => $ProgrammingLanguage,
+                'development_environment' => $Environment,
+                'software' => $Software,
+                'qualification' => $Qualification,
+                'address' => $CompanyAddress,
+                'map_url' => $CompanyAddressMap,
+                'video_url' => $IntroVideo,
+                'hp_url' => $CompanyHPMap
+            ];
+
+            \Log::info(var_export($data, true));
+
+            // user_nameを指定しデータを更新
+            DB::table('w_companies')
+                ->where('user_name', $UserName)
+                ->update($data);
+
+            return json_encode(true);
+        } catch (\Exception $e) {
+
+            \Log::info('registerController:新規登録データのDB保存処理エラー');
+            \Log::info($e);
+        }
+    }
+
+
 }

@@ -122,7 +122,7 @@ const ProfileMypage = () => {
           //console.log(response.data[0].follow_status);
           setResponseData(response.data[0]);
           setFollowStatus(response.data[0].follow_status);
-          console.log("ResponseData:", response.data[0]);
+          //console.log("ResponseData:", response.data[0]);
         }
       } catch (err) {
         console.log("err:", err);
@@ -133,7 +133,7 @@ const ProfileMypage = () => {
     if (user_name) {
       GetData();
     }
-  }, [user_name]); // user_name を依存配列に含める
+  }, [ResponseData]); // user_name を依存配列に含める
 
   // 初回レンダリング時の一度だけ実行させる
   useEffect(() => {
@@ -318,7 +318,7 @@ const ProfileMypage = () => {
             }
           }}
           image={ResponseData.icon ?
-            ResponseData.icon :
+            `http://localhost:8000/storage/images/userIcon/${ResponseData.icon}` :
             ""}
           alt="Loading..."
         />
@@ -458,7 +458,7 @@ const ProfileMypage = () => {
         </Box>
         )}
 
-        {ResponseData.companyInformation && !close && (
+        {/* {ResponseData.companyInformation && !close && (
           <Box ref={el => (detail.current[3] = el)} id="detail">
             <Typography variant="h6">企業情報</Typography>
             <table className="company_information_table">
@@ -480,7 +480,7 @@ const ProfileMypage = () => {
               </tbody>
             </table>
           </Box>
-        )}
+        )} */}
 
         {/* </span> */}
       </Stack>

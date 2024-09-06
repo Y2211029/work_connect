@@ -81,7 +81,7 @@ class registerController extends Controller
                 while(!$flg) {
                     // 12桁(0埋め有)のランダムな数値を生成
                     $randNum = str_pad(rand(1, 999999999999), 12, 0, STR_PAD_LEFT);
-                    
+
                     // id用に「S_」を前に付ける
                     $id = "S_" . "$randNum";
 
@@ -104,7 +104,7 @@ class registerController extends Controller
                 /*reactに返す*/
                 echo json_encode($e);
             }
-    
+
             /* DBにデータを登録 */
             if(!empty($mail)){
                 try {
@@ -147,6 +147,7 @@ class registerController extends Controller
                         'id' => $id,
                         'user_name' => $user_name,
                         'mail' => $mail,
+                        'icon' => "cover_19.jpg",
                     ];
                     echo json_encode($data);
 
@@ -196,7 +197,7 @@ class registerController extends Controller
         // ホームページURL
         $c_HP_URL = $c_requestData['HP_URL'];
 
-        
+
 
         /* 企業アカウントのID生成 */
         try {
@@ -207,7 +208,7 @@ class registerController extends Controller
             while(!$c_flg) {
                 // 12桁(0埋め有)のランダムな数値を生成
                 $c_randNum = str_pad(rand(1, 999999999999), 12, 0, STR_PAD_LEFT);
-                
+
                 // id用に「C_」を前に付ける
                 $c_id = "C_" . "$c_randNum";
 
@@ -244,7 +245,7 @@ class registerController extends Controller
                     'company_nameCana' => $c_company_nameCana,
                     'selectedOccupation' => $c_selectedOccupation,
                     'Prefecture' => $c_Prefecture,
-                    'hp_url' => $c_HP_URL,                    
+                    'hp_url' => $c_HP_URL,
                 ]);
 
                 // w_pre_usersテーブルのflgを0から1にUPDATEする
@@ -257,6 +258,7 @@ class registerController extends Controller
                     'id' => $c_id,
                     'user_name' => $c_user_name,
                     'mail' => $c_mail,
+                    'icon' => "cover_19.jpg",
                 ];
                 echo json_encode($c_data);
 

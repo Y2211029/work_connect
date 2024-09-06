@@ -134,6 +134,8 @@ const CompanyLoginModal = (props) => {
           updateSessionData("accountData", "id", data.id);
           updateSessionData("accountData", "user_name", data.user_name);
           updateSessionData("accountData", "mail", data.mail);
+          updateSessionData("accountData", "popover_icon", data.icon);
+
           console.log("ユーザーidは" + sessionStorage.getItem("user_id"));
 
           // 二重送信を防ぐため初期化

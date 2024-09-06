@@ -1171,11 +1171,11 @@ const Editor = () => {
         <p>下書き中の記事はありません</p>
       )}
 
-      <div className="news_button">
-        <button id="save" className="save" onClick={news_save}>下書きを保存する</button>
-        <button id="news_release" className="news_release" onClick={news_release_setting}>公開へ進む</button>
+        {/* <button id="news_release" className="news_release" onClick={news_release_setting}>公開へ進む</button> */}
 
         {/* 公開へ進むボタンを押すと出現するモーダル */}
+      {/* <div className="news_button">
+        <button id="save" className="save" onClick={news_save}>下書きを保存する</button>
         {show && (
           <div id="news_release_modal" className="news_release_modal">
             <div className="news_release_modal_content">
@@ -1218,12 +1218,12 @@ const Editor = () => {
                 ref={textareaRef}
               >
               </textarea>
-              {/* <p>{news_id}</p> */}
+              <p>{news_id}</p>
               <p><button onClick={news_upload}>投稿</button></p>
             </div>
           </div>
         )}
-      </div>
+      </div> */}
 
       {/* アップロードされた画像の表示 */}
       {

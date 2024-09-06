@@ -27,6 +27,7 @@ import UserIcon from "./EditDetailFields/UserIcon";
 // --- 必須項目 --- //
 import CompanyName from "./EditRequiredFields/CompanyName";
 import CompanyKanaName from "./EditRequiredFields/CompanyKanaName";
+//import CompanyUserName from "./EditRequiredFields/CompanyUserName";
 import IntroVideo from "./EditRequiredFields/IntroVideo";
 import CompanyAddress from "./EditRequiredFields/CompanyAddress";
 import CompanyAddressMap from "./EditRequiredFields/CompanyAddressMap";

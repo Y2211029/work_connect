@@ -28,7 +28,7 @@ class GetDepartmentNameTagController extends Controller
         }
 
         \Log::info('GetDepartmentNameTagController.php:$tag:');
-        \Log::info($tag);
+        \Log::info(json_decode($tag, true));
         return json_encode($tag);
     }
 }

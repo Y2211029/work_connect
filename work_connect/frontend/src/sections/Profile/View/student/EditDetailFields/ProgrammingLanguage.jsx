@@ -2,52 +2,41 @@ import { useState, useEffect } from "react";
 import Select from "react-select";
 import PropTypes from 'prop-types';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import GetTagAllList from "src/components/tag/GetTagAllList";
 
-const options = [
-  { value: "Python", label: "Python" },
-  { value: "C", label: "C" },
-  { value: "C++", label: "C++" },
-  { value: "C#", label: "C#" },
-  { value: "Java", label: "Java" },
-  { value: "JavaScript", label: "JavaScript" },
-  { value: "SQL", label: "SQL" },
-  { value: "Go", label: "Go" },
-  { value: "Scratch", label: "Scratch" },
-  { value: "Visual Basic", label: "Visual Basic" },
-  { value: "Assembly language", label: "Assembly language" },
-  { value: "PHP", label: "PHP" },
-  { value: "MATLAB", label: "MATLAB" },
-  { value: "Fortran", label: "Fortran" },
-  { value: "Delphi/Object Pascal", label: "Delphi/Object Pascal" },
-  { value: "Swift", label: "Swift" },
-  { value: "Rust", label: "Rust" },
-  { value: "Ruby", label: "Ruby" },
-  { value: "Kotlin", label: "Kotlin" },
-  { value: "COBOL", label: "COBOL" },
-];
-
-const ProgrammingLanguage = ({ProgrammingLanguageData}) => {
+const ProgrammingLanguage = ({ ProgrammingLanguageData }) => {
   const [selectedProgrammingLanguage, setselectedProgrammingLanguage] = useState([]);
 
   const { getSessionData, updateSessionData } = useSessionStorage();
-  
+
+  const [options, setOptions] = useState([]);
+
+  const { GetTagAllListFunction } = GetTagAllList();
+
+  useEffect(() => {
+    let optionArrayPromise = GetTagAllListFunction("student_programming_language");
+    optionArrayPromise.then((result) => {
+      setOptions(result);
+    });
+  }, []);
+
 
   // valueの初期値をセット
   useEffect(() => {
-     
+
     if (getSessionData("accountData") !== undefined) {
       const SessionData = getSessionData("accountData");
-      if(SessionData.ProgrammingLanguageEditing && SessionData.ProgrammingLanguage){
+      if (SessionData.ProgrammingLanguageEditing && SessionData.ProgrammingLanguage) {
         // セッションストレージから最新のデータを取得
         const devtagArray = SessionData.ProgrammingLanguage.split(",").map(item => ({
           value: item,
           label: item,
         }));
         setselectedProgrammingLanguage(devtagArray);
-      } else if(
-        (SessionData.ProgrammingLanguageEditing && SessionData.ProgrammingLanguage && ProgrammingLanguageData)||
+      } else if (
+        (SessionData.ProgrammingLanguageEditing && SessionData.ProgrammingLanguage && ProgrammingLanguageData) ||
         (!SessionData.ProgrammingLanguageEditing && ProgrammingLanguageData)
-      ){ // DBから最新のデータを取得
+      ) { // DBから最新のデータを取得
         const devtagArray = ProgrammingLanguageData.split(",").map(item => ({
           value: item,
           label: item,
@@ -90,7 +79,7 @@ const ProgrammingLanguage = ({ProgrammingLanguageData}) => {
 };
 
 ProgrammingLanguage.propTypes = {
-  ProgrammingLanguageData: PropTypes.string ,
+  ProgrammingLanguageData: PropTypes.string,
 };
 
 export default ProgrammingLanguage;

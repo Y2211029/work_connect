@@ -9,7 +9,7 @@ import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 
-import CreatableSelect from "react-select/creatable";
+import Select from "react-select";
 
 import { bgBlur } from "src/theme/css";
 
@@ -937,7 +937,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>学校名</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.school_name}
                           value={searchSource.school_name}
                           isClearable
@@ -955,7 +955,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>学科名</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.department_name}
                           value={searchSource.department_name}
                           isClearable
@@ -973,7 +973,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>学部名</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.faculty_name}
                           value={searchSource.faculty_name}
                           isClearable
@@ -991,7 +991,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>専攻名</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.major_name}
                           value={searchSource.major_name}
                           isClearable
@@ -1009,7 +1009,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>コース名</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.course_name}
                           value={searchSource.course_name}
                           isClearable
@@ -1027,7 +1027,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.work_genre}
                           value={searchSource.work_genre}
                           isClearable
@@ -1045,7 +1045,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.programming_language}
                           value={searchSource.programming_language}
                           isClearable
@@ -1063,7 +1063,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.development_environment}
                           value={searchSource.development_environment}
                           isClearable
@@ -1084,7 +1084,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>学校名</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.school_name}
                           value={searchSource.school_name}
                           isClearable
@@ -1102,7 +1102,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>学科名</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.department_name}
                           value={searchSource.department_name}
                           isClearable
@@ -1120,7 +1120,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>学部名</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.faculty_name}
                           value={searchSource.faculty_name}
                           isClearable
@@ -1138,7 +1138,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>専攻名</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.major_name}
                           value={searchSource.major_name}
                           isClearable
@@ -1156,7 +1156,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>コース名</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.course_name}
                           value={searchSource.course_name}
                           isClearable
@@ -1174,7 +1174,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.video_genre}
                           value={searchSource.video_genre}
                           isClearable
@@ -1195,7 +1195,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>卒業年</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.graduation_year}
                           value={searchSource.graduation_year}
                           isClearable
@@ -1213,7 +1213,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>学校名</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.school_name}
                           value={searchSource.school_name}
                           isClearable
@@ -1231,7 +1231,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>学科名</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.department_name}
                           value={searchSource.department_name}
                           isClearable
@@ -1249,7 +1249,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>学部名</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.faculty_name}
                           value={searchSource.faculty_name}
                           isClearable
@@ -1267,7 +1267,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>専攻名</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.major_name}
                           value={searchSource.major_name}
                           isClearable
@@ -1285,7 +1285,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>コース名</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.course_name}
                           value={searchSource.course_name}
                           isClearable
@@ -1303,7 +1303,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>希望職種</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.desired_occupation}
                           value={searchSource.desired_occupation}
                           isClearable
@@ -1321,7 +1321,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>希望勤務地</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.desired_work_region}
                           value={searchSource.desired_work_region}
                           isClearable
@@ -1339,7 +1339,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.student_programming_language}
                           value={searchSource.student_programming_language}
                           isClearable
@@ -1357,7 +1357,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.student_development_environment}
                           value={searchSource.student_development_environment}
                           isClearable
@@ -1375,7 +1375,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>ソフトウェア</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.software}
                           value={searchSource.software}
                           isClearable
@@ -1393,7 +1393,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>取得資格</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.acquisition_qualification}
                           value={searchSource.acquisition_qualification}
                           isClearable
@@ -1411,7 +1411,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>趣味</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.hobby}
                           value={searchSource.hobby}
                           isClearable
@@ -1432,7 +1432,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>職種</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.selected_occupation}
                           value={searchSource.selected_occupation}
                           isClearable
@@ -1450,7 +1450,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>勤務地</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.prefecture}
                           value={searchSource.prefecture}
                           isClearable
@@ -1471,7 +1471,7 @@ export default function Searchbar() {
                     >
                       <div style={{ fontWeight: "Bold", color: "#666" }}>企業名</div>
                       <div style={{ color: "#444" }}>
-                        <CreatableSelect
+                        <Select
                           options={options.company_name}
                           value={searchSource.company_name}
                           isClearable

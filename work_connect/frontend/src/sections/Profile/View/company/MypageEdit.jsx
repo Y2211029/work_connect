@@ -87,7 +87,7 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
   const CompanyKanaNameBox = useRef(null);
   const IntroBox = useRef(null);
   // 編集状態のチェック
-  const { getSessionData } = useSessionStorage();
+  const { getSessionData , updateSessionData } = useSessionStorage();
 
   // Laravelとの通信用URL
   const Get_url = "http://localhost:8000/get_profile_mypage";
@@ -268,6 +268,9 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
 
           // 更新された SessionData を sessionStorage に保存
           sessionStorage.setItem('accountData', JSON.stringify(SessionData));
+
+          // popoverのアイコンを更新
+          updateSessionData("accountData", "popover_icon", SessionData.Icon);
 
           // アラート
           alert("マイページを更新しました。");

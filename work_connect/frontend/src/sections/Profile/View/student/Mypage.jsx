@@ -105,7 +105,7 @@ const ProfileMypage = () => {
 
   // ProfileUserNameが変化したとき
   useEffect(() => {
-    async function GetData(user_name) {
+    async function GetData() {
 
       try {
         // Laravel側からデータを取得
@@ -120,7 +120,7 @@ const ProfileMypage = () => {
           console.log(response.data[0].follow_status);
           setResponseData(response.data[0]);
           setFollowStatus(response.data[0].follow_status);
-          console.log("ResponseDataaaaaaaaaaaaa:", ResponseData.icon);
+          //console.log("ResponseDataaaaaaaaaaaaa:", ResponseData.icon);
         }
         // console.log("ResponseData:", ResponseData);
       } catch (err) {
@@ -129,9 +129,9 @@ const ProfileMypage = () => {
     }
     // DBからデータを取得
     if (user_name) {
-      GetData(user_name);
+      GetData();
     }
-  }, [user_name]);
+  }, [ResponseData]);
 
   // 初回レンダリング時の一度だけ実行させる
   useEffect(() => {
@@ -306,7 +306,7 @@ const ProfileMypage = () => {
               }
             }}
             image={ResponseData.icon ?
-              ResponseData.icon :
+              `http://localhost:8000/storage/images/userIcon/${ResponseData.icon}` :
               ""}
             alt="Loading..."
           />

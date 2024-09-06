@@ -17,7 +17,7 @@ import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 const ImageCard = ({IconData}) => {
 
-  console.log("IconData"+IconData);
+  //console.log("IconData"+IconData);
 
   // 初期値
   const { getSessionData, updateSessionData } = useSessionStorage();
@@ -31,7 +31,7 @@ const ImageCard = ({IconData}) => {
 
       if(SessionData.IconEditing && SessionData.Icon){
         // セッションストレージから最新のデータを取得
-        setSelectedImage("http://localhost:8000/storage/images/userIcon/"+SessionData.Icon);
+        setSelectedImage(SessionData.Icon);
       } else if(
         ((SessionData.IconEditing && SessionData.Icon && IconData)||
         (!SessionData.IconEditing && IconData)) &&
@@ -41,7 +41,7 @@ const ImageCard = ({IconData}) => {
          setSelectedImage(IconData);
       } else {
         // デフォルト(アイコン設定なし)
-        setSelectedImage("mypage_icon/cover_19.jpg");
+        setSelectedImage("cover_19.jpg");
       }
     }
   }, [IconData]);
@@ -56,7 +56,7 @@ const ImageCard = ({IconData}) => {
 
   // アイコンの初期化
   const handleImageReset = async () => {
-    setSelectedImage("/mypage_icon/cover_19.jpg");
+    setSelectedImage("cover_19.jpg");
   }
 
   // アイコンの変更操作
@@ -79,7 +79,7 @@ const ImageCard = ({IconData}) => {
         if (response.ok) {
           // アップロードできた場合
           const data = await response.json();
-          const imageUrl = `http://localhost:8000/storage/images/userIcon/${data.fileName}`;
+          const imageUrl = data.fileName;
 
           // アイコンの更新
           setSelectedImage(imageUrl);
@@ -120,8 +120,10 @@ const ImageCard = ({IconData}) => {
               width: 350,
             }
           }}
-          image={selectedImage}
-          alt="Selected Image"
+          image={selectedImage ?
+            `http://localhost:8000/storage/images/userIcon/${selectedImage}` :
+            ""}
+          alt="Loading..."
         />
         <input
           accept=".jpg,.jpeg,.png"

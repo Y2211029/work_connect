@@ -74,7 +74,7 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
   );
 
   // セッションストレージ取得
-  const { getSessionData } = useSessionStorage();
+  const { getSessionData , updateSessionData } = useSessionStorage();
   // useRef初期化
   const Edit = useRef(null);
   const detail = useRef([]);
@@ -245,6 +245,9 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
 
           // 更新された SessionData を sessionStorage に保存
           sessionStorage.setItem('accountData', JSON.stringify(SessionData));
+
+          // popoverのアイコンを更新
+          updateSessionData("accountData", "popover_icon", SessionData.Icon);
 
           // アラート
           alert("マイページを更新しました。");

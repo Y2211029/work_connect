@@ -26,12 +26,14 @@ export default function AccountPopover() {
   const { setAllItems } = useContext(AllItemsContext);
   const [UserName, setUserName] = useState("");
   const [Mail, setMail] = useState("");
+  const [popoverIcon, setpopoverIcon] = useState("");
   const [login_state, setLoginState] = useState(false);
 
   useEffect(() => {
     if (accountData) {
       setUserName(accountData.user_name);
       setMail(accountData.mail);
+      setpopoverIcon(accountData.popover_icon);
       if (UserName && Mail) {
         setLoginState(true);
       }
@@ -110,7 +112,8 @@ export default function AccountPopover() {
         }}
       >
         <Avatar
-          src={account.photoURL}
+          // ログアウト時はゲストアバターを使用
+          src={popoverIcon ? `http://localhost:8000/storage/images/userIcon/${popoverIcon}`:account.photoURL}
           alt={account.displayName}
           sx={{
             width: 36,

@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import Select from "react-select";
+import CreatableSelect from "react-select/creatable";
 // import axios from "axios";
 import PropTypes from 'prop-types';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import GetTagAllList from "src/components/tag/GetTagAllList";
+import InsertTag from 'src/components/tag/InsertTag';
 
 const DesiredOccupation = ({ DesiredOccupationData }) => {
-
+  const {InsertTagFunction} = InsertTag();
   const { getSessionData, updateSessionData } = useSessionStorage();
 
   const [selectedOccupation, setSelectedOccupation] = useState([]);
@@ -58,15 +59,29 @@ const DesiredOccupation = ({ DesiredOccupationData }) => {
     updateSessionData("accountData", "DesiredOccupation", devTag);
   }, [selectedOccupation]);
 
-  const handleChange = (selectedOption) => {
+  const handleChange = (selectedOption, actionMeta) => {
     // newValueをセット
     setSelectedOccupation(selectedOption);
     // 編集中状態をオン(保存もしくはログアウトされるまで保持)
     updateSessionData("accountData", "DesiredOccupationEditing", true);
+
+    if (actionMeta && actionMeta.action === 'create-option') {
+
+      const inputValue = actionMeta;
+      console.log(inputValue);
+      const newOption = { value: inputValue.option.value, label: inputValue.option.label };
+      setOptions([...options, newOption]);
+      // 2は学生の希望職種です。
+      InsertTagFunction(inputValue.option.value, 2);
+    }
+    let valueArray = [];
+    selectedOption.map((value) => {
+      valueArray.push(value.value)
+    })
   };
 
   return (
-    <Select
+    <CreatableSelect
       name="selectedOccupation"
       id="prefecturesDropdwon"
       value={selectedOccupation}

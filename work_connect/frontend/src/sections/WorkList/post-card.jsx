@@ -14,6 +14,8 @@ import "src/App.css";
 
 import SvgColor from "src/components/svg-color";
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
+
+import { useCreateTagbutton } from "src/hooks/use-createTagbutton";
 // import { alpha } from "@mui/material/styles";
 // import { fDate } from "src/utils/format-time";
 // import { fShortenNumber } from "src/utils/format-number";
@@ -22,6 +24,8 @@ import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 
 const PostCard = forwardRef(({ post }, ref) => {
   const { work_id, genre, /* cover, */ title, intro, thumbnail, /*view, comment,*/ author, userName, createdAt } = post;
+
+  const { tagCreate } = useCreateTagbutton();
 
   // アイコン
   const renderAvatar = (
@@ -63,7 +67,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   const renderGenre =
     genre !== null ? (
       <div>
-        <Button
+        {/* <Button
           variant="contained"
           // color="primary"
           sx={{
@@ -76,8 +80,8 @@ const PostCard = forwardRef(({ post }, ref) => {
             },
           }}
         >
+        </Button> */}
           {genre}
-        </Button>
       </div>
     ) : null;
 

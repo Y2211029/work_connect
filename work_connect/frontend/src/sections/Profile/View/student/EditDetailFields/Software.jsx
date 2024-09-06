@@ -2,39 +2,38 @@ import { useState, useEffect } from "react";
 import Select from "react-select";
 import PropTypes from 'prop-types';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import GetTagAllList from "src/components/tag/GetTagAllList";
 
-const options = [
-  { value: "Adobe Photoshop", label: "Adobe Photoshop" },
-  { value: "Adobe Illustrator", label: "Adobe Illustrator" },
-  { value: "Adobe XD", label: "Adobe XD" },
-  { value: "Adobe Dreamweaver", label: "Adobe Dreamweaver" },
-  { value: "Krita", label: "Krita" },
-  { value: "GIMP", label: "GIMP" },
-  { value: "Inkscape", label: "Inkscape" },
-  { value: "InVision Studio", label: "InVision Studio" },
-  { value: "Figma", label: "Figma" },
-  { value: "Adobe PremierePro", label: "Adobe PremierePro" },
-];
-
-const Software = ({SoftwareData}) => {
+const Software = ({ SoftwareData }) => {
   const [selectedSoftware, setSelectedSoftware] = useState([]);
   const { getSessionData, updateSessionData } = useSessionStorage();
 
-   // valueの初期値をセット
-   useEffect(() => {
+  const [options, setOptions] = useState([]);
+
+  const { GetTagAllListFunction } = GetTagAllList();
+
+  useEffect(() => {
+    let optionArrayPromise = GetTagAllListFunction("software");
+    optionArrayPromise.then((result) => {
+      setOptions(result);
+    });
+  }, []);
+
+  // valueの初期値をセット
+  useEffect(() => {
     if (getSessionData("accountData") !== undefined) {
       const SessionData = getSessionData("accountData");
-      if(SessionData.SoftwareEditing && SessionData.Software){
+      if (SessionData.SoftwareEditing && SessionData.Software) {
         // セッションストレージから最新のデータを取得
         const devtagArray = SessionData.Software.split(",").map(item => ({
           value: item,
           label: item,
         }));
         setSelectedSoftware(devtagArray);
-      } else if(
-        (SessionData.SoftwareEditing && SessionData.Software && SoftwareData)||
+      } else if (
+        (SessionData.SoftwareEditing && SessionData.Software && SoftwareData) ||
         (!SessionData.SoftwareEditing && SoftwareData)
-      ){ // DBから最新のデータを取得
+      ) { // DBから最新のデータを取得
         const devtagArray = SoftwareData.split(",").map(item => ({
           value: item,
           label: item,
@@ -77,7 +76,7 @@ const Software = ({SoftwareData}) => {
 };
 
 Software.propTypes = {
-  SoftwareData: PropTypes.string ,
+  SoftwareData: PropTypes.string,
 };
 
 export default Software;

@@ -2,40 +2,40 @@ import { useState, useEffect } from "react";
 import Select from "react-select";
 import PropTypes from 'prop-types';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import GetTagAllList from "src/components/tag/GetTagAllList";
 
-const options = [
-  { value: "Visual Studio", label: "Visual Studio" },
-  { value: "Eclipse", label: "Eclipse" },
-  { value: "Xcode", label: "Xcode" },
-  { value: "Android Studio", label: "Android Studio" },
-  { value: "Claris FileMaker", label: "Claris FileMaker" },
-  { value: "Unity", label: "Unity" },
-  { value: "Visual Studio Code", label: "Visual Studio Code" },
-  { value: "MySQL", label: "MySQL" },
-  { value: "XAMMP", label: "XAMMP" },
-  { value: "ロリポップ", label: "ロリポップ" },
-];
 
-const Environment = ({EnvironmentData}) => {
+const Environment = ({ EnvironmentData }) => {
   const [selectedDevEnvironment, setSelectedDevEnvironment] = useState([]);
 
   const { getSessionData, updateSessionData } = useSessionStorage();
+
+  const [options, setOptions] = useState([]);
+
+  const { GetTagAllListFunction } = GetTagAllList();
+
+  useEffect(() => {
+    let optionArrayPromise = GetTagAllListFunction("student_development_environment");
+    optionArrayPromise.then((result) => {
+      setOptions(result);
+    });
+  }, []);
 
   // valueの初期値をセット
   useEffect(() => {
     if (getSessionData("accountData") !== undefined) {
       const SessionData = getSessionData("accountData");
-      if(SessionData.EnvironmentEditing && SessionData.Environment){
+      if (SessionData.EnvironmentEditing && SessionData.Environment) {
         // セッションストレージから最新のデータを取得
         const devtagArray = SessionData.Environment.split(",").map(item => ({
           value: item,
           label: item,
         }));
         setSelectedDevEnvironment(devtagArray);
-      } else if(
-        (SessionData.EnvironmentEditing && SessionData.Environment && EnvironmentData)||
+      } else if (
+        (SessionData.EnvironmentEditing && SessionData.Environment && EnvironmentData) ||
         (!SessionData.EnvironmentEditing && EnvironmentData)
-      ){ // DBから最新のデータを取得
+      ) { // DBから最新のデータを取得
         const devtagArray = EnvironmentData.split(",").map(item => ({
           value: item,
           label: item,
@@ -78,7 +78,7 @@ const Environment = ({EnvironmentData}) => {
 };
 
 Environment.propTypes = {
-  EnvironmentData: PropTypes.string ,
+  EnvironmentData: PropTypes.string,
 };
 
 export default Environment;

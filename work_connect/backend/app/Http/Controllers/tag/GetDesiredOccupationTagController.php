@@ -10,14 +10,26 @@ class GetDesiredOccupationTagController extends Controller
 {
     public function GetDesiredOccupationTagController(Request $request)
     {
-        $tag = \DB::table('w_tags')
-            ->where('item_id', 2)
-            ->whereExists(function ($query) {
-                $query->select(\DB::raw(1))
-                    ->from('w_users')
-                    ->whereRaw('w_users.desired_occupation REGEXP CONCAT("(^|,)", w_tags.name, "(,|$)")');
-            })
-            ->get();
+
+
+
+        if ($request->input("All", "") == "tags") {
+            $tag = \DB::table('w_tags')
+                ->where('item_id', 2)
+                ->get();
+        } else {
+            $tag = \DB::table('w_tags')
+                ->where('item_id', 2)
+                ->whereExists(function ($query) {
+                    $query->select(\DB::raw(1))
+                        ->from('w_users')
+                        ->whereRaw('w_users.desired_occupation REGEXP CONCAT("(^|,)", w_tags.name, "(,|$)")');
+                })
+                ->get();
+        }
+
+        \Log::info('GetDesiredOccupationTagController.php:$tag:');
+        \Log::info(json_decode($tag, true));
         return json_encode($tag);
     }
 }

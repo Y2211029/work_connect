@@ -11,9 +11,10 @@ import Typography from "@mui/material/Typography";
 
 import LoginStatusCheck from "src/components/account/loginStatusCheck/loginStatusCheck";
 import sessionAccountData from "src/components/account/loginStatusCheck/sessionAccountData";
-import CreateTagElements from "src/components/tag/CreateTagElements";
 import { AllItemsContext } from "src/layouts/dashboard";
 import { useIntersection } from "src/routes/hooks/use-intersection";
+
+import { UseCreateTagbutton } from "src/hooks/use-createTagbutton";
 
 const fetcher = (lastUrl) => fetch(lastUrl).then((res) => res.json());
 const setting = {
@@ -21,26 +22,29 @@ const setting = {
 };
 
 const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, setLoading, setItemLoading, error) => {
+
+  // ジャンル
+  // const [WorkGenre, setWorkGenre] = useState("");
+
+  const { tagCreate } = UseCreateTagbutton();
+  // useEffect(() => {
+  //   setWorkGenre(tagCreate(genre));
+  // }, [newWorks])
+
   if (newWorks) {
-    // w_works.work_id IDを取り出す。
-    // const uniqueRepoIds = new Set(currentWorkList.map((work) => work[idKey]));
-
     console.log("newWorks", newWorks);
-    // ※ 【filter】 条件に合うものを探して取り出す。 【has】 特定の値が存在する場合は trueを返す
-    // newWorks = data または DataListが代入されている。
-    // data または DataListの中にwork.work_idが被っているものは排除して新しいデータだけを代入
-    // const uniqueRepos = newWorks.filter((item) => !uniqueRepoIds.has(item[idKey]));
-    // const uniqueRepos = newWorks;
-    // console.log("uniqueRepos", uniqueRepos);
 
+
+    // 全作品アイテム
     newWorks.forEach((element) => {
+      // 作品のジャンル取り出す
       tags.forEach((tag) => {
+        // 取り出した配列の中にあるカンマ区切りの項目をtagCreateに渡す
         if (typeof element[tag] === "string" && element[tag] !== null) {
-          element[tag] = createTagElements(element[tag]);
+          element[tag] = tagCreate(element[tag]);
         }
       });
     });
-
 
     setWorkList((prev) => [...prev, ...newWorks]);
     setLoading(false);
@@ -54,9 +58,6 @@ const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, s
   }
 };
 
-const createTagElements = (genreString) => {
-  return genreString.split(",").map((item) => <CreateTagElements key={item} itemContents={item} />);
-};
 
 // --------------------------------ItemObjectAndPostCard--------------------------------
 export default function ItemObjectAndPostCard({ type, ParamUserName }) {

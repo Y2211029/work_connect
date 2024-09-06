@@ -20,6 +20,7 @@ const PostCard = forwardRef(({ post, index }, ref) => {
   const {
     company_id,
     userName,
+    companyName,
     selectedOccupation,
     prefecture,
     cover,
@@ -95,7 +96,7 @@ const PostCard = forwardRef(({ post, index }, ref) => {
         height: 60,
       }}
     >
-      {userName}
+      {companyName}
     </Link>
   );
 

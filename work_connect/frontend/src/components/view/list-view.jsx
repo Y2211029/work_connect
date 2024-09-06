@@ -183,7 +183,8 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       generatePosts: (WorkOfList) =>
         WorkOfList.map((company, key) => ({
           company_id: company.id,
-          userName: company.company_name,
+          userName: company.user_name,
+          companyName: company.company_name,
           selectedOccupation: company.selected_occupation,
           prefecture: company.prefecture,
           cover: `/assets/images/covers/cover_${key + 1}.jpg`,
@@ -369,10 +370,10 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
           {/*
           IsSearch.searchResultEmpty = false 作品データあり
           IsSearch.searchResultEmpty = true 作品データなし
-          
+
           IsSearch.searchResultEmpty !== true
           「検索結果が0件でない場合に表示」
-            
+
           // 学生・企業一覧の場合は並び替え必要ないので非表示にする。
           */}
 

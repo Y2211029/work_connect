@@ -1160,8 +1160,6 @@ const Editor = () => {
   return (
     <div className="editor">
 
-<<<<<<< HEAD
-=======
       <p>Draft List: </p>
       {draft_list.length > 0 ? (
         draft_list.map(draft => (
@@ -1227,7 +1225,6 @@ const Editor = () => {
         )}
       </div>
 
->>>>>>> 3c5789677e38c908589a20c4b753cb2d7d8e5230
       {/* アップロードされた画像の表示 */}
       {
         imageUrl && (

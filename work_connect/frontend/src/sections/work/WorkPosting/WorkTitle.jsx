@@ -39,13 +39,6 @@ const WorkTitle = (props) => {
           }}
         />
       </p>
-      <input
-        type="text"
-        name="title"
-        id="title"
-        className="kadomaru"
-        onChange={handleChange}
-      />
     </div>
   );
 };

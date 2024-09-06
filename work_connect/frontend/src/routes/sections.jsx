@@ -12,6 +12,10 @@ export const TopPage = lazy(() => import("../pages/topPage"));
 export const WorkPosting = lazy(() => import("src/components/account/students/WorkPosting"));
 // 動画投稿画面
 export const VideoPosting = lazy(() => import("src/components/account/students/VideoPosting"));
+// 作品選択画面
+export const WorkSelect = lazy(() => import("src/sections/work/WorkPosting/WorkSelect"));
+// 動画選択画面
+export const VideoSelect = lazy(() => import("src/sections/video/VideoSelect"));
 
 // 作品・動画・学生・企業一覧画面
 export const WorksListPage = lazy(() => import("src/pages/workList"));
@@ -80,6 +84,10 @@ export default function Router() {
         { path: "WorkPosting", element: <WorkPosting /> },
         // 動画投稿画面
         { path: "VideoPosting", element: <VideoPosting /> },
+        // 作品選択画面
+        { path: "WorkSelect", element: <WorkSelect /> },
+        // 動画選択画面
+        { path: "VideoSelect", element: <VideoSelect /> },
         //プロフィール
         // Profile/の後ろにユーザーネームを指定
         { path: "Profile/:user_name", element: <ProfilePage /> },

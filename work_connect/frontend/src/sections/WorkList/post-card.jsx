@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
+// import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
@@ -14,6 +14,7 @@ import "src/App.css";
 
 import SvgColor from "src/components/svg-color";
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
+
 // import { alpha } from "@mui/material/styles";
 // import { fDate } from "src/utils/format-time";
 // import { fShortenNumber } from "src/utils/format-number";
@@ -22,6 +23,10 @@ import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 
 const PostCard = forwardRef(({ post }, ref) => {
   const { work_id, genre, /* cover, */ title, intro, thumbnail, /*view, comment,*/ author, userName, createdAt } = post;
+
+
+
+
 
   // アイコン
   const renderAvatar = (
@@ -63,21 +68,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   const renderGenre =
     genre !== null ? (
       <div>
-        <Button
-          variant="contained"
-          // color="primary"
-          sx={{
-            padding: "2px",
-            margin: "2px",
-            // background: "#41A4FF",
-            background: "linear-gradient(#41A4FF, #9198e5)",
-            "&:hover": {
-              background: "linear-gradient(#c2c2c2, #e5ad91)",
-            },
-          }}
-        >
-          {genre}
-        </Button>
+        {genre}
       </div>
     ) : null;
 

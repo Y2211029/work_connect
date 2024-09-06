@@ -1,11 +1,12 @@
 import Button from "@mui/material/Button";
 
-export const useCreateTagbutton = () => {
+export const UseCreateTagbutton = () => {
   const tagCreate = (TagString) => {
     // タグ作成
     if (TagString) {
       console.log("TagString", TagString);
       let TagButton = [];
+      
       TagButton = TagString.split(",").map((item) => (
         <Button
           key={item}
@@ -24,6 +25,7 @@ export const useCreateTagbutton = () => {
           {item}
         </Button>
       ));
+
       return TagButton;
     }
   };

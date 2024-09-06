@@ -25,7 +25,7 @@ import { follow } from "src/_mock/follow";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
-  border:'#DAE2ED 2px solid',
+  border: '#DAE2ED 2px solid',
   padding: theme.spacing(1),
   textAlign: 'left',
   color: theme.palette.text.secondary,
@@ -195,6 +195,8 @@ const ProfileMypage = () => {
   // ExtractTagsメソッドで抽出したタグを<Item>内で表示する
   const department_name_tag = ExtractTags(ResponseData, 'department_name');
   const faculty_name_tag = ExtractTags(ResponseData, 'faculty_name');
+  const major_name_tag = ExtractTags(ResponseData, 'major_name');
+  const course_name_tag = ExtractTags(ResponseData, 'course_name');
   const development_environment_tag = ExtractTags(ResponseData, 'development_environment');
   const hobby_tag = ExtractTags(ResponseData, 'hobby');
   const desired_work_region_tag = ExtractTags(ResponseData, 'desired_work_region');
@@ -321,7 +323,7 @@ const ProfileMypage = () => {
         </Box>
         <Box>
           <Typography variant="h6">自己紹介</Typography>
-          <Item sx={{fontSize: '20px'}}>{ResponseData.intro ? ResponseData.intro : "Loading..."}</Item>
+          <Item sx={{ fontSize: '20px' }}>{ResponseData.intro ? ResponseData.intro : "Loading..."}</Item>
         </Box>
         <Box>
           <Typography variant="h6">卒業年度</Typography>
@@ -335,6 +337,8 @@ const ProfileMypage = () => {
         {/* 詳細項目がない場合「さらに表示」を表示しない */}
         {(ResponseData.department_name ||
           ResponseData.faculty_name ||
+          ResponseData.major_name ||
+          ResponseData.course_name ||
           ResponseData.development_environment ||
           ResponseData.hobby ||
           ResponseData.desired_work_region ||
@@ -362,8 +366,23 @@ const ProfileMypage = () => {
         {ResponseData.department_name && !close && (
           <Box ref={el => (detail.current[1] = el)} id="detail">
 
-            <Typography variant="h6"></Typography>
+            <Typography variant="h6">学科</Typography>
             <Item>{ShowTags(department_name_tag)}</Item>
+          </Box>
+        )}
+        {/* ResponseData.faculty_nameがあるときのみ表示 */}
+        {ResponseData.major_name && !close && (
+          <Box ref={el => (detail.current[0] = el)} id="detail">
+            <Typography variant="h6">専攻</Typography>
+            <Item>{ShowTags(major_name_tag)}</Item>
+          </Box>
+        )}
+        {/* ResponseData.department_nameがあるときのみ表示 */}
+        {ResponseData.course_name && !close && (
+          <Box ref={el => (detail.current[1] = el)} id="detail">
+
+            <Typography variant="h6">コース</Typography>
+            <Item>{ShowTags(course_name_tag)}</Item>
           </Box>
         )}
         {/* ResponseData.development_environmentがあるときのみ表示 */}

@@ -120,6 +120,7 @@ export default function HorizontalLinearStepper({ Stepbar }) {
             updateSessionData("accountData", "id", response.data.id);
             updateSessionData("accountData", "user_name", response.data.user_name);
             updateSessionData("accountData", "mail", response.data.mail);
+            updateSessionData("accountData", "popover_icon", response.data.icon);
 
             // ここで作品一覧ページに飛ばす処理 //////////////////////////
             navigation("/");

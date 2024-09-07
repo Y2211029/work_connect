@@ -1,9 +1,10 @@
 import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+import YouTube from "react-youtube";
+
 
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
@@ -23,7 +24,22 @@ import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef(({ post }, ref) => {
-  const { movie_id, title, genre, intro, /* view, comment,*/ author, userName, createdAt } = post;
+  const { movie_id, movie, title, genre, intro, /* view, comment,*/ author, userName, createdAt } = post;
+  
+  const opts = {
+    height: "100%",
+    width: "100%",
+    playerVars: {
+      modestbranding: 0,
+      controls: 0,
+      iv_load_policy: 3,
+    },
+  };
+
+  // youtube iframe
+  const renderMovie = (
+    <YouTube videoId={movie} opts={opts} />
+  );
 
   // アイコン
   const renderAvatar = (
@@ -63,23 +79,10 @@ const PostCard = forwardRef(({ post }, ref) => {
   const renderGenre =
     genre !== null ? (
       <div>
-        <Button
-          variant="contained"
-          // color="primary"
-          sx={{
-            padding: "2px",
-            margin: "2px",
-            // background: "#41A4FF",
-            background: "linear-gradient(#41A4FF, #9198e5)",
-            "&:hover": {
-              background: "linear-gradient(#c2c2c2, #e5ad91)",
-            },
-          }}
-        >
-          {genre}
-        </Button>
+        {genre}
       </div>
     ) : null;
+
 
   /* 投稿日 */
   const renderDate = (
@@ -223,6 +226,7 @@ const PostCard = forwardRef(({ post }, ref) => {
     //SM(Small) 600px以上
     //MD(Medium) 960px以上
     // グリッドは12分割されており、
+
     <Grid xs={12} sm={6} md={3}>
       <div ref={ref}>
         <Card>
@@ -231,6 +235,7 @@ const PostCard = forwardRef(({ post }, ref) => {
               padding: "5px 5px 5px 5px ",
             }}
           >
+            {renderMovie}
             {renderShape}
             {renderGenre}
             {renderTitle}

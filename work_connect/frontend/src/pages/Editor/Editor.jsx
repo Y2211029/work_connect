@@ -1163,6 +1163,7 @@ const Editor = () => {
   return (
     <div className="editor">
 
+<<<<<<< HEAD
       <Helmet>
         <title> ニュースの投稿 | Work&Connect </title>
       </Helmet>
@@ -1176,6 +1177,73 @@ const Editor = () => {
       </Stack>
 
 
+=======
+      <p>Draft List: </p>
+      {draft_list.length > 0 ? (
+        draft_list.map(draft => (
+          <p key={draft.id} onClick={() => rewrite_news(draft.id)}>
+            {draft.article_title}
+          </p>
+        ))
+      ) : (
+        <p>下書き中の記事はありません</p>
+      )}
+
+        {/* <button id="news_release" className="news_release" onClick={news_release_setting}>公開へ進む</button> */}
+
+        {/* 公開へ進むボタンを押すと出現するモーダル */}
+      {/* <div className="news_button">
+        <button id="save" className="save" onClick={news_save}>下書きを保存する</button>
+        {show && (
+          <div id="news_release_modal" className="news_release_modal">
+            <div className="news_release_modal_content">
+              <p><button onClick={closeModal}>キャンセル</button></p>
+              <p>公開設定</p>
+
+              <p>どのジャンルで公開しますか?</p>
+              <input
+                type="radio"
+                name="news_genre"
+                id="blog"
+                value="ブログ"
+                checked={selectedGenre === 'ブログ'}
+                onChange={handleRadioChange }
+              />
+              <label className="label" htmlFor="blog">ブログ</label>
+
+              <input
+                type="radio"
+                name="news_genre"
+                id="internship"
+                value="インターンシップ"
+                checked={selectedGenre === 'インターンシップ'}
+                onChange={handleRadioChange}
+              />
+              <label className="label" htmlFor="internship">インターンシップ</label>
+
+              <input
+                type="radio"
+                name="news_genre"
+                id="job"
+                value="求人"
+                checked={selectedGenre === '求人'}
+                onChange={handleRadioChange }
+              />
+              <label className="label" htmlFor="job">求人</label>              <br></br><br></br><br></br>
+              <p>学生さんへのメッセージや記事の内容を一言でご記入ください!</p>
+              <textarea id="news_textarea"
+                className="news_textarea"
+                ref={textareaRef}
+              >
+              </textarea>
+              <p>{news_id}</p>
+              <p><button onClick={news_upload}>投稿</button></p>
+            </div>
+          </div>
+        )}
+      </div> */}
+
+>>>>>>> 563d8387d6f83406cb3bfc5ec3fcfbfd3c2b2d2c
       {/* アップロードされた画像の表示 */}
       {
         imageUrl && (

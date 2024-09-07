@@ -37,7 +37,11 @@ const CompanyName = ({ CompanyNameData }) => {
             margin="normal"
             name="CompanyName"
             onChange={handleChange}
+<<<<<<< HEAD
             required
+=======
+            // required
+>>>>>>> 563d8387d6f83406cb3bfc5ec3fcfbfd3c2b2d2c
             type="text"
             value={CompanyName}
             variant="outlined"

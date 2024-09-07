@@ -15,6 +15,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import Button from "@mui/material/Button";
 
 // ログインのモーダル CSS設定
 const modalStyle = {
@@ -47,19 +48,19 @@ const CompanyLoginModal = (props) => {
   const url = "http://localhost:8000/s_login";
   const csrf_url = "http://localhost:8000/csrf-token";
 
-    // パスワード表示/非表示の切り替え(パスワード)
-    const [showPassword, setShowPassword] = useState("");
+  // パスワード表示/非表示の切り替え(パスワード)
+  const [showPassword, setShowPassword] = useState("");
 
-    const handleClickShowPassword = (e) => {
-      setShowModal(true);
-      setShowPassword(!showPassword);
-      e.stopPropagation();
-    };
+  const handleClickShowPassword = (e) => {
+    setShowModal(true);
+    setShowPassword(!showPassword);
+    e.stopPropagation();
+  };
 
-    const handleMouseDownPassword = (e) => {
-      setShowModal(true);
-      e.preventDefault();
-    };
+  const handleMouseDownPassword = (e) => {
+    setShowModal(true);
+    e.preventDefault();
+  };
 
   const handleOpenStudentModal = () => {
     props.callSetModalChange("学生");
@@ -134,6 +135,8 @@ const CompanyLoginModal = (props) => {
           updateSessionData("accountData", "id", data.id);
           updateSessionData("accountData", "user_name", data.user_name);
           updateSessionData("accountData", "mail", data.mail);
+          updateSessionData("accountData", "popover_icon", data.icon);
+
           console.log("ユーザーidは" + sessionStorage.getItem("user_id"));
 
           // 二重送信を防ぐため初期化
@@ -187,6 +190,10 @@ const CompanyLoginModal = (props) => {
     return errors;
   };
 
+  const fillDemoCredentials = () => {
+    setFormValues({ user_name: "株式会社アーキテクト", password: "ArchitectPassword" });
+  };
+  
   return (
     <div>
       {/* 条件付きレンダリングを使用 */}
@@ -197,50 +204,52 @@ const CompanyLoginModal = (props) => {
             <hr />
             <div className="loginUiForm">
               <TextField
-              fullWidth
-              label="企業名またはメールアドレス"
-              margin="normal"
-              name="user_name"
-              onChange={handleChange}
-              required
-              type= "text"
-              value={formValues.user_name}
-              variant="outlined"
-            />
+                fullWidth
+                label="企業名またはメールアドレス"
+                margin="normal"
+                name="user_name"
+                onChange={handleChange}
+                required
+                type="text"
+                value={formValues.user_name}
+                variant="outlined"
+              />
               <TextField
-              fullWidth
-              label="パスワード"
-              margin="normal"
-              name="password"
-              onChange={handleChange}
-              required
-              type={showPassword ? "text" : "password"}
-              value={formValues.password}
-              variant="outlined"
-              // パスワード表示/非表示の切り替え
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                      sx={{
+                fullWidth
+                label="パスワード"
+                margin="normal"
+                name="password"
+                onChange={handleChange}
+                required
+                type={showPassword ? "text" : "password"}
+                value={formValues.password}
+                variant="outlined"
+                // パスワード表示/非表示の切り替え
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                        sx={{
 
-                      }}
-                      variant="outlined"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-
-
+                        }}
+                        variant="outlined"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
 
 
+
+              <Button type="button" onClick={fillDemoCredentials} className="submitButton">
+                ユーザーネーム:株式会社アーキテクト パスワード:ArchitectPassword
+              </Button>
               <button type="submit" className="submitButton">
                 ログイン
               </button>

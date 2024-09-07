@@ -9,6 +9,7 @@ import YouTube from "react-youtube";
 import "../../../App.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 // // ログインのモーダル CSS設定
 // // const modalStyle = {
@@ -28,7 +29,7 @@ import axios from "axios";
 
 //   // const handleOpenModal = () => {
 //   //   // setShowModal(true);
-//   //   navigation("WorkPosting");
+//   //   navigation("VideoPosting");
 //   // };
 
 //   // const handleCloseModal = () => {
@@ -36,10 +37,10 @@ import axios from "axios";
 //   //   // setFormErrors({}); // エラーメッセージをリセット
 //   // };
 
-//   const [workData, setWorkData] = useState({
+//   const [workData, setVideoData] = useState({
 //     YoutubeURL: "",
-//     WorkTitle: "",
-//     WorkGenre: "",
+//     VideoTitle: "",
+//     VideoGenre: "",
 //     Introduction: "",
 //     Obsession: "",
 //     Language: "",
@@ -52,8 +53,8 @@ import axios from "axios";
 //     console.log(workData);
 //   }, [workData]);
 
-//   const callSetWorkData = (key, value) => {
-//     setWorkData({
+//   const callSetVideoData = (key, value) => {
+//     setVideoData({
 //       ...workData,
 //       [key]: value,
 //     });
@@ -62,7 +63,7 @@ import axios from "axios";
 //   const handleChange = (event) => {
 //     const url = event.target.value;
 //     setVideoUrl(url);
-//     callSetWorkData("YoutubeURL", url);
+//     callSetVideoData("YoutubeURL", url);
 
 //     // YouTubeの動画IDを抽出
 //     const urlPattern =
@@ -84,7 +85,7 @@ import axios from "axios";
 //     },
 //   };
 
-//   const WorkSubmit = async (e) => {
+//   const VideoSubmit = async (e) => {
 //     e.preventDefault();
 //     console.log("e", e.target);
 
@@ -113,23 +114,23 @@ import axios from "axios";
 
 //   return (
 //     <div>
-//       <div className="WorkPostingFormContainer">
-//         <form onSubmit={WorkSubmit} method="post" id="youtubeForm">
+//       <div className="VideoPostingFormContainer">
+//         <form onSubmit={VideoSubmit} method="post" id="youtubeForm">
 //           <h3>動画投稿</h3>
 //           <hr />
-//           <div className="WorkPostingUiForm">
+//           <div className="VideoPostingUiForm">
 //             <div className="ImageUpload">
-//               <div className="WorkPostingFormField">
+//               <div className="VideoPostingFormField">
 //                 <YoutubeURL onChange={handleChange} value={videoUrl} />
 //                  <YouTube videoId={videoId} opts={opts} />
 //               </div>
 //             </div>
 //             <div className="Information">
-//               <div className="WorkPostingFormField">
-//                 <VideoTitle callSetWorkData={callSetWorkData} />
+//               <div className="VideoPostingFormField">
+//                 <VideoTitle callSetVideoData={callSetVideoData} />
 //               </div>
 //               {/* ジャンル */}
-//               <div className="WorkPostingFormField">
+//               <div className="VideoPostingFormField">
 //                 <div className="workGenre" id="workGenre">
 //                   <p className="work_genre">
 //                     ジャンル&nbsp;<span className="red_txt">必須</span>
@@ -138,11 +139,11 @@ import axios from "axios";
 //                       タグを入れてください
 //                     </span>
 //                   </p>
-//                   <VideoGenre callSetWorkData={callSetWorkData} />
+//                   <VideoGenre callSetVideoData={callSetVideoData} />
 //                 </div>
 //               </div>
-//               <div className="WorkPostingFormField">
-//                 <Introduction callSetWorkData={callSetWorkData} />
+//               <div className="VideoPostingFormField">
+//                 <Introduction callSetVideoData={callSetVideoData} />
 //               </div>
 //             </div>
 //           </div>
@@ -160,7 +161,7 @@ const VideoPosting = () => {
 
   // const handleOpenModal = () => {
   //   // setShowModal(true);
-  //   navigation("WorkPosting");
+  //   navigation("VideoPosting");
   // };
 
   // const handleCloseModal = () => {
@@ -168,10 +169,12 @@ const VideoPosting = () => {
   //   // setFormErrors({}); // エラーメッセージをリセット
   // };
 
-  const [workData, setWorkData] = useState({
+  let navigation = useNavigate();
+
+  const [workData, setVideoData] = useState({
     YoutubeURL: "",
-    WorkTitle: "",
-    WorkGenre: "",
+    VideoTitle: "",
+    VideoGenre: "",
     Introduction: "",
     Obsession: "",
     Language: "",
@@ -184,8 +187,8 @@ const VideoPosting = () => {
     console.log(workData);
   }, [workData]);
 
-  const callSetWorkData = (key, value) => {
-    setWorkData({
+  const callSetVideoData = (key, value) => {
+    setVideoData({
       ...workData,
       [key]: value,
     });
@@ -204,7 +207,7 @@ const VideoPosting = () => {
       if (srcMatch && srcMatch2[1]) {
         setVideoId(srcMatch2[1]);
         console.log("videoId :", videoId);
-        callSetWorkData("YoutubeURL", videoId);
+        callSetVideoData("YoutubeURL", videoId);
       }
     }
     // URL入力時
@@ -212,18 +215,18 @@ const VideoPosting = () => {
       const urlObj = new URL(url);
       const params = new URLSearchParams(urlObj.search);
       setVideoId(params.get("v"));
-      callSetWorkData("YoutubeURL", videoId);
+      callSetVideoData("YoutubeURL", videoId);
     }
     // 短縮URL入力時
     else if (url.includes("youtu.be/")) {
       const urlObj = new URL(url);
       setVideoId(urlObj.pathname.substring(1));
-      callSetWorkData("YoutubeURL", videoId);
+      callSetVideoData("YoutubeURL", videoId);
     }
     // 動画ID入力時
     else {
       setVideoId(url);
-      callSetWorkData("YoutubeURL", videoId);
+      callSetVideoData("YoutubeURL", videoId);
     }
   };
 
@@ -231,11 +234,13 @@ const VideoPosting = () => {
     height: "283",
     width: "450",
     playerVars: {
-      autoplay: 1,
+      modestbranding: 0,
+      controls: 0,
+      iv_load_policy: 3,
     },
   };
 
-  const WorkSubmit = async (e) => {
+  const VideoSubmit = async (e) => {
     e.preventDefault();
     console.log("e", e.target);
 
@@ -251,6 +256,7 @@ const VideoPosting = () => {
       });
       console.log(formData);
       console.log(response.data.message);
+      navigation("/VideoSelect");
     } catch (error) {
       console.log(error.message);
     }
@@ -260,39 +266,43 @@ const VideoPosting = () => {
 
   return (
     <div>
-      <div className="WorkPostingFormContainer">
-        <form onSubmit={WorkSubmit} method="post" id="youtubeForm">
+      <div className="VideoPostingFormContainer">
+        <form onSubmit={VideoSubmit} method="post" id="youtubeForm">
           <h3>動画投稿</h3>
-          <div className="WorkPostingUiForm">
+          <div className="VideoPostingUiForm">
             <div className="ImageUpload">
-              <div className="WorkPostingFormField">
+              <div className="VideoPostingFormField">
                 <YoutubeURL onChange={handleChange} value={videoUrl} />
               </div>
-              {videoId ? <YouTube videoId={videoId} opts={opts} /> : <p>Please enter a valid YouTube URL, ID, or iframe code</p>}
+              <br />
+              {videoId ? <YouTube videoId={videoId} opts={opts} /> : <p>YouTubeのURL、ID、またはiframeコードを入力してください。</p>}
             </div>
-            <div className="Information">
-              <div className="WorkPostingFormField">
-                <VideoTitle callSetWorkData={callSetWorkData} />
+            <div className="VideoInformation">
+              <div className="VideoPostingFormField">
+                <VideoTitle callSetVideoData={callSetVideoData} />
               </div>
+              <br />
               {/* ジャンル */}
-              <div className="WorkPostingFormField">
+              <div className="VideoPostingFormField">
                 <div className="workGenre" id="workGenre">
                   <p className="work_genre">
-                    ジャンル&nbsp;<span className="red_txt">必須</span>
+                    ジャンル
+                    {/* ジャンル&nbsp;<span className="red_txt">必須</span>
                     &nbsp;
                     <span className="alert_red_txt" id="alert_a_3">
                       タグを入れてください
-                    </span>
+                    </span> */}
                   </p>
-                  <VideoGenre callSetWorkData={callSetWorkData} />
+                  <VideoGenre callSetVideoData={callSetVideoData} />
                 </div>
               </div>
-              <div className="WorkPostingFormField">
-                <Introduction callSetWorkData={callSetWorkData} />
+              <br />
+              <div className="VideoPostingFormField">
+                <Introduction callSetVideoData={callSetVideoData} />
               </div>
             </div>
           </div>
-          <input type="submit" value="送信" className="submit" />
+          <input type="submit" value="送信" className="VideoSubmit" />
         </form>
       </div>
       {/* </Modal> */}

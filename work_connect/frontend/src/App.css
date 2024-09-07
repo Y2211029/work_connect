@@ -326,11 +326,14 @@ nav ul li a:hover {
 }
 
 .WorkPostingUiForm {
-  align-items: center;
+  position: relative;
+  /* align-items: center; */
   float: left;
   justify-content: space-evenly;
   height: 600px;
   width: 100%;
+  top: -20%;
+  left: 15%;
   padding-right: 10px;
 }
 
@@ -352,20 +355,22 @@ nav ul li a:hover {
 }
 
 .WorkPostingFormField input {
-  border: 1px solid grey;
   padding: 15px;
-  width: 88%;
+  width: 100%;
   border-radius: 10px;
 }
 
 .WorkPostingImageFormField {
   display: flex;
+  align-items: center;
   flex-direction: column;
   width: 100%;
+  overflow-y: auto;
 }
 
 textarea {
   resize: none;
+  width: 100%;
 }
 
 .WorkPostingUiForm {
@@ -382,9 +387,9 @@ textarea {
   position: relative;
   border-radius: 5px;
   width: 50%;
-  padding: 20px;
+  height: auto;
+  /* padding: 20px; */
   margin-right: 6px;
-  max-height: 95.5%;
 }
 
 .Image {
@@ -395,25 +400,26 @@ textarea {
   padding: 5px 0px;
 }
 
-.Information {
+.WorkInformation {
   display: flex;
   flex-direction: column;
-  position: relative;
+  /* position: relative; */
   overflow-y: auto;
   /* background-color: #8b8b8b; */
   border-radius: 5px;
   max-width: 600px;
   flex: 1 1 0%;
-  padding: 20px;
+  padding-left: 20px;
   height: 100%;
+  top: 70px;
   margin-left: 6px;
   box-sizing: border-box;
 }
 
-.submit {
+.WorkSubmit {
   position: relative;
   float: right;
-  right: 3%;
+  right: -13%;
   margin-top: 1%;
   border-radius: 5%;
   font-size: 16pt;
@@ -427,13 +433,120 @@ textarea {
   border: 2px solid #6666ff;
 }
 
-.submit:hover {
+.WorkSubmit:hover {
   color: #6666ff;
   background: #ffffff;
 }
 
 /* 作品投稿画面 ここまで */
 
+/* 動画投稿画面 ここから */
+
+.VideoPostingFormContainer {
+  height: 80vh;
+  width: 70%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.VideoPostingFormContainer form {
+  /* background-color: white; */
+  width: 100%;
+  /* max-width: 600px; */
+  padding: 30px;
+  border-radius: 50px;
+  float: left;
+  /* border: 1px solid #dfdfdf; */
+  font-weight: 700;
+}
+
+.VideoPostingUiForm {
+  position: relative;
+  align-items: center;
+  float: left;
+  justify-content: space-evenly;
+  height: 600px;
+  width: 100%;
+  left: 150px;
+  padding-right: 10px;
+}
+
+.VideoPostingUiForm::-webkit-scrollbar {
+  background: white;
+  width: 10px;
+  height: 5px;
+}
+
+.VideoPostingUiForm::-webkit-scrollbar-thumb {
+  background-color: #8b8b8b;
+}
+
+
+.VideoPostingFormField {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.VideoPostingFormField input {
+  border: 1px solid grey;
+  padding: 15px;
+  width: 100%;
+  border-radius: 10px;
+}
+
+.VideoPostingImageFormField {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.VideoPostingUiForm {
+  display: flex;
+  flex-direction: row;
+  /* float: left; */
+}
+
+.VideoInformation {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-y: auto;
+  /* background-color: #8b8b8b; */
+  border-radius: 5px;
+  max-width: 600px;
+  flex: 1 1 0%;
+  padding: 20px;
+  height: 100%;
+  top: 70px;
+  margin-left: 6px;
+  box-sizing: border-box;
+}
+
+.VideoSubmit {
+  position: relative;
+  float: right;
+  right: -8%;
+  margin-top: 1%;
+  border-radius: 5%;
+  font-size: 16pt;
+  text-align: center;
+  cursor: pointer;
+  padding: 9px 32px;
+  background: #6666ff;
+  color: #ffffff;
+  line-height: 1em;
+  transition: .3s;
+  border: 2px solid #6666ff;
+}
+
+.VideoSubmit:hover {
+  color: #6666ff;
+  background: #ffffff;
+}
+
+/* 動画投稿画面 ここまで */
 
 /* 作品一覧画面　ここから */
 .link {
@@ -534,3 +647,19 @@ textarea {
 
 
 /* 作品詳細 　ここまで */
+
+
+
+/* 一覧 */
+@media (min-width : 600px) {
+  .mediaCard {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    max-height: 800px;
+  }
+
+  .itemGrid {
+    width: 28%;
+  }
+}

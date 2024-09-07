@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import GetTagAllList from "src/components/tag/GetTagAllList";
 
-const FacultyNameDropdown = ({ FacultyNameData }) => {
-  const [selectedFaculty, setSelectedFaculty] = useState(FacultyNameData);
+const CourseNameDropdown = ({ CourseNameData }) => {
+  const [selectedFaculty, setSelectedFaculty] = useState(CourseNameData);
 
   const { getSessionData, updateSessionData } = useSessionStorage();
 
@@ -14,7 +14,7 @@ const FacultyNameDropdown = ({ FacultyNameData }) => {
   const { GetTagAllListFunction } = GetTagAllList();
 
   useEffect(() => {
-    let optionArrayPromise = GetTagAllListFunction("faculty_name");
+    let optionArrayPromise = GetTagAllListFunction("course_name");
     optionArrayPromise.then((result) => {
       setOptions(result);
     });
@@ -24,28 +24,28 @@ const FacultyNameDropdown = ({ FacultyNameData }) => {
   useEffect(() => {
     if (getSessionData("accountData") !== undefined) {
       const SessionData = getSessionData("accountData");
-      if (SessionData.FacultyNameEditing && SessionData.FacultyName) {
+      if (SessionData.CourseNameEditing && SessionData.CourseName) {
         // セッションストレージから最新のデータを取得
         setSelectedFaculty({
-          value: SessionData.FacultyName,
-          label: SessionData.FacultyName,
+          value: SessionData.CourseName,
+          label: SessionData.CourseName,
         });
       } else if (
-        (SessionData.FacultyNameEditing && SessionData.FacultyName && FacultyNameData) ||
-        (!SessionData.FacultyNameEditing && FacultyNameData)
+        (SessionData.CourseNameEditing && SessionData.CourseName && CourseNameData) ||
+        (!SessionData.CourseNameEditing && CourseNameData)
       ) {
         // DBから最新のデータを取得
         setSelectedFaculty({
-          value: FacultyNameData,
-          label: FacultyNameData,
+          value: CourseNameData,
+          label: CourseNameData,
         });
       }
     }
-  }, [FacultyNameData]);
+  }, [CourseNameData]);
 
   useEffect(() => {
     if (selectedFaculty) {
-      updateSessionData("accountData", "FacultyName", selectedFaculty.value);
+      updateSessionData("accountData", "CourseName", selectedFaculty.value);
     }
   }, [selectedFaculty]);
 
@@ -53,13 +53,13 @@ const FacultyNameDropdown = ({ FacultyNameData }) => {
     setSelectedFaculty(selectedOption);
     // sessionStrageに値を保存
     if (selectedOption) {
-      updateSessionData("accountData", "FacultyName", selectedOption.value);
+      updateSessionData("accountData", "CourseName", selectedOption.value);
     } else {
       // なしの場合
-      updateSessionData("accountData", "FacultyName", "");
+      updateSessionData("accountData", "CourseName", "");
     }
     // 編集中状態をオン(保存もしくはログアウトされるまで保持)
-    updateSessionData("accountData", "FacultyNameEditing", true);
+    updateSessionData("accountData", "CourseNameEditing", true);
   };
 
   return (
@@ -76,8 +76,8 @@ const FacultyNameDropdown = ({ FacultyNameData }) => {
   );
 };
 
-FacultyNameDropdown.propTypes = {
-  FacultyNameData: PropTypes.string,
+CourseNameDropdown.propTypes = {
+  CourseNameData: PropTypes.string,
 };
 
-export default FacultyNameDropdown;
+export default CourseNameDropdown;

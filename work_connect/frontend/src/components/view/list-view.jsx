@@ -11,9 +11,10 @@ import Typography from "@mui/material/Typography";
 
 import LoginStatusCheck from "src/components/account/loginStatusCheck/loginStatusCheck";
 import sessionAccountData from "src/components/account/loginStatusCheck/sessionAccountData";
-import CreateTagElements from "src/components/tag/CreateTagElements";
 import { AllItemsContext } from "src/layouts/dashboard";
 import { useIntersection } from "src/routes/hooks/use-intersection";
+
+import { UseCreateTagbutton } from "src/hooks/use-createTagbutton";
 
 const fetcher = (lastUrl) => fetch(lastUrl).then((res) => res.json());
 const setting = {
@@ -21,26 +22,29 @@ const setting = {
 };
 
 const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, setLoading, setItemLoading, error) => {
+
+  // ジャンル
+  // const [WorkGenre, setWorkGenre] = useState("");
+
+  const { tagCreate } = UseCreateTagbutton();
+  // useEffect(() => {
+  //   setWorkGenre(tagCreate(genre));
+  // }, [newWorks])
+
   if (newWorks) {
-    // w_works.work_id IDを取り出す。
-    // const uniqueRepoIds = new Set(currentWorkList.map((work) => work[idKey]));
-
     console.log("newWorks", newWorks);
-    // ※ 【filter】 条件に合うものを探して取り出す。 【has】 特定の値が存在する場合は trueを返す
-    // newWorks = data または DataListが代入されている。
-    // data または DataListの中にwork.work_idが被っているものは排除して新しいデータだけを代入
-    // const uniqueRepos = newWorks.filter((item) => !uniqueRepoIds.has(item[idKey]));
-    // const uniqueRepos = newWorks;
-    // console.log("uniqueRepos", uniqueRepos);
 
+
+    // 全作品アイテム
     newWorks.forEach((element) => {
+      // 作品のジャンル取り出す
       tags.forEach((tag) => {
+        // 取り出した配列の中にあるカンマ区切りの項目をtagCreateに渡す
         if (typeof element[tag] === "string" && element[tag] !== null) {
-          element[tag] = createTagElements(element[tag]);
+          element[tag] = tagCreate(element[tag]);
         }
       });
     });
-
 
     setWorkList((prev) => [...prev, ...newWorks]);
     setLoading(false);
@@ -54,9 +58,6 @@ const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, s
   }
 };
 
-const createTagElements = (genreString) => {
-  return genreString.split(",").map((item) => <CreateTagElements key={item} itemContents={item} />);
-};
 
 // --------------------------------ItemObjectAndPostCard--------------------------------
 export default function ItemObjectAndPostCard({ type, ParamUserName }) {
@@ -109,9 +110,9 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       idKey: "work_id",
       tags: ["work_genre"],
       generatePosts: (WorkOfList) =>
-        WorkOfList.map((work, key) => ({
+        WorkOfList.map((work) => ({
           work_id: work.work_id,
-          thumbnail: `/assets/workImages/thumbnail/cover_${key + 1}.jpg`,
+          thumbnail: `sss`,
           title: work.work_name,
           genre: work.work_genre,
           intro: work.work_intro.length > 200 ? work.work_intro.substring(0, 200) + "..." : work.work_intro,
@@ -133,6 +134,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       generatePosts: (WorkOfList) =>
         WorkOfList.map((movie) => ({
           movie_id: movie.movie_id,
+          movie: movie.youtube_url,
           title: movie.title,
           genre: movie.genre,
           intro: movie.intro.length > 200 ? movie.intro.substring(0, 200) + "..." : movie.intro,
@@ -182,7 +184,8 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       generatePosts: (WorkOfList) =>
         WorkOfList.map((company, key) => ({
           company_id: company.id,
-          userName: company.company_name,
+          userName: company.user_name,
+          companyName: company.company_name,
           selectedOccupation: company.selected_occupation,
           prefecture: company.prefecture,
           cover: `/assets/images/covers/cover_${key + 1}.jpg`,
@@ -335,7 +338,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   const renderWorkItems =
     typeof workItems === "object" && Array.isArray(workItems) && PostCard ? (
       workItems.map((post, index) => (
-        <PostCard ref={index === WorkOfList.length - 1 ? ref : null} key={`${post}-${index}`} post={post} index={index} />
+        <PostCard className="mediaCard" ref={index === WorkOfList.length - 1 ? ref : null} key={`${post}-${index}`} post={post} index={index} />
       ))
     ) : typeof workItems === "string" ? (
       <>
@@ -356,7 +359,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
           colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
         />
       )}
-      <Container maxWidth="xl">
+      <Container maxWidth="xl" >
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           {typeof ItemName === "string" ? (
             <>
@@ -368,21 +371,23 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
           {/*
           IsSearch.searchResultEmpty = false 作品データあり
           IsSearch.searchResultEmpty = true 作品データなし
-          
+
           IsSearch.searchResultEmpty !== true
           「検索結果が0件でない場合に表示」
-            
+
           // 学生・企業一覧の場合は並び替え必要ないので非表示にする。
           */}
 
           {PostSort && PathName !== "CompanyList" && PathName !== "StudentList" && IsSearch.searchResultEmpty !== true && (
             <PostSort
+
               options={[
                 { value: "orderNewPostsDate", label: "投稿日が新しい順" },
                 { value: "orderOldPostsDate", label: "投稿日が古い順" },
               ]}
               sortOption={sortOption}
               onSort={handleSortChange}
+
             />
           )}
         </Stack>

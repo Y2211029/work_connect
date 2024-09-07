@@ -44,11 +44,19 @@ const CompanyKanaName = ({CompanyKanaNameData}) => {
         <TextField
             // error={NULL_validation2 == true || inputError.student_name}
             fullWidth
+<<<<<<< HEAD
             label=""
             margin="normal"
             name="CompanyKanaName"
             onChange={handleChange}
             required
+=======
+            label="企業名(カタカナ)"
+            margin="normal"
+            name="CompanyKanaName"
+            onChange={handleChange}
+            // required
+>>>>>>> 563d8387d6f83406cb3bfc5ec3fcfbfd3c2b2d2c
             type="text"
             value={CompanyKanaName}
             variant="outlined"

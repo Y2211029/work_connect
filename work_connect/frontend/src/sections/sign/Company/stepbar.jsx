@@ -104,11 +104,12 @@ export default function HorizontalLinearStepper({ Stepbar }) {
 
           // セキュリティ対策のため初期化
           sessionStorage.removeItem('accountData');
-            
+
           // データの保存(セッションストレージ)
           updateSessionData("accountData", "id", response.data.id);
           updateSessionData("accountData", "user_name", response.data.user_name);
           updateSessionData("accountData", "mail", response.data.mail);
+          updateSessionData("accountData", "popover_icon", response.data.icon);
 
           // ここで作品一覧ページに飛ばす処理 //////////////////////////
           navigation("/");
@@ -138,10 +139,10 @@ export default function HorizontalLinearStepper({ Stepbar }) {
       if(accountData.passwordCheck == undefined || accountData.passwordCheck == ""){
         childRef.current?.NULL_validation(5);
       }
-      
+
       alert("エラー：未入力項目があります");
 
-      
+
 
     }
   };

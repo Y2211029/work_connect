@@ -25,7 +25,7 @@ import { follow } from "src/_mock/follow";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
-  border:'#DAE2ED 2px solid',
+  border: '#DAE2ED 2px solid',
   padding: theme.spacing(1),
   textAlign: 'left',
   color: theme.palette.text.secondary,
@@ -105,7 +105,7 @@ const ProfileMypage = () => {
 
   // ProfileUserNameが変化したとき
   useEffect(() => {
-    async function GetData(user_name) {
+    async function GetData() {
 
       try {
         // Laravel側からデータを取得
@@ -113,14 +113,14 @@ const ProfileMypage = () => {
           params: {
             kind: "s",
             ProfileUserName: user_name,    //プロフィールとして表示されている人のユーザーネーム
-            MyUserId : MyUserId,           //ログイン中のID
+            MyUserId: MyUserId,           //ログイン中のID
           },
         });
         if (response) {
           console.log(response.data[0].follow_status);
           setResponseData(response.data[0]);
           setFollowStatus(response.data[0].follow_status);
-          console.log("ResponseData:", response.data[0]);
+          //console.log("ResponseDataaaaaaaaaaaaa:", ResponseData.icon);
         }
         // console.log("ResponseData:", ResponseData);
       } catch (err) {
@@ -129,9 +129,9 @@ const ProfileMypage = () => {
     }
     // DBからデータを取得
     if (user_name) {
-      GetData(user_name);
+      GetData();
     }
-  }, [user_name]);
+  }, [ResponseData]);
 
   // 初回レンダリング時の一度だけ実行させる
   useEffect(() => {
@@ -195,6 +195,8 @@ const ProfileMypage = () => {
   // ExtractTagsメソッドで抽出したタグを<Item>内で表示する
   const department_name_tag = ExtractTags(ResponseData, 'department_name');
   const faculty_name_tag = ExtractTags(ResponseData, 'faculty_name');
+  const major_name_tag = ExtractTags(ResponseData, 'major_name');
+  const course_name_tag = ExtractTags(ResponseData, 'course_name');
   const development_environment_tag = ExtractTags(ResponseData, 'development_environment');
   const hobby_tag = ExtractTags(ResponseData, 'hobby');
   const desired_work_region_tag = ExtractTags(ResponseData, 'desired_work_region');
@@ -281,35 +283,35 @@ const ProfileMypage = () => {
           </Box>
         )}
 
-<Card sx={{
-        textAlign: 'center',
-        display: 'flex',
-        justifyContent: 'center',
-        backgroundColor: theme.palette.background.default,
-        boxShadow: 'none',
-        position: 'relative'
-      }}>
-        <CardMedia
-          component="img"
-          sx={{
-            height: 'calc(100vw * 0.58)',
-            width: 'calc(100vw * 0.58)',
-            objectFit: 'cover',
-            borderRadius: '50%',
-            maxHeight: 350,
-            maxWidth: 350,
-            '@media (min-width: 600px)': {
-              height: 350,
-              width: 350,
-            }
-          }}
-          image={ResponseData.icon ?
-            ResponseData.icon :
-            ""}
-          alt="Loading..."
-        />
+        <Card sx={{
+          textAlign: 'center',
+          display: 'flex',
+          justifyContent: 'center',
+          backgroundColor: theme.palette.background.default,
+          boxShadow: 'none',
+          position: 'relative'
+        }}>
+          <CardMedia
+            component="img"
+            sx={{
+              height: 'calc(100vw * 0.58)',
+              width: 'calc(100vw * 0.58)',
+              objectFit: 'cover',
+              borderRadius: '50%',
+              maxHeight: 350,
+              maxWidth: 350,
+              '@media (min-width: 600px)': {
+                height: 350,
+                width: 350,
+              }
+            }}
+            image={ResponseData.icon ?
+              `http://localhost:8000/storage/images/userIcon/${ResponseData.icon}` :
+              ""}
+            alt="Loading..."
+          />
 
-      </Card>
+        </Card>
 
         <Box>
           <Typography variant="h6">名前</Typography>
@@ -321,7 +323,7 @@ const ProfileMypage = () => {
         </Box>
         <Box>
           <Typography variant="h6">自己紹介</Typography>
-          <Item sx={{fontSize: '20px'}}>{ResponseData.intro ? ResponseData.intro : "Loading..."}</Item>
+          <Item sx={{ fontSize: '20px' }}>{ResponseData.intro ? ResponseData.intro : "Loading..."}</Item>
         </Box>
         <Box>
           <Typography variant="h6">卒業年度</Typography>
@@ -335,6 +337,8 @@ const ProfileMypage = () => {
         {/* 詳細項目がない場合「さらに表示」を表示しない */}
         {(ResponseData.department_name ||
           ResponseData.faculty_name ||
+          ResponseData.major_name ||
+          ResponseData.course_name ||
           ResponseData.development_environment ||
           ResponseData.hobby ||
           ResponseData.desired_work_region ||
@@ -351,19 +355,34 @@ const ProfileMypage = () => {
               </Showmore>
             </Box>
           )}
+        {/* ResponseData.faculty_nameがあるときのみ表示 */}
+        {ResponseData.faculty_name && !close && (
+          <Box ref={el => (detail.current[0] = el)} id="detail">
+            <Typography variant="h6">学部</Typography>
+            <Item>{ShowTags(faculty_name_tag)}</Item>
+          </Box>
+        )}
         {/* ResponseData.department_nameがあるときのみ表示 */}
         {ResponseData.department_name && !close && (
-          <Box ref={el => (detail.current[0] = el)} id="detail">
+          <Box ref={el => (detail.current[1] = el)} id="detail">
 
-            <Typography variant="h6">学部</Typography>
+            <Typography variant="h6">学科</Typography>
             <Item>{ShowTags(department_name_tag)}</Item>
           </Box>
         )}
         {/* ResponseData.faculty_nameがあるときのみ表示 */}
-        {ResponseData.faculty_name && !close && (
+        {ResponseData.major_name && !close && (
+          <Box ref={el => (detail.current[0] = el)} id="detail">
+            <Typography variant="h6">専攻</Typography>
+            <Item>{ShowTags(major_name_tag)}</Item>
+          </Box>
+        )}
+        {/* ResponseData.department_nameがあるときのみ表示 */}
+        {ResponseData.course_name && !close && (
           <Box ref={el => (detail.current[1] = el)} id="detail">
-            <Typography variant="h6">学科</Typography>
-            <Item>{ShowTags(faculty_name_tag)}</Item>
+
+            <Typography variant="h6">コース</Typography>
+            <Item>{ShowTags(course_name_tag)}</Item>
           </Box>
         )}
         {/* ResponseData.development_environmentがあるときのみ表示 */}

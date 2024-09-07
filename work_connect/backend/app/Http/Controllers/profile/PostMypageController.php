@@ -35,6 +35,8 @@ class PostMypageController extends Controller
             $Icon = $request->input('Icon') === "" ? null : $request->input('Icon');
             $DepartmentName = $request->input('DepartmentName') === "" ? null : $request->input('DepartmentName');
             $FacultyName = $request->input('FacultyName') === "" ? null : $request->input('FacultyName');
+            $MajorName = $request->input('MajorName') === "" ? null : $request->input('MajorName');
+            $CourseName = $request->input('CourseName') === "" ? null : $request->input('CourseName');
             $Environment = $request->input('Environment') === "" ? null : $request->input('Environment');
             $Hobby = $request->input('Hobby') === "" ? null : $request->input('Hobby');
             $Prefecture = $request->input('Prefecture') === "" ? null : $request->input('Prefecture');
@@ -56,6 +58,8 @@ class PostMypageController extends Controller
                     'school_name' => $SchoolName,
                     'department_name' => $DepartmentName,
                     'faculty_name' => $FacultyName,
+                    'major_name' => $MajorName,
+                    'course_name' => $CourseName,
                     'development_environment' => $Environment,
                     'hobby' => $Hobby,
                     'desired_work_region' => $Prefecture,

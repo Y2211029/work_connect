@@ -27,7 +27,11 @@ import UserIcon from "./EditDetailFields/UserIcon";
 // --- 必須項目 --- //
 import CompanyName from "./EditRequiredFields/CompanyName";
 import CompanyKanaName from "./EditRequiredFields/CompanyKanaName";
+<<<<<<< HEAD
 import CompanyUserName from "./EditRequiredFields/CompanyUserName";
+=======
+//import CompanyUserName from "./EditRequiredFields/CompanyUserName";
+>>>>>>> 563d8387d6f83406cb3bfc5ec3fcfbfd3c2b2d2c
 import IntroVideo from "./EditRequiredFields/IntroVideo";
 import CompanyAddress from "./EditRequiredFields/CompanyAddress";
 import CompanyAddressMap from "./EditRequiredFields/CompanyAddressMap";
@@ -87,16 +91,25 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
   const CompanyKanaNameBox = useRef(null);
   const IntroBox = useRef(null);
   // 編集状態のチェック
-  const { getSessionData } = useSessionStorage();
+  const { getSessionData , updateSessionData } = useSessionStorage();
 
   // Laravelとの通信用URL
   const Get_url = "http://localhost:8000/get_profile_mypage";
+<<<<<<< HEAD
   const Post_url = "http://localhost:8000/company_post_profile_mypage";
+=======
+  const Post_url = "http://localhost:8000/post_profile_mypage";
+>>>>>>> 563d8387d6f83406cb3bfc5ec3fcfbfd3c2b2d2c
 
   // ログイン中のuser_nameではない
   // ＊＊＊他ルートからアクセスしたときに表示したいユーザのuser_nameをここで指定＊＊＊
   const { user_name } = useParams();
+<<<<<<< HEAD
   const ProfileUserName = useState({ user_name });
+=======
+  const UserName = useState({user_name});
+  const ProfileUserName = UserName[0].user_name;
+>>>>>>> 563d8387d6f83406cb3bfc5ec3fcfbfd3c2b2d2c
 
   // DBからのレスポンスが入る変数
   const [ResponseData, setResponseData] = useState([]);
@@ -131,7 +144,12 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
         // Laravel側からデータを取得
         const response = await axios.get(Get_url, {
           params: {
+<<<<<<< HEAD
             ProfileUserName: ProfileUserName[0],
+=======
+            kind: "c",
+            ProfileUserName: ProfileUserName,
+>>>>>>> 563d8387d6f83406cb3bfc5ec3fcfbfd3c2b2d2c
           },
         });
         if (response) {
@@ -143,8 +161,13 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
       }
     }
     // DBからデータを取得
+<<<<<<< HEAD
     GetData(ProfileUserName);
   }, [ProfileUserName]);
+=======
+    GetData();
+  }, []);
+>>>>>>> 563d8387d6f83406cb3bfc5ec3fcfbfd3c2b2d2c
 
   // 初回レンダリング時の一度だけ実行させる
   useEffect(() => {
@@ -198,12 +221,25 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
         console.log(SessionData.CompanyName);
         // Laravel側からデータを取得
         const response = await axios.post(Post_url, {
+<<<<<<< HEAD
+=======
+          // 企業側で送信
+          kind: "c",
+          // ユーザーネーム
+          ProfileUserName: ProfileUserName,
+          // アイコン
+          Icon: SessionData.Icon,
+>>>>>>> 563d8387d6f83406cb3bfc5ec3fcfbfd3c2b2d2c
           // 企業名
           CompanyName: SessionData.CompanyName,
           // 企業名(カタカナ)
           CompanyKanaName: SessionData.CompanyKanaName,
           // 採用担当者
+<<<<<<< HEAD
           UserName: SessionData.CompanyUserName,
+=======
+          //UserName: SessionData.CompanyUserName,
+>>>>>>> 563d8387d6f83406cb3bfc5ec3fcfbfd3c2b2d2c
           // 自己紹介
           Intro: SessionData.Intro,
           // 紹介動画
@@ -235,6 +271,7 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
 
           // 編集中状態をオフ(accountDataから削除)
           const keysToDelete = [
+<<<<<<< HEAD
             'CompanyNameEditing', //やった
             'CompanyKanaNameEditing', //やった
             'CompanyUserNameEditing',
@@ -250,6 +287,24 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
             'QualificationEditing', //やった
             'SoftwareEditing', //やった
             'CompanyHPMapEditing' //やった
+=======
+            'IconEditing',
+            'CompanyNameEditing',
+            'CompanyKanaNameEditing',
+            'CompanyUserNameEditing',
+            'IntroEditing',
+            'IntroVideoEditing',
+            'CompanyAddressEditing',
+            'CompanyAddressMapEditing',
+            'OfficeEditing',
+            'SelectedOccupationEditing',
+            'IndustryEditing',
+            'EnvironmentEditing',
+            'ProgrammingLanguageEditing',
+            'QualificationEditing',
+            'SoftwareEditing',
+            'CompanyHPMapEditing'
+>>>>>>> 563d8387d6f83406cb3bfc5ec3fcfbfd3c2b2d2c
           ];
 
           // 編集中状態のSessionDataを削除
@@ -259,6 +314,9 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
 
           // 更新された SessionData を sessionStorage に保存
           sessionStorage.setItem('accountData', JSON.stringify(SessionData));
+
+          // popoverのアイコンを更新
+          updateSessionData("accountData", "popover_icon", SessionData.Icon);
 
           // アラート
           alert("マイページを更新しました。");
@@ -323,20 +381,31 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
               '&:hover': { backgroundColor: '#f0f0f0' },
             }}
           >
+<<<<<<< HEAD
             <ArrowBackOutlinedIcon sx={{ fontSize: 40 }} />
+=======
+            <ArrowBackOutlinedIcon sx={{ fontSize: 55 }} />
+>>>>>>> 563d8387d6f83406cb3bfc5ec3fcfbfd3c2b2d2c
           </IconButton>
         </Tooltip>
       </Box>
 
+<<<<<<< HEAD
       <UserIcon />
       <Box ref={CompanyNameBox}>
         <Typography variant="h6">企業名</Typography>
+=======
+      <UserIcon IconData={ResponseData.icon} />
+      <Box ref={CompanyNameBox}>
+        <Typography variant="h6">企業名*</Typography>
+>>>>>>> 563d8387d6f83406cb3bfc5ec3fcfbfd3c2b2d2c
         <CompanyName CompanyNameData={ResponseData.company_name} />
       </Box>
       <Box ref={CompanyKanaNameBox}>
         <Typography variant="h6">企業名(カタカナ)*</Typography>
         <CompanyKanaName CompanyKanaNameData={ResponseData.company_namecana} />
       </Box>
+<<<<<<< HEAD
       <Box>
         <Typography variant="h6">採用担当者</Typography>
         <CompanyUserName CompanyUserNameData={ResponseData.user_name} />
@@ -355,6 +424,23 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
       </Box>
       <Box>
         <Typography variant="h6">本社所在地マップ</Typography>
+=======
+      {/* <Box>
+        <Typography variant="h6">採用担当者</Typography>
+        <CompanyUserName CompanyUserNameData={ResponseData.user_name} />
+      </Box> */}
+      <Box ref={IntroBox}>
+        <Typography variant="h6">企業概要*</Typography>
+        <Intro IntroData={ResponseData.intro} />
+      </Box>
+
+      <Box>
+        <Typography variant="h6">本社所在地*</Typography>
+        <CompanyAddress CompanyAddressData={ResponseData.address} />
+      </Box>
+      <Box>
+        <Typography variant="h6">本社所在地マップ*</Typography>
+>>>>>>> 563d8387d6f83406cb3bfc5ec3fcfbfd3c2b2d2c
         <CompanyAddressMap CompanyAddressMapData={ResponseData.map_url} />
       </Box>
       <Box>
@@ -397,6 +483,13 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
         <Typography variant="h6">ホームページURL</Typography>
         <CompanyHPMap CompanyHPMapData={ResponseData.hp_url} />
       </Box>
+<<<<<<< HEAD
+=======
+      <Box ref={el => (detail.current[9] = el)} id="detail">
+        <Typography variant="h6">紹介動画</Typography>
+        <IntroVideo IntroVideoData={ResponseData.video_url} />
+      </Box>
+>>>>>>> 563d8387d6f83406cb3bfc5ec3fcfbfd3c2b2d2c
       <Box>
         <Save>
           <Button variant="outlined"

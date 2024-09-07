@@ -1,47 +1,33 @@
+import { forwardRef, useState } from "react";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import Box from "@mui/material/Box";
-import Link from "@mui/material/Link";
+import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
-// import Avatar from "@mui/material/Avatar";
-// import { alpha } from "@mui/material/styles";
+import Avatar from "@mui/material/Avatar";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
+
+import "src/App.css";
+
+import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { follow } from "src/_mock/follow";
-
-// import { fDate } from "src/utils/format-time";
-
-import { fShortenNumber } from "src/utils/format-number";
-
-import Iconify from "src/components/iconify";
 
 // ----------------------------------------------------------------------
 
-export default function PostCard({ post, index }) {
-  const { company_id,news_id, company_name, article_title, genre, header_img, news_created_at, view, comment, follow_status: initialFollowStatus, } = post;
-
-  const navigate = useNavigate();
-  const latestPostLarge = index === -1;
+const PostCard = forwardRef(({ post }, ref) => {
+  const { company_id, news_id, company_name, article_title, genre, header_img, news_created_at, follow_status: initialFollowStatus, icon_id } = post;
 
   const [followStatus, setFollowStatus] = useState(initialFollowStatus);
   const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData");
-  const data = {
-    account_id: accountData.id,
-  };
-
-
-  console.log(data);
-  console.log(news_id);
 
   const handleFollowClick = async () => {
     try {
-      const updatedFollowStatus = await follow(data.account_id, company_id);
+      const updatedFollowStatus = await follow(accountData.id, company_id);
       if (updatedFollowStatus) {
         setFollowStatus(updatedFollowStatus);
       }
@@ -50,228 +36,155 @@ export default function PostCard({ post, index }) {
     }
   };
 
-  const handleProfileJump = () => {
-    navigate(`/Profile/${company_name}`);
-  }
+  // 企業アイコン
+  const renderAvatar = (
+    <Avatar
+      alt={company_name}
+      src={icon_id}
+      sx={{
+        zIndex: 9,
+        width: 30,
+        height: 30,
+      }}
+    />
+  );
 
-  const handleNewsDetailJump = (news_id) => {
-    const entity = { id: news_id }; // オブジェクトとして扱う
-    navigate("/news_detail", { state: entity }); // パラメータを渡して遷移
-  };
-
-
-  // const latestPost = index === 1 || index === 2;
-
+  // タイトル
   const renderTitle = (
     <Link
-      onClick={() => handleNewsDetailJump(news_id)}
-      color="inherit"
-      variant="subtitle2"
-      underline="hover"
-      sx={{
-        height: 44,
-        overflow: "hidden",
-        WebkitLineClamp: 2,
-        display: "-webkit-box",
-        WebkitBoxOrient: "vertical",
-        // ...(latestPostLarge && { typography: "h5", height: 60 }),
-        // ...((latestPostLarge || latestPost) && {
-        //   color: "common.white",
-        // }),
+      to={`/news_detail/${news_id}`}
+      className="link"
+      style={{
+        color: "common.black",
+        height: 30,
+        fontWeight: "Bold",
+        padding: "5px",
       }}
     >
       {article_title}
     </Link>
   );
 
-  //企業名
-  const renderCompanyName = (
-    <Link
-      onClick={handleProfileJump}
-      color="inherit"
-      variant="subtitle2"
-      underline="hover"
-      sx={{
-        height: 44,
-        overflow: "hidden",
-        WebkitLineClamp: 2,
-        display: "-webkit-box",
-        WebkitBoxOrient: "vertical",
-        // ...(latestPostLarge && { typography: "h5", height: 60 }),
-        // ...((latestPostLarge || latestPost) && {
-        //   color: "common.white",
-        // }),
-      }}
-    >
-      {company_name}
-    </Link>
-  );
-
-
-
-  // ジャンル(インターンシップor求人orブログ)
+  // ジャンル
   const renderGenre = genre ? (
-    <Button
-      variant="contained"
-      sx={{
-        fontSize: "10px",
-        padding: "8px 16px",
-        margin: "4px",
-        background: "linear-gradient(#41A4FF, #9198e5)",
-        "&:hover": {
-          background: "linear-gradient(#c2c2c2, #e5ad91)",
-        },
-      }}
-    >
-      {genre}
-    </Button>
+    <div>
+      <Button
+        variant="contained"
+        sx={{
+          padding: "2px",
+          margin: "2px",
+          background: "linear-gradient(#41A4FF, #9198e5)",
+          "&:hover": {
+            background: "linear-gradient(#c2c2c2, #e5ad91)",
+          },
+        }}
+      >
+        {genre}
+      </Button>
+    </div>
   ) : null;
 
+  // サムネイル
+  const renderThumbnail = (
+    <Box
+      component="img"
+      src={header_img}
+      sx={{
+        aspectRatio: 16 / 9,
+        borderRadius: "10px",
+        marginBottom: "10px",
+      }}
+    />
+  );
+
+  // フォローステータス
   const renderFollow = (
     <Typography opacity="0.48" onClick={handleFollowClick}>
       {followStatus}
     </Typography>
   );
 
-  const renderInfo = (
-<Stack
-  direction="row"
-  justifyContent="space-between"
-  alignItems="center"
-  sx={{ mt: 3 }}
->
-  <Typography opacity="0.48" sx={{ fontSize: "15px" }}>
-    {news_created_at}
-  </Typography>
-
-  <Stack
-    direction="row"
-    flexWrap="wrap"
-    spacing={1.5}
-    justifyContent="flex-end"
-    sx={{
-      color: "text.disabled",
-    }}
-  >
-    {[
-      { number: comment, icon: "eva:message-circle-fill" },
-      { number: view, icon: "eva:eye-fill" },
-      // { number: share, icon: "eva:share-fill" },
-    ].map((info, _index) => (
-      <Stack
-        key={_index}
-        direction="row"
-        sx={
-          {
-            // ...((latestPostLarge || latestPost) && {
-            //   opacity: 0.48,
-            //   color: "common.white",
-            // }),
-          }
-        }
-      >
-        <Iconify width={16} icon={info.icon} sx={{ mr: 0.5 }} />
-        <Typography variant="caption">{fShortenNumber(info.number)}</Typography>
-      </Stack>
-    ))}
-  </Stack>
-</Stack>
-
-  );
-
-  const renderCover = (
-    <Box
-      component="img"
-      // alt={title}
-      //C:\xampp\apps\work_connect\work_connect\frontend\public\header_img\DT_2024-08-11_13-54-04.jpg
-      src={header_img}
+  // 投稿日
+  const renderDate = (
+    <Typography
+      variant="caption"
+      component="div"
       sx={{
-        top: 0,
-        width: 1,
-        height: 1,
-        objectFit: "cover",
-        position: "absolute",
+        mb: 2,
+        opacity: 0.48,
+        color: "common.black",
       }}
-    />
+    >
+      {postDateTimeDisplay(news_created_at)}
+    </Typography>
   );
 
-  // const renderDate = (
-  //   <Typography
-  //     variant="caption"
-  //     component="div"
-  //     sx={{
-  //       mb: 2,
-  //       color: "text.disabled",
-  //       ...((latestPostLarge || latestPost) && {
-  //         opacity: 0.48,
-  //         color: "common.white",
-  //       }),
-  //     }}
-  //   >
-  //     {fDate(createdAt, "yyyy MM dd")}
-  //   </Typography>
-  // );
+  // 企業名
+  const renderCompanyName = (
+    <Typography
+      variant="caption"
+      component="div"
+      sx={{
+        mb: 2,
+        opacity: 0.48,
+        color: "common.black",
+      }}
+    >
+      {company_name}
+    </Typography>
+  );
 
+  // 投稿情報
+  const renderInfo = (
+    <Stack
+      direction="row"
+      justifyContent="space-between"
+      alignItems="center"
+      spacing={1}
+      sx={{
+        mt: 3,
+        color: "common.black",
+        padding: "5px",
+      }}
+    >
+      {renderDate}
+      <Stack
+        direction="row"
+        justifyContent="flex-end"
+        alignItems="center"
+        spacing={1}
+        sx={{
+          mt: 3,
+          color: "common.black",
+        }}
+      >
+        {renderAvatar}
+        {renderCompanyName}
+      </Stack>
+    </Stack>
+  );
 
   return (
-    <Grid xs={12} sm={latestPostLarge ? 12 : 6} md={latestPostLarge ? 6 : 3}>
-      <Card>
-        <Box
-          sx={{
-            position: "relative",
-            pt: "calc(100% * 3 / 4)",
-            // ...((latestPostLarge || latestPost) && {
-            //   pt: "calc(100% * 4 / 3)",
-            //   "&:after": {
-            //     top: 0,
-            //     content: "''",
-            //     width: "100%",
-            //     height: "100%",
-            //     position: "absolute",
-            //     bgcolor: (theme) => alpha(theme.palette.grey[900], 0.72),
-            //   },
-            // }),
-            // ...(latestPostLarge && {
-            //   pt: {
-            //     xs: "calc(100% * 4 / 3)",
-            //     sm: "calc(100% * 3 / 4.66)",
-            //   },
-            // }),
-          }}
-        >
-
-          {renderCover}
-
-
-        </Box>
-
-        <Box
-          sx={{
-            p: (theme) => theme.spacing(4, 3, 3, 3),
-            // ...((latestPostLarge || latestPost) && {
-            //   width: 1,
-            //   bottom: 0,
-            //   position: "absolute",
-            // }),
-          }}
-        >
-
-          {renderFollow}
-
-          {renderGenre}
-
-          {renderTitle}
-
-          {renderCompanyName}
-
-          {renderInfo}
-        </Box>
-      </Card>
+    <Grid xs={12} sm={6} md={3}>
+      <div ref={ref}>
+        <Card>
+          <Box sx={{ padding: "5px" }}>
+            {renderThumbnail}
+            {renderGenre}
+            {renderTitle}
+            {renderFollow}
+            {renderInfo}
+          </Box>
+        </Card>
+      </div>
     </Grid>
   );
-}
+});
+
+PostCard.displayName = "PostCard";
 
 PostCard.propTypes = {
   post: PropTypes.object.isRequired,
-  index: PropTypes.number,
 };
+
+export default PostCard;

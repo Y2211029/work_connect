@@ -40,6 +40,7 @@ import ImageSearchIcon from '@mui/icons-material/ImageSearch';
 import CancelIcon from '@mui/icons-material/Cancel';
 import MUIButton from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import DrawIcon from '@mui/icons-material/Draw';
 import SaveIcon from '@mui/icons-material/Save';
 import CampaignIcon from '@mui/icons-material/Campaign';
@@ -55,6 +56,7 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import moment from 'moment';
+import { Helmet } from 'react-helmet-async';
 
 
 //データ保存
@@ -93,6 +95,7 @@ const Editor = () => {
   const [charCount, setCharCount] = useState(0);
   const [usedPlugins, setUsedPlugins] = useState(null);
   const [usedImages, setUsedImages] = useState(null);
+  
 
 
   const news_save_url = "http://127.0.0.1:8000/news_save";
@@ -1160,74 +1163,19 @@ const Editor = () => {
   return (
     <div className="editor">
 
-<<<<<<< HEAD
-=======
-      <p>Draft List: </p>
-      {draft_list.length > 0 ? (
-        draft_list.map(draft => (
-          <p key={draft.id} onClick={() => rewrite_news(draft.id)}>
-            {draft.article_title}
-          </p>
-        ))
-      ) : (
-        <p>下書き中の記事はありません</p>
-      )}
+      <Helmet>
+        <title> ニュースの投稿 | Work&Connect </title>
+      </Helmet>
 
-      <div className="news_button">
-        <button id="save" className="save" onClick={news_save}>下書きを保存する</button>
-        <button id="news_release" className="news_release" onClick={news_release_setting}>公開へ進む</button>
+      <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+        <Typography variant="h4">ニュースの編集</Typography>
+        {/*
+        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />}>
+          New Post
+        </Button> */}
+      </Stack>
 
-        {/* 公開へ進むボタンを押すと出現するモーダル */}
-        {show && (
-          <div id="news_release_modal" className="news_release_modal">
-            <div className="news_release_modal_content">
-              <p><button onClick={closeModal}>キャンセル</button></p>
-              <p>公開設定</p>
 
-              <p>どのジャンルで公開しますか?</p>
-              <input
-                type="radio"
-                name="news_genre"
-                id="blog"
-                value="ブログ"
-                checked={selectedGenre === 'ブログ'}
-                onChange={handleRadioChange }
-              />
-              <label className="label" htmlFor="blog">ブログ</label>
-
-              <input
-                type="radio"
-                name="news_genre"
-                id="internship"
-                value="インターンシップ"
-                checked={selectedGenre === 'インターンシップ'}
-                onChange={handleRadioChange}
-              />
-              <label className="label" htmlFor="internship">インターンシップ</label>
-
-              <input
-                type="radio"
-                name="news_genre"
-                id="job"
-                value="求人"
-                checked={selectedGenre === '求人'}
-                onChange={handleRadioChange }
-              />
-              <label className="label" htmlFor="job">求人</label>              <br></br><br></br><br></br>
-              <p>学生さんへのメッセージや記事の内容を一言でご記入ください!</p>
-              <textarea id="news_textarea"
-                className="news_textarea"
-                ref={textareaRef}
-              >
-              </textarea>
-              {/* <p>{news_id}</p> */}
-              <p><button onClick={news_upload}>投稿</button></p>
-            </div>
-          </div>
-        )}
-      </div>
-
->>>>>>> 3c5789677e38c908589a20c4b753cb2d7d8e5230
       {/* アップロードされた画像の表示 */}
       {
         imageUrl && (
@@ -1446,7 +1394,6 @@ const Editor = () => {
         onClick={() => document.getElementById('fileInput').click()}
       />
 
-      <h1>ニュースの編集</h1>
       <textarea className="editor_title"
         id="editor_title"
         wrap="soft"

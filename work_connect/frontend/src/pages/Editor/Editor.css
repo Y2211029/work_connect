@@ -190,10 +190,11 @@ input[type="radio"]:checked + .label {
   justify-content: flex-start;
   white-space: nowrap;
   flex-direction: column;
-  width: 100%; /* 幅を増加 */
+  width: 90%; /* 幅を増加 */
   margin-right:10px;
   height: 450px;
   overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .news_genre_select {

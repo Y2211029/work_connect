@@ -1,6 +1,6 @@
 .NewsDetailContainer {
     position: relative;
-    top: 5%; /* 100pxから150pxに変更 */
+    top: 1%; /* 100pxから150pxに変更 */
     width:100%;
 }
 
@@ -9,6 +9,7 @@
     display: flex;
     justify-content: center; /* 横方向に中央揃え */
     align-items: center;      /* 縦方向に中央揃え */
+    padding-top: 5%;
 }
 
 .news_img {
@@ -19,19 +20,21 @@
 
 .news_company_name {
     display: inline-block; /* テキストの幅に合わせるための設定 */
-    margin-left: 25%;
     color: inherit;
     font-size: 20px; /* 既に指定されたサイズを使用 */
     height: 30px; /* 高さはそのままにしておく */
     overflow: hidden;
-    cursor: pointer;
     font-weight: 600;
 }
 
-.news_company_name:hover{
-    text-decoration: underline; /* "under-line" プロパティは無効なので、text-decoration を使用 */
+.news_created_at{
+    display: inline-block; /* テキストの幅に合わせるための設定 */
+    color: inherit;
+    font-size: 20px; /* 既に指定されたサイズを使用 */
+    height: 30px; /* 高さはそのままにしておく */
+    overflow: hidden;
+    font-weight: 600;
 }
-
 
 .news_title{
     text-align: "center";
@@ -53,16 +56,12 @@
     flex-wrap: "wrap";
 }
 
-.hr{
-    width: 60%;
-}
-
 .news_genre {
     margin-left: 100%;
     width:120px;
-    font-size: 10px; /* 単位は px */
-    padding: 8px 16px; /* 単位は px */
-    margin: 4px; /* 単位は px */
+    font-size: 10px;
+    padding: 8px 16px;
+    margin: 4px; 
     background: linear-gradient(#41A4FF, #9198e5); /* 背景色の設定 */
 }
 
@@ -83,13 +82,13 @@
     position: fixed;
     top: 80px;
     left: 15%;
-    width: 85%;
+    width: 80%;
     height: 50px;
     
     /* バーの装飾 */
     background-color: white;  /* 背景色 */
     color: black;             /* 文字色 */
-    box-shadow: 1px 1px 1px black; /* 影 */
+    box-shadow: 1px 1px 1px black, 0.1em 0 .4em black; /* 影 */
     
     /* Flexboxを使って内容を中央に揃える */
     display: flex;
@@ -109,7 +108,7 @@
   }
   
   .popup_menu p {
-    margin: 0; /* デフォルトのマージンをリセット */
+    margin: 0; 
     font-weight: bold;
     font-size: 20px;
   }

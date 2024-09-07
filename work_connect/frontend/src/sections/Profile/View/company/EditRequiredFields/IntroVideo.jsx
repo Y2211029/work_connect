@@ -9,6 +9,7 @@ const IntroVideo = ({ IntroVideoData }) => {
 
 
   const [IntroVideo, setIntroVideo] = useState(IntroVideoData);
+  const [IntroVideoURL, setIntroVideoURL] = useState(null);
   const { getSessionData, updateSessionData } = useSessionStorage();
 
 
@@ -31,8 +32,33 @@ const IntroVideo = ({ IntroVideoData }) => {
     const newValue = e.target.value;
     if (e.target.name === "IntroVideo") {
       setIntroVideo(newValue);
+      iframeURLChange(newValue);
       updateSessionData("accountData", "IntroVideoEditing", true);
     }
+  };
+
+
+  const iframeURLChange = (URL) => {
+    let extractedUrl = null;
+  
+    // 共有リンクを入力した場合 
+    if (URL.includes("youtu.be")) {
+      const videoId = URL.split('/').pop().split('?')[0]; 
+      extractedUrl = `https://www.youtube.com/embed/${videoId}`;
+    } 
+    // 埋め込み用リンクを入力した場合(Iframeから始まる)
+    else if (URL.includes("iframe")) {
+      const regex = /src="([^"]+)"/;
+      const match = URL.match(regex);
+      if (match && match[1]) {
+        extractedUrl = match[1];
+      }
+    }else if (URL.includes("watch?v=")) {
+      const videoId = URL.split('v=')[1].split('&')[0]; // Extract the video ID
+      extractedUrl = `https://www.youtube.com/embed/${videoId}`;
+    } 
+    setIntroVideoURL(extractedUrl);
+    console.log(extractedUrl);
   };
 
   // 編集中のデータを保存しておく
@@ -62,7 +88,7 @@ const IntroVideo = ({ IntroVideoData }) => {
         }}
       />
       <Iframe
-        url={IntroVideo}
+        url={IntroVideoURL}
         width="100%"
         height="400px"
       />

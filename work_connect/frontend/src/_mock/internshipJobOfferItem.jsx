@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-
-import { faker } from "@faker-js/faker";
-
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 // ----------------------------------------------------------------------
@@ -46,14 +43,15 @@ export const InternshipJobOfferItem = () => {
   }, []); // 空の依存配列を渡すことで初回のみ実行されるようにする
 
   const posts = newsData.map((_, key) => ({
+    company_id: newsData[key].company_id,
     news_id: newsData[key].news_id,
     company_name: newsData[key].company_name,
     article_title: newsData[key].article_title,
     genre: newsData[key].genre,
     header_img: newsData[key].header_img,
     news_created_at: newsData[key].news_created_at,
-    view: faker.number.int(99999),
-    comment: faker.number.int(99999),
+
+    icon_id: newsData[key].icon_id,
   }));
 
   return posts;

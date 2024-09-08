@@ -76,7 +76,7 @@ export default function Router() {
         { path: "Settings", element: <SettingsPage /> },
         { path: "Editor", element: <EditorPage /> },
         //20240704
-        { path: "news_detail", element: <NewsDetailPage /> },
+        { path: "news_detail/:id", element: <NewsDetailPage /> },
 
         // トップ画面追加
         { path: "Top", element: <TopPage /> },

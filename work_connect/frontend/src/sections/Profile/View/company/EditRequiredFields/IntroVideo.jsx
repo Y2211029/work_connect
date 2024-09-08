@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
-import PropTypes from 'prop-types'; 
+import PropTypes from 'prop-types';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import Iframe from 'react-iframe'; //紹介動画やマップを埋め込む
 
@@ -25,7 +25,7 @@ const IntroVideo = ({ IntroVideoData }) => {
       // セッションストレージから最新のデータを取得
       setIntroVideo(SessionData.IntroVideo);
     }
-    
+
   }, [IntroVideoData]);
 
   const handleChange = (e) => {
@@ -40,12 +40,12 @@ const IntroVideo = ({ IntroVideoData }) => {
 
   const iframeURLChange = (URL) => {
     let extractedUrl = null;
-  
-    // 共有リンクを入力した場合 
+
+    // 共有リンクを入力した場合
     if (URL.includes("youtu.be")) {
-      const videoId = URL.split('/').pop().split('?')[0]; 
+      const videoId = URL.split('/').pop().split('?')[0];
       extractedUrl = `https://www.youtube.com/embed/${videoId}`;
-    } 
+    }
     // 埋め込み用リンクを入力した場合(Iframeから始まる)
     else if (URL.includes("iframe")) {
       const regex = /src="([^"]+)"/;
@@ -56,7 +56,7 @@ const IntroVideo = ({ IntroVideoData }) => {
     }else if (URL.includes("watch?v=")) {
       const videoId = URL.split('v=')[1].split('&')[0]; // Extract the video ID
       extractedUrl = `https://www.youtube.com/embed/${videoId}`;
-    } 
+    }
     setIntroVideoURL(extractedUrl);
     console.log(extractedUrl);
   };

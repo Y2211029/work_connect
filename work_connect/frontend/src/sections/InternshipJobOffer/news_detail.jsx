@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Helmet } from "react-helmet-async";
-import { useLocation } from "react-router-dom";
+// import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import "./news_detail.css"
 import { follow } from "src/_mock/follow";
@@ -23,8 +25,10 @@ const InternshipJobOfferPage = () => {
 
     const csrf_url = "http://localhost:8000/csrf-token";
     const news_bookmark_url = "http://localhost:8000/news_bookmark";
-    const location = useLocation();
-    const parameter = location.state; // パラメータ(w_newsテーブルのidカラムの値)を代入
+    // const location = useLocation();
+    // const parameter = location.state; // パラメータ(w_newsテーブルのidカラムの値)を代入
+    const { id } = useParams(); // パラメータから id を取得
+    const newsdetail_id = String(id); // id を文字列に変換する
     const navigate = useNavigate();
     console.log(csrfToken);
 
@@ -36,12 +40,12 @@ const InternshipJobOfferPage = () => {
 
     useEffect(() => {
 
-        console.log(parameter.id);
+        console.log(newsdetail_id);
         //ニュースのデータを抽出する
         async function fetchData() {
             try {
                 const response = await axios.get(
-                    `http://localhost:8000/Internship_JobOffer/news_detail/${parameter.id}`,
+                    `http://localhost:8000/Internship_JobOffer/news_detail/${newsdetail_id}`,
                     {
                         params: {
                             MyId: data.id, //今ログインしている人のid
@@ -56,7 +60,7 @@ const InternshipJobOfferPage = () => {
             }
         }
         fetchData();
-    }, [parameter.id]);
+    }, [newsdetail_id]);
 
     useEffect(() => {
         async function fetchCsrfToken() {
@@ -98,13 +102,13 @@ const InternshipJobOfferPage = () => {
     const news_bookmark = async () => {
         setBookmarked(!bookmarked); //usestateセット
         //ajax処理
-        console.log(parameter.id);
+        console.log(newsdetail_id);
         console.log(NewsDetail.genre);
         try {
             const response = await axios.post(
                 news_bookmark_url,
                 {
-                    id: parameter.id,              //bookmark_idカラムに入れる
+                    id: newsdetail_id,              //bookmark_idカラムに入れる
                     category: NewsDetail.genre,   //categoryカラムに入れる
                     sessionid: data.Id,         //企業or学生のid
                 },
@@ -195,14 +199,14 @@ const InternshipJobOfferPage = () => {
                                     }}
                                     onClick={handleFollowClick}
                                 >
-                                {followStatus} 
+                                {followStatus}
                                 {/* usestateから持ってくる */}
                                 </Button>
 
                             </Stack>
                         </div>
                     }
-    
+
                     <Button
                                     variant="contained"
                                     sx={{
@@ -215,7 +219,7 @@ const InternshipJobOfferPage = () => {
                                         },
                                     }}
                                 >
-                                {NewsDetail.genre} 
+                                {NewsDetail.genre}
                     </Button>
                     <h1 className="news_title">{NewsDetail.article_title}</h1>
                     <Stack direction="row" spacing={2}>
@@ -250,7 +254,7 @@ const InternshipJobOfferPage = () => {
                                     }}
                                     onClick={handleFollowClick}
                                 >
-                                {followStatus} 
+                                {followStatus}
                                 {/* usestateから持ってくる */}
                                 </Button>
 

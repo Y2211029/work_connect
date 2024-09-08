@@ -117,7 +117,6 @@ const ProfileMypage = () => {
           },
         });
         if (response) {
-          console.log(response.data[0].follow_status);
           setResponseData(response.data[0]);
           setFollowStatus(response.data[0].follow_status);
           //console.log("ResponseData:", response.data[0]);
@@ -131,7 +130,7 @@ const ProfileMypage = () => {
     if (user_name) {
       GetData();
     }
-  }, [ResponseData]); // user_name を依存配列に含める
+  }, [ResponseData,user_name]); // user_name を依存配列に含める
 
   // 初回レンダリング時の一度だけ実行させる
   useEffect(() => {
@@ -305,22 +304,12 @@ const ProfileMypage = () => {
             sx={{
               height: 350,
               width: 350,
-<<<<<<< HEAD
               objectFit: 'cover', // 画像をカード内でカバーするように設定
               borderRadius: '50%', // 画像を丸くする
             }}
             image={ResponseData.thumbnail_id}
             alt="Placeholder"
           />
-=======
-            }
-          }}
-          image={ResponseData.icon ?
-            `http://localhost:8000/storage/images/userIcon/${ResponseData.icon}` :
-            ""}
-          alt="Loading..."
-        />
->>>>>>> 563d8387d6f83406cb3bfc5ec3fcfbfd3c2b2d2c
 
         </Card>
 

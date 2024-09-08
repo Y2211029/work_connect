@@ -14,11 +14,17 @@ class NewsController extends Controller
     // パラメータから取得したIDを元にニュースのデータを取得するメソッド
     public function news_detail_get(Request $request, $id)
     {
-
-        // 
+        // MyId を取得
         $MyId = $request->input("MyId");
 
-        //w_companiesテーブルと結合する
+        // $id を文字列に変換
+        $id = (string) $id;
+
+        // ログ出力で確認
+        \Log::info('MyId: ' . $MyId);
+        \Log::info('ID as string: ' . $id);
+
+        // w_companies テーブルと結合する
         $news_detail = w_news::where('w_news.id', $id)
             ->join('w_companies', 'w_news.company_id', '=', 'w_companies.id')
             ->select('w_news.*', 'w_companies.*', 'w_news.created_at as news_created_at', 'w_news.id as news_id')
@@ -26,10 +32,10 @@ class NewsController extends Controller
 
         // データが存在する場合
         if ($news_detail) {
-            // summaryカラムの値をJSONから文字列に変換
+            // summary カラムの値を JSON から文字列に変換
             $news_detail->summary = json_decode($news_detail->summary);
 
-            //フォロー状況をチェックする
+            // フォロー状況をチェック
             $isFollowing = w_follow::where('follow_sender_id', $MyId)
                 ->where('follow_recipient_id', $news_detail->id)
                 ->exists();
@@ -45,7 +51,7 @@ class NewsController extends Controller
                 $followStatus = 'フォローしています';
             } elseif ($isFollowedByUser) {
                 $followStatus = 'フォローされています';
-            }else if($news_detail->id[0] === $MyId[0]){
+            } elseif ($news_detail->id == $MyId) {
                 $followStatus = 'フォローできません';
             } else {
                 $followStatus = 'フォローする';
@@ -53,7 +59,6 @@ class NewsController extends Controller
 
             // フォロー状況を各ニュースに追加する
             $news_detail->follow_status = $followStatus;
-
 
             return response()->json($news_detail);
         } else {

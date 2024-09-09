@@ -8,16 +8,9 @@ import Iframe from 'react-iframe'; //紹介動画やマップを埋め込む
 
 
 const IntroVideo = ({ IntroVideoData }) => {
-
-
-
-
   const [IntroVideo, setIntroVideo] = useState(IntroVideoData);
   const [IntroVideoURL, setIntroVideoURL] = useState(null);
   const { getSessionData, updateSessionData } = useSessionStorage();
-
-
-
 
   // valueの初期値をセット
   useEffect(() => {
@@ -28,13 +21,12 @@ const IntroVideo = ({ IntroVideoData }) => {
     /// 編集の途中ならセッションストレージからデータを取得する。
     /// (リロードした時も、データが残った状態にする。)
     if ((SessionData.IntroVideo !== undefined) ||
-    SessionData.IntroVideoEditing) {
+      SessionData.IntroVideoEditing) {
       // セッションストレージから最新のデータを取得
       setIntroVideo(SessionData.IntroVideo);
     }
 
   }, [IntroVideoData]);
-
 
   const handleChange = (e) => {
     const newValue = e.target.value;
@@ -45,12 +37,6 @@ const IntroVideo = ({ IntroVideoData }) => {
     }
   };
 
-
-<<<<<<< HEAD:work_connect/frontend/src/sections/Profile/View/company/EditDetailFields/IntroVideo.jsx
-
-
-=======
->>>>>>> 502672cdbfb63981c5c7948932a5a5491fb300cb:work_connect/frontend/src/sections/Profile/View/company/EditRequiredFields/IntroVideo.jsx
   const iframeURLChange = (URL) => {
     let extractedUrl = null;
 
@@ -66,7 +52,7 @@ const IntroVideo = ({ IntroVideoData }) => {
       if (match && match[1]) {
         extractedUrl = match[1];
       }
-    }else if (URL.includes("watch?v=")) {
+    } else if (URL.includes("watch?v=")) {
       const videoId = URL.split('v=')[1].split('&')[0]; // Extract the video ID
       extractedUrl = `https://www.youtube.com/embed/${videoId}`;
     }
@@ -74,10 +60,6 @@ const IntroVideo = ({ IntroVideoData }) => {
     console.log(extractedUrl);
   };
 
-<<<<<<< HEAD:work_connect/frontend/src/sections/Profile/View/company/EditDetailFields/IntroVideo.jsx
-
-=======
->>>>>>> 502672cdbfb63981c5c7948932a5a5491fb300cb:work_connect/frontend/src/sections/Profile/View/company/EditRequiredFields/IntroVideo.jsx
   // 編集中のデータを保存しておく
   useEffect(() => {
     updateSessionData("accountData", "IntroVideo", IntroVideo);

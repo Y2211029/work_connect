@@ -28,7 +28,7 @@ import UserIcon from "./EditDetailFields/UserIcon";
 import CompanyName from "./EditRequiredFields/CompanyName";
 import CompanyKanaName from "./EditRequiredFields/CompanyKanaName";
 //import CompanyUserName from "./EditRequiredFields/CompanyUserName";
-import IntroVideo from "./EditRequiredFields/IntroVideo";
+
 import CompanyAddress from "./EditRequiredFields/CompanyAddress";
 import CompanyAddressMap from "./EditRequiredFields/CompanyAddressMap";
 
@@ -45,6 +45,7 @@ import Qualification from "./EditDetailFields/Qualification";
 import Software from "./EditDetailFields/Software";
 
 import CompanyHPMap from "./EditRequiredFields/CompanyHPMap";
+import IntroVideo from "./EditDetailFields/IntroVideo";
 
 
 

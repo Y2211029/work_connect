@@ -274,8 +274,10 @@ const ProfileMypage = () => {
             </Tooltip>
             {/* {showEdit ? <ProfileMypageEdit /> : <ProfileMypage />} */}
           </Box>
-        ) : (
-          //ResponseData.id(プロフィールのID) と MyUserId(ログイン中のID)が一致しない場合はフォローの状況を表示
+        ) : (ResponseData.id && MyUserId[0]) && (ResponseData.id.charAt(0) !== MyUserId[0].charAt(0)) ? (
+
+         // ResponseData.id(プロフィールのID)の1文字目 と MyUserId(ログイン中のID)の1文字目が一致しない場合はフォローの状況を表示
+         // 学生側はS、企業側はCで始まる。
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', }} >
             <Tooltip title="フォロー">
               {/* <IconButton
@@ -292,6 +294,8 @@ const ProfileMypage = () => {
             </Tooltip>
             {/* {showEdit ? <ProfileMypageEdit /> : <ProfileMypage />} */}
           </Box>
+        ):(
+          null
         )}
 
 

@@ -163,6 +163,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       generatePosts: (WorkOfList) =>
         WorkOfList.map((student, key) => ({
           student_id: student.id,
+          icon: student.icon,
           cover: `/assets/images/covers/cover_${key + 1}.jpg`,
           userName: student.user_name,
           graduationYear: student.graduation_year,
@@ -171,7 +172,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           desiredOccupation: student.desired_occupation,
           followStatus: student.follow_status,
           author: {
-            avatarUrl: `/assets/images/avatars/avatar_${student.icon}.jpg`,
+            avatarUrl: `/assets/images/avatars/avatar_0.jpg`,
           },
         })),
     },
@@ -183,6 +184,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       generatePosts: (WorkOfList) =>
         WorkOfList.map((company, key) => ({
           company_id: company.id,
+          icon: company.icon,
           userName: company.user_name,
           companyName: company.company_name,
           selectedOccupation: company.selected_occupation,

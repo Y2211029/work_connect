@@ -110,9 +110,9 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       idKey: "work_id",
       tags: ["work_genre"],
       generatePosts: (WorkOfList) =>
-        WorkOfList.map((work, key) => ({
+        WorkOfList.map((work) => ({
           work_id: work.work_id,
-          thumbnail: `/assets/workImages/thumbnail/cover_${key + 1}.jpg`,
+          thumbnail: `sss`,
           title: work.work_name,
           genre: work.work_genre,
           intro: work.work_intro.length > 200 ? work.work_intro.substring(0, 200) + "..." : work.work_intro,
@@ -134,6 +134,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       generatePosts: (WorkOfList) =>
         WorkOfList.map((movie) => ({
           movie_id: movie.movie_id,
+          movie: movie.youtube_url,
           title: movie.title,
           genre: movie.genre,
           intro: movie.intro.length > 200 ? movie.intro.substring(0, 200) + "..." : movie.intro,
@@ -339,7 +340,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   const renderWorkItems =
     typeof workItems === "object" && Array.isArray(workItems) && PostCard ? (
       workItems.map((post, index) => (
-        <PostCard ref={index === WorkOfList.length - 1 ? ref : null} key={`${post}-${index}`} post={post} index={index} />
+        <PostCard className="mediaCard" ref={index === WorkOfList.length - 1 ? ref : null} key={`${post}-${index}`} post={post} index={index} />
       ))
     ) : typeof workItems === "string" ? (
       <>
@@ -360,7 +361,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
           colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
         />
       )}
-      <Container maxWidth="xl">
+      <Container maxWidth="xl" >
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           {typeof ItemName === "string" ? (
             <>
@@ -381,12 +382,14 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
 
           {PostSort && PathName !== "CompanyList" && PathName !== "StudentList" && IsSearch.searchResultEmpty !== true && (
             <PostSort
+
               options={[
                 { value: "orderNewPostsDate", label: "投稿日が新しい順" },
                 { value: "orderOldPostsDate", label: "投稿日が古い順" },
               ]}
               sortOption={sortOption}
               onSort={handleSortChange}
+
             />
           )}
         </Stack>

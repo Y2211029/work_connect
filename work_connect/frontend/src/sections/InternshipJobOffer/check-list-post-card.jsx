@@ -170,14 +170,16 @@ export default function PostCard({ post}) {
 
 
   return (
-<Grid 
-  container 
+<Grid container 
   justifyContent="center" 
   alignItems="center"
-  sx={{ Height: '300vh',gap: '100px' }}  // 画面全体の高さで中央に揃える
+  marginLeft={"15%"}
+  paddingBottom={"10%"}
+  Height={"600px"}
+  sx={{ Height: '100px'}} 
 >
-  <Grid item xs={12} sm={8} md={12}> {/* 幅を調整 */}
-    <Card sx={{ width: 450}}> {/* カードの幅を制限 */}
+  <Grid>
+    <Card sx={{ width: 400,height: 600,paddingBottom: 10,}}> {/* カードの幅を制限 */}
       <Box
         sx={{
           position: "relative",

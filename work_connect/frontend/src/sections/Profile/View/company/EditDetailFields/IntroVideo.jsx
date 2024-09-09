@@ -46,8 +46,11 @@ const IntroVideo = ({ IntroVideoData }) => {
   };
 
 
+<<<<<<< HEAD:work_connect/frontend/src/sections/Profile/View/company/EditDetailFields/IntroVideo.jsx
 
 
+=======
+>>>>>>> 502672cdbfb63981c5c7948932a5a5491fb300cb:work_connect/frontend/src/sections/Profile/View/company/EditRequiredFields/IntroVideo.jsx
   const iframeURLChange = (URL) => {
     let extractedUrl = null;
 
@@ -71,7 +74,10 @@ const IntroVideo = ({ IntroVideoData }) => {
     console.log(extractedUrl);
   };
 
+<<<<<<< HEAD:work_connect/frontend/src/sections/Profile/View/company/EditDetailFields/IntroVideo.jsx
 
+=======
+>>>>>>> 502672cdbfb63981c5c7948932a5a5491fb300cb:work_connect/frontend/src/sections/Profile/View/company/EditRequiredFields/IntroVideo.jsx
   // 編集中のデータを保存しておく
   useEffect(() => {
     updateSessionData("accountData", "IntroVideo", IntroVideo);

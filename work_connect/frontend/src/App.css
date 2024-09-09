@@ -647,3 +647,19 @@ textarea {
 
 
 /* 作品詳細 　ここまで */
+
+
+
+/* 一覧 */
+@media (min-width : 600px) {
+  .mediaCard {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    max-height: 800px;
+  }
+
+  .itemGrid {
+    width: 28%;
+  }
+}

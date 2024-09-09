@@ -7,12 +7,11 @@ import Obsession from "../../../sections/work/WorkPosting/Obsession";
 import Language from "../../../sections/work/WorkPosting/Language";
 import Environment from "../../../sections/work/WorkPosting/Environment";
 // import Modal from "react-modal";
-// import { useState } from "react";
-// import { useNavigate } from "react-router-dom";
 
 import "../../../App.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 // ログインのモーダル CSS設定
 // const modalStyle = {
@@ -28,7 +27,7 @@ import axios from "axios";
 
 const WorkPosting = () => {
   // const [showModal, setShowModal] = useState(false);
-  // let navigation = useNavigate();
+  let navigation = useNavigate();
 
   // const handleOpenModal = () => {
   //   // setShowModal(true);
@@ -117,6 +116,7 @@ const WorkPosting = () => {
         }
       );
       console.log(formData);
+      navigation("/WorkSelect");
       setMessage(response.data.message);
     } catch (error) {
       setMessage(error.message);
@@ -152,7 +152,7 @@ const WorkPosting = () => {
               <div className="WorkPostingFormField">
                 <div className="workGenre" id="workGenre">
                   <p className="work_genre">
-                    ジャンル
+                    ジャンル*
                     {/* ジャンル&nbsp;<span className="red_txt">必須</span>
                     &nbsp;
                     <span className="alert_red_txt" id="alert_a_3">

@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Helmet } from "react-helmet-async";
-import { useLocation } from "react-router-dom";
+// import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import "./news_detail.css"
+import { follow } from "src/_mock/follow";
+
+//MUIアイコン
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import Stack from "@mui/material/Stack";
-import { useNavigate } from "react-router-dom";
-import { useSessionStorage } from "src/hooks/use-sessionStorage";
-import "./news_detail.css"
-
+import Button from "@mui/material/Button";
 
 const InternshipJobOfferPage = () => {
     const [csrfToken, setCsrfToken] = useState("");
@@ -16,42 +21,46 @@ const InternshipJobOfferPage = () => {
     const [bookmarked, setBookmarked] = useState(false);
     const [isHover, SetFavoriteIcon_hover] = useState(false);  //ホバーしたら「クリックするとブックマークできます」というテキストが出現
     const [showNav, setShowNav] = useState(false); // ナビゲーションバーを表示するかどうかの状態を管理
+    const [followStatus, setFollowStatus] = useState(null);
 
     const csrf_url = "http://localhost:8000/csrf-token";
     const news_bookmark_url = "http://localhost:8000/news_bookmark";
-    const location = useLocation();
-    const parameter = location.state; // パラメータ(w_newsテーブルのidカラムの値)を代入
+    // const location = useLocation();
+    // const parameter = location.state; // パラメータ(w_newsテーブルのidカラムの値)を代入
+    const { id } = useParams(); // パラメータから id を取得
+    const newsdetail_id = String(id); // id を文字列に変換する
     const navigate = useNavigate();
     console.log(csrfToken);
 
     const { getSessionData } = useSessionStorage();
     const accountData = getSessionData("accountData");
     const data = {
-      id: accountData.id,
+        id: accountData.id,
     };
 
     useEffect(() => {
 
-        console.log(parameter.id);
+        console.log(newsdetail_id);
         //ニュースのデータを抽出する
         async function fetchData() {
             try {
                 const response = await axios.get(
-                    `http://localhost:8000/Internship_JobOffer/news_detail/${parameter.id}`,
+                    `http://localhost:8000/Internship_JobOffer/news_detail/${newsdetail_id}`,
                     {
                         params: {
                             MyId: data.id, //今ログインしている人のid
-                          },
+                        },
                     }
                 );
                 console.log(response.data);
                 SetNewsDetail(response.data);
+                setFollowStatus(response.data.follow_status);
             } catch (error) {
                 console.error("データの取得中にエラーが発生しました！", error);
             }
         }
         fetchData();
-    }, [parameter.id]);
+    }, [newsdetail_id]);
 
     useEffect(() => {
         async function fetchCsrfToken() {
@@ -69,7 +78,16 @@ const InternshipJobOfferPage = () => {
         fetchCsrfToken(); // ページがロードされた時点でCSRFトークンを取得
     }, []);
 
-
+    const handleFollowClick = async () => {
+        try {
+          const updatedFollowStatus = await follow(data.id, NewsDetail.company_id);
+          if (updatedFollowStatus) {
+            setFollowStatus(updatedFollowStatus);
+          }
+        } catch (error) {
+          console.error("フォロー処理中にエラーが発生しました！", error);
+        }
+      };
 
     //日付をYY/MM/DDに変換する
     const formatDate = (dateString) => {
@@ -84,13 +102,13 @@ const InternshipJobOfferPage = () => {
     const news_bookmark = async () => {
         setBookmarked(!bookmarked); //usestateセット
         //ajax処理
-        console.log(parameter.id);
+        console.log(newsdetail_id);
         console.log(NewsDetail.genre);
         try {
             const response = await axios.post(
                 news_bookmark_url,
                 {
-                    id: parameter.id,              //bookmark_idカラムに入れる
+                    id: newsdetail_id,              //bookmark_idカラムに入れる
                     category: NewsDetail.genre,   //categoryカラムに入れる
                     sessionid: data.Id,         //企業or学生のid
                 },
@@ -146,26 +164,102 @@ const InternshipJobOfferPage = () => {
 
             {NewsDetail ? (
 
-
-
                 <div className="NewsDetailContainer">
 
                     {/* ある程度下へスクロールしたら出てくるメニュー */}
                     {showNav &&
-                            <div className={`popup_menu ${showNav ? 'visible' : 'invisible'}`}>
-                                <Stack direction="row" spacing={2}>
+                        <div className={`popup_menu ${showNav ? 'visible' : 'invisible'}`}>
+                            <Stack direction="row" spacing={2}>
                                 <p>{NewsDetail.article_title}</p>
-                                <p style={{ fontSize: '15px' }}>企業プロフィール</p>
-                                <p>{NewsDetail.follow_status}</p> 
-                                </Stack>
-                            </div>
+                                <Button
+                                    variant="contained"
+                                    sx={{
+                                        fontSize: "10px",
+                                        padding: "8px 16px",
+                                        margin: "4px",
+                                        background: "linear-gradient(#41A4FF, #9198e5)",
+                                        "&:hover": {
+                                            background: "linear-gradient(#c2c2c2, #e5ad91)",
+                                        },
+                                    }}
+                                    onClick={handleProfileJump}
+                                >
+                                    企業プロフィールはこちらから
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    sx={{
+                                        fontSize: "10px",
+                                        padding: "8px 16px",
+                                        margin: "4px",
+                                        background: "linear-gradient(#41A4FF, #9198e5)",
+                                        "&:hover": {
+                                            background: "linear-gradient(#c2c2c2, #e5ad91)",
+                                        },
+                                    }}
+                                    onClick={handleFollowClick}
+                                >
+                                {followStatus}
+                                {/* usestateから持ってくる */}
+                                </Button>
+
+                            </Stack>
+                        </div>
                     }
 
-                    <hr className="hr"></hr>
-                    <p className="news_genre">{NewsDetail.genre}</p>
-                    <hr className="hr"></hr>
+                    <Button
+                                    variant="contained"
+                                    sx={{
+                                        fontSize: "10px",
+                                        padding: "8px 16px",
+                                        margin: "4px",
+                                        background: "linear-gradient(#41A4FF, #9198e5)",
+                                        "&:hover": {
+                                            background: "linear-gradient(#c2c2c2, #e5ad91)",
+                                        },
+                                    }}
+                                >
+                                {NewsDetail.genre}
+                    </Button>
                     <h1 className="news_title">{NewsDetail.article_title}</h1>
-                    <p className="news_company_name" onClick={handleProfileJump}>{NewsDetail.company_name}</p>
+                    <Stack direction="row" spacing={2}>
+                    <p className="news_company_name">{NewsDetail.company_name}</p>
+                    <p className="news_created_at">{formatDate(NewsDetail.news_created_at)}</p>
+                    <Stack direction="row" spacing={2}>
+                                <Button
+                                    variant="contained"
+                                    sx={{
+                                        fontSize: "10px",
+                                        padding: "8px 16px",
+                                        margin: "4px",
+                                        background: "linear-gradient(#41A4FF, #9198e5)",
+                                        "&:hover": {
+                                            background: "linear-gradient(#c2c2c2, #e5ad91)",
+                                        },
+                                    }}
+                                    onClick={handleProfileJump}
+                                >
+                                    企業プロフィールはこちらから
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    sx={{
+                                        fontSize: "10px",
+                                        padding: "8px 16px",
+                                        margin: "4px",
+                                        background: "linear-gradient(#41A4FF, #9198e5)",
+                                        "&:hover": {
+                                            background: "linear-gradient(#c2c2c2, #e5ad91)",
+                                        },
+                                    }}
+                                    onClick={handleFollowClick}
+                                >
+                                {followStatus}
+                                {/* usestateから持ってくる */}
+                                </Button>
+
+                            </Stack>
+                    </Stack>
                     {/* NewsDetailHeader要素 サムネイルと会社名・お気に入りボタンを一括りにする */}
                     <div className="NewsDetailHeader">
                         <img
@@ -176,9 +270,6 @@ const InternshipJobOfferPage = () => {
                     </div>
 
                     <div className="genre_update">
-
-                        <p>{formatDate(NewsDetail.news_created_at)}</p>
-
 
                         {/* //ログインしていない場合非表示 */}
                         {data.id && (

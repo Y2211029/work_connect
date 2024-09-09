@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { forwardRef, useState } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -24,9 +24,9 @@ import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 const PostCard = forwardRef(({ post }, ref) => {
   const { work_id, genre, /* cover, */ title, intro, thumbnail, /*view, comment,*/ author, userName, createdAt } = post;
 
+  const [imgSrc, setImgSrc] = useState(thumbnail);
 
-
-
+  let fallbackImage = "https://placehold.jp/300x200.png";
 
   // アイコン
   const renderAvatar = (
@@ -75,7 +75,8 @@ const PostCard = forwardRef(({ post }, ref) => {
   const renderThumbnail = (
     <Box
       component="img"
-      src={thumbnail}
+      src={imgSrc}
+      onError={() => setImgSrc(fallbackImage)}
       sx={{
         aspectRatio: 16 / 9,
         borderRadius: "10px",
@@ -224,7 +225,7 @@ const PostCard = forwardRef(({ post }, ref) => {
     //SM(Small) 600px以上
     //MD(Medium) 960px以上
     // グリッドは12分割されており、
-    <Grid xs={12} sm={6} md={3}>
+    <Grid xs={12} sm={6} md={3} className="itemGrid">
       <div ref={ref}>
         <Card>
           <Box

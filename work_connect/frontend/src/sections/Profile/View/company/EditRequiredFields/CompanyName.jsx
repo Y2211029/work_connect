@@ -37,7 +37,7 @@ const CompanyName = ({ CompanyNameData }) => {
             margin="normal"
             name="CompanyName"
             onChange={handleChange}
-            // required
+            required
             type="text"
             value={CompanyName}
             variant="outlined"

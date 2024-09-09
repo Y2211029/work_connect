@@ -27,7 +27,6 @@ import { follow } from "src/_mock/follow";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
-  border:'#DAE2ED 2px solid',
   padding: theme.spacing(1),
   textAlign: 'left',
   color: theme.palette.text.secondary,
@@ -113,13 +112,11 @@ const ProfileMypage = () => {
 
         const response = await axios.get(url, {
           params: {
-            kind: "c",
             ProfileUserName: user_name, // プロフィールとして表示されている人のユーザーネーム
             MyUserId: MyUserId, //ログイン中のID
           },
         });
         if (response) {
-          //console.log(response.data[0].follow_status);
           setResponseData(response.data[0]);
           setFollowStatus(response.data[0].follow_status);
           //console.log("ResponseData:", response.data[0]);
@@ -133,7 +130,7 @@ const ProfileMypage = () => {
     if (user_name) {
       GetData();
     }
-  }, [ResponseData]); // user_name を依存配列に含める
+  }, [ResponseData,user_name]); // user_name を依存配列に含める
 
   // 初回レンダリング時の一度だけ実行させる
   useEffect(() => {
@@ -269,13 +266,15 @@ const ProfileMypage = () => {
                   '&:hover': { backgroundColor: '#f0f0f0', title: 'a' },
                 }}
               >
-                <ModeEditIcon sx={{ fontSize: 55 }} />
+                <ModeEditIcon sx={{ fontSize: 40 }} />
               </IconButton>
             </Tooltip>
             {/* {showEdit ? <ProfileMypageEdit /> : <ProfileMypage />} */}
           </Box>
-        ) : (
-          //ResponseData.id(プロフィールのID) と MyUserId(ログイン中のID)が一致しない場合はフォローの状況を表示
+        ) : (ResponseData.id && MyUserId[0]) && (ResponseData.id.charAt(0) !== MyUserId[0].charAt(0)) ? (
+
+         // ResponseData.id(プロフィールのID)の1文字目 と MyUserId(ログイン中のID)の1文字目が一致しない場合はフォローの状況を表示
+         // 学生側はS、企業側はCで始まる。
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', }} >
             <Tooltip title="フォロー">
               {/* <IconButton
@@ -292,38 +291,31 @@ const ProfileMypage = () => {
             </Tooltip>
             {/* {showEdit ? <ProfileMypageEdit /> : <ProfileMypage />} */}
           </Box>
+        ):(
+          null
         )}
 
 
-<Card sx={{
-        textAlign: 'center',
-        display: 'flex',
-        justifyContent: 'center',
-        backgroundColor: theme.palette.background.default,
-        boxShadow: 'none',
-        position: 'relative'
-      }}>
-        <CardMedia
-          component="img"
-          sx={{
-            height: 'calc(100vw * 0.58)',
-            width: 'calc(100vw * 0.58)',
-            objectFit: 'cover',
-            borderRadius: '50%',
-            maxHeight: 350,
-            maxWidth: 350,
-            '@media (min-width: 600px)': {
+        <Card sx={{
+          textAlign: 'center',
+          display: 'flex',
+          justifyContent: 'center',
+          backgroundColor: theme.palette.background.default,
+          boxShadow: 'none'
+        }}>
+          <CardMedia
+            component="img"
+            sx={{
               height: 350,
               width: 350,
-            }
-          }}
-          image={ResponseData.icon ?
-            `http://localhost:8000/storage/images/userIcon/${ResponseData.icon}` :
-            ""}
-          alt="Loading..."
-        />
+              objectFit: 'cover', // 画像をカード内でカバーするように設定
+              borderRadius: '50%', // 画像を丸くする
+            }}
+            image={ResponseData.thumbnail_id}
+            alt="Placeholder"
+          />
 
-      </Card>
+        </Card>
 
         <Box>
           <Typography variant="h6">企業名</Typography>
@@ -333,15 +325,28 @@ const ProfileMypage = () => {
           <Typography variant="h6">企業名(カタカナ)</Typography>
           <Item>{ResponseData.company_namecana ? ResponseData.company_namecana : "Loading..."} </Item>
         </Box>
-        {/* <Box>
+        <Box>
           <Typography variant="h6">企業採用担当者</Typography>
           <Item>{ResponseData.user_name ? ResponseData.user_name : "Loading..."} </Item>
-        </Box> */}
+        </Box>
         <Box>
           <Typography variant="h6">企業概要</Typography>
-          <Item sx={{fontSize: '20px'}}>{ResponseData.intro ? ResponseData.intro : "Loading..."} </Item>
+          <Item>{ResponseData.intro ? ResponseData.intro : "Loading..."} </Item>
         </Box>
-
+        <Box>
+          <Typography variant="h6">紹介動画</Typography>
+          <Item>
+            {ResponseData.video_url ? (
+              <Iframe
+                url={ResponseData.video_url}
+                width="100%"
+                height="400px"
+              />
+            ) : (
+              "Loading..."
+            )}
+          </Item>
+        </Box>
         <Box>
           <Typography variant="h6">本社所在地</Typography>
           <Item>{ResponseData.address ? ResponseData.address : "Loading..."} </Item>
@@ -441,22 +446,7 @@ const ProfileMypage = () => {
             <Item><a href={ResponseData.hp_url} target="_blank">{ShowTagsCompanyInformation(hp_url_button)}</a></Item>
           </Box>
         )}
-        {ResponseData.video_url && !close && (
-        <Box>
-          <Typography variant="h6">紹介動画</Typography>
-          <Item>
-            {ResponseData.video_url ? (
-              <Iframe
-                url={ResponseData.video_url}
-                width="100%"
-                height="400px"
-              />
-            ) : (
-              "Loading..."
-            )}
-          </Item>
-        </Box>
-        )}
+
 
         {/* {ResponseData.companyInformation && !close && (
           <Box ref={el => (detail.current[3] = el)} id="detail">

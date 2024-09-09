@@ -29,16 +29,23 @@ export default function CompanyListView() {
         </Button> */}
       </Stack>
 
-      <Stack mb={5} direction="row" alignItems="center" justifyContent="space-between">
-        {/* <PostSearch posts={posts} /> */}
-        <PostSort
-          options={[
-            { value: "latest", label: "Latest" },
-            { value: "popular", label: "Popular" },
-            { value: "oldest", label: "Oldest" },
-          ]}
-        />
-      </Stack>
+      <Stack mb={5} direction="row" alignItems="center" justifyContent="flex-end">
+          {/*
+          IsSearch.searchResultEmpty = false 作品データあり
+          IsSearch.searchResultEmpty = true 作品データなし
+          
+          IsSearch.searchResultEmpty !== true
+          「検索結果が0件でない場合に表示」
+            
+          // 学生・企業一覧の場合は並び替え必要ないので非表示にする。
+          */}
+            <PostSort
+              options={[
+                { value: "orderNewPostsDate", label: "投稿日が新しい順" },
+                { value: "orderOldPostsDate", label: "投稿日が古い順" },
+              ]}
+            />
+        </Stack>
 
       <Grid container spacing={3}>
         {postsFrominternshipJobOffer.map((post, index) => (

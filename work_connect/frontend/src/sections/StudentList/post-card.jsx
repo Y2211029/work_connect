@@ -19,6 +19,7 @@ import { useSessionStorage } from "src/hooks/use-sessionStorage";
 const PostCard = forwardRef(({ post, index }, ref) => {
   const {
     student_id,
+    icon,
     cover,
     userName,
     graduationYear,
@@ -63,7 +64,7 @@ const PostCard = forwardRef(({ post, index }, ref) => {
   const renderAvatar = (
     <Avatar
       alt={author.name}
-      src={author.avatarUrl}
+      src={icon ? `http://localhost:8000/storage/images/userIcon/${icon}` : author.avatarUrl}
       sx={{
         zIndex: 9,
         width: 32,

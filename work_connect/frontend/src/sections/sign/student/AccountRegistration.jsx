@@ -28,7 +28,7 @@ let NULL_validation7 = false;
 // import { prepareCssVars } from "@mui/system";
 
 const AccountRegistar = forwardRef((props, ref) => {
-  
+
   // 「次へ」を押したときに企業名・企業名(カナ)が空だったらバリデーションを実行
   // ./stepbar.jsx から呼び出し
   useImperativeHandle(ref, () => ({
@@ -241,7 +241,7 @@ const AccountRegistar = forwardRef((props, ref) => {
       props.coleSetUserNameCheck("required", false);
     }
 
-    
+
     // セイのhtmlオブジェクトを取得
     const student_kanasurnameElement = document.querySelector('[name="student_kanasurname"]');
     // セイのバリデーションチェック
@@ -313,7 +313,7 @@ const AccountRegistar = forwardRef((props, ref) => {
       } else if(name == "passwordCheck" && value.trim() !== ''){
         // バリデーションを解除
         NULL_validation7 = false;
-      } 
+      }
 
     setAccountData((prev) => ({ ...prev, [name]: value }));
 
@@ -522,7 +522,7 @@ useEffect(() => {
               fullWidth
               helperText={
                 // パスワードが空の時にもエラー表示出てたので修正しました。
-                (accountData.password == undefined || accountData.password == "" ? "" : inputError.password ? "パスワードが条件を満たしていません" : "") + 
+                (accountData.password == undefined || accountData.password == "" ? "" : inputError.password ? "パスワードが条件を満たしていません" : "") +
                 " ※大文字・小文字・英数字・記号・8文字以上30文字以内"
               }
               label="パスワード"
@@ -533,7 +533,7 @@ useEffect(() => {
               type={showPassword ? "text" : "password"}
               value={accountData.password}
               inputProps={{
-                pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,30}$",
+                pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[_!@#$%^&*]).{8,30}$",
                 // ^                : 文字列の開始
                 // (?=.*[a-z])      : 少なくとも一つの小文字の英字が含まれていること
                 // (?=.*[A-Z])      : 少なくとも一つの大文字の英字が含まれていること

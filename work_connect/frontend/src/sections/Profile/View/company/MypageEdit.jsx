@@ -27,8 +27,13 @@ import UserIcon from "./EditDetailFields/UserIcon";
 // --- 必須項目 --- //
 import CompanyName from "./EditRequiredFields/CompanyName";
 import CompanyKanaName from "./EditRequiredFields/CompanyKanaName";
+<<<<<<< HEAD
 //import CompanyUserName from "./EditRequiredFields/CompanyUserName";
+
+=======
+// import CompanyUserName from "./EditRequiredFields/CompanyUserName";
 import IntroVideo from "./EditRequiredFields/IntroVideo";
+>>>>>>> 502672cdbfb63981c5c7948932a5a5491fb300cb
 import CompanyAddress from "./EditRequiredFields/CompanyAddress";
 import CompanyAddressMap from "./EditRequiredFields/CompanyAddressMap";
 
@@ -45,6 +50,7 @@ import Qualification from "./EditDetailFields/Qualification";
 import Software from "./EditDetailFields/Software";
 
 import CompanyHPMap from "./EditRequiredFields/CompanyHPMap";
+import IntroVideo from "./EditDetailFields/IntroVideo";
 
 
 
@@ -91,7 +97,7 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
 
   // Laravelとの通信用URL
   const Get_url = "http://localhost:8000/get_profile_mypage";
-  const Post_url = "http://localhost:8000/post_profile_mypage";
+  const Post_url = "http://localhost:8000/company_post_profile_mypage";
 
   // ログイン中のuser_nameではない
   // ＊＊＊他ルートからアクセスしたときに表示したいユーザのuser_nameをここで指定＊＊＊

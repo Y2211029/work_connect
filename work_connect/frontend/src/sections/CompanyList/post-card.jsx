@@ -19,6 +19,7 @@ import SvgColor from "src/components/svg-color";
 const PostCard = forwardRef(({ post, index }, ref) => {
   const {
     company_id,
+    icon,
     userName,
     companyName,
     selectedOccupation,
@@ -69,7 +70,7 @@ const PostCard = forwardRef(({ post, index }, ref) => {
   const renderAvatar = (
     <Avatar
       alt={author.name}
-      src={author.avatarUrl}
+      src={icon ? `http://localhost:8000/storage/images/userIcon/${icon}` : author.avatarUrl}
       sx={{
         zIndex: 9,
         width: 32,

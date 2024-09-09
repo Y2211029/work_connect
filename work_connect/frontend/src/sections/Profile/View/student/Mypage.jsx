@@ -263,24 +263,28 @@ const ProfileMypage = () => {
             </Tooltip>
             {/* {showEdit ? <ProfileMypageEdit /> : <ProfileMypage />} */}
           </Box>
-        ) : (
-          //ResponseData.id(プロフィールのID) と MyUserId(ログイン中のID)が一致しない場合はフォローの状況を表示
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Tooltip title="フォロー">
-              {/* <IconButton
-                sx={{
-                  marginLeft: 'auto', // 右揃え
-                  '&:hover': { backgroundColor: '#f0f0f0' },
-                }}
-                onClick={handleFollowClick()} // クリックイベントのハンドラーを設定
-              >
-                <ModeEditIcon sx={{ fontSize: 40 }} />
-              </IconButton> */}
-              {renderFollow()}
+        ) : (ResponseData.id && MyUserId[0]) && (ResponseData.id.charAt(0) !== MyUserId[0].charAt(0)) ? (
+          
+         // ResponseData.id(プロフィールのID)の1文字目 と MyUserId(ログイン中のID)の1文字目が一致しない場合はフォローの状況を表示
+         // 学生側はS、企業側はCで始まる。
+         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+         <Tooltip title="フォロー">
+           {/* <IconButton
+             sx={{
+               marginLeft: 'auto', // 右揃え
+               '&:hover': { backgroundColor: '#f0f0f0' },
+             }}
+             onClick={handleFollowClick()} // クリックイベントのハンドラーを設定
+           >
+             <ModeEditIcon sx={{ fontSize: 40 }} />
+           </IconButton> */}
+           {renderFollow()}
 
-            </Tooltip>
+         </Tooltip>
 
-          </Box>
+       </Box>
+        ):(
+          null
         )}
 
         <Card sx={{
@@ -372,14 +376,14 @@ const ProfileMypage = () => {
         )}
         {/* ResponseData.faculty_nameがあるときのみ表示 */}
         {ResponseData.major_name && !close && (
-          <Box ref={el => (detail.current[0] = el)} id="detail">
+          <Box ref={el => (detail.current[2] = el)} id="detail">
             <Typography variant="h6">専攻</Typography>
             <Item>{ShowTags(major_name_tag)}</Item>
           </Box>
         )}
         {/* ResponseData.department_nameがあるときのみ表示 */}
         {ResponseData.course_name && !close && (
-          <Box ref={el => (detail.current[1] = el)} id="detail">
+          <Box ref={el => (detail.current[3] = el)} id="detail">
 
             <Typography variant="h6">コース</Typography>
             <Item>{ShowTags(course_name_tag)}</Item>
@@ -387,49 +391,49 @@ const ProfileMypage = () => {
         )}
         {/* ResponseData.development_environmentがあるときのみ表示 */}
         {ResponseData.development_environment && !close && (
-          <Box ref={el => (detail.current[2] = el)} id="detail">
+          <Box ref={el => (detail.current[4] = el)} id="detail">
             <Typography variant="h6">開発環境</Typography>
             <Item>{ShowTags(development_environment_tag)}</Item>
           </Box>
         )}
         {/* ResponseData.hobbyがあるときのみ表示 */}
         {ResponseData.hobby && !close && (
-          <Box ref={el => (detail.current[3] = el)} id="detail">
+          <Box ref={el => (detail.current[5] = el)} id="detail">
             <Typography variant="h6">趣味</Typography>
             <Item>{ShowTags(hobby_tag)}</Item>
           </Box>
         )}
         {/* ResponseData.desired_work_regionがあるときのみ表示 */}
         {ResponseData.desired_work_region && !close && (
-          <Box ref={el => (detail.current[4] = el)} id="detail">
+          <Box ref={el => (detail.current[6] = el)} id="detail">
             <Typography variant="h6">希望勤務地</Typography>
             <Item>{ShowTags(desired_work_region_tag)}</Item>
           </Box>
         )}
         {/* ResponseData.desired_occupationがあるときのみ表示 */}
         {ResponseData.desired_occupation && !close && (
-          <Box ref={el => (detail.current[5] = el)} id="detail">
+          <Box ref={el => (detail.current[7] = el)} id="detail">
             <Typography variant="h6">希望職種</Typography>
             <Item>{ShowTags(desired_occupation_tag)}</Item>
           </Box>
         )}
         {/* ResponseData.programming_languageがあるときのみ表示 */}
         {ResponseData.programming_language && !close && (
-          <Box ref={el => (detail.current[6] = el)} id="detail">
+          <Box ref={el => (detail.current[8] = el)} id="detail">
             <Typography variant="h6">プログラミング言語</Typography>
             <Item>{ShowTags(programming_language_tag)}</Item>
           </Box>
         )}
         {/* ResponseData.acquisition_qualificationがあるときのみ表示 */}
         {ResponseData.acquisition_qualification && !close && (
-          <Box ref={el => (detail.current[7] = el)} id="detail">
+          <Box ref={el => (detail.current[9] = el)} id="detail">
             <Typography variant="h6">取得資格</Typography>
             <Item>{ShowTags(acquisition_qualification_tag)}</Item>
           </Box>
         )}
         {/* ResponseData.softwareがあるときのみ表示 */}
         {ResponseData.software && !close && (
-          <Box ref={el => (detail.current[8] = el)} id="detail">
+          <Box ref={el => (detail.current[10] = el)} id="detail">
             <Typography variant="h6">ソフトウェア</Typography>
             <Item>{ShowTags(software_tag)}</Item>
           </Box>

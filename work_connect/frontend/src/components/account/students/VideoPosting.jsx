@@ -9,6 +9,7 @@ import YouTube from "react-youtube";
 import "../../../App.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 // // ログインのモーダル CSS設定
 // // const modalStyle = {
@@ -168,6 +169,8 @@ const VideoPosting = () => {
   //   // setFormErrors({}); // エラーメッセージをリセット
   // };
 
+  let navigation = useNavigate();
+
   const [workData, setVideoData] = useState({
     YoutubeURL: "",
     VideoTitle: "",
@@ -253,6 +256,7 @@ const VideoPosting = () => {
       });
       console.log(formData);
       console.log(response.data.message);
+      navigation("/VideoSelect");
     } catch (error) {
       console.log(error.message);
     }

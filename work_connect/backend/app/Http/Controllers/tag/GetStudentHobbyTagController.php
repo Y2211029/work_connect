@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\w_tags;
 
-class GetHobbyTagController extends Controller
+class GetStudentHobbyTagController extends Controller
 {
-    public function GetHobbyTagController(Request $request)
+    public function GetStudentHobbyTagController(Request $request)
     {
 
         if ($request->input("All", "") == "tags") {

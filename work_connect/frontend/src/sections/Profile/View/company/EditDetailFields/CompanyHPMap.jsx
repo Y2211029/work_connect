@@ -48,7 +48,7 @@ const CompanyHPMap = ({ CompanyHPMapData }) => {
         margin="normal"
         name="CompanyHPMap"
         onChange={handleChange}
-        required
+        // required
         type="text"
         value={CompanyHPMap}
         variant="outlined"

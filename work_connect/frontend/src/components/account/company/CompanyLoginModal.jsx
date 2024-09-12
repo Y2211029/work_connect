@@ -193,7 +193,7 @@ const CompanyLoginModal = (props) => {
   const fillDemoCredentials = () => {
     setFormValues({ user_name: "株式会社アーキテクト", password: "ArchitectPassword" });
   };
-  
+
   return (
     <div>
       {/* 条件付きレンダリングを使用 */}

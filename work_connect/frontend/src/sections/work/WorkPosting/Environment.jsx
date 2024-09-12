@@ -44,10 +44,10 @@ const Environment = (props) => {
     if (actionMeta && actionMeta.action === 'create-option') {
 
       const inputValue = actionMeta;
-      console.log(inputValue);  
+      console.log(inputValue);
       const newOption = { value: inputValue.option.value, label: inputValue.option.label };
       setOptions([...options, newOption]);
-      // 13は作品投稿の開発環境です。 
+      // 13は作品投稿の開発環境です。
       InsertTagFunction(inputValue.option.value, 13);
     }
     let valueArray = [];

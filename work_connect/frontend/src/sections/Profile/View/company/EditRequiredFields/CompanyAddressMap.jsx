@@ -12,6 +12,10 @@ const CompanyAddressMap = ({ CompanyAddressMapData }) => {
   const { getSessionData, updateSessionData } = useSessionStorage();
   const [CompanyAddressMapURL, setCompanyAddressMapURL] = useState(null);
 
+  // 入力エラーの状態管理
+  const [inputError, setInputError] = useState({
+    CompanyAddressMapError: false,
+  });
 
   // valueの初期値をセット
   useEffect(() => {
@@ -20,11 +24,13 @@ const CompanyAddressMap = ({ CompanyAddressMapData }) => {
 
     /// 編集の途中ならセッションストレージからデータを取得する。
     /// (リロードした時も、データが残った状態にする。)
-    if ((SessionData.CompanyAddressMap !== undefined) ||
+    if ((SessionData.CompanyAddressMap !== undefined && SessionData.CompanyAddressMap !== "") ||
     SessionData.CompanyAddressMapEditing) {
       // セッションストレージから最新のデータを取得
-      console.log(SessionData.CompanyAddressMap);
       setCompanyAddressMap(SessionData.CompanyAddressMap);
+    } else {
+      // DBから最新のデータを取得
+      setCompanyAddressMap(CompanyAddressMapData);
     }
 
   }, [CompanyAddressMapData]);
@@ -32,8 +38,10 @@ const CompanyAddressMap = ({ CompanyAddressMapData }) => {
   const handleChange = (e) => {
     const newValue = e.target.value;
     if (e.target.name === "CompanyAddressMap") {
+      // newValueをセット
       setCompanyAddressMap(newValue);
       iframeURLChange(newValue);
+      // 編集中状態をオン(保存もしくはログアウトされるまで保持)
       updateSessionData("accountData", "CompanyAddressMapEditing", true);
     }
   };
@@ -70,39 +78,49 @@ const CompanyAddressMap = ({ CompanyAddressMapData }) => {
         if (match && match[1]) {
             extractedUrl = match[1];
         }
-    }
-  //   else if (URL.includes("https://maps.app.goo.gl/")) {
-  //     // Google Maps の URL から ID を抽出
-  //     const mapId = URL.split('/').pop();
+      }
+      //   else if (URL.includes("https://maps.app.goo.gl/")) {
+      //     // Google Maps の URL から ID を抽出
+      //     const mapId = URL.split('/').pop();
 
-  //     if (mapId) {
-  //         // 埋め込み URL を生成
-  //         extractedUrl = `https://www.google.com/maps/embed?pb=${mapId}`;
-  //     }
-  // }
+      //     if (mapId) {
+      //         // 埋め込み URL を生成
+      //         extractedUrl = `https://www.google.com/maps/embed?pb=${mapId}`;
+      //     }
+      // }
 
-    // URL を設定し、コンソールに出力する
-    setCompanyAddressMapURL(extractedUrl);
-    console.log(extractedUrl);
-};
+        // URL を設定し、コンソールに出力する
+        setCompanyAddressMapURL(extractedUrl);
+        console.log(extractedUrl);
+    };
 
 
 
-  // 編集中のデータを保存しておく
   useEffect(() => {
+    // 編集中のデータを保存しておく
     updateSessionData("accountData", "CompanyAddressMap", CompanyAddressMap);
-  }, [CompanyAddressMap]);
 
+    // バリデーション
+    if(CompanyAddressMap === ""){
+      // 姓が空だったら、error表示
+      setInputError((prev) => ({ ...prev, CompanyAddressMapError: true }));
+    } else if(CompanyAddressMap !== ""){
+      // 姓が空でないなら、error非表示
+      setInputError((prev) => ({ ...prev, CompanyAddressMapError: false }));
+    }
+
+  }, [CompanyAddressMap]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
       <TextField
+        error={inputError.CompanyAddressMapError}
         fullWidth
-        label=""
+        label="本社所在地マップ"
         margin="normal"
         name="CompanyAddressMap"
         onChange={handleChange}
-        required
+        // required
         type="text"
         value={CompanyAddressMap}
         variant="outlined"

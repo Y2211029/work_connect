@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\w_tags;
 
-class GetSoftwareTagController extends Controller
+class GetStudentSoftwareTagController extends Controller
 {
-    public function GetSoftwareTagController(Request $request)
+    public function GetStudentSoftwareTagController(Request $request)
     {
         if ($request->input("All", "") == "tags") {
             $tag = \DB::table('w_tags')

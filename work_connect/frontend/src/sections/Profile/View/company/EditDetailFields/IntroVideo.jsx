@@ -17,13 +17,12 @@ const IntroVideo = ({ IntroVideoData }) => {
     // セッションデータ取得
     const SessionData = getSessionData("accountData");
 
-
     /// 編集の途中ならセッションストレージからデータを取得する。
     /// (リロードした時も、データが残った状態にする。)
-    if ((SessionData.IntroVideo !== undefined) ||
-      SessionData.IntroVideoEditing) {
+    if ((SessionData.CompanyIntroVideo !== undefined) ||
+    SessionData.CompanyIntroVideoEditing) {
       // セッションストレージから最新のデータを取得
-      setIntroVideo(SessionData.IntroVideo);
+      setIntroVideo(SessionData.CompanyIntroVideo);
     }
 
   }, [IntroVideoData]);
@@ -33,7 +32,7 @@ const IntroVideo = ({ IntroVideoData }) => {
     if (e.target.name === "IntroVideo") {
       setIntroVideo(newValue);
       iframeURLChange(newValue);
-      updateSessionData("accountData", "IntroVideoEditing", true);
+      updateSessionData("accountData", "CompanyIntroVideoEditing", true);
     }
   };
 
@@ -62,13 +61,9 @@ const IntroVideo = ({ IntroVideoData }) => {
 
   // 編集中のデータを保存しておく
   useEffect(() => {
-    updateSessionData("accountData", "IntroVideo", IntroVideo);
-
+    updateSessionData("accountData", "CompanyIntroVideo", IntroVideo);
 
   }, [IntroVideo]);
-
-
-
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -78,7 +73,7 @@ const IntroVideo = ({ IntroVideoData }) => {
         margin="normal"
         name="IntroVideo"
         onChange={handleChange}
-        required
+        // required
         type="text"
         value={IntroVideo}
         variant="outlined"

@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
-import Select from "react-select";
+import CreatableSelect from "react-select/creatable";
 import PropTypes from 'prop-types';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import GetTagAllList from "src/components/tag/GetTagAllList";
+import InsertTag from 'src/components/tag/InsertTag';
 
 const FacultyNameDropdown = ({ FacultyNameData }) => {
+  const {InsertTagFunction} = InsertTag();
   const [selectedFaculty, setSelectedFaculty] = useState(FacultyNameData);
 
   const { getSessionData, updateSessionData } = useSessionStorage();
@@ -14,7 +16,7 @@ const FacultyNameDropdown = ({ FacultyNameData }) => {
   const { GetTagAllListFunction } = GetTagAllList();
 
   useEffect(() => {
-    let optionArrayPromise = GetTagAllListFunction("faculty_name");
+    let optionArrayPromise = GetTagAllListFunction("student_faculty_name");
     optionArrayPromise.then((result) => {
       setOptions(result);
     });
@@ -49,22 +51,24 @@ const FacultyNameDropdown = ({ FacultyNameData }) => {
     }
   }, [selectedFaculty]);
 
-  const handleChange = (selectedOption) => {
+  const handleChange = (selectedOption, actionMeta) => {
+    // newValueをセット
     setSelectedFaculty(selectedOption);
-    // sessionStrageに値を保存
-    if (selectedOption) {
-      updateSessionData("accountData", "FacultyName", selectedOption.value);
-    } else {
-      // なしの場合
-      updateSessionData("accountData", "FacultyName", "");
-    }
     // 編集中状態をオン(保存もしくはログアウトされるまで保持)
     updateSessionData("accountData", "FacultyNameEditing", true);
+
+    if (actionMeta && actionMeta.action === 'create-option') {
+        const inputValue = actionMeta;
+        const newOption = { value: inputValue.option.value, label: inputValue.option.label };
+        setOptions([...options, newOption]);
+        // 18は学生の学部です。
+        InsertTagFunction(inputValue.option.value, 18);
+    }
   };
 
   return (
     <div>
-      <Select
+      <CreatableSelect
         id="departmentDropdown"
         value={selectedFaculty}
         onChange={handleChange}

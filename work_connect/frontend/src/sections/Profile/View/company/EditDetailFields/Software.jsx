@@ -70,8 +70,8 @@ const Software = ({SoftwareData}) => {
       console.log(inputValue);
       const newOption = { value: inputValue.option.value, label: inputValue.option.label };
       setOptions([...options, newOption]);
-      // 5は学生のソフトウェアです。
-      InsertTagFunction(inputValue.option.value, 5);
+      // 26は企業のソフトウェアです。
+      InsertTagFunction(inputValue.option.value, 26);
     }
     let valueArray = [];
     selectedOption.map((value) => {

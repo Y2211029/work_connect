@@ -72,8 +72,8 @@ const ProgrammingLanguage = ({ProgrammingLanguageData}) => {
       console.log(inputValue);
       const newOption = { value: inputValue.option.value, label: inputValue.option.label };
       setOptions([...options, newOption]);
-      // 4は学生のプログラミング言語です。
-      InsertTagFunction(inputValue.option.value, 4);
+      // 24は企業のプログラミング言語です。
+      InsertTagFunction(inputValue.option.value, 24);
     }
     let valueArray = [];
     selectedOption.map((value) => {

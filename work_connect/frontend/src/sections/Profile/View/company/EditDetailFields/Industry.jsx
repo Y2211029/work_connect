@@ -16,7 +16,7 @@ const Industry = ({IndustryData}) => {
   const { GetTagAllListFunction } = GetTagAllList();
 
   useEffect(() => {
-    let optionArrayPromise = GetTagAllListFunction("industry");
+    let optionArrayPromise = GetTagAllListFunction("company_industry");
     optionArrayPromise.then((result) => {
       setOptions(result);
     });
@@ -70,8 +70,8 @@ useEffect(() => {
       console.log(inputValue);
       const newOption = { value: inputValue.option.value, label: inputValue.option.label };
       setOptions([...options, newOption]);
-      // 2は学生の希望職種です。
-      InsertTagFunction(inputValue.option.value, 2);
+      // 22は企業の業界キーワードです。
+      InsertTagFunction(inputValue.option.value, 22);
     }
     let valueArray = [];
     selectedOption.map((value) => {

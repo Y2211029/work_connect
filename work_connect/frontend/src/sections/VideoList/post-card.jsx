@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-import YouTube from "react-youtube";
+// import YouTube from "react-youtube";
 
 
 import Box from "@mui/material/Box";
@@ -25,20 +25,21 @@ import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 
 const PostCard = forwardRef(({ post }, ref) => {
   const { movie_id, movie, title, genre, intro, /* view, comment,*/ author, userName, createdAt } = post;
-  
-  const opts = {
-    height: "100%",
-    width: "100%",
-    playerVars: {
-      modestbranding: 0,
-      controls: 0,
-      iv_load_policy: 3,
-    },
-  };
+
+  // const opts = {
+  //   height: "100%",
+  //   width: "100%",
+  //   playerVars: {
+  //     modestbranding: 0,
+  //     controls: 0,
+  //     iv_load_policy: 3,
+  //   },
+  // };
 
   // youtube iframe
   const renderMovie = (
-    <YouTube videoId={movie} opts={opts} />
+    // <YouTube videoId={movie} opts={opts} />
+    <img style={{ borderRadius: "10px" }} src={`https://img.youtube.com/vi/${movie}/mqdefault.jpg`} alt="サンプル動画" width="100%" height="auto" />
   );
 
   // アイコン

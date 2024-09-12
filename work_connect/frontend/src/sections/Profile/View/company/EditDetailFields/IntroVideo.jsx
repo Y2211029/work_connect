@@ -8,7 +8,6 @@ import Iframe from 'react-iframe'; //紹介動画やマップを埋め込む
 
 
 const IntroVideo = ({ IntroVideoData }) => {
-
   const [IntroVideo, setIntroVideo] = useState(IntroVideoData);
   const [IntroVideoURL, setIntroVideoURL] = useState(null);
   const { getSessionData, updateSessionData } = useSessionStorage();
@@ -27,7 +26,6 @@ const IntroVideo = ({ IntroVideoData }) => {
     }
 
   }, [IntroVideoData]);
-
 
   const handleChange = (e) => {
     const newValue = e.target.value;
@@ -53,7 +51,7 @@ const IntroVideo = ({ IntroVideoData }) => {
       if (match && match[1]) {
         extractedUrl = match[1];
       }
-    }else if (URL.includes("watch?v=")) {
+    } else if (URL.includes("watch?v=")) {
       const videoId = URL.split('v=')[1].split('&')[0]; // Extract the video ID
       extractedUrl = `https://www.youtube.com/embed/${videoId}`;
     }

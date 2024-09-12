@@ -29,12 +29,12 @@ const ImageCard = ({IconData}) => {
     if (getSessionData("accountData") !== undefined) {
       const SessionData = getSessionData("accountData");
 
-      if(SessionData.IconEditing && SessionData.Icon){
+      if(SessionData.CompanyIconEditing && SessionData.CompanyIcon){
         // セッションストレージから最新のデータを取得
-        setSelectedImage(SessionData.Icon);
+        setSelectedImage(SessionData.CompanyIcon);
       } else if(
-        ((SessionData.IconEditing && SessionData.Icon && IconData)||
-        (!SessionData.IconEditing && IconData)) &&
+        ((SessionData.CompanyIconEditing && SessionData.CompanyIcon && IconData)||
+        (!SessionData.CompanyIconEditing && IconData)) &&
         IconData !== "http://localhost:8000/storage/images/userIcon"
       ){
          // DBから最新のデータを取得
@@ -50,7 +50,7 @@ const ImageCard = ({IconData}) => {
     // sessionStrageに値を保存
     if(selectedImage){
       const selectedImageName = selectedImage.substring(selectedImage.lastIndexOf('/') + 1);
-      updateSessionData("accountData", "Icon", selectedImageName);
+      updateSessionData("accountData", "CompanyIcon", selectedImageName);
     }
   }, [selectedImage]);
 
@@ -84,7 +84,7 @@ const ImageCard = ({IconData}) => {
           // アイコンの更新
           setSelectedImage(imageUrl);
           // 編集中状態をオン(保存もしくはログアウトされるまで保持)
-          updateSessionData("accountData", "IconEditing", true);
+          updateSessionData("accountData", "CompanyIconEditing", true);
 
         } else {
           // アップロードできなかった場合

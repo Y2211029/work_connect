@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\w_tags;
 use Illuminate\Http\Request;
 
-class GetDesiredWorkRegionTagController extends Controller
+class GetStudentDesiredWorkRegionTagController extends Controller
 {
-    public function GetDesiredWorkRegionTagController(Request $request){
+    public function GetStudentDesiredWorkRegionTagController(Request $request){
         $tag = \DB::table('w_tags')
             ->where('item_id', 3)
             ->whereExists(function ($query) {

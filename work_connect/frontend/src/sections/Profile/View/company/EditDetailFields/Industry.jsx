@@ -1,38 +1,42 @@
-import { useState, useEffect } from "react";
-import Select from "react-select";
+import { useEffect, useState } from "react";
+import CreatableSelect from "react-select/creatable";
+// import axios from "axios";
 import PropTypes from 'prop-types';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
-
-const options = [
-  { value: "IT", label: "IT" },
-  { value: "Sler", label: "Sler" },
-  { value: "独立系", label: "独立系" },
-  { value: "フィンテック", label: "フィンテック" },
-  { value: "デジタルトランスフォーメーション", label: "デジタルトランスフォーメーション" },
-  { value: "IoT", label: "IoT" },
-  { value: "AI", label: "AI" },
-  { value: "RPA", label: "RPA" },
-  { value: "BtoB", label: "BtoB" },
-];
+import GetTagAllList from "src/components/tag/GetTagAllList";
+import InsertTag from 'src/components/tag/InsertTag';
 
 const Industry = ({IndustryData}) => {
-  const [selectedIndustry, setSelectedIndustry] = useState([]);
+  const {InsertTagFunction} = InsertTag();
   const { getSessionData, updateSessionData } = useSessionStorage();
+
+  const [selectedIndustry, setSelectedIndustry] = useState([]);
+  const [options, setOptions] = useState([]);
+
+  const { GetTagAllListFunction } = GetTagAllList();
+
+  useEffect(() => {
+    let optionArrayPromise = GetTagAllListFunction("company_industry");
+    optionArrayPromise.then((result) => {
+      setOptions(result);
+    });
+  }, []);
+
 
 // valueの初期値をセット
 useEffect(() => {
   if (getSessionData("accountData") !== undefined){
     const SessionData = getSessionData("accountData");
-    if(SessionData.IndustryEditing && SessionData.Industry){
+    if(SessionData.CompanyIndustryEditing && SessionData.CompanyIndustry){
       // セッションストレージから最新のデータを取得
-      const devtagArray = SessionData.Industry.split(",").map(item => ({
+      const devtagArray = SessionData.CompanyIndustry.split(",").map(item => ({
         value: item,
         label: item,
       }));
       setSelectedIndustry(devtagArray);
     } else if(
-      (SessionData.IndustryEditing && SessionData.Industry && IndustryData)||
-      (!SessionData.IndustryEditing && IndustryData)
+      (SessionData.CompanyIndustryEditing && SessionData.CompanyIndustry && IndustryData)||
+      (!SessionData.CompanyIndustryEditing && IndustryData)
     ){ // DBから最新のデータを取得
       const devtagArray = IndustryData.split(",").map(item => ({
         value: item,
@@ -51,19 +55,33 @@ useEffect(() => {
     });
     devTag = devTagArray.join(",");
 
-    updateSessionData("accountData", "Industry", devTag);
+    updateSessionData("accountData", "CompanyIndustry", devTag);
   }, [selectedIndustry]);
 
-  const handleChange = (selectedOption) => {
+  const handleChange = (selectedOption, actionMeta) => {
     // newValueをセット
     setSelectedIndustry(selectedOption);
     // 編集中状態をオン(保存もしくはログアウトされるまで保持)
-    updateSessionData("accountData", "IndustryEditing", true);
+    updateSessionData("accountData", "CompanyIndustryEditing", true);
+
+    if (actionMeta && actionMeta.action === 'create-option') {
+
+      const inputValue = actionMeta;
+      console.log(inputValue);
+      const newOption = { value: inputValue.option.value, label: inputValue.option.label };
+      setOptions([...options, newOption]);
+      // 22は企業の業界キーワードです。
+      InsertTagFunction(inputValue.option.value, 22);
+    }
+    let valueArray = [];
+    selectedOption.map((value) => {
+      valueArray.push(value.value)
+    })
   };
 
   return (
     <>
-      <Select
+      <CreatableSelect
         id="acquisitionIndustry"
         value={selectedIndustry}
         onChange={handleChange}

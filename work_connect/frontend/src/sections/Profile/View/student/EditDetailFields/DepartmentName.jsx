@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
-import Select from "react-select";
+import CreatableSelect from "react-select/creatable";
 import PropTypes from 'prop-types';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import GetTagAllList from "src/components/tag/GetTagAllList";
-
+import InsertTag from 'src/components/tag/InsertTag';
 
 
 const DepartmentNameDropdown = ({ DepartmentNameData }) => {
+  const {InsertTagFunction} = InsertTag();
   const [selectedDepartment, setSelectedDepartment] = useState(DepartmentNameData);
 
   const { getSessionData, updateSessionData } = useSessionStorage();
@@ -16,7 +17,7 @@ const DepartmentNameDropdown = ({ DepartmentNameData }) => {
   const { GetTagAllListFunction } = GetTagAllList();
 
   useEffect(() => {
-    let optionArrayPromise = GetTagAllListFunction("department_name");
+    let optionArrayPromise = GetTagAllListFunction("student_department_name");
     optionArrayPromise.then((result) => {
       setOptions(result);
     });
@@ -54,31 +55,34 @@ const DepartmentNameDropdown = ({ DepartmentNameData }) => {
     }
   }, [selectedDepartment]);
 
-  const handleChange = (selectedOption) => {
+  const handleChange = (selectedOption, actionMeta) => {
+    // newValueをセット
     setSelectedDepartment(selectedOption);
-    // sessionStrageに値を保存
-    if (selectedOption) {
-      updateSessionData("accountData", "DepartmentName", selectedOption.value);
-    } else {
-      // なしの場合
-      updateSessionData("accountData", "DepartmentName", "");
-    }
     // 編集中状態をオン(保存もしくはログアウトされるまで保持)
-    updateSessionData("accountData", "DepartmentNameEditing", true);
-  };
+    updateSessionData("accountData", "DepartmentEditing", true);
 
-  return (
+    if (actionMeta && actionMeta.action === 'create-option') {
+        const inputValue = actionMeta;
+        const newOption = { value: inputValue.option.value, label: inputValue.option.label };
+        setOptions([...options, newOption]);
+        // 17は学生の学科です。
+        InsertTagFunction(inputValue.option.value, 17);
+    }
+};
+
+return (
     <div>
-      <Select
-        id="departmentDropdown"
-        value={selectedDepartment}
-        onChange={handleChange}
-        options={options}
-        placeholder="Select..."
-        isClearable
-      />
+        <CreatableSelect
+            id="departmentDropdown"
+            value={selectedDepartment}
+            onChange={handleChange}
+            options={options}
+            placeholder="Select..."
+            isClearable
+        />
     </div>
-  );
+);
+
 };
 
 DepartmentNameDropdown.propTypes = {

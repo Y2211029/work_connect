@@ -27,7 +27,8 @@ import UserIcon from "./EditDetailFields/UserIcon";
 // --- 必須項目 --- //
 import CompanyName from "./EditRequiredFields/CompanyName";
 import CompanyKanaName from "./EditRequiredFields/CompanyKanaName";
-// import CompanyUserName from "./EditRequiredFields/CompanyUserName";
+//import CompanyUserName from "./EditRequiredFields/CompanyUserName";
+
 import CompanyAddress from "./EditRequiredFields/CompanyAddress";
 import CompanyAddressMap from "./EditRequiredFields/CompanyAddressMap";
 
@@ -36,14 +37,14 @@ import Intro from "./EditRequiredFields/Intro";
 // import GraduationYear from "./EditRequiredFields/GraduationYear";
 // --- 詳細項目 --- //
 import Industry from "./EditDetailFields/Industry";
-import Office from "./EditDetailFields/Prefecture";
+import Prefecture from "./EditDetailFields/Prefecture";
 import SelectedOccupation from "./EditDetailFields/SelectedOccupation";
 import Environment from "./EditDetailFields/Environment";
 import ProgrammingLanguage from "./EditDetailFields/ProgrammingLanguage";
 import Qualification from "./EditDetailFields/Qualification";
 import Software from "./EditDetailFields/Software";
 
-import CompanyHPMap from "./EditRequiredFields/CompanyHPMap";
+import CompanyHPMap from "./EditDetailFields/CompanyHPMap";
 import IntroVideo from "./EditDetailFields/IntroVideo";
 
 
@@ -86,12 +87,14 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
   const CompanyNameBox = useRef(null);
   const CompanyKanaNameBox = useRef(null);
   const IntroBox = useRef(null);
+  const CompanyAddressBox = useRef(null);
+  const CompanyAddressMapBox = useRef(null);
   // 編集状態のチェック
   const { getSessionData , updateSessionData } = useSessionStorage();
 
   // Laravelとの通信用URL
   const Get_url = "http://localhost:8000/get_profile_mypage";
-  const Post_url = "http://localhost:8000/company_post_profile_mypage";
+  const Post_url = "http://localhost:8000/post_profile_mypage";
 
   // ログイン中のuser_nameではない
   // ＊＊＊他ルートからアクセスしたときに表示したいユーザのuser_nameをここで指定＊＊＊
@@ -101,28 +104,6 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
 
   // DBからのレスポンスが入る変数
   const [ResponseData, setResponseData] = useState([]);
-
-
-  // // セッションストレージからaccountDataを取得し、MypageEditStateを初期値として設定
-  // const getInitialMypageEditState = () => {
-  //   const accountData = getSessionData("accountData");
-  //   return accountData.MypageEditState ? accountData.MypageEditState : 0;
-  // };
-
-  //const [MypageEditState] = useState(getInitialMypageEditState);
-
-  // MypageEditStateが変化したとき
-  // useEffect(() => {
-  //   //const sessionData = getSessionData("accountData");
-  //   if (Edit.current) {
-  //     if (MypageEditState === 0) {
-  //       Edit.current.style.display = 'none';
-  //     } else if (MypageEditState === 1) {
-  //       Edit.current.style.display = '';
-  //     }
-  //   }
-  //   updateSessionData("accountData", "MypageEditState", MypageEditState);
-  // }, [MypageEditState]);
 
   // ProfileUserNameが変化したとき
   useEffect(() => {
@@ -162,8 +143,6 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
   const handleBackClick = () => {
     // マイページ編集画面のとき
     console.log("click!");
-    //MypageEditStateを0に更新
-    //updateSessionData("accountData", "MypageEditState", 0);
     // リロード
     window.location.reload();
   };
@@ -205,7 +184,7 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
           // ユーザーネーム
           ProfileUserName: ProfileUserName,
           // アイコン
-          Icon: SessionData.Icon,
+          Icon: SessionData.CompanyIcon,
           // 企業名
           CompanyName: SessionData.CompanyName,
           // 企業名(カタカナ)
@@ -213,27 +192,27 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
           // 採用担当者
           //UserName: SessionData.CompanyUserName,
           // 自己紹介
-          Intro: SessionData.Intro,
+          Intro: SessionData.CompanyIntro,
           // 紹介動画
-          IntroVideo: SessionData.IntroVideo,
+          IntroVideo: SessionData.CompanyIntroVideo,
           // 本社所在地
           CompanyAddress: SessionData.CompanyAddress,
           // 本社所在地マップ
           CompanyAddressMap: SessionData.CompanyAddressMap,
           // 勤務地
-          Prefecture: SessionData.Prefecture,
+          Prefecture: SessionData.CompanyPrefecture,
           // 社員の職種・応募職種
-          SelectedOccupation: SessionData.SelectedOccupation,
+          SelectedOccupation: SessionData.CompanySelectedOccupation,
           // 業界キーワード
-          Industry: SessionData.Industry,
+          Industry: SessionData.CompanyIndustry,
           // 開発環境
-          Environment: SessionData.Environment,
+          Environment: SessionData.CompanyEnvironment,
           // プログラミング言語
-          ProgrammingLanguage: SessionData.ProgrammingLanguage,
+          ProgrammingLanguage: SessionData.CompanyProgrammingLanguage,
           // 資格
-          Qualification: SessionData.Qualification,
+          Qualification: SessionData.CompanyQualification,
           // ソフトウェア
-          Software: SessionData.Software,
+          Software: SessionData.CompanySoftware,
           // ホームページURL
           CompanyHPMap: SessionData.CompanyHPMap
         });
@@ -243,21 +222,21 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
 
           // 編集中状態をオフ(accountDataから削除)
           const keysToDelete = [
-            'IconEditing',
+            'CompanyIconEditing',
             'CompanyNameEditing',
             'CompanyKanaNameEditing',
             'CompanyUserNameEditing',
-            'IntroEditing',
-            'IntroVideoEditing',
+            'CompanyIntroEditing',
+            'CompanyIntroVideoEditing',
             'CompanyAddressEditing',
             'CompanyAddressMapEditing',
-            'OfficeEditing',
-            'SelectedOccupationEditing',
-            'IndustryEditing',
-            'EnvironmentEditing',
-            'ProgrammingLanguageEditing',
-            'QualificationEditing',
-            'SoftwareEditing',
+            'CompanyPrefectureEditing',
+            'CompanySelectedOccupationEditing',
+            'CompanyIndustryEditing',
+            'CompanyEnvironmentEditing',
+            'CompanyProgrammingLanguageEditing',
+            'CompanyQualificationEditing',
+            'CompanySoftwareEditing',
             'CompanyHPMapEditing'
           ];
 
@@ -270,7 +249,7 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
           sessionStorage.setItem('accountData', JSON.stringify(SessionData));
 
           // popoverのアイコンを更新
-          updateSessionData("accountData", "popover_icon", SessionData.Icon);
+          updateSessionData("accountData", "popover_icon", SessionData.CompanyIcon);
 
           // アラート
           alert("マイページを更新しました。");
@@ -294,11 +273,21 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
     if (
       !SessionData.CompanyName ||
       !SessionData.CompanyKanaName ||
-      !SessionData.Intro
+      !SessionData.CompanyIntro ||
+      !SessionData.CompanyAddress ||
+      !SessionData.CompanyAddressMap
     ) {
       // 未入力項目がある場合
-      if (!SessionData.Intro) {
-        // 自己紹介が未入力のとき<Box ref={IntroBox}>にスクロール
+      if (!SessionData.CompanyAddressMap) {
+        // 本社所在地マップが未入力のとき<Box ref={CompanyAddressMapBox}>にスクロール
+        CompanyAddressMapBox.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      if (!SessionData.CompanyAddress) {
+        // 本社所在地が未入力のとき<Box ref={CompanyAddressBox}>にスクロール
+        CompanyAddressBox.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      if (!SessionData.CompanyIntro) {
+        // 企業概要が未入力のとき<Box ref={IntroBox}>にスクロール
         IntroBox.current.scrollIntoView({ behavior: "smooth", block: "center" });
       }
       if (!SessionData.CompanyName) {
@@ -358,11 +347,11 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
         <Intro IntroData={ResponseData.intro} />
       </Box>
 
-      <Box>
+      <Box ref={CompanyAddressBox}>
         <Typography variant="h6">本社所在地*</Typography>
         <CompanyAddress CompanyAddressData={ResponseData.address} />
       </Box>
-      <Box>
+      <Box ref={CompanyAddressMapBox}>
         <Typography variant="h6">本社所在地マップ*</Typography>
         <CompanyAddressMap CompanyAddressMapData={ResponseData.map_url} />
       </Box>
@@ -374,39 +363,39 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
           </Button>
         </Showmore>
       </Box>
-      <Box ref={el => (detail.current[1] = el)} id="detail">
+      <Box ref={el => (detail.current[0] = el)} id="detail">
         <Typography variant="h6">勤務地</Typography>
-        <Office PrefectureData={ResponseData.office} />
+        <Prefecture PrefectureData={ResponseData.prefecture} />
       </Box>
-      <Box ref={el => (detail.current[2] = el)} id="detail">
+      <Box ref={el => (detail.current[1] = el)} id="detail">
         <Typography variant="h6">社員の職種・募集職種</Typography>
         <SelectedOccupation SelectedOccupationData={ResponseData.selected_occupation} />
       </Box>
-      <Box ref={el => (detail.current[3] = el)} id="detail">
+      <Box ref={el => (detail.current[2] = el)} id="detail">
         <Typography variant="h6">業界キーワード</Typography>
         <Industry IndustryData={ResponseData.industry} />
       </Box>
-      <Box ref={el => (detail.current[4] = el)} id="detail">
+      <Box ref={el => (detail.current[3] = el)} id="detail">
         <Typography variant="h6">開発環境</Typography>
         <Environment EnvironmentData={ResponseData.development_environment} />
       </Box>
-      <Box ref={el => (detail.current[5] = el)} id="detail">
+      <Box ref={el => (detail.current[4] = el)} id="detail">
         <Typography variant="h6">プログラミング言語</Typography>
         <ProgrammingLanguage ProgrammingLanguageData={ResponseData.programming_language} />
       </Box>
-      <Box ref={el => (detail.current[6] = el)} id="detail">
+      <Box ref={el => (detail.current[5] = el)} id="detail">
         <Typography variant="h6">社員が取得している資格・取得支援資格・歓迎資格・必須資格</Typography>
-        <Qualification QualificationData={ResponseData.qualification} />
+        <Qualification QualificationData={ResponseData.acquisition_qualification} />
       </Box>
-      <Box ref={el => (detail.current[7] = el)} id="detail">
+      <Box ref={el => (detail.current[6] = el)} id="detail">
         <Typography variant="h6">ソフトウェア</Typography>
         <Software SoftwareData={ResponseData.software} />
       </Box>
-      <Box ref={el => (detail.current[8] = el)} id="detail">
+      <Box ref={el => (detail.current[7] = el)} id="detail">
         <Typography variant="h6">ホームページURL</Typography>
         <CompanyHPMap CompanyHPMapData={ResponseData.hp_url} />
       </Box>
-      <Box ref={el => (detail.current[9] = el)} id="detail">
+      <Box ref={el => (detail.current[8] = el)} id="detail">
         <Typography variant="h6">紹介動画</Typography>
         <IntroVideo IntroVideoData={ResponseData.video_url} />
       </Box>

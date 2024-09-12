@@ -25,7 +25,7 @@ let NULL_validation4 = false;
 let NULL_validation5 = false;
 
 const AccountRegistar = forwardRef((props, ref) => {
-  
+
   // 「次へ」を押したときに企業名・企業名(カナ)が空だったらバリデーションを実行
   // ./stepbar.jsx から呼び出し
   useImperativeHandle(ref, () => ({
@@ -43,7 +43,7 @@ const AccountRegistar = forwardRef((props, ref) => {
       }
     }
   }));
-    
+
   // ユーザー名重複時のhelperTextの内容を宣言
   const [userNameHelperText, setUserNameHelperText] = useState("");
   // アカウントデータの状態管理
@@ -88,7 +88,7 @@ const AccountRegistar = forwardRef((props, ref) => {
   };
 
   // 登録項目確認の際に利用
-  const { getSessionData, updateSessionData, updateObjectSessionData } = 
+  const { getSessionData, updateSessionData, updateObjectSessionData } =
   useSessionStorage();
 
 
@@ -155,7 +155,7 @@ const AccountRegistar = forwardRef((props, ref) => {
         setInputError((prev) => ({ ...prev, password: false }));
       }
     };
-  
+
     useEffect(() => {
       // 外部URLから本アプリにアクセスした際に、sessionStrageに保存する
       if (performance.navigation.type !== performance.navigation.TYPE_RELOAD) {
@@ -167,16 +167,16 @@ const AccountRegistar = forwardRef((props, ref) => {
         console.log("リロードでのアクセスです。");
       }
       props.coleSetUserNameCheck("required", true);
-  
+
       // console.log('props.coleSetUserNameCheck("required", true)');
     }, []);
-  
+
     // sessionStrageに保存されているデータを取得する
     useEffect(() => {
       console.log("処理準確認用: 1");
       let sessionDataAccount = getSessionData("accountData");
       console.log("sessionDataAccount", sessionDataAccount);
-  
+
       setAccountData((prev) => ({
         ...prev,
         company_name: sessionDataAccount.company_name,
@@ -186,7 +186,7 @@ const AccountRegistar = forwardRef((props, ref) => {
         passwordCheck: sessionDataAccount.passwordCheck,
       }));
     }, []);
-  
+
     // リロードしたときに、accountDataのオブジェクト内のvalueに値があれば、sessionStrageに保存する
     useEffect(() => {
       console.log("処理準確認用: 2");
@@ -198,20 +198,20 @@ const AccountRegistar = forwardRef((props, ref) => {
       } else {
         console.log("空。");
       }
-  
+
       /* --------------------------------------------------------------------- */
       /* 必須項目全て入力された場合のみ次に行けるようにする処理を追加しました */
       /* --------------------------------------------------------------------- */
       // フラグをセット
       let requiredFlg = false;
-  
+
       // accountDataのvalueに1個でも空欄のものが存在するとフラグをtrueにする
       Object.values(accountData).map((value) => {
         if (value == "" || value == undefined) {
           requiredFlg = true;
         }
       });
-  
+
       // フラグがtrueならstepbar.jsxのuserAccountCheck.requiredをtrueにする
       if (requiredFlg) {
         props.coleSetUserNameCheck("required", true);
@@ -226,16 +226,16 @@ const AccountRegistar = forwardRef((props, ref) => {
 
       // ユーザー名の重複チェック
       inviteUserNameCheck(accountData.user_name);
-  
+
       // パスワードのhtmlオブジェクトを取得
       const passwordElement = document.querySelector('[name="password"]');
       // パスワードのバリデーションチェック
       passwordCheck(passwordElement);
-  
+
       // ESlintError削除、推奨されて無いので他の方法を追々考えます。
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [accountData]);
-  
+
     const handleChange = (e) => {
       const { name, value } = e.target;
 
@@ -273,10 +273,10 @@ const AccountRegistar = forwardRef((props, ref) => {
       } else if(name == "passwordCheck" && value.trim() !== ''){
         // バリデーションを解除
         NULL_validation5 = false;
-      } 
+      }
 
       setAccountData((prev) => ({ ...prev, [name]: value }));
-  
+
       console.log("処理準確認用: 3");
 
   console.log("処理準確認用: 4");
@@ -348,7 +348,7 @@ useEffect(() => {
   for (const [key, value] of AccountData) {
     objAccountData[key] = value;
   }
-  
+
   updateSessionData("accountData", "mail", AccountData[0][1]);
 
   return (
@@ -423,7 +423,7 @@ useEffect(() => {
               fullWidth
               helperText={
                 // パスワードが空の時にもエラー表示出てたので修正しました。
-                (accountData.password == undefined || accountData.password == "" ? "" : inputError.password ? "パスワードが条件を満たしていません" : "") + 
+                (accountData.password == undefined || accountData.password == "" ? "" : inputError.password ? "パスワードが条件を満たしていません" : "") +
                 " ※大文字・小文字・英数字・記号・8文字以上30文字以内"
               }
               label="パスワード"

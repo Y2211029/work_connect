@@ -90,6 +90,34 @@ class SearchVideoController extends Controller
                 }
             }
 
+            // 検索文字列で絞り込み
+            if ($searchText != "") {
+                $query->where(function($query) use ($searchText) {
+                    // 動画の情報
+                    $query->where('w_movies.title', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_movies.genre', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_movies.intro', 'LIKE', '%' . $searchText . '%');
+
+                    // 学生の情報
+                    $query->orWhere('w_users.user_name', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_users.student_surname', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_users.student_name', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_users.student_kanasurname', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_users.student_kananame', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_users.school_name', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_users.department_name', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_users.faculty_name', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_users.major_name', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_users.course_name', 'LIKE', '%' . $searchText . '%');
+
+                    // 苗字と名前セットの場合
+                    $query->orWhere(\DB::raw('CONCAT(w_users.student_surname,w_users.student_name)'), 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere(\DB::raw('CONCAT(w_users.student_kanasurname,w_users.student_kananame)'), 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere(\DB::raw('CONCAT(w_users.student_surname," ",w_users.student_name)'), 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere(\DB::raw('CONCAT(w_users.student_kanasurname," ",w_users.student_kananame)'), 'LIKE', '%' . $searchText . '%');
+                });
+            }
+
             if ($sortOption === 'orderNewPostsDate') {
                 $query->orderBy('w_movies.created_at', 'desc');
             }

@@ -17,6 +17,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
+import { ColorRing } from "react-loader-spinner";
 
 import ProfileMypageEdit from './MypageEdit';
 import { follow } from "src/_mock/follow";
@@ -41,6 +42,8 @@ const Showmore = styled(Paper)(({ theme }) => ({
 }));
 
 const ProfileMypage = () => {
+
+
 
   // 「さらに表示」ボタンの初期設定
   const [showMoreText, setShowMoreText] = useState(
@@ -69,6 +72,17 @@ const ProfileMypage = () => {
 
   //フォローの状況がセットされる関数
   const [followStatus, setFollowStatus] = useState([]);
+
+
+  const coloRing = {
+    visible: true,  // コロンで区切る
+    margin: "0px",
+    height: "10",
+    width: "10",
+    ariaLabel: "color-ring-loading",
+    wrapperClass: "custom-color-ring-wrapper", // コメントを外に
+    colors: ["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]
+  };
 
 
   // // セッションストレージからaccountDataを取得し、MypageEditStateを初期値として設定
@@ -264,12 +278,12 @@ const ProfileMypage = () => {
             {/* {showEdit ? <ProfileMypageEdit /> : <ProfileMypage />} */}
           </Box>
         ) : (ResponseData.id && MyUserId[0]) && (ResponseData.id.charAt(0) !== MyUserId[0].charAt(0)) ? (
-          
-         // ResponseData.id(プロフィールのID)の1文字目 と MyUserId(ログイン中のID)の1文字目が一致しない場合はフォローの状況を表示
-         // 学生側はS、企業側はCで始まる。
-         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-         <Tooltip title="フォロー">
-           {/* <IconButton
+
+          // ResponseData.id(プロフィールのID)の1文字目 と MyUserId(ログイン中のID)の1文字目が一致しない場合はフォローの状況を表示
+          // 学生側はS、企業側はCで始まる。
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Tooltip title="フォロー">
+              {/* <IconButton
              sx={{
                marginLeft: 'auto', // 右揃え
                '&:hover': { backgroundColor: '#f0f0f0' },
@@ -278,12 +292,12 @@ const ProfileMypage = () => {
            >
              <ModeEditIcon sx={{ fontSize: 40 }} />
            </IconButton> */}
-           {renderFollow()}
+              {renderFollow()}
 
-         </Tooltip>
+            </Tooltip>
 
-       </Box>
-        ):(
+          </Box>
+        ) : (
           null
         )}
 
@@ -319,24 +333,32 @@ const ProfileMypage = () => {
 
         <Box>
           <Typography variant="h6">名前</Typography>
-          <Item>{ResponseData.student_surname ? ResponseData.student_surname : "Loading..."} {ResponseData.student_name}</Item>
+          <Item>{ResponseData.student_surname ? ResponseData.student_surname : <ColorRing
+            style={coloRing}
+          />} {ResponseData.student_name}</Item>
         </Box>
         <Box>
           <Typography variant="h6">名前(カタカナ)</Typography>
-          <Item>{ResponseData.student_kanasurname ? ResponseData.student_kanasurname : "Loading..."} {ResponseData.student_kananame}</Item>
+          <Item>{ResponseData.student_kanasurname ? ResponseData.student_kanasurname : <ColorRing
+            style={coloRing}
+          />} {ResponseData.student_kananame}</Item>
         </Box>
         <Box>
           <Typography variant="h6">自己紹介</Typography>
-          <Item sx={{ fontSize: '20px' }}>{ResponseData.intro ? ResponseData.intro : "Loading..."}</Item>
+          <Item sx={{ fontSize: '20px' }}>{ResponseData.intro ? ResponseData.intro : <ColorRing style={coloRing} />}</Item>
         </Box>
         <Box>
           <Typography variant="h6">卒業年度</Typography>
-          <Item>{ResponseData.graduation_year ? ResponseData.graduation_year + "年" : "Loading..."}</Item>
+          <Item>{ResponseData.graduation_year ? ResponseData.graduation_year + "年" : <ColorRing
+            style={coloRing}
+          />}</Item>
         </Box>
 
         <Box>
           <Typography variant="h6">学校名(大学名)</Typography>
-          <Item>{ResponseData.school_name ? ResponseData.school_name : "Loading..."}</Item>
+          <Item>{ResponseData.school_name ? ResponseData.school_name : <ColorRing
+            style={coloRing}
+          />}</Item>
         </Box>
         {/* 詳細項目がない場合「さらに表示」を表示しない */}
         {(ResponseData.department_name ||

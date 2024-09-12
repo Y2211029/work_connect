@@ -71,14 +71,6 @@ const ProfileMypage = () => {
   //フォローの状況がセットされる関数
   const [followStatus, setFollowStatus] = useState([]);
 
-  // // セッションストレージからaccountDataを取得し、MypageEditStateを初期値として設定
-  // // マイページ編集時なら"1",マイページ時なら"0"
-  // const getInitialMypageEditState = () => {
-  //   const accountData = getSessionData("accountData");
-  //   return accountData.MypageEditState ? accountData.MypageEditState : 0;
-  // };
-  // const [MypageEditState, setMypageEditState] = useState(getInitialMypageEditState);
-
   // セッションストレージからaccountDataを取得し、idを初期値として設定(ログイン中のIDを取得)
   const getUserId = () => {
     const accountData = getSessionData("accountData");
@@ -87,22 +79,6 @@ const ProfileMypage = () => {
 
   //ログイン中のid
   const MyUserId = useState(getUserId);
-
-
-  // // MypageEditStateが変化したとき
-  // useEffect(() => {
-  //   if (Profile.current) {
-  //     if (MypageEditState === 0) {
-  //       Profile.current.style.display = '';
-  //     } else if (MypageEditState === 1) {
-  //       // 編集画面をオープン
-  //       childRef.current?.openEdit();
-  //       // プロフィール画面を閉じる
-  //       Profile.current.style.display = 'none';
-  //     }
-  //   }
-  //   updateSessionData("accountData", "MypageEditState", MypageEditState);
-  // }, [MypageEditState]);
 
   // ProfileUserNameが変化したとき
   useEffect(() => {
@@ -205,13 +181,13 @@ const ProfileMypage = () => {
 
 
   // ExtractTagsメソッドで抽出したタグを<Item>内で表示する
-  const office_tag = ExtractTags(ResponseData, 'office');
+  const prefecture_tag = ExtractTags(ResponseData, 'prefecture');
   const selected_occupation_tag = ExtractTags(ResponseData, 'selected_occupation');
   const industry_tag = ExtractTags(ResponseData, 'industry');
   const programming_language_tag = ExtractTags(ResponseData, 'programming_language');
   const development_environment_tag = ExtractTags(ResponseData, 'development_environment');
   const software_tag = ExtractTags(ResponseData, 'software');
-  const qualification_tag = ExtractTags(ResponseData, 'qualification');
+  const qualification_tag = ExtractTags(ResponseData, 'acquisition_qualification');
 
   const profile_id = ResponseData.id;
   const hp_url_button = `${ResponseData.company_name}さんのホームページはこちら`;
@@ -266,7 +242,7 @@ const ProfileMypage = () => {
                   '&:hover': { backgroundColor: '#f0f0f0', title: 'a' },
                 }}
               >
-                <ModeEditIcon sx={{ fontSize: 40 }} />
+                <ModeEditIcon sx={{ fontSize: 55 }} />
               </IconButton>
             </Tooltip>
             {/* {showEdit ? <ProfileMypageEdit /> : <ProfileMypage />} */}
@@ -311,8 +287,11 @@ const ProfileMypage = () => {
               objectFit: 'cover', // 画像をカード内でカバーするように設定
               borderRadius: '50%', // 画像を丸くする
             }}
-            image={ResponseData.thumbnail_id}
-            alt="Placeholder"
+            image={
+              ResponseData.icon ?
+              `http://localhost:8000/storage/images/userIcon/${ResponseData.icon}`
+              :""}
+            alt="Loading..."
           />
 
         </Card>
@@ -325,28 +304,15 @@ const ProfileMypage = () => {
           <Typography variant="h6">企業名(カタカナ)</Typography>
           <Item>{ResponseData.company_namecana ? ResponseData.company_namecana : "Loading..."} </Item>
         </Box>
-        <Box>
+        {/* <Box>
           <Typography variant="h6">企業採用担当者</Typography>
           <Item>{ResponseData.user_name ? ResponseData.user_name : "Loading..."} </Item>
-        </Box>
+        </Box> */}
         <Box>
           <Typography variant="h6">企業概要</Typography>
           <Item>{ResponseData.intro ? ResponseData.intro : "Loading..."} </Item>
         </Box>
-        <Box>
-          <Typography variant="h6">紹介動画</Typography>
-          <Item>
-            {ResponseData.video_url ? (
-              <Iframe
-                url={ResponseData.video_url}
-                width="100%"
-                height="400px"
-              />
-            ) : (
-              "Loading..."
-            )}
-          </Item>
-        </Box>
+
         <Box>
           <Typography variant="h6">本社所在地</Typography>
           <Item>{ResponseData.address ? ResponseData.address : "Loading..."} </Item>
@@ -368,14 +334,15 @@ const ProfileMypage = () => {
 
 
         {/* 詳細項目がない場合「さらに表示」を表示しない */}
-        {(ResponseData.office ||
+        {(ResponseData.prefecture ||
           ResponseData.selected_occupation ||
           ResponseData.industry ||
           ResponseData.programming_language ||
           ResponseData.development_environment ||
           ResponseData.software ||
-          ResponseData.qualification ||
+          ResponseData.acquisition_qualification ||
           ResponseData.hp_url ||
+          ResponseData.video_url ||
           ResponseData.companyInformation) && (
             <Box>
               <Showmore>
@@ -386,11 +353,11 @@ const ProfileMypage = () => {
               </Showmore>
             </Box>
           )}
-        {/* ResponseData.officeがあるときのみ表示 */}
-        {ResponseData.office && !close && (
+        {/* ResponseData.prefectureがあるときのみ表示 */}
+        {ResponseData.prefecture && !close && (
           <Box ref={el => (detail.current[0] = el)} id="detail">
             <Typography variant="h6">勤務地</Typography>
-            <Item>{ShowTags(office_tag)}</Item>
+            <Item>{ShowTags(prefecture_tag)}</Item>
           </Box>
         )}
         {/* ResponseData.selected_occupationがあるときのみ表示 */}
@@ -407,46 +374,58 @@ const ProfileMypage = () => {
             <Item>{ShowTags(industry_tag)}</Item>
           </Box>
         )}
-        {/* ResponseData.programming_languageがあるときのみ表示 */}
-        {ResponseData.programming_language && !close && (
-          <Box ref={el => (detail.current[3] = el)} id="detail">
-            <Typography variant="h6">プログラミング言語</Typography>
-            <Item>{ShowTags(programming_language_tag)}</Item>
-          </Box>
-        )}
-
         {/* ResponseData.development_environmentがあるときのみ表示 */}
         {ResponseData.development_environment && !close && (
-          <Box ref={el => (detail.current[4] = el)} id="detail">
+          <Box ref={el => (detail.current[3] = el)} id="detail">
             <Typography variant="h6">開発環境</Typography>
             <Item>{ShowTags(development_environment_tag)}</Item>
           </Box>
         )}
-
+        {/* ResponseData.programming_languageがあるときのみ表示 */}
+        {ResponseData.programming_language && !close && (
+          <Box ref={el => (detail.current[4] = el)} id="detail">
+            <Typography variant="h6">プログラミング言語</Typography>
+            <Item>{ShowTags(programming_language_tag)}</Item>
+          </Box>
+        )}
+        {/* ResponseData.acquisition_qualificationがあるときのみ表示 */}
+        {ResponseData.acquisition_qualification && !close && (
+          <Box ref={el => (detail.current[5] = el)} id="detail">
+            <Typography variant="h6">社員が取得している資格・取得支援資格・歓迎資格・必須資格</Typography>
+            <Item>{ShowTags(qualification_tag)}</Item>
+          </Box>
+        )}
         {/* ResponseData.softwareがあるときのみ表示 */}
         {ResponseData.software && !close && (
-          <Box ref={el => (detail.current[5] = el)} id="detail">
+          <Box ref={el => (detail.current[6] = el)} id="detail">
             <Typography variant="h6">ソフトウェア</Typography>
             <Item>{ShowTags(software_tag)}</Item>
           </Box>
         )}
-
-        {/* ResponseData.qualificationがあるときのみ表示 */}
-        {ResponseData.qualification && !close && (
-          <Box ref={el => (detail.current[5] = el)} id="detail">
-            <Typography variant="h6">資格</Typography>
-            <Item>{ShowTags(qualification_tag)}</Item>
-          </Box>
-        )}
-
         {/* ResponseData.hp_urlがあるときのみ表示 */}
         {ResponseData.hp_url && !close && (
-          <Box ref={el => (detail.current[6] = el)} id="detail">
+          <Box ref={el => (detail.current[7] = el)} id="detail">
             <Typography variant="h6">ホームページURL</Typography>
             <Item><a href={ResponseData.hp_url} target="_blank">{ShowTagsCompanyInformation(hp_url_button)}</a></Item>
           </Box>
         )}
-
+        {/* ResponseData.video_urlがあるときのみ表示 */}
+        {ResponseData.video_url && !close && (
+        <Box ref={el => (detail.current[8] = el)} id="detail">
+          <Typography variant="h6">紹介動画</Typography>
+          <Item>
+            {ResponseData.video_url ? (
+              <Iframe
+                url={ResponseData.video_url}
+                width="100%"
+                height="400px"
+              />
+            ) : (
+              "Loading..."
+            )}
+          </Item>
+        </Box>
+        )}
 
         {/* {ResponseData.companyInformation && !close && (
           <Box ref={el => (detail.current[3] = el)} id="detail">

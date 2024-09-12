@@ -38,16 +38,16 @@ const PrefectureDropdown = ({PrefectureData}) => {
   useEffect(() => {
     if (getSessionData("accountData") !== undefined) {
       const SessionData = getSessionData("accountData");
-      if(SessionData.PrefectureEditing && SessionData.Prefecture){
+      if(SessionData.CompanyPrefectureEditing && SessionData.CompanyPrefecture){
         // セッションストレージから最新のデータを取得
-        const devtagArray = SessionData.Prefecture.split(",").map(item => ({
+        const devtagArray = SessionData.CompanyPrefecture.split(",").map(item => ({
           value: item,
           label: item,
         }));
         setPrefecture(devtagArray);
       } else if(
-        (SessionData.PrefectureEditing && SessionData.Prefecture && PrefectureData)||
-        (!SessionData.PrefectureEditing && PrefectureData)
+        (SessionData.CompanyPrefectureEditing && SessionData.CompanyPrefecture && PrefectureData)||
+        (!SessionData.CompanyPrefectureEditing && PrefectureData)
       ){ // DBから最新のデータを取得
         const devtagArray = PrefectureData.split(",").map(item => ({
           value: item,
@@ -67,14 +67,14 @@ const PrefectureDropdown = ({PrefectureData}) => {
     });
     devTag = devTagArray.join(",");
 
-    updateSessionData("accountData", "Prefecture", devTag);
+    updateSessionData("accountData", "CompanyPrefecture", devTag);
   }, [Prefecture]);
 
   const handleChange = (selectedOption) => {
     // newValueをセット
     setPrefecture(selectedOption);
     // 編集中状態をオン(保存もしくはログアウトされるまで保持)
-    updateSessionData("accountData", "PrefectureEditing", true);
+    updateSessionData("accountData", "CompanyPrefectureEditing", true);
   };
 
   return (

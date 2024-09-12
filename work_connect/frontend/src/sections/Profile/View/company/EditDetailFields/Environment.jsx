@@ -1,40 +1,40 @@
 import { useState, useEffect } from "react";
-import Select from "react-select";
+import CreatableSelect from "react-select/creatable";
 import PropTypes from 'prop-types';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
-
-const options = [
-  { value: "Visual Studio", label: "Visual Studio" },
-  { value: "Eclipse", label: "Eclipse" },
-  { value: "Xcode", label: "Xcode" },
-  { value: "Android Studio", label: "Android Studio" },
-  { value: "Claris FileMaker", label: "Claris FileMaker" },
-  { value: "Unity", label: "Unity" },
-  { value: "Visual Studio Code", label: "Visual Studio Code" },
-  { value: "MySQL", label: "MySQL" },
-  { value: "XAMMP", label: "XAMMP" },
-  { value: "ロリポップ", label: "ロリポップ" },
-];
+import GetTagAllList from "src/components/tag/GetTagAllList";
+import InsertTag from 'src/components/tag/InsertTag';
 
 const Environment = ({EnvironmentData}) => {
+  const {InsertTagFunction} = InsertTag();
   const [selectedDevEnvironment, setSelectedDevEnvironment] = useState([]);
 
   const { getSessionData, updateSessionData } = useSessionStorage();
 
+  const [options, setOptions] = useState([]);
+
+  const { GetTagAllListFunction } = GetTagAllList();
+
+  useEffect(() => {
+    let optionArrayPromise = GetTagAllListFunction("company_development_environment");
+    optionArrayPromise.then((result) => {
+      setOptions(result);
+    });
+  }, []);
   // valueの初期値をセット
   useEffect(() => {
     if (getSessionData("accountData") !== undefined) {
       const SessionData = getSessionData("accountData");
-      if(SessionData.EnvironmentEditing && SessionData.Environment){
+      if(SessionData.CompanyEnvironmentEditing && SessionData.CompanyEnvironment){
         // セッションストレージから最新のデータを取得
-        const devtagArray = SessionData.Environment.split(",").map(item => ({
+        const devtagArray = SessionData.CompanyEnvironment.split(",").map(item => ({
           value: item,
           label: item,
         }));
         setSelectedDevEnvironment(devtagArray);
       } else if(
-        (SessionData.EnvironmentEditing && SessionData.Environment && EnvironmentData)||
-        (!SessionData.EnvironmentEditing && EnvironmentData)
+        (SessionData.CompanyEnvironmentEditing && SessionData.CompanyEnvironment && EnvironmentData)||
+        (!SessionData.CompanyEnvironmentEditing && EnvironmentData)
       ){ // DBから最新のデータを取得
         const devtagArray = EnvironmentData.split(",").map(item => ({
           value: item,
@@ -53,19 +53,32 @@ const Environment = ({EnvironmentData}) => {
     });
     devTag = devTagArray.join(",");
 
-    updateSessionData("accountData", "Environment", devTag);
+    updateSessionData("accountData", "CompanyEnvironment", devTag);
   }, [selectedDevEnvironment]);
 
-  const handleChange = (selectedOption) => {
+  const handleChange = (selectedOption, actionMeta) => {
     // newValueをセット
     setSelectedDevEnvironment(selectedOption);
     // 編集中状態をオン(保存もしくはログアウトされるまで保持)
-    updateSessionData("accountData", "EnvironmentEditing", true);
-  };
+    updateSessionData("accountData", "CompanyEnvironmentEditing", true);
 
+    if (actionMeta && actionMeta.action === 'create-option') {
+
+      const inputValue = actionMeta;
+      console.log(inputValue);
+      const newOption = { value: inputValue.option.value, label: inputValue.option.label };
+      setOptions([...options, newOption]);
+      // 6は学生の開発環境です。
+      InsertTagFunction(inputValue.option.value, 6);
+    }
+    let valueArray = [];
+    selectedOption.map((value) => {
+      valueArray.push(value.value)
+    })
+  };
   return (
     <div>
-      <Select
+      <CreatableSelect
         id="devEnvironment"
         value={selectedDevEnvironment}
         onChange={handleChange}

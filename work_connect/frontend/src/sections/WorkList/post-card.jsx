@@ -23,10 +23,26 @@ import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 
 const PostCard = forwardRef(({ post }, ref) => {
   const { work_id, genre, /* cover, */ title, intro, thumbnail, /*view, comment,*/ author, userName, createdAt } = post;
-
+  
   const [imgSrc, setImgSrc] = useState(thumbnail);
-
+  
   let fallbackImage = "https://placehold.jp/300x200.png";
+  
+  const renderThumbnail = (
+    <Box
+      component="img"
+      src={imgSrc}
+      onError={() => setImgSrc(fallbackImage)}
+      sx={{
+        aspectRatio: 16 / 9,
+        borderRadius: "10px",
+        width: "100%",
+        // height: 200,
+        // objectFit: "cover",
+        marginBottom: "10px",
+      }}
+    />
+  );
 
   // アイコン
   const renderAvatar = (
@@ -72,21 +88,6 @@ const PostCard = forwardRef(({ post }, ref) => {
       </div>
     ) : null;
 
-  const renderThumbnail = (
-    <Box
-      component="img"
-      src={imgSrc}
-      onError={() => setImgSrc(fallbackImage)}
-      sx={{
-        aspectRatio: 16 / 9,
-        borderRadius: "10px",
-        // width: 1,
-        // height: 200,
-        // objectFit: "cover",
-        marginBottom: "10px",
-      }}
-    />
-  );
 
   /* 投稿日 */
   const renderDate = (

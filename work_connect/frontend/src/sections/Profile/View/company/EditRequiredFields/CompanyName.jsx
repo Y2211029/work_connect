@@ -8,36 +8,62 @@ const CompanyName = ({ CompanyNameData }) => {
   const [CompanyName, setCompanyName] = useState(CompanyNameData);
   const { getSessionData, updateSessionData } = useSessionStorage();
 
-  useEffect(() => {
-    const SessionData = getSessionData("accountData");
+    // 入力エラーの状態管理
+    const [inputError, setInputError] = useState({
+      CompanyNameError: false
+    });
+    // valueの初期値をセット
+    useEffect(() => {
+      // セッションデータ取得
+      const SessionData = getSessionData("accountData");
 
-    if ((SessionData.CompanyName !== undefined)
-    || SessionData.CompanyNameEditing ) {
-      setCompanyName(SessionData.CompanyName);
-    } else {
-      setCompanyName(CompanyNameData);
-    }
-  }, [CompanyNameData]);
+      /// 編集の途中ならセッションストレージからデータを取得する。
+      /// (リロードした時も、データが残った状態にする。)
+      if ((SessionData.CompanyName !== undefined && SessionData.CompanyName !== "") ||
+      SessionData.CompanyNameEditing) {
+        // セッションストレージから最新のデータを取得
+        setCompanyName(SessionData.CompanyName);
+      } else {
+        // DBから最新のデータを取得
+        setCompanyName(CompanyNameData);
+      }
+
+    }, [CompanyNameData]);
 
   const handleChange = (e) => {
     const newValue = e.target.value;
+    // newValueをセット
     setCompanyName(newValue);
+    // 編集中状態をオン(保存もしくはログアウトされるまで保持)
     updateSessionData("accountData", "CompanyNameEditing", true);
   };
 
   useEffect(() => {
+    // 編集中のデータを保存しておく
     updateSessionData("accountData", "CompanyName", CompanyName);
+
+    // バリデーション
+    if(CompanyName === ""){
+      // 姓が空だったら、error表示
+      setInputError((prev) => ({ ...prev, CompanyNameError: true }));
+    } else if(CompanyName !== ""){
+      // 姓が空でないなら、error非表示
+      setInputError((prev) => ({ ...prev, CompanyNameError: false }));
+    }
+
+
   }, [CompanyName]);
 
   return (
     <div style={{ display: "flex" }}>
         <TextField
+            error={inputError.CompanyNameError}
             fullWidth
             label="企業名"
             margin="normal"
             name="CompanyName"
             onChange={handleChange}
-            required
+            // required
             type="text"
             value={CompanyName}
             variant="outlined"

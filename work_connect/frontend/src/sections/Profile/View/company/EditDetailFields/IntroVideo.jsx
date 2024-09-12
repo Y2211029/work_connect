@@ -5,13 +5,12 @@ import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import Iframe from 'react-iframe'; //紹介動画やマップを埋め込む
 
 
+
+
 const IntroVideo = ({ IntroVideoData }) => {
-
-
   const [IntroVideo, setIntroVideo] = useState(IntroVideoData);
   const [IntroVideoURL, setIntroVideoURL] = useState(null);
   const { getSessionData, updateSessionData } = useSessionStorage();
-
 
   // valueの初期値をセット
   useEffect(() => {
@@ -20,10 +19,10 @@ const IntroVideo = ({ IntroVideoData }) => {
 
     /// 編集の途中ならセッションストレージからデータを取得する。
     /// (リロードした時も、データが残った状態にする。)
-    if ((SessionData.IntroVideo !== undefined) ||
-    SessionData.IntroVideoEditing) {
+    if ((SessionData.CompanyIntroVideo !== undefined) ||
+    SessionData.CompanyIntroVideoEditing) {
       // セッションストレージから最新のデータを取得
-      setIntroVideo(SessionData.IntroVideo);
+      setIntroVideo(SessionData.CompanyIntroVideo);
     }
 
   }, [IntroVideoData]);
@@ -33,10 +32,9 @@ const IntroVideo = ({ IntroVideoData }) => {
     if (e.target.name === "IntroVideo") {
       setIntroVideo(newValue);
       iframeURLChange(newValue);
-      updateSessionData("accountData", "IntroVideoEditing", true);
+      updateSessionData("accountData", "CompanyIntroVideoEditing", true);
     }
   };
-
 
   const iframeURLChange = (URL) => {
     let extractedUrl = null;
@@ -53,7 +51,7 @@ const IntroVideo = ({ IntroVideoData }) => {
       if (match && match[1]) {
         extractedUrl = match[1];
       }
-    }else if (URL.includes("watch?v=")) {
+    } else if (URL.includes("watch?v=")) {
       const videoId = URL.split('v=')[1].split('&')[0]; // Extract the video ID
       extractedUrl = `https://www.youtube.com/embed/${videoId}`;
     }
@@ -63,10 +61,9 @@ const IntroVideo = ({ IntroVideoData }) => {
 
   // 編集中のデータを保存しておく
   useEffect(() => {
-    updateSessionData("accountData", "IntroVideo", IntroVideo);
+    updateSessionData("accountData", "CompanyIntroVideo", IntroVideo);
 
   }, [IntroVideo]);
-
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -76,7 +73,7 @@ const IntroVideo = ({ IntroVideoData }) => {
         margin="normal"
         name="IntroVideo"
         onChange={handleChange}
-        required
+        // required
         type="text"
         value={IntroVideo}
         variant="outlined"
@@ -95,12 +92,16 @@ const IntroVideo = ({ IntroVideoData }) => {
     </div>
 
 
+
+
   );
 };
+
 
 // プロパティの型を定義
 IntroVideo.propTypes = {
   IntroVideoData: PropTypes.string.isRequired,
 };
+
 
 export default IntroVideo;

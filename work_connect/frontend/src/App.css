@@ -651,7 +651,7 @@ textarea {
 
 
 /* 一覧 */
-@media (min-width : 600px) {
+/* @media (min-width : 600px) {
   .mediaCard {
     display: flex;
     flex-wrap: wrap;
@@ -662,4 +662,4 @@ textarea {
   .itemGrid {
     width: 28%;
   }
-}
+} */

@@ -110,7 +110,6 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
         });
         if (response) {
           setResponseData(response.data[0]);
-          console.log("ResponseData.company_name::::::::::::::::" + ResponseData.student_surname);
         }
         console.log("ResponseData:", ResponseData);
       } catch (err) {

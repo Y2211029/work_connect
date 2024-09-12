@@ -9,28 +9,21 @@ import Iframe from 'react-iframe'; //紹介動画やマップを埋め込む
 
 const IntroVideo = ({ IntroVideoData }) => {
 
-
-
-
   const [IntroVideo, setIntroVideo] = useState(IntroVideoData);
   const [IntroVideoURL, setIntroVideoURL] = useState(null);
   const { getSessionData, updateSessionData } = useSessionStorage();
-
-
-
 
   // valueの初期値をセット
   useEffect(() => {
     // セッションデータ取得
     const SessionData = getSessionData("accountData");
 
-
     /// 編集の途中ならセッションストレージからデータを取得する。
     /// (リロードした時も、データが残った状態にする。)
-    if ((SessionData.IntroVideo !== undefined) ||
-    SessionData.IntroVideoEditing) {
+    if ((SessionData.CompanyIntroVideo !== undefined) ||
+    SessionData.CompanyIntroVideoEditing) {
       // セッションストレージから最新のデータを取得
-      setIntroVideo(SessionData.IntroVideo);
+      setIntroVideo(SessionData.CompanyIntroVideo);
     }
 
   }, [IntroVideoData]);
@@ -41,16 +34,10 @@ const IntroVideo = ({ IntroVideoData }) => {
     if (e.target.name === "IntroVideo") {
       setIntroVideo(newValue);
       iframeURLChange(newValue);
-      updateSessionData("accountData", "IntroVideoEditing", true);
+      updateSessionData("accountData", "CompanyIntroVideoEditing", true);
     }
   };
 
-
-<<<<<<< HEAD:work_connect/frontend/src/sections/Profile/View/company/EditDetailFields/IntroVideo.jsx
-
-
-=======
->>>>>>> 502672cdbfb63981c5c7948932a5a5491fb300cb:work_connect/frontend/src/sections/Profile/View/company/EditRequiredFields/IntroVideo.jsx
   const iframeURLChange = (URL) => {
     let extractedUrl = null;
 
@@ -74,19 +61,11 @@ const IntroVideo = ({ IntroVideoData }) => {
     console.log(extractedUrl);
   };
 
-<<<<<<< HEAD:work_connect/frontend/src/sections/Profile/View/company/EditDetailFields/IntroVideo.jsx
-
-=======
->>>>>>> 502672cdbfb63981c5c7948932a5a5491fb300cb:work_connect/frontend/src/sections/Profile/View/company/EditRequiredFields/IntroVideo.jsx
   // 編集中のデータを保存しておく
   useEffect(() => {
-    updateSessionData("accountData", "IntroVideo", IntroVideo);
-
+    updateSessionData("accountData", "CompanyIntroVideo", IntroVideo);
 
   }, [IntroVideo]);
-
-
-
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -96,7 +75,7 @@ const IntroVideo = ({ IntroVideoData }) => {
         margin="normal"
         name="IntroVideo"
         onChange={handleChange}
-        required
+        // required
         type="text"
         value={IntroVideo}
         variant="outlined"

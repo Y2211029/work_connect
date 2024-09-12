@@ -1,62 +1,41 @@
 import { useEffect, useState } from "react";
-import Select from "react-select";
+import CreatableSelect from "react-select/creatable";
 // import axios from "axios";
 import PropTypes from 'prop-types';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
-
-
-const options = [
-  { value: "システムエンジニア", label: "システムエンジニア" },
-  { value: "プログラマー", label: "プログラマー" },
-  { value: "インフラエンジニア", label: "インフラエンジニア" },
-  { value: "サーバーエンジニア", label: "サーバーエンジニア" },
-  { value: "ネットワークエンジニア", label: "ネットワークエンジニア" },
-  { value: "セキュリティエンジニア", label: "セキュリティエンジニア" },
-  { value: "組み込みエンジニア", label: "組み込みエンジニア" },
-  { value: "データベースエンジニア", label: "データベースエンジニア" },
-  { value: "クラウドエンジニア", label: "クラウドエンジニア" },
-  { value: "AIエンジニア", label: "AIエンジニア" },
-  { value: "WEBエンジニア", label: "WEBエンジニア" },
-  { value: "フロントエンドエンジニア", label: "フロントエンドエンジニア" },
-  { value: "バックエンドエンジニア", label: "バックエンドエンジニア" },
-  { value: "セールスエンジニア", label: "セールスエンジニア" },
-  { value: "サービスエンジニア", label: "サービスエンジニア" },
-  { value: "プロジェクトマネージャー", label: "プロジェクトマネージャー" },
-  { value: "ITコンサルタント", label: "ITコンサルタント" },
-  { value: "ヘルプデスク", label: "ヘルプデスク" },
-  { value: "Webディレクター", label: "Webディレクター" },
-  { value: "Webクリエイター", label: "Webクリエイター" },
-  { value: "Webデザイナー", label: "Webデザイナー" },
-  { value: "グラフィックデザイナー", label: "グラフィックデザイナー" },
-  { value: "UI/UXデザイナー", label: "UI/UXデザイナー" },
-  { value: "3DCGデザイナー", label: "3DCGデザイナー" },
-  { value: "ゲームエンジニア", label: "ゲームエンジニア" },
-  { value: "ゲームデザイナー", label: "ゲームデザイナー" },
-  { value: "ゲームプランナー", label: "ゲームプランナー" },
-];
+import GetTagAllList from "src/components/tag/GetTagAllList";
+import InsertTag from 'src/components/tag/InsertTag';
 
 const SelectedOccupation = ({SelectedOccupationData}) => {
-
-  //console.log("SelectedOccupationData:::"+SelectedOccupationData);
-
+  const {InsertTagFunction} = InsertTag();
   const { getSessionData, updateSessionData } = useSessionStorage();
 
   const [selectedOccupation, setSelectedOccupation] = useState([]);
+  const [options, setOptions] = useState([]);
+
+  const { GetTagAllListFunction } = GetTagAllList();
+
+  useEffect(() => {
+    let optionArrayPromise = GetTagAllListFunction("selected_occupation");
+    optionArrayPromise.then((result) => {
+      setOptions(result);
+    });
+  }, []);
 
   // valueの初期値をセット
   useEffect(() => {
     if (getSessionData("accountData") !== undefined) {
       const SessionData = getSessionData("accountData");
-      if(SessionData.SelectedOccupationEditing && SessionData.SelectedOccupation){
+      if(SessionData.CompanySelectedOccupationEditing && SessionData.CompanySelectedOccupation){
         // セッションストレージから最新のデータを取得
-        const devtagArray = SessionData.SelectedOccupation.split(",").map(item => ({
+        const devtagArray = SessionData.CompanySelectedOccupation.split(",").map(item => ({
           value: item,
           label: item,
         }));
         setSelectedOccupation(devtagArray);
       } else if(
-        (SessionData.SelectedOccupationEditing && SessionData.SelectedOccupation && SelectedOccupationData)||
-        (!SessionData.SelectedOccupationEditing && SelectedOccupationData)
+        (SessionData.CompanySelectedOccupationEditing && SessionData.CompanySelectedOccupation && SelectedOccupationData)||
+        (!SessionData.CompanySelectedOccupationEditing && SelectedOccupationData)
       ){ // DBから最新のデータを取得
         const devtagArray = SelectedOccupationData.split(",").map(item => ({
           value: item,
@@ -76,18 +55,32 @@ const SelectedOccupation = ({SelectedOccupationData}) => {
     });
     devTag = devTagArray.join(",");
 
-    updateSessionData("accountData", "SelectedOccupation", devTag);
+    updateSessionData("accountData", "CompanySelectedOccupation", devTag);
   }, [selectedOccupation]);
 
-  const handleChange = (selectedOption) => {
+  const handleChange = (selectedOption, actionMeta) => {
     // newValueをセット
     setSelectedOccupation(selectedOption);
     // 編集中状態をオン(保存もしくはログアウトされるまで保持)
-    updateSessionData("accountData", "SelectedOccupationEditing", true);
+    updateSessionData("accountData", "CompanySelectedOccupationEditing", true);
+
+    if (actionMeta && actionMeta.action === 'create-option') {
+
+      const inputValue = actionMeta;
+      console.log(inputValue);
+      const newOption = { value: inputValue.option.value, label: inputValue.option.label };
+      setOptions([...options, newOption]);
+      // 14は企業の募集職種です。
+      InsertTagFunction(inputValue.option.value, 14);
+    }
+    let valueArray = [];
+    selectedOption.map((value) => {
+      valueArray.push(value.value)
+    })
   };
 
   return (
-    <Select
+    <CreatableSelect
         name="selectedOccupation"
         id="prefecturesDropdwon"
         value={selectedOccupation}

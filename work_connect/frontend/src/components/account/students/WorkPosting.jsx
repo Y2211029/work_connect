@@ -107,7 +107,7 @@ const WorkPosting = () => {
     console.log("...formData.entries(): ", ...formData.entries());
     try {
       const response = await axios.post(
-        "http://192.168.11.109:8000/work_posting",
+        "http://localhost:8000/work_posting",
         formData,
         {
           headers: {

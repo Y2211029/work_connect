@@ -104,13 +104,13 @@ const WorkDetailItem = () => {
   // モーダルスライドのCSS
 
   // 作品データ
-  const workDetailUrl = "http://192.168.11.109:8000/get_work_detail";
+  const workDetailUrl = "http://localhost:8000/get_work_detail";
   // 作品コメント投稿
-  const workCommentPostUrl = "http://192.168.11.109:8000/post_work_comment_post";
+  const workCommentPostUrl = "http://localhost:8000/post_work_comment_post";
   // 作品コメントデータ
-  const workCommentUrl = "http://192.168.11.109:8000/post_work_comment";
+  const workCommentUrl = "http://localhost:8000/post_work_comment";
   // 作品コメント削除
-  const workCommentDelete = "http://192.168.11.109:8000/post_work_comment_delete";
+  const workCommentDelete = "http://localhost:8000/post_work_comment_delete";
 
   // console.log("currentSlideIndex", currentSlideIndex);
 

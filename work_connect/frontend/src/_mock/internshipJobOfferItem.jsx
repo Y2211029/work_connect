@@ -20,7 +20,7 @@ export const InternshipJobOfferItem = () => {
   console.log("idは",data.id);
 
   // ニュースの一覧データを取得する用URL
-  const url = "http://192.168.11.109:8000/Internship_JobOffer";
+  const url = "http://localhost:8000/Internship_JobOffer";
 
   useEffect(() => {
     async function InternshipJobOfferFunction() {

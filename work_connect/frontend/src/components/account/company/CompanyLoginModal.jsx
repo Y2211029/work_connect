@@ -45,8 +45,8 @@ const CompanyLoginModal = (props) => {
   const [isSubmit, setIsSubmit] = useState(false);
   const [csrfToken, setCsrfToken] = useState("");
 
-  const url = "http://192.168.11.109:8000/s_login";
-  const csrf_url = "http://192.168.11.109:8000/csrf-token";
+  const url = "http://localhost:8000/s_login";
+  const csrf_url = "http://localhost:8000/csrf-token";
 
   // パスワード表示/非表示の切り替え(パスワード)
   const [showPassword, setShowPassword] = useState("");
@@ -110,7 +110,7 @@ const CompanyLoginModal = (props) => {
 
     //ajax
     $.ajax({
-      url: url, // アクセスするURL "http://192.168.11.109:8000/login"
+      url: url, // アクセスするURL "http://localhost:8000/login"
       type: "GET", // POST または GET
       cache: false, // cacheを使うか使わないかを設定
       dataType: "json", // データタイプ (script, xmlDocument, jsonなど)

@@ -15,7 +15,7 @@ export default function InternshipJobOfferPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://192.168.11.109:8000/Internship_JobOffer');
+        const response = await axios.get('http://localhost:8000/Internship_JobOffer');
         console.log("ニュースリスト", response.data);
         setNewsData(response.data);
         setFilteredData(response.data);

@@ -15,7 +15,7 @@ function GetTagAllList() {
     const GetTagAllListFunction = async (kind) => {
         try {
             if (kind != undefined) {
-                const url = `http://192.168.11.109:8000/get_${kind}_tag`;
+                const url = `http://localhost:8000/get_${kind}_tag`;
                 let result;
                 let optionArray = [];
 

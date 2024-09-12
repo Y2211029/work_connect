@@ -9,7 +9,7 @@ import Profile_router2 from "src/sections/Profile/View/company/Profile";
 export default function Profile() {
 
   // Laravelとの通信用URL
-  const url = "http://192.168.11.109:8000/get_profile_mypage_kind";
+  const url = "http://localhost:8000/get_profile_mypage_kind";
 
   const { user_name } = useParams();
   const [ ProfileUserName ] = useState(user_name);

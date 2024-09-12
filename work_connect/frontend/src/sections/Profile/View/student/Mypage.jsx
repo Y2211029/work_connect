@@ -55,7 +55,7 @@ const ProfileMypage = () => {
   const childRef = useRef(null);
   const [close, setClose] = useState(true);
   // Laravelとの通信用URL
-  const url = "http://localhost:8000/get_profile_mypage";
+  const url = "http://192.168.11.109:8000/get_profile_mypage";
 
   // ログイン中のuser_nameではない
   // ＊＊＊他ルートからアクセスしたときに表示したいユーザのuser_nameをここで指定＊＊＊
@@ -306,7 +306,7 @@ const ProfileMypage = () => {
               }
             }}
             image={ResponseData.icon ?
-              `http://localhost:8000/storage/images/userIcon/${ResponseData.icon}` :
+              `http://192.168.11.109:8000/storage/images/userIcon/${ResponseData.icon}` :
               ""}
             alt="Loading..."
           />

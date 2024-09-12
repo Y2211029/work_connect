@@ -31,8 +31,8 @@ const CompanyPreSignModal = (props) => {
 
   const clickOneTimes = useRef(false); // 一度だけ処理させたい処理を管理するuseRefを作成する
 
-  const url = "http://localhost:8000/s_pre_register";
-  const csrf_url = "http://localhost:8000/csrf-token";
+  const url = "http://192.168.11.109:8000/s_pre_register";
+  const csrf_url = "http://192.168.11.109:8000/csrf-token";
 
   // ヘッダーの新規登録ボタンを押したときに新規登録モーダルを開いたり閉じたりする処理
   $("#CompanypreSignModalOpenButton").click(function (e) {

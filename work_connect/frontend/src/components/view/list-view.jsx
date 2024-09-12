@@ -106,7 +106,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
   const urlMapping = {
     works: {
       ItemName: "作品一覧",
-      url: "http://localhost:8000/get_work_list",
+      url: "http://192.168.11.109:8000/get_work_list",
       idKey: "work_id",
       tags: ["work_genre"],
       generatePosts: (WorkOfList) =>
@@ -128,7 +128,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
     },
     movies: {
       ItemName: "動画一覧",
-      url: "http://localhost:8000/get_movie_list",
+      url: "http://192.168.11.109:8000/get_movie_list",
       idKey: "movie_id",
       tags: ["genre"],
       generatePosts: (WorkOfList) =>
@@ -150,7 +150,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
     },
     students: {
       ItemName: "学生一覧",
-      url: "http://localhost:8000/get_student_list",
+      url: "http://192.168.11.109:8000/get_student_list",
       idKey: "id",
       tags: [
         "desired_occupation",
@@ -178,7 +178,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
     },
     companies: {
       ItemName: "企業一覧",
-      url: "http://localhost:8000/get_company_list",
+      url: "http://192.168.11.109:8000/get_company_list",
       idKey: "id",
       tags: ["selected_occupation", "prefecture"],
       generatePosts: (WorkOfList) =>

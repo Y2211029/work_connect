@@ -3,7 +3,7 @@ import axios from "axios";
 /*--------------------------------------------*/
 /*               タグ作成処理                  */
 /*--------------------------------------------*/
-/* 
+/*
 import InsertTag from "～/InsertTag";
 const { InsertTagFunction } = InsertTag();
 InsertTagFunction();
@@ -18,7 +18,7 @@ function InsertTag() {
     if (name != undefined) {
       if (item_id != undefined) {
         await axios.post(
-          "http://localhost:8000/insert_tag",
+          "http://192.168.11.109:8000/insert_tag",
           {
             name: name,
             item_id: item_id

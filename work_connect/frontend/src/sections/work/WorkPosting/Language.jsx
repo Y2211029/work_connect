@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 
 const Language = (props) => {
   const {InsertTagFunction} = InsertTag();
-  const url = 'http://localhost:8000/get_work_language_tag'
+  const url = 'http://192.168.11.109:8000/get_work_language_tag'
   const [options, setOptions] = useState([]);
   useEffect(()=>{
     async function LanguageFunction() {
@@ -44,10 +44,10 @@ const Language = (props) => {
     if (actionMeta && actionMeta.action === 'create-option') {
 
       const inputValue = actionMeta;
-      console.log(inputValue);  
+      console.log(inputValue);
       const newOption = { value: inputValue.option.value, label: inputValue.option.label };
       setOptions([...options, newOption]);
-      // 12は作品投稿のプログラミング言語です。 
+      // 12は作品投稿のプログラミング言語です。
       InsertTagFunction(inputValue.option.value, 12);
     }
     let valueArray = [];

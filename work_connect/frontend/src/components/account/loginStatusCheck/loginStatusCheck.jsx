@@ -29,7 +29,7 @@ function LoginStatusCheck() {
     if (accountData != undefined) {
       if (accountData.id != undefined) {
         loginStatusCheckResponse = await axios.post(
-          "http://localhost:8000/login_status_check",
+          "http://192.168.11.109:8000/login_status_check",
           // "http://127.0.0.1:8000/login_status_check",
           data
         );

@@ -113,7 +113,7 @@ export default function AccountPopover() {
       >
         <Avatar
           // ログアウト時はゲストアバターを使用
-          src={popoverIcon ? `http://localhost:8000/storage/images/userIcon/${popoverIcon}`:account.photoURL}
+          src={popoverIcon ? `http://192.168.11.109:8000/storage/images/userIcon/${popoverIcon}`:account.photoURL}
           alt={account.displayName}
           sx={{
             width: 36,

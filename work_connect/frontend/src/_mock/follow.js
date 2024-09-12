@@ -5,7 +5,7 @@ import axios from 'axios';
 export async function follow(senderId, recipientId) {
   try {
     // フォロー処理のためにPOSTリクエストを送信
-    const response = await axios.post('http://localhost:8000/follow', {
+    const response = await axios.post('http://192.168.11.109:8000/follow', {
       sender_id: senderId,
       recipient_id: recipientId
     });
@@ -14,7 +14,7 @@ export async function follow(senderId, recipientId) {
     console.log('フォロー成功:', response.data);
     const UpdateFollow = response.data.follow_status;
     return UpdateFollow;
-    
+
   } catch (error) {
     // エラーハンドリング
     console.error('フォロー処理中にエラーが発生しました！', error);

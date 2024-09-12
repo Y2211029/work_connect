@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 
 const Environment = (props) => {
   const {InsertTagFunction} = InsertTag();
-  const url = 'http://localhost:8000/get_work_environment_tag'
+  const url = 'http://192.168.11.109:8000/get_work_environment_tag'
   const [options, setOptions] = useState([]);
   useEffect(()=>{
     async function EnvironmentFunction() {
@@ -44,10 +44,10 @@ const Environment = (props) => {
     if (actionMeta && actionMeta.action === 'create-option') {
 
       const inputValue = actionMeta;
-      console.log(inputValue);  
+      console.log(inputValue);
       const newOption = { value: inputValue.option.value, label: inputValue.option.label };
       setOptions([...options, newOption]);
-      // 13は作品投稿の開発環境です。 
+      // 13は作品投稿の開発環境です。
       InsertTagFunction(inputValue.option.value, 13);
     }
     let valueArray = [];

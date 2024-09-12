@@ -23,8 +23,8 @@ const InternshipJobOfferPage = () => {
     const [showNav, setShowNav] = useState(false); // ナビゲーションバーを表示するかどうかの状態を管理
     const [followStatus, setFollowStatus] = useState(null);
 
-    const csrf_url = "http://localhost:8000/csrf-token";
-    const news_bookmark_url = "http://localhost:8000/news_bookmark";
+    const csrf_url = "http://192.168.11.109:8000/csrf-token";
+    const news_bookmark_url = "http://192.168.11.109:8000/news_bookmark";
     // const location = useLocation();
     // const parameter = location.state; // パラメータ(w_newsテーブルのidカラムの値)を代入
     const { id } = useParams(); // パラメータから id を取得
@@ -45,7 +45,7 @@ const InternshipJobOfferPage = () => {
         async function fetchData() {
             try {
                 const response = await axios.get(
-                    `http://localhost:8000/Internship_JobOffer/news_detail/${newsdetail_id}`,
+                    `http://192.168.11.109:8000/Internship_JobOffer/news_detail/${newsdetail_id}`,
                     {
                         params: {
                             MyId: data.id, //今ログインしている人のid

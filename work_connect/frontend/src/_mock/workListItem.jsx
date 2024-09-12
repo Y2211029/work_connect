@@ -23,7 +23,7 @@ const WorkListItem = () => {
   const [WorkOfList, setWorkOfList] = useState([]);
 
   // 作品の一覧データを取得する用URL
-  const url = "http://localhost:8000/get_work_list";
+  const url = "http://192.168.11.109:8000/get_work_list";
 
   useEffect(() => {
     async function workListFunction() {

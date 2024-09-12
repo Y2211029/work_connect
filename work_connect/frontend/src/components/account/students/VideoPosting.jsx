@@ -95,7 +95,7 @@ import { useNavigate } from "react-router-dom";
 //     }
 //     try {
 //       const response = await axios.post(
-//         "http://localhost:8000/video_posting",
+//         "http://192.168.11.109:8000/video_posting",
 //         formData,
 //         {
 //           headers: {
@@ -249,7 +249,7 @@ const VideoPosting = () => {
       formData.append(key, workData[key]);
     }
     try {
-      const response = await axios.post("http://localhost:8000/video_posting", formData, {
+      const response = await axios.post("http://192.168.11.109:8000/video_posting", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

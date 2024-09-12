@@ -30,8 +30,8 @@ const StudentPreSignModal = (props) => {
   const [isSubmit, setIsSubmit] = useState(false);
   const [csrfToken, setCsrfToken] = useState("");
 
-  const url = "http://localhost:8000/s_pre_register";
-  const csrf_url = "http://localhost:8000/csrf-token";
+  const url = "http://192.168.11.109:8000/s_pre_register";
+  const csrf_url = "http://192.168.11.109:8000/csrf-token";
 
   // 親に渡す。
   const handleOpenCompanyPreModal = () => {

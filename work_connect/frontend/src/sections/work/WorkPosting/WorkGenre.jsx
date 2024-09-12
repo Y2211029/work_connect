@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 
 const WorkGenre = (props) => {
   const {InsertTagFunction} = InsertTag();
-  const url = 'http://localhost:8000/get_work_genre_tag'
+  const url = 'http://192.168.11.109:8000/get_work_genre_tag'
   const [options, setOptions] = useState([]);
   useEffect(()=>{
     async function WorkGenreFunction() {
@@ -45,10 +45,10 @@ const WorkGenre = (props) => {
     if (actionMeta && actionMeta.action === 'create-option') {
 
       const inputValue = actionMeta;
-      console.log(inputValue);  
+      console.log(inputValue);
       const newOption = { value: inputValue.option.value, label: inputValue.option.label };
       setOptions([...options, newOption]);
-      // 11は作品投稿の作品ジャンルです。 
+      // 11は作品投稿の作品ジャンルです。
       InsertTagFunction(inputValue.option.value, 11);
     }
     let valueArray = [];

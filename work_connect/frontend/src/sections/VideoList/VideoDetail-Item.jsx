@@ -5,7 +5,7 @@ import axios from "axios";
 
 import Box from "@mui/material/Box";
 
-import { useCreateTagbutton } from "src/hooks/use-createTagbutton";
+import { UseCreateTagbutton } from "src/hooks/use-createTagbutton";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 const VideoDetailItem = () => {
@@ -25,18 +25,18 @@ const VideoDetailItem = () => {
   const [CommentCancel, setCommentCancel] = useState("");
 
   // -----タグ-----
-  const { tagCreate } = useCreateTagbutton();
+  const { tagCreate } = UseCreateTagbutton();
   // ジャンル
   const [VideoGenre, setVideoGenre] = useState("");
 
   // 動画データ
-  const videoDetailUrl = "http://localhost:8000/get_movie_detail";
+  const videoDetailUrl = "http://192.168.11.109:8000/get_movie_detail";
   // 動画コメント投稿
-  const videoCommentPostUrl = "http://localhost:8000/post_movie_comment_post";
+  const videoCommentPostUrl = "http://192.168.11.109:8000/post_movie_comment_post";
   // 動画コメントデータ
-  const videoCommentUrl = "http://localhost:8000/post_movie_comment";
+  const videoCommentUrl = "http://192.168.11.109:8000/post_movie_comment";
   // 動画コメント削除
-  const videoCommentDelete = "http://localhost:8000/post_movie_comment_delete";
+  const videoCommentDelete = "http://192.168.11.109:8000/post_movie_comment_delete";
 
   // Laravel側から動画詳細データを取得
   useEffect(() => {

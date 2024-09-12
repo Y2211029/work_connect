@@ -46,6 +46,25 @@ class SearchCompanyController extends Controller
                 }
             }
 
+            // 検索文字列で絞り込み
+            if ($searchText != "") {
+                $query->where(function($query) use ($searchText) {
+                    // 学生の情報
+                    $query->orWhere('w_companies.user_name', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_companies.company_name', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_companies.company_namecana', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_companies.selected_occupation', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_companies.intro', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_companies.industry', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_companies.others', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_companies.development_environment', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_companies.programming_language', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_companies.acquisition_qualification', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_companies.software', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_companies.office', 'LIKE', '%' . $searchText . '%');
+                });
+            }
+
             $results = $query->skip($offset)
                 ->take($perPage) //件数
                 ->get();

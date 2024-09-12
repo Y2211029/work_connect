@@ -13,7 +13,7 @@ const Language = (props) => {
       try {
         // Laravel側から企業一覧データを取得
         const response = await axios.get(url, {
-          params: {},
+          params: {All:"tags"},
         });
 
         // response.dataは配列の中にオブジェクトがある形になっています
@@ -44,10 +44,10 @@ const Language = (props) => {
     if (actionMeta && actionMeta.action === 'create-option') {
 
       const inputValue = actionMeta;
-      console.log(inputValue);  
+      console.log(inputValue);
       const newOption = { value: inputValue.option.value, label: inputValue.option.label };
       setOptions([...options, newOption]);
-      // 12は作品投稿のプログラミング言語です。 
+      // 12は作品投稿のプログラミング言語です。
       InsertTagFunction(inputValue.option.value, 12);
     }
     let valueArray = [];

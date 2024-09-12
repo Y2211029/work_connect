@@ -13,7 +13,7 @@ const VideoGenre = (props) => {
       try {
         // Laravel側から企業一覧データを取得
         const response = await axios.get(url, {
-          params: {},
+          params: {All:"tags"},
         });
 
         // response.dataは配列の中にオブジェクトがある形になっています
@@ -45,10 +45,10 @@ const VideoGenre = (props) => {
     if (actionMeta && actionMeta.action === 'create-option') {
 
       const inputValue = actionMeta;
-      console.log(inputValue);  
+      console.log(inputValue);
       const newOption = { value: inputValue.option.value, label: inputValue.option.label };
       setOptions([...options, newOption]);
-      // 10は動画投稿の作品ジャンルです。 
+      // 10は動画投稿の作品ジャンルです。
       InsertTagFunction(inputValue.option.value, 10);
     }
     let valueArray = [];

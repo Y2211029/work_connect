@@ -69,23 +69,25 @@ const Obsession = (props) => {
   };
   return (
     <div>
-      <p>こだわりポイント*</p>
-      <Textarea
-        error={hasError}
-        name="Obsession"
-        maxRows={12}
-        aria-label="maximum height"
-        placeholder="500字以内"
-        value={inputValue}
-        onChange={handleChange}
-        maxLength={500}
-        sx={{
-          border:
-            Obsession === ""
-              ? "1px red solid"
-              : `1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]}`,
-        }}
-      />
+      <p>
+        こだわりポイント*
+        <Textarea
+          error={hasError}
+          name="Obsession"
+          maxRows={12}
+          aria-label="maximum height"
+          placeholder="500字以内"
+          value={inputValue}
+          onChange={handleChange}
+          maxLength={500}
+          sx={{
+            border:
+              Obsession === ""
+                ? "1px red solid"
+                : `1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]}`,
+          }}
+        />
+      </p>
 
       <Typography
         variant="body2"

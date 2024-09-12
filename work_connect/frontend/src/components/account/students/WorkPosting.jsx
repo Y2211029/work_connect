@@ -169,15 +169,17 @@ const WorkPosting = () => {
               <div className="WorkPostingFormField">
                 <Obsession callSetWorkData={callSetWorkData} />
               </div>
-              <br />
               <div className="WorkPostingFormField">
-                <p>プログラミング言語</p>
-                <Language callSetWorkData={callSetWorkData} />
+                <p>
+                  プログラミング言語
+                  <Language callSetWorkData={callSetWorkData} />
+                </p>
               </div>
-              <br />
               <div className="WorkPostingFormField">
-                <p>開発環境</p>
-                <Environment callSetWorkData={callSetWorkData} />
+                <p>
+                  開発環境
+                  <Environment callSetWorkData={callSetWorkData} />
+                </p>
               </div>
             </div>
           </div>

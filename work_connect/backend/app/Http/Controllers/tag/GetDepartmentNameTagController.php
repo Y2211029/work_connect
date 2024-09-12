@@ -10,8 +10,6 @@ class GetDepartmentNameTagController extends Controller
 {
     public function GetDepartmentNameTagController(Request $request)
     {
-
-
         if ($request->input("All", "") == "tags") {
             $tag = \DB::table('w_tags')
                 ->where('item_id', 17)

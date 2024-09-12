@@ -1,7 +1,7 @@
-import YoutubeURL from "../../../sections/work/WorkPosting/YoutubeURL";
+import VideoYoutubeURL from "../../../sections/video/VideoYoutubeURL";
 import VideoTitle from "../../../sections/work/WorkPosting/WorkTitle";
 import VideoGenre from "../../../sections/video/VideoGenre";
-import Introduction from "../../../sections/work/WorkPosting/Introduction";
+import VideoIntroduction from "../../../sections/video/VideoIntroduction";
 import YouTube from "react-youtube";
 // import Modal from "react-modal";
 // import { useNavigate } from "react-router-dom";
@@ -11,17 +11,17 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-// // ログインのモーダル CSS設定
-// // const modalStyle = {
-// //   content: {
-// //     position: "none",
-// //     backgroundColor: "rgb(0 0 0 / 70%)",
-// //     border: "none",
-// //     borderRadius: "0",
-// //     padding: "1.5rem",
-// //     overflow: "none",
-// //   },
-// // };
+// ログインのモーダル CSS設定
+// const modalStyle = {
+//   content: {
+//     position: "none",
+//     backgroundColor: "rgb(0 0 0 / 70%)",
+//     border: "none",
+//     borderRadius: "0",
+//     padding: "1.5rem",
+//     overflow: "none",
+//   },
+// };
 
 // const VideoPosting = () => {
 //   // const [showModal, setShowModal] = useState(false);
@@ -182,6 +182,7 @@ const VideoPosting = () => {
   });
   const [videoUrl, setVideoUrl] = useState("");
   const [videoId, setVideoId] = useState("");
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     console.log(workData);
@@ -197,6 +198,7 @@ const VideoPosting = () => {
   const handleChange = (event) => {
     const url = event.target.value;
     setVideoUrl(url);
+    setHasError(url === '');
 
     // YouTubeの動画IDを抽出
     // iframe入力時
@@ -272,7 +274,7 @@ const VideoPosting = () => {
           <div className="VideoPostingUiForm">
             <div className="ImageUpload">
               <div className="VideoPostingFormField">
-                <YoutubeURL onChange={handleChange} value={videoUrl} />
+                <VideoYoutubeURL onChange={handleChange} value={videoUrl} error={hasError} />
               </div>
               <br />
               {videoId ? <YouTube videoId={videoId} opts={opts} /> : <p>YouTubeのURL、ID、またはiframeコードを入力してください。</p>}
@@ -298,7 +300,7 @@ const VideoPosting = () => {
               </div>
               <br />
               <div className="VideoPostingFormField">
-                <Introduction callSetVideoData={callSetVideoData} />
+                <VideoIntroduction callSetVideoData={callSetVideoData} />
               </div>
             </div>
           </div>

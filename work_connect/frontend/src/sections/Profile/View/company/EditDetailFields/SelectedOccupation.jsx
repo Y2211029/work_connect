@@ -16,7 +16,7 @@ const SelectedOccupation = ({SelectedOccupationData}) => {
   const { GetTagAllListFunction } = GetTagAllList();
 
   useEffect(() => {
-    let optionArrayPromise = GetTagAllListFunction("selected_occupation");
+    let optionArrayPromise = GetTagAllListFunction("company_selected_occupation");
     optionArrayPromise.then((result) => {
       setOptions(result);
     });
@@ -70,8 +70,8 @@ const SelectedOccupation = ({SelectedOccupationData}) => {
       console.log(inputValue);
       const newOption = { value: inputValue.option.value, label: inputValue.option.label };
       setOptions([...options, newOption]);
-      // 14は企業の募集職種です。
-      InsertTagFunction(inputValue.option.value, 14);
+      // 21は企業の社員の職種・募集職種です。
+      InsertTagFunction(inputValue.option.value, 21);
     }
     let valueArray = [];
     selectedOption.map((value) => {

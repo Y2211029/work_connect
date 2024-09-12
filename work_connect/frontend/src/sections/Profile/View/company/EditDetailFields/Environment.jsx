@@ -68,8 +68,8 @@ const Environment = ({EnvironmentData}) => {
       console.log(inputValue);
       const newOption = { value: inputValue.option.value, label: inputValue.option.label };
       setOptions([...options, newOption]);
-      // 6は学生の開発環境です。
-      InsertTagFunction(inputValue.option.value, 6);
+      // 23は企業の開発環境です。
+      InsertTagFunction(inputValue.option.value, 23);
     }
     let valueArray = [];
     selectedOption.map((value) => {

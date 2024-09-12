@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import Select from "react-select";
+import CreatableSelect from "react-select/creatable";
 import PropTypes from 'prop-types';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import GetTagAllList from "src/components/tag/GetTagAllList";
+import InsertTag from 'src/components/tag/InsertTag';
 
 const MajorNameDropdown = ({ MajorNameData }) => {
-    const [selectedFaculty, setSelectedFaculty] = useState(MajorNameData);
+    const {InsertTagFunction} = InsertTag();
+    const [selectedMajorName, setSelectedMajorName] = useState(MajorNameData);
 
     const { getSessionData, updateSessionData } = useSessionStorage();
 
@@ -14,7 +16,7 @@ const MajorNameDropdown = ({ MajorNameData }) => {
     const { GetTagAllListFunction } = GetTagAllList();
 
     useEffect(() => {
-        let optionArrayPromise = GetTagAllListFunction("major_name");
+        let optionArrayPromise = GetTagAllListFunction("student_major_name");
         optionArrayPromise.then((result) => {
             setOptions(result);
         });
@@ -26,7 +28,7 @@ const MajorNameDropdown = ({ MajorNameData }) => {
             const SessionData = getSessionData("accountData");
             if (SessionData.MajorNameEditing && SessionData.MajorName) {
                 // セッションストレージから最新のデータを取得
-                setSelectedFaculty({
+                setSelectedMajorName({
                     value: SessionData.MajorName,
                     label: SessionData.MajorName,
                 });
@@ -35,7 +37,7 @@ const MajorNameDropdown = ({ MajorNameData }) => {
                 (!SessionData.MajorNameEditing && MajorNameData)
             ) {
                 // DBから最新のデータを取得
-                setSelectedFaculty({
+                setSelectedMajorName({
                     value: MajorNameData,
                     label: MajorNameData,
                 });
@@ -44,29 +46,31 @@ const MajorNameDropdown = ({ MajorNameData }) => {
     }, [MajorNameData]);
 
     useEffect(() => {
-        if (selectedFaculty) {
-            updateSessionData("accountData", "MajorName", selectedFaculty.value);
+        if (selectedMajorName) {
+            updateSessionData("accountData", "MajorName", selectedMajorName.value);
         }
-    }, [selectedFaculty]);
+    }, [selectedMajorName]);
 
-    const handleChange = (selectedOption) => {
-        setSelectedFaculty(selectedOption);
-        // sessionStrageに値を保存
-        if (selectedOption) {
-            updateSessionData("accountData", "MajorName", selectedOption.value);
-        } else {
-            // なしの場合
-            updateSessionData("accountData", "MajorName", "");
-        }
+    const handleChange = (selectedOption, actionMeta) => {
+        // newValueをセット
+        setSelectedMajorName(selectedOption);
         // 編集中状態をオン(保存もしくはログアウトされるまで保持)
         updateSessionData("accountData", "MajorNameEditing", true);
-    };
+
+        if (actionMeta && actionMeta.action === 'create-option') {
+            const inputValue = actionMeta;
+            const newOption = { value: inputValue.option.value, label: inputValue.option.label };
+            setOptions([...options, newOption]);
+            // 19は学生の専攻です。
+            InsertTagFunction(inputValue.option.value, 19);
+        }
+      };
 
     return (
         <div>
-            <Select
+            <CreatableSelect
                 id="departmentDropdown"
-                value={selectedFaculty}
+                value={selectedMajorName}
                 onChange={handleChange}
                 options={options}
                 placeholder="Select..."

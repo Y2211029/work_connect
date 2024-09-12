@@ -17,7 +17,7 @@ const Qualification = ({ QualificationData }) => {
   const { GetTagAllListFunction } = GetTagAllList();
 
   useEffect(() => {
-    let optionArrayPromise = GetTagAllListFunction("acquisition_qualification");
+    let optionArrayPromise = GetTagAllListFunction("student_acquisition_qualification");
     optionArrayPromise.then((result) => {
       setOptions(result);
     });

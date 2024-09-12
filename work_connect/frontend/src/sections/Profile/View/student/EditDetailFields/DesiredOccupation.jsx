@@ -16,7 +16,7 @@ const DesiredOccupation = ({ DesiredOccupationData }) => {
   const { GetTagAllListFunction } = GetTagAllList();
 
   useEffect(() => {
-    let optionArrayPromise = GetTagAllListFunction("desired_occupation");
+    let optionArrayPromise = GetTagAllListFunction("student_desired_occupation");
     optionArrayPromise.then((result) => {
       setOptions(result);
     });

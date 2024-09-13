@@ -9,21 +9,20 @@ const CompanyHPMap = ({ CompanyHPMapData }) => {
   const [CompanyHPMap, setCompanyHPMap] = useState(CompanyHPMapData);
   const { getSessionData, updateSessionData } = useSessionStorage();
 
-
   // valueの初期値をセット
   useEffect(() => {
-    // セッションデータ取得
-    const SessionData = getSessionData("accountData");
-
-    /// 編集の途中ならセッションストレージからデータを取得する。
-    /// (リロードした時も、データが残った状態にする。)
-    if ((SessionData.CompanyHPMap !== undefined) ||
-    SessionData.CompanyHPMapEditing) {
-      // セッションストレージから最新のデータを取得
-      console.log(SessionData.CompanyHPMap);
-      setCompanyHPMap(SessionData.CompanyHPMap);
+    if (getSessionData("accountData") !== undefined){
+      const SessionData = getSessionData("accountData");
+      if(SessionData.CompanyHPMapEditing && SessionData.CompanyHPMap){
+        // セッションストレージから最新のデータを取得
+        setCompanyHPMap(SessionData.CompanyHPMap);
+      } else if(
+        (SessionData.CompanyHPMapEditing && SessionData.CompanyIntroVideo && CompanyHPMapData)||
+        (!SessionData.CompanyHPMapEditing && CompanyHPMapData)
+      ){ // DBから最新のデータを取得
+        setCompanyHPMap(CompanyHPMapData);
+      }
     }
-
   }, [CompanyHPMapData]);
 
   const handleChange = (e) => {

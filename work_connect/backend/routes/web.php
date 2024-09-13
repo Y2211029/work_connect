@@ -200,7 +200,7 @@ Route::post('/thumbnail_image_save', [EditorController::class, 'thumbnail_image_
 Route::post('/contents_image_save', [EditorController::class, 'contents_image_save']);
 Route::post('/contents_url_image_save', [EditorController::class, 'contents_url_image_save']);
 Route::get('/news_draft_list/{id}', [EditorController::class, 'news_draft_list']);
-Route::get('/Internship_JobOffer', [NewsController::class, 'all_news_get']);
+Route::get('/Internship_JobOffer/{id}', [NewsController::class, 'all_news_get']);
 Route::get('/Internship_JobOffer/special_company_news/{id}', [NewsController::class, 'special_company_news']);
 Route::get('/Internship_JobOffer/news_detail/{id}', [NewsController::class, 'news_detail_get']);
 Route::post('/news_bookmark', [NewsController::class, 'news_bookmark']);

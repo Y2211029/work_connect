@@ -34,6 +34,10 @@ import { useNavigate } from "react-router-dom";
 // ゲストモード時、作品投稿・動画投稿・通知
 import { MyContext } from "src/layouts/dashboard/index";
 
+//学生か企業かで、ヘッダー内容を切り替え、Linkを用いてジャンプする
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
+
+
 import StudentPreSignModal from "../../components/account/students/StudentPreSignModal";
 import CompanyPreSignModal from "../../components/account/company/CompanyPreSignModal";
 
@@ -43,6 +47,12 @@ export default function Header({ onOpenNav }) {
   const [ModalChange, setModalChange] = useState("");
   const [PreModalChange, setPreModalChange] = useState("");
   const Display = useContext(MyContext);
+
+  const { getSessionData } = useSessionStorage();
+  const accountData = getSessionData("accountData") || {};
+  const data = {
+    id: accountData.id || "",
+  };
 
   const theme = useTheme();
   const lgUp = useResponsive("up", "lg");
@@ -83,6 +93,11 @@ export default function Header({ onOpenNav }) {
       setPreModalChange("学生");
     }
   };
+
+  const handleNewsJump = () => {
+    navigation('/Editor');
+  }
+
 
   //クリックすると一番上まで戻るボタン
   const handleScrollToTop = () => {
@@ -134,16 +149,24 @@ export default function Header({ onOpenNav }) {
       <Searchbar />
 
       <Box sx={{ flexGrow: 1 }} />
-
       {/* ログイン、新規登録、本登録、チャット、通知、アカウントプロフィール */}
       <Stack direction="row" alignItems="center" spacing={1}>
-        <Button onClick={handleOpenModal} variant="contained" sx={buttonStyle}>
-          作品投稿
-        </Button>
-        <Button onClick={handleOpenModal2} variant="contained" sx={buttonStyle}>
-          動画投稿
-        </Button>
-        {/* <SignUp1 /> */}
+        {data.id[0] === "S" ? (
+          <>
+            <Button onClick={handleOpenModal} variant="contained" sx={buttonStyle}>
+              作品投稿
+            </Button>
+            <Button onClick={handleOpenModal2} variant="contained" sx={buttonStyle}>
+              動画投稿
+            </Button>
+          </>
+        ) : data.id[0] === "C" ? (
+          <>
+            <Button onClick={handleNewsJump} variant="contained" sx={buttonStyle}>
+              ニュース投稿
+            </Button>
+          </>
+        ) : null}
 
         <Button id="LoginButton" onClick={handleChange} style={{ display: Display === "" ? "none" : "block" }}>
           ログイン
@@ -201,7 +224,7 @@ export default function Header({ onOpenNav }) {
             height: 1,
             px: { lg: 5 },
           }}
-        >
+        > 
           {renderContent}
         </Toolbar>
         <ArrowUpwardIcon

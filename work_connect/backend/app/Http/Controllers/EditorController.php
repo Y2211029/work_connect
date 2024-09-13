@@ -80,24 +80,34 @@ class EditorController extends Controller
         // 画像を保存
         if ($request->hasFile('file')) {
             $image = $request->file('file');
-            Log::info($image);
-            $originalFilename = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+
+            // ランダムなファイル名を生成（画像のハッシュを使用）
             $extension = $image->getClientOriginalExtension();
-            $timestamp = $now->format('Y-m-d_H-i-s'); // タイムスタンプのフォーマットを変更
+            $hash = hash_file('sha256', $image->getPathname());
+            $filename = $hash . '.' . $extension;
 
-            // 新しいファイル名を作成
-            $filename = $originalFilename . '_' . $timestamp . '.' . $extension;
+            // 保存先のパスを指定
+            $destinationPath = public_path('assets/header_img');
+            $path = $destinationPath . '/' . $filename;
 
-            // 画像を指定したフォルダに保存
-            $destinationPath = 'C:\xampp\apps\work_connect\work_connect\frontend\public\header_img'; // 絶対パスを使用
+            // 画像を指定したパスに保存
             $image->move($destinationPath, $filename);
 
+            // 保存された画像の相対パスを取得
+            $relativePath = 'assets/header_img/' . $filename;
+
+            // 公開 URL を生成
+            $publicPath = url($relativePath);
+
+            // デバッグ用: 保存パスと公開URLをログに出力
+            Log::info('File Path: ' . $path);
+            Log::info('Public Image URL: ' . $publicPath);
 
             if ($news_id == 0) {
                 // 新規作成
                 $w_news = w_news::create([
                     'company_id' => $Company_Id,
-                    'header_img' => $filename, // ファイル名を保存
+                    'header_img' => $relativePath, // 相対パスを保存
                     'created_at' => $now,
                     'public_status' => "0"
                 ]);
@@ -107,14 +117,13 @@ class EditorController extends Controller
                 if (!$w_news) {
                     return response()->json(['error' => 'Record not found'], 404);
                 }
-                $w_news->header_img = $filename; // ファイル名を保存
+                $w_news->header_img = $relativePath; // 相対パスを保存
                 $w_news->created_at = $now;
                 $w_news->save();
             }
 
             // 作成または更新されたレコードのIDを取得する
             $id = $w_news->id;
-            $filename = $w_news->header_img;
 
             // news_draft_list 関数を呼び出してニュースドラフトリストを取得
             $newsDraftList = $this->news_draft_list($request, $Company_Id);
@@ -122,7 +131,7 @@ class EditorController extends Controller
             // IDと画像パスを返す
             return response()->json([
                 'id' => $id,
-                'image' => $filename,
+                'image' => $publicPath, // 完全な URL を返す
                 'success' => true,
                 'news_draft_list' => $newsDraftList // 配列が直接返される
             ], 200);
@@ -131,20 +140,33 @@ class EditorController extends Controller
         return response()->json(['error' => '画像が選択されていません'], 400);
     }
 
+
+
     public function contents_image_save(Request $request)
     {
         if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $destinationPath = public_path('storage/images/news_contents'); // 保存先ディレクトリ
-            $fileName = $file->getClientOriginalName(); // 元のファイル名
-            $file->move($destinationPath, $fileName); // ファイルを移動
 
-            Log::info($fileName);
-            Log::info(asset('storage/images/news_contents/' . $fileName));
+            $image = $request->file('file');
+
+            // ランダムなファイル名を生成（画像のハッシュを使用）
+            $extension = $image->getClientOriginalExtension();
+            $hash = hash_file('sha256', $image->getPathname());
+            $filename = $hash . '.' . $extension;
+
+            $destinationPath = public_path('storage/images/news_contents'); // 保存先ディレクトリ
+            $image->move($destinationPath, $filename); // ファイルを移動
+
+            // 保存された画像の相対パスを取得
+            $relativePath = 'storage/images/news_contents/' . $filename;
+
+            // 公開 URL を生成
+            $publicPath = url($relativePath);
+
+            Log::info('ニュースコンテンツのURL: ' . $publicPath);
 
             return response()->json([
                 'success' => 1,
-                'url' => asset('storage/images/news_contents/' . $fileName) // アップロードされた画像のURLを返す
+                'url' => $publicPath // アップロードされた画像のURLを返す
             ]);
         }
 
@@ -225,7 +247,7 @@ class EditorController extends Controller
         $w_news = w_news::find($news_id);
         if (!$w_news) {
             return response()->json(['error' => 'Record not found'], 404);
-        }else{
+        } else {
             $w_news->company_id = $company_id;
             $w_news->article_title = $article_title;
             $w_news->genre = $genre;
@@ -237,7 +259,6 @@ class EditorController extends Controller
             $w_news->updated_at = $now;
             $w_news->save();
         }
-
     }
 
     public function news_draft_list(Request $request, $id)
@@ -250,8 +271,8 @@ class EditorController extends Controller
                 ->orderBy('updated_at', 'desc') // 降順でソート
                 ->get();
 
-            Log::info($newsDraftList);
 
+        Log::info($newsDraftList);
 
             return $newsDraftList;
         } catch (\Exception $e) {
@@ -300,23 +321,18 @@ class EditorController extends Controller
             if (preg_match('/instagram\.com\/p\/([^\/]+)/', $url, $matches)) {
                 $ogp['embedHtml'] = "<iframe src='https://www.instagram.com/p/{$matches[1]}/embed' width='400' height='500' frameborder='0' scrolling='no' allowtransparency='true'></iframe>";
                 Log::info("Instagram embed generated.");
-
             } elseif (preg_match('/twitter\.com\/[^\/]+\/status\/(\d+)/', $url, $matches)) {
                 $ogp['embedHtml'] = "<blockquote class='twitter-tweet'><a href='{$url}'></a></blockquote><script async src='https://platform.twitter.com/widgets.js' charset='utf-8'></script>";
                 Log::info("Twitter embed generated.");
-
             } elseif (preg_match('/l\.facebook\.com\/l\.php\?u=([^&]+)/', $url, $matches)) {
                 $actualUrl = urldecode($matches[1]);
                 $ogp['embedHtml'] = "<iframe src='https://www.facebook.com/plugins/post.php?href={$actualUrl}' width='500' height='600' style='border:none;overflow:hidden' scrolling='no' frameborder='0' allowTransparency='true' allow='encrypted-media'></iframe>";
                 Log::info("Facebook embed generated.");
-
-
             } elseif (preg_match('/github\.com\/([^\/]+\/[^\/\.]+)(\.git)?/', $url, $matches)) {
                 $repo = $matches[1];
 
                 $ogp['embedHtml'] = "<iframe src='https://github.com/{$repo}' width='800' height='600' frameborder='0' scrolling='yes' style='border:none;'></iframe>";
                 Log::info("GitHub embed generated.");
-
             } elseif (preg_match('/note\.com\/n\/([^\/?]+)/', $url, $matches)) {
                 $noteId = $matches[1];
                 $ogp['embedHtml'] = "<iframe class='note-embed' src='https://note.com/embed/notes/{$noteId}' style='border: 0; display: block; max-width: 99%; width: 494px; padding: 0px; margin: 10px 0px; position: static; visibility: visible;' height='400'></iframe><script async src='https://note.com/scripts/embed.js' charset='utf-8'></script>";
@@ -331,6 +347,4 @@ class EditorController extends Controller
             return response()->json(['error' => 'Failed to fetch data'], 500);
         }
     }
-
-
 }

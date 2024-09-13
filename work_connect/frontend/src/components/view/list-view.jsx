@@ -38,12 +38,14 @@ const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, s
     // 全作品アイテム
     newWorks.forEach((element) => {
       // 作品のジャンル取り出す
+      console.log("ループ中");
       tags.forEach((tag) => {
         // 取り出した配列の中にあるカンマ区切りの項目をtagCreateに渡す
         if (typeof element[tag] === "string" && element[tag] !== null) {
           element[tag] = tagCreate(element[tag]);
         }
-      });
+      }
+      );
     });
 
     setWorkList((prev) => [...prev, ...newWorks]);
@@ -97,11 +99,15 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
         const { default: CompanyListPostCard } = await import("src/sections/CompanyList/post-card");
         setPostCard(() => CompanyListPostCard);
         console.log("CompanyListPostCard");
+      } else if (PathName === "/Internship_JobOffer") {
+        const { default: Internship_JobOfferPostCard } = await import("src/sections/InternshipJobOffer/post-card");
+        setPostCard(() => Internship_JobOfferPostCard);
+        console.log("Internship_JobOfferPostCard");
       }
     };
-
     loadComponents();
   }, [SessionAccountData.user_name, PathName]);
+
 
   const urlMapping = {
     works: {
@@ -197,9 +203,29 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           followStatus: company.follow_status,
         })),
     },
+    internjoboffers: {
+      ItemName: "ニュース一覧",
+      url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}`,
+      idKey: "id",
+      tags: ["company_name", "prefecture"],
+      generatePosts: (WorkOfList) =>
+        WorkOfList.map((company) => ({
+          company_id: company.company_id,
+          news_id: company.news_id,
+          company_name: company.company_name[0].props.children,
+          article_title: company.article_title,
+          genre: company.genre,
+          header_img: company.header_img,
+          news_created_at: company.news_created_at,
+          icon_id: company.icon_id,
+          followStatus: company.follow_status,
+        })),
+    },
   };
+
   // console.log("ループしてるか確認");
   return (
+
     <ListView
       SessionAccountData={SessionAccountData}
       PathName={PathName}
@@ -280,7 +306,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   //   一覧データ取得URL
   let lastUrl = "";
   // URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合
-  if (url && (PathName === "/" || PathName === "/VideoList" || PathName === "/StudentList" || PathName === "/CompanyList")) {
+  if (url && (PathName === "/" || PathName === "/VideoList" || PathName === "/StudentList" || PathName === "/CompanyList" || PathName === "/Internship_JobOffer")) {
     // console.log(" URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合");
     lastUrl = `${url}?page=${Page}&sort=${sortOption}`;
     console.log("lastUrl", lastUrl);

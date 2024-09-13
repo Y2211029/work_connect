@@ -94,7 +94,7 @@ const CompanyLoginModal = (props) => {
   // aysncつけました
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // フォームの送信処理
+    // フォームの送信処理architect_2024-09-12_14-10-31.png
     setFormErrors(validate(formValues));
     setIsSubmit(true);
 

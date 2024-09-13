@@ -279,16 +279,16 @@ export default function Searchbar() {
       getSchoolNameTag();
 
       // 学科のタグ一覧を取得
-      getTag("department_name", "department_name");
+      getTag("student_department_name", "department_name");
 
       // 学部のタグ一覧を取得
-      getTag("faculty_name", "faculty_name");
+      getTag("student_faculty_name", "faculty_name");
 
       // 専攻のタグ一覧を取得
-      getTag("major_name", "major_name");
+      getTag("student_major_name", "major_name");
 
       // コースのタグ一覧を取得
-      getTag("course_name", "course_name");
+      getTag("student_course_name", "course_name");
 
       // 作品ジャンルのタグ一覧を取得
       getTag("work_genre", "work_genre");
@@ -304,16 +304,16 @@ export default function Searchbar() {
       getSchoolNameTag();
 
       // 学科のタグ一覧を取得
-      getTag("department_name", "department_name");
+      getTag("student_department_name", "department_name");
 
       // 学部のタグ一覧を取得
-      getTag("faculty_name", "faculty_name");
+      getTag("student_faculty_name", "faculty_name");
 
       // 専攻のタグ一覧を取得
-      getTag("major_name", "major_name");
+      getTag("student_major_name", "major_name");
 
       // コースのタグ一覧を取得
-      getTag("course_name", "course_name");
+      getTag("student_course_name", "course_name");
 
       // 動画ジャンルのタグ一覧を取得
       getTag("video_genre", "video_genre");
@@ -326,37 +326,37 @@ export default function Searchbar() {
       getSchoolNameTag();
 
       // 学科のタグ一覧を取得
-      getTag("department_name", "department_name");
+      getTag("student_department_name", "department_name");
 
       // 学部のタグ一覧を取得
-      getTag("faculty_name", "faculty_name");
+      getTag("student_faculty_name", "faculty_name");
 
       // 専攻のタグ一覧を取得
-      getTag("major_name", "major_name");
+      getTag("student_major_name", "major_name");
 
       // コースのタグ一覧を取得
-      getTag("course_name", "course_name");
+      getTag("student_course_name", "course_name");
 
       // 希望職種のタグ一覧を取得
-      getTag("desired_occupation", "desired_occupation");
+      getTag("student_desired_occupation", "desired_occupation");
 
       // 希望勤務地のタグ一覧を取得
-      getTag("desired_work_region", "desired_work_region");
+      getTag("student_desired_work_region", "desired_work_region");
 
       // プログラミング言語のタグ一覧を取得
-      getTag("student_programming_language", "student_programming_language");
+      getTag("student_programming_language", "programming_language");
 
       // 開発環境のタグ一覧を取得
-      getTag("student_development_environment", "student_development_environment");
+      getTag("student_development_environment", "development_environment");
 
       // ソフトウェアのタグ一覧を取得
-      getTag("software", "software");
+      getTag("student_software", "software");
 
       // 取得資格のタグ一覧を取得
-      getTag("acquisition_qualification", "acquisition_qualification");
+      getTag("student_acquisition_qualification", "acquisition_qualification");
 
       // 趣味のタグ一覧を取得
-      getTag("hobby", "hobby");
+      getTag("student_hobby", "hobby");
     } else if (PathName == "/Profile/yoshioka/work") {
       // 学生プロフィール内の作品一覧の場合
       // 作品ジャンルのタグ一覧を取得
@@ -370,17 +370,17 @@ export default function Searchbar() {
     } else if (PathName == "/CompanyList") {
       // 企業一覧の場合
       // 職種のタグ一覧を取得
-      getTag("selected_occupation", "selected_occupation");
+      getTag("company_selected_occupation", "selected_occupation");
 
       // 勤務地のタグ一覧を取得
-      getTag("prefecture", "prefecture");
+      getTag("company_prefecture", "prefecture");
     } else if (PathName == "/Internship_JobOffer") {
       // 求人一覧の場合
       // 企業名一覧を取得
       getCompanyNameTag();
 
       // 勤務地のタグ一覧を取得
-      getTag("prefecture", "prefecture");
+      getTag("company_prefecture", "prefecture");
     }
   }, [PathName]);
 
@@ -794,7 +794,7 @@ export default function Searchbar() {
       setOpen(false);
     }
 
-    
+
     if (isAllEmpty(searchSource)) {
       setAllItems((prevItems) => ({
         ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用

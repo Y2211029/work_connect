@@ -83,7 +83,7 @@ class SearchWorkController extends Controller
             // ユーザー名で絞り込み
             if ($user_name != "") {
                 $query->where('w_users.user_name', $user_name);
-            }
+            }   
 
             // 学校名で絞り込み
             if (isset($school_name_array)) {

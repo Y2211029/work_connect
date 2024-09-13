@@ -124,10 +124,10 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       url: "http://localhost:8000/get_work_list",
       idKey: "work_id",
       tags: ["work_genre"],
-      generatePosts: (WorkOfList) =>
+      generatePosts: (WorkOfList, key) =>
         WorkOfList.map((work) => ({
           work_id: work.work_id,
-          thumbnail: `sss`,
+          thumbnail: `/assets/images/covers/cover_${key + 1}.jpg`,
           title: work.work_name,
           genre: work.work_genre,
           intro: work.work_intro.length > 200 ? work.work_intro.substring(0, 200) + "..." : work.work_intro,
@@ -341,7 +341,6 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   }, [ResetItem, setWorkOfList, setAllItems]);
 
 
-
   // 作品アイテムの一番最後までスクロールされたらデータを取得する。
   useEffect(() => {
     if (isIntersecting) {
@@ -356,8 +355,8 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   /*----- 検索されていないかつ作品データがあるとき -----*/
   useEffect(() => {
     if (!ResetItem && !IsSearch.Check && data) {
-      // console.log("datadataWorkOfList", WorkOfList);
-      // console.log("datadata", data);
+      console.log("datadataWorkOfList", WorkOfList);
+      console.log("datadata", data);
       funcSetWorksItem(idKey, tags, WorkOfList, setWorkOfList, data, setIsLoadColorLing, setIsLoadItemColorLing, error, generatePosts);
     }
   }, [data, error, ResetItem, IsSearch.Check, IsSearch.searchResultEmpty]);
@@ -367,7 +366,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   useEffect(() => {
     if (IsSearch.Check && DataList) {
       // console.log("datadataWorkOfList", WorkOfList);
-      // console.log("datadata", DataList);
+      console.log("datadataDataList", DataList);
       funcSetWorksItem(idKey, tags, WorkOfList, setWorkOfList, DataList, setIsLoadColorLing, setIsLoadItemColorLing, error, generatePosts);
     }
   }, [DataList, IsSearch.Check, IsSearch.searchResultEmpty]);

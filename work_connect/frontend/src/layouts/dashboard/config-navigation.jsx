@@ -47,6 +47,11 @@ const navConfig = [
     path: '/Editor',
     icon: <StickyNote2Icon />,
   },
+  {
+    title: 'テストページ何か試したいものはここで',
+    path: '/TestPage',
+    icon: <StickyNote2Icon />,
+  },
   // {
   //   title: 'Not found',
   //   path: '/404',

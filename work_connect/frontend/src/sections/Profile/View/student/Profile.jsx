@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useContext,useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import PropTypes from 'prop-types';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
@@ -70,7 +70,40 @@ export default function NavTabs() {
     updateSessionData("accountData", "ProfileTabState", ProfileTabState);
   }, [ProfileTabState]);
 
-  const handleChange = (event, newValue) => {
+  /* 作品か動画かを判断する用のパラメータ追加処理 */
+  function pageCheck(pageStr) {
+    let url = new URL(window.location.href);
+    let urlStr = location.pathname;
+    if(url.searchParams.get('page') != null) {
+      let urlStrArray = urlStr.split('?');
+      urlStr = urlStrArray[0];
+    }
+    window.history.pushState('', '', urlStr + `?page=${pageStr}`);
+  }
+
+  useEffect(() => {
+    setValue(0);
+  }, []);
+
+  useEffect(() => {
+    if (value === 0) {
+      // マイページが押されたとき
+      setProfileTabState(0);
+      pageCheck('mypage');
+    } else if (value === 1) {
+      // 作品が押されたとき
+      setProfileTabState(1);
+      pageCheck('work');
+    } else if (value === 2) {
+      // 動画が押されたとき
+      setProfileTabState(2);
+      pageCheck('movie');
+    }
+  }, [value]);
+
+
+
+  const handleTabClick = (event, newValue) => {
 
     // event.type can be equal to focus with selectionFollowsFocus.
     if (
@@ -82,12 +115,15 @@ export default function NavTabs() {
     if (newValue === 0) {
       // マイページが押されたとき
       setProfileTabState(0);
+      pageCheck('mypage');
     } else if (newValue === 1) {
       // 作品が押されたとき
       setProfileTabState(1);
+      pageCheck('work');
     } else if (newValue === 2) {
       // 動画が押されたとき
       setProfileTabState(2);
+      pageCheck('movie');
     }
     // 作品・動画一覧を正常に再表示するために必要な処理
     setAllItems((prevItems) => ({
@@ -102,15 +138,18 @@ export default function NavTabs() {
 
   return (
     <Box sx={{ width: '100%' }}>
+      {/*
+        2024/09/13 14:38 Tabsコンポーネントに直接onClickイベントをすると動かないので
+        子コンポーネントにそれぞれhandleTabClickを適応させました。
+      */}
       <Tabs
         value={value}
-        onChange={handleChange}
         aria-label="nav tabs example"
         role="navigation"
       >
-        <Tab label="マイページ" />
-        <Tab label="作品" />
-        <Tab label="動画" />
+        <Tab label="マイページ" onClick={(e) => handleTabClick(e, 0)} />
+        <Tab label="作品" onClick={(e) => handleTabClick(e, 1)} />
+        <Tab label="動画" onClick={(e) => handleTabClick(e, 2)} />
       </Tabs>
       {value === 0 && <ProfileMypage />}
       {value === 1 && <ListView type="works" ParamUserName={user_name} />}

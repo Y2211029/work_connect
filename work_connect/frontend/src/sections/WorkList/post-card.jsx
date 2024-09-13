@@ -23,13 +23,14 @@ import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 
 const PostCard = forwardRef(({ post }, ref) => {
   const { work_id, genre, /* cover, */ title, intro, thumbnail, /*view, comment,*/ author, userName, createdAt } = post;
-  
+
   const [imgSrc, setImgSrc] = useState(thumbnail);
-  
+
   let fallbackImage = "https://placehold.jp/300x200.png";
-  
+
   const renderThumbnail = (
     <Box
+      className="c-card-img"
       component="img"
       src={imgSrc}
       onError={() => setImgSrc(fallbackImage)}

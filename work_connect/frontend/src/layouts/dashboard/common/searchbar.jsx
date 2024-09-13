@@ -262,8 +262,14 @@ export default function Searchbar() {
   }, [options]);
 
   useEffect(() => {
-    setPathName(location.pathname);
-    // console.log(PathName);
+    let url = new URL(window.location.href);
+    let urlPageParams = url.searchParams.get('page');
+    if(urlPageParams != null) {
+      setPathName(location.pathname + '/' + urlPageParams);
+    } else {
+      setPathName(location.pathname);
+    }
+    // console.log(location.pathname + '/' + urlPageParams);
     // タグ一覧取得
 
     if (PathName == "/") {
@@ -273,16 +279,16 @@ export default function Searchbar() {
       getSchoolNameTag();
 
       // 学科のタグ一覧を取得
-      getTag("department_name", "department_name");
+      getTag("student_department_name", "department_name");
 
       // 学部のタグ一覧を取得
-      getTag("faculty_name", "faculty_name");
+      getTag("student_faculty_name", "faculty_name");
 
       // 専攻のタグ一覧を取得
-      getTag("major_name", "major_name");
+      getTag("student_major_name", "major_name");
 
       // コースのタグ一覧を取得
-      getTag("course_name", "course_name");
+      getTag("student_course_name", "course_name");
 
       // 作品ジャンルのタグ一覧を取得
       getTag("work_genre", "work_genre");
@@ -298,16 +304,16 @@ export default function Searchbar() {
       getSchoolNameTag();
 
       // 学科のタグ一覧を取得
-      getTag("department_name", "department_name");
+      getTag("student_department_name", "department_name");
 
       // 学部のタグ一覧を取得
-      getTag("faculty_name", "faculty_name");
+      getTag("student_faculty_name", "faculty_name");
 
       // 専攻のタグ一覧を取得
-      getTag("major_name", "major_name");
+      getTag("student_major_name", "major_name");
 
       // コースのタグ一覧を取得
-      getTag("course_name", "course_name");
+      getTag("student_course_name", "course_name");
 
       // 動画ジャンルのタグ一覧を取得
       getTag("video_genre", "video_genre");
@@ -320,51 +326,61 @@ export default function Searchbar() {
       getSchoolNameTag();
 
       // 学科のタグ一覧を取得
-      getTag("department_name", "department_name");
+      getTag("student_department_name", "department_name");
 
       // 学部のタグ一覧を取得
-      getTag("faculty_name", "faculty_name");
+      getTag("student_faculty_name", "faculty_name");
 
       // 専攻のタグ一覧を取得
-      getTag("major_name", "major_name");
+      getTag("student_major_name", "major_name");
 
       // コースのタグ一覧を取得
-      getTag("course_name", "course_name");
+      getTag("student_course_name", "course_name");
 
       // 希望職種のタグ一覧を取得
-      getTag("desired_occupation", "desired_occupation");
+      getTag("student_desired_occupation", "desired_occupation");
 
       // 希望勤務地のタグ一覧を取得
-      getTag("desired_work_region", "desired_work_region");
+      getTag("student_desired_work_region", "desired_work_region");
 
       // プログラミング言語のタグ一覧を取得
-      getTag("student_programming_language", "student_programming_language");
+      getTag("student_programming_language", "programming_language");
 
       // 開発環境のタグ一覧を取得
-      getTag("student_development_environment", "student_development_environment");
+      getTag("student_development_environment", "development_environment");
 
       // ソフトウェアのタグ一覧を取得
-      getTag("software", "software");
+      getTag("student_software", "software");
 
       // 取得資格のタグ一覧を取得
-      getTag("acquisition_qualification", "acquisition_qualification");
+      getTag("student_acquisition_qualification", "acquisition_qualification");
 
       // 趣味のタグ一覧を取得
-      getTag("hobby", "hobby");
+      getTag("student_hobby", "hobby");
+    } else if (PathName == "/Profile/yoshioka/work") {
+      // 学生プロフィール内の作品一覧の場合
+      // 作品ジャンルのタグ一覧を取得
+      getTag("work_genre", "work_genre");
+
+      // プログラミング言語のタグ一覧を取得
+      getTag("work_language", "programming_language");
+
+      // 開発環境のタグ一覧を取得
+      getTag("work_environment", "development_environment");
     } else if (PathName == "/CompanyList") {
       // 企業一覧の場合
       // 職種のタグ一覧を取得
-      getTag("selected_occupation", "selected_occupation");
+      getTag("company_selected_occupation", "selected_occupation");
 
       // 勤務地のタグ一覧を取得
-      getTag("prefecture", "prefecture");
+      getTag("company_prefecture", "prefecture");
     } else if (PathName == "/Internship_JobOffer") {
       // 求人一覧の場合
       // 企業名一覧を取得
       getCompanyNameTag();
 
       // 勤務地のタグ一覧を取得
-      getTag("prefecture", "prefecture");
+      getTag("company_prefecture", "prefecture");
     }
   }, [PathName]);
 
@@ -373,7 +389,13 @@ export default function Searchbar() {
   // }, [options]);
 
   const handleOpen = () => {
-    setPathName(location.pathname);
+    let url = new URL(window.location.href);
+    let urlPageParams = url.searchParams.get('page');
+    if(urlPageParams != null) {
+      setPathName(location.pathname + '/' + urlPageParams);
+    } else {
+      setPathName(location.pathname);
+    }
     setOpen(!open);
   };
 
@@ -597,6 +619,43 @@ export default function Searchbar() {
         // StudentList-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
+      } else if (PathName == "/Profile/yoshioka/work") {
+        // 学生プロフィール内の作品一覧の場合
+        const url = `http://localhost:8000/search_work?page=${Page}&sort=${sortOption}`;
+
+        let work_genre = [];
+        let programming_language = [];
+        let development_environment = [];
+
+        console.log("検証:searchSource", searchSource);
+        searchSource.work_genre.map((value) => {
+          work_genre.push(value.value);
+        });
+
+        searchSource.programming_language.map((value) => {
+          programming_language.push(value.value);
+        });
+
+        searchSource.development_environment.map((value) => {
+          development_environment.push(value.value);
+        });
+
+        let urlStr = location.pathname.split('/')[2];
+
+        const response = await axios.get(url, {
+          params: {
+            user_name: urlStr,
+            searchText: searchSource.searchText,
+            work_genre: work_genre,
+            programming_language: programming_language,
+            development_environment: development_environment,
+          },
+        });
+        console.log("response.data", response.data);
+
+        // company-view.jsxにデータを渡す
+        const responseData = response.data;
+        responseItems(responseData);
       } else if (PathName == "/CompanyList") {
         // 企業一覧の場合
         const url = `http://localhost:8000/search_company?page=${Page}`;
@@ -705,15 +764,6 @@ export default function Searchbar() {
         prefecture: [],
         company_name: [],
       }));
-
-      // 検索結果をリセットして初期状態に戻す
-      setAllItems((prevItems) => ({
-        ...prevItems,
-        Page: 1,
-        IsSearch: { ...prevItems.IsSearch, Check: false, searchResultEmpty: false },
-        DataList: [], // 検索結果をリセット
-        ResetItem: false,
-      }));
     }
   }, [ResetItem]);
 
@@ -727,21 +777,39 @@ export default function Searchbar() {
 
   // 検索ボタンを押したとき
   const handleSearch = () => {
-    setAllItems((prevItems) => ({
-      ...prevItems,
-      DataList: [],
-      IsSearch: {
-        ...prevItems.IsSearch,
-        searchToggle: prevItems.IsSearch.searchToggle === 0 ? 1 : 0,
-        Check: !isAllEmpty(searchSource), // 検索タグが選択されていなければfalse
-        searchResultEmpty: false,
-      },
-      Page: 1,
-      sortOption: "orderNewPostsDate",
-    }));
-    // 検索バーを閉じる
-    setOpen(false);
+    // 文字列やタグを選択している場合は!falseになるのでtrue
+    // 「並び替え順」「一覧データ」初期化
+    if (!isAllEmpty(searchSource)) {
+      setAllItems((prevItems) => ({
+        ...prevItems,
+        DataList: [],
+        IsSearch: {
+          ...prevItems.IsSearch,
+          searchToggle: prevItems.IsSearch.searchToggle === 0 ? 1 : 0,
+          Check: !isAllEmpty(searchSource), // 検索タグが選択されていなければfalse
+          searchResultEmpty: false,
+        },
+        Page: 1,
+        sortOption: "orderNewPostsDate",
+      }));
+      // 検索バーを閉じる
+      setOpen(false);
+    }
+
+    // 文字列やタグを選択していない場合
+    // 「検索文字列・タグ」「並び替え順」「一覧データ」初期化
+    if (isAllEmpty(searchSource)) {
+      setAllItems((prevItems) => ({
+        ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
+        ResetItem: true,
+        DataList: [], //検索してない状態にするために初期化 //searchbar.jsxのsearchSourceも初期化
+        IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
+        Page: 1, //スクロールする前の状態にするために初期化
+        sortOption: "orderNewPostsDate", //並び替える前の状態にするために初期化
+      }));
+    }
   };
+
 
   // ページが変更された時に次のデータを取得する
   useEffect(() => {
@@ -750,6 +818,8 @@ export default function Searchbar() {
       searchSourceList();
     }
   }, [IsSearch.Check, Page, IsSearch.searchToggle, sortOption]);
+
+
 
   // 検索欄に入力したとき
   const handleChangeText = (e) => {
@@ -1416,6 +1486,63 @@ export default function Searchbar() {
                           isClearable
                           isMulti
                           onChange={handleChangeHobby}
+                        />
+                      </div>
+                    </div>
+                  </>
+                ) : PathName === "/Profile/yoshioka/work" ? (
+                  <>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
+                      <div style={{ color: "#444" }}>
+                        <Select
+                          options={options.work_genre}
+                          value={searchSource.work_genre}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeWorkGenre}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
+                      <div style={{ color: "#444" }}>
+                        <Select
+                          options={options.programming_language}
+                          value={searchSource.programming_language}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeProgrammingLanguage}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
+                      <div style={{ color: "#444" }}>
+                        <Select
+                          options={options.development_environment}
+                          value={searchSource.development_environment}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeDevelopmentEnvironment}
                         />
                       </div>
                     </div>

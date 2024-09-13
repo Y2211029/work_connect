@@ -262,8 +262,14 @@ export default function Searchbar() {
   }, [options]);
 
   useEffect(() => {
-    setPathName(location.pathname);
-    // console.log(PathName);
+    let url = new URL(window.location.href);
+    let urlPageParams = url.searchParams.get('page');
+    if(urlPageParams != null) {
+      setPathName(location.pathname + '/' + urlPageParams);
+    } else {
+      setPathName(location.pathname);
+    }
+    // console.log(location.pathname + '/' + urlPageParams);
     // タグ一覧取得
 
     if (PathName == "/") {
@@ -351,6 +357,16 @@ export default function Searchbar() {
 
       // 趣味のタグ一覧を取得
       getTag("hobby", "hobby");
+    } else if (PathName == "/Profile/yoshioka/work") {
+      // 学生プロフィール内の作品一覧の場合
+      // 作品ジャンルのタグ一覧を取得
+      getTag("work_genre", "work_genre");
+
+      // プログラミング言語のタグ一覧を取得
+      getTag("work_language", "programming_language");
+
+      // 開発環境のタグ一覧を取得
+      getTag("work_environment", "development_environment");
     } else if (PathName == "/CompanyList") {
       // 企業一覧の場合
       // 職種のタグ一覧を取得
@@ -373,7 +389,13 @@ export default function Searchbar() {
   // }, [options]);
 
   const handleOpen = () => {
-    setPathName(location.pathname);
+    let url = new URL(window.location.href);
+    let urlPageParams = url.searchParams.get('page');
+    if(urlPageParams != null) {
+      setPathName(location.pathname + '/' + urlPageParams);
+    } else {
+      setPathName(location.pathname);
+    }
     setOpen(!open);
   };
 
@@ -595,6 +617,43 @@ export default function Searchbar() {
         console.log("response.data", response.data);
 
         // StudentList-view.jsxにデータを渡す
+        const responseData = response.data;
+        responseItems(responseData);
+      } else if (PathName == "/Profile/yoshioka/work") {
+        // 学生プロフィール内の作品一覧の場合
+        const url = `http://localhost:8000/search_work?page=${Page}&sort=${sortOption}`;
+
+        let work_genre = [];
+        let programming_language = [];
+        let development_environment = [];
+
+        console.log("検証:searchSource", searchSource);
+        searchSource.work_genre.map((value) => {
+          work_genre.push(value.value);
+        });
+
+        searchSource.programming_language.map((value) => {
+          programming_language.push(value.value);
+        });
+
+        searchSource.development_environment.map((value) => {
+          development_environment.push(value.value);
+        });
+
+        let urlStr = location.pathname.split('/')[2];
+
+        const response = await axios.get(url, {
+          params: {
+            user_name: urlStr,
+            searchText: searchSource.searchText,
+            work_genre: work_genre,
+            programming_language: programming_language,
+            development_environment: development_environment,
+          },
+        });
+        console.log("response.data", response.data);
+
+        // company-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
       } else if (PathName == "/CompanyList") {
@@ -1417,6 +1476,63 @@ export default function Searchbar() {
                           isClearable
                           isMulti
                           onChange={handleChangeHobby}
+                        />
+                      </div>
+                    </div>
+                  </>
+                ) : PathName === "/Profile/yoshioka/work" ? (
+                  <>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
+                      <div style={{ color: "#444" }}>
+                        <Select
+                          options={options.work_genre}
+                          value={searchSource.work_genre}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeWorkGenre}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
+                      <div style={{ color: "#444" }}>
+                        <Select
+                          options={options.programming_language}
+                          value={searchSource.programming_language}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeProgrammingLanguage}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
+                      <div style={{ color: "#444" }}>
+                        <Select
+                          options={options.development_environment}
+                          value={searchSource.development_environment}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeDevelopmentEnvironment}
                         />
                       </div>
                     </div>

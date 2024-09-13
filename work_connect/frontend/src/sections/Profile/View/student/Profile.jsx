@@ -70,6 +70,17 @@ export default function NavTabs() {
     updateSessionData("accountData", "ProfileTabState", ProfileTabState);
   }, [ProfileTabState]);
 
+  /* 作品か動画かを判断する用のパラメータ追加処理 */
+  function pageCheck(pageStr) {
+    let url = new URL(window.location.href);
+    let urlStr = location.pathname;
+    if(url.searchParams.get('page') != null) {
+      let urlStrArray = urlStr.split('?');
+      urlStr = urlStrArray[0];
+    }
+    window.history.pushState('', '', urlStr + `?page=${pageStr}`);
+  }
+
   const handleChange = (event, newValue) => {
 
     // event.type can be equal to focus with selectionFollowsFocus.
@@ -82,12 +93,15 @@ export default function NavTabs() {
     if (newValue === 0) {
       // マイページが押されたとき
       setProfileTabState(0);
+      pageCheck('mypage');
     } else if (newValue === 1) {
       // 作品が押されたとき
       setProfileTabState(1);
+      pageCheck('work');
     } else if (newValue === 2) {
       // 動画が押されたとき
       setProfileTabState(2);
+      pageCheck('movie');
     }
     // 作品・動画一覧を正常に再表示するために必要な処理
     setAllItems((prevItems) => ({

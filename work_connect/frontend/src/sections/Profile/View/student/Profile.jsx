@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useContext,useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import PropTypes from 'prop-types';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
@@ -53,7 +53,6 @@ export default function NavTabs() {
 
   // タブ状態のチェック
   const { getSessionData, updateSessionData } = useSessionStorage();
-  const { setAllItems } = useContext(AllItemsContext);
   /* セッションストレージからaccountDataを取得し、ProfileTabStateを初期値として設定
      ProfileTabStateがない場合は0をセットする */
   const getInitialProfileTabState = () => {
@@ -69,8 +68,10 @@ export default function NavTabs() {
   useEffect(() => {
     updateSessionData("accountData", "ProfileTabState", ProfileTabState);
   }, [ProfileTabState]);
+  const { AllItems, setAllItems } = useContext(AllItemsContext);
+  const { IsSearch, Page, sortOption } = AllItems;
 
-  const handleChange = (event, newValue) => {
+  const handleTabClick  = (event, newValue) => {
 
     // event.type can be equal to focus with selectionFollowsFocus.
     if (
@@ -89,28 +90,33 @@ export default function NavTabs() {
       // 動画が押されたとき
       setProfileTabState(2);
     }
-    // 作品・動画一覧を正常に再表示するために必要な処理
-    setAllItems((prevItems) => ({
-      ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
-      ResetItem: true,
-      DataList: [], //検索してない状態にするために初期化 //searchbar.jsxのsearchSourceも初期化
-      IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
-      Page: 1, //スクロールする前の状態にするために初期化
-      sortOption: "orderNewPostsDate", //並び替える前の状態にするために初期化
-    }));
+    if (sortOption !== "orderNewPostsDate" || Page > 1 || IsSearch.Check == true) {
+      setAllItems((prevItems) => ({
+        ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
+        ResetItem: true,
+        DataList: [], //検索してない状態にするために初期化 //searchbar.jsxのsearchSourceも初期化
+        IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
+        Page: 1, //スクロールする前の状態にするために初期化
+        sortOption: "orderNewPostsDate", //並び替える前の状態にするために初期化
+      }));
+      // 必要に応じて、スクロール位置や他の状態もリセット
+    }
   };
 
   return (
     <Box sx={{ width: '100%' }}>
+      {/*
+        2024/09/13 14:38 Tabsコンポーネントに直接onClickイベントをすると動かないので
+        子コンポーネントにそれぞれhandleTabClickを適応させました。
+      */}
       <Tabs
         value={value}
-        onChange={handleChange}
         aria-label="nav tabs example"
         role="navigation"
       >
-        <Tab label="マイページ" />
-        <Tab label="作品" />
-        <Tab label="動画" />
+        <Tab label="マイページ" onClick={(e) => handleTabClick(e, 0)} />
+        <Tab label="作品" onClick={(e) => handleTabClick(e, 1)} />
+        <Tab label="動画" onClick={(e) => handleTabClick(e, 2)} />
       </Tabs>
       {value === 0 && <ProfileMypage />}
       {value === 1 && <ListView type="works" ParamUserName={user_name} />}

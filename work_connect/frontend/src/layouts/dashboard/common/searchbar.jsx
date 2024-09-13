@@ -705,15 +705,6 @@ export default function Searchbar() {
         prefecture: [],
         company_name: [],
       }));
-
-      // 検索結果をリセットして初期状態に戻す
-      setAllItems((prevItems) => ({
-        ...prevItems,
-        Page: 1,
-        IsSearch: { ...prevItems.IsSearch, Check: false, searchResultEmpty: false },
-        DataList: [], // 検索結果をリセット
-        ResetItem: false,
-      }));
     }
   }, [ResetItem]);
 
@@ -727,21 +718,36 @@ export default function Searchbar() {
 
   // 検索ボタンを押したとき
   const handleSearch = () => {
-    setAllItems((prevItems) => ({
-      ...prevItems,
-      DataList: [],
-      IsSearch: {
-        ...prevItems.IsSearch,
-        searchToggle: prevItems.IsSearch.searchToggle === 0 ? 1 : 0,
-        Check: !isAllEmpty(searchSource), // 検索タグが選択されていなければfalse
-        searchResultEmpty: false,
-      },
-      Page: 1,
-      sortOption: "orderNewPostsDate",
-    }));
-    // 検索バーを閉じる
-    setOpen(false);
+    if (!isAllEmpty(searchSource)) {
+      setAllItems((prevItems) => ({
+        ...prevItems,
+        DataList: [],
+        IsSearch: {
+          ...prevItems.IsSearch,
+          searchToggle: prevItems.IsSearch.searchToggle === 0 ? 1 : 0,
+          Check: !isAllEmpty(searchSource), // 検索タグが選択されていなければfalse
+          searchResultEmpty: false,
+        },
+        Page: 1,
+        sortOption: "orderNewPostsDate",
+      }));
+      // 検索バーを閉じる
+      setOpen(false);
+    }
+
+    
+    if (isAllEmpty(searchSource)) {
+      setAllItems((prevItems) => ({
+        ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
+        ResetItem: true,
+        DataList: [], //検索してない状態にするために初期化 //searchbar.jsxのsearchSourceも初期化
+        IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
+        Page: 1, //スクロールする前の状態にするために初期化
+        sortOption: "orderNewPostsDate", //並び替える前の状態にするために初期化
+      }));
+    }
   };
+
 
   // ページが変更された時に次のデータを取得する
   useEffect(() => {
@@ -750,6 +756,8 @@ export default function Searchbar() {
       searchSourceList();
     }
   }, [IsSearch.Check, Page, IsSearch.searchToggle, sortOption]);
+
+
 
   // 検索欄に入力したとき
   const handleChangeText = (e) => {

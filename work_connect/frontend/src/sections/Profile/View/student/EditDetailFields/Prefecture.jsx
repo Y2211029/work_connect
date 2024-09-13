@@ -17,6 +17,7 @@ const PrefectureDropdown = ({PrefectureData}) => {
 
   useEffect(() => {
     let optionArrayPromise = GetTagAllListFunction("student_prefecture");
+    console.log("optionArrayPromise:"+optionArrayPromise);
     optionArrayPromise.then((result) => {
       setOptions(result);
     });

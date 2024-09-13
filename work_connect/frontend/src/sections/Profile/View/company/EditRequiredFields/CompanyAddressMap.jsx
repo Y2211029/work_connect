@@ -28,9 +28,15 @@ const CompanyAddressMap = ({ CompanyAddressMapData }) => {
     SessionData.CompanyAddressMapEditing) {
       // セッションストレージから最新のデータを取得
       setCompanyAddressMap(SessionData.CompanyAddressMap);
+      if(SessionData.CompanyAddressMap){
+        iframeURLChange(SessionData.CompanyAddressMap);
+      }
     } else {
       // DBから最新のデータを取得
       setCompanyAddressMap(CompanyAddressMapData);
+      if(CompanyAddressMapData){
+        iframeURLChange(CompanyAddressMapData);
+      }
     }
 
   }, [CompanyAddressMapData]);

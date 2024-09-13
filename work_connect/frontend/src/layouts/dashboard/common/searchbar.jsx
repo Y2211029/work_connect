@@ -775,7 +775,6 @@ export default function Searchbar() {
       let selectedOptionArray = [];
       if (!Array.isArray(selectedOption)) {
         selectedOptionArray[0] = selectedOption;
-        console.log("aaaaaaaaaaaaaaa");
         console.log(selectedOptionArray);
       } else {
         selectedOptionArray = selectedOption;

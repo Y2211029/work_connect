@@ -14,28 +14,20 @@ class NewsController extends Controller
     // パラメータから取得したIDを元にニュースのデータを取得するメソッド
     public function news_detail_get(Request $request, $id)
     {
-        // MyId を取得
         $MyId = $request->input("MyId");
-
-        // $id を文字列に変換
         $id = (string) $id;
 
-        // ログ出力で確認
         \Log::info('MyId: ' . $MyId);
         \Log::info('ID as string: ' . $id);
 
-        // w_companies テーブルと結合する
         $news_detail = w_news::where('w_news.id', $id)
             ->join('w_companies', 'w_news.company_id', '=', 'w_companies.id')
             ->select('w_news.*', 'w_companies.*', 'w_news.created_at as news_created_at', 'w_news.id as news_id')
             ->first();
 
-        // データが存在する場合
         if ($news_detail) {
-            // summary カラムの値を JSON から文字列に変換
             $news_detail->summary = json_decode($news_detail->summary);
 
-            // フォロー状況をチェック
             $isFollowing = w_follow::where('follow_sender_id', $MyId)
                 ->where('follow_recipient_id', $news_detail->id)
                 ->exists();
@@ -44,7 +36,6 @@ class NewsController extends Controller
                 ->where('follow_recipient_id', $MyId)
                 ->exists();
 
-            // フォロー状況を決定
             if ($isFollowing && $isFollowedByUser) {
                 $followStatus = '相互フォローしています';
             } elseif ($isFollowing) {
@@ -57,7 +48,6 @@ class NewsController extends Controller
                 $followStatus = 'フォローする';
             }
 
-            // フォロー状況を各ニュースに追加する
             $news_detail->follow_status = $followStatus;
 
             return response()->json($news_detail);
@@ -66,28 +56,25 @@ class NewsController extends Controller
         }
     }
 
-
-    //ブックマークした情報を入れる
+    // ブックマーク機能
     public function news_bookmark(Request $request)
     {
-
-        // 日本の現在時刻を取得
         $now = Carbon::now('Asia/Tokyo');
-
-        // react側からのリクエスト
         $session_id = $request->input('session_id');
         $bookmark_id = $request->input('id');
         $category = $request->input('category');
 
-        //既にブックマークしているかどうかをチェック
-        $news_bookmark = w_bookmark::where('position_id', $session_id)->where('bookmark_id', $bookmark_id)->exists();
+        $news_bookmark = w_bookmark::where('position_id', $session_id)
+            ->where('bookmark_id', $bookmark_id)
+            ->exists();
 
         if ($news_bookmark) {
-            //もしも存在したら
-            w_bookmark::where('position_id', $session_id)->where('bookmark_id', $bookmark_id)->delete();
-            echo json_encode(["message" => "削除成功しました"], JSON_UNESCAPED_UNICODE);
+            w_bookmark::where('position_id', $session_id)
+                ->where('bookmark_id', $bookmark_id)
+                ->delete();
+            
+            return response()->json(["message" => "削除成功しました"], 200);
         } else {
-            //もしも存在しなかったら
             w_bookmark::create([
                 'position_id' => $session_id,
                 'category' => $category,
@@ -95,14 +82,13 @@ class NewsController extends Controller
                 'created_at' => $now,
             ]);
 
-            echo json_encode(["message" => "新規追加成功しました"], JSON_UNESCAPED_UNICODE);
+            return response()->json(["message" => "新規追加成功しました"], 201);
         }
     }
 
-    // 企業のIDから特定の企業が投稿したニュースのデータを取得するメソッド
+    // 企業ニュース取得
     public function special_company_news(Request $request, $id)
     {
-        // 特定の企業が投稿したニュースを取得
         $special_company_news = w_news::where('company_id', $id)
             ->where('public_status', 1)
             ->join('w_companies', 'w_news.company_id', '=', 'w_companies.id')
@@ -110,49 +96,67 @@ class NewsController extends Controller
             ->orderBy('news_created_at', 'desc')
             ->get();
 
-        // データが存在する場合
-        if ($special_company_news) {
+        if ($special_company_news->isNotEmpty()) {
             return response()->json($special_company_news);
         } else {
             return response()->json(['error' => 'ニュースが見つかりませんでした。'], 404);
         }
     }
 
-    public function all_news_get(Request $request)
+    // 全ニュース取得
+    public function all_news_get(Request $request, $id)
     {
-        $MyId = $request->input('MyId');
+        try {
+            $page = (int) $request->query('page', 1);
+            $perPage = 20;
+            $offset = ($page - 1) * $perPage;
+            $sortOption = $request->query('sort');
+            $userName = $request->query('userName');
 
-        // ニュースのデータと関連する会社のデータを結合して取得する
-        $posts = w_news::where('w_news.public_status', 1)
-            ->join('w_companies', 'w_news.company_id', '=', 'w_companies.id')
-            ->select('w_news.*', 'w_companies.*', 'w_news.created_at as news_created_at', 'w_news.id as news_id')
-            ->get();
+            $postsQuery = w_news::where('w_news.public_status', 1)
+                ->join('w_companies', 'w_news.company_id', '=', 'w_companies.id')
+                ->select('w_news.*', 'w_companies.*', 'w_news.created_at as news_created_at', 'w_news.id as news_id');
 
-        // 各ニュースに対してフォロー状況を追加する
-        foreach ($posts as $post) {
-            $isFollowing = w_follow::where('follow_sender_id', $MyId)
-                ->where('follow_recipient_id', $post->id)
-                ->exists();
-
-            $isFollowedByUser = w_follow::where('follow_sender_id', $post->id)
-                ->where('follow_recipient_id', $MyId)
-                ->exists();
-
-            // フォロー状況を決定
-            if ($isFollowing && $isFollowedByUser) {
-                $followStatus = '相互フォローしています';
-            } elseif ($isFollowing) {
-                $followStatus = 'フォローしています';
-            } elseif ($isFollowedByUser) {
-                $followStatus = 'フォローされています';
-            } else {
-                $followStatus = 'フォローする';
+            if ($userName !== null) {
+                $postsQuery->where('w_companies.user_name', $userName);
             }
 
-            // フォロー状況を各ニュースに追加する
-            $post->follow_status = $followStatus;
-        }
+            if ($sortOption === 'orderNewPostsDate') {
+                $postsQuery->orderBy('w_news.created_at', 'desc');
+            } elseif ($sortOption === 'orderOldPostsDate') {
+                $postsQuery->orderBy('w_news.created_at', 'asc');
+            }
 
-        return response()->json($posts);
+            $posts = $postsQuery->skip($offset)
+                ->take($perPage)
+                ->get();
+
+            foreach ($posts as $post) {
+                $isFollowing = w_follow::where('follow_sender_id', $id)
+                    ->where('follow_recipient_id', $post->id)
+                    ->exists();
+
+                $isFollowedByUser = w_follow::where('follow_sender_id', $post->id)
+                    ->where('follow_recipient_id', $id)
+                    ->exists();
+
+                if ($isFollowing && $isFollowedByUser) {
+                    $post->follow_status = '相互フォローしています';
+                } elseif ($isFollowing) {
+                    $post->follow_status = 'フォローしています';
+                } elseif ($isFollowedByUser) {
+                    $post->follow_status = 'フォローされています';
+                } else {
+                    $post->follow_status = 'フォローする';
+                }
+            }
+
+            return response()->json($posts);
+        } catch (\Exception $e) {
+            \Log::error('all_news_get エラー: ' . $e->getMessage());
+            return response()->json(['error' => 'データ取得中にエラーが発生しました。'], 500);
+        }
     }
 }
+
+?>

@@ -95,7 +95,7 @@ const ProfileMypage = () => {
         if (response) {
           setResponseData(response.data[0]);
           setFollowStatus(response.data[0].follow_status);
-          //console.log("ResponseData:", response.data[0]);
+          console.log("ResponseData:", response.data[0]);
         }
       } catch (err) {
         console.log("err:", err);
@@ -115,6 +115,47 @@ const ProfileMypage = () => {
       if (ref) ref.style.display = 'none';
     });
   }, []);
+
+  const handleMapUrl = (URL) => {
+    let extractedUrl = null;
+
+    if (URL.includes("iframe")) {
+        // src属性からURLを抽出する
+        const regex = /src="([^"]+)"/;
+        const match = URL.match(regex);
+        if (match && match[1]) {
+            extractedUrl = match[1];
+        }
+      }
+      return extractedUrl;
+    };
+
+  // YouTubeのリンク設定
+  const handleVideoUrl = (URL) => {
+    let extractedUrl = null;
+  
+    // 共有リンク (https://youtu.be/)
+    if (URL.includes("youtu.be")) {
+      const videoId = URL.split('/').pop().split('?')[0];
+      extractedUrl = `https://www.youtube.com/embed/${videoId}`;
+    }
+    // 埋め込み用リンクを入力した場合 (<iframe ...>)
+    else if (URL.includes("iframe")) {
+      const regex = /src="([^"]+)"/;
+      const match = URL.match(regex);
+      if (match && match[1]) {
+        extractedUrl = match[1];
+      }
+    }
+    // 通常のYouTubeリンク (https://www.youtube.com/watch?v=)
+    else if (URL.includes("watch?v=")) {
+      const videoId = URL.split('v=')[1].split('&')[0];
+      extractedUrl = `https://www.youtube.com/embed/${videoId}`;
+    }
+  
+    return extractedUrl;
+  };
+  
 
   // 編集ボタンを押したときの処理
   const handleEditClick = () => {
@@ -322,7 +363,8 @@ const ProfileMypage = () => {
           <Item>
             {ResponseData.map_url ? (
               <Iframe
-                url={ResponseData.map_url}
+                //url={ResponseData.map_url}
+                url={handleMapUrl(ResponseData.map_url)}
                 width="100%"
                 height="400px"
               />
@@ -416,7 +458,8 @@ const ProfileMypage = () => {
           <Item>
             {ResponseData.video_url ? (
               <Iframe
-                url={ResponseData.video_url}
+                //url={ResponseData.video_url}
+                url={handleVideoUrl(ResponseData.video_url)}
                 width="100%"
                 height="400px"
               />

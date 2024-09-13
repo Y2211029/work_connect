@@ -718,6 +718,8 @@ export default function Searchbar() {
 
   // 検索ボタンを押したとき
   const handleSearch = () => {
+    // 文字列やタグを選択している場合は!falseになるのでtrue
+    // 「並び替え順」「一覧データ」初期化
     if (!isAllEmpty(searchSource)) {
       setAllItems((prevItems) => ({
         ...prevItems,
@@ -735,7 +737,8 @@ export default function Searchbar() {
       setOpen(false);
     }
 
-    
+    // 文字列やタグを選択していない場合
+    // 「検索文字列・タグ」「並び替え順」「一覧データ」初期化
     if (isAllEmpty(searchSource)) {
       setAllItems((prevItems) => ({
         ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用

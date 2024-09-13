@@ -124,10 +124,10 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       url: "http://localhost:8000/get_work_list",
       idKey: "work_id",
       tags: ["work_genre"],
-      generatePosts: (WorkOfList) =>
+      generatePosts: (WorkOfList, key) =>
         WorkOfList.map((work) => ({
           work_id: work.work_id,
-          thumbnail: `sss`,
+          thumbnail: `/assets/images/covers/cover_${key + 1}.jpg`,
           title: work.work_name,
           genre: work.work_genre,
           intro: work.work_intro.length > 200 ? work.work_intro.substring(0, 200) + "..." : work.work_intro,
@@ -360,8 +360,8 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
       funcSetWorksItem(idKey, tags, WorkOfList, setWorkOfList, data, setIsLoadColorLing, setIsLoadItemColorLing, error, generatePosts);
     }
   }, [data, error, ResetItem, IsSearch.Check, IsSearch.searchResultEmpty]);
-  
-  
+
+
   /*----- 検索されたかつ、検索結果が帰ってきたとき -----*/
   useEffect(() => {
     if (IsSearch.Check && DataList) {

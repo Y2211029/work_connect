@@ -17,7 +17,7 @@ const Hobby = ({ HobbyData }) => {
   const { GetTagAllListFunction } = GetTagAllList();
 
   useEffect(() => {
-    let optionArrayPromise = GetTagAllListFunction("hobby");
+    let optionArrayPromise = GetTagAllListFunction("student_hobby");
     optionArrayPromise.then((result) => {
       setOptions(result);
     });

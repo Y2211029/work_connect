@@ -146,6 +146,39 @@ class SearchStudentController extends Controller
                     $query->where('w_users.hobby', 'REGEXP', '(^|,)' . preg_quote($hobby) . '($|,)');
                 }
             }
+
+            // 検索文字列で絞り込み
+            if ($searchText != "") {
+                $query->where(function($query) use ($searchText) {
+                    // 学生の情報
+                    $query->orWhere('w_users.user_name', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_users.student_surname', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_users.student_name', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_users.student_kanasurname', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_users.student_kananame', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_users.school_name', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_users.department_name', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_users.faculty_name', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_users.major_name', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_users.course_name', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_users.programming_language', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_users.development_environment', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_users.software', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_users.acquisition_qualification', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_users.desired_work_region', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_users.hobby', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_users.other', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_users.graduation_year', 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere('w_users.desired_occupation', 'LIKE', '%' . $searchText . '%');
+
+                    // 苗字と名前セットの場合
+                    $query->orWhere(\DB::raw('CONCAT(w_users.student_surname,w_users.student_name)'), 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere(\DB::raw('CONCAT(w_users.student_kanasurname,w_users.student_kananame)'), 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere(\DB::raw('CONCAT(w_users.student_surname," ",w_users.student_name)'), 'LIKE', '%' . $searchText . '%');
+                    $query->orWhere(\DB::raw('CONCAT(w_users.student_kanasurname," ",w_users.student_kananame)'), 'LIKE', '%' . $searchText . '%');
+                });
+            }
+
             $results = $query->skip($offset)
                 ->take($perPage) //件数
                 ->get();

@@ -20,8 +20,7 @@ const fetcher = (lastUrl) => fetch(lastUrl).then((res) => res.json());
 const setting = {
   rootMargin: "40px",
 };
-
-const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, setLoading, setItemLoading, error) => {
+const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, setLoading, setItemLoading, error, generatePosts) => {
 
   // ジャンル
   // const [WorkGenre, setWorkGenre] = useState("");
@@ -34,9 +33,12 @@ const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, s
   if (newWorks) {
     console.log("newWorks", newWorks);
 
+    const existingIds = new Set(currentWorkList.map(item => item[idKey]));
+
+    const filteredNewWorks = newWorks.filter(element => !existingIds.has(element[idKey]));
 
     // 全作品アイテム
-    newWorks.forEach((element) => {
+    filteredNewWorks.forEach((element) => {
       // 作品のジャンル取り出す
       console.log("ループ中");
       tags.forEach((tag) => {
@@ -48,7 +50,13 @@ const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, s
       );
     });
 
-    setWorkList((prev) => [...prev, ...newWorks]);
+    // if(SearchFlag == true) {
+    //   setWorkList((prev) => [...prev, ...generatePosts(filteredNewWorks)])
+    // }else {
+    //   setWorkList("検索結果は0件です。");
+    // }
+
+    setWorkList((prev) => [...prev, ...generatePosts(filteredNewWorks)])
     setLoading(false);
     setItemLoading(false);
   }
@@ -76,6 +84,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
   useEffect(() => {
     setPathName(PathName);
   }, [PathName]);
+
   useEffect(() => {
     // URLごとにpost-sort、post-card.jsxを各フォルダから取得
     const loadComponents = async () => {
@@ -254,7 +263,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   const [isLoadItemColorLing, setIsLoadItemColorLing] = useState(false);
   // AllItemsContextから状態を取得
   const { AllItems, setAllItems } = useContext(AllItemsContext);
-  const { DataList, IsSearch, Page, sortOption /*, ResetItem*/ } = AllItems;
+  const { DataList, IsSearch, Page, sortOption, ResetItem } = AllItems;
   // スクロールされたらtrueを返す。
   const [isIntersecting, ref] = useIntersection(setting);
 
@@ -262,10 +271,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
 
   useEffect(() => {
     loginStatusCheckFunction();
-  }, [loginStatusCheckFunction]);
-  // useEffect(() => {
-  //   loginStatusCheckFunction();
-  // }, []);
+  }, []);
 
   // 並べ替え
   const handleSortChange = (event) => {
@@ -282,6 +288,24 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     // 無駄なアイテム追加を防ぐために一度綺麗にする
     setWorkOfList([]);
   };
+
+
+  //   一覧データ取得URL
+  let lastUrl = "";
+  // URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合
+  if (url && (PathName === "/" || PathName === "/VideoList" || PathName === "/StudentList" || PathName === "/CompanyList")) {
+    // console.log(" URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合");
+    lastUrl = `${url}?page=${Page}&sort=${sortOption}`;
+    console.log("lastUrl", lastUrl);
+  } else if (ParamUserName === SessionAccountData.user_name) {
+    // console.log("ユーザーネームもセッションネームも同じ場合");
+    lastUrl = `${url}?page=${Page}&sort=${sortOption}&userName=${SessionAccountData.user_name}`;
+  } else if (ParamUserName && ParamUserName !== SessionAccountData.user_name) {
+    // console.log("ユーザーネームとセッションネームが違う場合");
+    lastUrl = `${url}?page=${Page}&sort=${sortOption}&userName=${ParamUserName}`;
+  }
+
+  const { data, error } = useSWR(lastUrl, fetcher);
 
   // 検索時にsetWorkOfListをリセット
   useEffect(() => {
@@ -303,22 +327,20 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     }
   }, [IsSearch.Check, DataList.length]);
 
-  //   一覧データ取得URL
-  let lastUrl = "";
-  // URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合
-  if (url && (PathName === "/" || PathName === "/VideoList" || PathName === "/StudentList" || PathName === "/CompanyList" || PathName === "/Internship_JobOffer")) {
-    // console.log(" URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合");
-    lastUrl = `${url}?page=${Page}&sort=${sortOption}`;
-    console.log("lastUrl", lastUrl);
-  } else if (ParamUserName === SessionAccountData.user_name) {
-    // console.log("ユーザーネームもセッションネームも同じ場合");
-    lastUrl = `${url}?page=${Page}&sort=${sortOption}&userName=${SessionAccountData.user_name}`;
-  } else if (ParamUserName && ParamUserName !== SessionAccountData.user_name) {
-    // console.log("ユーザーネームとセッションネームが違う場合");
-    lastUrl = `${url}?page=${Page}&sort=${sortOption}&userName=${ParamUserName}`;
-  }
 
-  const { data, error } = useSWR(lastUrl, fetcher);
+  useEffect(() => {
+    console.log("WorkOfList", WorkOfList)
+    if (ResetItem === true) {
+      // ここでアイテム消える
+      setWorkOfList([]);
+      setAllItems((prevItems) => ({
+        ...prevItems,
+        ResetItem: false, // リセットが完了したら false に戻す
+      }));
+    }
+  }, [ResetItem, setWorkOfList, setAllItems]);
+
+
 
   // 作品アイテムの一番最後までスクロールされたらデータを取得する。
   useEffect(() => {
@@ -331,48 +353,39 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     }
   }, [isIntersecting]);
 
-  // // サイドバーをクリックした際にリセット
-  // useEffect(() => {
-  //   // タグを選択した状態
-  //   if (ResetItem) {
-  //     setWorkOfList([]);
-  //   }
-  // }, [ResetItem]);
-
   /*----- 検索されていないかつ作品データがあるとき -----*/
   useEffect(() => {
-    if (!IsSearch.Check && data) {
-      console.log("data", data);
-      funcSetWorksItem(idKey, tags, WorkOfList, setWorkOfList, data, setIsLoadColorLing, setIsLoadItemColorLing, error);
+    if (!ResetItem && !IsSearch.Check && data) {
+      // console.log("datadataWorkOfList", WorkOfList);
+      // console.log("datadata", data);
+      funcSetWorksItem(idKey, tags, WorkOfList, setWorkOfList, data, setIsLoadColorLing, setIsLoadItemColorLing, error, generatePosts);
     }
-  }, [data, error, IsSearch.Check, IsSearch.searchResultEmpty]);
-
+  }, [data, error, ResetItem, IsSearch.Check, IsSearch.searchResultEmpty]);
+  
+  
   /*----- 検索されたかつ、検索結果が帰ってきたとき -----*/
   useEffect(() => {
     if (IsSearch.Check && DataList) {
-      funcSetWorksItem(idKey, tags, WorkOfList, setWorkOfList, DataList, setIsLoadColorLing, setIsLoadItemColorLing, error);
+      // console.log("datadataWorkOfList", WorkOfList);
+      // console.log("datadata", DataList);
+      funcSetWorksItem(idKey, tags, WorkOfList, setWorkOfList, DataList, setIsLoadColorLing, setIsLoadItemColorLing, error, generatePosts);
     }
   }, [DataList, IsSearch.Check, IsSearch.searchResultEmpty]);
 
-  let workItems = [];
-
-  workItems = IsSearch.searchResultEmpty
-    ? "検索結果は0件です" // フラグに基づいて表示
-    : typeof generatePosts === "function"
-      ? generatePosts(WorkOfList)
-      : null;
+  // workItems = IsSearch.searchResultEmpty
+  //   ? "検索結果は0件です" // フラグに基づいて表示
+  //   : typeof generatePosts === "function"
+  //     ? generatePosts(WorkOfList)
+  //     : null;
 
   // 作品アイテムをHTML要素に当てはめて表示する準備
-  const renderWorkItems =
-    typeof workItems === "object" && Array.isArray(workItems) && PostCard ? (
-      workItems.map((post, index) => (
-        <PostCard className="mediaCard" ref={index === WorkOfList.length - 1 ? ref : null} key={`${post}-${index}`} post={post} index={index} />
-      ))
-    ) : typeof workItems === "string" ? (
-      <>
-        <Typography variant="h4">{workItems}</Typography>
-      </>
-    ) : null; // 検索結果が文字列の場合、その文字列を表示
+
+  const renderWorkItems = WorkOfList && PostCard ?
+    WorkOfList.map((post, index) => (
+      <PostCard className="mediaCard" ref={index === WorkOfList.length - 1 ? ref : null}
+        key={`${post}-${index}`} post={post} index={index} />
+    ))
+    : null;
 
   return (
     <>

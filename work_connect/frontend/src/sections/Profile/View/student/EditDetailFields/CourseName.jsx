@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import Select from "react-select";
+import CreatableSelect from "react-select/creatable";
 import PropTypes from 'prop-types';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import GetTagAllList from "src/components/tag/GetTagAllList";
+import InsertTag from 'src/components/tag/InsertTag';
 
 const CourseNameDropdown = ({ CourseNameData }) => {
-  const [selectedFaculty, setSelectedFaculty] = useState(CourseNameData);
+  const {InsertTagFunction} = InsertTag();
+  const [selectedCourseName, setSelectedCourseName] = useState(CourseNameData);
 
   const { getSessionData, updateSessionData } = useSessionStorage();
 
@@ -14,7 +16,7 @@ const CourseNameDropdown = ({ CourseNameData }) => {
   const { GetTagAllListFunction } = GetTagAllList();
 
   useEffect(() => {
-    let optionArrayPromise = GetTagAllListFunction("course_name");
+    let optionArrayPromise = GetTagAllListFunction("student_course_name");
     optionArrayPromise.then((result) => {
       setOptions(result);
     });
@@ -26,7 +28,7 @@ const CourseNameDropdown = ({ CourseNameData }) => {
       const SessionData = getSessionData("accountData");
       if (SessionData.CourseNameEditing && SessionData.CourseName) {
         // セッションストレージから最新のデータを取得
-        setSelectedFaculty({
+        setSelectedCourseName({
           value: SessionData.CourseName,
           label: SessionData.CourseName,
         });
@@ -35,7 +37,7 @@ const CourseNameDropdown = ({ CourseNameData }) => {
         (!SessionData.CourseNameEditing && CourseNameData)
       ) {
         // DBから最新のデータを取得
-        setSelectedFaculty({
+        setSelectedCourseName({
           value: CourseNameData,
           label: CourseNameData,
         });
@@ -44,29 +46,31 @@ const CourseNameDropdown = ({ CourseNameData }) => {
   }, [CourseNameData]);
 
   useEffect(() => {
-    if (selectedFaculty) {
-      updateSessionData("accountData", "CourseName", selectedFaculty.value);
+    if (selectedCourseName) {
+      updateSessionData("accountData", "CourseName", selectedCourseName.value);
     }
-  }, [selectedFaculty]);
+  }, [selectedCourseName]);
 
-  const handleChange = (selectedOption) => {
-    setSelectedFaculty(selectedOption);
-    // sessionStrageに値を保存
-    if (selectedOption) {
-      updateSessionData("accountData", "CourseName", selectedOption.value);
-    } else {
-      // なしの場合
-      updateSessionData("accountData", "CourseName", "");
-    }
+  const handleChange = (selectedOption, actionMeta) => {
+    // newValueをセット
+    setSelectedCourseName(selectedOption);
     // 編集中状態をオン(保存もしくはログアウトされるまで保持)
     updateSessionData("accountData", "CourseNameEditing", true);
+
+    if (actionMeta && actionMeta.action === 'create-option') {
+        const inputValue = actionMeta;
+        const newOption = { value: inputValue.option.value, label: inputValue.option.label };
+        setOptions([...options, newOption]);
+        // 20は学生のコースです。
+        InsertTagFunction(inputValue.option.value, 20);
+    }
   };
 
   return (
     <div>
-      <Select
+      <CreatableSelect
         id="departmentDropdown"
-        value={selectedFaculty}
+        value={selectedCourseName}
         onChange={handleChange}
         options={options}
         placeholder="Select..."

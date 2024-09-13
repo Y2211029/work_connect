@@ -73,7 +73,7 @@ const PreSignUrlCheck = () => {
             console.log(data);
             console.log("違います。");
             location.href = "/404";
-            
+
           }
         } else {
           console.log("login失敗");

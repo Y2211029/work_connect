@@ -187,7 +187,7 @@ const ProfileMypage = () => {
   const programming_language_tag = ExtractTags(ResponseData, 'programming_language');
   const development_environment_tag = ExtractTags(ResponseData, 'development_environment');
   const software_tag = ExtractTags(ResponseData, 'software');
-  const qualification_tag = ExtractTags(ResponseData, 'qualification');
+  const qualification_tag = ExtractTags(ResponseData, 'acquisition_qualification');
 
   const profile_id = ResponseData.id;
   const hp_url_button = `${ResponseData.company_name}さんのホームページはこちら`;
@@ -340,7 +340,7 @@ const ProfileMypage = () => {
           ResponseData.programming_language ||
           ResponseData.development_environment ||
           ResponseData.software ||
-          ResponseData.qualification ||
+          ResponseData.acquisition_qualification ||
           ResponseData.hp_url ||
           ResponseData.video_url ||
           ResponseData.companyInformation) && (
@@ -388,8 +388,8 @@ const ProfileMypage = () => {
             <Item>{ShowTags(programming_language_tag)}</Item>
           </Box>
         )}
-        {/* ResponseData.qualificationがあるときのみ表示 */}
-        {ResponseData.qualification && !close && (
+        {/* ResponseData.acquisition_qualificationがあるときのみ表示 */}
+        {ResponseData.acquisition_qualification && !close && (
           <Box ref={el => (detail.current[5] = el)} id="detail">
             <Typography variant="h6">社員が取得している資格・取得支援資格・歓迎資格・必須資格</Typography>
             <Item>{ShowTags(qualification_tag)}</Item>

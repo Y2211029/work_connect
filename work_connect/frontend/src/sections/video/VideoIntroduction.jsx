@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from 'react';
 import PropTypes from "prop-types";
 import { TextareaAutosize as BaseTextareaAutosize } from "@mui/base/TextareaAutosize";
 import { styled, useTheme } from "@mui/material/styles";
@@ -57,49 +57,38 @@ const Textarea = styled(BaseTextareaAutosize)(
 `
 );
 
-const Introduction = (props) => {
+const VideoIntroduction = (props) => {
+
   const theme = useTheme();
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState('');
   const [hasError, setHasError] = useState(false);
 
   const handleChange = (e) => {
-    props.callSetWorkData("Introduction", e.target.value);
+    props.callSetVideoData("Introduction", e.target.value);
     setInputValue(e.target.value);
-    setHasError(e.target.value === ""); // 空の場合にエラーを表示
+    setHasError(e.target.value === ''); // 空の場合にエラーを表示
   };
-
-  useEffect(() => {
-    // バリデーション
-    if (inputValue === "") {
-      // 自己紹介が空だったら、error表示
-      setHasError((prev) => ({ ...prev, hasError: true }));
-    } else if (inputValue !== "") {
-      // 自己紹介が空でないなら、error非表示
-      setHasError((prev) => ({ ...prev, hasError: false }));
-    }
-  }, [inputValue]);
-
   return (
     <div>
       <p>
         作品紹介文*
-        <Textarea
-          error={hasError}
-          name="Introduction"
-          maxRows={12}
-          aria-label="maximum height"
-          placeholder="500字以内"
-          value={inputValue}
-          onChange={handleChange}
-          maxLength={500}
-          sx={{
-            border:
-              Introduction === ""
-                ? "1px red solid"
-                : `1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]}`,
-          }}
-        />
       </p>
+      <Textarea
+        error={hasError}
+        name="Introduction"
+        maxRows={12}
+        aria-label="maximum height"
+        placeholder="500字以内"
+        value={inputValue}
+        onChange={handleChange}
+        maxLength={500}
+        sx={{
+          border:
+            VideoIntroduction === ""
+              ? "1px red solid"
+              : `1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]}`,
+        }}
+      />
 
       <Typography
         variant="body2"
@@ -119,7 +108,7 @@ const Introduction = (props) => {
   );
 };
 
-Introduction.propTypes = {
-  callSetWorkData: PropTypes.func,
+VideoIntroduction.propTypes = {
+  callSetVideoData: PropTypes.func,
 };
-export default Introduction;
+export default VideoIntroduction;

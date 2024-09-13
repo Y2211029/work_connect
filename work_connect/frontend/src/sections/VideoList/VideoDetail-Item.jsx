@@ -5,7 +5,7 @@ import axios from "axios";
 
 import Box from "@mui/material/Box";
 
-import { useCreateTagbutton } from "src/hooks/use-createTagbutton";
+import { UseCreateTagbutton } from "src/hooks/use-createTagbutton";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 const VideoDetailItem = () => {
@@ -25,7 +25,7 @@ const VideoDetailItem = () => {
   const [CommentCancel, setCommentCancel] = useState("");
 
   // -----タグ-----
-  const { tagCreate } = useCreateTagbutton();
+  const { tagCreate } = UseCreateTagbutton();
   // ジャンル
   const [VideoGenre, setVideoGenre] = useState("");
 

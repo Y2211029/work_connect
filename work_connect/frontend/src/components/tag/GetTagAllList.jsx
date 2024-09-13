@@ -22,13 +22,13 @@ function GetTagAllList() {
                 result = await axios.get(url, {
                     params: { All: "tags" },
                 });
-                
+
                 const tags = result.data;
-                
+
                 tags.map((value) => {
                     optionArray.push({ value: value.name, label: value.name });
                 });
-                
+
                 console.log("optionArray: ", optionArray);
 
 

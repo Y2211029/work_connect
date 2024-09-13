@@ -385,7 +385,7 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
       </Box>
       <Box ref={el => (detail.current[5] = el)} id="detail">
         <Typography variant="h6">社員が取得している資格・取得支援資格・歓迎資格・必須資格</Typography>
-        <Qualification QualificationData={ResponseData.qualification} />
+        <Qualification QualificationData={ResponseData.acquisition_qualification} />
       </Box>
       <Box ref={el => (detail.current[6] = el)} id="detail">
         <Typography variant="h6">ソフトウェア</Typography>

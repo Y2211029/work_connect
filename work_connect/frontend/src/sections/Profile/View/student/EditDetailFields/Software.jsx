@@ -16,7 +16,7 @@ const Software = ({ SoftwareData }) => {
   const { GetTagAllListFunction } = GetTagAllList();
 
   useEffect(() => {
-    let optionArrayPromise = GetTagAllListFunction("software");
+    let optionArrayPromise = GetTagAllListFunction("student_software");
     optionArrayPromise.then((result) => {
       setOptions(result);
     });

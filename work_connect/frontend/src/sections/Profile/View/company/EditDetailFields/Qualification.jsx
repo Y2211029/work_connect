@@ -69,8 +69,8 @@ useEffect(() => {
       console.log(inputValue);
       const newOption = { value: inputValue.option.value, label: inputValue.option.label };
       setOptions([...options, newOption]);
-      // 7は学生の取得資格です。
-      InsertTagFunction(inputValue.option.value, 7);
+      // 25は企業の社員が取得している資格・取得支援資格・歓迎資格・必須資格です。
+      InsertTagFunction(inputValue.option.value, 25);
     }
     let valueArray = [];
     selectedOption.map((value) => {

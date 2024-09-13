@@ -1,16 +1,27 @@
 import PropTypes from "prop-types";
+import TextField from "@mui/material/TextField";
 
 const YoutubeURL = (props) => {
   return (
     <div>
-      <p>Youtube URLを入力してください。</p>
-      <input
-        type="text"
-        name="text"
-        className="kadomaru"
-        onChange={props.onChange}
-        value={props.value}
-      />
+      <p>
+        Youtube URLを入力してください。
+        <TextField
+          fullWidth
+          margin="normal"
+          type="text"
+          name="text"
+          variant="outlined"
+          onChange={props.onChange}
+          value={props.value}
+          sx={{
+            backgroundColor: "#fff", // 背景色を指定
+            borderRadius: "8px", // 角の丸みを設定
+            marginTop: "6px",
+            marginBottom: "0",
+          }}
+        />
+      </p>
     </div>
   );
 };

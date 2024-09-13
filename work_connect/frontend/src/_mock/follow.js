@@ -14,7 +14,7 @@ export async function follow(senderId, recipientId) {
     console.log('フォロー成功:', response.data);
     const UpdateFollow = response.data.follow_status;
     return UpdateFollow;
-    
+
   } catch (error) {
     // エラーハンドリング
     console.error('フォロー処理中にエラーが発生しました！', error);

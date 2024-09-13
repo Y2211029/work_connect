@@ -490,7 +490,6 @@ textarea {
 }
 
 .VideoPostingFormField input {
-  border: 1px solid grey;
   padding: 15px;
   width: 100%;
   border-radius: 10px;

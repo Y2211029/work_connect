@@ -3,10 +3,10 @@
 use App\Http\Controllers\movie\PostMovieCommentDeleteController;
 use App\Http\Controllers\movie\PostMovieCommentPostController;
 use App\Http\Controllers\movie\PostMovieCommentSaveController;
-use App\Http\Controllers\tag\GetCourseNameTagController;
-use App\Http\Controllers\tag\GetDepartmentNameTagController;
-use App\Http\Controllers\tag\GetFacultyNameTagController;
-use App\Http\Controllers\tag\GetMajorNameTagController;
+use App\Http\Controllers\tag\GetStudentCourseNameTagController;
+use App\Http\Controllers\tag\GetStudentDepartmentNameTagController;
+use App\Http\Controllers\tag\GetStudentFacultyNameTagController;
+use App\Http\Controllers\tag\GetStudentMajorNameTagController;
 use App\Http\Controllers\work\PostWorkCommentPostController;
 use App\Http\Controllers\work\PostWorkCommentSaveController;
 use App\Http\Controllers\work\PostWorkCommentDeleteController;
@@ -39,13 +39,18 @@ use App\Http\Controllers\movie\VideoPostingController;
 use App\Http\Controllers\tag\GetVideoGenreTagController;
 use App\Http\Controllers\tag\GetStudentProgrammingLanguageTagController;
 use App\Http\Controllers\tag\GetStudentDevelopmentEnvironmentTagController;
-use App\Http\Controllers\tag\GetSoftwareTagController;
-use App\Http\Controllers\tag\GetAcquisitionQualificationTagController;
-use App\Http\Controllers\tag\GetHobbyTagController;
-use App\Http\Controllers\tag\GetDesiredOccupationTagController;
-use App\Http\Controllers\tag\GetDesiredWorkRegionTagController;
-use App\Http\Controllers\tag\GetSelectedOccupationTagController;
-use App\Http\Controllers\tag\GetPrefectureTagController;
+use App\Http\Controllers\tag\GetStudentSoftwareTagController;
+use App\Http\Controllers\tag\GetStudentAcquisitionQualificationTagController;
+use App\Http\Controllers\tag\GetStudentHobbyTagController;
+use App\Http\Controllers\tag\GetStudentDesiredOccupationTagController;
+use App\Http\Controllers\tag\GetStudentDesiredWorkRegionTagController;
+use App\Http\Controllers\tag\GetCompanyPrefectureTagController;
+use App\Http\Controllers\tag\GetCompanySelectedOccupationTagController;
+use App\Http\Controllers\tag\GetCompanyIndustryTagController;
+use App\Http\Controllers\tag\GetCompanyDevelopmentEnvironmentTagController;
+use App\Http\Controllers\tag\GetCompanyProgrammingLanguageTagController;
+use App\Http\Controllers\tag\GetCompanyAcquisitionQualificationTagController;
+use App\Http\Controllers\tag\GetCompanySoftwareTagController;
 use App\Http\Controllers\tag\GetCompanyNameListController;
 use App\Http\Controllers\work\WorkPostingController;
 use App\Http\Controllers\search\SearchWorkController;
@@ -103,32 +108,45 @@ Route::get('/get_work_environment_tag', [GetEnvironmentTagController::class, 'Ge
 Route::post('/video_posting', [VideoPostingController::class, 'VideoPostingController']);
 // 動画ジャンルタグ取得
 Route::get('/get_video_genre_tag', [GetVideoGenreTagController::class, 'GetVideoGenreTagController']);
-// 学科名タグ取得
-Route::get('/get_department_name_tag', [GetDepartmentNameTagController::class, 'GetDepartmentNameTagController']);
-// 学部名タグ取得
-Route::get('/get_faculty_name_tag', [GetFacultyNameTagController::class, 'GetFacultyNameTagController']);
-// 専攻名タグ取得
-Route::get('/get_major_name_tag', [GetMajorNameTagController::class, 'GetMajorNameTagController']);
-// コース名タグ取得
-Route::get('/get_course_name_tag', [GetCourseNameTagController::class, 'GetCourseNameTagController']);
-// 学生のプログラミング言語タグ取得
-Route::get('/get_student_programming_language_tag', [GetStudentProgrammingLanguageTagController::class, 'GetStudentProgrammingLanguageTagController']);
+
+// 学生の学部名タグ取得
+Route::get('/get_student_faculty_name_tag', [GetStudentFacultyNameTagController::class, 'GetStudentFacultyNameTagController']);
+// 学生の学科名タグ取得
+Route::get('/get_student_department_name_tag', [GetStudentDepartmentNameTagController::class, 'GetStudentDepartmentNameTagController']);
+// 学生の専攻名タグ取得
+Route::get('/get_student_major_name_tag', [GetStudentMajorNameTagController::class, 'GetStudentMajorNameTagController']);
+// 学生のコース名タグ取得
+Route::get('/get_student_course_name_tag', [GetStudentCourseNameTagController::class, 'GetStudentCourseNameTagController']);
 // 学生の開発環境タグ取得
 Route::get('/get_student_development_environment_tag', [GetStudentDevelopmentEnvironmentTagController::class, 'GetStudentDevelopmentEnvironmentTagController']);
-// ソフトウェアタグ取得
-Route::get('/get_software_tag', [GetSoftwareTagController::class, 'GetSoftwareTagController']);
-// 取得資格タグ取得
-Route::get('/get_acquisition_qualification_tag', [GetAcquisitionQualificationTagController::class, 'GetAcquisitionQualificationTagController']);
-// 趣味タグ取得
-Route::get('/get_hobby_tag', [GetHobbyTagController::class, 'GetHobbyTagController']);
+// 学生の趣味タグ取得
+Route::get('/get_student_hobby_tag', [GetStudentHobbyTagController::class, 'GetStudentHobbyTagController']);
+// 学生の希望勤務地タグ取得
+Route::get('/get_student_prefecture_tag', [GetStudentDesiredWorkRegionTagController::class, 'GetStudentDesiredWorkRegionTagController']);
 // 学生の希望職種タグ取得
-Route::get('/get_desired_occupation_tag', [GetDesiredOccupationTagController::class, 'GetDesiredOccupationTagController']);
-// 学生の希望職種タグ取得
-Route::get('/get_desired_work_region_tag', [GetDesiredWorkRegionTagController::class, 'GetDesiredWorkRegionTagController']);
-// 企業の職種タグ取得
-Route::get('/get_selected_occupation_tag', [GetSelectedOccupationTagController::class, 'GetSelectedOccupationTagController']);
+Route::get('/get_student_desired_occupation_tag', [GetStudentDesiredOccupationTagController::class, 'GetStudentDesiredOccupationTagController']);
+// 学生のプログラミング言語タグ取得
+Route::get('/get_student_programming_language_tag', [GetStudentProgrammingLanguageTagController::class, 'GetStudentProgrammingLanguageTagController']);
+// 学生の取得資格タグ取得
+Route::get('/get_student_acquisition_qualification_tag', [GetStudentAcquisitionQualificationTagController::class, 'GetStudentAcquisitionQualificationTagController']);
+// 学生のソフトウェアタグ取得
+Route::get('/get_student_software_tag', [GetStudentSoftwareTagController::class, 'GetStudentSoftwareTagController']);
+
 // 企業の勤務地タグ取得
-Route::get('/get_prefecture_tag', [GetPrefectureTagController::class, 'GetPrefectureTagController']);
+Route::get('/get_company_prefecture_tag', [GetCompanyPrefectureTagController::class, 'GetCompanyPrefectureTagController']);
+// 企業の社員の職種・募集職種タグ取得
+Route::get('/get_company_selected_occupation_tag', [GetCompanySelectedOccupationTagController::class, 'GetCompanySelectedOccupationTagController']);
+// 企業の業界キーワードタグ取得
+Route::get('/get_company_industry_tag', [GetCompanyIndustryTagController::class, 'GetCompanyIndustryTagController']);
+// 企業の開発環境タグ取得
+Route::get('/get_company_development_environment_tag', [GetCompanyDevelopmentEnvironmentTagController::class, 'GetCompanyDevelopmentEnvironmentTagController']);
+// 企業のプログラミング言語タグ取得
+Route::get('/get_company_programming_language_tag', [GetCompanyProgrammingLanguageTagController::class, 'GetCompanyProgrammingLanguageTagController']);
+// 企業の社員が取得している資格・取得支援資格・歓迎資格・必須資格タグ取得
+Route::get('/get_company_acquisition_qualification_tag', [GetCompanyAcquisitionQualificationTagController::class, 'GetCompanyAcquisitionQualificationTagController']);
+// 企業のソフトウェアタグ取得
+Route::get('/get_company_software_tag', [GetCompanySoftwareTagController::class, 'GetCompanySoftwareTagController']);
+
 // 企業名一覧を取得
 Route::get('/get_company_name_list', [GetCompanyNameListController::class, 'GetCompanyNameListController']);
 

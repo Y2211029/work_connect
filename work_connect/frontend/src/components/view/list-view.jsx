@@ -361,8 +361,8 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
       funcSetWorksItem(idKey, tags, WorkOfList, setWorkOfList, data, setIsLoadColorLing, setIsLoadItemColorLing, error, generatePosts);
     }
   }, [data, error, ResetItem, IsSearch.Check, IsSearch.searchResultEmpty]);
-  
-  
+
+
   /*----- 検索されたかつ、検索結果が帰ってきたとき -----*/
   useEffect(() => {
     if (IsSearch.Check && DataList) {

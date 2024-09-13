@@ -79,6 +79,7 @@
     "react-youtube": "^10.1.0",
     "rimraf": "^5.0.7",
     "sanitize.css": "^13.0.0",
+    "sendbird-uikit": "^2.7.2",
     "simplebar-react": "^3.2.5",
     "skm-flipbox": "^1.0.3",
     "styled-components": "^6.1.11",

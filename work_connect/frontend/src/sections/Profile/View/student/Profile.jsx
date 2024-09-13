@@ -53,6 +53,7 @@ export default function NavTabs() {
 
   // タブ状態のチェック
   const { getSessionData, updateSessionData } = useSessionStorage();
+  const { setAllItems } = useContext(AllItemsContext);
   /* セッションストレージからaccountDataを取得し、ProfileTabStateを初期値として設定
      ProfileTabStateがない場合は0をセットする */
   const getInitialProfileTabState = () => {
@@ -68,10 +69,41 @@ export default function NavTabs() {
   useEffect(() => {
     updateSessionData("accountData", "ProfileTabState", ProfileTabState);
   }, [ProfileTabState]);
-  const { AllItems, setAllItems } = useContext(AllItemsContext);
-  const { IsSearch, Page, sortOption } = AllItems;
 
-  const handleTabClick  = (event, newValue) => {
+  /* 作品か動画かを判断する用のパラメータ追加処理 */
+  function pageCheck(pageStr) {
+    let url = new URL(window.location.href);
+    let urlStr = location.pathname;
+    if(url.searchParams.get('page') != null) {
+      let urlStrArray = urlStr.split('?');
+      urlStr = urlStrArray[0];
+    }
+    window.history.pushState('', '', urlStr + `?page=${pageStr}`);
+  }
+
+  useEffect(() => {
+    setValue(0);
+  }, []);
+
+  useEffect(() => {
+    if (value === 0) {
+      // マイページが押されたとき
+      setProfileTabState(0);
+      pageCheck('mypage');
+    } else if (value === 1) {
+      // 作品が押されたとき
+      setProfileTabState(1);
+      pageCheck('work');
+    } else if (value === 2) {
+      // 動画が押されたとき
+      setProfileTabState(2);
+      pageCheck('movie');
+    }
+  }, [value]);
+
+
+
+  const handleTabClick = (event, newValue) => {
 
     // event.type can be equal to focus with selectionFollowsFocus.
     if (
@@ -83,24 +115,25 @@ export default function NavTabs() {
     if (newValue === 0) {
       // マイページが押されたとき
       setProfileTabState(0);
+      pageCheck('mypage');
     } else if (newValue === 1) {
       // 作品が押されたとき
       setProfileTabState(1);
+      pageCheck('work');
     } else if (newValue === 2) {
       // 動画が押されたとき
       setProfileTabState(2);
+      pageCheck('movie');
     }
-    if (sortOption !== "orderNewPostsDate" || Page > 1 || IsSearch.Check == true) {
-      setAllItems((prevItems) => ({
-        ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
-        ResetItem: true,
-        DataList: [], //検索してない状態にするために初期化 //searchbar.jsxのsearchSourceも初期化
-        IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
-        Page: 1, //スクロールする前の状態にするために初期化
-        sortOption: "orderNewPostsDate", //並び替える前の状態にするために初期化
-      }));
-      // 必要に応じて、スクロール位置や他の状態もリセット
-    }
+    // 作品・動画一覧を正常に再表示するために必要な処理
+    setAllItems((prevItems) => ({
+      ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
+      ResetItem: true,
+      DataList: [], //検索してない状態にするために初期化 //searchbar.jsxのsearchSourceも初期化
+      IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
+      Page: 1, //スクロールする前の状態にするために初期化
+      sortOption: "orderNewPostsDate", //並び替える前の状態にするために初期化
+    }));
   };
 
   return (

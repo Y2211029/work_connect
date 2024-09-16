@@ -16,10 +16,14 @@ import { useIntersection } from "src/routes/hooks/use-intersection";
 
 import { UseCreateTagbutton } from "src/hooks/use-createTagbutton";
 
+import { useParams } from 'react-router-dom';
+
+
 const fetcher = (lastUrl) => fetch(lastUrl).then((res) => res.json());
 const setting = {
   rootMargin: "40px",
 };
+
 const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, setLoading, setItemLoading, error, generatePosts) => {
 
   // ジャンル
@@ -40,7 +44,6 @@ const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, s
     // 全作品アイテム
     filteredNewWorks.forEach((element) => {
       // 作品のジャンル取り出す
-      console.log("ループ中");
       tags.forEach((tag) => {
         // 取り出した配列の中にあるカンマ区切りの項目をtagCreateに渡す
         if (typeof element[tag] === "string" && element[tag] !== null) {
@@ -69,13 +72,15 @@ const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, s
 };
 
 
+
 // --------------------------------ItemObjectAndPostCard--------------------------------
-export default function ItemObjectAndPostCard({ type, ParamUserName }) {
-  // sessiondata取得
+export default function ItemObjectAndPostCard({ type, ParamUserName, NewsDetailId: initialNewsDetailId}) {
   const [SessionAccountData, setSessionAccountData] = useState(sessionAccountData);
   const [PathName, setPathName] = useState(window.location.pathname);
   const [PostCard, setPostCard] = useState(null);
   const [PostSort, setPostSort] = useState(null);
+  const [NewsDetailId, setNewsDetailId] = useState(initialNewsDetailId);
+  const { newsdetail_id } = useParams();
 
   useEffect(() => {
     setSessionAccountData(SessionAccountData);
@@ -84,6 +89,11 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
   useEffect(() => {
     setPathName(PathName);
   }, [PathName]);
+
+  useEffect(() => {
+    setNewsDetailId("2");
+  }, [newsdetail_id]);
+
 
   useEffect(() => {
     // URLごとにpost-sort、post-card.jsxを各フォルダから取得
@@ -108,14 +118,18 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
         const { default: CompanyListPostCard } = await import("src/sections/CompanyList/post-card");
         setPostCard(() => CompanyListPostCard);
         console.log("CompanyListPostCard");
-      } else if (PathName === "/Internship_JobOffer") {
+      } else if (PathName === `/Internship_JobOffer/joboffers` || PathName === `/Internship_JobOffer/internships` || PathName === `/Internship_JobOffer/blogs`) {
         const { default: Internship_JobOfferPostCard } = await import("src/sections/InternshipJobOffer/post-card");
         setPostCard(() => Internship_JobOfferPostCard);
         console.log("Internship_JobOfferPostCard");
+      }else if (PathName === `/WriteForm/${NewsDetailId}`) {
+        const { default: WriteFormPostCard } = await import("src/sections/WriteForm/post-card");
+        setPostCard(() => WriteFormPostCard);
+        console.log("WriteFormPostCard");
       }
     };
     loadComponents();
-  }, [SessionAccountData.user_name, PathName]);
+  }, [SessionAccountData.user_name, PathName,NewsDetailId]);
 
 
   const urlMapping = {
@@ -212,11 +226,11 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           followStatus: company.follow_status,
         })),
     },
-    internjoboffers: {
-      ItemName: "ニュース一覧",
-      url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}`,
+    joboffers: {
+      ItemName: "求人一覧",
+      url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/joboffers`,
       idKey: "id",
-      tags: ["company_name", "prefecture"],
+      tags: ["company_name"],
       generatePosts: (WorkOfList) =>
         WorkOfList.map((company) => ({
           company_id: company.company_id,
@@ -230,11 +244,57 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           followStatus: company.follow_status,
         })),
     },
+    internships: {
+      ItemName: "インターンシップ一覧",
+      url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/internships`,
+      idKey: "id",
+      tags: ["company_name"],
+      generatePosts: (WorkOfList) =>
+        WorkOfList.map((company) => ({
+          company_id: company.company_id,
+          news_id: company.news_id,
+          company_name: company.company_name[0].props.children,
+          article_title: company.article_title,
+          genre: company.genre,
+          header_img: company.header_img,
+          news_created_at: company.news_created_at,
+          icon_id: company.icon_id,
+          followStatus: company.follow_status,
+        })),
+    },
+    blogs: {
+      ItemName: "ブログ一覧",
+      url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/blogs`,
+      idKey: "id",
+      tags: ["company_name"],
+      generatePosts: (WorkOfList) =>
+        WorkOfList.map((company) => ({
+          company_id: company.company_id,
+          news_id: company.news_id,
+          company_name: company.company_name[0].props.children,
+          article_title: company.article_title,
+          genre: company.genre,
+          header_img: company.header_img,
+          news_created_at: company.news_created_at,
+          icon_id: company.icon_id,
+          followStatus: company.follow_status,
+        })),
+    },
+    writeforms: {
+      ItemName: "応募用フォーム",
+      url: `http://localhost:8000/write_form_get/${NewsDetailId}`,
+      idKey: "id",
+      tags: ["company_name"],
+      generatePosts: (WorkOfList) => {
+        return WorkOfList.map((company) => ({
+          company_id: company.company_id,
+          create_form: company.create_form,
+        }));
+      },
+    },
   };
 
-  // console.log("ループしてるか確認");
   return (
-
     <ListView
       SessionAccountData={SessionAccountData}
       PathName={PathName}
@@ -242,6 +302,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       PostCard={PostCard}
       PostSort={PostSort}
       ParamUserName={ParamUserName}
+      NewsDetailId={NewsDetailId}
     />
   );
 }
@@ -249,10 +310,11 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
 ItemObjectAndPostCard.propTypes = {
   type: PropTypes.string,
   ParamUserName: PropTypes.string,
+  NewsDetailId: PropTypes.string,
 };
 
 // ------------------------------------------------ListView------------------------------------------------
-const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort, ParamUserName }) => {
+const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort, ParamUserName, NewsDetailId}) => {
   // ログインチェック
   const { loginStatusCheckFunction } = LoginStatusCheck();
   // 作品アイテム格納
@@ -293,7 +355,9 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   //   一覧データ取得URL
   let lastUrl = "";
   // URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合
-  if (url && (PathName === "/" || PathName === "/VideoList" || PathName === "/StudentList" || PathName === "/CompanyList")) {
+  if (url && (PathName === "/" || PathName === "/VideoList" || PathName === "/StudentList" || PathName === "/CompanyList"
+    || PathName === "/Internship_JobOffer" || PathName === `/WriteForm/${NewsDetailId}`
+    || PathName === "/Internship_JobOffer/joboffer" || PathName === "/Internship_JobOffer/internships" || PathName === "/Internship_JobOffer/blogs")) {
     // console.log(" URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合");
     lastUrl = `${url}?page=${Page}&sort=${sortOption}`;
     console.log("lastUrl", lastUrl);
@@ -361,8 +425,8 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
       funcSetWorksItem(idKey, tags, WorkOfList, setWorkOfList, data, setIsLoadColorLing, setIsLoadItemColorLing, error, generatePosts);
     }
   }, [data, error, ResetItem, IsSearch.Check, IsSearch.searchResultEmpty]);
-  
-  
+
+
   /*----- 検索されたかつ、検索結果が帰ってきたとき -----*/
   useEffect(() => {
     if (IsSearch.Check && DataList) {
@@ -462,4 +526,5 @@ ListView.propTypes = {
   PostCard: PropTypes.elementType,
   PostSort: PropTypes.elementType,
   ParamUserName: PropTypes.string,
+  NewsDetailId: PropTypes.string,
 };

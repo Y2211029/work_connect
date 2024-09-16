@@ -39,8 +39,8 @@ const InternshipJobOfferPage = () => {
     };
 
     useEffect(() => {
-
-        console.log(newsdetail_id);
+        console.log("Myid", data.id);
+        console.log("newsdetail_id",newsdetail_id);
         //ニュースのデータを抽出する
         async function fetchData() {
             try {
@@ -60,7 +60,7 @@ const InternshipJobOfferPage = () => {
             }
         }
         fetchData();
-    }, [newsdetail_id]);
+    }, [newsdetail_id,data.id]);
 
     useEffect(() => {
         async function fetchCsrfToken() {
@@ -127,6 +127,10 @@ const InternshipJobOfferPage = () => {
 
     const handleProfileJump = () => {
         navigate(`/Profile/${NewsDetail.company_name}`);
+    }
+
+    const handleFormJump = () =>{
+        navigate(`/WriteForm/${newsdetail_id}`);
     }
 
     useEffect(() => {
@@ -202,7 +206,21 @@ const InternshipJobOfferPage = () => {
                                 {followStatus}
                                 {/* usestateから持ってくる */}
                                 </Button>
-
+                                <Button
+                                    variant="contained"
+                                    sx={{
+                                        fontSize: "10px",
+                                        padding: "8px 16px",
+                                        margin: "4px",
+                                        background: "linear-gradient(#41A4FF, #9198e5)",
+                                        "&:hover": {
+                                            background: "linear-gradient(#c2c2c2, #e5ad91)",
+                                        },
+                                    }}
+                                    onClick={handleFormJump}
+                                >
+                                    応募する
+                                </Button>
                             </Stack>
                         </div>
                     }
@@ -257,7 +275,21 @@ const InternshipJobOfferPage = () => {
                                 {followStatus}
                                 {/* usestateから持ってくる */}
                                 </Button>
-
+                                <Button
+                                    variant="contained"
+                                    sx={{
+                                        fontSize: "10px",
+                                        padding: "8px 16px",
+                                        margin: "4px",
+                                        background: "linear-gradient(#41A4FF, #9198e5)",
+                                        "&:hover": {
+                                            background: "linear-gradient(#c2c2c2, #e5ad91)",
+                                        },
+                                    }}
+                                    onClick={handleFormJump}
+                                >
+                                    応募する
+                                </Button>
                             </Stack>
                     </Stack>
                     {/* NewsDetailHeader要素 サムネイルと会社名・お気に入りボタンを一括りにする */}

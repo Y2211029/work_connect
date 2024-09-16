@@ -35,8 +35,14 @@ export const SettingsPage = lazy(() => import("src/pages/Settings"));
 
 //
 export const InternshipJobOfferPage = lazy(() => import("src/pages/internshipJobOffer"));
-//
+
+//ニュースを編集・投稿画面
 export const EditorPage = lazy(() => import("src/pages/Editor/Editor"));
+
+//応募用フォームを編集・回答画面
+export const CreateFormPage = lazy(() => import("src/pages/CreateForm/CreateForm"));
+export const WriteFormPage = lazy(() => import("src/pages/WriteForm/WriteForm"));
+
 
 // リンク無し画面
 export const Page404 = lazy(() => import("src/pages/page-not-found"));
@@ -67,14 +73,18 @@ export default function Router() {
         { path: "VideoList", element: <VideoListPage /> },
         { path: "StudentList", element: <StudentListPage /> },
         { path: "CompanyList", element: <CompanyListPage /> },
-        { path: "Internship_JobOffer", element: <InternshipJobOfferPage /> },
+        { path: "Internship_JobOffer/:Category", element: <InternshipJobOfferPage /> },
 
         { path: "WorkDetail/:id", element: <WorkDetail /> },
         { path: "VideoDetail/:id", element: <VideoDetail /> },
 
         //20240619
         { path: "Settings", element: <SettingsPage /> },
-        { path: "Editor", element: <EditorPage /> },
+        { path: "Editor/:genre", element: <EditorPage /> },
+        { path: "CreateForm/:news_id", element: <CreateFormPage /> },
+        { path: "WriteForm/:newsdetail_id", element: <WriteFormPage /> },
+
+
         //20240704
         { path: "news_detail/:id", element: <NewsDetailPage /> },
 

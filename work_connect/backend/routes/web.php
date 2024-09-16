@@ -12,8 +12,11 @@ use App\Http\Controllers\work\PostWorkCommentSaveController;
 use App\Http\Controllers\work\PostWorkCommentDeleteController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 use Illuminate\Support\Facades\Route;
+
+
 use App\Http\Controllers\ListController;
 use App\Http\Controllers\EditorController;
 use App\Http\Controllers\NewsController;
@@ -30,7 +33,8 @@ use App\Http\Controllers\work\GetWorkDetailController;
 use App\Http\Controllers\movie\GetMovieDetailController;
 use App\Http\Controllers\student\GetStudentListController;
 use App\Http\Controllers\company\GetCompanyListController;
-use App\Http\Controllers\follow\FollowController;
+use App\Http\Controllers\follow\followController;
+use App\Http\Controllers\FormController;
 use App\Http\Controllers\tag\InsertTagController;
 use App\Http\Controllers\tag\GetGenreTagController;
 use App\Http\Controllers\tag\GetLanguageTagController;
@@ -218,12 +222,16 @@ Route::post('/thumbnail_image_save', [EditorController::class, 'thumbnail_image_
 Route::post('/contents_image_save', [EditorController::class, 'contents_image_save']);
 Route::post('/contents_url_image_save', [EditorController::class, 'contents_url_image_save']);
 Route::get('/news_draft_list/{id}', [EditorController::class, 'news_draft_list']);
-Route::get('/Internship_JobOffer/{id}', [NewsController::class, 'all_news_get']);
+Route::get('/Internship_JobOffer/{id}/{category}', [NewsController::class, 'all_news_get']);
 Route::get('/Internship_JobOffer/special_company_news/{id}', [NewsController::class, 'special_company_news']);
 Route::get('/Internship_JobOffer/news_detail/{id}', [NewsController::class, 'news_detail_get']);
 Route::post('/news_bookmark', [NewsController::class, 'news_bookmark']);
 Route::get('/thumbnail_img_delete/{id}', [EditorController::class, 'thumbnail_img_delete']);
-Route::get('/api/embed', [EditorController::class, 'embed']);
+Route::get( '/api/embed', action: [EditorController::class, 'embed']);
+
+//応募用フォーム作成機能
+Route::post('/create_form_save', [FormController::class, 'create_form_save']);
+Route::get('/write_form_get/{NewsDetailId}', [FormController::class, 'write_form_get']);
 
 //設定機能
 Route::get('/color_save', [SettingController::class, 'color_save']);

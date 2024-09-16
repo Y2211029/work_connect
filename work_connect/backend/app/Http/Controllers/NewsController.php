@@ -8,6 +8,7 @@ use App\Models\w_company;
 use App\Models\w_bookmark;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class NewsController extends Controller
 {
@@ -17,8 +18,9 @@ class NewsController extends Controller
         $MyId = $request->input("MyId");
         $id = (string) $id;
 
-        \Log::info('MyId: ' . $MyId);
-        \Log::info('ID as string: ' . $id);
+        Log::info("news_detail_get通っています");
+        Log::info('MyId: ' . $MyId);
+        Log::info('ID as string: ' . $id);
 
         $news_detail = w_news::where('w_news.id', $id)
             ->join('w_companies', 'w_news.company_id', '=', 'w_companies.id')
@@ -50,6 +52,8 @@ class NewsController extends Controller
 
             $news_detail->follow_status = $followStatus;
 
+            Log::info('ニュース詳細: ' . $news_detail);
+
             return response()->json($news_detail);
         } else {
             return response()->json(['error' => 'ニュースが見つかりませんでした。'], 404);
@@ -72,7 +76,7 @@ class NewsController extends Controller
             w_bookmark::where('position_id', $session_id)
                 ->where('bookmark_id', $bookmark_id)
                 ->delete();
-            
+
             return response()->json(["message" => "削除成功しました"], 200);
         } else {
             w_bookmark::create([
@@ -104,7 +108,7 @@ class NewsController extends Controller
     }
 
     // 全ニュース取得
-    public function all_news_get(Request $request, $id)
+    public function all_news_get(Request $request, $id, $category)
     {
         try {
             $page = (int) $request->query('page', 1);
@@ -114,6 +118,7 @@ class NewsController extends Controller
             $userName = $request->query('userName');
 
             $postsQuery = w_news::where('w_news.public_status', 1)
+                ->where('w_news.genre', $category)
                 ->join('w_companies', 'w_news.company_id', '=', 'w_companies.id')
                 ->select('w_news.*', 'w_companies.*', 'w_news.created_at as news_created_at', 'w_news.id as news_id');
 
@@ -153,10 +158,9 @@ class NewsController extends Controller
 
             return response()->json($posts);
         } catch (\Exception $e) {
-            \Log::error('all_news_get エラー: ' . $e->getMessage());
+            Log::error('all_news_get エラー: ' . $e->getMessage());
             return response()->json(['error' => 'データ取得中にエラーが発生しました。'], 500);
         }
     }
 }
 
-?>

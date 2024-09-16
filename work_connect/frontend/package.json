@@ -82,6 +82,10 @@
     "simplebar-react": "^3.2.5",
     "skm-flipbox": "^1.0.3",
     "styled-components": "^6.1.11",
+    "survey-core": "^1.12.1",
+    "survey-creator-core": "^1.12.1",
+    "survey-creator-react": "^1.12.1",
+    "survey-react-ui": "^1.12.1",
     "swr": "^2.2.5",
     "title-editorjs": "^1.0.2",
     "wanakana": "^5.3.1"

@@ -367,6 +367,11 @@ export default function Searchbar() {
 
       // 開発環境のタグ一覧を取得
       getTag("work_environment", "development_environment");
+    } else if (PathName == "/Profile/yoshioka/movie") {
+      // 学生プロフィール内の動画一覧の場合
+      // 動画ジャンルのタグ一覧を取得
+      getTag("video_genre", "video_genre");
+
     } else if (PathName == "/CompanyList") {
       // 企業一覧の場合
       // 職種のタグ一覧を取得
@@ -644,11 +649,38 @@ export default function Searchbar() {
 
         const response = await axios.get(url, {
           params: {
+            info_str: "学生プロフィール内作品検索",
             user_name: urlStr,
             searchText: searchSource.searchText,
             work_genre: work_genre,
             programming_language: programming_language,
             development_environment: development_environment,
+          },
+        });
+        console.log("response.data", response.data);
+
+        // company-view.jsxにデータを渡す
+        const responseData = response.data;
+        responseItems(responseData);
+      } else if (PathName == "/Profile/yoshioka/movie") {
+        // 学生プロフィール内の作品一覧の場合
+        const url = `http://localhost:8000/search_video?page=${Page}&sort=${sortOption}`;
+
+        let video_genre = [];
+
+        console.log("検証:searchSource", searchSource);
+        searchSource.video_genre.map((value) => {
+          video_genre.push(value.value);
+        });
+
+        let urlStr = location.pathname.split('/')[2];
+
+        const response = await axios.get(url, {
+          params: {
+            info_str: "学生プロフィール内動画検索",
+            user_name: urlStr,
+            searchText: searchSource.searchText,
+            video_genre: video_genre,
           },
         });
         console.log("response.data", response.data);
@@ -1543,6 +1575,27 @@ export default function Searchbar() {
                           isClearable
                           isMulti
                           onChange={handleChangeDevelopmentEnvironment}
+                        />
+                      </div>
+                    </div>
+                  </>
+                ) : PathName === "/Profile/yoshioka/movie" ? (
+                  <>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
+                      <div style={{ color: "#444" }}>
+                        <Select
+                          options={options.work_genre}
+                          value={searchSource.work_genre}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeWorkGenre}
                         />
                       </div>
                     </div>

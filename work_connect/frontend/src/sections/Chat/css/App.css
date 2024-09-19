@@ -1,0 +1,10 @@
+
+/* channel-listのヘッダー非表示 */
+.sendbird-channel-list__header {
+display: none !important;
+}
+
+/* 送信ボタンのボタンのずれ */
+.sendbird-message-input .sendbird-message-input--attach {
+  bottom: 14px !important;
+}

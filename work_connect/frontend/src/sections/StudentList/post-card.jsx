@@ -78,7 +78,7 @@ const PostCard = forwardRef(({ post, index }, ref) => {
 
   const renderUserName = (
     <Link
-      to={`/Profile/${userName}`}
+      to={`/Profile/${userName}?page=mypage`}
       color="inherit"
       variant="subtitle2"
       underline="hover"

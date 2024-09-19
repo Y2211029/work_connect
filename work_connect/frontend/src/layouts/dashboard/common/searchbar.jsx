@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 
 import Slide from "@mui/material/Slide";
@@ -57,6 +57,7 @@ const StyledSearchbar = styled("div")(({ theme }) => ({
 
 export default function Searchbar() {
   const location = useLocation();
+  const searchParams = useSearchParams();
   const [PathName, setPathName] = useState("");
   // Topページであれば検索ボタンを非表示にする。
   const Display = useContext(MyContext);
@@ -269,7 +270,21 @@ export default function Searchbar() {
     } else {
       setPathName(location.pathname);
     }
-    // console.log(location.pathname + '/' + urlPageParams);
+  }, [location]);
+  useEffect(() => {
+    let url = new URL(window.location.href);
+    let urlPageParams = url.searchParams.get('page');
+    if(urlPageParams != null) {
+      setPathName(location.pathname + '/' + urlPageParams);
+    } else {
+      setPathName(location.pathname);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+
+    console.log("PathName: ", PathName);
+    // console.log(PathName);
     // タグ一覧取得
 
     if (PathName == "/") {
@@ -998,7 +1013,7 @@ export default function Searchbar() {
   return (
     <ClickAwayListener onClickAway={handleClose}>
       <div>
-        {!open && (
+        {!open && PathName != "/Profile/" + location.pathname.split('/')[2] + "/mypage" && (
           <IconButton onClick={handleOpen} style={{ display: Display }}>
             <Iconify icon="eva:search-fill" />
           </IconButton>

@@ -66,6 +66,14 @@ nav ul li a:hover {
   text-align: center;
 } */
 
+/* モーダルが開いているときは背景がスクロールしないようにする */
+.ReactModal__Body--open {
+  position: fixed;
+}
+.disable-scroll {
+  overflow: hidden;
+}
+
 .Modal form {
   background-color: white;
   width: 70%;

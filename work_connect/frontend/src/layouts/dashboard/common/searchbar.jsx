@@ -1,5 +1,5 @@
 import { useLocation, useSearchParams } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 
 import Slide from "@mui/material/Slide";
 import Input from "@mui/material/Input";
@@ -59,6 +59,33 @@ const StyledSearchbar = styled("div")(({ theme }) => ({
 export default function Searchbar() {
   const location = useLocation();
   const searchParams = useSearchParams();
+
+  /* 検索欄の上にカーソルが乗っているときは背景がスライドしないようにする */
+  const areaRef = useRef(null);
+  const [isScrollDisabled, setIsScrollDisabled] = useState(false); // スクロールの状態を管理
+  useEffect(() => {
+    const handleMouseOver = (event) => {
+      if (areaRef.current && areaRef.current.contains(event.target)) {
+        document.body.classList.add('disable-scroll');
+      } else {
+        document.body.classList.remove('disable-scroll');
+      }
+    };
+
+    document.addEventListener('mouseover', handleMouseOver);
+
+    return () => {
+      document.removeEventListener('mouseover', handleMouseOver);
+      document.body.classList.remove('disable-scroll'); // クリーンアップ時にスクロールを有効化
+    };
+  }, []);
+  useEffect(() => {
+    if (isScrollDisabled) {
+      document.body.classList.add('disable-scroll');
+    } else {
+      document.body.classList.remove('disable-scroll');
+    }
+  }, [isScrollDisabled]);
 
   const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData");
@@ -477,6 +504,7 @@ export default function Searchbar() {
   // }, [options]);
 
   const handleOpen = () => {
+    setIsScrollDisabled(true);
     let url = new URL(window.location.href);
     let urlPageParams = url.searchParams.get("page");
     if (urlPageParams != null) {
@@ -1144,7 +1172,7 @@ export default function Searchbar() {
             </IconButton>
           )}
 
-        <Slide direction="down" in={open} mountOnEnter unmountOnExit>
+        <Slide direction="down" in={open} mountOnEnter unmountOnExit ref={areaRef} className="no-scroll-area">
           <StyledSearchbar>
             <div style={{ display: "" }}>
               <div style={{ display: "flex" }}>

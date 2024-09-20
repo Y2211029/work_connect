@@ -64,7 +64,7 @@ export default function Searchbar() {
   const accountData = getSessionData("accountData");
 
   let myId = "";
-  if(accountData != undefined) {
+  if (accountData != undefined) {
     myId = accountData.id;
   }
 
@@ -329,6 +329,9 @@ export default function Searchbar() {
     if (PathName == "/") {
       // 作品一覧の場合
       // console.log("aaaaaaaaaaaaaaaaaaaaaaaa");
+      // フォロー状況のタグ一覧を取得
+      getFollowStatusTag();
+
       // 学校名のタグ一覧を取得
       getSchoolNameTag();
 
@@ -354,6 +357,9 @@ export default function Searchbar() {
       getTag("work_environment", "development_environment");
     } else if (PathName == "/VideoList") {
       // 動画一覧の場合
+      // フォロー状況のタグ一覧を取得
+      getFollowStatusTag();
+
       // 学校名のタグ一覧を取得
       getSchoolNameTag();
 
@@ -501,6 +507,7 @@ export default function Searchbar() {
         // const url = `http://localhost:8000/search_work?page=${Page}&sort=${`;
         // console.log("searchbar : Page = ", Page);
 
+        let follow_status = [];
         let school_name = [];
         let department_name = [];
         let faculty_name = [];
@@ -511,6 +518,9 @@ export default function Searchbar() {
         let development_environment = [];
 
         console.log("検証:searchSource", searchSource);
+        searchSource.follow_status.map((value) => {
+          follow_status.push(value.value);
+        });
         searchSource.school_name.map((value) => {
           school_name.push(value.value);
         });
@@ -540,7 +550,9 @@ export default function Searchbar() {
 
         const response = await axios.get(url, {
           params: {
+            myId: myId,
             searchText: searchSource.searchText,
+            follow_status: follow_status,
             school_name: school_name,
             department_name: department_name,
             faculty_name: faculty_name,
@@ -561,6 +573,7 @@ export default function Searchbar() {
         // 動画一覧の場合
         const url = `http://localhost:8000/search_video?page=${Page}&sort=${sortOption}`;
 
+        let follow_status = [];
         let school_name = [];
         let department_name = [];
         let faculty_name = [];
@@ -568,6 +581,9 @@ export default function Searchbar() {
         let course_name = [];
         let video_genre = [];
 
+        searchSource.follow_status.map((value) => {
+          follow_status.push(value.value);
+        });
         searchSource.school_name.map((value) => {
           school_name.push(value.value);
         });
@@ -589,7 +605,9 @@ export default function Searchbar() {
 
         const response = await axios.get(url, {
           params: {
+            myId: myId,
             searchText: searchSource.searchText,
+            follow_status: follow_status,
             school_name: school_name,
             department_name: department_name,
             faculty_name: faculty_name,
@@ -1115,6 +1133,32 @@ export default function Searchbar() {
               >
                 {PathName === "/" ? (
                   <>
+                    {myId[0] === "C" ? (
+                      <>
+                        <div
+                          style={{
+                            display: "",
+                            marginTop: "20px",
+                            marginBottom: "10px",
+                          }}
+                        >
+                          <div style={{ fontWeight: "Bold", color: "#666" }}>
+                            フォロー状況
+                          </div>
+                          <div style={{ color: "#444" }}>
+                            <Select
+                              options={options.follow_status}
+                              value={searchSource.follow_status}
+                              isClearable
+                              isMulti
+                              onChange={handleChangeFollowStatus}
+                            />
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      ""
+                    )}
                     <div
                       style={{
                         display: "",
@@ -1278,6 +1322,32 @@ export default function Searchbar() {
                   </>
                 ) : PathName === "/VideoList" ? (
                   <>
+                    {myId[0] === "C" ? (
+                      <>
+                        <div
+                          style={{
+                            display: "",
+                            marginTop: "20px",
+                            marginBottom: "10px",
+                          }}
+                        >
+                          <div style={{ fontWeight: "Bold", color: "#666" }}>
+                            フォロー状況
+                          </div>
+                          <div style={{ color: "#444" }}>
+                            <Select
+                              options={options.follow_status}
+                              value={searchSource.follow_status}
+                              isClearable
+                              isMulti
+                              onChange={handleChangeFollowStatus}
+                            />
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      ""
+                    )}
                     <div
                       style={{
                         display: "",

@@ -23,17 +23,17 @@ class GetCompanyListController extends Controller
             $companyList = w_company::skip($offset)
                 ->take($perPage)
                 ->get();
-            Log::info('GetCompanyListController:companyList');
-            Log::info(json_encode($companyList));
+            // Log::info('GetCompanyListController:companyList');
+            // Log::info(json_encode($companyList));
 
             // 各企業のフォロー状態を確認して更新
             $companyList = $companyList->map(function ($company) {
                 $id = $company->id;
-               
+
                 // IDの最初の文字が "S" の場合にフォロー状態を確認
                 if ($id[0] === "S") {
-                    Log::info('ID[0]が "S" の場合の処理を実行');
-                    Log::info('IDの値: ' . $id);
+                    // Log::info('ID[0]が "S" の場合の処理を実行');
+                    // Log::info('IDの値: ' . $id);
 
                     // ログインしているユーザーのIDを取得する必要があります（例: auth()->id()）
                     $currentUserId = auth()->id();
@@ -66,7 +66,7 @@ class GetCompanyListController extends Controller
                 return $company;
             });
 
-            Log::info(json_encode($companyList));
+            // Log::info(json_encode($companyList));
 
             // 結果をJSON形式で返す
             return response()->json($companyList);

@@ -27,12 +27,12 @@ class GetStudentListController extends Controller
             $StudentOfList = $StudentOfList->map(function ($user) {
                 // ユーザーのIDを取得
                 $id = $user->id;
-                Log::info('$user->id');
-                Log::info($id);
+                // Log::info('$user->id');
+                // Log::info($id);
                 // もしも $id の最初の文字が "C" であれば、フォロー状態を確認
                 if ("C" === $id[0]) {
-                    Log::info('ID[0]が "C" の場合の処理を実行');
-                    Log::info('IDの値: ' . $id);
+                    // Log::info('ID[0]が "C" の場合の処理を実行');
+                    // Log::info('IDの値: ' . $id);
 
                     // ユーザーがログインしているアカウントをフォローしているかどうか
                     $isFollowing = w_follow::where('follow_sender_id', $id)
@@ -62,8 +62,8 @@ class GetStudentListController extends Controller
                 return $user;
             });
 
-            Log::info('GetStudentListController: $StudentOfList:');
-            Log::info(json_encode($StudentOfList));
+            // Log::info('GetStudentListController: $StudentOfList:');
+            // Log::info(json_encode($StudentOfList));
 
             // 結果をJSON形式で返す
             return response()->json($StudentOfList);

@@ -15,17 +15,24 @@ class SearchCompanyController extends Controller
             $page = (int) $request->query('page', 1);
             $perPage = 20; //一ページ当たりのアイテム数
             $offset = ($page - 1) * $perPage;
+
+            // 検索者のIDを取得
+            $myId = $request->input('myId', "");
+
             // 検索文字列を取得
             $searchText = $request->input('searchText', "");
+
+            // 絞り込まれたフォロー状況を配列で取得
+            $follow_status_array = $request->input('follow_status', []);
 
             // 絞り込まれた職種を配列で取得
             $selected_occupation_array = $request->input('selected_occupation', []);
             $prefecture_array = $request->input('prefecture', []);
 
-            \Log::info('SearchCompanyController:$selected_occupation_array:');
-            \Log::info($selected_occupation_array);
-            \Log::info('SearchCompanyController:$prefecture_array:');
-            \Log::info($prefecture_array);
+            // \Log::info('SearchCompanyController:$selected_occupation_array:');
+            // \Log::info($selected_occupation_array);
+            // \Log::info('SearchCompanyController:$prefecture_array:');
+            // \Log::info($prefecture_array);
 
             $query = w_company::query();
 
@@ -49,7 +56,7 @@ class SearchCompanyController extends Controller
             // 検索文字列で絞り込み
             if ($searchText != "") {
                 $query->where(function($query) use ($searchText) {
-                    // 学生の情報
+                    // 企業の情報
                     $query->orWhere('w_companies.user_name', 'LIKE', '%' . $searchText . '%');
                     $query->orWhere('w_companies.company_name', 'LIKE', '%' . $searchText . '%');
                     $query->orWhere('w_companies.company_namecana', 'LIKE', '%' . $searchText . '%');
@@ -65,14 +72,31 @@ class SearchCompanyController extends Controller
                 });
             }
 
+            // フォロー状況で検索
+            if(in_array("フォローしている", $follow_status_array) && in_array("フォローされている", $follow_status_array)) {
+                // 相互フォローの場合
+                $query->join('w_follow as f1', 'w_companies.id', '=', 'f1.follow_recipient_id');
+                $query->where('f1.follow_sender_id', $myId);
+                $query->join('w_follow as f2', 'w_companies.id', '=', 'f2.follow_sender_id');
+                $query->where('f2.follow_recipient_id', $myId);
+            } else if(in_array("フォローしている", $follow_status_array)) {
+                // フォローしている場合
+                $query->join('w_follow', 'w_companies.id', '=', 'w_follow.follow_recipient_id');
+                $query->where('w_follow.follow_sender_id', $myId);
+            } else if(in_array("フォローされている", $follow_status_array)) {
+                // フォローされている場合
+                $query->join('w_follow', 'w_companies.id', '=', 'w_follow.follow_sender_id');
+                $query->where('w_follow.follow_recipient_id', $myId);
+            }
+
             $results = $query->skip($offset)
                 ->take($perPage) //件数
                 ->get();
 
             $resultsArray = json_decode(json_encode($results), true);
 
-            \Log::info('SearchVideoController:$resultsArray:');
-            \Log::info($resultsArray);
+            // \Log::info('SearchVideoController:$resultsArray:');
+            // \Log::info($resultsArray);
 
             return json_encode($resultsArray);
             // if (count($resultsArray) == 0) {

@@ -2,12 +2,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
-// import ChatPartnerList from './ChatPartnerList';
-// import ChatView from './ChatView';
-
 import "../css/App.css";
 
-const ChatApp = () => {
+const ChatView = () => {
 
   // DBからのレスポンスが入る変数
   const [ResponseChannelListData, setResponseChannelListData] = useState([]);
@@ -37,7 +34,7 @@ const ChatApp = () => {
           },
         });
         if (response) {
-          console.log(response.data);
+          //console.log(response.data);
           setResponseChannelListData(response.data);
         }
       } catch (err) {
@@ -52,10 +49,9 @@ const ChatApp = () => {
 
   return (
     <div style={{ width:'100%', height:'100%' }}>
-      {/* <ChatPartnerList />
-      <ChatView /> */}
+      あいうえお
     </div>
   )
 }
 
-export default ChatApp;
+export default ChatView;

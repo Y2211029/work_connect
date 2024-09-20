@@ -102,6 +102,7 @@ export default function Searchbar() {
     selected_occupation: [],
     prefecture: [],
     company_name: [],
+    industry: [],
   });
 
   const [options, setOptions] = useState({
@@ -128,6 +129,7 @@ export default function Searchbar() {
     selected_occupation: [],
     prefecture: [],
     company_name: [],
+    industry: [],
   });
 
   const { GetTagListFunction } = GetTagList();
@@ -445,6 +447,21 @@ export default function Searchbar() {
 
       // 勤務地のタグ一覧を取得
       getTag("company_prefecture", "prefecture");
+
+      // 業界キーワードのタグ一覧を取得
+      getTag("company_industry", "industry");
+
+      // 開発環境のタグ一覧を取得
+      getTag("company_development_environment", "development_environment");
+
+      // プログラミング言語のタグ一覧を取得
+      getTag("company_programming_language", "programming_language");
+
+      // 歓迎資格のタグ一覧を取得
+      getTag("company_acquisition_qualification", "acquisition_qualification");
+
+      // ソフトウェアのタグ一覧を取得
+      getTag("company_software", "software");
     } else if (PathName == "/Internship_JobOffer") {
       // 求人一覧の場合
       // 企業名一覧を取得
@@ -779,6 +796,11 @@ export default function Searchbar() {
         let follow_status = [];
         let selected_occupation = [];
         let prefecture = [];
+        let industry = [];
+        let development_environment = [];
+        let programming_language = [];
+        let acquisition_qualification = [];
+        let software = [];
 
         searchSource.follow_status.map((value) => {
           follow_status.push(value.value);
@@ -789,6 +811,21 @@ export default function Searchbar() {
         searchSource.prefecture.map((value) => {
           prefecture.push(value.value);
         });
+        searchSource.industry.map((value) => {
+          industry.push(value.value);
+        });
+        searchSource.development_environment.map((value) => {
+          development_environment.push(value.value);
+        });
+        searchSource.programming_language.map((value) => {
+          programming_language.push(value.value);
+        });
+        searchSource.acquisition_qualification.map((value) => {
+          acquisition_qualification.push(value.value);
+        });
+        searchSource.software.map((value) => {
+          software.push(value.value);
+        });
 
         const response = await axios.get(url, {
           params: {
@@ -797,6 +834,11 @@ export default function Searchbar() {
             follow_status: follow_status,
             selected_occupation: selected_occupation,
             prefecture: prefecture,
+            industry: industry,
+            development_environment: development_environment,
+            programming_language: programming_language,
+            acquisition_qualification: acquisition_qualification,
+            software  : software,
           },
         });
         console.log("response.data", response.data);
@@ -1073,6 +1115,10 @@ export default function Searchbar() {
   // 企業名のタグを操作したとき
   const handleChangeCompanyName = (selectedOption) => {
     tagAction("company_name", selectedOption);
+  };
+  // 業界タグのタグを操作したとき
+  const handleChangeIndustry = (selectedOption) => {
+    tagAction("industry", selectedOption);
   };
   // フォロー状況のタグを操作したとき
   const handleChangeFollowStatus = (selectedOption) => {
@@ -1909,6 +1955,106 @@ export default function Searchbar() {
                           isClearable
                           isMulti
                           onChange={handleChangePrefecture}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        業界キーワード
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <Select
+                          options={options.industry}
+                          value={searchSource.industry}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeIndustry}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        開発環境
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <Select
+                          options={options.development_environment}
+                          value={searchSource.development_environment}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeDevelopmentEnvironment}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        プログラミング言語
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <Select
+                          options={options.programming_language}
+                          value={searchSource.programming_language}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeProgrammingLanguage}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        歓迎資格
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <Select
+                          options={options.acquisition_qualification}
+                          value={searchSource.acquisition_qualification}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeAcquisitionQualification}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        ソフトウェア
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <Select
+                          options={options.software}
+                          value={searchSource.software}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeSoftware}
                         />
                       </div>
                     </div>

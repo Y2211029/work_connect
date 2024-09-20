@@ -27,7 +27,18 @@ class SearchCompanyController extends Controller
 
             // 絞り込まれた職種を配列で取得
             $selected_occupation_array = $request->input('selected_occupation', []);
+            // 絞り込まれた勤務地を配列で取得
             $prefecture_array = $request->input('prefecture', []);
+            // 絞り込まれた業界キーワードを配列で取得
+            $industry_array = $request->input('industry', []);
+            // 絞り込まれた開発環境を配列で取得
+            $development_environment_array = $request->input('development_environment', []);
+            // 絞り込まれたプログラミング言語を配列で取得
+            $programming_language_array = $request->input('programming_language', []);
+            // 絞り込まれた歓迎資格を配列で取得
+            $acquisition_qualification_array = $request->input('acquisition_qualification', []);
+            // 絞り込まれたソフトウェアを配列で取得
+            $software_array = $request->input('software', []);
 
             // \Log::info('SearchCompanyController:$selected_occupation_array:');
             // \Log::info($selected_occupation_array);
@@ -50,6 +61,36 @@ class SearchCompanyController extends Controller
             if (isset($prefecture_array)) {
                 foreach ($prefecture_array as $prefecture) {
                     $query->where('w_companies.prefecture', 'REGEXP', '(^|,)' . preg_quote($prefecture) . '($|,)');
+                }
+            }
+            // 業界キーワードで絞り込み
+            if (isset($industry_array)) {
+                foreach ($industry_array as $industry) {
+                    $query->where('w_companies.industry', 'REGEXP', '(^|,)' . preg_quote($industry) . '($|,)');
+                }
+            }
+            // 開発環境で絞り込み
+            if (isset($development_environment_array)) {
+                foreach ($development_environment_array as $development_environment) {
+                    $query->where('w_companies.development_environment', 'REGEXP', '(^|,)' . preg_quote($development_environment) . '($|,)');
+                }
+            }
+            // プログラミング言語で絞り込み
+            if (isset($programming_language_array)) {
+                foreach ($programming_language_array as $programming_language) {
+                    $query->where('w_companies.programming_language', 'REGEXP', '(^|,)' . preg_quote($programming_language) . '($|,)');
+                }
+            }
+            // 歓迎資格で絞り込み
+            if (isset($acquisition_qualification_array)) {
+                foreach ($acquisition_qualification_array as $acquisition_qualification) {
+                    $query->where('w_companies.acquisition_qualification', 'REGEXP', '(^|,)' . preg_quote($acquisition_qualification) . '($|,)');
+                }
+            }
+            // ソフトウェアで絞り込み
+            if (isset($software_array)) {
+                foreach ($software_array as $software) {
+                    $query->where('w_companies.software', 'REGEXP', '(^|,)' . preg_quote($software) . '($|,)');
                 }
             }
 

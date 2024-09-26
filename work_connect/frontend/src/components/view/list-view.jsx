@@ -124,8 +124,8 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       url: "http://localhost:8000/get_work_list",
       idKey: "work_id",
       tags: ["work_genre"],
-      generatePosts: (WorkOfList, key) =>
-        WorkOfList.map((work) => ({
+      generatePosts: (WorkOfList) =>
+        WorkOfList.map((work, key) => ({
           work_id: work.work_id,
           thumbnail: `/assets/images/covers/cover_${key + 1}.jpg`,
           icon: work.icon,
@@ -150,7 +150,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       generatePosts: (WorkOfList) =>
         WorkOfList.map((movie) => ({
           movie_id: movie.movie_id,
-          
+
           movie: movie.youtube_url,
           title: movie.title,
           genre: movie.genre,

@@ -29,6 +29,7 @@ class GetWorkDetailController extends Controller
             \Log::info('GetWorkDetailController:$id:');
             \Log::info($id);
 
+            // $workList[0]-
             $workImageList = w_images::select('*')->where('work_id', $id)->get();
 
             \Log::info('GetWorkDetailController:$workList[0]:');

@@ -70,6 +70,7 @@ nav ul li a:hover {
 .ReactModal__Body--open {
   position: fixed;
 }
+
 .disable-scroll {
   overflow: hidden;
 }
@@ -593,10 +594,13 @@ textarea {
 
 .postCard {
   /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
-  margin: 10px;
-  border-radius: 10px;
-  display: inline-block;
+  margin: 10px 0px;
+  border-radius: 20px;
+
   width: "100%";
+  background: white;
+  padding: 20px;
+
 }
 
 
@@ -660,16 +664,14 @@ textarea {
   height: 94%;
   overflow-y: scroll;
   padding-top: 20px;
-  width: 300px;
+  width: 100%;
 }
 
 #gallery .gallery_images .gallery_img {
   transition: 0.5s all;
-  display: inline-block;
   aspect-ratio: 16/9;
-  -o-object-fit: contain;
   object-fit: contain;
-  /* border: 2px solid rgba(0, 0, 0, 0.06); */
+  width: 300px;
 }
 
 .gallery_img:hover {

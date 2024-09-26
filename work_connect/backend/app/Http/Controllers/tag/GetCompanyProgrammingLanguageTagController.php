@@ -20,7 +20,7 @@ class GetCompanyProgrammingLanguageTagController extends Controller
                 ->whereExists(function ($query) {
                     $query->select(\DB::raw(1))
                         ->from('w_companies')
-                        ->whereRaw('w_companies.programming_language	 REGEXP CONCAT("(^|,)", w_tags.name, "(,|$)")');
+                        ->whereRaw('w_companies.programming_language REGEXP CONCAT("(^|,)", w_tags.name, "(,|$)")');
                 })
                 ->get();
         }

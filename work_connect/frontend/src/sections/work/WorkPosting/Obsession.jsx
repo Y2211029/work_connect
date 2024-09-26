@@ -59,7 +59,7 @@ const Textarea = styled(BaseTextareaAutosize)(
 
 const Obsession = (props) => {
   const theme = useTheme();
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState(null);
   const [hasError, setHasError] = useState(false);
 
   const handleChange = (e) => {
@@ -82,7 +82,7 @@ const Obsession = (props) => {
           maxLength={500}
           sx={{
             border:
-              Obsession === ""
+              inputValue === ""
                 ? "1px red solid"
                 : `1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]}`,
           }}

@@ -1,5 +1,5 @@
-import { useLocation } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { useLocation, useSearchParams } from "react-router-dom";
+import { useContext, useEffect, useState, useRef } from "react";
 
 import Slide from "@mui/material/Slide";
 import Input from "@mui/material/Input";
@@ -19,6 +19,7 @@ import axios from "axios";
 import GetTagList from "src/components/tag/GetTagList";
 import { MyContext } from "src/layouts/dashboard/index";
 import { AllItemsContext } from "src/layouts/dashboard/index";
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
 // import { PageContext } from "src/layouts/dashboard/index";
 // import { SearchCheckContext } from "src/layouts/dashboard/index";
 // import { SortOption } from "src/layouts/dashboard/index";
@@ -57,6 +58,43 @@ const StyledSearchbar = styled("div")(({ theme }) => ({
 
 export default function Searchbar() {
   const location = useLocation();
+  const searchParams = useSearchParams();
+
+  /* 検索欄の上にカーソルが乗っているときは背景がスライドしないようにする */
+  const areaRef = useRef(null);
+  const [isScrollDisabled, setIsScrollDisabled] = useState(false); // スクロールの状態を管理
+  useEffect(() => {
+    const handleMouseOver = (event) => {
+      if (areaRef.current && areaRef.current.contains(event.target)) {
+        document.body.classList.add('disable-scroll');
+      } else {
+        document.body.classList.remove('disable-scroll');
+      }
+    };
+
+    document.addEventListener('mouseover', handleMouseOver);
+
+    return () => {
+      document.removeEventListener('mouseover', handleMouseOver);
+      document.body.classList.remove('disable-scroll'); // クリーンアップ時にスクロールを有効化
+    };
+  }, []);
+  useEffect(() => {
+    if (isScrollDisabled) {
+      document.body.classList.add('disable-scroll');
+    } else {
+      document.body.classList.remove('disable-scroll');
+    }
+  }, [isScrollDisabled]);
+
+  const { getSessionData } = useSessionStorage();
+  const accountData = getSessionData("accountData");
+
+  let myId = "";
+  if (accountData != undefined) {
+    myId = accountData.id;
+  }
+
   const [PathName, setPathName] = useState("");
   // Topページであれば検索ボタンを非表示にする。
   const Display = useContext(MyContext);
@@ -69,6 +107,7 @@ export default function Searchbar() {
   const [open, setOpen] = useState(false);
   const [searchSource, setsearchSource] = useState({
     searchText: "",
+    follow_status: [],
     work_genre: [],
     programming_language: [],
     development_environment: [],
@@ -90,10 +129,12 @@ export default function Searchbar() {
     selected_occupation: [],
     prefecture: [],
     company_name: [],
+    industry: [],
   });
 
   const [options, setOptions] = useState({
     searchText: "",
+    follow_status: [],
     work_genre: [],
     programming_language: [],
     development_environment: [],
@@ -114,6 +155,7 @@ export default function Searchbar() {
     selected_occupation: [],
     prefecture: [],
     company_name: [],
+    industry: [],
   });
 
   const { GetTagListFunction } = GetTagList();
@@ -138,7 +180,14 @@ export default function Searchbar() {
 
   const getGraduationYearTag = async () => {
     let optionArray = [];
-    let result = ["2025年卒業", "2026年卒業", "2027年卒業", "2028年卒業", "2029年卒業", "2030年卒業"];
+    let result = [
+      "2025年卒業",
+      "2026年卒業",
+      "2027年卒業",
+      "2028年卒業",
+      "2029年卒業",
+      "2030年卒業",
+    ];
 
     // console.log("result: ", result);
     result.map((value) => {
@@ -218,7 +267,10 @@ export default function Searchbar() {
 
   const fetchCompanyNameData = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/get_company_name_list`, {});
+      const response = await axios.get(
+        `http://localhost:8000/get_company_name_list`,
+        {}
+      );
 
       console.log("fetchCompanyNameData response: ");
       console.log(response.data);
@@ -247,12 +299,30 @@ export default function Searchbar() {
 
     // console.log("result: ", result);
     result.map((value) => {
-      optionArray.push({ value: value.company_name, label: value.company_name });
+      optionArray.push({
+        value: value.company_name,
+        label: value.company_name,
+      });
     });
     console.log("optionArray", optionArray);
     setOptions((prevOptions) => ({
       ...prevOptions,
       company_name: optionArray,
+    }));
+  };
+
+  const getFollowStatusTag = () => {
+    let optionArray = [];
+    let result = ["フォローしている", "フォローされている"];
+
+    // console.log("result: ", result);
+    result.map((value) => {
+      optionArray.push({ value: value, label: value });
+    });
+    console.log("optionArray", optionArray);
+    setOptions((prevOptions) => ({
+      ...prevOptions,
+      follow_status: optionArray,
     }));
   };
 
@@ -262,18 +332,34 @@ export default function Searchbar() {
 
   useEffect(() => {
     let url = new URL(window.location.href);
-    let urlPageParams = url.searchParams.get('page');
-    if(urlPageParams != null) {
-      setPathName(location.pathname + '/' + urlPageParams);
+    let urlPageParams = url.searchParams.get("page");
+    if (urlPageParams != null) {
+      setPathName(location.pathname + "/" + urlPageParams);
     } else {
       setPathName(location.pathname);
     }
-    // console.log(location.pathname + '/' + urlPageParams);
+  }, [location]);
+  useEffect(() => {
+    let url = new URL(window.location.href);
+    let urlPageParams = url.searchParams.get("page");
+    if (urlPageParams != null) {
+      setPathName(location.pathname + "/" + urlPageParams);
+    } else {
+      setPathName(location.pathname);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    console.log("PathName: ", PathName);
+    // console.log(PathName);
     // タグ一覧取得
 
     if (PathName == "/") {
       // 作品一覧の場合
       // console.log("aaaaaaaaaaaaaaaaaaaaaaaa");
+      // フォロー状況のタグ一覧を取得
+      getFollowStatusTag();
+
       // 学校名のタグ一覧を取得
       getSchoolNameTag();
 
@@ -299,6 +385,9 @@ export default function Searchbar() {
       getTag("work_environment", "development_environment");
     } else if (PathName == "/VideoList") {
       // 動画一覧の場合
+      // フォロー状況のタグ一覧を取得
+      getFollowStatusTag();
+
       // 学校名のタグ一覧を取得
       getSchoolNameTag();
 
@@ -318,6 +407,10 @@ export default function Searchbar() {
       getTag("video_genre", "video_genre");
     } else if (PathName == "/StudentList") {
       // 学生一覧の場合
+
+      // フォロー状況のタグ一覧を取得
+      getFollowStatusTag();
+
       // 卒業年のタグ一覧を取得
       getGraduationYearTag();
 
@@ -366,13 +459,35 @@ export default function Searchbar() {
 
       // 開発環境のタグ一覧を取得
       getTag("work_environment", "development_environment");
+    } else if (PathName == "/Profile/yoshioka/movie") {
+      // 学生プロフィール内の動画一覧の場合
+      // 動画ジャンルのタグ一覧を取得
+      getTag("video_genre", "video_genre");
     } else if (PathName == "/CompanyList") {
       // 企業一覧の場合
+      // フォロー状況のタグ一覧を取得
+      getFollowStatusTag();
+
       // 職種のタグ一覧を取得
       getTag("company_selected_occupation", "selected_occupation");
 
       // 勤務地のタグ一覧を取得
       getTag("company_prefecture", "prefecture");
+
+      // 業界キーワードのタグ一覧を取得
+      getTag("company_industry", "industry");
+
+      // 開発環境のタグ一覧を取得
+      getTag("company_development_environment", "development_environment");
+
+      // プログラミング言語のタグ一覧を取得
+      getTag("company_programming_language", "programming_language");
+
+      // 歓迎資格のタグ一覧を取得
+      getTag("company_acquisition_qualification", "acquisition_qualification");
+
+      // ソフトウェアのタグ一覧を取得
+      getTag("company_software", "software");
     } else if (PathName == "/Internship_JobOffer") {
       // 求人一覧の場合
       // 企業名一覧を取得
@@ -388,10 +503,11 @@ export default function Searchbar() {
   // }, [options]);
 
   const handleOpen = () => {
+    setIsScrollDisabled(true);
     let url = new URL(window.location.href);
-    let urlPageParams = url.searchParams.get('page');
-    if(urlPageParams != null) {
-      setPathName(location.pathname + '/' + urlPageParams);
+    let urlPageParams = url.searchParams.get("page");
+    if (urlPageParams != null) {
+      setPathName(location.pathname + "/" + urlPageParams);
     } else {
       setPathName(location.pathname);
     }
@@ -435,6 +551,7 @@ export default function Searchbar() {
         // const url = `http://localhost:8000/search_work?page=${Page}&sort=${`;
         // console.log("searchbar : Page = ", Page);
 
+        let follow_status = [];
         let school_name = [];
         let department_name = [];
         let faculty_name = [];
@@ -445,6 +562,9 @@ export default function Searchbar() {
         let development_environment = [];
 
         console.log("検証:searchSource", searchSource);
+        searchSource.follow_status.map((value) => {
+          follow_status.push(value.value);
+        });
         searchSource.school_name.map((value) => {
           school_name.push(value.value);
         });
@@ -474,7 +594,9 @@ export default function Searchbar() {
 
         const response = await axios.get(url, {
           params: {
+            myId: myId,
             searchText: searchSource.searchText,
+            follow_status: follow_status,
             school_name: school_name,
             department_name: department_name,
             faculty_name: faculty_name,
@@ -495,6 +617,7 @@ export default function Searchbar() {
         // 動画一覧の場合
         const url = `http://localhost:8000/search_video?page=${Page}&sort=${sortOption}`;
 
+        let follow_status = [];
         let school_name = [];
         let department_name = [];
         let faculty_name = [];
@@ -502,6 +625,9 @@ export default function Searchbar() {
         let course_name = [];
         let video_genre = [];
 
+        searchSource.follow_status.map((value) => {
+          follow_status.push(value.value);
+        });
         searchSource.school_name.map((value) => {
           school_name.push(value.value);
         });
@@ -523,7 +649,9 @@ export default function Searchbar() {
 
         const response = await axios.get(url, {
           params: {
+            myId: myId,
             searchText: searchSource.searchText,
+            follow_status: follow_status,
             school_name: school_name,
             department_name: department_name,
             faculty_name: faculty_name,
@@ -541,6 +669,7 @@ export default function Searchbar() {
         // 学生一覧の場合
         const url = `http://localhost:8000/search_student?page=${Page}`;
 
+        let follow_status = [];
         let graduation_year = [];
         let school_name = [];
         let department_name = [];
@@ -555,6 +684,9 @@ export default function Searchbar() {
         let acquisition_qualification = [];
         let hobby = [];
 
+        searchSource.follow_status.map((value) => {
+          follow_status.push(value.value);
+        });
         searchSource.graduation_year.map((value) => {
           graduation_year.push(value.value);
         });
@@ -597,7 +729,9 @@ export default function Searchbar() {
 
         const response = await axios.get(url, {
           params: {
+            myId: myId,
             searchText: searchSource.searchText,
+            follow_status: follow_status,
             graduation_year: graduation_year,
             school_name: school_name,
             department_name: department_name,
@@ -639,10 +773,11 @@ export default function Searchbar() {
           development_environment.push(value.value);
         });
 
-        let urlStr = location.pathname.split('/')[2];
+        let urlStr = location.pathname.split("/")[2];
 
         const response = await axios.get(url, {
           params: {
+            info_str: "学生プロフィール内作品検索",
             user_name: urlStr,
             searchText: searchSource.searchText,
             work_genre: work_genre,
@@ -655,25 +790,82 @@ export default function Searchbar() {
         // company-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
+      } else if (PathName == "/Profile/yoshioka/movie") {
+        // 学生プロフィール内の作品一覧の場合
+        const url = `http://localhost:8000/search_video?page=${Page}&sort=${sortOption}`;
+
+        let video_genre = [];
+
+        console.log("検証:searchSource", searchSource);
+        searchSource.video_genre.map((value) => {
+          video_genre.push(value.value);
+        });
+
+        let urlStr = location.pathname.split("/")[2];
+
+        const response = await axios.get(url, {
+          params: {
+            info_str: "学生プロフィール内動画検索",
+            user_name: urlStr,
+            searchText: searchSource.searchText,
+            video_genre: video_genre,
+          },
+        });
+        console.log("response.data", response.data);
+
+        // company-view.jsxにデータを渡す
+        const responseData = response.data;
+        responseItems(responseData);
       } else if (PathName == "/CompanyList") {
         // 企業一覧の場合
         const url = `http://localhost:8000/search_company?page=${Page}`;
 
+        let follow_status = [];
         let selected_occupation = [];
         let prefecture = [];
+        let industry = [];
+        let development_environment = [];
+        let programming_language = [];
+        let acquisition_qualification = [];
+        let software = [];
 
+        searchSource.follow_status.map((value) => {
+          follow_status.push(value.value);
+        });
         searchSource.selected_occupation.map((value) => {
           selected_occupation.push(value.value);
         });
         searchSource.prefecture.map((value) => {
           prefecture.push(value.value);
         });
+        searchSource.industry.map((value) => {
+          industry.push(value.value);
+        });
+        searchSource.development_environment.map((value) => {
+          development_environment.push(value.value);
+        });
+        searchSource.programming_language.map((value) => {
+          programming_language.push(value.value);
+        });
+        searchSource.acquisition_qualification.map((value) => {
+          acquisition_qualification.push(value.value);
+        });
+        searchSource.software.map((value) => {
+          software.push(value.value);
+        });
 
         const response = await axios.get(url, {
           params: {
+            myId: myId,
             searchText: searchSource.searchText,
+            follow_status: follow_status,
             selected_occupation: selected_occupation,
             prefecture: prefecture,
+            industry: industry,
+            development_environment: development_environment,
+            programming_language: programming_language,
+            acquisition_qualification: acquisition_qualification,
+            software  : software,
           },
         });
         console.log("response.data", response.data);
@@ -772,7 +964,8 @@ export default function Searchbar() {
   };
 
   // 空だったらtrue
-  const isAllEmpty = (obj) => Object.values(obj).every((value) => value.length === 0);
+  const isAllEmpty = (obj) =>
+    Object.values(obj).every((value) => value.length === 0);
 
   // 検索ボタンを押したとき
   const handleSearch = () => {
@@ -809,7 +1002,6 @@ export default function Searchbar() {
     }
   };
 
-
   // ページが変更された時に次のデータを取得する
   useEffect(() => {
     // 検索タグが入力されているかつ、pageが変更されたて値があれば検索する
@@ -817,8 +1009,6 @@ export default function Searchbar() {
       searchSourceList();
     }
   }, [IsSearch.Check, Page, IsSearch.searchToggle, sortOption]);
-
-
 
   // 検索欄に入力したとき
   const handleChangeText = (e) => {
@@ -953,6 +1143,14 @@ export default function Searchbar() {
   const handleChangeCompanyName = (selectedOption) => {
     tagAction("company_name", selectedOption);
   };
+  // 業界タグのタグを操作したとき
+  const handleChangeIndustry = (selectedOption) => {
+    tagAction("industry", selectedOption);
+  };
+  // フォロー状況のタグを操作したとき
+  const handleChangeFollowStatus = (selectedOption) => {
+    tagAction("follow_status", selectedOption);
+  };
 
   useEffect(() => {
     console.log("searchSource: ", searchSource);
@@ -965,13 +1163,15 @@ export default function Searchbar() {
   return (
     <ClickAwayListener onClickAway={handleClose}>
       <div>
-        {!open && (
-          <IconButton onClick={handleOpen} style={{ display: Display.MyPage }}>
-            <Iconify icon="eva:search-fill" />
-          </IconButton>
-        )}
+        {!open &&
+          PathName !=
+            "/Profile/" + location.pathname.split("/")[2] + "/mypage" && (
+            <IconButton onClick={handleOpen} style={{ display: Display }}>
+              <Iconify icon="eva:search-fill" />
+            </IconButton>
+          )}
 
-        <Slide direction="down" in={open} mountOnEnter unmountOnExit>
+        <Slide direction="down" in={open} mountOnEnter unmountOnExit ref={areaRef} className="no-scroll-area">
           <StyledSearchbar>
             <div style={{ display: "" }}>
               <div style={{ display: "flex" }}>
@@ -982,7 +1182,10 @@ export default function Searchbar() {
                   placeholder="Search…"
                   startAdornment={
                     <InputAdornment position="start">
-                      <Iconify icon="eva:search-fill" sx={{ color: "text.disabled", width: 20, height: 20 }} />
+                      <Iconify
+                        icon="eva:search-fill"
+                        sx={{ color: "text.disabled", width: 20, height: 20 }}
+                      />
                     </InputAdornment>
                   }
                   sx={{ mr: 1, fontWeight: "fontWeightBold" }}
@@ -993,9 +1196,42 @@ export default function Searchbar() {
                   Search
                 </Button>
               </div>
-              <div style={{ overflowY: "scroll", minHeight: "40vh", maxHeight: "60vh", width: "100%" }}>
+              <div
+                style={{
+                  overflowY: "scroll",
+                  minHeight: "40vh",
+                  maxHeight: "60vh",
+                  width: "100%",
+                }}
+              >
                 {PathName === "/" ? (
                   <>
+                    {myId[0] === "C" ? (
+                      <>
+                        <div
+                          style={{
+                            display: "",
+                            marginTop: "20px",
+                            marginBottom: "10px",
+                          }}
+                        >
+                          <div style={{ fontWeight: "Bold", color: "#666" }}>
+                            フォロー状況
+                          </div>
+                          <div style={{ color: "#444" }}>
+                            <Select
+                              options={options.follow_status}
+                              value={searchSource.follow_status}
+                              isClearable
+                              isMulti
+                              onChange={handleChangeFollowStatus}
+                            />
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      ""
+                    )}
                     <div
                       style={{
                         display: "",
@@ -1003,7 +1239,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>学校名</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        学校名
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.school_name}
@@ -1021,7 +1259,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>学科名</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        学科名
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.department_name}
@@ -1039,7 +1279,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>学部名</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        学部名
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.faculty_name}
@@ -1057,7 +1299,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>専攻名</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        専攻名
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.major_name}
@@ -1075,7 +1319,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>コース名</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        コース名
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.course_name}
@@ -1093,7 +1339,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        ジャンル
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.work_genre}
@@ -1111,7 +1359,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        プログラミング言語
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.programming_language}
@@ -1129,7 +1379,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        開発環境
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.development_environment}
@@ -1143,6 +1395,32 @@ export default function Searchbar() {
                   </>
                 ) : PathName === "/VideoList" ? (
                   <>
+                    {myId[0] === "C" ? (
+                      <>
+                        <div
+                          style={{
+                            display: "",
+                            marginTop: "20px",
+                            marginBottom: "10px",
+                          }}
+                        >
+                          <div style={{ fontWeight: "Bold", color: "#666" }}>
+                            フォロー状況
+                          </div>
+                          <div style={{ color: "#444" }}>
+                            <Select
+                              options={options.follow_status}
+                              value={searchSource.follow_status}
+                              isClearable
+                              isMulti
+                              onChange={handleChangeFollowStatus}
+                            />
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      ""
+                    )}
                     <div
                       style={{
                         display: "",
@@ -1150,7 +1428,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>学校名</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        学校名
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.school_name}
@@ -1168,7 +1448,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>学科名</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        学科名
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.department_name}
@@ -1186,7 +1468,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>学部名</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        学部名
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.faculty_name}
@@ -1204,7 +1488,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>専攻名</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        専攻名
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.major_name}
@@ -1222,7 +1508,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>コース名</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        コース名
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.course_name}
@@ -1240,7 +1528,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        ジャンル
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.video_genre}
@@ -1254,6 +1544,32 @@ export default function Searchbar() {
                   </>
                 ) : PathName === "/StudentList" ? (
                   <>
+                    {myId[0] === "C" ? (
+                      <>
+                        <div
+                          style={{
+                            display: "",
+                            marginTop: "20px",
+                            marginBottom: "10px",
+                          }}
+                        >
+                          <div style={{ fontWeight: "Bold", color: "#666" }}>
+                            フォロー状況
+                          </div>
+                          <div style={{ color: "#444" }}>
+                            <Select
+                              options={options.follow_status}
+                              value={searchSource.follow_status}
+                              isClearable
+                              isMulti
+                              onChange={handleChangeFollowStatus}
+                            />
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      ""
+                    )}
                     <div
                       style={{
                         display: "",
@@ -1261,7 +1577,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>卒業年</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        卒業年
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.graduation_year}
@@ -1279,7 +1597,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>学校名</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        学校名
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.school_name}
@@ -1297,7 +1617,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>学科名</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        学科名
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.department_name}
@@ -1315,7 +1637,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>学部名</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        学部名
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.faculty_name}
@@ -1333,7 +1657,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>専攻名</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        専攻名
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.major_name}
@@ -1351,7 +1677,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>コース名</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        コース名
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.course_name}
@@ -1369,7 +1697,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>希望職種</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        希望職種
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.desired_occupation}
@@ -1387,7 +1717,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>希望勤務地</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        希望勤務地
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.desired_work_region}
@@ -1405,7 +1737,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        プログラミング言語
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.student_programming_language}
@@ -1423,7 +1757,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        開発環境
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.student_development_environment}
@@ -1441,7 +1777,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>ソフトウェア</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        ソフトウェア
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.software}
@@ -1459,7 +1797,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>取得資格</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        取得資格
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.acquisition_qualification}
@@ -1477,7 +1817,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>趣味</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        趣味
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.hobby}
@@ -1498,7 +1840,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        ジャンル
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.work_genre}
@@ -1516,7 +1860,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        プログラミング言語
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.programming_language}
@@ -1534,7 +1880,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        開発環境
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.development_environment}
@@ -1546,7 +1894,7 @@ export default function Searchbar() {
                       </div>
                     </div>
                   </>
-                ) : PathName === "/CompanyList" ? (
+                ) : PathName === "/Profile/yoshioka/movie" ? (
                   <>
                     <div
                       style={{
@@ -1555,7 +1903,58 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>職種</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        ジャンル
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <Select
+                          options={options.work_genre}
+                          value={searchSource.work_genre}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeWorkGenre}
+                        />
+                      </div>
+                    </div>
+                  </>
+                ) : PathName === "/CompanyList" ? (
+                  <>
+                    {myId[0] === "S" ? (
+                      <>
+                        <div
+                          style={{
+                            display: "",
+                            marginTop: "20px",
+                            marginBottom: "10px",
+                          }}
+                        >
+                          <div style={{ fontWeight: "Bold", color: "#666" }}>
+                            フォロー状況
+                          </div>
+                          <div style={{ color: "#444" }}>
+                            <Select
+                              options={options.follow_status}
+                              value={searchSource.follow_status}
+                              isClearable
+                              isMulti
+                              onChange={handleChangeFollowStatus}
+                            />
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      ""
+                    )}
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        職種
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.selected_occupation}
@@ -1573,7 +1972,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>勤務地</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        勤務地
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.prefecture}
@@ -1581,6 +1982,106 @@ export default function Searchbar() {
                           isClearable
                           isMulti
                           onChange={handleChangePrefecture}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        業界キーワード
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <Select
+                          options={options.industry}
+                          value={searchSource.industry}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeIndustry}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        開発環境
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <Select
+                          options={options.development_environment}
+                          value={searchSource.development_environment}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeDevelopmentEnvironment}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        プログラミング言語
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <Select
+                          options={options.programming_language}
+                          value={searchSource.programming_language}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeProgrammingLanguage}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        歓迎資格
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <Select
+                          options={options.acquisition_qualification}
+                          value={searchSource.acquisition_qualification}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeAcquisitionQualification}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        ソフトウェア
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <Select
+                          options={options.software}
+                          value={searchSource.software}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeSoftware}
                         />
                       </div>
                     </div>
@@ -1594,7 +2095,9 @@ export default function Searchbar() {
                         marginBottom: "10px",
                       }}
                     >
-                      <div style={{ fontWeight: "Bold", color: "#666" }}>企業名</div>
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        企業名
+                      </div>
                       <div style={{ color: "#444" }}>
                         <Select
                           options={options.company_name}

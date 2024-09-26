@@ -31,6 +31,7 @@ use App\Http\Controllers\movie\GetMovieDetailController;
 use App\Http\Controllers\student\GetStudentListController;
 use App\Http\Controllers\company\GetCompanyListController;
 use App\Http\Controllers\follow\FollowController;
+use App\Http\Controllers\chat\GetChannelListController;
 use App\Http\Controllers\tag\InsertTagController;
 use App\Http\Controllers\tag\GetGenreTagController;
 use App\Http\Controllers\tag\GetLanguageTagController;
@@ -195,6 +196,8 @@ Route::post('/post_movie_comment_delete', [PostMovieCommentDeleteController::cla
 // フォロー
 Route::post('/follow', [FollowController::class, 'FollowController']);
 
+// チャット相手取得
+Route::get('/get_channel_list', [GetChannelListController::class, 'GetChannelListController']);
 
 
 

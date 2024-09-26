@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class loginController extends Controller
 {
-    
+
     public function loginController(Request $request){
 
         $userName = $request->input('user_name');
@@ -23,10 +23,10 @@ class loginController extends Controller
         // if(Hash::check($password, $password_x)){
         //   \Log::info('hash OK');
         // }
-        // // 
+        // //
         \Log::info('get_InputValue: ' . json_encode($kind));
-    
-        
+
+
         if(!empty($userName)&&!empty($password)&&!empty($kind)){
           if(preg_match('/@/', $userName)){
             // @マークを含む(メールアドレス)
@@ -43,7 +43,7 @@ class loginController extends Controller
               ->where('password', "$password")
               ->first();
             }
-            
+
           } else {
             // @マークを含まない(ユーザー名)
             if($kind == "s"){
@@ -60,17 +60,17 @@ class loginController extends Controller
               ->first();
             }
           }
-          
+
           \Log::info('get_InputValue(b): ' . json_encode($userName));
           \Log::info('userInfo: ' . json_encode($userInfo));
 
           /*reactに返す*/
           echo json_encode($userInfo);
 
-        
+
         }
     }
 
-   
+
 
 }

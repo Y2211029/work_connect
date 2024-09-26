@@ -15,7 +15,7 @@ class GetCompanySelectedOccupationTagController extends Controller
             $tag = \DB::table('w_tags')
                 ->where('item_id', 21)
                 ->get();
-        } else {
+        } else {    
             $tag = \DB::table('w_tags')
                 ->where('item_id', 21)
                 ->whereExists(function ($query) {

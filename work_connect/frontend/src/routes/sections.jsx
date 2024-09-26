@@ -42,8 +42,11 @@ export const EditorPage = lazy(() => import("src/pages/Editor/Editor"));
 // リンク無し画面
 export const Page404 = lazy(() => import("src/pages/page-not-found"));
 
-//プロフィール
+// プロフィール
 export const ProfilePage = lazy(() => import("src/pages/Profile"));
+
+// チャット
+export const Chat = lazy(() => import("src/pages/Chat"));
 
 //20240704
 export const NewsDetailPage = lazy(() => import('src/sections/InternshipJobOffer/news_detail'));
@@ -89,9 +92,11 @@ export default function Router() {
         { path: "WorkSelect", element: <WorkSelect /> },
         // 動画選択画面
         { path: "VideoSelect", element: <VideoSelect /> },
-        //プロフィール
+        // プロフィール
         // Profile/の後ろにユーザーネームを指定
         { path: "Profile/:user_name", element: <ProfilePage /> },
+        // チャット
+        { path: "Chat", element: <Chat /> },
         // テストページ何か試したいものがあればこのページで行う。
         { path: "TestPage", element: <TestPage /> },
       ],

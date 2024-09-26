@@ -208,7 +208,7 @@ const ImageUpload = ({ onImagesUploaded, coleSetImage }) => {
 
   return (
     <div>
-      <p>画像</p>
+      <p>画像*</p>
       <input
         type="file"
         multiple

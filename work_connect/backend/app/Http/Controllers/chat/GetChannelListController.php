@@ -37,10 +37,10 @@ class GetChannelListController extends Controller
                     $follow_recipient_id = $record->follow_recipient_id;
 
                     if($MyUserId[0] === "S"){
-                        // 自分のidが学生(1文字目がS)の場合
+                        // 自分のidが学生(1文字目がS)の場合、企業のテーブルを参照
                         $data = w_company::where('id', $follow_recipient_id)->first();
                     } else if($MyUserId[0] === "C"){
-                        // 自分のidが企業(1文字目がC)の場合
+                        // 自分のidが企業(1文字目がC)の場合、学生のテーブルを参照
                         $data = w_users::where('id', $follow_recipient_id)->first();
                     }
                     // 相手側とのフォロー状態
@@ -51,10 +51,10 @@ class GetChannelListController extends Controller
                     $follow_sender_id = $record->follow_sender_id;
 
                     if($MyUserId[0] === "S"){
-                        // 自分のidが学生(1文字目がS)の場合
+                        // 自分のidが学生(1文字目がS)の場合、企業のテーブルを参照
                         $data = w_company::where('id', $follow_sender_id)->first();
                     } else if($MyUserId[0] === "C"){
-                        // 自分のidが企業(1文字目がC)の場合
+                        // 自分のidが企業(1文字目がC)の場合、学生のテーブルを参照
                         $data = w_users::where('id', $follow_sender_id)->first();
                     }
                     // 相手側とのフォロー状態
@@ -63,12 +63,24 @@ class GetChannelListController extends Controller
 
                 //  in_array関数で$unique_list配列にidが存在しない場合、$channel_listに追加する
                 if (!in_array($data->id, $unique_list)) {
-                    $channel_list[] = [
-                        'id' => $data->id,
-                        'user_name' => $data->user_name,
-                        'icon' => $data->icon,
-                        'follow_status' => $followStatus,
-                    ];
+                    if($MyUserId[0] === "S"){
+                        // 自分のidが学生(1文字目がS)の場合、企業のテーブルを参照
+                        $channel_list[] = [
+                            'id' => $data->id,
+                            'user_name' => $data->user_name,
+                            'company_name' => $data->company_name,
+                            'icon' => $data->icon,
+                            'follow_status' => $followStatus,
+                        ];
+                    } else if($MyUserId[0] === "C"){
+                        // 自分のidが企業(1文字目がC)の場合、学生のテーブルを参照
+                        $channel_list[] = [
+                            'id' => $data->id,
+                            'user_name' => $data->user_name,
+                            'icon' => $data->icon,
+                            'follow_status' => $followStatus,
+                        ];
+                    }
                 }
                 // $unique_list配列にidを追加(相互でも重複しなくなる)
                 $unique_list[] = $data->id;

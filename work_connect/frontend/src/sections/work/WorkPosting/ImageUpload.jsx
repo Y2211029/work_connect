@@ -106,6 +106,17 @@ const ImageUpload = ({ onImagesUploaded, coleSetImage }) => {
     localStorage.setItem("items", JSON.stringify(items));
   }, [items]);
 
+  // 画像リストをリセットする関数
+  const resetItems = () => {
+    setItems([]);
+    localStorage.removeItem("items"); // ローカルストレージもリセット
+  };
+  
+  // 初回レンダリング時に状態をリセット
+  useEffect(() => {
+    resetItems(); // ページ読み込み時にリセット
+  }, []);
+
   const handleImageUpload = (event) => {
     coleSetImage(event.target.files);
     const files = Array.from(event.target.files);

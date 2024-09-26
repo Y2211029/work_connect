@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { faker } from "@faker-js/faker";
 
 import Stack from "@mui/material/Stack";
-import Container from "@mui/material/Container";
+// import Container from "@mui/material/Container";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 
@@ -124,10 +124,11 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       url: "http://localhost:8000/get_work_list",
       idKey: "work_id",
       tags: ["work_genre"],
-      generatePosts: (WorkOfList, key) =>
-        WorkOfList.map((work) => ({
+      generatePosts: (WorkOfList) =>
+        WorkOfList.map((work, key) => ({
           work_id: work.work_id,
           thumbnail: `/assets/images/covers/cover_${key + 1}.jpg`,
+          icon: work.icon,
           title: work.work_name,
           genre: work.work_genre,
           intro: work.work_intro.length > 200 ? work.work_intro.substring(0, 200) + "..." : work.work_intro,
@@ -149,6 +150,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       generatePosts: (WorkOfList) =>
         WorkOfList.map((movie) => ({
           movie_id: movie.movie_id,
+
           movie: movie.youtube_url,
           title: movie.title,
           genre: movie.genre,
@@ -399,7 +401,10 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
           colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
         />
       )}
-      <Container maxWidth="xl" >
+      {/* <Container  style={{ width: "100%" }}> */}
+      <div className="list-view-Container">
+
+
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           {typeof ItemName === "string" ? (
             <>
@@ -434,7 +439,9 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
 
         <Grid container spacing={3}>
           {/* 作品アイテムの表示 */}
-          {renderWorkItems}
+          <div className="column-container" >
+            {renderWorkItems}
+          </div>
 
           {isLoadItemColorLing && (
             <ColorRing
@@ -448,7 +455,8 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
             />
           )}
         </Grid>
-      </Container>
+      </div>
+      {/* </Container> */}
     </>
   );
 };

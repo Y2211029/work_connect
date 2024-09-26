@@ -138,7 +138,6 @@ export default function Searchbar() {
     work_genre: [],
     programming_language: [],
     development_environment: [],
-    video_genre: [],
     school_name: [],
     department_name: [],
     faculty_name: [],
@@ -1172,7 +1171,7 @@ export default function Searchbar() {
             </IconButton>
           )}
 
-        <Slide direction="down" in={open} mountOnEnter unmountOnExit ref={areaRef} className="no-scroll-area">
+        <Slide direction="down" in={open} mountOnEnter unmountOnExit ref={areaRef} className="no-scroll-area" onMouseEnter={document.body.classList.add('disable-scroll')}>
           <StyledSearchbar>
             <div style={{ display: "" }}>
               <div style={{ display: "flex" }}>

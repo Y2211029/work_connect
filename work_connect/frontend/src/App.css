@@ -70,6 +70,7 @@ nav ul li a:hover {
 .ReactModal__Body--open {
   position: fixed;
 }
+
 .disable-scroll {
   overflow: hidden;
 }
@@ -559,6 +560,55 @@ textarea {
 /* 動画投稿画面 ここまで */
 
 /* 作品一覧画面　ここから */
+/* styles.css */
+.list-view-Container {
+  margin: 20px;
+}
+
+.column-container {
+  column-gap: 20px;
+  column-count: 5;
+  /* デフォルトは5カラム */
+  width: 100%;
+  /* 幅を100%に設定 */
+  max-width: 1600px;
+  /* 最大幅を設定（必要に応じて変更） */
+  margin: 0 auto;
+  /* 中央揃え */
+
+  @media (max-width: 1200px) {
+    column-count: 4;
+  }
+
+  @media (max-width: 900px) {
+    column-count: 3;
+  }
+
+  @media (max-width: 600px) {
+    column-count: 2;
+  }
+
+  @media (max-width: 400px) {
+    column-count: 1;
+  }
+}
+
+
+
+.postCard {
+  /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+  margin: 10px 0px;
+  border-radius: 20px;
+
+  width: "100%";
+  background: white;
+  padding: 20px;
+
+}
+
+
+
+
 .link {
   /* color: white; */
   color: black;
@@ -589,6 +639,10 @@ textarea {
   animation: color-ring-spin var(--spinner-animation-duration) linear infinite;
 }
 
+
+
+
+
 /* 作品一覧画面　ここまで */
 
 /* -- 作品詳細 ここから -- */
@@ -613,16 +667,14 @@ textarea {
   height: 94%;
   overflow-y: scroll;
   padding-top: 20px;
-  width: 300px;
+  width: 100%;
 }
 
 #gallery .gallery_images .gallery_img {
   transition: 0.5s all;
-  display: inline-block;
   aspect-ratio: 16/9;
-  -o-object-fit: contain;
   object-fit: contain;
-  /* border: 2px solid rgba(0, 0, 0, 0.06); */
+  width: 300px;
 }
 
 .gallery_img:hover {

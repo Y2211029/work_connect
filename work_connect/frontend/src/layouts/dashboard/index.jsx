@@ -1,6 +1,6 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import PropTypes from "prop-types";
-
 export const MyContext = createContext();
 export const AllItemsContext = createContext();
 // export const DataListContext = createContext();
@@ -17,13 +17,23 @@ import Header from "./header";
 
 export default function DashboardLayout({ children }) {
   const [openNav, setOpenNav] = useState(false);
+  const [searchParams] = useSearchParams();
+  const [pageStyles, setPageStyles] = useState({
+    HomePage: location.pathname === "/Top" ? "none" : "",
+    MyPage: "block"
+  });
 
-  /**
-   * ユーザーが開いているページが"localhost5174/Top"だった時
-   * headerに表示されている不必要なボタンなどを表示しない
-   */
+  useEffect(() => {
 
-  const HomePage = location.pathname === "/Top" ? "none" : "";
+    const page = searchParams.get("page");
+    console.log("header-Mypage-page", page)
+    // ページパラメータが"mypage"の場合、MyPageを"none"に設定
+    setPageStyles({
+      HomePage: location.pathname === "/Top" ? "none" : "",
+      MyPage: page === "mypage" ? "none" : "block"
+    });
+  }, [location.pathname, searchParams]); // location.pathname や searchParams が変わるたびに実行
+
 
   const [AllItems, setAllItems] = useState({
     DataList: [],
@@ -40,7 +50,7 @@ export default function DashboardLayout({ children }) {
 
   return (
     <>
-      <MyContext.Provider value={HomePage}>
+      <MyContext.Provider value={pageStyles}>
         <AllItemsContext.Provider value={value1}>
           <Header onOpenNav={() => setOpenNav(true)} />
           <Box

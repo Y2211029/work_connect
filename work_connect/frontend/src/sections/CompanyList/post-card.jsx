@@ -192,13 +192,13 @@ const PostCard = forwardRef(({ post, index }, ref) => {
   );
 
   return (
-    <Grid xs={12} sm={latestPostLarge ? 12 : 6} md={latestPostLarge ? 6 : 3}>
+    <Grid xs={12} sm={latestPostLarge ? 12 : 6} md={latestPostLarge ? 6 : 3}  style={{ width: "100%" }}>
       <div ref={ref}>
-        <Card>
+        <Card className="postCard" style={{ width: "100%" }}>
           <Box
             sx={{
               position: "relative",
-              pt: "calc(100% * 3 / 4)",
+              pt: "calc(100% * 2 / 4)",
             }}
           >
             {renderShape}

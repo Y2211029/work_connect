@@ -10,7 +10,7 @@ import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
 
 import { SLIDER, AVATAR } from "src/layouts/dashboard/config-layout";
-import { useCreateTagbutton } from "src/hooks/use-createTagbutton";
+import { UseCreateTagbutton } from "src/hooks/use-createTagbutton";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 import { Splide, SplideSlide, SplideTrack } from "@splidejs/react-splide";
@@ -79,7 +79,7 @@ const WorkDetailItem = () => {
   const [CommentCancel, setCommentCancel] = useState("");
 
   // -----タグ-----
-  const { tagCreate } = useCreateTagbutton();
+  const { tagCreate } = UseCreateTagbutton();
   // ジャンル
   const [WorkGenre, setWorkGenre] = useState("");
   // 開発言語
@@ -345,13 +345,18 @@ const WorkDetailItem = () => {
     workCommentDeletefunc();
   };
 
+
+  useEffect(() => {
+    console.log("workDetail.icon", workDetail.icon);
+  }, [workDetail.icon])
+
   // 作品タイトル
   const renderTitle = workDetail.work_name && <h1 className="WorkDetail-title">{workDetail.work_name}</h1>;
 
   // 作品投稿者アイコン
   const renderIcon = workDetail.icon && (
     <img
-      src={`/assets/images/avatars/${workDetail.icon}`}
+      src={workDetail.icon ? `http://localhost:8000/storage/images/userIcon/${workDetail.icon}` : `http://localhost:8000/storage/images/userIcon/subNinja.jpg`}
       alt=""
       style={{ width: AVATAR.A_WIDTH, height: AVATAR.A_HEIGHT, borderRadius: AVATAR.A_RADIUS }}
     />
@@ -429,7 +434,7 @@ const WorkDetailItem = () => {
                 aria-labelledby="thumbnail-slider-example"
                 onMoved={(splide, newIndex) => setCurrentSlideIndex(newIndex)}
                 hasTrack={false}
-                // sx={{ justifyContent: "center", alignItems: "center", display: "flex" }}
+              // sx={{ justifyContent: "center", alignItems: "center", display: "flex" }}
               >
                 <SplideTrack>
                   {WorkSlide.map((slide) => (
@@ -482,6 +487,17 @@ const WorkDetailItem = () => {
             />
           ))}
         </div>
+        {/* <div className="gallery_images" id="gallery_images">
+          {WorkSlide.map((slide, index) => (
+            <img
+              className="gallery_img"
+              key={slide.work_id + slide.id}
+              src={slide.image}
+              alt={slide.image}
+              onClick={() => openModal(index)}
+            />
+          ))}
+        </div> */}
       </div>
     </>
   );
@@ -532,7 +548,7 @@ const WorkDetailItem = () => {
       {workComment && Object.keys(Comment).length > 0 && <h3>コメント一覧</h3>}
       {workComment.map((item, index) =>
         (item.commenter_id === AccountData.id && item.commenter_user_name === AccountData.user_name) ||
-        (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
+          (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
           <div key={index}>
             <hr />
             {/* {console.log("comment", Comment)} */}

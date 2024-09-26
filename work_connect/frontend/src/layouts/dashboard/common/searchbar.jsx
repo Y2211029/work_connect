@@ -97,7 +97,6 @@ export default function Searchbar() {
     work_genre: [],
     programming_language: [],
     development_environment: [],
-    video_genre: [],
     school_name: [],
     department_name: [],
     faculty_name: [],
@@ -967,7 +966,7 @@ export default function Searchbar() {
     <ClickAwayListener onClickAway={handleClose}>
       <div>
         {!open && (
-          <IconButton onClick={handleOpen} style={{ display: Display }}>
+          <IconButton onClick={handleOpen} style={{ display: Display.MyPage }}>
             <Iconify icon="eva:search-fill" />
           </IconButton>
         )}

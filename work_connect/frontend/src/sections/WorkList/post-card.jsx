@@ -3,26 +3,17 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import Box from "@mui/material/Box";
-// import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
-import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
-
-import "src/App.css";
 
 import SvgColor from "src/components/svg-color";
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 
-// import { alpha } from "@mui/material/styles";
-// import { fDate } from "src/utils/format-time";
-// import { fShortenNumber } from "src/utils/format-number";
-// import Iconify from "src/components/iconify";
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef(({ post }, ref) => {
-  const { work_id, genre, /* cover, */ title, intro, thumbnail, /*view, comment,*/ author, userName, createdAt } = post;
+  const { work_id, genre, thumbnail, icon, /* cover, */ title, intro,  /*view, comment,*/ author, userName, createdAt } = post;
 
   const [imgSrc, setImgSrc] = useState(thumbnail);
 
@@ -49,7 +40,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   const renderAvatar = (
     <Avatar
       alt={author.name}
-      src={author.avatarUrl}
+      src={icon ? `http://localhost:8000/storage/images/userIcon/${icon}` : author.avatarUrl}
       sx={{
         // position: "absolute",
         // bottom: (theme) => theme.spacing(0),
@@ -223,28 +214,22 @@ const PostCard = forwardRef(({ post }, ref) => {
   );
 
   return (
-    //XS(Extra small) 0px以上 画面サイズがスマホ並みに狭いとき
-    //SM(Small) 600px以上
-    //MD(Medium) 960px以上
-    // グリッドは12分割されており、
-    <Grid xs={12} sm={6} md={3} className="itemGrid">
-      <div ref={ref}>
-        <Card>
-          <Box
-            sx={{
-              padding: "5px 5px 5px 5px ",
-            }}
-          >
-            {renderShape}
-            {renderThumbnail}
-            {renderGenre}
-            {renderTitle}
-            {renderIntro}
-            {renderInfo}
-          </Box>
-        </Card>
+    <div ref={ref} >
+      <div className="postCard">
+        <Box
+          sx={{
+            padding: "5px 5px 5px 5px ",
+          }}
+        >
+          {renderShape}
+          {renderThumbnail}
+          {renderGenre}
+          {renderTitle}
+          {renderIntro}
+          {renderInfo}
+        </Box>
       </div>
-    </Grid>
+    </div>
   );
 });
 

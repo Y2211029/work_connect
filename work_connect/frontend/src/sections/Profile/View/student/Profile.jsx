@@ -13,8 +13,6 @@ import ProfileMypage from './Mypage';
 import { AllItemsContext } from "src/layouts/dashboard/index";
 import ListView from "src/components/view/list-view";
 
-
-
 function samePageLinkNavigation(event) {
   if (
     event.defaultPrevented ||
@@ -50,7 +48,6 @@ LinkTab.propTypes = {
 };
 
 export default function NavTabs() {
-
   // タブ状態のチェック
   const { getSessionData, updateSessionData } = useSessionStorage();
   const { setAllItems } = useContext(AllItemsContext);
@@ -74,7 +71,7 @@ export default function NavTabs() {
   function pageCheck(pageStr) {
     let url = new URL(window.location.href);
     let urlStr = location.pathname;
-    if(url.searchParams.get('page') != null) {
+    if (url.searchParams.get('page') != null) {
       let urlStrArray = urlStr.split('?');
       urlStr = urlStrArray[0];
     }
@@ -90,6 +87,8 @@ export default function NavTabs() {
       // マイページが押されたとき
       setProfileTabState(0);
       pageCheck('mypage');
+
+
     } else if (value === 1) {
       // 作品が押されたとき
       setProfileTabState(1);
@@ -116,6 +115,7 @@ export default function NavTabs() {
       // マイページが押されたとき
       setProfileTabState(0);
       pageCheck('mypage');
+      // 検索アイコン非表示にする
     } else if (newValue === 1) {
       // 作品が押されたとき
       setProfileTabState(1);

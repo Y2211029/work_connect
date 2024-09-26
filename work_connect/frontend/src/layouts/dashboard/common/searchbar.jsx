@@ -138,7 +138,6 @@ export default function Searchbar() {
     work_genre: [],
     programming_language: [],
     development_environment: [],
-    video_genre: [],
     school_name: [],
     department_name: [],
     faculty_name: [],

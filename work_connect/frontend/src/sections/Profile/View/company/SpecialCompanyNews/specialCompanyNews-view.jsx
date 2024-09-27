@@ -1,50 +1,94 @@
-import Stack from "@mui/material/Stack";
-import Container from "@mui/material/Container";
-import Grid from "@mui/material/Unstable_Grid2";
-import Typography from "@mui/material/Typography";
+import { useContext, useEffect, useState } from "react";
+import PropTypes from 'prop-types';
+import Box from '@mui/material/Box';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
 
-import specialCompanyNewsItem from "src/_mock/specialCompanyNewsItem";
+import { AllItemsContext } from "src/layouts/dashboard/index";
+import { useParams, useNavigate } from "react-router-dom";
 
-import PostCard from "src/sections/InternshipJobOffer/post-card";
-import PostSort from "src/sections/InternshipJobOffer/post-sort";
+function samePageLinkNavigation(event) {
+  if (
+    event.defaultPrevented ||
+    event.button !== 0 ||
+    event.metaKey ||
+    event.ctrlKey ||
+    event.altKey ||
+    event.shiftKey
+  ) {
+    return false;
+  }
+  return true;
+}
 
-//internshipJobOffer
-
-// import Button from '@mui/material/Button';
-// import Iconify from 'src/components/iconify';
-// import PostSearch from 'src/sections/VideoList/post-search';
-
-// ----------------------------------------------------------------------
-
-export default function CompanyListView() {
-  const postsFrominternshipJobOffer = specialCompanyNewsItem();
-  console.log("postsFromCompany", postsFrominternshipJobOffer);
+function LinkTab(props) {
   return (
-    <Container>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4">ニュース一覧</Typography>
-        {/*
-        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />}>
-          New Post
-        </Button> */}
-      </Stack>
+    <Tab
+      component="a"
+      onClick={(event) => {
+        if (samePageLinkNavigation(event)) {
+          event.preventDefault();
+        }
+      }}
+      aria-current={props.selected && 'page'}
+      {...props}
+    />
+  );
+}
 
-      <Stack mb={5} direction="row" alignItems="center" justifyContent="space-between">
-        {/* <PostSearch posts={posts} /> */}
-        <PostSort
-          options={[
-            { value: "latest", label: "Latest" },
-            { value: "popular", label: "Popular" },
-            { value: "oldest", label: "Oldest" },
-          ]}
-        />
-      </Stack>
+LinkTab.propTypes = {
+  selected: PropTypes.bool,
+};
 
-      <Grid container spacing={3}>
-        {postsFrominternshipJobOffer.map((post, index) => (
-          <PostCard key={post.id} post={post} index={index} />
-        ))}
-      </Grid>
-    </Container>
+export default function NavTabs() {
+  const { setAllItems } = useContext(AllItemsContext);
+  const [value, setValue] = useState(1);
+  const { user_name } = useParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (value === 1) {
+      navigate(`/Profile/${user_name}/News/JobOffers`);
+    } else if (value === 2) {
+      navigate(`/Profile/${user_name}/News/Internships`);
+    } else if (value === 3) {
+      navigate(`/Profile/${user_name}/News/Blogs`);
+    }else if(value === 4){
+      navigate(`/Profile/${user_name}/News/Forms`);
+    }
+  }, [value, navigate, user_name]);
+
+  const handleChange = (event, newValue) => {
+    if (
+      event.type !== 'click' ||
+      (event.type === 'click' && samePageLinkNavigation(event))
+    ) {
+      setValue(newValue);
+    }
+
+    setAllItems((prevItems) => ({
+      ...prevItems,
+      ResetItem: true,
+      DataList: [],
+      IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
+      Page: 1,
+      sortOption: "orderNewPostsDate",
+    }));
+  };
+
+  return (
+    <Box sx={{ width: '100%' }}>
+      <Tabs
+        value={value}
+        onChange={handleChange}
+        aria-label="nav tabs example"
+        role="navigation"
+      >
+        <LinkTab label="求人" value={1} />
+        <LinkTab label="インターンシップ" value={2} />
+        <LinkTab label="ブログ" value={3} />
+        <LinkTab label="フォームを見る" value={4} />
+      </Tabs>
+    </Box>
   );
 }

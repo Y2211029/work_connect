@@ -36,14 +36,23 @@ export const SettingsPage = lazy(() => import("src/pages/Settings"));
 
 //
 export const InternshipJobOfferPage = lazy(() => import("src/pages/internshipJobOffer"));
-//
+
+//ニュースを編集・投稿画面
 export const EditorPage = lazy(() => import("src/pages/Editor/Editor"));
+
+//応募用フォームを編集・回答画面
+export const CreateFormPage = lazy(() => import("src/pages/CreateForm/CreateForm"));
+export const WriteFormPage = lazy(() => import("src/pages/WriteForm/WriteForm"));
+
 
 // リンク無し画面
 export const Page404 = lazy(() => import("src/pages/page-not-found"));
 
 // プロフィール
 export const ProfilePage = lazy(() => import("src/pages/Profile"));
+export const ProfileNewsPage = lazy(() => import("src/sections/Profile/View/company/News"));
+export const SpecialCompanyNewsPage = lazy(() => import("src/sections/Profile/View/company/SpecialCompanyNews/SpecialCompanyListView"));
+export const CheckFormPage = lazy(() => import("src/sections/CheckForm/View/CheckForm"));
 
 // チャット
 export const Chat = lazy(() => import("src/pages/Chat"));
@@ -71,16 +80,20 @@ export default function Router() {
         { path: "VideoList", element: <VideoListPage /> },
         { path: "StudentList", element: <StudentListPage /> },
         { path: "CompanyList", element: <CompanyListPage /> },
-        { path: "Internship_JobOffer", element: <InternshipJobOfferPage /> },
+        { path: "Internship_JobOffer/:Category", element: <InternshipJobOfferPage /> },
 
         { path: "WorkDetail/:id", element: <WorkDetail /> },
         { path: "VideoDetail/:id", element: <VideoDetail /> },
 
         //20240619
         { path: "Settings", element: <SettingsPage /> },
-        { path: "Editor", element: <EditorPage /> },
+        { path: "Editor/:genre", element: <EditorPage /> },
+        { path: "CreateForm/:news_id", element: <CreateFormPage /> },
+        { path: "WriteForm/:newsdetail_id", element: <WriteFormPage /> },
+
+
         //20240704
-        { path: "news_detail/:id", element: <NewsDetailPage /> },
+        { path: "news_detail/:news_id", element: <NewsDetailPage /> },
 
         // トップ画面追加
         { path: "Top", element: <TopPage /> },
@@ -95,10 +108,18 @@ export default function Router() {
         // プロフィール
         // Profile/の後ろにユーザーネームを指定
         { path: "Profile/:user_name", element: <ProfilePage /> },
+<<<<<<< HEAD
+        { path: "Profile/:user_name/News", element: <ProfileNewsPage /> },
+        { path: "Profile/:user_name/News/:Genre", element: <SpecialCompanyNewsPage /> },
+
+        //企業が応募フォームを見る画面
+        { path: "CheckForm/:NewsId", element: <CheckFormPage /> },
+=======
         // チャット
         { path: "Chat", element: <Chat /> },
         // テストページ何か試したいものがあればこのページで行う。
         { path: "TestPage", element: <TestPage /> },
+>>>>>>> 79cc4a73bb2a7c7c4a748ee845ec41314e645716
       ],
     },
     {

@@ -283,7 +283,6 @@ const VideoPosting = () => {
               <div className="VideoPostingFormField">
                 <VideoTitle callSetVideoData={callSetVideoData} />
               </div>
-              <br />
               {/* ジャンル */}
               <div className="VideoPostingFormField">
                 <div className="workGenre" id="workGenre">

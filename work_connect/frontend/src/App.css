@@ -447,6 +447,9 @@ textarea {
   background: #ffffff;
 }
 
+.css-1pv2561-MuiInputBase-root-MuiOutlinedInput-root:hover{
+  border-color:   #3399FF;
+}
 /* 作品投稿画面 ここまで */
 
 /* 動画投稿画面 ここから */

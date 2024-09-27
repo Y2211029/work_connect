@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import "./Editor.css";
 import PropTypes from 'prop-types';
+import { useParams } from 'react-router-dom';
 
 // プラグインのインポート
 import EditorJS from "@editorjs/editorjs";
@@ -45,9 +46,9 @@ import DrawIcon from '@mui/icons-material/Draw';
 import SaveIcon from '@mui/icons-material/Save';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import ErrorIcon from '@mui/icons-material/Error';
+import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
 
 import NewsMenuTable from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -67,12 +68,7 @@ import { useNavigate } from 'react-router-dom';
 
 //過去に投稿したニュースを取得
 import specialCompanyNewsItem from "src/_mock/specialCompanyNewsItem";
-import PostCard from "src/sections/InternshipJobOffer/check-list-post-card";
 import Grid from "@mui/material/Unstable_Grid2";
-
-
-
-
 
 
 const Editor = () => {
@@ -89,20 +85,19 @@ const Editor = () => {
   const [draft_list, setDraftList] = useState([]); // ニュースの下書きリストを保持するステート
   const [selected_draft, setSelectedDraft] = useState(null); // 選択された下書きを保持するステート
   const textareaRef = useRef(null);
-  const [selectedGenre, setSelectedGenre] = useState('');
   const [newsmenushow, setNewsMenuShow] = useState(false);
   const [clickedMenu, setClickedMenu] = useState(null);
   const [charCount, setCharCount] = useState(0);
   const [usedPlugins, setUsedPlugins] = useState(null);
   const [usedImages, setUsedImages] = useState(null);
 
-
-
   const news_save_url = "http://127.0.0.1:8000/news_save";
   const thumbnail_image_save_url = "http://127.0.0.1:8000/thumbnail_image_save";
   const news_upload_url = "http://localhost:8000/news_upload";
   const csrf_url = "http://localhost:8000/csrf-token";
   const navigate = useNavigate();
+  const { genre } = useParams();
+  console.log(genre);
 
   // style CSS ここから
   const buttonStyle = {
@@ -114,12 +109,6 @@ const Editor = () => {
   };
   // style CSS ここまで
 
-
-  // ラジオボタンの選択を変更する
-  const handleRadioChange = (event) => {
-    console.log(event.target.value);
-    setSelectedGenre(event.target.value);
-  };
 
   //ニュースを投稿した際の処理
   const news_upload = async () => {
@@ -142,7 +131,6 @@ const Editor = () => {
       console.log("header_img", imageUrl);
       console.log("outputData", outputData);
       console.log("newsContent", newsContent);
-      console.log("selectedGenre", selectedGenre);
 
       const response = await axios.post(news_upload_url, {
         company_id: sessionId, // 企業ID
@@ -151,7 +139,7 @@ const Editor = () => {
         header_img: imageUrl, //ニュースサムネイル画像
         value: outputData,  //ニュースの内容
         message: newsContent, //採用担当者からの一言メッセージ
-        genre: selectedGenre, //インターンor求人orブログ
+        genre: genre
       }, {
         headers: {
           'Content-Type': 'application/json',
@@ -204,6 +192,7 @@ const Editor = () => {
       setNewsId(response.data.id); // news_idを更新する
       console.log("成功");
       alert("下書きを保存しました!");
+      return response.data.id; // 保存されたnews_idを返す
     } catch (error) {
       console.error("Error:", error);
     }
@@ -485,7 +474,7 @@ const Editor = () => {
       return <p>画像のデータにエラーがあります</p>;
     }
 
-    // 画像を5つずつのグループに分ける
+    // 画像を2枚ずつのグループに分ける
     const rows = [];
     for (let i = 0; i < usedImages.length; i += 2) {
       rows.push(usedImages.slice(i, i + 2));
@@ -651,6 +640,10 @@ const Editor = () => {
   const postsFrominternshipJobOffer = specialCompanyNewsItem();
   console.log("postsFromCompany", postsFrominternshipJobOffer);
 
+  const create_form_jump = async () => {    
+    const savedNewsId = await news_save(); // news_save関数が完了するまで待つ
+    navigate(`/CreateForm/${savedNewsId}`); // 保存されたnews_idでnavigateする
+  }
 
   useEffect(() => {
 
@@ -683,7 +676,6 @@ const Editor = () => {
       }
     }
     fetchCsrfToken(); // ページがロードされた時点でCSRFトークンを取得
-
 
 
     if (editorHolder.current) {
@@ -1159,33 +1151,51 @@ const Editor = () => {
     }
   };
 
+  const getNewsTitle = () => {
+    let NewsTitle;
+    console.log(genre);
+
+    if (genre === "Blog") {
+      NewsTitle = "ブログニュースの編集";
+    } else if (genre === "Internship") {
+      NewsTitle = "インターンニュースの編集";
+    } else if (genre === "JobOffer") {
+      NewsTitle = "求人ニュースの編集";
+    }
+
+    return (
+      <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+        <Typography variant="h4">{NewsTitle}</Typography>
+      </Stack>
+    );
+  };
+
+  const menuItems = [
+    { key: "draftList", icon: <DrawIcon />, text: "下書きリスト" },
+    { key: "saveNews", icon: <SaveIcon />, text: "ニュースを保存する" },
+    { key: "releaseNews", icon: <CampaignIcon />, text: "ニュースを公開する" },
+  ];
+
+  const additionalMenuItem = (genre === "Internship" || genre === "JobOffer") ? (
+    { key: "createForm", icon: <DisplaySettingsIcon />, text: "応募フォームを作成する" }
+  ) : null;
+
 
   return (
     <div className="editor">
-
       <Helmet>
-        <title> ニュースの投稿 | Work&Connect </title>
+        <title>ニュースの投稿 | Work&Connect</title>
       </Helmet>
 
-      <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4">ニュースの編集</Typography>
-        {/*
-        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />}>
-          New Post
-        </Button> */}
-      </Stack>
-
+      {getNewsTitle()}
 
       {/* アップロードされた画像の表示 */}
-      {
-        imageUrl && (
-          <div className="uploaded-image" id="uploaded-image">
-            <img src={`${imageUrl}`} alt="Uploaded" style={{ width: '100%', height: '300px' }} />
-            <CancelIcon onClick={thumbnail_img_delete} />
-          </div>
-        )
-
-      }
+      {imageUrl && (
+        <div className="uploaded-image" id="uploaded-image">
+          <img src={`${imageUrl}`} alt="Uploaded" style={{ width: '100%', height: '300px' }} />
+          <CancelIcon onClick={thumbnail_img_delete} />
+        </div>
+      )}
 
       {/* 画像を選ぶ */}
       <form>
@@ -1197,13 +1207,12 @@ const Editor = () => {
           ref={fileInputRef}
           onChange={handleFileSelect}
         />
-
       </form>
 
       <Stack direction="row" alignItems="center" spacing={1}>
         <MUIButton onClick={NewsMenuShow} variant="contained" sx={buttonStyle}>
           ニュースメニュー
-        </MUIButton >
+        </MUIButton>
       </Stack>
 
       {newsmenushow && (
@@ -1213,53 +1222,32 @@ const Editor = () => {
 
             <div className="menu-content">
               <div className="menu-container">
-                <div
-                  className="menu-item"
-                  onClick={() => handleClickEnter("draftList")}
-                  style={{ backgroundColor: clickedMenu === "draftList" ? "rgba(201, 201, 204, .48)" : "transparent" }}
-                >
-                  <div className="icon-text-container">
-                    <DrawIcon />
-                    <p>下書きリスト</p>
+                {menuItems.map(({ key, icon, text }) => (
+                  <div
+                    key={key}
+                    className="menu-item"
+                    onClick={() => handleClickEnter(key)}
+                    style={{ backgroundColor: clickedMenu === key ? "rgba(201, 201, 204, .48)" : "transparent" }}
+                  >
+                    <div className="icon-text-container">
+                      {icon}
+                      <p>{text}</p>
+                    </div>
                   </div>
-                </div>
-
-                <div
-                  className="menu-item"
-                  onClick={() => handleClickEnter("saveNews")}
-                  style={{ backgroundColor: clickedMenu === "saveNews" ? "rgba(201, 201, 204, .48)" : "transparent" }}
-                >
-                  <div className="icon-text-container">
-                    <SaveIcon />
-                    <p>ニュースを保存する</p>
+                ))}
+                {additionalMenuItem && (
+                  <div
+                    className="menu-item"
+                    onClick={() => handleClickEnter(additionalMenuItem.key)}
+                    style={{ backgroundColor: clickedMenu === additionalMenuItem.key ? "rgba(201, 201, 204, .48)" : "transparent" }}
+                  >
+                    <div className="icon-text-container">
+                      {additionalMenuItem.icon}
+                      <p>{additionalMenuItem.text}</p>
+                    </div>
                   </div>
-                </div>
-
-                <div
-                  className="menu-item"
-                  onClick={() => handleClickEnter("releaseNews")}
-                  style={{ backgroundColor: clickedMenu === "releaseNews" ? "rgba(201, 201, 204, .48)" : "transparent" }}
-                >
-                  <div className="icon-text-container">
-                    <CampaignIcon />
-                    <p>ニュースを公開する</p>
-                  </div>
-                </div>
-
-                <div
-                  className="menu-item"
-                  onClick={() => handleClickEnter("checkNews")}
-                  style={{ backgroundColor: clickedMenu === "checkNews" ? "rgba(201, 201, 204, .48)" : "transparent" }}
-                >
-                  <div className="icon-text-container">
-                    <PlaylistAddCheckIcon />
-                    <p>投稿済みニュース</p>
-                  </div>
-                </div>
+                )}
               </div>
-
-
-
 
               <div className="hover-content">
                 {clickedMenu === "draftList" && (
@@ -1309,8 +1297,6 @@ const Editor = () => {
                     )}
                   </>
                 )}
-
-
                 {clickedMenu === "saveNews" && (
                   <div className="news_button">
                     <p>現在の編集状況</p>
@@ -1326,39 +1312,6 @@ const Editor = () => {
 
                 {clickedMenu === "releaseNews" && (
                   <>
-                    <p>どのジャンルで公開しますか?</p>
-                    <div className="news_genre_select">
-                      <input
-                        type="radio"
-                        name="news_genre"
-                        id="blog"
-                        value="ブログ"
-                        checked={selectedGenre === 'ブログ'}
-                        onChange={handleRadioChange}
-                      />
-                      <label className="label" htmlFor="blog">ブログ</label>
-
-                      <input
-                        type="radio"
-                        name="news_genre"
-                        id="internship"
-                        value="インターンシップ"
-                        checked={selectedGenre === 'インターンシップ'}
-                        onChange={handleRadioChange}
-                      />
-                      <label className="label" htmlFor="internship">インターンシップ</label>
-
-                      <input
-                        type="radio"
-                        name="news_genre"
-                        id="job"
-                        value="求人"
-                        checked={selectedGenre === '求人'}
-                        onChange={handleRadioChange}
-                      />
-                      <label className="label" htmlFor="job">求人</label>
-                    </div>
-
                     <p>メッセージや記事内容をご記入ください!</p>
                     <textarea
                       id="news_textarea"
@@ -1368,15 +1321,12 @@ const Editor = () => {
                     <p><button onClick={news_upload}>投稿</button></p>
                   </>
                 )}
-                {clickedMenu === "checkNews" && (
+                {clickedMenu === "createForm" && (
                   <Grid container spacing={1}>
-                    {postsFrominternshipJobOffer.length > 0 ? (
-                      postsFrominternshipJobOffer.map((post, index) => (
-                        <PostCard  key={post.id} post={post} index={index} />
-                      ))
-                    ) : (
-                      <p>下書き中の記事はありません</p>
-                    )}
+                    <p>インターンシップや求人のニュースを作成するオプションとして、<br></br>
+                      応募フォームを作成することができます。
+                    </p>
+                    <button id="createFormJump" className="save" onClick={() => create_form_jump(news_id)}>応募フォームを作成する</button>
                   </Grid>
                 )}
               </div>
@@ -1385,16 +1335,14 @@ const Editor = () => {
         </div>
       )}
 
-
-
-
       <ImageSearchIcon
         className="cover_img_upload"
         style={{ display: displayInput ? 'block' : 'none' }}
         onClick={() => document.getElementById('fileInput').click()}
       />
 
-      <textarea className="editor_title"
+      <textarea
+        className="editor_title"
         id="editor_title"
         wrap="soft"
         placeholder="記事タイトル"
@@ -1405,7 +1353,7 @@ const Editor = () => {
       <div className="editor-wrapper">
         <div ref={editorHolder} id="editor" className="editor" />
       </div>
-    </div >
+    </div>
   );
 };
 

@@ -2,7 +2,6 @@ import ApartmentIcon from '@mui/icons-material/Apartment';
 import NewspaperOutlinedIcon from '@mui/icons-material/NewspaperOutlined';
 import VideoLibraryOutlinedIcon from '@mui/icons-material/VideoLibraryOutlined';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
-import StickyNote2Icon from '@mui/icons-material/StickyNote2';
 import SvgColor from 'src/components/svg-color';
 
 // ----------------------------------------------------------------------
@@ -33,8 +32,8 @@ const navConfig = [
     icon: <ApartmentIcon />,
   },
   {
-    title: 'インターン/求人',
-    path: '/Internship_JobOffer',
+    title: 'ニュース一覧',
+    path: '/Internship_JobOffer/joboffers',
     icon: <NewspaperOutlinedIcon />,
   },
   {
@@ -42,6 +41,8 @@ const navConfig = [
     path: '/Settings',
     icon: icon('ic_disabled'),
   },
+<<<<<<< HEAD
+=======
   {
     title: 'ニュースの投稿',
     path: '/Editor',
@@ -52,6 +53,7 @@ const navConfig = [
     path: '/TestPage',
     icon: <StickyNote2Icon />,
   },
+>>>>>>> 79cc4a73bb2a7c7c4a748ee845ec41314e645716
   // {
   //   title: 'Not found',
   //   path: '/404',

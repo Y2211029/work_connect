@@ -213,7 +213,7 @@ const PostCard = forwardRef(({ post, index }, ref) => {
               p: (theme) => theme.spacing(4, 3, 3, 3),
             }}
           >
-            {renderFollow}
+            {renderFollow()}
 
             {renderUserName}
 

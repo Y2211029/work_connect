@@ -3,17 +3,14 @@ import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-
 import ProfileMypage from './Mypage';
 import ProfileNews from './News';
 
-
-
-
+// 同一ページ内リンク用のナビゲーション制御
 function samePageLinkNavigation(event) {
   if (
     event.defaultPrevented ||
-    event.button !== 0 || // ignore everything but left-click
+    event.button !== 0 || // 左クリックのみ許可
     event.metaKey ||
     event.ctrlKey ||
     event.altKey ||
@@ -24,14 +21,14 @@ function samePageLinkNavigation(event) {
   return true;
 }
 
+// カスタムリンクタブ
 function LinkTab(props) {
   return (
     <Tab
       component="a"
       onClick={(event) => {
-        // Routing libraries handle this, you can remove the onClick handle when using them.
         if (samePageLinkNavigation(event)) {
-          event.preventDefault();
+          event.preventDefault(); // ナビゲーションを防止
         }
       }}
       aria-current={props.selected && 'page'}
@@ -44,16 +41,27 @@ LinkTab.propTypes = {
   selected: PropTypes.bool,
 };
 
-export default function NavTabs() {
-  const [value, setValue] = React.useState(0);
+// Profile コンポーネントで value を NavTabs に渡す
+const Profile = ({ value }) => {
+  return (
+    <div>
+      <NavTabs initialTabValue={value} /> {/* value を initialTabValue として渡す */}
+    </div>
+  );
+};
+
+export default Profile;
+
+// NavTabs コンポーネント
+export function NavTabs({ initialTabValue = 0 }) {
+  const [value, setValue] = React.useState(initialTabValue); // 初期値をプロパティから設定
 
   const handleChange = (event, newValue) => {
-    // event.type can be equal to focus with selectionFollowsFocus.
     if (
       event.type !== 'click' ||
       (event.type === 'click' && samePageLinkNavigation(event))
     ) {
-      setValue(newValue);
+      setValue(newValue); // タブの変更を処理
     }
   };
 
@@ -65,13 +73,19 @@ export default function NavTabs() {
         aria-label="nav tabs example"
         role="navigation"
       >
-        <Tab label="マイページ" />
-        <Tab label="ニュース" />
-        <Tab label="分析" />
+        <LinkTab label="マイページ" href="/mypage" />
+        <LinkTab label="ニュース" href="/news" />
       </Tabs>
-      {value === 0 && <ProfileMypage />}
-      {value === 1 && <ProfileNews />}
-      {value === 2 && <ProfileNews />}
+      {value === 0 && <ProfileMypage />} {/* value が 0 の場合マイページ */}
+      {value === 1 && <ProfileNews />}   {/* value が 1 の場合ニュース */}
     </Box>
   );
+}
+
+NavTabs.propTypes = {
+  initialTabValue: PropTypes.number, // 初期タブを指定するためのプロパティ
+};
+
+Profile.propTypes = {
+  value:PropTypes.number,
 }

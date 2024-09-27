@@ -19,7 +19,7 @@ import { follow } from "src/_mock/follow";
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef(({ post }, ref) => {
-  const { company_id, news_id, company_name, article_title, genre, header_img, news_created_at, follow_status: initialFollowStatus, icon_id } = post;
+  const { company_id, news_id, company_name, article_title, genre, header_img, news_created_at, follow_status: initialFollowStatus, icon_id, count } = post;
 
   const [followStatus, setFollowStatus] = useState(initialFollowStatus);
   const { getSessionData } = useSessionStorage();
@@ -35,7 +35,6 @@ const PostCard = forwardRef(({ post }, ref) => {
       console.error("フォロー処理中にエラーが発生しました！", error);
     }
   };
-
 
   // 企業アイコン
   const renderAvatar = (
@@ -68,21 +67,19 @@ const PostCard = forwardRef(({ post }, ref) => {
 
   // ジャンル
   const renderGenre = genre ? (
-    <div>
-      <Button
-        variant="contained"
-        sx={{
-          padding: "2px",
-          margin: "2px",
-          background: "linear-gradient(#41A4FF, #9198e5)",
-          "&:hover": {
-            background: "linear-gradient(#c2c2c2, #e5ad91)",
-          },
-        }}
-      >
-        {genre}
-      </Button>
-    </div>
+    <Button
+      variant="contained"
+      sx={{
+        padding: "2px",
+        margin: "2px",
+        background: "linear-gradient(#41A4FF, #9198e5)",
+        "&:hover": {
+          background: "linear-gradient(#c2c2c2, #e5ad91)",
+        },
+      }}
+    >
+      {genre}
+    </Button>
   ) : null;
 
   // サムネイル
@@ -164,6 +161,17 @@ const PostCard = forwardRef(({ post }, ref) => {
       </Stack>
     </Stack>
   );
+  // Profile/株式会社アーキテクト/News/Forms
+  // フォームのレンダリング（企業の投稿の場合）
+  const renderForm = company_id === accountData.id && count > 0 ? (
+    <Link
+      to={`/CheckForm/${news_id}`}
+    >
+      <Typography opacity="0.48" onClick={handleFollowClick}>
+      このニュースに{count}件のフォーム回答があります
+      </Typography>
+    </Link>
+  ) : null;
 
   return (
     <Grid xs={12} sm={6} md={3}>
@@ -175,6 +183,7 @@ const PostCard = forwardRef(({ post }, ref) => {
             {renderTitle}
             {renderFollow}
             {renderInfo}
+            {renderForm}
           </Box>
         </Card>
       </div>

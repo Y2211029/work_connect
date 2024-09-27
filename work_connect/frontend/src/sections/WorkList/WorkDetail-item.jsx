@@ -71,7 +71,7 @@ const WorkDetailItem = () => {
   // -----作品データ-----
   const [workDetail, setWorkDetail] = useState([]);
   const [CommentPost, setCommentPost] = useState({
-    display: "none",
+    // display: "none",
     text: "",
   });
   const [workComment, setWorkComment] = useState([]);
@@ -225,13 +225,13 @@ const WorkDetailItem = () => {
   };
 
   // コメント欄表示
-  const handleTextOpen = () => {
-    setCommentPost({ ...CommentPost, display: "block" });
-  };
+  // const handleTextOpen = () => {
+  //   setCommentPost({ ...CommentPost, display: "block" });
+  // };
 
   // コメント投稿キャンセル
   const handlePostCancel = () => {
-    setCommentPost({ ...CommentPost, display: "none", text: "" });
+    setCommentPost({ ...CommentPost, text: "" });
   };
 
   // コメント投稿内容
@@ -374,7 +374,7 @@ const WorkDetailItem = () => {
       aria-labelledby="autoplay-example-heading"
       hasTrack={false}
       onMoved={(splide, newIndex) => setCurrentSlideIndex(newIndex)}
-      style={{ width: "90%", height: "90%", margin: "0 auto", }}
+      style={{ width: "100%", height: "100%", margin: "0 auto", marginBottom: "80px" }}
     >
       <div style={{ position: "relative" }}>
         <SplideTrack>
@@ -395,7 +395,7 @@ const WorkDetailItem = () => {
   // モーダルスライド
   const renderModalSlider = modalIsOpen && WorkSlideCheck && (
     <>
-      <div>
+      <div >
         <Button onClick={closeModal} className="close-button">
           <span className="close-button_text">閉じる</span>
         </Button>
@@ -490,38 +490,38 @@ const WorkDetailItem = () => {
   // 作品紹介文
   const renderIntro = workDetail.work_intro && (
     <>
-      <Typography variant="h5">●作品の紹介</Typography>
-      <div>{workDetail.work_intro}</div>
+      <Typography variant="h4" className="WorkDetail_typo">●作品の紹介</Typography>
+      <div className="WorkDetail_info">{workDetail.work_intro}</div>
     </>
   );
 
   // 作品ジャンル
   const renderGenre = WorkGenre && (
     <>
-      <Typography variant="h5">●ジャンル</Typography>
-      {WorkGenre}
+      <Typography variant="h4" className="WorkDetail_typo">●ジャンル</Typography>
+      <div className="WorkDetail_info">{WorkGenre}</div>
     </>
   );
 
   // 作品の開発言語
   const renderProgrammingLang = WorkProgrammingLanguage && (
     <>
-      <Typography variant="h5">●開発言語</Typography>
-      {WorkProgrammingLanguage}
+      <Typography variant="h4" className="WorkDetail_typo">●開発言語</Typography>
+      <div className="WorkDetail_info">{WorkProgrammingLanguage}</div>
     </>
   );
 
   // 作品の開発環境
   const renderDevelopmentEnv = WorkDevelopmentEnvironment && (
     <>
-      <Typography variant="h5">●開発環境</Typography>
-      {WorkDevelopmentEnvironment}
+      <Typography variant="h4" className="WorkDetail_typo">●開発環境</Typography>
+      <div className="WorkDetail_info">{WorkDevelopmentEnvironment}</div>
     </>
   );
 
   const renderWorkURL = workDetail.work_url && (
     <>
-      <div>
+      <div style={{ height: "100px", textAlign: "center" }}>
         <Link target="_blank" to={workDetail.work_url}>
           作品リンクはこちら
         </Link>
@@ -589,27 +589,25 @@ const WorkDetailItem = () => {
   );
   const renderCommentButton = (
     <>
-      <div>
-        <Button variant="contained" onClick={handleTextOpen}>
-          コメントする
-        </Button>
-        <br />
+      <div >
+        {/* <Button variant="contained" onClick={handleTextOpen}>
+          感想を残す
+        </Button> */}
         <div
           style={{
             display: CommentPost.display,
+            margin: "0 auto",
+           
           }}
+          
         >
           <textarea
-            style={{
-              width: "50%",
-              height: "100px",
-            }}
+            className="WorkDetail_commnet"
             value={CommentPost.text}
             onChange={(e) => handlePostChange(e.target.value)}
           />
-          <br />
           <button onClick={() => handlePostCancel()}>キャンセル</button>
-          <button onClick={() => handlePost()}>投稿</button>
+          <button onClick={() => handlePost()}>コメント</button>
         </div>
       </div>
     </>

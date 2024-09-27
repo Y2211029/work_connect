@@ -447,9 +447,10 @@ textarea {
   background: #ffffff;
 }
 
-.css-1pv2561-MuiInputBase-root-MuiOutlinedInput-root:hover{
-  border-color:   #3399FF;
+.css-1pv2561-MuiInputBase-root-MuiOutlinedInput-root:hover {
+  border-color: #3399FF;
 }
+
 /* 作品投稿画面 ここまで */
 
 /* 動画投稿画面 ここから */
@@ -746,6 +747,27 @@ textarea {
 }
 
 
+/* 作品の紹介・ジャンル・開発言語・開発環境などの項目 */
+.WorkDetail_typo {
+  padding: 20px 0 0 0;
+}
+
+.WorkDetail_info {
+  margin: 10px;
+}
+
+.WorkDetail_commnet {
+  /* Rectangle 6 */
+  width: 50%;
+  height: 100px;
+  left: 43px;
+  top: 759px;
+
+  background: #FFFFFF;
+  border: none;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
+}
 
 /* 作品詳細 　ここまで */
 

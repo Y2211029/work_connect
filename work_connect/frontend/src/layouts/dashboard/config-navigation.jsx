@@ -41,19 +41,16 @@ const navConfig = [
     path: '/Settings',
     icon: icon('ic_disabled'),
   },
-<<<<<<< HEAD
-=======
   {
     title: 'ニュースの投稿',
     path: '/Editor',
-    icon: <StickyNote2Icon />,
+    icon: <NewspaperOutlinedIcon />,
   },
   {
     title: 'テストページ何か試したいものはここで',
     path: '/TestPage',
-    icon: <StickyNote2Icon />,
+    icon: <NewspaperOutlinedIcon />,
   },
->>>>>>> 79cc4a73bb2a7c7c4a748ee845ec41314e645716
   // {
   //   title: 'Not found',
   //   path: '/404',

@@ -33,13 +33,9 @@ use App\Http\Controllers\work\GetWorkDetailController;
 use App\Http\Controllers\movie\GetMovieDetailController;
 use App\Http\Controllers\student\GetStudentListController;
 use App\Http\Controllers\company\GetCompanyListController;
-<<<<<<< HEAD
-use App\Http\Controllers\follow\followController;
 use App\Http\Controllers\FormController;
-=======
 use App\Http\Controllers\follow\FollowController;
 use App\Http\Controllers\chat\GetChannelListController;
->>>>>>> 79cc4a73bb2a7c7c4a748ee845ec41314e645716
 use App\Http\Controllers\tag\InsertTagController;
 use App\Http\Controllers\tag\GetGenreTagController;
 use App\Http\Controllers\tag\GetLanguageTagController;

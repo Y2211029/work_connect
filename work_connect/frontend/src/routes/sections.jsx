@@ -108,18 +108,15 @@ export default function Router() {
         // プロフィール
         // Profile/の後ろにユーザーネームを指定
         { path: "Profile/:user_name", element: <ProfilePage /> },
-<<<<<<< HEAD
         { path: "Profile/:user_name/News", element: <ProfileNewsPage /> },
         { path: "Profile/:user_name/News/:Genre", element: <SpecialCompanyNewsPage /> },
 
         //企業が応募フォームを見る画面
         { path: "CheckForm/:NewsId", element: <CheckFormPage /> },
-=======
         // チャット
         { path: "Chat", element: <Chat /> },
         // テストページ何か試したいものがあればこのページで行う。
         { path: "TestPage", element: <TestPage /> },
->>>>>>> 79cc4a73bb2a7c7c4a748ee845ec41314e645716
       ],
     },
     {

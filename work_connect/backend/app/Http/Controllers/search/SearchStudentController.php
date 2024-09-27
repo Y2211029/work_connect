@@ -17,8 +17,14 @@ class SearchStudentController extends Controller
             // すでに取得したデータをスキップするためのオフセット計算
             $offset = ($page - 1) * $perPage;
 
+            // 検索者のIDを取得
+            $myId = $request->input('myId', "");
+
             // 検索文字列を取得
             $searchText = $request->input('searchText', "");
+
+            // 絞り込まれたフォロー状況を配列で取得
+            $follow_status_array = $request->input('follow_status', []);
 
             // 絞り込まれた学校名を配列で取得
             $graduation_year_array = $request->input('graduation_year', []);
@@ -47,8 +53,8 @@ class SearchStudentController extends Controller
             // 絞り込まれた趣味を配列で取得
             $hobby_array = $request->input('hobby', []);
 
-            \Log::info('SearchStudentController:$student_programming_language_array:');
-            \Log::info($student_programming_language_array);
+            // \Log::info('SearchStudentController:$student_programming_language_array:');
+            // \Log::info($student_programming_language_array);
 
             $query = w_users::query();
 
@@ -179,14 +185,31 @@ class SearchStudentController extends Controller
                 });
             }
 
+            // フォロー状況で検索
+            if(in_array("フォローしている", $follow_status_array) && in_array("フォローされている", $follow_status_array)) {
+                // 相互フォローの場合
+                $query->join('w_follow as f1', 'w_users.id', '=', 'f1.follow_recipient_id');
+                $query->where('f1.follow_sender_id', $myId);
+                $query->join('w_follow as f2', 'w_users.id', '=', 'f2.follow_sender_id');
+                $query->where('f2.follow_recipient_id', $myId);
+            } else if(in_array("フォローしている", $follow_status_array)) {
+                // フォローしている場合
+                $query->join('w_follow', 'w_users.id', '=', 'w_follow.follow_recipient_id');
+                $query->where('w_follow.follow_sender_id', $myId);
+            } else if(in_array("フォローされている", $follow_status_array)) {
+                // フォローされている場合
+                $query->join('w_follow', 'w_users.id', '=', 'w_follow.follow_sender_id');
+                $query->where('w_follow.follow_recipient_id', $myId);
+            }
+
             $results = $query->skip($offset)
                 ->take($perPage) //件数
                 ->get();
 
             $resultsArray = json_decode(json_encode($results), true);
 
-            \Log::info('SearchStudentController:$resultsArray:');
-            \Log::info($resultsArray);
+            // \Log::info('SearchStudentController:$resultsArray:');
+            // \Log::info($resultsArray);
 
             return json_encode($resultsArray);
 

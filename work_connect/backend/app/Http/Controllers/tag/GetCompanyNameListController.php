@@ -14,8 +14,8 @@ class GetCompanyNameListController extends Controller
             ->select('company_name')
             ->get();
 
-        \Log::info('GetCompanyNameListController.php:$tag:');
-        \Log::info($tag);
+        // \Log::info('GetCompanyNameListController.php:$tag:');
+        // \Log::info($tag);
         return json_encode($tag);
     }
 }

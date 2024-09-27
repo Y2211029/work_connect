@@ -1,15 +1,14 @@
-import { useState } from 'react';
+import { useState } from "react";
 import PropTypes from "prop-types";
 import TextField from "@mui/material/TextField";
 
 const WorkTitle = (props) => {
-
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState(null);
   const [hasError, setHasError] = useState(false);
 
   const handleChange = (e) => {
     setInputValue(e.target.value);
-    setHasError(e.target.value === ''); // 空の場合にエラーを表示
+    setHasError(e.target.value === ""); // 空の場合にエラーを表示
 
     props.callSetWorkData("WorkTitle", e.target.value);
   };
@@ -29,13 +28,7 @@ const WorkTitle = (props) => {
           variant="outlined"
           error={hasError}
           sx={{
-            backgroundColor: "#fff", // 背景色を指定
-            borderRadius: "8px", // 角の丸みを設定
-            marginTop: "6px",
-            marginBottom: "0",
-            '& .MuiOutlinedInput-root': {
-              '&.Mui-error fieldset': { borderColor: 'red' }, // エラー時の枠の色を赤に設定
-            },
+            backgroundColor: "#fff",
           }}
         />
       </p>

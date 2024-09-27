@@ -86,7 +86,7 @@ const WorkPosting = () => {
   const WorkSubmit = async (e) => {
     e.preventDefault();
     console.log("e", e.target);
-
+    async function PostData() {
     const formData = new FormData();
     console.log("Image: ", Image);
     // imageFiles.forEach((file) => {
@@ -105,21 +105,36 @@ const WorkPosting = () => {
     }
     formData.append("imagesName", imagesName);
     console.log("...formData.entries(): ", ...formData.entries());
-    try {
-      const response = await axios.post(
-        "http://localhost:8000/work_posting",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      console.log(formData);
-      navigation("/WorkSelect");
-      setMessage(response.data.message);
-    } catch (error) {
-      setMessage(error.message);
+
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/work_posting",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        console.log(formData);
+        navigation("/WorkSelect");
+        setMessage(response.data.message);
+      } catch (error) {
+        setMessage(error.message);
+      }
+    }
+
+    if (
+      !workData.WorkTitle ||
+      !workData.WorkGenre ||
+      !workData.Introduction ||
+      !workData.Obsession ||
+      !FileList
+    ) {
+      alert("エラー：未入力項目があります。");
+    } else {
+      // それ以外(実行)
+      PostData();
     }
     // e.target.map
   };

@@ -68,7 +68,7 @@ export default function Header({ onOpenNav }) {
 
   // style CSS ここから
   const buttonStyle = {
-    display: Display,
+    display: Display.HomePage,
     margin: 4,
     "&:hover": {
       backgroundColor: "#a9a9a9",
@@ -187,14 +187,14 @@ export default function Header({ onOpenNav }) {
   const renderContent = (
     <>
       {!lgUp && (
-        <IconButton onClick={onOpenNav} sx={{ mr: 1, display: Display }}>
+        <IconButton onClick={onOpenNav} sx={{ mr: 1, display: Display.HomePage }}>
           {/* ハンバーガーメニュー */}
           <Iconify icon="eva:menu-2-fill" />
         </IconButton>
       )}
 
       {/* 検索バー */}
-      <Searchbar />
+      <Searchbar style={{ display: Display.MyPage }}/>
 
       <Box sx={{ flexGrow: 1 }} />
       {/* ログイン、新規登録、本登録、チャット、通知、アカウントプロフィール */}
@@ -246,11 +246,11 @@ export default function Header({ onOpenNav }) {
           </>
         ) : null}
 
-        <Button id="LoginButton" onClick={handleChange} style={{ display: Display === "" ? "none" : "block" }}>
+        <Button id="LoginButton" onClick={handleChange} style={{ display: Display.HomePage === "" ? "none" : "block" }}>
           ログイン
         </Button>
 
-        <Button id="PreSignButton" onClick={handleChange} style={{ display: Display === "" ? "none" : "block" }}>
+        <Button id="PreSignButton" onClick={handleChange} style={{ display: Display.HomePage === "" ? "none" : "block" }}>
           新規登録
         </Button>
 

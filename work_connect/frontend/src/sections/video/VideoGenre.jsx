@@ -55,7 +55,7 @@ const VideoGenre = (props) => {
     selectedOption.map((value) => {
       valueArray.push(value.value)
     })
-    props.callSetWorkData("VideoGenre", valueArray.join(","));
+    props.callSetVideoData("VideoGenre", valueArray.join(","));
   };
 
   return(
@@ -64,7 +64,7 @@ const VideoGenre = (props) => {
 };
 
 VideoGenre.propTypes = {
-  callSetWorkData: PropTypes.func,
+  callSetVideoData: PropTypes.func,
 };
 
 export default VideoGenre;

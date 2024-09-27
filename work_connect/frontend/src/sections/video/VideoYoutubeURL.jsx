@@ -1,7 +1,22 @@
+import { useState } from "react";
 import PropTypes from "prop-types";
 import TextField from "@mui/material/TextField";
 
 const VideoYoutubeURL = (props) => {
+  const [error, setError] = useState(false); // エラー状態を管理
+
+  const handleChange = (event) => {
+    const value = event.target.value;
+    props.onChange(event); // 親コンポーネントに変更を通知
+
+    // 入力が空の場合、エラーを true にする
+    if (value.trim() === "") {
+      setError(true);
+    } else {
+      setError(false);
+    }
+  };
+
   return (
     <div>
       <p>Youtube URLを入力してください。</p>
@@ -11,23 +26,11 @@ const VideoYoutubeURL = (props) => {
         type="text"
         name="text"
         variant="outlined"
-        onChange={props.onChange}
+        onChange={handleChange}
         value={props.value}
+        error={error}
         sx={{
           backgroundColor: "#fff", // 背景色を指定
-          borderRadius: "8px", // 角の丸みを設定
-          marginTop: "6px",
-          marginBottom: "0",
-          "& .MuiOutlinedInput-root": {
-            "&.Mui-error fieldset": { borderColor: "red" }, // エラー時の枠の色を赤に設定
-            "&:hover": {
-              borderColor: "#3399FF",
-            },
-            "&:focus": {
-              borderCcolor: "#3399FF",
-              boxShadow: "0 0 0 3px",
-            },
-          },
         }}
       />
     </div>
@@ -35,7 +38,7 @@ const VideoYoutubeURL = (props) => {
 };
 
 VideoYoutubeURL.propTypes = {
-  callSetWorkData: PropTypes.func,
+  callSetVideoData: PropTypes.func,
   onChange: PropTypes.func.isRequired, // 追加
   value: PropTypes.string.isRequired, // 追加
 };

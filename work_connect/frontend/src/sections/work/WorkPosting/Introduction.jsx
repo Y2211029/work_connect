@@ -59,11 +59,13 @@ const Textarea = styled(BaseTextareaAutosize)(
 
 const Introduction = (props) => {
   const theme = useTheme();
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState(null);
   const [hasError, setHasError] = useState(false);
 
   const handleChange = (e) => {
     props.callSetWorkData("Introduction", e.target.value);
+    console.log("nagasa",e.target.value);
+
     setInputValue(e.target.value);
     setHasError(e.target.value === ""); // 空の場合にエラーを表示
   };
@@ -94,7 +96,7 @@ const Introduction = (props) => {
           maxLength={500}
           sx={{
             border:
-              Introduction === ""
+              inputValue === ""
                 ? "1px red solid"
                 : `1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]}`,
           }}

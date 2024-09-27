@@ -26,6 +26,7 @@ export const CompanyListPage = lazy(() => import("src/pages/companyList"));
 // 作品・動画・学生・企業詳細画面
 export const WorkDetail = lazy(() => import("src/sections/WorkList/view/WorkDetail"));
 export const VideoDetail = lazy(() => import("src/sections/VideoList/view/VideoDetail"));
+export const TestPage = lazy(() => import("src/sections/TestPage"));
 
 // export const StudentListPage = lazy(() => import("src/sections/WorkList/view/WorkDetail.jsx"));
 // export const CompanyListPage = lazy(() => import("src/sections/WorkList/view/WorkDetail.jsx"));
@@ -47,11 +48,14 @@ export const WriteFormPage = lazy(() => import("src/pages/WriteForm/WriteForm"))
 // リンク無し画面
 export const Page404 = lazy(() => import("src/pages/page-not-found"));
 
-//プロフィール
+// プロフィール
 export const ProfilePage = lazy(() => import("src/pages/Profile"));
 export const ProfileNewsPage = lazy(() => import("src/sections/Profile/View/company/News"));
 export const SpecialCompanyNewsPage = lazy(() => import("src/sections/Profile/View/company/SpecialCompanyNews/SpecialCompanyListView"));
 export const CheckFormPage = lazy(() => import("src/sections/CheckForm/View/CheckForm"));
+
+// チャット
+export const Chat = lazy(() => import("src/pages/Chat"));
 
 //20240704
 export const NewsDetailPage = lazy(() => import('src/sections/InternshipJobOffer/news_detail'));
@@ -101,14 +105,21 @@ export default function Router() {
         { path: "WorkSelect", element: <WorkSelect /> },
         // 動画選択画面
         { path: "VideoSelect", element: <VideoSelect /> },
-        //プロフィール
+        // プロフィール
         // Profile/の後ろにユーザーネームを指定
         { path: "Profile/:user_name", element: <ProfilePage /> },
+<<<<<<< HEAD
         { path: "Profile/:user_name/News", element: <ProfileNewsPage /> },
         { path: "Profile/:user_name/News/:Genre", element: <SpecialCompanyNewsPage /> },
 
         //企業が応募フォームを見る画面
         { path: "CheckForm/:NewsId", element: <CheckFormPage /> },
+=======
+        // チャット
+        { path: "Chat", element: <Chat /> },
+        // テストページ何か試したいものがあればこのページで行う。
+        { path: "TestPage", element: <TestPage /> },
+>>>>>>> 79cc4a73bb2a7c7c4a748ee845ec41314e645716
       ],
     },
     {

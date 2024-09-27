@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { faker } from "@faker-js/faker";
 
 import Stack from "@mui/material/Stack";
-import Container from "@mui/material/Container";
+// import Container from "@mui/material/Container";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 
@@ -155,9 +155,10 @@ export default function ItemObjectAndPostCard({ type, ParamUserName,NewsId }) {
       idKey: "work_id",
       tags: ["work_genre"],
       generatePosts: (WorkOfList) =>
-        WorkOfList.map((work) => ({
+        WorkOfList.map((work, key) => ({
           work_id: work.work_id,
-          thumbnail: `sss`,
+          thumbnail: `/assets/images/covers/cover_${key + 1}.jpg`,
+          icon: work.icon,
           title: work.work_name,
           genre: work.work_genre,
           intro: work.work_intro.length > 200 ? work.work_intro.substring(0, 200) + "..." : work.work_intro,
@@ -179,6 +180,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName,NewsId }) {
       generatePosts: (WorkOfList) =>
         WorkOfList.map((movie) => ({
           movie_id: movie.movie_id,
+
           movie: movie.youtube_url,
           title: movie.title,
           genre: movie.genre,
@@ -516,7 +518,6 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   }, [ResetItem, setWorkOfList, setAllItems]);
 
 
-
   // 作品アイテムの一番最後までスクロールされたらデータを取得する。
   useEffect(() => {
     if (isIntersecting) {
@@ -531,8 +532,8 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   /*----- 検索されていないかつ作品データがあるとき -----*/
   useEffect(() => {
     if (!ResetItem && !IsSearch.Check && data) {
-      // console.log("datadataWorkOfList", WorkOfList);
-      // console.log("datadata", data);
+      console.log("datadataWorkOfList", WorkOfList);
+      console.log("datadata", data);
       funcSetWorksItem(idKey, tags, WorkOfList, setWorkOfList, data, setIsLoadColorLing, setIsLoadItemColorLing, error, generatePosts);
     }
   }, [data, error, ResetItem, IsSearch.Check, IsSearch.searchResultEmpty]);
@@ -542,7 +543,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   useEffect(() => {
     if (IsSearch.Check && DataList) {
       // console.log("datadataWorkOfList", WorkOfList);
-      // console.log("datadata", DataList);
+      console.log("datadataDataList", DataList);
       funcSetWorksItem(idKey, tags, WorkOfList, setWorkOfList, DataList, setIsLoadColorLing, setIsLoadItemColorLing, error, generatePosts);
     }
   }, [DataList, IsSearch.Check, IsSearch.searchResultEmpty]);
@@ -575,7 +576,10 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
           colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
         />
       )}
-      <Container maxWidth="xl" >
+      {/* <Container  style={{ width: "100%" }}> */}
+      <div className="list-view-Container">
+
+
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           {typeof ItemName === "string" ? (
             <>
@@ -610,7 +614,9 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
 
         <Grid container spacing={3}>
           {/* 作品アイテムの表示 */}
-          {renderWorkItems}
+          <div className="column-container" >
+            {renderWorkItems}
+          </div>
 
           {isLoadItemColorLing && (
             <ColorRing
@@ -624,7 +630,8 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
             />
           )}
         </Grid>
-      </Container>
+      </div>
+      {/* </Container> */}
     </>
   );
 };

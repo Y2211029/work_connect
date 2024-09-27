@@ -4,9 +4,6 @@ import PropTypes from 'prop-types';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import Iframe from 'react-iframe'; //紹介動画やマップを埋め込む
 
-
-
-
 const IntroVideo = ({ IntroVideoData }) => {
   const [IntroVideo, setIntroVideo] = useState(IntroVideoData);
   const [IntroVideoURL, setIntroVideoURL] = useState(null);
@@ -14,17 +11,24 @@ const IntroVideo = ({ IntroVideoData }) => {
 
   // valueの初期値をセット
   useEffect(() => {
-    // セッションデータ取得
-    const SessionData = getSessionData("accountData");
-
-    /// 編集の途中ならセッションストレージからデータを取得する。
-    /// (リロードした時も、データが残った状態にする。)
-    if ((SessionData.CompanyIntroVideo !== undefined) ||
-    SessionData.CompanyIntroVideoEditing) {
-      // セッションストレージから最新のデータを取得
-      setIntroVideo(SessionData.CompanyIntroVideo);
+    if (getSessionData("accountData") !== undefined){
+      const SessionData = getSessionData("accountData");
+      if(SessionData.CompanyIntroVideoEditing && SessionData.CompanyIntroVideo){
+        // セッションストレージから最新のデータを取得
+        setIntroVideo(SessionData.CompanyIntroVideo);
+        if(SessionData.CompanyIntroVideo){
+          iframeURLChange(SessionData.CompanyIntroVideo);
+        }
+      } else if(
+        (SessionData.CompanyIntroVideoEditing && SessionData.CompanyIntroVideo && IntroVideoData)||
+        (!SessionData.CompanyIntroVideoEditing && IntroVideoData)
+      ){ // DBから最新のデータを取得
+        setIntroVideo(IntroVideoData);
+        if(IntroVideoData){
+          iframeURLChange(IntroVideoData);
+        }
+      }
     }
-
   }, [IntroVideoData]);
 
   const handleChange = (e) => {

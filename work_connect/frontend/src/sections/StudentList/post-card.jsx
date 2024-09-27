@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { forwardRef } from "react";
 import { Link } from "react-router-dom";
@@ -78,7 +79,7 @@ const PostCard = forwardRef(({ post, index }, ref) => {
 
   const renderUserName = (
     <Link
-      to={`/Profile/${userName}`}
+      to={`/Profile/${userName}?page=mypage`}
       color="inherit"
       variant="subtitle2"
       underline="hover"
@@ -258,9 +259,9 @@ const PostCard = forwardRef(({ post, index }, ref) => {
   );
 
   return (
-    <Grid xs={12} sm={latestPostLarge ? 12 : 6} md={latestPostLarge ? 6 : 3}>
-      <div ref={ref}>
-        <Card>
+    <Grid xs={12} sm={latestPostLarge ? 12 : 6} md={latestPostLarge ? 6 : 3} style={{ width: "100%" }}>
+      <div ref={ref} >
+        <Card className="postCard" style={{ width: "100%" }}>
           <Box
             sx={{
               position: "relative",

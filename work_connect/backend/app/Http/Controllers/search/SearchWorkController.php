@@ -19,8 +19,20 @@ class SearchWorkController extends Controller
 
             $sortOption = $request->query('sort');
 
+            // ユーザー名を取得
+            $user_name = $request->input('user_name', "");
+
+            // 検索者のIDを取得
+            $myId = $request->input('myId', "");
+
+            // 学生プロフィール内の作品一覧かを識別するための情報を取得
+            $infoStr = $request->input('info_str', "");
+
             // 検索文字列を取得
             $searchText = $request->input('searchText', "");
+
+            // 絞り込まれたフォロー状況を配列で取得
+            $follow_status_array = $request->input('follow_status', []);
 
             // 絞り込まれた学校名を配列で取得
             $school_name_array = $request->input('school_name', []);
@@ -40,8 +52,7 @@ class SearchWorkController extends Controller
             // 絞り込まれた開発環境を配列で取得
             $development_environment_array = $request->input('development_environment', []);
 
-            \Log::info('GetWorkListController:$work_genre_array:');
-            \Log::info($work_genre_array);
+
 
             $query = w_works::query();
 
@@ -77,6 +88,11 @@ class SearchWorkController extends Controller
 
             $query->join('w_users', 'w_works.creator_id', '=', 'w_users.id');
 
+            // ユーザー名で絞り込み
+            if ($user_name != "") {
+                $query->where('w_users.user_name', $user_name);
+            }
+
             // 学校名で絞り込み
             if (isset($school_name_array)) {
                 foreach ($school_name_array as $school_name) {
@@ -86,8 +102,8 @@ class SearchWorkController extends Controller
 
             // 学科名で絞り込み
             if (isset($department_name_array)) {
-                \Log::info('SearchWorkController: $department_name_array: ');
-                \Log::info($department_name_array);
+                // \Log::info('SearchWorkController: $department_name_array: ');
+                // \Log::info($department_name_array);
                 foreach ($department_name_array as $department_name) {
                     $query->where('w_users.department_name', 'REGEXP', '(^|,)' . preg_quote($department_name) . '($|,)');
                 }
@@ -114,11 +130,13 @@ class SearchWorkController extends Controller
                 }
             }
 
+
+
             // \Log::info('SearchWorkController:$searchText:');
             // \Log::info($searchText);
             // 検索文字列で絞り込み
             if ($searchText != "") {
-                $query->where(function($query) use ($searchText) {
+                $query->where(function($query) use ($searchText, $infoStr) {
                     // 作品の情報
                     $query->where('w_works.work_genre', 'LIKE', '%' . $searchText . '%');
                     $query->orWhere('w_works.work_name', 'LIKE', '%' . $searchText . '%');
@@ -126,24 +144,48 @@ class SearchWorkController extends Controller
                     $query->orWhere('w_works.programming_language', 'LIKE', '%' . $searchText . '%');
                     $query->orWhere('w_works.development_environment', 'LIKE', '%' . $searchText . '%');
 
-                    // 学生の情報
-                    $query->orWhere('w_users.user_name', 'LIKE', '%' . $searchText . '%');
-                    $query->orWhere('w_users.student_surname', 'LIKE', '%' . $searchText . '%');
-                    $query->orWhere('w_users.student_name', 'LIKE', '%' . $searchText . '%');
-                    $query->orWhere('w_users.student_kanasurname', 'LIKE', '%' . $searchText . '%');
-                    $query->orWhere('w_users.student_kananame', 'LIKE', '%' . $searchText . '%');
-                    $query->orWhere('w_users.school_name', 'LIKE', '%' . $searchText . '%');
-                    $query->orWhere('w_users.department_name', 'LIKE', '%' . $searchText . '%');
-                    $query->orWhere('w_users.faculty_name', 'LIKE', '%' . $searchText . '%');
-                    $query->orWhere('w_users.major_name', 'LIKE', '%' . $searchText . '%');
-                    $query->orWhere('w_users.course_name', 'LIKE', '%' . $searchText . '%');
+                    // \Log::info('GetWorkListController:$infoStr:');
+                    // \Log::info($infoStr);
 
-                    // 苗字と名前セットの場合
-                    $query->orWhere(\DB::raw('CONCAT(w_users.student_surname,w_users.student_name)'), 'LIKE', '%' . $searchText . '%');
-                    $query->orWhere(\DB::raw('CONCAT(w_users.student_kanasurname,w_users.student_kananame)'), 'LIKE', '%' . $searchText . '%');
-                    $query->orWhere(\DB::raw('CONCAT(w_users.student_surname," ",w_users.student_name)'), 'LIKE', '%' . $searchText . '%');
-                    $query->orWhere(\DB::raw('CONCAT(w_users.student_kanasurname," ",w_users.student_kananame)'), 'LIKE', '%' . $searchText . '%');
+                    // if(isset($infoStr)) {
+                        if($infoStr != "学生プロフィール内作品検索") {
+                            // 学生の情報
+                            $query->orWhere('w_users.user_name', 'LIKE', '%' . $searchText . '%');
+                            $query->orWhere('w_users.student_surname', 'LIKE', '%' . $searchText . '%');
+                            $query->orWhere('w_users.student_name', 'LIKE', '%' . $searchText . '%');
+                            $query->orWhere('w_users.student_kanasurname', 'LIKE', '%' . $searchText . '%');
+                            $query->orWhere('w_users.student_kananame', 'LIKE', '%' . $searchText . '%');
+                            $query->orWhere('w_users.school_name', 'LIKE', '%' . $searchText . '%');
+                            $query->orWhere('w_users.department_name', 'LIKE', '%' . $searchText . '%');
+                            $query->orWhere('w_users.faculty_name', 'LIKE', '%' . $searchText . '%');
+                            $query->orWhere('w_users.major_name', 'LIKE', '%' . $searchText . '%');
+                            $query->orWhere('w_users.course_name', 'LIKE', '%' . $searchText . '%');
+
+                            // 苗字と名前セットの場合
+                            $query->orWhere(\DB::raw('CONCAT(w_users.student_surname,w_users.student_name)'), 'LIKE', '%' . $searchText . '%');
+                            $query->orWhere(\DB::raw('CONCAT(w_users.student_kanasurname,w_users.student_kananame)'), 'LIKE', '%' . $searchText . '%');
+                            $query->orWhere(\DB::raw('CONCAT(w_users.student_surname," ",w_users.student_name)'), 'LIKE', '%' . $searchText . '%');
+                            $query->orWhere(\DB::raw('CONCAT(w_users.student_kanasurname," ",w_users.student_kananame)'), 'LIKE', '%' . $searchText . '%');
+                        }
+                    // }
                 });
+            }
+
+            // フォロー状況で検索
+            if(in_array("フォローしている", $follow_status_array) && in_array("フォローされている", $follow_status_array)) {
+                // 相互フォローの場合
+                $query->join('w_follow as f1', 'w_works.creator_id', '=', 'f1.follow_recipient_id');
+                $query->where('f1.follow_sender_id', $myId);
+                $query->join('w_follow as f2', 'w_works.creator_id', '=', 'f2.follow_sender_id');
+                $query->where('f2.follow_recipient_id', $myId);
+            } else if(in_array("フォローしている", $follow_status_array)) {
+                // フォローしている場合
+                $query->join('w_follow', 'w_works.creator_id', '=', 'w_follow.follow_recipient_id');
+                $query->where('w_follow.follow_sender_id', $myId);
+            } else if(in_array("フォローされている", $follow_status_array)) {
+                // フォローされている場合
+                $query->join('w_follow', 'w_works.creator_id', '=', 'w_follow.follow_sender_id');
+                $query->where('w_follow.follow_recipient_id', $myId);
             }
 
             if ($sortOption === 'orderNewPostsDate') {
@@ -159,10 +201,10 @@ class SearchWorkController extends Controller
 
             $resultsArray = json_decode(json_encode($workList), true);
 
-            \Log::info('SearchWorkController:$resultsArray:');
-            \Log::info($resultsArray);
-            \Log::info('SearchWorkController:$sortOption:');
-            \Log::info($sortOption);
+            // \Log::info('SearchWorkController:$resultsArray:');
+            // \Log::info($resultsArray);
+            // \Log::info('SearchWorkController:$sortOption:');
+            // \Log::info($sortOption);
 
             return json_encode($resultsArray);
             // if (count($resultsArray) == 0) {
@@ -171,7 +213,7 @@ class SearchWorkController extends Controller
             //     return json_encode($resultsArray);p
             // }
         } catch (\Exception $e) {
-            \Log::info('SearchWorkController:user_name重複チェックエラー');
+            \Log::info('SearchWorkController:エラー');
             \Log::info($e);
             /*reactに返す*/
             return json_encode($e);

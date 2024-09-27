@@ -1,4 +1,4 @@
-import { forwardRef, /*useState*/ } from "react";
+import { forwardRef, /*useEffect, /*useState*/ } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -15,26 +15,8 @@ import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 const PostCard = forwardRef(({ post }, ref) => {
   const { work_id, genre, thumbnail, icon, /* cover, */ title, intro,  /*view, comment,*/ author, userName, createdAt } = post;
 
-  // const [imgSrc, setImgSrc] = useState(thumbnail);
 
-  // let fallbackImage = "https://placehold.jp/300x200.png";
 
-  // const renderThumbnail = (
-  //   <Box
-  //     className="c-card-img"
-  //     component="img"
-  //     src={imgSrc}
-  //     // onError={() => setImgSrc(fallbackImage)}
-  //     sx={{
-  //       aspectRatio: 16 / 9,
-  //       borderRadius: "10px",
-  //       width: "100%",
-  //       // height: 200,
-  //       // objectFit: "cover",
-  //       marginBottom: "10px",
-  //     }}
-  //   />
-  // );
   const renderThumbnail = (
     <Box
       component="img"
@@ -74,14 +56,7 @@ const PostCard = forwardRef(({ post }, ref) => {
       // color="inherit"
       variant="subtitle2"
       underline="none"
-      className="link"
-      style={{
-        color: "#3C98EF",
-        height: 30,
-        fontSize: "16px",
-        fontWeight: "Bold",
-        padding: "5px",
-      }}
+      className="link item-Link"
     >
       {title}
     </Link>

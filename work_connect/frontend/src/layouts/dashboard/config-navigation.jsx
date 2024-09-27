@@ -45,12 +45,12 @@ const navConfig = [
   {
     title: 'ニュースの投稿',
     path: '/Editor',
-    icon: <StickyNote2Icon />,
+    icon: <NewspaperOutlinedIcon />,
   },
   {
     title: 'テストページ何か試したいものはここで',
     path: '/TestPage',
-    icon: <StickyNote2Icon />,
+    icon: <NewspaperOutlinedIcon />,
   },
   // {
   //   title: 'Not found',

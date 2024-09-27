@@ -22,7 +22,7 @@ const ChatPng = () => {
         '&:hover': { backgroundColor: '#f0f0f0', title: 'a' },
       }}
     >
-      <ChatIcon color="action" style={{ display: Display }} />
+      <ChatIcon color="action" style={{ display: Display.HomePage }} />
     </IconButton>
     </>
   );

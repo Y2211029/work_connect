@@ -8,6 +8,7 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
+import Container from "@mui/material/Container";
 
 import { SLIDER, AVATAR } from "src/layouts/dashboard/config-layout";
 import { UseCreateTagbutton } from "src/hooks/use-createTagbutton";
@@ -373,6 +374,7 @@ const WorkDetailItem = () => {
       aria-labelledby="autoplay-example-heading"
       hasTrack={false}
       onMoved={(splide, newIndex) => setCurrentSlideIndex(newIndex)}
+      style={{ width: "90%", height: "90%", margin: "0 auto", }}
     >
       <div style={{ position: "relative" }}>
         <SplideTrack>
@@ -460,44 +462,27 @@ const WorkDetailItem = () => {
       </div>
     </>
   );
-  // モーダルスライド
+  // モーダルギャラリー
   const renderGallery = (
     <>
       <div id="gallery">
-        <div className="gallery_header">
-          <div className="g_h_left"></div>
-          <div className="g_h_right">
-            <Button onClick={closeGallery} className="close-button">
-              <span className="close-button_text">閉じる</span>
-              {/* <span className="close-button_icon">&times;</span> */}
-            </Button>
-            <Button onClick={openGallery} className="oepn-gallery">
-              スライド
-            </Button>
+        <div className="gallery_images" id="gallery_images">
+          <div className="gallery-container">
+            {WorkSlide.map((slide, index) => (
+              <div key={`${slide}-${index}`} className="GalleryPostCard" style={{ width: '100%' }}>
+                <img
+                  className="gallery_img"
+                  key={slide.work_id + slide.id}
+                  src={slide.image}
+                  alt={slide.image}
+                  onClick={() => openModal(index)}
+                />
+              </div>
+            ))}
           </div>
         </div>
-        <div className="gallery_images" id="gallery_images">
-          {WorkSlide.map((slide, index) => (
-            <img
-              className="gallery_img"
-              key={slide.work_id + slide.id}
-              src={slide.image}
-              alt={slide.image}
-              onClick={() => openModal(index)}
-            />
-          ))}
-        </div>
-        {/* <div className="gallery_images" id="gallery_images">
-          {WorkSlide.map((slide, index) => (
-            <img
-              className="gallery_img"
-              key={slide.work_id + slide.id}
-              src={slide.image}
-              alt={slide.image}
-              onClick={() => openModal(index)}
-            />
-          ))}
-        </div> */}
+
+
       </div>
     </>
   );
@@ -505,7 +490,7 @@ const WorkDetailItem = () => {
   // 作品紹介文
   const renderIntro = workDetail.work_intro && (
     <>
-      <Typography variant="h5">紹介文</Typography>
+      <Typography variant="h5">●作品の紹介</Typography>
       <div>{workDetail.work_intro}</div>
     </>
   );
@@ -513,7 +498,7 @@ const WorkDetailItem = () => {
   // 作品ジャンル
   const renderGenre = WorkGenre && (
     <>
-      <Typography variant="h5">ジャンル</Typography>
+      <Typography variant="h5">●ジャンル</Typography>
       {WorkGenre}
     </>
   );
@@ -521,7 +506,7 @@ const WorkDetailItem = () => {
   // 作品の開発言語
   const renderProgrammingLang = WorkProgrammingLanguage && (
     <>
-      <Typography variant="h5">開発言語</Typography>
+      <Typography variant="h5">●開発言語</Typography>
       {WorkProgrammingLanguage}
     </>
   );
@@ -529,7 +514,7 @@ const WorkDetailItem = () => {
   // 作品の開発環境
   const renderDevelopmentEnv = WorkDevelopmentEnvironment && (
     <>
-      <Typography variant="h5">開発環境</Typography>
+      <Typography variant="h5">●開発環境</Typography>
       {WorkDevelopmentEnvironment}
     </>
   );
@@ -643,55 +628,70 @@ const WorkDetailItem = () => {
 
   return (
     <>
-      <div>
-        <Link to="/">
-          <Stack direction="row" justifyContent="left" alignItems="center" spacing={3}>
-            {renderIcon}
-            {renderUserName}
-          </Stack>
-        </Link>
-        {renderTitle}
-      </div>
+      <Container>
+        <div>
+          <Link to="/">
+            <Stack direction="row" justifyContent="left" alignItems="center" spacing={3}>
+              {renderIcon}
+              {renderUserName}
+            </Stack>
+          </Link>
+          {renderTitle}
+        </div>
 
-      {renderMainSlider}
+        {renderMainSlider}
 
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        contentLabel="Image Modal"
-        overlayClassName="custom-overlay"
-        style={{
-          content: {
-            zIndex: theme.zIndex.modal,
-          },
-        }}
-      >
-        {renderModalSlider}
-      </Modal>
+        <Modal
+          isOpen={modalIsOpen}
+          onRequestClose={closeModal}
+          contentLabel="Image Modal"
+          overlayClassName="custom-overlay"
+          style={{
+            content: {
+              zIndex: theme.zIndex.modal,
+            },
+          }}
+        >
+          {renderModalSlider}
+        </Modal>
 
-      <Modal
-        isOpen={galleryIsOpen}
-        onRequestClose={closeModal}
-        contentLabel="Image Modal"
-        overlayClassName="custom-overlay"
-        style={{
-          content: {
-            zIndex: theme.zIndex.modal,
-          },
-        }}
-      >
-        {renderGallery}
-      </Modal>
 
-      <Box>
-        {renderIntro}
-        {renderGenre}
-        {renderProgrammingLang}
-        {renderDevelopmentEnv}
-        {renderWorkURL}
-        {renderCommentButton}
-        {renderComment}
-      </Box>
+        <Modal
+          isOpen={galleryIsOpen}
+          onRequestClose={closeModal}
+          contentLabel="Image Modal"
+          overlayClassName="custom-overlay"
+          style={{
+            content: {
+              zIndex: theme.zIndex.modal,
+            },
+          }}
+        >
+          <div className="gallery_header">
+            <div className="g_h_left"></div>
+            <div className="g_h_right">
+              <Button onClick={closeGallery} className="close-button">
+                <span className="close-button_text">閉じる</span>
+              </Button>
+              <Button onClick={openGallery} className="oepn-gallery">
+                スライド
+              </Button>
+            </div>
+          </div>
+
+          {renderGallery}
+        </Modal>
+
+        <Box>
+          {renderIntro}
+          {renderGenre}
+          {renderProgrammingLang}
+          {renderDevelopmentEnv}
+          {renderWorkURL}
+          {renderCommentButton}
+          {renderComment}
+        </Box>
+      </Container >
     </>
   );
 };

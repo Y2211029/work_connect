@@ -74,7 +74,7 @@ const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, s
 
 
 // --------------------------------ItemObjectAndPostCard--------------------------------
-export default function ItemObjectAndPostCard({ type, ParamUserName,NewsId }) {
+export default function ItemObjectAndPostCard({ type, ParamUserName, NewsId }) {
   const [SessionAccountData, setSessionAccountData] = useState(sessionAccountData);
   const [PathName, setPathName] = useState(window.location.pathname);
   const [DecodeURL, setDecode] = useState(decodeURIComponent(window.location.pathname)); // decodeURIComponentを追加
@@ -139,14 +139,14 @@ export default function ItemObjectAndPostCard({ type, ParamUserName,NewsId }) {
         const { default: WriteFormPostCard } = await import("src/sections/WriteForm/post-card");
         setPostCard(() => WriteFormPostCard);
         console.log("WriteFormPostCard");
-      }else if (PathName === `/CheckForm/${NewsId}`) {
+      } else if (PathName === `/CheckForm/${NewsId}`) {
         const { default: CheckFormPostCard } = await import("src/sections/CheckForm/post-card");
         setPostCard(() => CheckFormPostCard);
         console.log("CheckFormPostCard");
       }
     };
     loadComponents();
-  }, [SessionAccountData.user_name, PathName, NewsDetailId, ParamUserName, DecodeURL,NewsId]);
+  }, [SessionAccountData.user_name, PathName, NewsDetailId, ParamUserName, DecodeURL, NewsId]);
 
   const urlMapping = {
     works: {
@@ -418,7 +418,7 @@ ItemObjectAndPostCard.propTypes = {
 };
 
 // ------------------------------------------------ListView------------------------------------------------
-const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort, ParamUserName, NewsDetailId, DecodeURL,NewsId}) => {
+const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort, ParamUserName, NewsDetailId, DecodeURL, NewsId }) => {
   // ログインチェック
   const { loginStatusCheckFunction } = LoginStatusCheck();
   // 作品アイテム格納
@@ -556,6 +556,9 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
 
   // 作品アイテムをHTML要素に当てはめて表示する準備
 
+  useEffect(() => {
+    console.log("WorkOfList", WorkOfList);
+  }, [WorkOfList]);
   const renderWorkItems = WorkOfList && PostCard ?
     WorkOfList.map((post, index) => (
       <PostCard className="mediaCard" ref={index === WorkOfList.length - 1 ? ref : null}

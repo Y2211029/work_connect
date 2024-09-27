@@ -6,22 +6,20 @@ import { Survey } from 'survey-react-ui';
 import 'survey-core/defaultV2.min.css';
 import './writeform.css';
 import Typography from "@mui/material/Typography";
-// import { unstable_useViewTransitionState } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import { Link } from "react-router-dom";
-
+import Box from "@mui/material/Box";
 
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef(({ post }, ref) => {
-  const { company_id, wright_form, news_id, article_title, answerer_name,icon_id } = post;
+  const { company_id, wright_form, news_id, article_title, answerer_name, icon_id } = post;
 
   const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData");
   const data = {
     account_id: accountData.id,
   };
-
 
   useEffect(() => {
     console.log("company_id", company_id);
@@ -64,18 +62,16 @@ const PostCard = forwardRef(({ post }, ref) => {
             name: field.name,
             title: field.title,
             ...(field.inputType && { 
-              inputType: field.inputType,
-              disabled: true // ここで無効化を設定
+              inputType: field.inputType
             }), 
             ...(field.validators && { validators: field.validators }), 
-            ...(field.response && { defaultValue: field.response }),  
+            ...(field.response && { defaultValue: field.response }),
+            readOnly: true  // ここで読み取り専用を設定
           })),
         }
       ]
     };
   };
-
-
 
   // フォームフィールドデータをSurvey形式に変換
   const surveyData = transformFormFields(wright_form);
@@ -125,27 +121,28 @@ const PostCard = forwardRef(({ post }, ref) => {
     />
   );
 
-    // 回答者のプロフィール誘導
-    const renderAnswererProfile = (
+  // 回答者のプロフィール誘導
+  const renderAnswererProfile = (
     <Link
       to={`/Profile/${answerer_name}`}
     >
-        {answerer_name}さんのプロフィール
+      {answerer_name}さんのプロフィール
     </Link>
-    );
+  );
+
+  // フォーム
+  const renderSurvey = (
+    <Survey model={survey} />
+  );
 
   return (
-    <div ref={ref}>
-
+    <Box ref={ref} display="flex" flexDirection="column" gap={5}>
       {renderTitle}
       {renderAnswererName}
       {renderAvatar}
       {renderAnswererProfile}
-
-      <Survey model={survey} />
-
-
-    </div>
+      {renderSurvey}
+    </Box>
   );
 });
 

@@ -15,6 +15,8 @@ import Number from "./SelectOptionMenu/Number";
 import Radio from "./SelectOptionMenu/Radio";
 import FormDesign from "./SelectOptionMenu/FormDesign";
 import DropDown from "./SelectOptionMenu/DropDown";
+import CheckBox from "./SelectOptionMenu/CheckBox";
+
 
 
 // MUI
@@ -22,6 +24,13 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
+import TranslateIcon from '@mui/icons-material/Translate';
+import WatchLaterIcon from '@mui/icons-material/WatchLater';
+import MoneyIcon from '@mui/icons-material/Money';
+import RadioIcon from '@mui/icons-material/Radio';
+import ArrowDropDownCircleIcon from '@mui/icons-material/ArrowDropDownCircle';
+import BrushIcon from '@mui/icons-material/Brush';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
 
 // データ保存
 import axios from "axios";
@@ -83,6 +92,8 @@ export default function CreateForm() {
           return "dropdown";
         case "Number":
           return "number";
+        case "CheckBox":
+          return "checkbox";
         default:
           return "text";
       }
@@ -124,6 +135,9 @@ export default function CreateForm() {
           separateSpecialChoices: settings.separateSpecialChoices || q.separateSpecialChoices,
           showClearButton: settings.showClearButton || q.showClearButton,
           fitToContainer: settings.fitToContainer || q.fitToContainer,
+
+          showSelectAllItem: settings.showSelectAllItem || q.showSelectAllItem,
+          selectallText: settings.selectallText || q.selectallText,
         }
         : q
     );
@@ -200,6 +214,11 @@ export default function CreateForm() {
         separateSpecialChoices: q.separateSpecialChoices || undefined,
         showClearButton: q.showClearButton || undefined,
         fitToContainer: q.fitToContainer || undefined,
+        
+        showSelectAllItem: q.showSelectAllItem || undefined,
+        selectallText: q.selectallText || undefined,
+
+
         themeSettings: {
           themeName: q.themeName || "default", // デフォルト値を設定
           colorPalette: q.colorPalette || "light",
@@ -288,6 +307,7 @@ export default function CreateForm() {
               {selectmenu === "Radio" && <Radio onSave={handleSaveSettings} />}
               {selectmenu === "FormDesign" && <FormDesign onSave={handleSaveSettings} />}
               {selectmenu === "DropDown" && <DropDown onSave={handleSaveSettings} />}
+              {selectmenu === "CheckBox" && <CheckBox onSave={handleSaveSettings} />}
             </Stack>
           </div>
         )}
@@ -298,24 +318,172 @@ export default function CreateForm() {
         保存する
       </Button>
 
-      <button className="TextFormButton" onClick={() => addQuestion("text")}>
-        テキストフォームを追加
-      </button>
-      <button className="TextFormButton" onClick={() => addQuestion("Date")}>
-        日時フォームを追加
-      </button>
-      <button className="TextFormButton" onClick={() => addQuestion("Number")}>
-        数値フォームを追加
-      </button>
-      <button className="TextFormButton" onClick={() => addQuestion("Radio")}>
-        ラジオボタンのフォームを追加
-      </button>
-      <button className="TextFormButton" onClick={() => addQuestion("DropDown")}>
-        ドロップダウンのフォームを追加
-      </button>
-      <button className="TextFormButton" onClick={() => addQuestion("FormDesign")}>
-        デザインを変更
-      </button>
+      <Stack
+      direction="row"
+      border="solid"
+      alignItems="center"
+      style={{ maxWidth: "250px", overflow: "hidden", marginBottom: "5px"}} 
+      >      
+      <TranslateIcon onClick={() => addQuestion("text")} style={{ cursor: 'pointer' }} />
+      <Typography onClick={() => addQuestion("text")}
+        component="span"
+        style={{
+          cursor: 'pointer',
+          marginLeft: 8,
+          borderWidth: "2px",
+          flexShrink: 0, // テキストが縮小しないようにする
+          whiteSpace: "nowrap", // テキストを折り返さずに表示
+          overflow: "hidden", // 溢れたテキストを隠す
+          textOverflow: "ellipsis" // 溢れたテキストに省略記号を表示
+        }}
+      >
+        テキストを追加
+      </Typography>
+    </Stack>
+
+    <Stack
+      direction="row"
+      border="solid"
+      borderCollapse="collapse"
+      alignItems="center"
+      style={{ maxWidth: "250px", overflow: "hidden", marginBottom: "5px"}} 
+      >      
+      <WatchLaterIcon onClick={() => addQuestion("Date")} style={{ cursor: 'pointer' }} />
+      <Typography onClick={() => addQuestion("Date")}
+        component="span"
+        style={{
+          cursor: 'pointer',
+          marginLeft: 8,
+          borderWidth: "2px",
+          flexShrink: 0, // テキストが縮小しないようにする
+          whiteSpace: "nowrap", // テキストを折り返さずに表示
+          overflow: "hidden", // 溢れたテキストを隠す
+          textOverflow: "ellipsis" // 溢れたテキストに省略記号を表示
+        }}
+      >
+        日時を追加
+      </Typography>
+    </Stack>
+      
+    <Stack
+      direction="row"
+      border="solid"
+      borderCollapse="collapse"
+      alignItems="center"
+      style={{ maxWidth: "250px", overflow: "hidden", marginBottom: "5px" }} 
+      >      
+      <MoneyIcon onClick={() => addQuestion("Number")} style={{ cursor: 'pointer' }} />
+      <Typography onClick={() => addQuestion("Number")}
+        component="span"
+        style={{
+          cursor: 'pointer',
+          marginLeft: 8,
+          borderWidth: "2px",
+          flexShrink: 0, // テキストが縮小しないようにする
+          whiteSpace: "nowrap", // テキストを折り返さずに表示
+          overflow: "hidden", // 溢れたテキストを隠す
+          textOverflow: "ellipsis" // 溢れたテキストに省略記号を表示
+        }}
+      >
+        数値を追加
+      </Typography>
+    </Stack>
+
+    <Stack
+      direction="row"
+      border="solid"
+      borderCollapse="collapse"
+      alignItems="center"
+      style={{ maxWidth: "250px", overflow: "hidden", marginBottom: "5px" }} 
+      >      
+      <RadioIcon onClick={() => addQuestion("Radio")} style={{ cursor: 'pointer' }} />
+      <Typography onClick={() => addQuestion("Radio")}
+        component="span"
+        style={{
+          cursor: 'pointer',
+          marginLeft: 8,
+          borderWidth: "2px",
+          flexShrink: 0, // テキストが縮小しないようにする
+          whiteSpace: "nowrap", // テキストを折り返さずに表示
+          overflow: "hidden", // 溢れたテキストを隠す
+          textOverflow: "ellipsis" // 溢れたテキストに省略記号を表示
+        }}
+      >
+        ラジオボタンを追加
+      </Typography>
+    </Stack> 
+
+    <Stack
+      direction="row"
+      border="solid"
+      borderCollapse="collapse"
+      alignItems="center"
+      style={{ maxWidth: "250px", overflow: "hidden", marginBottom: "5px" }} 
+      >      
+      <ArrowDropDownCircleIcon onClick={() => addQuestion("DropDown")} style={{ cursor: 'pointer' }} />
+      <Typography onClick={() => addQuestion("DropDown")}
+        component="span"
+        style={{
+          cursor: 'pointer',
+          marginLeft: 8,
+          borderWidth: "2px",
+          flexShrink: 0, // テキストが縮小しないようにする
+          whiteSpace: "nowrap", // テキストを折り返さずに表示
+          overflow: "hidden", // 溢れたテキストを隠す
+          textOverflow: "ellipsis" // 溢れたテキストに省略記号を表示
+        }}
+      >
+      ドロップダウンを追加      
+      </Typography>
+    </Stack> 
+
+    <Stack
+      direction="row"
+      border="solid"
+      borderCollapse="collapse"
+      alignItems="center"
+      style={{ maxWidth: "250px", overflow: "hidden", marginBottom: "5px" }} 
+      >      
+      <CheckBoxIcon onClick={() => addQuestion("CheckBox")} style={{ cursor: 'pointer' }} />
+      <Typography onClick={() => addQuestion("CheckBox")}
+        component="span"
+        style={{
+          cursor: 'pointer',
+          marginLeft: 8,
+          borderWidth: "2px",
+          flexShrink: 0, // テキストが縮小しないようにする
+          whiteSpace: "nowrap", // テキストを折り返さずに表示
+          overflow: "hidden", // 溢れたテキストを隠す
+          textOverflow: "ellipsis" // 溢れたテキストに省略記号を表示
+        }}
+      >
+      チェックボックスを追加      
+      </Typography>
+    </Stack> 
+
+    <Stack
+      direction="row"
+      border="solid"
+      borderCollapse="collapse"
+      alignItems="center"
+      style={{ maxWidth: "250px", overflow: "hidden", marginBottom: "5px" }} 
+      >      
+      <BrushIcon onClick={() => addQuestion("FormDesign")} style={{ cursor: 'pointer' }} />
+      <Typography onClick={() => addQuestion("FormDesign")}
+        component="span"
+        style={{
+          cursor: 'pointer',
+          marginLeft: 8,
+          borderWidth: "2px",
+          flexShrink: 0, // テキストが縮小しないようにする
+          whiteSpace: "nowrap", // テキストを折り返さずに表示
+          overflow: "hidden", // 溢れたテキストを隠す
+          textOverflow: "ellipsis" // 溢れたテキストに省略記号を表示
+        }}
+      >
+      デザインを変更     
+      </Typography>
+    </Stack> 
     </>
   );
 

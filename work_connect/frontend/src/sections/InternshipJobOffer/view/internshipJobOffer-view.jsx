@@ -1,16 +1,22 @@
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import sessionAccountData from "src/components/account/loginStatusCheck/sessionAccountData";
 import { NewsSelectView } from "src/sections/InternshipJobOffer/view";
-import ListView from "src/components/view/list-view";
-import { useParams } from 'react-router-dom';
+
 
 const InternshipJobOfferView = () => {
   const { Category } = useParams();
-  console.log("カテゴリ",Category);
-  //Categoryにはjoboffers or internships or blogsが入る
+  const [SessionAccountData, setSessionAccountData] = useState(sessionAccountData);
+  console.log("カテゴリー",Category);
+
+  useEffect(() => {
+    setSessionAccountData(SessionAccountData);
+  }, [SessionAccountData]);
+
   return (
-    <>
-      <NewsSelectView />
-      <ListView type={Category}/>
-    </>
+    <div>
+        <NewsSelectView />
+    </div>
   );
 };
 

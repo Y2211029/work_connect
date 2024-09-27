@@ -27,8 +27,8 @@ const InternshipJobOfferPage = () => {
     const news_bookmark_url = "http://localhost:8000/news_bookmark";
     // const location = useLocation();
     // const parameter = location.state; // パラメータ(w_newsテーブルのidカラムの値)を代入
-    const { id } = useParams(); // パラメータから id を取得
-    const newsdetail_id = String(id); // id を文字列に変換する
+    const { news_id } = useParams(); // パラメータから id を取得
+    const newsdetail_id = String(news_id); // id を文字列に変換する
     const navigate = useNavigate();
     console.log(csrfToken);
 
@@ -41,11 +41,11 @@ const InternshipJobOfferPage = () => {
     useEffect(() => {
         console.log("Myid", data.id);
         console.log("newsdetail_id",newsdetail_id);
-        //ニュースのデータを抽出する
+        //ニュースのデータを抽出するc
         async function fetchData() {
             try {
                 const response = await axios.get(
-                    `http://localhost:8000/Internship_JobOffer/news_detail/${newsdetail_id}`,
+                    `http://localhost:8000/news_detail/${newsdetail_id}`,
                     {
                         params: {
                             MyId: data.id, //今ログインしている人のid
@@ -60,7 +60,7 @@ const InternshipJobOfferPage = () => {
             }
         }
         fetchData();
-    }, [newsdetail_id,data.id]);
+    }, [newsdetail_id]);
 
     useEffect(() => {
         async function fetchCsrfToken() {

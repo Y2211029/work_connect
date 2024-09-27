@@ -49,6 +49,9 @@ export const Page404 = lazy(() => import("src/pages/page-not-found"));
 
 //プロフィール
 export const ProfilePage = lazy(() => import("src/pages/Profile"));
+export const ProfileNewsPage = lazy(() => import("src/sections/Profile/View/company/News"));
+export const SpecialCompanyNewsPage = lazy(() => import("src/sections/Profile/View/company/SpecialCompanyNews/SpecialCompanyListView"));
+export const CheckFormPage = lazy(() => import("src/sections/CheckForm/View/CheckForm"));
 
 //20240704
 export const NewsDetailPage = lazy(() => import('src/sections/InternshipJobOffer/news_detail'));
@@ -86,7 +89,7 @@ export default function Router() {
 
 
         //20240704
-        { path: "news_detail/:id", element: <NewsDetailPage /> },
+        { path: "news_detail/:news_id", element: <NewsDetailPage /> },
 
         // トップ画面追加
         { path: "Top", element: <TopPage /> },
@@ -101,6 +104,11 @@ export default function Router() {
         //プロフィール
         // Profile/の後ろにユーザーネームを指定
         { path: "Profile/:user_name", element: <ProfilePage /> },
+        { path: "Profile/:user_name/News", element: <ProfileNewsPage /> },
+        { path: "Profile/:user_name/News/:Genre", element: <SpecialCompanyNewsPage /> },
+
+        //企業が応募フォームを見る画面
+        { path: "CheckForm/:NewsId", element: <CheckFormPage /> },
       ],
     },
     {

@@ -46,7 +46,6 @@ import DrawIcon from '@mui/icons-material/Draw';
 import SaveIcon from '@mui/icons-material/Save';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import ErrorIcon from '@mui/icons-material/Error';
 import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
@@ -69,7 +68,6 @@ import { useNavigate } from 'react-router-dom';
 
 //過去に投稿したニュースを取得
 import specialCompanyNewsItem from "src/_mock/specialCompanyNewsItem";
-import PostCard from "src/sections/InternshipJobOffer/check-list-post-card";
 import Grid from "@mui/material/Unstable_Grid2";
 
 
@@ -194,6 +192,7 @@ const Editor = () => {
       setNewsId(response.data.id); // news_idを更新する
       console.log("成功");
       alert("下書きを保存しました!");
+      return response.data.id; // 保存されたnews_idを返す
     } catch (error) {
       console.error("Error:", error);
     }
@@ -641,8 +640,9 @@ const Editor = () => {
   const postsFrominternshipJobOffer = specialCompanyNewsItem();
   console.log("postsFromCompany", postsFrominternshipJobOffer);
 
-  const create_form_jump = (news_id) => {
-    navigate(`/CreateForm/${news_id}`);
+  const create_form_jump = async () => {    
+    const savedNewsId = await news_save(); // news_save関数が完了するまで待つ
+    navigate(`/CreateForm/${savedNewsId}`); // 保存されたnews_idでnavigateする
   }
 
   useEffect(() => {
@@ -1159,7 +1159,7 @@ const Editor = () => {
       NewsTitle = "ブログニュースの編集";
     } else if (genre === "Internship") {
       NewsTitle = "インターンニュースの編集";
-    } else if (genre === "Job") {
+    } else if (genre === "JobOffer") {
       NewsTitle = "求人ニュースの編集";
     }
 
@@ -1174,7 +1174,6 @@ const Editor = () => {
     { key: "draftList", icon: <DrawIcon />, text: "下書きリスト" },
     { key: "saveNews", icon: <SaveIcon />, text: "ニュースを保存する" },
     { key: "releaseNews", icon: <CampaignIcon />, text: "ニュースを公開する" },
-    { key: "checkNews", icon: <PlaylistAddCheckIcon />, text: "投稿済みニュース" }
   ];
 
   const additionalMenuItem = (genre === "Internship" || genre === "JobOffer") ? (
@@ -1321,17 +1320,6 @@ const Editor = () => {
                     />
                     <p><button onClick={news_upload}>投稿</button></p>
                   </>
-                )}
-                {clickedMenu === "checkNews" && (
-                  <Grid container spacing={1}>
-                    {postsFrominternshipJobOffer.length > 0 ? (
-                      postsFrominternshipJobOffer.map((post, index) => (
-                        <PostCard key={post.id} post={post} index={index} />
-                      ))
-                    ) : (
-                      <p>下書き中の記事はありません</p>
-                    )}
-                  </Grid>
                 )}
                 {clickedMenu === "createForm" && (
                   <Grid container spacing={1}>

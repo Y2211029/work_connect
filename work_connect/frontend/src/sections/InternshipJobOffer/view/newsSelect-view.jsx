@@ -6,7 +6,8 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
 import { AllItemsContext } from "src/layouts/dashboard/index";
-import { useNavigate } from "react-router-dom";
+import ListView from "src/components/view/list-view";
+
 
 function samePageLinkNavigation(event) {
   if (
@@ -50,13 +51,23 @@ export default function NavTabs() {
     return accountData.NewsTabState ? accountData.NewsTabState : 0;
   };
 
-  const [NewsTabState, setNewsTabState] = useState(getInitialNewsTabState);
   const [value, setValue] = useState(getInitialNewsTabState);
-  let navigate = useNavigate();
+  const [currentView, setCurrentView] = useState("");
 
   useEffect(() => {
-    updateSessionData("accountData", "NewsTabState", NewsTabState);
-  }, [NewsTabState]);
+    updateSessionData("accountData", "NewsTabState", value);
+
+    let newView;
+    if (value === 0) {
+      newView = <ListView type={"joboffers"} />;
+    } else if (value === 1) {
+      newView = <ListView type={"internships"} />;
+    } else if (value === 2) {
+      newView = <ListView type={"blogs"} />;
+    }
+    setCurrentView(newView);
+
+  }, [value]);
 
   const handleChange = (event, newValue) => {
     if (
@@ -74,23 +85,6 @@ export default function NavTabs() {
       Page: 1,
       sortOption: "orderNewPostsDate",
     }));
-
-    // `newValue` に基づいてパスを変更
-    let path;
-    if (newValue === 0) {
-      setNewsTabState(0);
-      path = "/Internship_JobOffer/joboffers";
-    } else if (newValue === 1) {
-      setNewsTabState(1);
-      path = "/Internship_JobOffer/internships";
-    } else if (newValue === 2) {
-      setNewsTabState(2);
-      path = "/Internship_JobOffer/blogs";
-    }
-
-    // navigate 関数を直接呼び出して遷移する
-    navigate(path);
-
   };
 
   return (
@@ -105,6 +99,8 @@ export default function NavTabs() {
         <Tab label="インターンシップ" />
         <Tab label="ブログ" />
       </Tabs>
+
+      {currentView}
     </Box>
   );
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\w_create_form;
+use App\Models\w_wright_form;
 use App\Models\w_news;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -67,9 +68,6 @@ public function write_form_get(Request $request, $NewsDetailId)
     Log::info('newsdetail_id: ' . $newsdetail_id);
 
     try {
-        // パラメータの取得
-        $newsdetail_id = (string) $NewsDetailId;
-        Log::info('newsdetail_id: ' . $newsdetail_id);
 
         $page = (int) $request->query('page', 1);
         $perPage = 20;
@@ -119,6 +117,30 @@ public function write_form_get(Request $request, $NewsDetailId)
         Log::error('write_form_get エラー: ' . $e->getMessage());
         return response()->json(['error' => 'データ取得中にエラーが発生しました。'], 500);
     }
+}
+
+public function wright_form_save(Request $request) 
+{
+        // 日本の現在時刻を取得
+        $now = Carbon::now('Asia/Tokyo');
+
+        // react側からのリクエスト
+        $FormData = json_encode($request->input('FormData'));
+        $NewsId = strval($request->input('NewsId')); 
+        $MyId = $request->input('MyId'); 
+
+        $w_wright_form = w_wright_form::create([
+            'user_id' => $MyId,
+            'news_id' => $NewsId,
+            'wright_form' => $FormData,
+            'wrightformDateTime' => $now
+        ]);
+
+        //IDを返す
+        return response()->json([
+            'success' => 0,
+            'form' => $w_wright_form
+        ]);
 }
 
 

@@ -7,27 +7,37 @@ import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import { useParams } from 'react-router-dom';
 
 
-//フォームメニュー
-import Text from "./SelectOptionMenu/Text";
 
-//MUI
+// フォームメニュー
+import Text from "./SelectOptionMenu/Text";
+import DateForm from "./SelectOptionMenu/Date";
+import Number from "./SelectOptionMenu/Number";
+import Radio from "./SelectOptionMenu/Radio";
+import FormDesign from "./SelectOptionMenu/FormDesign";
+import DropDown from "./SelectOptionMenu/DropDown";
+
+
+// MUI
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
 
-//データ保存
+// データ保存
 import axios from "axios";
 
 export default function CreateForm() {
   const [questions, setQuestions] = useState([
-    { name: "Question1", title: "新しい質問1", type: "text" },
+    { name: "Question1", title: "デモ質問", type: "text", placeholder: "この質問はテキストを入力できます" },
   ]);
 
+  // const [survey, setSurvey] = useState(null); // Survey モデルを state に保存
   const [modalopen, setModalOpen] = useState(false);
   const [selectmenu, setSelectMenu] = useState("");
   const { getSessionData } = useSessionStorage();
   const [createformid, setCreateFormId] = useState(0);
+  const [questionData, setQuestionData] = useState(null);
+
 
 
   const accountData = getSessionData("accountData");
@@ -35,61 +45,197 @@ export default function CreateForm() {
     id: accountData.id,
   };
   const { news_id } = useParams();
-  const [ create_news_id ] = useState(news_id);
+  const [create_news_id] = useState(news_id);
 
-  const addQuestion = () => {
+  // 質問を追加する関数
+  const addQuestion = (Questions_Genre) => {
+    console.log(Questions_Genre);
     const newQuestion = {
       id: `${questions.length + 1}`,
       name: `Question${questions.length + 1}`,
       title: `設定中`,
-      type: "text",
+      type: getQuestionType(Questions_Genre),  // 質問のタイプを決定
+      inputType: getQuestionType(Questions_Genre),  // 質問のタイプを決定
     };
     setQuestions([...questions, newQuestion]);
-    ModalOpen("text");
+    openModal(Questions_Genre);
   };
 
-  const ModalOpen = (genre) => {
-    setSelectMenu(genre);
+
+  const openModal = (Questions_Genre) => {
+    setSelectMenu(Questions_Genre);
     setModalOpen(true);
   };
 
-  // 保存時に質問を更新するための関数
+  const EditopenModal = (Questions_Genre, questionData) => {
+    setSelectMenu(Questions_Genre);
+    setQuestionData(questionData);
+    setModalOpen(true);
+  };
+
+  // 質問のタイプを決定する関数
+  const getQuestionType = (Questions_Genre) => {
+    const type = (() => {
+      switch (Questions_Genre) {
+        case "Radio":
+          return "radiogroup";
+        case "DropDown":
+          return "dropdown";
+        case "Number":
+          return "number";
+        default:
+          return "text";
+      }
+    })();
+    console.log('Question Type:', type);  // タイプが正しく返されているか確認
+    return type;
+  };
+
   const handleSaveSettings = (settings) => {
+    console.log("受け取った設定", settings);
+    console.log("inputType 確認: ", settings.inputType); // 追加
     const updatedQuestions = questions.map((q, index) =>
       index === questions.length - 1
-        ? { ...q,
-          title:settings.title,
-          inputtype:settings.inputType,
-          maxLength: settings.maxLength,
-          minLength: settings.minLength,
-          placeholder: settings.placeholder,
-          autocomplete: settings.autocomplete,
-          isrequired: settings.isrequired,
-          description: settings.description,
-          validators: settings.validators
+        ? {
+          ...q,
+          title: settings.title || q.title,
+          type: settings.type || q.type,
+          inputType: settings.inputType || q.inputType,
+          maxLength: settings.maxLength || q.maxLength,
+          minLength: settings.minLength || q.minLength,
+          placeholder: settings.placeholder || q.placeholder,
+          autocomplete: settings.autocomplete || q.autocomplete,
+          isrequired: settings.isrequired || q.isrequired,
+          description: settings.description || q.description,
+          validators: settings.validators || q.validators,
+          defaultValueExpression: settings.defaultValueExpression || q.defaultValueExpression,
+          minValueExpression: settings.minValueExpression || q.minValueExpression,
+          min: settings.min || q.min,
+          max: settings.max || q.max,
+          defaultValue: settings.defaultValue || q.defaultValue,
+          step: settings.step || q.step,
+          showNoneItem: settings.showNoneItem || q.showNoneItem,
+          showOtherItem: settings.showOtherItem || q.showOtherItem,
+          choices: settings.choices || q.choices,
+          colCount: settings.colCount || q.colCount,
+          noneText: settings.noneText || q.noneText,
+          otherText: settings.otherText || q.otherText,
+          clearText: settings.clearText || q.clearText,
+          separateSpecialChoices: settings.separateSpecialChoices || q.separateSpecialChoices,
+          showClearButton: settings.showClearButton || q.showClearButton,
+          fitToContainer: settings.fitToContainer || q.fitToContainer,
         }
         : q
     );
+
+    console.log("更新した質問", updatedQuestions);
     setQuestions(updatedQuestions);
-    setModalOpen(false); // モーダルを閉じる
+
+    survey.applyTheme({
+      themeName: settings.themeName,
+      colorPalette: settings.colorPalette,
+    });
+
+    setModalOpen(false);
   };
 
   const surveyJson = {
-    elements: questions.map((q) => ({
-      name: q.name,
-      title: q.title,
-      type: q.type,
-      maxLength: q.maxLength || undefined,
-      minLength: q.minLength || undefined,
-      placeholder: q.placeholder || undefined,
-      autocomplete: q.autocomplete || undefined,
-      isRequired: q.isrequired || false,
-      description: q.description || undefined,
-      validators: q.validators || undefined,
-    })),
+    elements: questions.map((q) => {
+      // 各質問のデータをログに出力
+      console.log("質問データ:", {
+        name: q.name,
+        title: q.title,
+        type: q.type,
+        inputType: q.inputType,
+        maxLength: q.maxLength || undefined,
+        minLength: q.minLength || undefined,
+        placeholder: q.placeholder || undefined,
+        autocomplete: q.autocomplete || undefined,
+        isRequired: q.isrequired || false,
+        description: q.description || undefined,
+        validators: q.validators || undefined,
+        defaultValueExpression: q.defaultValueExpression || undefined,
+        minValueExpression: q.minValueExpression || undefined,
+        min: q.min || undefined,
+        max: q.max || undefined,
+        defaultValue: q.defaultValue || undefined,
+        step: q.step || undefined,
+        showNoneItem: q.showNoneItem || undefined,
+        showOtherItem: q.showOtherItem || undefined,
+        choices: q.choices || undefined,
+        colCount: q.colCount || undefined,
+        noneText: q.noneText || undefined,
+        otherText: q.otherText || undefined,
+        clearText: q.clearText || undefined,
+        separateSpecialChoices: q.separateSpecialChoices || undefined,
+        showClearButton: q.showClearButton || undefined,
+        fitToContainer: q.fitToContainer || undefined,
+      });
+
+      return {
+        name: q.name,
+        title: q.title,
+        type: q.type || undefined,
+        inputType: q.inputType || undefined,
+        maxLength: q.maxLength || undefined,
+        minLength: q.minLength || undefined,
+        placeholder: q.placeholder || undefined,
+        autocomplete: q.autocomplete || undefined,
+        isRequired: q.isrequired || false,
+        description: q.description || undefined,
+        validators: q.validators || undefined,
+        defaultValueExpression: q.defaultValueExpression || undefined,
+        minValueExpression: q.minValueExpression || undefined,
+        min: q.min || undefined,
+        max: q.max || undefined,
+        defaultValue: q.defaultValue || undefined,
+        step: q.step || undefined,
+        showNoneItem: q.showNoneItem || undefined,
+        showOtherItem: q.showOtherItem || undefined,
+        choices: q.choices || undefined,
+        colCount: q.colCount || undefined,
+        noneText: q.noneText || undefined,
+        otherText: q.otherText || undefined,
+        clearText: q.clearText || undefined,
+        separateSpecialChoices: q.separateSpecialChoices || undefined,
+        showClearButton: q.showClearButton || undefined,
+        fitToContainer: q.fitToContainer || undefined,
+        themeSettings: {
+          themeName: q.themeName || "default", // デフォルト値を設定
+          colorPalette: q.colorPalette || "light",
+        }
+      };
+    }),
   };
 
+  // surveyJsonの内容をログに出力
+  console.log("Survey JSON:", surveyJson);
+
+
+  console.table(surveyJson.elements);
   const survey = new Model(surveyJson);
+
+  survey.onAfterRenderQuestion.add(function (survey, options) {
+    var deleteButton = document.createElement("button");
+    var editButton = document.createElement("button");
+    deleteButton.textContent = "削除";
+    editButton.textContent = "編集";
+    deleteButton.onclick = function () {
+      var page = options.question.page;
+      page.removeQuestion(options.question);
+    };
+    editButton.onclick = function () {
+      const questionData = options.question;
+      const questionType = questionData.getType ? questionData.getType() : questionData.inputType || questionData.type;
+      console.log("編集対象の質問データ:", questionData);
+      console.log("質問タイプ:", questionType);
+      EditopenModal(questionType, questionData);
+    };
+    options.htmlElement.appendChild(deleteButton);
+    options.htmlElement.appendChild(editButton);
+  });
+
+
 
   useEffect(() => {
     // 完了ボタンを非表示にする
@@ -104,29 +250,22 @@ export default function CreateForm() {
     document.head.appendChild(styleSheet);
   }, []);
 
-  //フォームの編集データを保存
+  // フォームの編集データを保存
   const CreateFormSave = async () => {
     console.log("フォーム内容", questions);
 
-    // フォームの保存先URL
     const create_form_save_url = `http://localhost:8000/create_form_save`;
 
     try {
-      console.log(questions);
-      console.log(data.id);
-      console.log(create_news_id);
       const response = await axios.post(create_form_save_url, {
-        create_form_id: createformid, // フォームのID
-        create_form: questions,       // フォームの内容
-        company_id: data.id,          // 企業ID
-        create_news_id: create_news_id, // どのニュースの応募用フォームなのか
+        create_form_id: createformid,
+        create_form: questions,
+        company_id: data.id,
+        create_news_id: create_news_id,
       });
-      // レスポンスの処理
       console.log("サーバーからのレスポンス", response.data);
       setCreateFormId(response.data.create_form_id);
-      console.log(response.data.create_form_id);
     } catch (error) {
-      // エラーハンドリング
       console.error("フォーム保存エラー", error);
     }
   };
@@ -134,27 +273,52 @@ export default function CreateForm() {
   return (
     <>
       <Stack direction="row" alignItems="center" spacing={1}>
-      <Survey model={survey} />
-      {modalopen && (
-        <div className="FormOptionModal">
-          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-            <Typography variant="h4"></Typography>
-            {selectmenu === "text" && <Text onSave={handleSaveSettings} />} {/* Textコンポーネントを呼び出し */}
-          </Stack>
-        </div>
-      )}
+        {questions.length === 0 ? (
+          <p>フォームがありません</p> // 質問がない場合に表示
+        ) : (
+          <Survey model={survey} /> // 質問がある場合にSurveyを表示
+        )}
+        {modalopen && (
+          <div className="FormOptionModal">
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+              <Typography variant="h4"></Typography>
+              {selectmenu === "text" && <Text onSave={handleSaveSettings} questionData={questionData} />}
+              {selectmenu === "Date" && <DateForm onSave={handleSaveSettings} />}
+              {selectmenu === "Number" && <Number onSave={handleSaveSettings} />}
+              {selectmenu === "Radio" && <Radio onSave={handleSaveSettings} />}
+              {selectmenu === "FormDesign" && <FormDesign onSave={handleSaveSettings} />}
+              {selectmenu === "DropDown" && <DropDown onSave={handleSaveSettings} />}
+            </Stack>
+          </div>
+        )}
       </Stack>
 
-
       <Button variant="outlined" onClick={CreateFormSave}
-            sx={{width:"40px", borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer'}}>
-            あいうえお
-        </Button>
+        sx={{ width: "40px", borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
+        保存する
+      </Button>
 
-
-      <button className="TextFormButton" onClick={addQuestion}>テキストフォームを追加</button>
+      <button className="TextFormButton" onClick={() => addQuestion("text")}>
+        テキストフォームを追加
+      </button>
+      <button className="TextFormButton" onClick={() => addQuestion("Date")}>
+        日時フォームを追加
+      </button>
+      <button className="TextFormButton" onClick={() => addQuestion("Number")}>
+        数値フォームを追加
+      </button>
+      <button className="TextFormButton" onClick={() => addQuestion("Radio")}>
+        ラジオボタンのフォームを追加
+      </button>
+      <button className="TextFormButton" onClick={() => addQuestion("DropDown")}>
+        ドロップダウンのフォームを追加
+      </button>
+      <button className="TextFormButton" onClick={() => addQuestion("FormDesign")}>
+        デザインを変更
+      </button>
     </>
   );
+
 }
 
 // PropTypesバリデーション

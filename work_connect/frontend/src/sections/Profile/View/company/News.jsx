@@ -5,7 +5,7 @@ import { SpecialCompanyNewsView } from "./SpecialCompanyNews";
 
 // ----------------------------------------------------------------------
 
-export default function InternshipJobOfferPage() {
+export default function CompanyNewsPage() {
   return (
     <>
       <Helmet>

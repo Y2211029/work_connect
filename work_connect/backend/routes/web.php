@@ -223,15 +223,19 @@ Route::post('/contents_image_save', [EditorController::class, 'contents_image_sa
 Route::post('/contents_url_image_save', [EditorController::class, 'contents_url_image_save']);
 Route::get('/news_draft_list/{id}', [EditorController::class, 'news_draft_list']);
 Route::get('/Internship_JobOffer/{id}/{category}', [NewsController::class, 'all_news_get']);
-Route::get('/Internship_JobOffer/special_company_news/{id}', [NewsController::class, 'special_company_news']);
-Route::get('/Internship_JobOffer/news_detail/{id}', [NewsController::class, 'news_detail_get']);
+Route::get('/Internship_JobOffer/special_company_news/{username}/{Myid}/{genre}', [NewsController::class, 'special_company_news']);
+Route::get('/special_forms/{NewsId}', [NewsController::class, 'special_forms']);
+Route::get('/news_detail/{newsdetail_id}', [NewsController::class, 'news_detail_get']);
 Route::post('/news_bookmark', [NewsController::class, 'news_bookmark']);
 Route::get('/thumbnail_img_delete/{id}', [EditorController::class, 'thumbnail_img_delete']);
 Route::get( '/api/embed', action: [EditorController::class, 'embed']);
 
+
 //応募用フォーム作成機能
 Route::post('/create_form_save', [FormController::class, 'create_form_save']);
 Route::get('/write_form_get/{NewsDetailId}', [FormController::class, 'write_form_get']);
+Route::post('/wright_form_save', [FormController::class, 'wright_form_save']);
+
 
 //設定機能
 Route::get('/color_save', [SettingController::class, 'color_save']);

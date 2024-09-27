@@ -1166,7 +1166,7 @@ export default function Searchbar() {
         {!open &&
           PathName !=
             "/Profile/" + location.pathname.split("/")[2] + "/mypage" && (
-            <IconButton onClick={handleOpen} style={{ display: Display }}>
+            <IconButton onClick={handleOpen} style={{ display: Display.HomePage }}>
               <Iconify icon="eva:search-fill" />
             </IconButton>
           )}

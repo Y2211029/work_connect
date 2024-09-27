@@ -74,14 +74,7 @@ const PostCard = forwardRef(({ post }, ref) => {
       // color="inherit"
       variant="subtitle2"
       underline="none"
-      className="link"
-      style={{
-        color: "#3C98EF",
-        height: 30,
-        fontSize: "16px",
-        fontWeight: "Bold",
-        padding: "5px",
-      }}
+      className="link item-Link"
     >
       {title}
     </Link>

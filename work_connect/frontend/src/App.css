@@ -590,6 +590,32 @@ textarea {
   }
 }
 
+.gallery-container {
+  column-gap: 10px;
+  column-count: 5;
+  /* デフォルトは5カラム */
+  width: 100%;
+  /* 最大幅を設定（必要に応じて変更） */
+  margin: 0 auto;
+  /* 中央揃え */
+
+  @media (max-width: 1200px) {
+    column-count: 4;
+  }
+
+  @media (max-width: 900px) {
+    column-count: 3;
+  }
+
+  @media (max-width: 600px) {
+    column-count: 2;
+  }
+
+  @media (max-width: 400px) {
+    column-count: 1;
+  }
+}
+
 
 
 .postCard {
@@ -600,7 +626,15 @@ textarea {
   width: "100%";
   background: white;
   padding: 20px;
+}
 
+.GalleryPostCard {
+  margin: 0px 0px;
+  border-radius: 20px;
+
+  width: "100%";
+  background: white;
+  padding: 20px;
 }
 
 
@@ -660,25 +694,30 @@ textarea {
 
 
 /* ギャラリーー */
-#gallery .gallery_images {
+/* #gallery .gallery_images {
   height: 94%;
   overflow-y: scroll;
   padding-top: 20px;
   width: 100%;
-}
+} */
 
-#gallery .gallery_images .gallery_img {
+/* #gallery .gallery_images .gallery_img {
   transition: 0.5s all;
   aspect-ratio: 16/9;
   object-fit: contain;
   width: 300px;
+} */
+
+.gallery_images {
+  align-items: center;
+  justify-content: center;
 }
 
-.gallery_img:hover {
+/* .gallery_img:hover {
   border: 4px solid #41a4ff;
   transform: scale(1.1);
   transition: 0.5s all;
-}
+} */
 
 
 /* 矢印の大きさを調整 */
@@ -722,3 +761,12 @@ textarea {
     width: 28%;
   }
 } */
+
+
+.item-Link {
+  color: #3C98EF;
+  height: 30;
+  font-size: 16px;
+  font-weight: Bold;
+  padding: 5px;
+}

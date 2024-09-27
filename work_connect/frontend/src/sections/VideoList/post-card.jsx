@@ -2,7 +2,6 @@ import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
-import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
@@ -36,15 +35,6 @@ const PostCard = forwardRef(({ post }, ref) => {
     <Avatar
       alt={author.name}
       src={author.avatarUrl}
-      sx={{
-        // position: "absolute",
-        // bottom: (theme) => theme.spacing(0),
-        zIndex: 9,
-        // top: 45,
-        // left: 20,
-        width: 30,
-        height: 30,
-      }}
     />
   );
 
@@ -55,7 +45,7 @@ const PostCard = forwardRef(({ post }, ref) => {
       color="inherit"
       variant="subtitle2"
       underline="none" // デフォルトで下線を消す
-      className="link"
+      className="link item-Link"
       style={{
         height: 30,
         typography: "h5",
@@ -213,21 +203,20 @@ const PostCard = forwardRef(({ post }, ref) => {
 
   return (
     <div ref={ref} >
-      <div className="postCard">
-        <Box
-          sx={{
-            padding: "5px 5px 5px 5px ",
-          }}
-        >
-          {renderMovie}
+      <Stack sx={{ display: "inline-block" }}>
+        <div className="postCard" style={{ width: '100%' }}>
           {renderShape}
-          {renderGenre}
+          {renderMovie}
           {renderTitle}
+          <div style={{ borderBottom: "1px solid #bbb", margin: "5px 0px 10px 0px" }}></div>
           {renderIntro}
+          {/* <div style={{ borderBottom: "1px solid #bbb", margin: "10px 0px 5px 0px" }}></div> */}
+          {renderGenre}
+          <div style={{ borderBottom: "1px solid #bbb", margin: "10px 0px 5px 0px" }}></div>
           {renderInfo}
-        </Box>
-      </div>
-    </div>
+        </div>
+      </Stack >
+    </div >
   );
 });
 

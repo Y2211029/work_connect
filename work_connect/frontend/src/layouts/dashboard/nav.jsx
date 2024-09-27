@@ -148,7 +148,7 @@ export default function Nav({ openNav, onCloseNav }) {
         flexShrink: { lg: 0 },
         width: { lg: NAV.WIDTH },
         // display: Display,
-        display: Display,
+        display: Display.HomePage,
       }}
     >
       {upLg ? (

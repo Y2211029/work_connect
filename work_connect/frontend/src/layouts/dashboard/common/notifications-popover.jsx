@@ -102,7 +102,7 @@ export default function NotificationsPopover() {
 
   return (
     <>
-      <IconButton color={open ? "primary" : "default"} style={{ display: Display }} onClick={handleOpen}>
+      <IconButton color={open ? "primary" : "default"} style={{ display: Display.HomePage }} onClick={handleOpen}>
         <Badge badgeContent={totalUnRead} color="error">
           <Iconify width={24} icon="solar:bell-bing-bold-duotone" />
         </Badge>

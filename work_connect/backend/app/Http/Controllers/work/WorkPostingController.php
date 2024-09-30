@@ -21,14 +21,18 @@ class WorkPostingController extends Controller
         $Environment = $request->input('Environment');
         $images = $request->input('imagesName'); // 画像のバリデーション
         $imagesArray = $request->file('images');
-    
-        $pathArray = [];
 
-        foreach ($imagesArray as $value) {
-            // \Log::info('$value: ', $value);
-            $pathArray[] = explode('/', $value->store('public/images/work'))[3];
+        $pathArray = [];
+        if (is_array($images) && count($images) > 0) {
+            foreach ($imagesArray as $value) {
+                // \Log::info('$value: ', $value);
+                $pathArray[] = explode('/', $value->store('public/images/work'))[3];
+            }
+        } else {
+            // エラーハンドリング：nullが渡された場合
+            return response()->json(['error' => 'No images provided.'], 400);
         }
-        
+
         \Log::info('$pathArray: ', $pathArray);
 
 

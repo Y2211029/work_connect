@@ -5,7 +5,7 @@ const YoutubeURL = (props) => {
   return (
     <div>
       <p>
-        Youtube URLを入力してください。
+        動画
         <TextField
           fullWidth
           margin="normal"

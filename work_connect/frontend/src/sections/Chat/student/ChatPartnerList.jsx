@@ -123,9 +123,11 @@ export default function ChatPartnerList() {
 
   // accountDataが変化したとき
   useEffect(() => {
+    //console.log(",./,/.,/."+accountData.ChatOpenId);
     if (accountData.ChatOpenId) {
       setChatOpenId(accountData.ChatOpenId);
     }
+
 
   }, [accountData]);
 
@@ -186,6 +188,9 @@ export default function ChatPartnerList() {
             pl: 4,
             // 選択中なら色付け
             background: element.id === ChatOpenId ? '#cce5ff' : 'initial',
+            '&:hover': {
+              background: element.id === ChatOpenId ? '#cce5ff' : '#eee',
+            },
           }}
           onClick={() => ChatOpen(element)}>
             {/* アイコン */}
@@ -236,6 +241,9 @@ export default function ChatPartnerList() {
             pl: 4,
             // 選択中なら色付け
             background: element.id === ChatOpenId ? '#cce5ff' : 'initial',
+            '&:hover': {
+              background: element.id === ChatOpenId ? '#cce5ff' : '#eee',
+            },
           }}
           onClick={() => ChatOpen(element)}>
             {/* アイコン */}
@@ -286,6 +294,9 @@ export default function ChatPartnerList() {
             pl: 4,
             // 選択中なら色付け
             background: element.id === ChatOpenId ? '#cce5ff' : 'initial',
+            '&:hover': {
+              background: element.id === ChatOpenId ? '#cce5ff' : '#eee',
+            },
           }}
           onClick={() => ChatOpen(element)}>
             {/* アイコン */}

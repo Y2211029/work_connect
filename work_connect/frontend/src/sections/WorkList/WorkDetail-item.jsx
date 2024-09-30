@@ -8,9 +8,10 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
+import Container from "@mui/material/Container";
 
 import { SLIDER, AVATAR } from "src/layouts/dashboard/config-layout";
-import { useCreateTagbutton } from "src/hooks/use-createTagbutton";
+import { UseCreateTagbutton } from "src/hooks/use-createTagbutton";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 import { Splide, SplideSlide, SplideTrack } from "@splidejs/react-splide";
@@ -70,7 +71,7 @@ const WorkDetailItem = () => {
   // -----作品データ-----
   const [workDetail, setWorkDetail] = useState([]);
   const [CommentPost, setCommentPost] = useState({
-    display: "none",
+    // display: "none",
     text: "",
   });
   const [workComment, setWorkComment] = useState([]);
@@ -79,7 +80,7 @@ const WorkDetailItem = () => {
   const [CommentCancel, setCommentCancel] = useState("");
 
   // -----タグ-----
-  const { tagCreate } = useCreateTagbutton();
+  const { tagCreate } = UseCreateTagbutton();
   // ジャンル
   const [WorkGenre, setWorkGenre] = useState("");
   // 開発言語
@@ -224,13 +225,13 @@ const WorkDetailItem = () => {
   };
 
   // コメント欄表示
-  const handleTextOpen = () => {
-    setCommentPost({ ...CommentPost, display: "block" });
-  };
+  // const handleTextOpen = () => {
+  //   setCommentPost({ ...CommentPost, display: "block" });
+  // };
 
   // コメント投稿キャンセル
   const handlePostCancel = () => {
-    setCommentPost({ ...CommentPost, display: "none", text: "" });
+    setCommentPost({ ...CommentPost, text: "" });
   };
 
   // コメント投稿内容
@@ -345,13 +346,18 @@ const WorkDetailItem = () => {
     workCommentDeletefunc();
   };
 
+
+  useEffect(() => {
+    console.log("workDetail.icon", workDetail.icon);
+  }, [workDetail.icon])
+
   // 作品タイトル
   const renderTitle = workDetail.work_name && <h1 className="WorkDetail-title">{workDetail.work_name}</h1>;
 
   // 作品投稿者アイコン
   const renderIcon = workDetail.icon && (
     <img
-      src={`/assets/images/avatars/${workDetail.icon}`}
+      src={workDetail.icon ? `http://localhost:8000/storage/images/userIcon/${workDetail.icon}` : `http://localhost:8000/storage/images/userIcon/subNinja.jpg`}
       alt=""
       style={{ width: AVATAR.A_WIDTH, height: AVATAR.A_HEIGHT, borderRadius: AVATAR.A_RADIUS }}
     />
@@ -368,6 +374,7 @@ const WorkDetailItem = () => {
       aria-labelledby="autoplay-example-heading"
       hasTrack={false}
       onMoved={(splide, newIndex) => setCurrentSlideIndex(newIndex)}
+      style={{ width: "100%", height: "100%", margin: "0 auto", marginBottom: "80px" }}
     >
       <div style={{ position: "relative" }}>
         <SplideTrack>
@@ -388,7 +395,7 @@ const WorkDetailItem = () => {
   // モーダルスライド
   const renderModalSlider = modalIsOpen && WorkSlideCheck && (
     <>
-      <div>
+      <div >
         <Button onClick={closeModal} className="close-button">
           <span className="close-button_text">閉じる</span>
         </Button>
@@ -429,7 +436,7 @@ const WorkDetailItem = () => {
                 aria-labelledby="thumbnail-slider-example"
                 onMoved={(splide, newIndex) => setCurrentSlideIndex(newIndex)}
                 hasTrack={false}
-                // sx={{ justifyContent: "center", alignItems: "center", display: "flex" }}
+              // sx={{ justifyContent: "center", alignItems: "center", display: "flex" }}
               >
                 <SplideTrack>
                   {WorkSlide.map((slide) => (
@@ -455,33 +462,27 @@ const WorkDetailItem = () => {
       </div>
     </>
   );
-  // モーダルスライド
+  // モーダルギャラリー
   const renderGallery = (
     <>
       <div id="gallery">
-        <div className="gallery_header">
-          <div className="g_h_left"></div>
-          <div className="g_h_right">
-            <Button onClick={closeGallery} className="close-button">
-              <span className="close-button_text">閉じる</span>
-              {/* <span className="close-button_icon">&times;</span> */}
-            </Button>
-            <Button onClick={openGallery} className="oepn-gallery">
-              スライド
-            </Button>
+        <div className="gallery_images" id="gallery_images">
+          <div className="gallery-container">
+            {WorkSlide.map((slide, index) => (
+              <div key={`${slide}-${index}`} className="GalleryPostCard" style={{ width: '100%' }}>
+                <img
+                  className="gallery_img"
+                  key={slide.work_id + slide.id}
+                  src={slide.image}
+                  alt={slide.image}
+                  onClick={() => openModal(index)}
+                />
+              </div>
+            ))}
           </div>
         </div>
-        <div className="gallery_images" id="gallery_images">
-          {WorkSlide.map((slide, index) => (
-            <img
-              className="gallery_img"
-              key={slide.work_id + slide.id}
-              src={slide.image}
-              alt={slide.image}
-              onClick={() => openModal(index)}
-            />
-          ))}
-        </div>
+
+
       </div>
     </>
   );
@@ -489,38 +490,38 @@ const WorkDetailItem = () => {
   // 作品紹介文
   const renderIntro = workDetail.work_intro && (
     <>
-      <Typography variant="h5">紹介文</Typography>
-      <div>{workDetail.work_intro}</div>
+      <Typography variant="h4" className="WorkDetail_typo">●作品の紹介</Typography>
+      <div className="WorkDetail_info">{workDetail.work_intro}</div>
     </>
   );
 
   // 作品ジャンル
   const renderGenre = WorkGenre && (
     <>
-      <Typography variant="h5">ジャンル</Typography>
-      {WorkGenre}
+      <Typography variant="h4" className="WorkDetail_typo">●ジャンル</Typography>
+      <div className="WorkDetail_info">{WorkGenre}</div>
     </>
   );
 
   // 作品の開発言語
   const renderProgrammingLang = WorkProgrammingLanguage && (
     <>
-      <Typography variant="h5">開発言語</Typography>
-      {WorkProgrammingLanguage}
+      <Typography variant="h4" className="WorkDetail_typo">●開発言語</Typography>
+      <div className="WorkDetail_info">{WorkProgrammingLanguage}</div>
     </>
   );
 
   // 作品の開発環境
   const renderDevelopmentEnv = WorkDevelopmentEnvironment && (
     <>
-      <Typography variant="h5">開発環境</Typography>
-      {WorkDevelopmentEnvironment}
+      <Typography variant="h4" className="WorkDetail_typo">●開発環境</Typography>
+      <div className="WorkDetail_info">{WorkDevelopmentEnvironment}</div>
     </>
   );
 
   const renderWorkURL = workDetail.work_url && (
     <>
-      <div>
+      <div style={{ height: "100px", textAlign: "center" }}>
         <Link target="_blank" to={workDetail.work_url}>
           作品リンクはこちら
         </Link>
@@ -532,7 +533,7 @@ const WorkDetailItem = () => {
       {workComment && Object.keys(Comment).length > 0 && <h3>コメント一覧</h3>}
       {workComment.map((item, index) =>
         (item.commenter_id === AccountData.id && item.commenter_user_name === AccountData.user_name) ||
-        (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
+          (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
           <div key={index}>
             <hr />
             {/* {console.log("comment", Comment)} */}
@@ -588,27 +589,25 @@ const WorkDetailItem = () => {
   );
   const renderCommentButton = (
     <>
-      <div>
-        <Button variant="contained" onClick={handleTextOpen}>
-          コメントする
-        </Button>
-        <br />
+      <div >
+        {/* <Button variant="contained" onClick={handleTextOpen}>
+          感想を残す
+        </Button> */}
         <div
           style={{
             display: CommentPost.display,
+            margin: "0 auto",
+           
           }}
+          
         >
           <textarea
-            style={{
-              width: "50%",
-              height: "100px",
-            }}
+            className="WorkDetail_commnet"
             value={CommentPost.text}
             onChange={(e) => handlePostChange(e.target.value)}
           />
-          <br />
           <button onClick={() => handlePostCancel()}>キャンセル</button>
-          <button onClick={() => handlePost()}>投稿</button>
+          <button onClick={() => handlePost()}>コメント</button>
         </div>
       </div>
     </>
@@ -627,55 +626,70 @@ const WorkDetailItem = () => {
 
   return (
     <>
-      <div>
-        <Link to="/">
-          <Stack direction="row" justifyContent="left" alignItems="center" spacing={3}>
-            {renderIcon}
-            {renderUserName}
-          </Stack>
-        </Link>
-        {renderTitle}
-      </div>
+      <Container>
+        <div>
+          <Link to="/">
+            <Stack direction="row" justifyContent="left" alignItems="center" spacing={3}>
+              {renderIcon}
+              {renderUserName}
+            </Stack>
+          </Link>
+          {renderTitle}
+        </div>
 
-      {renderMainSlider}
+        {renderMainSlider}
 
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        contentLabel="Image Modal"
-        overlayClassName="custom-overlay"
-        style={{
-          content: {
-            zIndex: theme.zIndex.modal,
-          },
-        }}
-      >
-        {renderModalSlider}
-      </Modal>
+        <Modal
+          isOpen={modalIsOpen}
+          onRequestClose={closeModal}
+          contentLabel="Image Modal"
+          overlayClassName="custom-overlay"
+          style={{
+            content: {
+              zIndex: theme.zIndex.modal,
+            },
+          }}
+        >
+          {renderModalSlider}
+        </Modal>
 
-      <Modal
-        isOpen={galleryIsOpen}
-        onRequestClose={closeModal}
-        contentLabel="Image Modal"
-        overlayClassName="custom-overlay"
-        style={{
-          content: {
-            zIndex: theme.zIndex.modal,
-          },
-        }}
-      >
-        {renderGallery}
-      </Modal>
 
-      <Box>
-        {renderIntro}
-        {renderGenre}
-        {renderProgrammingLang}
-        {renderDevelopmentEnv}
-        {renderWorkURL}
-        {renderCommentButton}
-        {renderComment}
-      </Box>
+        <Modal
+          isOpen={galleryIsOpen}
+          onRequestClose={closeModal}
+          contentLabel="Image Modal"
+          overlayClassName="custom-overlay"
+          style={{
+            content: {
+              zIndex: theme.zIndex.modal,
+            },
+          }}
+        >
+          <div className="gallery_header">
+            <div className="g_h_left"></div>
+            <div className="g_h_right">
+              <Button onClick={closeGallery} className="close-button">
+                <span className="close-button_text">閉じる</span>
+              </Button>
+              <Button onClick={openGallery} className="oepn-gallery">
+                スライド
+              </Button>
+            </div>
+          </div>
+
+          {renderGallery}
+        </Modal>
+
+        <Box>
+          {renderIntro}
+          {renderGenre}
+          {renderProgrammingLang}
+          {renderDevelopmentEnv}
+          {renderWorkURL}
+          {renderCommentButton}
+          {renderComment}
+        </Box>
+      </Container >
     </>
   );
 };

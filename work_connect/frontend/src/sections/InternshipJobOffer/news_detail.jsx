@@ -27,8 +27,8 @@ const InternshipJobOfferPage = () => {
     const news_bookmark_url = "http://localhost:8000/news_bookmark";
     // const location = useLocation();
     // const parameter = location.state; // パラメータ(w_newsテーブルのidカラムの値)を代入
-    const { id } = useParams(); // パラメータから id を取得
-    const newsdetail_id = String(id); // id を文字列に変換する
+    const { news_id } = useParams(); // パラメータから id を取得
+    const newsdetail_id = String(news_id); // id を文字列に変換する
     const navigate = useNavigate();
     console.log(csrfToken);
 
@@ -39,13 +39,13 @@ const InternshipJobOfferPage = () => {
     };
 
     useEffect(() => {
-
-        console.log(newsdetail_id);
-        //ニュースのデータを抽出する
+        console.log("Myid", data.id);
+        console.log("newsdetail_id",newsdetail_id);
+        //ニュースのデータを抽出するc
         async function fetchData() {
             try {
                 const response = await axios.get(
-                    `http://localhost:8000/Internship_JobOffer/news_detail/${newsdetail_id}`,
+                    `http://localhost:8000/news_detail/${newsdetail_id}`,
                     {
                         params: {
                             MyId: data.id, //今ログインしている人のid
@@ -129,6 +129,10 @@ const InternshipJobOfferPage = () => {
         navigate(`/Profile/${NewsDetail.company_name}`);
     }
 
+    const handleFormJump = () =>{
+        navigate(`/WriteForm/${newsdetail_id}`);
+    }
+
     useEffect(() => {
         // スクロールイベントのハンドラー関数
         const handleScroll = () => {
@@ -202,7 +206,21 @@ const InternshipJobOfferPage = () => {
                                 {followStatus}
                                 {/* usestateから持ってくる */}
                                 </Button>
-
+                                <Button
+                                    variant="contained"
+                                    sx={{
+                                        fontSize: "10px",
+                                        padding: "8px 16px",
+                                        margin: "4px",
+                                        background: "linear-gradient(#41A4FF, #9198e5)",
+                                        "&:hover": {
+                                            background: "linear-gradient(#c2c2c2, #e5ad91)",
+                                        },
+                                    }}
+                                    onClick={handleFormJump}
+                                >
+                                    応募する
+                                </Button>
                             </Stack>
                         </div>
                     }
@@ -257,7 +275,21 @@ const InternshipJobOfferPage = () => {
                                 {followStatus}
                                 {/* usestateから持ってくる */}
                                 </Button>
-
+                                <Button
+                                    variant="contained"
+                                    sx={{
+                                        fontSize: "10px",
+                                        padding: "8px 16px",
+                                        margin: "4px",
+                                        background: "linear-gradient(#41A4FF, #9198e5)",
+                                        "&:hover": {
+                                            background: "linear-gradient(#c2c2c2, #e5ad91)",
+                                        },
+                                    }}
+                                    onClick={handleFormJump}
+                                >
+                                    応募する
+                                </Button>
                             </Stack>
                     </Stack>
                     {/* NewsDetailHeader要素 サムネイルと会社名・お気に入りボタンを一括りにする */}

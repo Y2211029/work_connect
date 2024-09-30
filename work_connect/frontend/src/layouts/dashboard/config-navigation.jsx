@@ -2,8 +2,8 @@ import ApartmentIcon from '@mui/icons-material/Apartment';
 import NewspaperOutlinedIcon from '@mui/icons-material/NewspaperOutlined';
 import VideoLibraryOutlinedIcon from '@mui/icons-material/VideoLibraryOutlined';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
-import StickyNote2Icon from '@mui/icons-material/StickyNote2';
 import SvgColor from 'src/components/svg-color';
+import StickyNote2Icon from '@mui/icons-material/StickyNote2';
 
 // ----------------------------------------------------------------------
 
@@ -33,8 +33,8 @@ const navConfig = [
     icon: <ApartmentIcon />,
   },
   {
-    title: 'インターン/求人',
-    path: '/Internship_JobOffer',
+    title: 'ニュース一覧',
+    path: '/Internship_JobOffer/joboffers',
     icon: <NewspaperOutlinedIcon />,
   },
   {
@@ -45,12 +45,12 @@ const navConfig = [
   {
     title: 'ニュースの投稿',
     path: '/Editor',
-    icon: <StickyNote2Icon />,
+    icon: <NewspaperOutlinedIcon />,
   },
   {
     title: 'テストページ何か試したいものはここで',
     path: '/TestPage',
-    icon: <StickyNote2Icon />,
+    icon: <NewspaperOutlinedIcon />,
   },
   // {
   //   title: 'Not found',

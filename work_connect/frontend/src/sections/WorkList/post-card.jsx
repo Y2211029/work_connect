@@ -1,4 +1,4 @@
-import { forwardRef, useState } from "react";
+import { forwardRef, /*useEffect, /*useState*/ } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -15,22 +15,18 @@ import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 const PostCard = forwardRef(({ post }, ref) => {
   const { work_id, genre, thumbnail, icon, /* cover, */ title, intro,  /*view, comment,*/ author, userName, createdAt } = post;
 
-  const [imgSrc, setImgSrc] = useState(thumbnail);
 
-  let fallbackImage = "https://placehold.jp/300x200.png";
 
   const renderThumbnail = (
     <Box
-      className="c-card-img"
       component="img"
-      src={imgSrc}
-      onError={() => setImgSrc(fallbackImage)}
+      src={thumbnail}
       sx={{
         aspectRatio: 16 / 9,
         borderRadius: "10px",
         width: "100%",
         // height: 200,
-        // objectFit: "cover",
+        objectFit: "cover",
         marginBottom: "10px",
       }}
     />
@@ -60,13 +56,7 @@ const PostCard = forwardRef(({ post }, ref) => {
       // color="inherit"
       variant="subtitle2"
       underline="none"
-      className="link"
-      style={{
-        color: "common.black",
-        height: 30,
-        fontWeight: "Bold",
-        padding: "5px",
-      }}
+      className="link item-Link"
     >
       {title}
     </Link>
@@ -90,6 +80,7 @@ const PostCard = forwardRef(({ post }, ref) => {
         mb: 2,
         opacity: 0.48,
         color: "common.black",
+        fontSize: "12px"
       }}
     >
       {/* {fDate(createdAt, "yyyy MM dd")} */}
@@ -124,7 +115,9 @@ const PostCard = forwardRef(({ post }, ref) => {
         mt: 3,
         // color: "text.disabled",
         color: "common.black",
-        padding: "5px",
+        paddingTop: "10px",
+        width: "100%",
+        margin: "0px",
       }}
     >
       {renderDate}
@@ -144,43 +137,6 @@ const PostCard = forwardRef(({ post }, ref) => {
       </Stack>
     </Stack>
   );
-
-  {
-    /* {[
-    { number: comment, icon: "eva:message-circle-fill" },
-    { number: view, icon: "eva:eye-fill" },
-    ].map((info, _index) => (
-      <Stack
-      key={_index}
-      direction="row"
-      justifyContent="center"
-      alignItems="center"
-      spacing={1}
-      sx={{
-        opacity: 0.48,
-        // color: "common.white",
-        color: "common.black",
-        }}
-        >
-        <Iconify width={16} icon={info.icon} sx={{ mr: 0.5 }} />
-        <Typography variant="caption">{fShortenNumber(info.number)}</Typography>
-        </Stack>
-        ))} */
-  }
-  // const renderCover = (
-  //   <Box
-  //     component="img"
-  //     alt={title}
-  //     src={cover}
-  //     sx={{
-  //       top: 0,
-  //       width: 1,
-  //       height: 1,
-  //       objectFit: "cover",
-  //       position: "absolute",
-  //     }}
-  //   />
-  // );
 
   const renderShape = (
     <SvgColor
@@ -205,8 +161,9 @@ const PostCard = forwardRef(({ post }, ref) => {
       sx={{
         mb: 2,
         opacity: 0.85,
-        // color: "common.white",
+        fontSize: "12px",
         color: "common.black",
+        margin: "0px"
       }}
     >
       {intro}
@@ -215,21 +172,20 @@ const PostCard = forwardRef(({ post }, ref) => {
 
   return (
     <div ref={ref} >
-      <div className="postCard">
-        <Box
-          sx={{
-            padding: "5px 5px 5px 5px ",
-          }}
-        >
+      <Stack sx={{ display: "inline-block" }}>
+        <div className="postCard" style={{ width: '100%' }}>
           {renderShape}
           {renderThumbnail}
-          {renderGenre}
           {renderTitle}
+          <div style={{ borderBottom: "1px solid #bbb", margin: "5px 0px 10px 0px" }}></div>
           {renderIntro}
+          {/* <div style={{ borderBottom: "1px solid #bbb", margin: "10px 0px 5px 0px" }}></div> */}
+          {renderGenre}
+          <div style={{ borderBottom: "1px solid #bbb", margin: "10px 0px 5px 0px" }}></div>
           {renderInfo}
-        </Box>
-      </div>
-    </div>
+        </div>
+      </Stack >
+    </div >
   );
 });
 

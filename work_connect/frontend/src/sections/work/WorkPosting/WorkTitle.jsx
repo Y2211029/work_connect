@@ -28,10 +28,7 @@ const WorkTitle = (props) => {
           variant="outlined"
           error={hasError}
           sx={{
-            "&:hover": {
-              border: "1px solid #B0B8C4",
-              borderRadius: "8px",
-            }
+            backgroundColor: "#fff",
           }}
         />
       </p>

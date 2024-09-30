@@ -10,6 +10,11 @@ import Toolbar from "@mui/material/Toolbar";
 import { useTheme } from "@mui/material/styles";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import Button from "@mui/material/Button";
+import Popover from "@mui/material/Popover";
+import Divider from "@mui/material/Divider";
+import MenuItem from "@mui/material/MenuItem";
+
+
 
 import StudentLoginModal from "src/components/account/students/StudentLoginModal";
 import CompanyLoginModal from "src/components/account/company/CompanyLoginModal";
@@ -47,16 +52,19 @@ export default function Header({ onOpenNav }) {
   const [ModalChange, setModalChange] = useState("");
   const [PreModalChange, setPreModalChange] = useState("");
   const Display = useContext(MyContext);
+  const [open, setOpen] = useState(null);
 
   const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData") || {};
   const data = {
     id: accountData.id || "",
   };
+  const [login_state, setLoginState] = useState(false);
+
 
   const theme = useTheme();
   const lgUp = useResponsive("up", "lg");
-  let navigation = useNavigate();
+  let navigate = useNavigate();
 
   // style CSS ここから
   const buttonStyle = {
@@ -68,13 +76,21 @@ export default function Header({ onOpenNav }) {
   };
   // style CSS ここまで
 
+  useEffect(() => {
+    if (accountData) {
+      if (accountData.user_name ) {
+        setLoginState(true);
+      }
+    }
+  }, [accountData]);
+
   const handleOpenModal = () => {
     // setShowModal(true);
-    navigation("WorkPosting");
+    navigate("WorkPosting");
   };
   const handleOpenModal2 = () => {
     // setShowModal(true);
-    navigation("VideoPosting");
+    navigate("VideoPosting");
   };
 
   const callSetModalChange = (newValue) => {
@@ -94,9 +110,41 @@ export default function Header({ onOpenNav }) {
     }
   };
 
-  const handleNewsJump = () => {
-    navigation('/Editor');
-  }
+  // const handleNewsJump = () => {
+  //   navigate('/Editor');
+  // }
+
+  const handleOpen = (event) => {
+    setOpen(event.currentTarget); // ボタンがクリックされた要素を保存
+  };
+
+  const handleClose = () => {
+    setOpen(null); // ポップオーバーを閉じる
+  };
+
+  const NEWS_MENU_OPTIONS = [
+    {
+      label: "インターンシップの記事を投稿する",
+      path: `/Editor/Internship`,
+      icon: "eva:person-fill",
+    },
+    {
+      label: "求人の記事を投稿する",
+      path: "/Editor/JobOffer",
+      icon: "eva:settings-2-fill",
+    },
+    {
+      label: "ブログの記事を投稿する",
+      path: "/Editor/Blog",
+      icon: "eva:settings-2-fill",
+    },
+  ];
+
+
+  const handleMenuItemClick = (path) => {
+    handleClose();
+    navigate(path);
+  };
 
 
   //クリックすると一番上まで戻るボタン
@@ -162,9 +210,39 @@ export default function Header({ onOpenNav }) {
           </>
         ) : data.id[0] === "C" ? (
           <>
-            <Button onClick={handleNewsJump} variant="contained" sx={buttonStyle}>
-              ニュース投稿
-            </Button>
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <Button onClick={handleOpen} variant="contained">
+                ニュース投稿
+              </Button>
+
+              <Popover
+                open={!!open}
+                anchorEl={open}
+                onClose={handleClose}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                PaperProps={{
+                  sx: {
+                    p: 0,
+                    mt: 1,
+                    ml: 0.75,
+                    width: 250,
+                  },
+                }}
+              >
+                {NEWS_MENU_OPTIONS.map((option) => (
+                  <MenuItem
+                    key={option.label}
+                    onClick={() => handleMenuItemClick(option.path)}
+                    sx={{ display: login_state ? 'block' : 'none' }}
+                  >
+                    {option.label}
+                    <Divider sx={{ borderStyle: 'dashed', display: 'block'}} />
+                  </MenuItem>
+                ))}
+
+              </Popover>
+            </Stack>
           </>
         ) : null}
 
@@ -197,7 +275,7 @@ export default function Header({ onOpenNav }) {
   );
 
   useEffect(() => {
-    console.log("theme.zIndex",theme.zIndex);
+    console.log("theme.zIndex", theme.zIndex);
   }, [theme]);
 
   return (
@@ -224,7 +302,7 @@ export default function Header({ onOpenNav }) {
             height: 1,
             px: { lg: 5 },
           }}
-        > 
+        >
           {renderContent}
         </Toolbar>
         <ArrowUpwardIcon

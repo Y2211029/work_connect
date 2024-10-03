@@ -269,7 +269,7 @@ const Settings = () => {
   return (
     <div className="setting">
       <div>
-        <Link to={`/Setting`}>メールアドレス変更</Link>
+        <Link to={`/Settings/ChangeEmail`}>メールアドレス変更</Link>
       </div>
 
       <div>

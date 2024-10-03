@@ -162,7 +162,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName, NewsId }) {
           icon: work.icon,
           title: work.work_name,
           genre: work.work_genre,
-          intro: work.work_intro.length > 200 ? work.work_intro.substring(0, 200) + "..." : work.work_intro,
+          intro: work.work_intro.length > 200 ? work.work_intro.trim().substring(0, 200) + "..." : work.work_intro,
           author: {
             avatarUrl: `/assets/images/avatars/avatar_${work.icon}.jpg`,
           },

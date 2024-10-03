@@ -21,6 +21,7 @@ use App\Http\Controllers\ListController;
 use App\Http\Controllers\EditorController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\settings\SettingChangeEmailController;
 use App\Http\Controllers\login\loginController;
 use App\Http\Controllers\login\LoginStatusCheckController;
 use App\Http\Controllers\register\pre_registerController;
@@ -242,7 +243,7 @@ Route::get('/special_forms/{NewsId}', [NewsController::class, 'special_forms']);
 Route::get('/news_detail/{newsdetail_id}', [NewsController::class, 'news_detail_get']);
 Route::post('/news_bookmark', [NewsController::class, 'news_bookmark']);
 Route::get('/thumbnail_img_delete/{id}', [EditorController::class, 'thumbnail_img_delete']);
-Route::get( '/api/embed', action: [EditorController::class, 'embed']);
+Route::get('/api/embed', action: [EditorController::class, 'embed']);
 
 
 //応募用フォーム作成機能
@@ -253,6 +254,9 @@ Route::post('/wright_form_save', [FormController::class, 'wright_form_save']);
 
 //設定機能
 Route::get('/color_save', [SettingController::class, 'color_save']);
+
+//設定メールアドレス変更
+Route::post('/change_email', [SettingChangeEmailController::class, 'settingChangeEmail']);
 
 
 // ミドルウェア

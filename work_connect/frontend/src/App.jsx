@@ -6,6 +6,7 @@ import ThemeProvider from "src/theme/index";
 
 import "./global.css";
 
+import "src/App.css";
 // ----------------------------------------------------------------------
 
 const App = () => {

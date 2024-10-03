@@ -9,6 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ColorPicker from './ColorPicker';
 import axios from 'axios';
 import './setting.css';
+import { Link } from 'react-router-dom';
 
 const Settings = () => {
   const [rows, setRows] = useState([]);
@@ -238,7 +239,7 @@ const Settings = () => {
         }
       );
       const savedRow = response.data.saved_row;
-      console.log("savedrow",savedRow);
+      console.log("savedrow", savedRow);
       setRows((prevRows) => [...prevRows, savedRow]);
     } catch (error) {
       console.error("Error saving new row!", error);
@@ -267,6 +268,13 @@ const Settings = () => {
 
   return (
     <div className="setting">
+      <div>
+        <Link to={`/Setting`}>メールアドレス変更</Link>
+      </div>
+
+      <div>
+      </div>
+
       <p>色を設定する</p>
       <ColorPicker />
 

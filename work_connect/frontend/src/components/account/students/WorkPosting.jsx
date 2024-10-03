@@ -55,12 +55,12 @@ const WorkPosting = () => {
   const [videoUrl, setVideoUrl] = useState("");
   const [videoId, setVideoId] = useState("");
   const [hasError, setHasError] = useState(false);
-
   const [Image, setImage] = useState();
 
   const coleSetImage = (e) => {
     setImage(e);
-    // console.log("image: ",Image);
+    console.log("image: ", Image);
+    // handleImageChange(e);
   };
 
   useEffect(() => {
@@ -74,10 +74,30 @@ const WorkPosting = () => {
     });
   };
 
-  const handleImageChange = (images) => {
-    console.log("images: ", images);
-    setImageFiles(images);
-    setImagesName(images.map((item) => item.name).join(", "));
+  const handleImageChange = () => {
+    //   console.log("images: ", images);
+    //   if (images.length > 0) {
+    //     // Fileオブジェクトのプロパティをログに表示
+    //     for (let i = 0; i < images.length; i++) {
+    //         console.log(`File ${i} - Name: ${images[i].name}, Size: ${images[i].size}, Type: ${images[i].type}`);
+    //     }
+    // }
+    //   setImageFiles(images);
+    //   setImagesName(images.map((item) => item.name).join(", "));
+
+    console.log("Image: ", Image);
+    // ImageがFileListか確認し、正しい場合のみ処理を続行
+    if (Image && (Image instanceof FileList || (Array.isArray(Image) && Image.length > 0 && Image[0] instanceof File)))
+    {
+      setImageFiles(Image); // ImageをimageFilesにセット
+      setImagesName(
+        Array.from(Image)
+          .map((item) => item.name)
+          .join(", ")
+      ); // ファイル名をセット
+    } else {
+      console.error("Invalid Image input: ", Image);
+    }
   };
 
   // useEffectでstateが更新された直後に処理を実行する
@@ -142,8 +162,18 @@ const WorkPosting = () => {
     e.preventDefault();
     console.log("e", e.target);
     async function PostData() {
+      if (
+        !workData.WorkTitle ||
+        !workData.WorkGenre ||
+        !workData.Introduction ||
+        !workData.Obsession ||
+        !imageFiles.length // 画像がアップロードされているかを確認
+      ) {
+        alert("エラー：未入力項目があります。");
+        return;
+      }
       const formData = new FormData();
-      console.log("Image: ", Image);
+      // console.log("Image: ", Image);
       // imageFiles.forEach((file) => {
       //   formData.append(`images[]`, file);
       //   console.log(file);
@@ -152,15 +182,35 @@ const WorkPosting = () => {
       // formDataに画像データを1個追加
       // Imageに入っているデータの形がfileListのため、mapやforEachでループできない
       // imageFilesが配列として扱える場合
-      imageFiles.forEach((file) => {
-        formData.append("images[]", file); // ファイルの追加
-      });
+      for (let i = 0; i < imageFiles.length; i++) {
+        formData.append("images[]", Image[i]);
+      }
+
+      // for (let i = 0; i < Image.length; i++) {
+      //   formData.append("images[]", Image[i]);
+      // }
 
       for (const key in workData) {
         formData.append(key, workData[key]);
       }
       // formData.append("imagesName", imagesName);
-      console.log("...formData.entries(): ", ...formData.entries());
+      // formData.entries()の中身を確認
+      for (let pair of formData.entries()) {
+        // ファイル名が 'images[]' で、File オブジェクトの場合のみ詳細を表示
+        console.log(`${pair[0]}: `, pair[1]);
+
+        if (pair[1] instanceof File) {
+          // Fileオブジェクトの詳細を表示
+          console.log(
+            "File details - name:",
+            pair[1].name,
+            "size:",
+            pair[1].size,
+            "type:",
+            pair[1].type
+          );
+        }
+      }
 
       try {
         const response = await axios.post(
@@ -176,7 +226,13 @@ const WorkPosting = () => {
         navigation("/WorkSelect");
         setMessage(response.data.message);
       } catch (error) {
-        setMessage(error.message);
+        console.error(
+          "Error:",
+          error.response ? error.response.data : error.message
+        );
+        setMessage(
+          error.response ? error.response.data.message : error.message
+        );
       }
     }
 

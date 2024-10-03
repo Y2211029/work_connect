@@ -36,6 +36,7 @@ use App\Http\Controllers\company\GetCompanyListController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\follow\FollowController;
 use App\Http\Controllers\chat\GetChannelListController;
+use App\Http\Controllers\chat\GetChatController;
 use App\Http\Controllers\tag\InsertTagController;
 use App\Http\Controllers\tag\GetGenreTagController;
 use App\Http\Controllers\tag\GetLanguageTagController;
@@ -205,6 +206,8 @@ Route::post('/follow', [FollowController::class, 'FollowController']);
 
 // チャット相手取得
 Route::get('/get_channel_list', [GetChannelListController::class, 'GetChannelListController']);
+// チャット取得
+Route::get('/get_chat', [GetChatController::class, 'GetChatController']);
 
 // 通知取得
 Route::get('/get_notice', [GetNoticeController::class, 'GetNoticeController']);

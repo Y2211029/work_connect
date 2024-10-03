@@ -67,75 +67,102 @@ const Textarea = styled(BaseTextareaAutosize)(
 
 const ChatView = () => {
 
-  // DBからのレスポンスが入る変数
-  const [ResponseChannelListData, setResponseChannelListData] = useState([]);
-
-  // セッションデータが入る変数
-  const [ChatOpenId, setChatOpenId] = useState([]);
-  const [ChatOpenUserName, setChatOpenUserName] = useState([]);
-  const [ChatOpenCompanyName, setChatOpenCompanyName] = useState([]);
-  const [ChatOpenIcon, setChatOpenIcon] = useState([]);
-  const [ChatOpenFollowStatus, setChatOpenFollowStatus] = useState([]);
-
   // セッションストレージ取得
   const { getSessionData } = useSessionStorage();
 
-  // セッションストレージからaccountDataを取得し、idを初期値として設定(ログイン中のIDを取得)
-  const accountData = getSessionData("accountData");
+  // // セッションストレージからaccountDataを取得し、idを初期値として設定(ログイン中のIDを取得)
+  // const [accountData, setAccountData] = useState(getSessionData("accountData"));
 
-  // ログイン中のid
-  const MyUserId = accountData.id;
+  // // セッションストレージのデータを定期的に取得
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     const updatedAccountData = getSessionData("accountData");
+  //     setAccountData(updatedAccountData);
+  //   }, 100); // 1秒ごとに更新
 
-  // Laravelとの通信用URL
-  const channel_list_url = "http://localhost:8000/get_channel_list";
-  //const chat_url = "http://localhost:8000/get_chat";
+  //   // コンポーネントがアンマウントされたらintervalをクリア
+  //   return () => clearInterval(interval);
+  // }, []);
 
-  // accountDataが変化したとき
+  // // DBからのレスポンスが入る変数
+  // const [ResponseChannelListData, setResponseChannelListData] = useState([]);
+
+  // セッションデータが入る変数
+  const [ChatOpenId, setChatOpenId] = useState(null);
+  const [ChatOpenUserName, setChatOpenUserName] = useState(null);
+  const [ChatOpenCompanyName, setChatOpenCompanyName] = useState(null);
+  const [ChatOpenIcon, setChatOpenIcon] = useState(null);
+  const [ChatOpenFollowStatus, setChatOpenFollowStatus] = useState(null);
+
+
+
+  // // ログイン中のid
+  const MyUserId = getSessionData("accountData").id;
+
+  // // Laravelとの通信用URL
+  const chat_url = "http://localhost:8000/get_chat";
+
+
+  // 初回レンダリング時のみ実行
   useEffect(() => {
-    if (accountData.ChatOpenId) {
-      setChatOpenId(accountData.ChatOpenId);
-    }
-    if (accountData.ChatOpenUserName) {
-      setChatOpenUserName(accountData.ChatOpenUserName);
-    }
-    if (accountData.ChatOpenCompanyName) {
-      setChatOpenCompanyName(accountData.ChatOpenCompanyName);
-    }
-    if (accountData.ChatOpenIcon) {
-      setChatOpenIcon(accountData.ChatOpenIcon);
-    }
-    if (accountData.ChatOpenFollowStatus) {
-      setChatOpenFollowStatus(accountData.ChatOpenFollowStatus);
-    }
+    // 1秒ごとにチャットの読み込みを実行
+    const intervalId = setInterval(() => {
+      // チャットの取得
+      GetChat();
+    }, 1000);
 
-    // あとで消す！！！！！！！！！！！！！！！！！！！！
-    console.log(ChatOpenId+ChatOpenFollowStatus);
+    // クリーンアップ（コンポーネントがアンマウントされたときに実行）
+    return () => clearInterval(intervalId);
+  }, []);
 
-  }, [accountData]);
+  const GetChat = () => {
 
-  // ResponseChannelListDataが変化したとき
-  useEffect(() => {
     async function GetData() {
+      console.log('チャットデータを取得中...'+ChatOpenFollowStatus);
       try {
         // Laravel側からデータを取得
-        const response = await axios.get(channel_list_url, {
+        const response = await axios.get(chat_url, {
           params: {
-            MyUserId: MyUserId, //ログイン中のID
+            MyUserId: MyUserId, // ログイン中のID
+            PairUserId: getSessionData("accountData").ChatOpenId // チャット相手のID
           },
         });
         if (response) {
-          //console.log(response.data);
-          setResponseChannelListData(response.data);
+          console.log(response.data);
         }
       } catch (err) {
         console.log("err:", err);
       }
     }
     // DBからデータを取得
-    if (MyUserId) {
+    if (MyUserId && getSessionData("accountData").ChatOpenId) {
       GetData();
+    } else {
+      console.log("できません");
     }
-  }, [ResponseChannelListData]);
+
+  };
+
+  // accountDataが変化したとき
+  useEffect(() => {
+
+    if (getSessionData("accountData").ChatOpenId) {
+      setChatOpenId(getSessionData("accountData").ChatOpenId);
+    }
+    if (getSessionData("accountData").ChatOpenUserName) {
+      setChatOpenUserName(getSessionData("accountData").ChatOpenUserName);
+    }
+    if (getSessionData("accountData").ChatOpenCompanyName) {
+      setChatOpenCompanyName(getSessionData("accountData").ChatOpenCompanyName);
+    }
+    if (getSessionData("accountData").ChatOpenIcon) {
+      setChatOpenIcon(getSessionData("accountData").ChatOpenIcon);
+    }
+    if (getSessionData("accountData").ChatOpenFollowStatus) {
+      setChatOpenFollowStatus(getSessionData("accountData").ChatOpenFollowStatus);
+    }
+
+  }, [getSessionData("accountData")]);
 
   return (
     <div style={{
@@ -148,31 +175,45 @@ const ChatView = () => {
       borderRadius: '10px'}}>
 
       {/****** チャット相手のアイコン、名前を表示させる ******/}
-      <Box sx={{
-        padding: '5px 0',
-        borderBottom: '#DAE2ED 2px solid',
-        fontSize: '25px'
-        }}>
+      {(ChatOpenId) ? (
+        // 選択状態
+        <Box sx={{
+          padding: '5px 0',
+          borderBottom: '#DAE2ED 2px solid',
+          fontSize: '25px'
+          }}>
 
-        {/* 企業名もしくはユーザーネームを表示(企業は企業名、学生はユーザーネーム) */}
-        <Tooltip title={(ChatOpenCompanyName ? ChatOpenCompanyName : ChatOpenUserName) + "さんのマイページ"}>
-          <Link
-            to={`/Profile/${ChatOpenUserName}`}
-          >
-            <img src={
-            `http://localhost:8000/storage/images/userIcon/${ChatOpenIcon}`
-            }
-            //alt={element.user_name}
-            style={{
-              width: '40px',
-              height: '40px',
-              margin: '0 5px',
-              borderRadius: '50%' }}
-            />
-            {ChatOpenCompanyName ? ChatOpenCompanyName : ChatOpenUserName}
-          </Link>
-        </Tooltip>
-      </Box>
+          {/* 企業名もしくはユーザーネームを表示(企業は企業名、学生はユーザーネーム) */}
+          <Tooltip title={(ChatOpenCompanyName ? ChatOpenCompanyName : ChatOpenUserName) + "さんのマイページ"}>
+            <Link
+              to={`/Profile/${ChatOpenUserName}`}
+            >
+              <img src={
+              `http://localhost:8000/storage/images/userIcon/${ChatOpenIcon}`
+              }
+              //alt={element.user_name}
+              style={{
+                width: '40px',
+                height: '40px',
+                margin: '0 5px',
+                borderRadius: '50%' }}
+              />
+              {ChatOpenCompanyName ? ChatOpenCompanyName : ChatOpenUserName}
+            </Link>
+          </Tooltip>
+        </Box>
+      ) : (
+        // 未選択状態
+        <Box sx={{
+          padding: '5px 0',
+          borderBottom: '#DAE2ED 2px solid',
+          fontSize: '25px'
+          }}>
+
+
+          &nbsp;
+        </Box>
+      )}
 
       {/****** チャット内容 ******/}
       <Box sx={{
@@ -181,13 +222,15 @@ const ChatView = () => {
         overflow: 'auto',
           }}>
 
-        {Array(50).fill('こんにちは').map((message, index) => (
+        {/* {Array(50).fill('こんにちは').map((message, index) => (
         <div key={index}>{message}</div>
-      ))}
+      ))} */}
 
       </Box>
 
       {/****** チャット送信フォーム ******/}
+      {(ChatOpenId) ? (
+      // 選択状態
       <Box sx={{
         display: 'flex',
         alignItems: 'center',
@@ -223,6 +266,18 @@ const ChatView = () => {
         />
         </IconButton>
       </Box>
+      ) : (
+        // 未選択状態
+        <Box sx={{
+          display: 'flex',
+          alignItems: 'center',
+          borderTop: '#DAE2ED 2px solid',
+          width: '100%',
+          height: '10%'
+        }}>
+
+        </Box>
+      )}
     </div>
   )
 }

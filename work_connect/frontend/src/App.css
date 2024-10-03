@@ -39,7 +39,67 @@ nav ul li a:hover {
   color: rgb(45, 214, 158);
 }
 
+/* トップページここから */
+.top_page_app_name {
+  position: fixed;
+  text-align: center;
+  color: rgb(40, 140, 255);
+  top: 0px;
+  z-index: 1101;
+}
 
+.top_page_wrapper {
+  background: #D9D9D9;
+  border-radius: 20px;
+  width: 83.5%;
+  margin: 0 auto;
+  height: 600px;
+}
+
+.top_page_content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.top_page_content_first {
+  padding: 0px 25px;
+}
+
+/* 作品を投稿して企業から手を差し伸べてもらおう!!!*/
+.top_page_message {
+  overflow-wrap: break-word;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.top_page_app_image {
+  background: red;
+  width: calc(100% - 30%);
+  border-radius: 35px;
+}
+
+.top_page_controller {
+  display: flex;
+}
+
+.top_page_button {
+  background-color: white;
+  color: #1877F2;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.top_page_button:first-child {
+  margin-right: 5px;
+}
+
+/* トップページここまで */
 
 /* 以下、出口記入 */
 .Modal {
@@ -756,17 +816,49 @@ textarea {
   margin: 10px;
 }
 
-.WorkDetail_commnet {
-  /* Rectangle 6 */
-  width: 50%;
-  height: 100px;
-  left: 43px;
-  top: 759px;
 
+.top_comment_area {
+  margin: 0px auto;
+  /* divの隙間をなくす */
+  line-height: 0;
+}
+
+.comment_area_parts {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.comment_text_area {
+  height: 100px;
   background: #FFFFFF;
   border: none;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  /* box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.06); */
+}
 
+.comment_operation {
+  width: 100%;
+  background: #ebebeb;
+  /* Rectangle 7 */
+}
+
+.comment_button {
+  width: fit-content;
+  margin-left: auto;
+}
+
+.comment_button button {
+  border: none;
+  background: #66B2FD;
+  color: #fff;
+  border: 1px solid #dfdfdf;
+}
+
+.comment_button button:hover {
+  border: none;
+  background: #b4d8fc;
+  border: 1px solid #dfdfdf;
+  color: #fff;
+  transition: 0.5s;
 }
 
 /* 作品詳細 　ここまで */

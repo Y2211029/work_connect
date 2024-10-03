@@ -95,7 +95,7 @@ const ProfileMypage = () => {
         if (response) {
           setResponseData(response.data[0]);
           setFollowStatus(response.data[0].follow_status);
-          console.log("ResponseData:", response.data[0]);
+          // console.log("ResponseData:", response.data[0]);
         }
       } catch (err) {
         console.log("err:", err);
@@ -133,7 +133,7 @@ const ProfileMypage = () => {
   // YouTubeのリンク設定
   const handleVideoUrl = (URL) => {
     let extractedUrl = null;
-  
+
     // 共有リンク (https://youtu.be/)
     if (URL.includes("youtu.be")) {
       const videoId = URL.split('/').pop().split('?')[0];
@@ -152,10 +152,10 @@ const ProfileMypage = () => {
       const videoId = URL.split('v=')[1].split('&')[0];
       extractedUrl = `https://www.youtube.com/embed/${videoId}`;
     }
-  
+
     return extractedUrl;
   };
-  
+
 
   // 編集ボタンを押したときの処理
   const handleEditClick = () => {

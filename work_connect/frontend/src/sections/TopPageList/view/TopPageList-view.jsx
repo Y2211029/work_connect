@@ -94,7 +94,6 @@ export default function TopPageListView() {
                   新規登録
                 </button>
               </div>
-
               {ModalChange === "学生" ? (
                 <StudentLoginModal callSetModalChange={callSetModalChange} />
               ) : ModalChange === "企業" ? (
@@ -106,7 +105,6 @@ export default function TopPageListView() {
               ) : PreModalChange === "企業" ? (
                 <CompanyPreSignModal callSetPreModalChange={callSetPreModalChange} />
               ) : null}
-
             </div>
           </div>
           <div>
@@ -114,7 +112,6 @@ export default function TopPageListView() {
           </div>
         </div>
       </div>
-
     </>
   );
 }

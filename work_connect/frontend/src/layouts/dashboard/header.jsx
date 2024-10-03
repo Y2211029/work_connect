@@ -324,7 +324,7 @@ export default function Header({ onOpenNav }) {
             width: "50px",
             height: "50px",
             position: "fixed",
-            top: "800px",
+            top: "873px",
             right: "20px",
             color: "black",
             borderRadius: "50%",

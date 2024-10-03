@@ -468,6 +468,13 @@ export default function NotificationsPopover() {
             <Typography variant="body2" sx={{ color: "text.secondary" }}>
               未読： {totalUnRead} 件
             </Typography>
+            <button
+              type="button"
+              className="noticeSelectButton"
+              style={{ border: "0px" }}
+            >
+              選択
+            </button>
           </Box>
 
           {/* {totalUnRead > 0 && (

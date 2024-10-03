@@ -10,7 +10,7 @@ import SendIcon from '@mui/icons-material/Send';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 
-import "../css/App.css";
+// import "../css/App.css";
 
 const blue = {
   100: '#DAECFF',
@@ -67,58 +67,75 @@ const Textarea = styled(BaseTextareaAutosize)(
 
 const ChatView = () => {
 
-  // セッションストレージ取得
   const { getSessionData } = useSessionStorage();
-
   // // セッションストレージからaccountDataを取得し、idを初期値として設定(ログイン中のIDを取得)
-  // const [accountData, setAccountData] = useState(getSessionData("accountData"));
+  const [accountData, setAccountData] = useState(getSessionData("accountData"));
 
-  // // セッションストレージのデータを定期的に取得
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     const updatedAccountData = getSessionData("accountData");
-  //     setAccountData(updatedAccountData);
-  //   }, 100); // 1秒ごとに更新
-
-  //   // コンポーネントがアンマウントされたらintervalをクリア
-  //   return () => clearInterval(interval);
-  // }, []);
-
-  // // DBからのレスポンスが入る変数
-  // const [ResponseChannelListData, setResponseChannelListData] = useState([]);
-
-  // セッションデータが入る変数
-  const [ChatOpenId, setChatOpenId] = useState(null);
-  const [ChatOpenUserName, setChatOpenUserName] = useState(null);
-  const [ChatOpenCompanyName, setChatOpenCompanyName] = useState(null);
-  const [ChatOpenIcon, setChatOpenIcon] = useState(null);
-  const [ChatOpenFollowStatus, setChatOpenFollowStatus] = useState(null);
-
-
-
-  // // ログイン中のid
-  const MyUserId = getSessionData("accountData").id;
-
-  // // Laravelとの通信用URL
-  const chat_url = "http://localhost:8000/get_chat";
-
-
-  // 初回レンダリング時のみ実行
+  // 1秒単位でデータを取得
   useEffect(() => {
-    // 1秒ごとにチャットの読み込みを実行
-    const intervalId = setInterval(() => {
-      // チャットの取得
-      GetChat();
+    // セッションストレージ取得
+    setAccountData(getSessionData("accountData"));
+    GetChat();
+    const interval = setInterval(() => {
+     // セッションストレージ取得
+    setAccountData(getSessionData("accountData"));
+    GetChat();
     }, 1000);
 
-    // クリーンアップ（コンポーネントがアンマウントされたときに実行）
-    return () => clearInterval(intervalId);
+    // コンポーネントがアンマウントされたらintervalをクリア
+    return () => clearInterval(interval);
   }, []);
 
+  // DBからのレスポンスが入る変数
+  const [ResponseData, setResponseData] = useState([]);
+
+  // テキストの文章を保持する変数
+  const [TextData, setTextData] = useState(null);
+
+  // ログイン中のid
+  const MyUserId = accountData.id;
+
+  // Laravelとの通信用URL
+  const chat_url = "http://localhost:8000/get_chat";
+  const chat_post_url = "http://localhost:8000/post_chat";
+
+  // チャットアイコンの設定
+  const avatarSrc = accountData.ChatOpenIcon
+  ? `http://localhost:8000/storage/images/userIcon/${accountData.ChatOpenIcon}`
+  : (() => {
+      switch (accountData.ChatOpenFollowStatus) {
+        case '相互フォローしています':
+          return 'assets/images/avatars/avatar_1.jpg';
+        case 'フォローしています':
+          return 'assets/images/avatars/avatar_2.jpg';
+        case 'フォローされています':
+          return 'assets/images/avatars/avatar_3.jpg';
+        default:
+          return 'assets/images/avatars/avatar_1.jpg'; // デフォルトの画像を指定
+      }
+    })();
+
+  // テキストが変更されたとき
+  const textChange = (e) => {
+    const newValue = e.target.value;
+    // newValueをセット
+    setTextData(newValue);
+    console.log("newvalue:"+newValue);
+  };
+
+  // 送信ボタンが押されたとき
+  const sendClick = () => {
+    const newValue = TextData;
+    console.log("送信内容は:"+newValue+"です");
+    PostChat();
+  };
+
+  // 最新のチャットを取得する処理
   const GetChat = () => {
 
     async function GetData() {
-      console.log('チャットデータを取得中...'+ChatOpenFollowStatus);
+
+      console.log('チャットデータを取得中...'+getSessionData("accountData").ChatOpenId);
       try {
         // Laravel側からデータを取得
         const response = await axios.get(chat_url, {
@@ -127,42 +144,54 @@ const ChatView = () => {
             PairUserId: getSessionData("accountData").ChatOpenId // チャット相手のID
           },
         });
-        if (response) {
-          console.log(response.data);
+        if (response.data !== "null") {
+          console.log("チャットのレスポンスは"+JSON.stringify(response.data, null, 2));
+          setResponseData(response.data);
+          console.log("ResponseDataは"+ResponseData);
+        } else {
+          console.log("まだチャットしてない");
+          setResponseData([]);
         }
       } catch (err) {
         console.log("err:", err);
       }
     }
     // DBからデータを取得
-    if (MyUserId && getSessionData("accountData").ChatOpenId) {
+    if (getSessionData("accountData").ChatOpenId) {
       GetData();
     } else {
       console.log("できません");
     }
-
   };
 
-  // accountDataが変化したとき
-  useEffect(() => {
+  // チャットを送信する処理
+  const PostChat = () => {
+    async function PostData() {
+      try {
+        console.log("TextData:"+TextData);
+        // Laravelにデータを送信
+        const response = await axios.post(chat_post_url, {
+          MyUserId: MyUserId, // ログイン中のID
+          PairUserId: getSessionData("accountData").ChatOpenId, // チャット相手のID
+          Message: TextData // メッセージ
+        });
+        if (response.data) {
+          console.log("送信成功しました＿＿＿");
+          setTextData("");
+        }
+      } catch (err) {
+        console.log("err:", err);
+      }
+    }
+    // DBからデータを取得
+    if (TextData) {
+      PostData();
+    } else {
+      console.log("送信できません");
+    }
+  };
 
-    if (getSessionData("accountData").ChatOpenId) {
-      setChatOpenId(getSessionData("accountData").ChatOpenId);
-    }
-    if (getSessionData("accountData").ChatOpenUserName) {
-      setChatOpenUserName(getSessionData("accountData").ChatOpenUserName);
-    }
-    if (getSessionData("accountData").ChatOpenCompanyName) {
-      setChatOpenCompanyName(getSessionData("accountData").ChatOpenCompanyName);
-    }
-    if (getSessionData("accountData").ChatOpenIcon) {
-      setChatOpenIcon(getSessionData("accountData").ChatOpenIcon);
-    }
-    if (getSessionData("accountData").ChatOpenFollowStatus) {
-      setChatOpenFollowStatus(getSessionData("accountData").ChatOpenFollowStatus);
-    }
 
-  }, [getSessionData("accountData")]);
 
   return (
     <div style={{
@@ -175,7 +204,7 @@ const ChatView = () => {
       borderRadius: '10px'}}>
 
       {/****** チャット相手のアイコン、名前を表示させる ******/}
-      {(ChatOpenId) ? (
+      {(accountData.ChatOpenId) ? (
         // 選択状態
         <Box sx={{
           padding: '5px 0',
@@ -184,21 +213,21 @@ const ChatView = () => {
           }}>
 
           {/* 企業名もしくはユーザーネームを表示(企業は企業名、学生はユーザーネーム) */}
-          <Tooltip title={(ChatOpenCompanyName ? ChatOpenCompanyName : ChatOpenUserName) + "さんのマイページ"}>
+          <Tooltip title={(accountData.ChatOpenCompanyName ? accountData.ChatOpenCompanyName : accountData.ChatOpenUserName) + "さんのマイページ"}>
             <Link
-              to={`/Profile/${ChatOpenUserName}`}
+              to={`/Profile/${accountData.ChatOpenUserName}`}
             >
-              <img src={
-              `http://localhost:8000/storage/images/userIcon/${ChatOpenIcon}`
-              }
-              //alt={element.user_name}
+              <img src={avatarSrc}
+
               style={{
                 width: '40px',
                 height: '40px',
                 margin: '0 5px',
                 borderRadius: '50%' }}
               />
-              {ChatOpenCompanyName ? ChatOpenCompanyName : ChatOpenUserName}
+              {accountData.ChatOpenCompanyName ?
+               accountData.ChatOpenCompanyName :
+               accountData.ChatOpenUserName}
             </Link>
           </Tooltip>
         </Box>
@@ -222,14 +251,24 @@ const ChatView = () => {
         overflow: 'auto',
           }}>
 
-        {/* {Array(50).fill('こんにちは').map((message, index) => (
-        <div key={index}>{message}</div>
-      ))} */}
+    {(ResponseData && ResponseData.length > 0) ? (ResponseData.map((element, index) => (
+      // チャット履歴があるとき
+      <div key={index}>
+        {element.message}
+      </div>
+    ))):(
+      // チャット履歴がまだないとき
+      <div>
+        メッセージがありません
+      </div>
+    )}
+
+
 
       </Box>
 
       {/****** チャット送信フォーム ******/}
-      {(ChatOpenId) ? (
+      {(accountData.ChatOpenId) ? (
       // 選択状態
       <Box sx={{
         display: 'flex',
@@ -252,18 +291,20 @@ const ChatView = () => {
               height: '100%' // TextFieldの内部要素も親の高さに合わせる
             }
           }}
+          value={TextData}
+          onChange={textChange}
           //label="内容を入力してください"
         />
         <IconButton
-            //onClick={handleBackClick}
+            onClick={sendClick}
             sx={{
               '&:hover': { backgroundColor: '#c1e0ff' },
             }}
           >
-        <SendIcon
-        color="primary"
-        sx={{ fontSize: 30,paddingBottom:'14' }}
-        />
+          <SendIcon
+            color="primary"
+            sx={{ fontSize: 30, paddingBottom:'14' }}
+          />
         </IconButton>
       </Box>
       ) : (

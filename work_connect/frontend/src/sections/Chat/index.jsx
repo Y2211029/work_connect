@@ -1,7 +1,7 @@
 import ChatPartnerList from './ChatPartnerList';
 import ChatView from './ChatView';
 
-import "../css/App.css";
+// import "../css/App.css";
 
 const ChatApp = () => {
 

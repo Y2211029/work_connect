@@ -31,6 +31,8 @@ import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 // ----------------------------------------------------------------------
 
+var noticeDeleteFlg = true;
+
 export default function NotificationsPopover() {
   // laravelから取得した通知を入れる用
   const [NOTIFICATIONS, setNOTIFICATIONS] = useState([
@@ -179,7 +181,11 @@ export default function NotificationsPopover() {
 
       console.log("!DeleteNotice.includes(value.id):noticeData: ", noticeData);
 
-      setNoticeArray(noticeData);
+      if (noticeDeleteFlg) {
+        setNoticeArray(noticeData);
+      } else {
+        noticeDeleteFlg = true;
+      }
 
       // var noticeIdArray = [];
 
@@ -353,7 +359,7 @@ export default function NotificationsPopover() {
 
   const deleteSingleNotice = async (e) => {
     console.log("delete!! ", e.target.dataset.notice);
-
+    noticeDeleteFlg = false;
     try {
       const noticeId = e.target.dataset.notice;
 

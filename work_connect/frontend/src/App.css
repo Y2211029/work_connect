@@ -795,3 +795,9 @@ textarea {
   font-weight: Bold;
   padding: 5px;
 }
+
+/* 通知削除ボタン */
+.noticeDeleteButton:hover{
+  cursor:pointer;
+  background-color: #ffcccc;
+}

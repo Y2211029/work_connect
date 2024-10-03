@@ -32,6 +32,7 @@ import { useSessionStorage } from "src/hooks/use-sessionStorage";
 // ----------------------------------------------------------------------
 
 export default function NotificationsPopover() {
+  // laravelから取得した通知を入れる用
   const [NOTIFICATIONS, setNOTIFICATIONS] = useState([
     // {
     //   id: faker.string.uuid(),
@@ -89,27 +90,34 @@ export default function NotificationsPopover() {
     // },
   ]);
 
+  // セッションからログインしているアカウントのデータ取得
   const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData");
 
+  // 表示する用の通知を入れる用
   const [notifications, setNotifications] = useState(NOTIFICATIONS);
 
   const Display = useContext(MyContext);
 
+  // 未読の件数を取得
   const totalUnRead = notifications.filter(
     (item) => item.isUnRead === true
   ).length;
 
+  // 通知モーダルを開く用
   const [open, setOpen] = useState(null);
 
+  // 通知モーダルを開いたときに動く
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
   };
 
+  // 通知モーダルが閉じたときに動く
   const handleClose = () => {
     setOpen(null);
   };
 
+  // 通知を未読から既読にする命令をLaravelに送信
   async function noticeAlreadyReadFunction() {
     // console.log("NoticeIdNoticeIdNoticeIdNoticeId: ", NoticeId);
     try {
@@ -126,6 +134,7 @@ export default function NotificationsPopover() {
     }
   }
 
+  // 未読の通知をすべて既読状態にする
   const handleMarkAllAsRead = () => {
     console.log("handleMarkAllAsRead!!!");
 
@@ -139,16 +148,19 @@ export default function NotificationsPopover() {
     noticeAlreadyReadFunction();
   };
 
+  // Laravalから取得した通知を一時保存しておく用
   const [NoticeArray, setNoticeArray] = useState([]);
   // const [NoticeId, setNoticeId] = useState([]);
   // const [ResponseData, setResponseData] = useState([]);
 
+  // Laravelから通知データを取得し、NoticeArrayにセットする
   async function noticeListFunction() {
     // console.log("NoticeIdNoticeIdNoticeIdNoticeId: ", NoticeId);
     try {
       // 通知一覧データを取得する用URL
       const url = "http://localhost:8000/get_notice";
 
+      // ログインしているアカウントの情報を取得
       const accountData = getSessionData("accountData");
 
       // console.log("accountData: ", accountData);
@@ -159,7 +171,15 @@ export default function NotificationsPopover() {
         },
       });
 
-      setNoticeArray(response.data);
+      var noticeData = [];
+
+      noticeData = response.data.filter((value) => {
+        return !DeleteNotice.includes(value.id);
+      })
+
+      console.log("!DeleteNotice.includes(value.id):noticeData: ", noticeData);
+
+      setNoticeArray(noticeData);
 
       // var noticeIdArray = [];
 
@@ -217,6 +237,7 @@ export default function NotificationsPopover() {
     }
   }
 
+  // 通知監視用
   useEffect(() => {
     const interval = setInterval(() => {
       noticeListFunction();
@@ -224,6 +245,7 @@ export default function NotificationsPopover() {
     return () => clearInterval(interval);
   }, []);
 
+  // Laravelから取得した通知データをもとに表示に適した形に変換する
   useEffect(() => {
     // console.log("useEffect[NoticeArray]:NoticeId:", NoticeId);
     console.log("NoticeArray:", NoticeArray);
@@ -281,11 +303,13 @@ export default function NotificationsPopover() {
     setNOTIFICATIONS(noticeData);
   }, [NoticeArray]);
 
+  // 表示するのに適した形になった通知データを表示用配列にセット
   useEffect(() => {
     console.log("NOTIFICATIONS: ", NOTIFICATIONS);
     setNotifications(NOTIFICATIONS);
   }, [NOTIFICATIONS]);
 
+  // 通知モーダルが閉じられたときに未読の通知をすべて既読状態にする
   useEffect(() => {
     console.log("open!!!");
     if (!open) {
@@ -309,6 +333,94 @@ export default function NotificationsPopover() {
   //   // setNoticeArray(newNotice);
   //   // setNoticeArray((prevNoticeArray) => [...prevNoticeArray, ...newNotice]);
   // }, [ResponseData]);
+
+  const [DeleteNotice, setDeleteNotice] = useState([]);
+
+  useEffect(() => {
+    console.log("DeleteNotice: ", DeleteNotice);
+
+    console.log("notifications: ", notifications);
+    var test = [];
+    test = notifications.filter((value) => {
+      return value.isUnRead == true && !DeleteNotice.includes(value.id);
+    });
+    console.log("test: ", test);
+  }, [DeleteNotice]);
+
+  // useEffect(() => {
+  //   console.log("notifications: ", notifications);
+  // }, [notifications]);
+
+  const deleteSingleNotice = async (e) => {
+    console.log("delete!! ", e.target.dataset.notice);
+
+    try {
+      const noticeId = e.target.dataset.notice;
+
+      setNOTIFICATIONS(NOTIFICATIONS.filter((value) => value.id != noticeId));
+      setNotifications(notifications.filter((value) => value.id != noticeId));
+      setDeleteNotice((prevNoticeId) => [...prevNoticeId, noticeId]);
+
+      // 通知削除用URL
+      const url = "http://localhost:8000/post_notice_delete";
+
+      // console.log("accountData: ", accountData);
+      // Laravel側か通知一覧データを取得
+      await axios.post(url, {
+        noticeId: noticeId,
+      });
+    } catch (err) {
+      console.log("err:", err);
+    }
+  };
+
+  function NotificationItem({ notification }) {
+    const { avatar, title } = renderContent(notification);
+
+    return (
+      <ListItemButton
+        sx={{
+          py: 1.5,
+          px: 2.5,
+          mt: "1px",
+          ...(notification.isUnRead && {
+            bgcolor: "action.selected",
+          }),
+        }}
+      >
+        <ListItemAvatar>
+          <Avatar sx={{ bgcolor: "background.neutral" }}>{avatar}</Avatar>
+        </ListItemAvatar>
+        <ListItemText
+          primary={title}
+          secondary={
+            <Typography
+              variant="caption"
+              sx={{
+                mt: 0.5,
+                display: "flex",
+                alignItems: "center",
+                color: "text.disabled",
+              }}
+            >
+              <Iconify
+                icon="eva:clock-outline"
+                sx={{ mr: 0.5, width: 16, height: 16 }}
+              />
+              {fToNow(notification.createdAt)}
+            </Typography>
+          }
+        />
+        <button
+          type="button"
+          data-notice={notification.id}
+          onClick={deleteSingleNotice}
+        >
+          ✕
+        </button>
+      </ListItemButton>
+    );
+  }
 
   return (
     <>
@@ -340,6 +452,13 @@ export default function NotificationsPopover() {
         <Box sx={{ display: "flex", alignItems: "center", py: 2, px: 2.5 }}>
           <Box sx={{ flexGrow: 1 }}>
             <Typography variant="subtitle1">通知</Typography>
+            <button
+              type="button"
+              className="noticeDeleteButton"
+              style={{ border: "0px" }}
+            >
+              選択した通知を削除
+            </button>
             <Typography variant="body2" sx={{ color: "text.secondary" }}>
               未読： {totalUnRead} 件
             </Typography>
@@ -358,7 +477,7 @@ export default function NotificationsPopover() {
 
         <Scrollbar sx={{ height: { xs: 340, sm: "auto" } }}>
           {notifications.filter((value) => {
-            return value.isUnRead == true;
+            return value.isUnRead == true && !DeleteNotice.includes(value.id);
           }).length > 0 ? (
             <List
               disablePadding
@@ -373,20 +492,25 @@ export default function NotificationsPopover() {
             >
               {notifications
                 .filter((value) => {
-                  return value.isUnRead == true;
+                  return (
+                    value.isUnRead == true && !DeleteNotice.includes(value.id)
+                  );
                 })
+                .reverse()
                 .map((notification) => (
-                  <NotificationItem
-                    key={notification.id}
-                    notification={notification}
-                  />
+                  <>
+                    <NotificationItem
+                      key={notification.id}
+                      notification={notification}
+                    />
+                  </>
                 ))}
             </List>
           ) : (
             ""
           )}
           {notifications.filter((value) => {
-            return value.isUnRead == false;
+            return value.isUnRead == false && !DeleteNotice.includes(value.id);
           }).length > 0 ? (
             <List
               disablePadding
@@ -401,8 +525,11 @@ export default function NotificationsPopover() {
             >
               {notifications
                 .filter((value) => {
-                  return value.isUnRead == false;
+                  return (
+                    value.isUnRead == false && !DeleteNotice.includes(value.id)
+                  );
                 })
+                .reverse()
                 .map((notification) => (
                   <NotificationItem
                     key={notification.id}
@@ -429,58 +556,17 @@ export default function NotificationsPopover() {
 
 // ----------------------------------------------------------------------
 
-NotificationItem.propTypes = {
-  notification: PropTypes.shape({
-    createdAt: PropTypes.instanceOf(Date),
-    id: PropTypes.string,
-    isUnRead: PropTypes.bool,
-    title: PropTypes.string,
-    description: PropTypes.string,
-    type: PropTypes.string,
-    avatar: PropTypes.any,
-  }),
-};
-
-function NotificationItem({ notification }) {
-  const { avatar, title } = renderContent(notification);
-
-  return (
-    <ListItemButton
-      sx={{
-        py: 1.5,
-        px: 2.5,
-        mt: "1px",
-        ...(notification.isUnRead && {
-          bgcolor: "action.selected",
-        }),
-      }}
-    >
-      <ListItemAvatar>
-        <Avatar sx={{ bgcolor: "background.neutral" }}>{avatar}</Avatar>
-      </ListItemAvatar>
-      <ListItemText
-        primary={title}
-        secondary={
-          <Typography
-            variant="caption"
-            sx={{
-              mt: 0.5,
-              display: "flex",
-              alignItems: "center",
-              color: "text.disabled",
-            }}
-          >
-            <Iconify
-              icon="eva:clock-outline"
-              sx={{ mr: 0.5, width: 16, height: 16 }}
-            />
-            {fToNow(notification.createdAt)}
-          </Typography>
-        }
-      />
-    </ListItemButton>
-  );
-}
+// NotificationItem.propTypes = {
+//   notification: PropTypes.shape({
+//     createdAt: PropTypes.instanceOf(Date),
+//     id: PropTypes.string,
+//     isUnRead: PropTypes.bool,
+//     title: PropTypes.string,
+//     description: PropTypes.string,
+//     type: PropTypes.string,
+//     avatar: PropTypes.any,
+//   }),
+// };
 
 // ----------------------------------------------------------------------
 
@@ -548,4 +634,8 @@ function renderContent(notification) {
     ) : null,
     title,
   };
+}
+
+NotificationsPopover.propTypes = {
+  notification: PropTypes.object,
 }

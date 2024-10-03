@@ -68,6 +68,7 @@ use App\Http\Controllers\profile\PostMypageController;
 use App\Http\Controllers\profile\GetMypageKindController;
 use App\Http\Controllers\notice\GetNoticeController;
 use App\Http\Controllers\notice\PostNoticeAlreadyReadController;
+use App\Http\Controllers\notice\PostNoticeDeleteController;
 
 
 // トップ画面
@@ -209,6 +210,8 @@ Route::get('/get_channel_list', [GetChannelListController::class, 'GetChannelLis
 Route::get('/get_notice', [GetNoticeController::class, 'GetNoticeController']);
 // 未読通知を既読にする
 Route::post('/post_notice_already_read', [PostNoticeAlreadyReadController::class, 'PostNoticeAlreadyReadController']);
+// 通知を削除する
+Route::post('/post_notice_delete', [PostNoticeDeleteController::class, 'PostNoticeDeleteController']);
 
 Route::get('/user_name_check', [userNameCheckController::class, 'userNameCheckController']);
 

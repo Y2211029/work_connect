@@ -22,7 +22,7 @@ class PostNoticeAlreadyReadController extends Controller
 
             return response()->json("既読処理成功");
         } catch (\Exception $e) {
-            Log::error('GetNoticeController: エラー');
+            Log::error('PostNoticeAlreadyReadController: エラー');
             Log::error($e);
 
             // エラーメッセージをJSON形式で返す

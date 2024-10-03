@@ -19,7 +19,7 @@ const VideoYoutubeURL = (props) => {
 
   return (
     <div>
-      <p>Youtube URLを入力してください。</p>
+      <p>動画*</p>
       <TextField
         fullWidth
         margin="normal"

@@ -131,7 +131,7 @@ const ProfileMypage = () => {
           },
         });
         if (response) {
-          console.log(response.data[0].follow_status);
+          // console.log(response.data[0].follow_status);
           setResponseData(response.data[0]);
           setFollowStatus(response.data[0].follow_status);
           //console.log("ResponseDataaaaaaaaaaaaa:", ResponseData.icon);

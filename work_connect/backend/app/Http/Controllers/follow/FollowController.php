@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\follow;
 
 use App\Models\w_follow;
+use App\Models\w_notice;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -48,13 +49,28 @@ class FollowController extends Controller
         // フォロー状態を決定
         if ($isFollowing && $isFollowedByUser) {
             $followStatus = '相互フォローしています';
+            w_notice::create([
+                'get_user_id' => $recipient_id,
+                'send_user_id' => $sender_id,
+                'category' => "フォロー",
+                'detail' => "相互フォロー",
+                'already_read' => 0,
+            ]);
         } elseif ($isFollowing) {
             $followStatus = 'フォローしています';
+            w_notice::create([
+                'get_user_id' => $recipient_id,
+                'send_user_id' => $sender_id,
+                'category' => "フォロー",
+                'detail' => "",
+                'already_read' => 0,
+            ]);
         } elseif ($isFollowedByUser) {
             $followStatus = 'フォローされています';
         } else {
             $followStatus = 'フォローする';
         }
+
 
         // フォロー状況を JSON 形式で返す
         return response()->json([

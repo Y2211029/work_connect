@@ -23,7 +23,7 @@ class WorkPostingController extends Controller
         $imagesArray = $request->file('images');
 
         $pathArray = [];
-        if (is_array($images) && count($images) > 0) {
+        if (is_array($imagesArray) && count($imagesArray) > 0) {
             foreach ($imagesArray as $value) {
                 // \Log::info('$value: ', $value);
                 $pathArray[] = explode('/', $value->store('public/images/work'))[3];

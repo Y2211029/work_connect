@@ -22,6 +22,7 @@ use App\Http\Controllers\EditorController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\settings\SettingChangeEmailController;
+use App\Http\Controllers\settings\SettingCheckEmailController;
 use App\Http\Controllers\login\loginController;
 use App\Http\Controllers\login\LoginStatusCheckController;
 use App\Http\Controllers\register\pre_registerController;
@@ -261,6 +262,8 @@ Route::get('/color_save', [SettingController::class, 'color_save']);
 //設定メールアドレス変更
 Route::post('/change_email', [SettingChangeEmailController::class, 'settingChangeEmail']);
 
+//設定メールアドレス変更確認
+Route::post('/check_email', [SettingCheckEmailController::class, 'settingCheckEmail']);
 
 // ミドルウェア
 Route::group(['middleware' => ['api', 'cors']], function () {

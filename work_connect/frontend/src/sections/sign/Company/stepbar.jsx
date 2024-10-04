@@ -10,8 +10,8 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
 import AccountRegistar from "./AccountRegistration";
-import CompanyInformation from "src/sections/sign/company/CompanyInformation";
-import Confirmation from "src/sections/sign/company/Confirmation";
+import CompanyInformation from "src/sections/sign/Company/CompanyInformation.jsx";
+import Confirmation from "src/sections/sign/Company/Confirmation.jsx";
 
 // Laravelとの通信用
 import axios from "axios";
@@ -101,6 +101,8 @@ export default function HorizontalLinearStepper({ Stepbar }) {
         .then((response) => {
           console.log("レスポンス:", response);
           alert("新規登録が完了しました。");
+
+          
 
           // セキュリティ対策のため初期化
           sessionStorage.removeItem('accountData');

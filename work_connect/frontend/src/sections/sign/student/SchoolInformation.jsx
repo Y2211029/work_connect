@@ -1,13 +1,15 @@
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
-import { Container, RegistarCard } from "../css/RegistarStyled";
 
 import GraduationYearDropdown from "./SchoolInformation/GraduationYearDropdown";
 import SchoolNameDropdown from "./SchoolInformation/SchoolNameDropdown";
 import DepartmentNameDropdown from "./SchoolInformation/DepartmentNameDropdown";
 import FacultyName from "./SchoolInformation/FacultyName";
+import MajorName from "./SchoolInformation/MajorName";
+import CourceName from "./SchoolInformation/CourseName";
 
-import { useEffect, useState } from "react";
+import { Container, RegistarCard } from "../css/RegistarStyled";
 
 const SchoolInformation = (props) => {
 
@@ -44,8 +46,8 @@ const SchoolInformation = (props) => {
         <SchoolNameDropdown  coleSetRequiredCheck={coleSetRequiredCheck}/>
         <DepartmentNameDropdown />
         <FacultyName />
-        {/* <p>専攻</p>
-        <p>コース</p> */}
+        <MajorName />
+        <CourceName />
       </RegistarCard>
     </Container>
   );

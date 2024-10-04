@@ -35,6 +35,8 @@ export const TestPage = lazy(() => import("src/sections/TestPage"));
 export const SettingsPage = lazy(() => import("src/pages/Settings"));
 // メールアドレス変更
 export const ChangeEmail = lazy(() => import("src/pages/ChangeEmail"));
+// メールアドレス確認
+export const CheckEmail = lazy(() => import("src/pages/CheckEmail"));
 
 //
 export const InternshipJobOfferPage = lazy(() => import("src/pages/internshipJobOffer"));
@@ -91,6 +93,7 @@ export default function Router() {
         //20240619
         { path: "Settings", element: <SettingsPage /> },
         { path: "Settings/ChangeEmail", element: <ChangeEmail /> },
+        { path: "Settings/CheckEmail", element: <CheckEmail /> },
         { path: "Editor/:genre", element: <EditorPage /> },
         { path: "CreateForm/:news_id", element: <CreateFormPage /> },
         { path: "WriteForm/:newsdetail_id", element: <WriteFormPage /> },

@@ -203,8 +203,8 @@ const PostCard = forwardRef(({ post }, ref) => {
 
   return (
     <div ref={ref} >
-      <Stack sx={{ display: "inline-block" }}>
-        <div className="postCard" style={{ width: '100%' }}>
+      <Stack>
+        <div className="postCard" style={{ width: "500px" }}>
           {renderShape}
           {renderMovie}
           {renderTitle}

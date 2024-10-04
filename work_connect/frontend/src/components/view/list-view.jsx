@@ -81,6 +81,9 @@ export default function ItemObjectAndPostCard({ type, ParamUserName, NewsId }) {
   const [PostCard, setPostCard] = useState(null);
   const [PostSort, setPostSort] = useState(null);
   const { newsdetail_id } = useParams();
+  const searchParams = new URLSearchParams(window.location.search); // クエリパラメータを取得
+  const page = searchParams.get("page");
+  const category = searchParams.get("category");
   const [NewsDetailId, setNewsDetailId] = useState(newsdetail_id);
 
   useEffect(() => {
@@ -100,6 +103,9 @@ export default function ItemObjectAndPostCard({ type, ParamUserName, NewsId }) {
   useEffect(() => {
     setNewsDetailId(NewsDetailId);
   }, [NewsDetailId]);
+
+  console.log("page",page);
+  console.log("category",category);
 
 
   useEffect(() => {
@@ -125,12 +131,10 @@ export default function ItemObjectAndPostCard({ type, ParamUserName, NewsId }) {
         const { default: CompanyListPostCard } = await import("src/sections/CompanyList/post-card");
         setPostCard(() => CompanyListPostCard);
         console.log("CompanyListPostCard");
-      } else if (PathName === `/Internship_JobOffer/joboffers` ||
-        PathName === `/Internship_JobOffer/internships` ||
-        PathName === `/Internship_JobOffer/blogs` ||
-        DecodeURL === `/Profile/${ParamUserName}/News/JobOffers` ||
-        DecodeURL === `/Profile/${ParamUserName}/News/Internships` ||
-        DecodeURL === `/Profile/${ParamUserName}/News/Blogs`) {
+      } else if (PathName === `/Internship_JobOffer` ||
+        DecodeURL === `/Profile/${ParamUserName}` &&
+        page === "news" &&
+        (category === "joboffers" || category === "internships" || category === "blogs")) {
         const { default: Internship_JobOfferPostCard } = await import("src/sections/InternshipJobOffer/post-card");
         setPostCard(() => Internship_JobOfferPostCard);
         console.log("Internship_JobOfferPostCard");
@@ -146,7 +150,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName, NewsId }) {
       }
     };
     loadComponents();
-  }, [SessionAccountData.user_name, PathName, NewsDetailId, ParamUserName, DecodeURL, NewsId]);
+  }, [SessionAccountData.user_name, PathName, NewsDetailId, ParamUserName, DecodeURL, NewsId,category,page]);
 
   const urlMapping = {
     works: {
@@ -311,6 +315,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName, NewsId }) {
           company_id: company.company_id,
           create_form: company.create_form,
           news_id: company.news_id,
+          article_title: company.article_title,
         }));
       },
     },
@@ -404,6 +409,8 @@ export default function ItemObjectAndPostCard({ type, ParamUserName, NewsId }) {
       NewsDetailId={NewsDetailId}
       DecodeURL={DecodeURL}
       NewsId={NewsId}
+      page={page}
+      category={category}
     />
   );
 }
@@ -415,10 +422,12 @@ ItemObjectAndPostCard.propTypes = {
   NewsDetailId: PropTypes.string,
   DecodeURL: PropTypes.string,
   NewsId: PropTypes.string,
+  page: PropTypes.string,
+  category: PropTypes.string,
 };
 
 // ------------------------------------------------ListView------------------------------------------------
-const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort, ParamUserName, NewsDetailId, DecodeURL, NewsId }) => {
+const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort, ParamUserName, NewsDetailId, DecodeURL, NewsId,page,category}) => {
   // ログインチェック
   const { loginStatusCheckFunction } = LoginStatusCheck();
   // 作品アイテム格納
@@ -465,11 +474,10 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     || PathName === "/Internship_JobOffer" || PathName === `/WriteForm/${NewsDetailId}`
     || PathName === "/Internship_JobOffer/joboffers" || PathName === "/Internship_JobOffer/internships"
     || PathName === "/Internship_JobOffer/blogs"
-    || DecodeURL === `/Profile/${ParamUserName}/News/JobOffers`
-    || DecodeURL === `/Profile/${ParamUserName}/News/Internships`
-    || DecodeURL === `/Profile/${ParamUserName}/News/Blogs`
-    || DecodeURL === `/Profile/${ParamUserName}/News/Forms`
     || PathName === `/CheckForm/${NewsId}`
+    || DecodeURL === `/Profile/${ParamUserName}` &&
+        page === "news" &&
+      (category === "joboffers" || category === "internships" || category === "blogs")
   )) {
     // console.log(" URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合");
     lastUrl = `${url}?page=${Page}&sort=${sortOption}`;
@@ -650,4 +658,6 @@ ListView.propTypes = {
   NewsDetailId: PropTypes.string,
   DecodeURL: PropTypes.string,
   NewsId: PropTypes.string,
+  page: PropTypes.string,
+  category: PropTypes.string,
 };

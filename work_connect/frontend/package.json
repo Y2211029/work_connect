@@ -89,6 +89,7 @@
     "survey-react-ui": "^1.12.1",
     "swr": "^2.2.5",
     "title-editorjs": "^1.0.2",
+    "vite": "^5.4.8",
     "wanakana": "^5.3.1"
   },
   "devDependencies": {
@@ -107,7 +108,6 @@
     "eslint-plugin-react": "^7.34.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
-    "vite": "^5.3.1",
     "vite-plugin-checker": "^0.6.4"
   }
 }

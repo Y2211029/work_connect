@@ -56,38 +56,65 @@ const PostCard = forwardRef(({ post }, ref) => {
     />
   );
 
-  // タイトル
-  const renderTitle = (
+    // Profile/株式会社アーキテクト/News/Forms
+  // フォームのレンダリング（企業の投稿の場合）
+  const renderForm = company_id === accountData.id && count > 0 ? (
     <Link
-      to={`/news_detail/${news_id}`}
-      className="link"
-      style={{
-        color: "common.black",
-        height: 30,
-        fontWeight: "Bold",
-        padding: "5px",
-      }}
+      to={`/CheckForm/${news_id}`}
     >
-      {article_title}
+      <Typography opacity="0.48" onClick={handleFollowClick}>
+        {count}件のフォーム回答
+      </Typography>
     </Link>
-  );
+  ) : null;
 
   // ジャンル
   const renderGenre = genre ? (
+    <Stack
+    direction="row"
+    justifyContent="space-between"
+    alignItems="center"
+    spacing={1}
+    sx={{
+      mt: 3,
+      color: "common.black",
+      padding: "5px",
+    }}
+  >
+    
     <Button
       variant="contained"
       sx={{
         padding: "2px",
-        margin: "2px",
+        margin: "2px",       
         background: "linear-gradient(#41A4FF, #9198e5)",
         "&:hover": {
           background: "linear-gradient(#c2c2c2, #e5ad91)",
         },
       }}
     >
-      {genre}
-    </Button>
-  ) : null;
+    {genre === 'internships' ? 'インターンシップ' : genre === 'blogs' ? 'ブログ' : genre === 'joboffers' ? '求人' : genre}    </Button>
+    
+    {renderForm}
+
+    </Stack>
+
+) : null;
+
+    // タイトル
+    const renderTitle = (
+      <Link
+        to={`/news_detail/${news_id}`}
+        className="link"
+        style={{
+          color: "common.black",
+          height: 30,
+          fontWeight: "Bold",
+        }}
+      >
+        {article_title}
+      </Link>
+    );
 
   // サムネイル
   const renderThumbnail = (
@@ -168,28 +195,17 @@ const PostCard = forwardRef(({ post }, ref) => {
       </Stack>
     </Stack>
   );
-  // Profile/株式会社アーキテクト/News/Forms
-  // フォームのレンダリング（企業の投稿の場合）
-  const renderForm = company_id === accountData.id && count > 0 ? (
-    <Link
-      to={`/CheckForm/${news_id}`}
-    >
-      <Typography opacity="0.48" onClick={handleFollowClick}>
-        このニュースに{count}件のフォーム回答があります
-      </Typography>
-    </Link>
-  ) : null;
+
 
   return (
     <div ref={ref} >
       <Stack sx={{ display: "inline-block" }}>
         <div className="postCard" style={{ width: '100%' }}>
           {renderThumbnail}
-          {renderGenre}
           {renderTitle}
+          {renderGenre}
           {renderFollow}
           {renderInfo}
-          {renderForm}
         </div>
       </Stack >
     </div >

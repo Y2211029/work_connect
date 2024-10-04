@@ -28,17 +28,15 @@ class GetChatController extends Controller
                 $query->where('send_user_id', $PairUserId)
                       ->where('get_user_id', $MyUserId);
             })->get();
-            
+
             if ($chat_list->isEmpty()) {
                 // チャットリストが空の場合の処理
                 Log::error('Chat list is empty.');
                 return response()->json("null");
             }
-            
+
             // 正常に結果が得られた場合の処理
-            
-             
-             \Log::info('$chat_list: ' . $chat_list[0]);
+             \Log::info('$chat_list: ' . $chat_list);
 
 
             if($chat_list){

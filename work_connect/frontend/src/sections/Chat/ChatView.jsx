@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import React from 'react';
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import { Link } from "react-router-dom";
@@ -6,6 +7,8 @@ import { TextareaAutosize as BaseTextareaAutosize } from '@mui/base/TextareaAuto
 import { styled } from '@mui/material/styles';
 
 import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import Typography from "@mui/material/Typography";
 import SendIcon from '@mui/icons-material/Send';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
@@ -67,11 +70,19 @@ const Textarea = styled(BaseTextareaAutosize)(
 
 const ChatView = () => {
 
+  // セッションストレージ
   const { getSessionData } = useSessionStorage();
-  // // セッションストレージからaccountDataを取得し、idを初期値として設定(ログイン中のIDを取得)
+  // セッションストレージからaccountDataを取得し、idを初期値として設定(ログイン中のIDを取得)
   const [accountData, setAccountData] = useState(getSessionData("accountData"));
+  // DBからのレスポンスが入る変数
+  const [ResponseData, setResponseData] = useState([]);
 
-  // 1秒単位でデータを取得
+  // デフォルトでチャットを一番下にスクロールする
+  const chatBoxscroll = useRef(null);
+  // スクロールの高さが変わったときに、元のスクロールの高さを保持しておく
+  const [prevScrollHeight, setPrevScrollHeight] = useState(0);
+
+  // 1回のみ実行(1秒単位でデータを取得)
   useEffect(() => {
     // セッションストレージ取得
     setAccountData(getSessionData("accountData"));
@@ -86,8 +97,32 @@ const ChatView = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // DBからのレスポンスが入る変数
-  const [ResponseData, setResponseData] = useState([]);
+  // ResponseDataが更新されたら実行
+  useEffect(() => {
+    const chatBox = chatBoxscroll.current;
+    // chatBoxがなければ中断
+    if (!chatBox) return;
+
+    // MutationObserverの設定
+    const observer = new MutationObserver(() => {
+      // 現在のscrollHeight
+      const currentScrollHeight = chatBox.scrollHeight;
+
+      // scrollHeightが変わったときにのみスクロール
+      if (currentScrollHeight !== prevScrollHeight) {
+        chatBox.scrollTop = chatBox.scrollHeight;
+        setPrevScrollHeight(currentScrollHeight); // 更新
+      }
+    });
+    // observerの監視対象を設定
+    observer.observe(chatBox, { childList: true, subtree: true });
+
+    // クリーンアップ
+    return () => {
+      observer.disconnect(); // コンポーネントがアンマウントされたときにobserverを解除
+    };
+  }, [ResponseData]);
+
 
   // テキストの文章を保持する変数
   const [TextData, setTextData] = useState(null);
@@ -147,7 +182,6 @@ const ChatView = () => {
         if (response.data !== "null") {
           console.log("チャットのレスポンスは"+JSON.stringify(response.data, null, 2));
           setResponseData(response.data);
-          console.log("ResponseDataは"+ResponseData);
         } else {
           console.log("まだチャットしてない");
           setResponseData([]);
@@ -213,7 +247,10 @@ const ChatView = () => {
           }}>
 
           {/* 企業名もしくはユーザーネームを表示(企業は企業名、学生はユーザーネーム) */}
-          <Tooltip title={(accountData.ChatOpenCompanyName ? accountData.ChatOpenCompanyName : accountData.ChatOpenUserName) + "さんのマイページ"}>
+          <Tooltip title={
+            (accountData.ChatOpenCompanyName ?
+             accountData.ChatOpenCompanyName :
+             accountData.ChatOpenUserName) + "さんのマイページ"}>
             <Link
               to={`/Profile/${accountData.ChatOpenUserName}`}
             >
@@ -245,7 +282,9 @@ const ChatView = () => {
       )}
 
       {/****** チャット内容 ******/}
-      <Box sx={{
+      <Box
+      ref={chatBoxscroll} // refを適用
+      sx={{
         height:'82%',
         maxHeight: 600,
         overflow: 'auto',
@@ -253,8 +292,40 @@ const ChatView = () => {
 
     {(ResponseData && ResponseData.length > 0) ? (ResponseData.map((element, index) => (
       // チャット履歴があるとき
+      // element.send_user_id(チャットの送信者のid)とMyUserId(自分のid)が一致すれば右側、そうでなければ左側
       <div key={index}>
-        {element.message}
+        <Box
+          display="flex"
+          justifyContent={element.send_user_id === MyUserId ? 'flex-end' : 'flex-start'}
+          mb={2}
+        >
+          <Paper
+            sx={{
+              padding: '10px',
+              margin:'5px 10px 0px 10px',
+              color: element.send_user_id === MyUserId ?'black':'black',
+              borderRadius: '10px',
+              maxWidth: '60%',
+              // 背景色
+              bgcolor: element.send_user_id === MyUserId ?'#dbdbff':'#dbdbdb',
+              // 背景色(ホバー時)
+              '&:hover': {
+                bgcolor: element.send_user_id === MyUserId ? 'rgba(199, 199, 255)':'rgba(199, 199, 199)',
+              },
+            }}
+          >
+            <Typography variant="body1">
+              {/* 改行に対応 */}
+              {element.message.split('\n').map((msg, idx) => (
+                <React.Fragment key={idx}>
+                  {msg}
+                  {idx < element.message.split('\n').length - 1 && <br />} {/* 最後の要素以外で改行 */}
+                </React.Fragment>
+              ))}
+            </Typography>
+          </Paper>
+        </Box>
+
       </div>
     ))):(
       // チャット履歴がまだないとき

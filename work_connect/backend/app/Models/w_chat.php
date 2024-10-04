@@ -37,7 +37,6 @@ class w_chat extends Model
     // テーブルにtimestampカラムがある場合はこのプロパティを定義
     protected $casts = [
         'send_datetime' => 'datetime',
-        'check_read' => 'boolean',
     ];
 }
 

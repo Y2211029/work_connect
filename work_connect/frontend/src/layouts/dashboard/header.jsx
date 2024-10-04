@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import $ from "jquery";
 
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -16,8 +15,6 @@ import MenuItem from "@mui/material/MenuItem";
 
 
 
-import StudentLoginModal from "src/components/account/students/StudentLoginModal";
-import CompanyLoginModal from "src/components/account/company/CompanyLoginModal";
 
 // import SignUp from "src/components/account/students/SignUp";
 // import SignUp1 from "src/components/account/students/SignUp1";
@@ -43,14 +40,21 @@ import { MyContext } from "src/layouts/dashboard/index";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 
-import StudentPreSignModal from "../../components/account/students/StudentPreSignModal";
-import CompanyPreSignModal from "../../components/account/company/CompanyPreSignModal";
-
+{/* TopPageList-view.jsxに移動しました。藤田2024/09/30 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓*/ }
+// import $ from "jquery";
+// import StudentLoginModal from "src/components/account/students/StudentLoginModal";
+// import CompanyLoginModal from "src/components/account/company/CompanyLoginModal";
+// import StudentPreSignModal from "../../components/account/students/StudentPreSignModal";
+// import CompanyPreSignModal from "../../components/account/company/CompanyPreSignModal";
+{/* TopPageList-view.jsxに移動しました。藤田2024/09/30 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑*/ }
 // ----------------------------------------------------------------------
 
 export default function Header({ onOpenNav }) {
-  const [ModalChange, setModalChange] = useState("");
-  const [PreModalChange, setPreModalChange] = useState("");
+
+  {/* TopPageList-view.jsxに移動しました。藤田2024/09/30 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓*/ }
+  // const [ModalChange, setModalChange] = useState("");
+  // const [PreModalChange, setPreModalChange] = useState("");
+  {/* TopPageList-view.jsxに移動しました。藤田2024/09/30 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑*/ }
   const Display = useContext(MyContext);
   const [open, setOpen] = useState(null);
 
@@ -78,7 +82,7 @@ export default function Header({ onOpenNav }) {
 
   useEffect(() => {
     if (accountData) {
-      if (accountData.user_name ) {
+      if (accountData.user_name) {
         setLoginState(true);
       }
     }
@@ -93,23 +97,26 @@ export default function Header({ onOpenNav }) {
     navigate("VideoPosting");
   };
 
-  const callSetModalChange = (newValue) => {
-    setModalChange(newValue);
-  };
-  const callSetPreModalChange = (newValue) => {
-    setPreModalChange(newValue);
-  };
+  //   {/* TopPageList-view.jsxに移動しました。藤田2024/09/30 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓*/ }
+  // const callSetModalChange = (newValue) => {
+  //   setModalChange(newValue);
+  // };
+  // const callSetPreModalChange = (newValue) => {
+  //   setPreModalChange(newValue);
+  // };
+  {/* TopPageList-view.jsxに移動しました。藤田2024/09/30 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑*/ }
 
-  const handleChange = (e) => {
-    if (e.target.id === "LoginButton") {
-      setModalChange("学生");
-      setPreModalChange("");
-    } else {
-      setModalChange("");
-      setPreModalChange("学生");
-    }
-  };
-
+  {/* TopPageList-view.jsxに移動しました。藤田2024/09/30 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓*/ }
+  // const handleChange = (e) => {
+  //   if (e.target.id === "LoginButton") {
+  //     setModalChange("学生");
+  //     setPreModalChange("");
+  //   } else {
+  //     setModalChange("");
+  //     setPreModalChange("学生");
+  //   }
+  // };
+  {/* TopPageList-view.jsxに移動しました。藤田2024/09/30 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑*/ }
   // const handleNewsJump = () => {
   //   navigate('/Editor');
   // }
@@ -152,37 +159,40 @@ export default function Header({ onOpenNav }) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  {/* TopPageList-view.jsxに移動しました。藤田2024/09/30 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓*/ }
+
   // ログインのform内以外をクリックしたときにモーダルを閉じる処理
-  $("*").click(function (e) {
-    // クリックした要素の<html>までのすべての親要素の中に"formInModal"クラスがついている要素を取得
-    var targetParants = $(e.target).parents(".formInModal");
+  // $("*").click(function (e) {
+  // クリックした要素の<html>までのすべての親要素の中に"formInModal"クラスがついている要素を取得
+  // var targetParants = $(e.target).parents(".formInModal");
 
-    // 取得した要素の個数が0個の場合
-    // ***if (targetParants.length == 0 || $(e.target).text() == "閉じる")***
-    // console.log($(e.target).text());
-    if (targetParants.length == 0 || $(e.target).text() == "閉じる") {
-      // クリックした要素に"formInModal"クラスがついていない場合
-      if (
-        $(e.target).attr("class") != "formInModal" &&
-        $(e.target).attr("id") != "LoginButton" &&
-        $(e.target).attr("id") != "loginCompanyModalLink" &&
-        $(e.target).attr("id") != "loginStudentModalLink"
-      ) {
-        // ログインモーダルを閉じる
-        setModalChange("");
-      }
+  // 取得した要素の個数が0個の場合
+  // ***if (targetParants.length == 0 || $(e.target).text() == "閉じる")***
+  // console.log($(e.target).text());
+  // if (targetParants.length == 0 || $(e.target).text() == "閉じる") {
+  // クリックした要素に"formInModal"クラスがついていない場合
+  // if (
+  //   $(e.target).attr("class") != "formInModal" &&
+  //   $(e.target).attr("id") != "LoginButton" &&
+  //   $(e.target).attr("id") != "loginCompanyModalLink" &&
+  //   $(e.target).attr("id") != "loginStudentModalLink"
+  // ) {
+  // ログインモーダルを閉じる
+  // setModalChange("");
+  // }
 
-      if (
-        $(e.target).attr("class") != "formInModal" &&
-        $(e.target).attr("id") != "PreSignButton" &&
-        $(e.target).attr("id") != "PreSignCompanyModalLink" &&
-        $(e.target).attr("id") != "PreSignStudentModalLink"
-      ) {
-        // 新規登録モーダルを閉じる
-        setPreModalChange("");
-      }
-    }
-  });
+  //     if (
+  //       $(e.target).attr("class") != "formInModal" &&
+  //       $(e.target).attr("id") != "PreSignButton" &&
+  //       $(e.target).attr("id") != "PreSignCompanyModalLink" &&
+  //       $(e.target).attr("id") != "PreSignStudentModalLink"
+  //     ) {
+  //       // 新規登録モーダルを閉じる
+  //       setPreModalChange("");
+  //     }
+  //   }
+  // });
+  {/* TopPageList-view.jsxに移動しました。藤田2024/09/30 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑*/ }
 
   const renderContent = (
     <>
@@ -193,8 +203,9 @@ export default function Header({ onOpenNav }) {
         </IconButton>
       )}
 
+
       {/* 検索バー */}
-      <Searchbar style={{ display: Display.MyPage }}/>
+      <Searchbar style={{ display: Display.MyPage }} />
 
       <Box sx={{ flexGrow: 1 }} />
       {/* ログイン、新規登録、本登録、チャット、通知、アカウントプロフィール */}
@@ -237,7 +248,7 @@ export default function Header({ onOpenNav }) {
                     sx={{ display: login_state ? 'block' : 'none' }}
                   >
                     {option.label}
-                    <Divider sx={{ borderStyle: 'dashed', display: 'block'}} />
+                    <Divider sx={{ borderStyle: 'dashed', display: 'block' }} />
                   </MenuItem>
                 ))}
 
@@ -246,7 +257,8 @@ export default function Header({ onOpenNav }) {
           </>
         ) : null}
 
-        <Button id="LoginButton" onClick={handleChange} style={{ display: Display.HomePage === "" ? "none" : "block" }}>
+        {/* TopPageList-view.jsxに移動しました。藤田2024/09/30 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓*/}
+        {/* <Button id="LoginButton" onClick={handleChange} style={{ display: Display.HomePage === "" ? "none" : "block" }}>
           ログイン
         </Button>
 
@@ -264,9 +276,9 @@ export default function Header({ onOpenNav }) {
           <StudentPreSignModal callSetPreModalChange={callSetPreModalChange} />
         ) : PreModalChange === "企業" ? (
           <CompanyPreSignModal callSetPreModalChange={callSetPreModalChange} />
-        ) : null}
+        ) : null} */}
+        {/* TopPageList-view.jsxに移動しました。藤田2024/09/30 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑*/}
 
-        {/* <SignUp /> */}
         <ChatPng />
         <NotificationsPopover />
         <AccountPopover />
@@ -291,7 +303,7 @@ export default function Header({ onOpenNav }) {
           transition: theme.transitions.create(["height"], {
             duration: theme.transitions.duration.shorter,
           }),
-          ...(lgUp && {
+          ...(lgUp && !Display.HomePage && {
             width: `calc(100% - ${NAV.WIDTH + 1}px)`,
             height: HEADER.H_DESKTOP,
           }),
@@ -312,7 +324,7 @@ export default function Header({ onOpenNav }) {
             width: "50px",
             height: "50px",
             position: "fixed",
-            top: "800px",
+            top: "873px",
             right: "20px",
             color: "black",
             borderRadius: "50%",

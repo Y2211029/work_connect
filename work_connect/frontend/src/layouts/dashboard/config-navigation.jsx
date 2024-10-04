@@ -3,7 +3,12 @@ import NewspaperOutlinedIcon from '@mui/icons-material/NewspaperOutlined';
 import VideoLibraryOutlinedIcon from '@mui/icons-material/VideoLibraryOutlined';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import SvgColor from 'src/components/svg-color';
+<<<<<<< HEAD
 
+=======
+// 動かない
+// import StickyNote2Icon from '@mui/icons-material/StickyNote2';
+>>>>>>> 3e05a3f47c99c2407bf18b0b5349560bedd0b918
 // ----------------------------------------------------------------------
 
 const icon = (name) => (

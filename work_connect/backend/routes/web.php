@@ -21,6 +21,8 @@ use App\Http\Controllers\ListController;
 use App\Http\Controllers\EditorController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\settings\SettingChangeEmailController;
+use App\Http\Controllers\settings\SettingCheckEmailController;
 use App\Http\Controllers\login\loginController;
 use App\Http\Controllers\login\LoginStatusCheckController;
 use App\Http\Controllers\register\pre_registerController;
@@ -36,6 +38,8 @@ use App\Http\Controllers\company\GetCompanyListController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\follow\FollowController;
 use App\Http\Controllers\chat\GetChannelListController;
+use App\Http\Controllers\chat\GetChatController;
+use App\Http\Controllers\chat\PostChatController;
 use App\Http\Controllers\tag\InsertTagController;
 use App\Http\Controllers\tag\GetGenreTagController;
 use App\Http\Controllers\tag\GetLanguageTagController;
@@ -66,6 +70,9 @@ use App\Http\Controllers\search\SearchInternshipJobOffer;
 use App\Http\Controllers\profile\GetMypageController;
 use App\Http\Controllers\profile\PostMypageController;
 use App\Http\Controllers\profile\GetMypageKindController;
+use App\Http\Controllers\notice\GetNoticeController;
+use App\Http\Controllers\notice\PostNoticeAlreadyReadController;
+use App\Http\Controllers\notice\PostNoticeDeleteController;
 
 
 // トップ画面
@@ -202,8 +209,17 @@ Route::post('/follow', [FollowController::class, 'FollowController']);
 
 // チャット相手取得
 Route::get('/get_channel_list', [GetChannelListController::class, 'GetChannelListController']);
+// チャット取得
+Route::get('/get_chat', [GetChatController::class, 'GetChatController']);
+// チャット送信
+Route::post('/post_chat', [PostChatController::class, 'PostChatController']);
 
-
+// 通知取得
+Route::get('/get_notice', [GetNoticeController::class, 'GetNoticeController']);
+// 未読通知を既読にする
+Route::post('/post_notice_already_read', [PostNoticeAlreadyReadController::class, 'PostNoticeAlreadyReadController']);
+// 通知を削除する
+Route::post('/post_notice_delete', [PostNoticeDeleteController::class, 'PostNoticeDeleteController']);
 
 Route::get('/user_name_check', [userNameCheckController::class, 'userNameCheckController']);
 
@@ -231,7 +247,7 @@ Route::get('/special_forms/{NewsId}', [NewsController::class, 'special_forms']);
 Route::get('/news_detail/{newsdetail_id}', [NewsController::class, 'news_detail_get']);
 Route::post('/news_bookmark', [NewsController::class, 'news_bookmark']);
 Route::get('/thumbnail_img_delete/{id}', [EditorController::class, 'thumbnail_img_delete']);
-Route::get( '/api/embed', action: [EditorController::class, 'embed']);
+Route::get('/api/embed', action: [EditorController::class, 'embed']);
 
 
 //応募用フォーム作成機能
@@ -243,6 +259,11 @@ Route::post('/wright_form_save', [FormController::class, 'wright_form_save']);
 //設定機能
 Route::get('/color_save', [SettingController::class, 'color_save']);
 
+//設定メールアドレス変更
+Route::post('/change_email', [SettingChangeEmailController::class, 'settingChangeEmail']);
+
+//設定メールアドレス変更確認
+Route::post('/check_email', [SettingCheckEmailController::class, 'settingCheckEmail']);
 
 // ミドルウェア
 Route::group(['middleware' => ['api', 'cors']], function () {

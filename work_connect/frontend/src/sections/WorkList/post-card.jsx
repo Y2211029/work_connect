@@ -163,7 +163,8 @@ const PostCard = forwardRef(({ post }, ref) => {
         opacity: 0.85,
         fontSize: "12px",
         color: "common.black",
-        margin: "0px"
+        margin: "0px",
+        overflowWrap: "anywhere",
       }}
     >
       {intro}

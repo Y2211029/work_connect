@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { faker } from "@faker-js/faker";
 
 import Stack from "@mui/material/Stack";
-// import Container from "@mui/material/Container";
+
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 
@@ -17,6 +17,7 @@ import { useIntersection } from "src/routes/hooks/use-intersection";
 import { UseCreateTagbutton } from "src/hooks/use-createTagbutton";
 
 import { useParams } from 'react-router-dom';
+
 
 
 const fetcher = (lastUrl) => fetch(lastUrl).then((res) => res.json());
@@ -165,7 +166,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName, NewsId }) {
           icon: work.icon,
           title: work.work_name,
           genre: work.work_genre,
-          intro: work.work_intro.length > 200 ? work.work_intro.substring(0, 200) + "..." : work.work_intro,
+          intro: work.work_intro.length > 200 ? work.work_intro.trim().substring(0, 200) + "..." : work.work_intro,
           author: {
             avatarUrl: `/assets/images/avatars/avatar_${work.icon}.jpg`,
           },

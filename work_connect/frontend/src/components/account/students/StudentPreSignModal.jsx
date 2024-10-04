@@ -29,6 +29,7 @@ const StudentPreSignModal = (props) => {
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [csrfToken, setCsrfToken] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const url = "http://localhost:8000/s_pre_register";
   const csrf_url = "http://localhost:8000/csrf-token";
@@ -63,6 +64,8 @@ const StudentPreSignModal = (props) => {
   }, []); // 空の依存配列を渡して、初回のみ実行するようにする
 
   const handleSubmit = async (e) => {
+    setIsSubmitting(true); // ボタンを無効化する
+    // 
     e.preventDefault();
 
     // フォームの送信処理
@@ -162,13 +165,13 @@ const StudentPreSignModal = (props) => {
                 margin="normal"
                 name="mail"
                 onChange={handleChange}
-                type= "text"
+                type="text"
                 value={formValues.mail}
                 variant="outlined"
               />
               <p className="errorMsg">{formErrors.mail}</p>
-              <button type="submit" className="submitButton">
-                仮登録
+              <button type="submit" className="submitButton" disabled={isSubmitting}>
+                {isSubmitting ? '送信中...' : '仮登録'}
               </button>
               {Object.keys(formErrors).length === 0 && isSubmit && handleCloseModal}
               <button onClick={handleCloseModal}>閉じる</button>

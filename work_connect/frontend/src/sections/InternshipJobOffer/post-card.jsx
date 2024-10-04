@@ -10,7 +10,6 @@ import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 
-import "src/App.css";
 
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";

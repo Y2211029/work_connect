@@ -3,7 +3,7 @@ import axios from "axios";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 
-import "../css/App.css";
+// import "../css/App.css";
 
 import * as React from 'react';
 import ListSubheader from '@mui/material/ListSubheader';
@@ -24,9 +24,6 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 
 export default function ChatPartnerList() {
 
-  // セッションデータが入る変数
-  const [ChatOpenId, setChatOpenId] = useState([]);
-
   const [GroupingOpen_1, setGroupingOpen_1] = React.useState(true);
   const [GroupingOpen_2, setGroupingOpen_2] = React.useState(true);
   const [GroupingOpen_3, setGroupingOpen_3] = React.useState(true);
@@ -38,7 +35,6 @@ export default function ChatPartnerList() {
   const [FollowStatusCount_1, setFollowStatusCount_1] = useState(null);
   const [FollowStatusCount_2, setFollowStatusCount_2] = useState(null);
   const [FollowStatusCount_3, setFollowStatusCount_3] = useState(null);
-
 
   const groupinghandleClick_1 = () => {
     setGroupingOpen_1(!GroupingOpen_1);
@@ -115,19 +111,11 @@ export default function ChatPartnerList() {
    // element.company_nameが存在するときのみ実行
    element.company_name && updateSessionData("accountData", "ChatOpenCompanyName", element.company_name);
    // element.iconが存在するときのみ実行
-   element.icon && updateSessionData("accountData", "ChatOpenIcon", element.icon);
+   element.icon ? updateSessionData("accountData", "ChatOpenIcon", element.icon) : updateSessionData("accountData", "ChatOpenIcon", "");
    // element.follow_statusが存在するときのみ実行
    element.follow_status && updateSessionData("accountData", "ChatOpenFollowStatus", element.follow_status);
 
   };
-
-  // accountDataが変化したとき
-  useEffect(() => {
-    if (accountData.ChatOpenId) {
-      setChatOpenId(accountData.ChatOpenId);
-    }
-
-  }, [accountData]);
 
   return (
     <List
@@ -185,16 +173,19 @@ export default function ChatPartnerList() {
           sx={{
             pl: 4,
             // 選択中なら色付け
-            background: element.id === ChatOpenId ? '#cce5ff' : 'initial',
+            background: element.id === accountData.ChatOpenId ? '#cce5ff' : 'initial',
+            '&:hover': {
+              background: element.id === accountData.ChatOpenId ? '#cce5ff' : '#eee',
+            },
           }}
           onClick={() => ChatOpen(element)}>
             {/* アイコン */}
             <ListItemIcon>
             <img src={element.icon ?
               `http://localhost:8000/storage/images/userIcon/${element.icon}` :
-              ''}
+              'assets/images/avatars/avatar_1.jpg'}
               alt={element.user_name}
-              style={{ width: '40px', height: '40px', borderRadius: '50%' }}
+              style={{ width: '40px', height: '40px', borderRadius: '50%', border: '3px solid #bbb'}}
               />
             </ListItemIcon>
             {/* ユーザー名 */}
@@ -235,16 +226,19 @@ export default function ChatPartnerList() {
           sx={{
             pl: 4,
             // 選択中なら色付け
-            background: element.id === ChatOpenId ? '#cce5ff' : 'initial',
+            background: element.id === accountData.ChatOpenId ? '#cce5ff' : 'initial',
+            '&:hover': {
+              background: element.id === accountData.ChatOpenId ? '#cce5ff' : '#eee',
+            },
           }}
           onClick={() => ChatOpen(element)}>
             {/* アイコン */}
             <ListItemIcon>
             <img src={element.icon ?
               `http://localhost:8000/storage/images/userIcon/${element.icon}` :
-              ''}
+              'assets/images/avatars/avatar_2.jpg'}
               alt={element.user_name}
-              style={{ width: '40px', height: '40px', borderRadius: '50%' }}
+              style={{ width: '40px', height: '40px', borderRadius: '50%', border: '3px solid #bbb'}}
               />
             </ListItemIcon>
             {/* ユーザー名 */}
@@ -285,16 +279,19 @@ export default function ChatPartnerList() {
           sx={{
             pl: 4,
             // 選択中なら色付け
-            background: element.id === ChatOpenId ? '#cce5ff' : 'initial',
+            background: element.id === accountData.ChatOpenId ? '#cce5ff' : 'initial',
+            '&:hover': {
+              background: element.id === accountData.ChatOpenId ? '#cce5ff' : '#eee',
+            },
           }}
           onClick={() => ChatOpen(element)}>
             {/* アイコン */}
             <ListItemIcon>
             <img src={element.icon ?
               `http://localhost:8000/storage/images/userIcon/${element.icon}` :
-              ''}
+              'assets/images/avatars/avatar_3.jpg'}
               alt={element.user_name}
-              style={{ width: '40px', height: '40px', borderRadius: '50%' }}
+              style={{ width: '40px', height: '40px', borderRadius: '50%', border: '3px solid #bbb'}}
               />
             </ListItemIcon>
             {/* ユーザー名 */}

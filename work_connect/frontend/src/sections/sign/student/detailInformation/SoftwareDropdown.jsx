@@ -1,23 +1,20 @@
 import { useState, useEffect } from "react";
 import Select from "react-select";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import GetTagAllList from "src/components/tag/GetTagAllList";
 
 const Software = () => {
   const [selectedSoftware, setSelectedSoftware] = useState([]);
   const { getSessionData, updateSessionData } = useSessionStorage();
+  const [options, setOptions] = useState([]);
+  const { GetTagAllListFunction } = GetTagAllList();
 
-  const options = [
-    { value: "Adobe Photoshop", label: "Adobe Photoshop" },
-    { value: "Adobe Illustrator", label: "Adobe Illustrator" },
-    { value: "Adobe XD", label: "Adobe XD" },
-    { value: "Adobe Dreamweaver", label: "Adobe Dreamweaver" },
-    { value: "Krita", label: "Krita" },
-    { value: "GIMP", label: "GIMP" },
-    { value: "Inkscape", label: "Inkscape" },
-    { value: "InVision Studio", label: "InVision Studio" },
-    { value: "Figma", label: "Figma" },
-    { value: "Adobe PremierePro", label: "Adobe PremierePro" },
-  ];
+  useEffect(() => {
+    let optionArrayPromise = GetTagAllListFunction("student_software");
+    optionArrayPromise.then((result) => {
+      setOptions(result);
+    });
+  }, []);
 
   // すでに趣味がsessionStrageに保存されていればその値をstateにセットして表示する。
   useEffect(() => {

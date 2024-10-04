@@ -52,11 +52,15 @@ const WorkPosting = () => {
   const [imageFiles, setImageFiles] = useState([]);
   const [message, setMessage] = useState("");
   const [imagesName, setImagesName] = useState("");
-
+  const [videoUrl, setVideoUrl] = useState("");
+  const [videoId, setVideoId] = useState("");
+  const [hasError, setHasError] = useState(false);
   const [Image, setImage] = useState();
 
   const coleSetImage = (e) => {
     setImage(e);
+    console.log("image: ", Image);
+    // handleImageChange(e);
   };
 
   useEffect(() => {
@@ -70,41 +74,143 @@ const WorkPosting = () => {
     });
   };
 
-  const handleImageChange = (images) => {
-    console.log(images);
-    setImagesName(images.map((item) => item.name).join(", "));
-    console.log(imagesName);
-    // images.forEach(image => {
-    //   console.log(`File name: ${image.name}, URL: ${image.image}`);
-    // });
-    // console.log("bbbb");
+  const handleImageChange = () => {
+    //   console.log("images: ", images);
+    //   if (images.length > 0) {
+    //     // Fileオブジェクトのプロパティをログに表示
+    //     for (let i = 0; i < images.length; i++) {
+    //         console.log(`File ${i} - Name: ${images[i].name}, Size: ${images[i].size}, Type: ${images[i].type}`);
+    //     }
+    // }
+    //   setImageFiles(images);
+    //   setImagesName(images.map((item) => item.name).join(", "));
 
-    setImageFiles(images);
-    console.log(imageFiles);
+    console.log("Image: ", Image);
+    // ImageがFileListか確認し、正しい場合のみ処理を続行
+    if (Image && (Image instanceof FileList || (Array.isArray(Image) && Image.length > 0 && Image[0] instanceof File)))
+    {
+      setImageFiles(Image); // ImageをimageFilesにセット
+      setImagesName(
+        Array.from(Image)
+          .map((item) => item.name)
+          .join(", ")
+      ); // ファイル名をセット
+    } else {
+      console.error("Invalid Image input: ", Image);
+    }
+  };
+
+  // useEffectでstateが更新された直後に処理を実行する
+  useEffect(() => {
+    console.log("imagesName updated: ", imagesName);
+  }, [imagesName]);
+
+  useEffect(() => {
+    console.log("imageFiles updated: ", imageFiles);
+    console.log(Array.isArray(imageFiles)); // trueなら配列です
+  }, [imageFiles]);
+
+  const handleChange = (event) => {
+    const url = event.target.value;
+    setVideoUrl(url);
+    setHasError(url === "");
+
+    // 入力が空の場合、videoIdをリセットしてYoutubeURLをクリア
+    if (url === "") {
+      setVideoId(""); // videoIdを空にリセット
+      callSetWorkData("YoutubeURL", ""); // YoutubeURLもリセット
+      return; // ここで処理を終了
+    }
+
+    let extractedVideoId = "";
+
+    // YouTubeの動画IDを抽出
+    // iframe入力時
+    if (url.includes("iframe")) {
+      const srcMatch = url.match(
+        /src="https:\/\/www\.youtube\.com\/embed\/([^"]+)?/
+      );
+      const srcMatch2 = srcMatch[1].match(/([^?]+)?/);
+
+      if (srcMatch && srcMatch2[1]) {
+        extractedVideoId = srcMatch2[1];
+      }
+    }
+    // URL入力時
+    else if (url.includes("youtube.com/watch?v=")) {
+      const urlObj = new URL(url);
+      const params = new URLSearchParams(urlObj.search);
+      extractedVideoId = params.get("v");
+    }
+    // 短縮URL入力時
+    else if (url.includes("youtu.be/")) {
+      const urlObj = new URL(url);
+      extractedVideoId = urlObj.pathname.substring(1);
+    }
+    // 動画ID入力時
+    else {
+      extractedVideoId = url;
+    }
+
+    if (extractedVideoId) {
+      setVideoId(extractedVideoId); // videoIdを設定
+      callSetWorkData("YoutubeURL", extractedVideoId); // 最新のvideoIdを反映
+    }
   };
 
   const WorkSubmit = async (e) => {
     e.preventDefault();
     console.log("e", e.target);
     async function PostData() {
-    const formData = new FormData();
-    console.log("Image: ", Image);
-    // imageFiles.forEach((file) => {
-    //   formData.append(`images[]`, file);
-    //   console.log(file);
-    // });
+      if (
+        !workData.WorkTitle ||
+        !workData.WorkGenre ||
+        !workData.Introduction ||
+        !workData.Obsession ||
+        !imageFiles.length // 画像がアップロードされているかを確認
+      ) {
+        alert("エラー：未入力項目があります。");
+        return;
+      }
+      const formData = new FormData();
+      // console.log("Image: ", Image);
+      // imageFiles.forEach((file) => {
+      //   formData.append(`images[]`, file);
+      //   console.log(file);
+      // });
 
-    // formDataに画像データを1個追加
-    // Imageに入っているデータの形がfileListのため、mapやforEachでループできない
-    for (let i = 0; i < Image.length; i++) {
-      formData.append("images[]", Image[i]);
-    }
+      // formDataに画像データを1個追加
+      // Imageに入っているデータの形がfileListのため、mapやforEachでループできない
+      // imageFilesが配列として扱える場合
+      for (let i = 0; i < imageFiles.length; i++) {
+        formData.append("images[]", Image[i]);
+      }
 
-    for (const key in workData) {
-      formData.append(key, workData[key]);
-    }
-    formData.append("imagesName", imagesName);
-    console.log("...formData.entries(): ", ...formData.entries());
+      // for (let i = 0; i < Image.length; i++) {
+      //   formData.append("images[]", Image[i]);
+      // }
+
+      for (const key in workData) {
+        formData.append(key, workData[key]);
+      }
+      // formData.append("imagesName", imagesName);
+      // formData.entries()の中身を確認
+      for (let pair of formData.entries()) {
+        // ファイル名が 'images[]' で、File オブジェクトの場合のみ詳細を表示
+        console.log(`${pair[0]}: `, pair[1]);
+
+        if (pair[1] instanceof File) {
+          // Fileオブジェクトの詳細を表示
+          console.log(
+            "File details - name:",
+            pair[1].name,
+            "size:",
+            pair[1].size,
+            "type:",
+            pair[1].type
+          );
+        }
+      }
 
       try {
         const response = await axios.post(
@@ -120,7 +226,13 @@ const WorkPosting = () => {
         navigation("/WorkSelect");
         setMessage(response.data.message);
       } catch (error) {
-        setMessage(error.message);
+        console.error(
+          "Error:",
+          error.response ? error.response.data : error.message
+        );
+        setMessage(
+          error.response ? error.response.data.message : error.message
+        );
       }
     }
 
@@ -148,9 +260,21 @@ const WorkPosting = () => {
             <div className="ImageUpload">
               <div className="Image">
                 <div className="WorkPostingFormField">
-                  <YoutubeURL callSetWorkData={callSetWorkData} />
+                  <YoutubeURL
+                    onChange={handleChange}
+                    value={videoUrl}
+                    error={hasError}
+                  />
                 </div>
-                <br />
+                {videoId ? (
+                  <p>
+                    <br />
+                  </p>
+                ) : (
+                  <p>
+                    YouTubeのURL、ID、またはiframeコードを入力してください。
+                  </p>
+                )}
                 <div className="WorkPostingImageFormField">
                   <ImageUpload
                     onImagesUploaded={handleImageChange}

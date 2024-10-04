@@ -29,7 +29,6 @@ export default function HorizontalLinearStepper({ Stepbar }) {
     user_name: false,
     password: false,
     passwordCheck: false,
-
     // 必須項目がすべて入力されている場合のみfalseになる
     required: false,
   });
@@ -111,19 +110,29 @@ export default function HorizontalLinearStepper({ Stepbar }) {
           // thenで成功した場合の処理
           .then((response) => {
             console.log("レスポンス:", response);
-            alert("新規登録が完了しました。");
 
-            // セキュリティ対策のため初期化
-            sessionStorage.removeItem("accountData");
+            if (response.data == "ユーザーネームが重複しています") {
+              setActiveStep(0);
+              setUserAccountCheck((prev) => ({
+                ...prev,
+                user_name: true,
+              })
+              )
+            } else {
+              alert("新規登録が完了しました。");
+              // セキュリティ対策のため初期化
+              sessionStorage.removeItem("accountData");
 
-            // データの保存(セッションストレージ)
-            updateSessionData("accountData", "id", response.data.id);
-            updateSessionData("accountData", "user_name", response.data.user_name);
-            updateSessionData("accountData", "mail", response.data.mail);
-            updateSessionData("accountData", "popover_icon", response.data.icon);
+              // データの保存(セッションストレージ)
+              updateSessionData("accountData", "id", response.data.id);
+              updateSessionData("accountData", "user_name", response.data.user_name);
+              updateSessionData("accountData", "mail", response.data.mail);
+              updateSessionData("accountData", "popover_icon", response.data.icon);
 
-            // ここで作品一覧ページに飛ばす処理 //////////////////////////
-            navigation("/");
+              // ここで作品一覧ページに飛ばす処理 //////////////////////////
+              navigation("/");
+            }
+
           })
           // catchでエラー時の挙動を定義
           .catch((err) => {

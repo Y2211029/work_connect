@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('w_chats', function (Blueprint $table) {
-            $table->string('chat_id', 16)->primary(); // chat_idを主キーとして設定
+            $table->id(); // 自動インクリメントのデフォルトのid
             $table->text('message'); // メッセージ
             $table->string('send_user_id', 16); // 送信者のユーザーID
             $table->string('get_user_id', 16); // 受信者のユーザーID

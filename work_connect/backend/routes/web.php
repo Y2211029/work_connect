@@ -73,6 +73,7 @@ use App\Http\Controllers\profile\GetMypageKindController;
 use App\Http\Controllers\notice\GetNoticeController;
 use App\Http\Controllers\notice\PostNoticeAlreadyReadController;
 use App\Http\Controllers\notice\PostNoticeDeleteController;
+use App\Http\Controllers\notice\PostSelectNoticeDeleteController;
 
 
 // トップ画面
@@ -218,8 +219,10 @@ Route::post('/post_chat', [PostChatController::class, 'PostChatController']);
 Route::get('/get_notice', [GetNoticeController::class, 'GetNoticeController']);
 // 未読通知を既読にする
 Route::post('/post_notice_already_read', [PostNoticeAlreadyReadController::class, 'PostNoticeAlreadyReadController']);
-// 通知を削除する
+// 一つの通知を削除する
 Route::post('/post_notice_delete', [PostNoticeDeleteController::class, 'PostNoticeDeleteController']);
+// 選択した通知を削除する
+Route::post('/post_select_notice_delete', [PostSelectNoticeDeleteController::class, 'PostSelectNoticeDeleteController']);
 
 Route::get('/user_name_check', [userNameCheckController::class, 'userNameCheckController']);
 

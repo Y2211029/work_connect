@@ -899,3 +899,9 @@ textarea {
   cursor: pointer;
   background-color: #ffcccc;
 }
+
+/* 通知選択ボタン */
+.noticeSelectButton:hover{
+  cursor:pointer;
+  background-color: #ffcccc;
+}

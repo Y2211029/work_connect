@@ -82,6 +82,19 @@ const ChatView = () => {
   // スクロールの高さが変わったときに、元のスクロールの高さを保持しておく
   const [prevScrollHeight, setPrevScrollHeight] = useState(0);
 
+  // テキストの文章を保持する変数
+  const [TextData, setTextData] = useState(null);
+
+  // const [PrevChatDate, setPrevChatDate] = useState(null);
+  // const [PrevChatDateCount, setPrevChatDateCount] = useState(false);
+
+  // ログイン中のid
+  const MyUserId = accountData.id;
+
+  // Laravelとの通信用URL
+  const chat_url = "http://localhost:8000/get_chat";
+  const chat_post_url = "http://localhost:8000/post_chat";
+
   // 1回のみ実行(1秒単位でデータを取得)
   useEffect(() => {
     // セッションストレージ取得
@@ -123,16 +136,6 @@ const ChatView = () => {
     };
   }, [ResponseData]);
 
-
-  // テキストの文章を保持する変数
-  const [TextData, setTextData] = useState(null);
-
-  // ログイン中のid
-  const MyUserId = accountData.id;
-
-  // Laravelとの通信用URL
-  const chat_url = "http://localhost:8000/get_chat";
-  const chat_post_url = "http://localhost:8000/post_chat";
 
   // チャットアイコンの設定
   const avatarSrc = accountData.ChatOpenIcon
@@ -225,13 +228,47 @@ const ChatView = () => {
     }
   };
 
+  // 送信時間から日にちを取り出す関数
+  const GetDay = (time) => {
+    //setPrevChatDateCount(true);
+    // 日付部分を切り取る
+    const dateString = time.slice(0, 10); // "2024-10-07" などを取得
+    //setPrevChatDate(dateString);
+    const [year, month, day] = dateString.split('-'); // 年、月、日を分割
+    console.log("テストですテストですテストですテストです"+year);
+    // 月と日を整数に変換し、形式を整える
+    const formattedDate = `${parseInt(month, 10)}月${parseInt(day, 10)}日`; // "10月7日"
+
+    // 曜日を取得
+    const date = new Date(`${dateString}T00:00:00+09:00`); // UTCからDateオブジェクトに変換
+    const options = { weekday: 'long' }; // 曜日のオプション
+    const dayOfWeek = date.toLocaleDateString('ja-JP', options); // 日本語の曜日を取得
+
+    return `${formattedDate} (${dayOfWeek})`; // "10月7日 (日曜日)" の形式で返す
+  };
+
+  // 送信時間から時:分だけを取り出す関数
+  const GetTime = (time) => {
+    // 文字列を切り取って時間と分を取得
+    const timeString = time.slice(11, 16); // "14:07" などを取得
+
+    // timeStringの最初の2文字を取得
+    let hour = timeString.slice(0, 2); // "14" の場合、"14" を取得
+
+    // 最初の文字が 0 の場合は切り取る
+    if (hour.startsWith('0')) {
+      hour = hour.slice(1); // "14" なら "4" になる
+    }
+
+    return `${hour}:${timeString.slice(3)}`; // 分はそのまま返す
+  };
 
 
   return (
     <div style={{
       width: '100%',
       height: 'auto',
-      maxHeight: 600,
+      maxHeight: 700,
       marginLeft: '2%',
       marginRight: '2%',
       border: '#DAE2ED 2px solid',
@@ -286,7 +323,7 @@ const ChatView = () => {
       ref={chatBoxscroll} // refを適用
       sx={{
         height:'82%',
-        maxHeight: 600,
+        maxHeight: 700,
         overflow: 'auto',
           }}>
 
@@ -294,15 +331,35 @@ const ChatView = () => {
       // チャット履歴があるとき
       // element.send_user_id(チャットの送信者のid)とMyUserId(自分のid)が一致すれば右側、そうでなければ左側
       <div key={index}>
+
+        <Typography
+          display="flex"
+          justifyContent="center"
+          variant="caption"
+          component="div"
+          sx={{ margin: '5px 10px 0 10px' }}
+        >
+          {GetDay(element.send_datetime)}
+        </Typography>
+
+        <Typography
+          display="flex"
+          justifyContent={element.send_user_id === MyUserId ? 'flex-end' : 'flex-start'}
+          variant="caption"
+          component="div"
+          sx={{margin:'5px 10px 0 10px',}}>
+          {GetTime(element.send_datetime)}
+        </Typography>
         <Box
           display="flex"
           justifyContent={element.send_user_id === MyUserId ? 'flex-end' : 'flex-start'}
           mb={2}
         >
+
           <Paper
             sx={{
               padding: '10px',
-              margin:'5px 10px 0px 10px',
+              margin:'0px 10px',
               color: element.send_user_id === MyUserId ?'black':'black',
               borderRadius: '10px',
               maxWidth: '60%',

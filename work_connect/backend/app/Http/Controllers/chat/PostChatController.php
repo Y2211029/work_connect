@@ -20,10 +20,8 @@ class PostChatController extends Controller
             $PairUserId = $request->input('PairUserId');
             $Message = $request->input('Message');
 
-
-            $check_read = false;
             // 現在の日時を取得
-            $sendDateTime = Carbon::now();
+            $sendDateTime = Carbon::now('Asia/Tokyo');
 
             w_chat::create([
                 'send_user_id' => $MyUserId,

@@ -47,6 +47,11 @@ class WorkPostingController extends Controller
             'development_environment' => $Environment,
             'thumbnail' => implode(',', $pathArray)
         ]);
+        foreach ($pathArray as $data) {
+            w_images::create([
+                'image' => $data, // 'column_name'は実際のカラム名に変更
+            ]);
+        }
 
 
         return response()->json(['message' => 'Work data saved successfully'], 200);

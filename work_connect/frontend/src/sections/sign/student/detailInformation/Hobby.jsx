@@ -1,27 +1,20 @@
 import { useState, useEffect } from "react";
 import Select from "react-select";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import GetTagAllList from "src/components/tag/GetTagAllList";
 
 const Hobby = () => {
   const [selectedDepartment, setSelectedHobby] = useState([]);
   const { getSessionData, updateSessionData } = useSessionStorage();
-  
-  const options = [
-    { value: "旅行", label: "旅行" },
-    { value: "読書", label: "読書" },
-    { value: "ドライブ", label: "ドライブ" },
-    { value: "映画鑑賞", label: "映画鑑賞" },
-    { value: "筋トレ", label: "筋トレ" },
-    { value: "カラオケ", label: "カラオケ" },
-    { value: "スポーツ観戦", label: "スポーツ観戦" },
-    { value: "ゲーム", label: "ゲーム" },
-    { value: "プログラミング", label: "プログラミング" },
-    { value: "DIY", label: "DIY" },
-    { value: "釣り", label: "釣り" },
-    { value: "料理", label: "料理" },
-    { value: "ツーリング", label: "ツーリング" },
-    { value: "音楽鑑賞", label: "音楽鑑賞" },
-  ];
+  const [options, setOptions] = useState([]);
+  const { GetTagAllListFunction } = GetTagAllList();
+
+  useEffect(() => {
+    let optionArrayPromise = GetTagAllListFunction("student_hobby");
+    optionArrayPromise.then((result) => {
+      setOptions(result);
+    });
+  }, []);
 
   // すでに趣味がsessionStrageに保存されていればその値をstateにセットして表示する。
   useEffect(() => {

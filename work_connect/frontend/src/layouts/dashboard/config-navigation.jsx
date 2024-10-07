@@ -3,6 +3,7 @@ import NewspaperOutlinedIcon from '@mui/icons-material/NewspaperOutlined';
 import VideoLibraryOutlinedIcon from '@mui/icons-material/VideoLibraryOutlined';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import SvgColor from 'src/components/svg-color';
+
 // 動かない
 // import StickyNote2Icon from '@mui/icons-material/StickyNote2';
 // ----------------------------------------------------------------------
@@ -34,29 +35,9 @@ const navConfig = [
   },
   {
     title: 'ニュース一覧',
-    path: '/Internship_JobOffer/joboffers',
+    path: '/Internship_JobOffer?page=joboffers',
     icon: <NewspaperOutlinedIcon />,
   },
-  {
-    title: '設定',
-    path: '/Settings',
-    icon: icon('ic_disabled'),
-  },
-  {
-    title: 'ニュースの投稿',
-    path: '/Editor',
-    icon: <NewspaperOutlinedIcon />,
-  },
-  {
-    title: 'テストページ何か試したいものはここで',
-    path: '/TestPage',
-    icon: <NewspaperOutlinedIcon />,
-  },
-  // {
-  //   title: 'Not found',
-  //   path: '/404',
-  //   icon: icon('ic_disabled'),
-  // },
 ];
 
 export default navConfig;

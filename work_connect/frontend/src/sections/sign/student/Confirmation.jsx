@@ -27,6 +27,8 @@ const displayContentsName = {
   school_name: "学校名",
   department_name: "学部",
   faculty_name: "学科",
+  major_name: "専攻",
+  course_name: "コース",
   desired_work_region: "希望勤務地",
   desired_occupation: "希望職種",
   development_environment: "開発環境",
@@ -92,7 +94,9 @@ const SessionDataList = ({ sessionData }) => {
               label === "ユーザーネーム" ||
               label === "学校名"||
               label === "学部"||
-              label === "学科") {
+              label === "学科" ||
+              label === "専攻"||
+              label === "コース") {
                 // テキストに普通に表示
               itemContentValues = (
                 <TextField

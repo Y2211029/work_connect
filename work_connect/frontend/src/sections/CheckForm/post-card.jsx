@@ -1,4 +1,4 @@
-import { useEffect, forwardRef } from "react";
+import { useEffect, forwardRef, useState } from "react";
 import PropTypes from "prop-types";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import { Model } from 'survey-core';
@@ -9,10 +9,12 @@ import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import { Link } from "react-router-dom";
 import Box from "@mui/material/Box";
+import Tooltip from '@mui/material/Tooltip';
+import Stack from "@mui/material/Stack";
 
 // ----------------------------------------------------------------------
 
-const PostCard = forwardRef(({ post }, ref) => {
+const PostCard = forwardRef(({ post },) => {
   const { company_id, wright_form, news_id, article_title, answerer_name, icon_id } = post;
 
   const { getSessionData } = useSessionStorage();
@@ -20,6 +22,8 @@ const PostCard = forwardRef(({ post }, ref) => {
   const data = {
     account_id: accountData.id,
   };
+
+  const [showForm, setShowForm] = useState(false); // 修正: useStateを正しく宣言
 
   useEffect(() => {
     console.log("company_id", company_id);
@@ -29,21 +33,17 @@ const PostCard = forwardRef(({ post }, ref) => {
   }, [company_id, wright_form, data.account_id]);
 
   useEffect(() => {
-    // 完了ボタンを非表示にする
-    const css = `
-      .sv-action__content .sd-btn--action.sd-navigation__complete-btn {
+    const css =
+      `.sv-action__content .sd-btn--action.sd-navigation__complete-btn {
         display: none;
-      }
-    `;
+      }`;
     const styleSheet = document.createElement("style");
     styleSheet.type = "text/css";
     styleSheet.innerText = css;
     document.head.appendChild(styleSheet);
   }, []);
 
-  // フォームフィールドをSurveyの形式に変換する
   const transformFormFields = (fields) => {
-    // fieldsが存在するかチェック
     if (!fields || !Array.isArray(fields)) {
       console.error("フォームフィールドがありません。fields:", fields);
       return {
@@ -53,7 +53,6 @@ const PostCard = forwardRef(({ post }, ref) => {
     }
 
     return {
-      title: "アンケートaaタイトル",
       pages: [
         {
           name: "page1",
@@ -61,88 +60,68 @@ const PostCard = forwardRef(({ post }, ref) => {
             type: field.type,
             name: field.name,
             title: field.title,
-            ...(field.inputType && { 
+            ...(field.inputType && {
               inputType: field.inputType
-            }), 
-            ...(field.validators && { validators: field.validators }), 
+            }),
+            ...(field.validators && { validators: field.validators }),
             ...(field.response && { defaultValue: field.response }),
-            readOnly: true  // ここで読み取り専用を設定
+            readOnly: true
           })),
         }
       ]
     };
   };
 
-  // フォームフィールドデータをSurvey形式に変換
   const surveyData = transformFormFields(wright_form);
-
-  // Survey モデルの生成
   const survey = new Model(surveyData);
   console.log(survey);
 
-  // タイトル
   const renderTitle = (
-    <Typography
-      style={{
-        color: "common.black",
-        height: 30,
-        fontWeight: "Bold",
-        padding: "5px",
-      }}
-    >
-      {article_title}のフォーム一覧
-    </Typography>
+    <Tooltip title={article_title} arrow>
+      <Typography
+        className="article-title"
+        onClick={() => setShowForm(true)}
+      >
+        {article_title}
+      </Typography>
+    </Tooltip>
   );
 
-  // 回答者
-  const renderAnswererName = (
-    <Typography
-      style={{
-        color: "common.black",
-        height: 30,
-        fontWeight: "Bold",
-        padding: "5px",
-      }}
-    >
-      {answerer_name}さん
-    </Typography>
-  );
-
-  // 回答者アイコン
-  const renderAvatar = (
-    <Avatar
-      alt={answerer_name}
-      src={icon_id}
-      sx={{
-        zIndex: 9,
-        width: 30,
-        height: 30,
-      }}
-    />
-  );
-
-  // 回答者のプロフィール誘導
   const renderAnswererProfile = (
-    <Link
-      to={`/Profile/${answerer_name}`}
-    >
-      {answerer_name}さんのプロフィール
-    </Link>
+    <div className="answerer-profile">
+      <div className="profile-header">
+        <Link to={`/Profile/${answerer_name}`} className="profile-link">
+          <Typography className="answerer-name">
+            {answerer_name}さん
+          </Typography>
+        </Link>
+        <Avatar
+          alt={answerer_name}
+          src={icon_id}
+          className="answerer-avatar"
+        />
+      </div>
+      <Box className="survey-box">
+        <Survey model={survey} className="survey" />
+      </Box>
+    </div>
   );
 
-  // フォーム
-  const renderSurvey = (
-    <Survey model={survey} />
-  );
 
   return (
-    <Box ref={ref} display="flex" flexDirection="column" gap={5}>
-      {renderTitle}
-      {renderAnswererName}
-      {renderAvatar}
-      {renderAnswererProfile}
-      {renderSurvey}
-    </Box>
+    <Stack
+      direction="row"
+      justifyContent="center"
+      alignItems="flex-start"
+    >
+      <Box className="title-box">
+        {renderTitle}
+      </Box>
+
+      <Stack display={showForm ? "block" : "none"} className="form-stack" direction="column" alignItems="flex-start">
+        {renderAnswererProfile}
+      </Stack>
+    </Stack>
   );
 });
 
@@ -162,7 +141,7 @@ PostCard.propTypes = {
       type: PropTypes.string.isRequired,
       inputtype: PropTypes.string,
       validators: PropTypes.array,
-    })).isRequired, // JSON 配列として修正
+    })).isRequired,
   }).isRequired,
 };
 

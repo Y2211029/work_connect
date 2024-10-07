@@ -8,10 +8,13 @@ import Button from '@mui/material/Button';
 import './writeform.css';
 import axios from 'axios';
 
+import Stack from "@mui/material/Stack";
+
+
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef(({ post }, ref) => {
-  const { company_id, create_form,news_id } = post;
+  const { company_id, create_form, news_id, article_title } = post;
 
   const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData");
@@ -41,19 +44,20 @@ const PostCard = forwardRef(({ post }, ref) => {
     document.head.appendChild(styleSheet);
   }, []);
 
+
   // フォームフィールドをSurveyの形式に変換する
   const transformFormFields = (fields) => {
     // fieldsが存在するかチェック
     if (!fields || !Array.isArray(fields)) {
       console.error("フォームフィールドがありません。fields:", fields);
       return {
-        title: "アンケートタイトル",
+        title: {article_title},
         pages: [],
       };
     }
 
     return {
-      title: "アンケートタイトル",
+      title: article_title,
       pages: [
         {
           name: "page1",
@@ -110,12 +114,12 @@ const PostCard = forwardRef(({ post }, ref) => {
         NewsId: news_id,
         MyId: data.account_id,
       })
-      .then(response => {
-        console.log('保存成功', response);
-      })
-      .catch(error => {
-        console.error('保存エラー', error);
-      });
+        .then(response => {
+          console.log('保存成功', response);
+        })
+        .catch(error => {
+          console.error('保存エラー', error);
+        });
     } else {
       console.log("フォームにエラーがあります。修正してください。");
 
@@ -135,12 +139,16 @@ const PostCard = forwardRef(({ post }, ref) => {
 
   return (
     <div ref={ref}>
-      <Survey model={survey} />
+      <Stack sx={{ display: "inline-block"}}>
+        <div className="WriteForm">
+        <Survey model={survey} />
 
-      <Button variant="outlined" onClick={WriteFormSave}
-        sx={{ width: "40px", borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
-        保存する
-      </Button>
+        <Button variant="outlined" onClick={WriteFormSave}
+          sx={{ width: "40px", borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
+          保存する
+        </Button>
+        </div>
+      </Stack>
     </div>
   );
 });
@@ -152,6 +160,7 @@ PostCard.propTypes = {
   post: PropTypes.shape({
     company_id: PropTypes.string,
     news_id: PropTypes.string,
+    article_title: PropTypes.string,
     create_form: PropTypes.arrayOf(PropTypes.shape({
       name: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,

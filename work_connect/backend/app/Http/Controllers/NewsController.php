@@ -313,6 +313,8 @@ class NewsController extends Controller
         }
 
         $special_company_news_id = $company->id; // IDを取得
+        Log::info($special_company_news_id);
+        Log::info($Genre);
 
         // ニュースの取得
         $newsQuery = w_news::where('company_id', $special_company_news_id)

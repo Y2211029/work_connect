@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class WChat extends Model
+class w_chat extends Model
 {
     use HasFactory;
 
@@ -13,17 +13,17 @@ class WChat extends Model
     protected $table = 'w_chats';
 
     // 主キーのカラム名を指定（省略可能、Laravelは"id"を自動使用する）
-    protected $primaryKey = 'chat_id';
+    // protected $primaryKey = 'chat_id';
 
     // 主キーが自動増分ではない場合は、$incrementingをfalseに設定
-    public $incrementing = false;
+    //public $incrementing = false;
 
     // 主キーの型を指定（文字列の場合は'string'）
     protected $keyType = 'string';
 
     // マスアサインメント可能な属性
     protected $fillable = [
-        'chat_id',
+        'id',
         'message',
         'send_user_id',
         'get_user_id',
@@ -37,7 +37,6 @@ class WChat extends Model
     // テーブルにtimestampカラムがある場合はこのプロパティを定義
     protected $casts = [
         'send_datetime' => 'datetime',
-        'check_read' => 'boolean',
     ];
 }
 

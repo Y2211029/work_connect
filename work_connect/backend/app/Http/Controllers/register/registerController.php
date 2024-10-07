@@ -74,6 +74,14 @@ class registerController extends Controller
 
             /* 学生アカウントのID生成 */
             try {
+                // ユーザー名重複チェック
+
+                $userNameDuplicateCheck = w_users::where('user_name', $user_name)->exists();
+                // idが存在しなかった場合にフラグをtrueにする
+                if($userNameDuplicateCheck) {
+                    return json_encode("ユーザーネームが重複しています。");
+                } 
+
                 // フラグをセット
                 $flg = false;
 

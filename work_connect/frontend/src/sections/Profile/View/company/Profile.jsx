@@ -1,10 +1,13 @@
-import * as React from 'react';
+import { useState, useEffect,useContext } from 'react';
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import ProfileMypage from './Mypage';
 import ProfileNews from './News';
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import { AllItemsContext } from "src/layouts/dashboard/index";
+
 
 // 同一ページ内リンク用のナビゲーション制御
 function samePageLinkNavigation(event) {
@@ -31,7 +34,7 @@ function LinkTab(props) {
           event.preventDefault(); // ナビゲーションを防止
         }
       }}
-      aria-current={props.selected && 'page'}
+      aria-current={props.selected ? 'page' : undefined}
       {...props}
     />
   );
@@ -54,27 +57,68 @@ export default Profile;
 
 // NavTabs コンポーネント
 export function NavTabs({ initialTabValue = 0 }) {
-  const [value, setValue] = React.useState(initialTabValue); // 初期値をプロパティから設定
+  const { getSessionData, updateSessionData } = useSessionStorage();
+  const [ProfileTabState, setProfileTabState] = useState(getInitialProfileTabState);
+  const { setAllItems } = useContext(AllItemsContext);
+  const [value, setValue] = useState(initialTabValue);
 
-  const handleChange = (event, newValue) => {
+  useEffect(() => {
+    updateSessionData("accountData", "ProfileTabState", ProfileTabState);
+  }, [ProfileTabState]);
+
+  function getInitialProfileTabState() {
+    const accountData = getSessionData("accountData");
+    return accountData.ProfileTabState || 0; // 初期値を設定
+  }
+
+  useEffect(() => {
+    setValue(0);
+  }, []);
+
+  const handleTabClick = (event, newValue) => {
+
+    // event.type can be equal to focus with selectionFollowsFocus.
     if (
       event.type !== 'click' ||
       (event.type === 'click' && samePageLinkNavigation(event))
     ) {
-      setValue(newValue); // タブの変更を処理
+      setValue(newValue);
     }
+    if (newValue === 0) {
+      // マイページが押されたとき
+      setProfileTabState(0);
+      pageCheck('mypage');
+      // 検索アイコン非表示にする
+    } else if (newValue === 1) {
+      // 作品が押されたとき
+      setProfileTabState(1);
+      pageCheck('news&category=joboffers');
+    }
+    setAllItems((prevItems) => ({
+      ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
+      ResetItem: true,
+      DataList: [], //検索してない状態にするために初期化 //searchbar.jsxのsearchSourceも初期化
+      IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
+      Page: 1, //スクロールする前の状態にするために初期化
+      sortOption: "orderNewPostsDate", //並び替える前の状態にするために初期化
+    }));
   };
+
+  function pageCheck(pageStr) {
+    const url = new URL(window.location.href);
+    const urlStr = url.pathname.split('?')[0]; // クエリパラメータを取り除く
+    window.history.pushState({}, '', `${urlStr}?page=${pageStr}`);
+  }
 
   return (
     <Box sx={{ width: '100%' }}>
       <Tabs
         value={value}
-        onChange={handleChange}
         aria-label="nav tabs example"
         role="navigation"
       >
-        <LinkTab label="マイページ" href="/mypage" />
-        <LinkTab label="ニュース" href="/news" />
+        <Tab label="マイページ" onClick={(e) => handleTabClick(e, 0)} />
+        <Tab label="ニュース" onClick={(e) => handleTabClick(e, 1)} />
       </Tabs>
       {value === 0 && <ProfileMypage />} {/* value が 0 の場合マイページ */}
       {value === 1 && <ProfileNews />}   {/* value が 1 の場合ニュース */}
@@ -87,5 +131,5 @@ NavTabs.propTypes = {
 };
 
 Profile.propTypes = {
-  value:PropTypes.number,
-}
+  value: PropTypes.number,
+};

@@ -16,7 +16,7 @@ import Radio from "./SelectOptionMenu/Radio";
 import FormDesign from "./SelectOptionMenu/FormDesign";
 import DropDown from "./SelectOptionMenu/DropDown";
 import CheckBox from "./SelectOptionMenu/CheckBox";
-
+import Boolean from "./SelectOptionMenu/Boolean";
 
 
 // MUI
@@ -31,6 +31,7 @@ import RadioIcon from '@mui/icons-material/Radio';
 import ArrowDropDownCircleIcon from '@mui/icons-material/ArrowDropDownCircle';
 import BrushIcon from '@mui/icons-material/Brush';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import FlakyIcon from '@mui/icons-material/Flaky';
 
 // データ保存
 import axios from "axios";
@@ -94,6 +95,8 @@ export default function CreateForm() {
           return "number";
         case "CheckBox":
           return "checkbox";
+        case "Boolean":
+            return "boolean";
         default:
           return "text";
       }
@@ -308,6 +311,7 @@ export default function CreateForm() {
               {selectmenu === "FormDesign" && <FormDesign onSave={handleSaveSettings} />}
               {selectmenu === "DropDown" && <DropDown onSave={handleSaveSettings} />}
               {selectmenu === "CheckBox" && <CheckBox onSave={handleSaveSettings} />}
+              {selectmenu === "Boolean" && <Boolean onSave={handleSaveSettings} />}
             </Stack>
           </div>
         )}
@@ -322,7 +326,7 @@ export default function CreateForm() {
       direction="row"
       border="solid"
       alignItems="center"
-      style={{ maxWidth: "250px", overflow: "hidden", marginBottom: "5px"}} 
+      style={{ maxWidth: "300px", overflow: "hidden", marginBottom: "5px"}} 
       >      
       <TranslateIcon onClick={() => addQuestion("text")} style={{ cursor: 'pointer' }} />
       <Typography onClick={() => addQuestion("text")}
@@ -346,7 +350,7 @@ export default function CreateForm() {
       border="solid"
       borderCollapse="collapse"
       alignItems="center"
-      style={{ maxWidth: "250px", overflow: "hidden", marginBottom: "5px"}} 
+      style={{ maxWidth: "300px", overflow: "hidden", marginBottom: "5px"}} 
       >      
       <WatchLaterIcon onClick={() => addQuestion("Date")} style={{ cursor: 'pointer' }} />
       <Typography onClick={() => addQuestion("Date")}
@@ -370,7 +374,7 @@ export default function CreateForm() {
       border="solid"
       borderCollapse="collapse"
       alignItems="center"
-      style={{ maxWidth: "250px", overflow: "hidden", marginBottom: "5px" }} 
+      style={{ maxWidth: "300px", overflow: "hidden", marginBottom: "5px" }} 
       >      
       <MoneyIcon onClick={() => addQuestion("Number")} style={{ cursor: 'pointer' }} />
       <Typography onClick={() => addQuestion("Number")}
@@ -394,7 +398,7 @@ export default function CreateForm() {
       border="solid"
       borderCollapse="collapse"
       alignItems="center"
-      style={{ maxWidth: "250px", overflow: "hidden", marginBottom: "5px" }} 
+      style={{ maxWidth: "300px", overflow: "hidden", marginBottom: "5px" }} 
       >      
       <RadioIcon onClick={() => addQuestion("Radio")} style={{ cursor: 'pointer' }} />
       <Typography onClick={() => addQuestion("Radio")}
@@ -418,7 +422,7 @@ export default function CreateForm() {
       border="solid"
       borderCollapse="collapse"
       alignItems="center"
-      style={{ maxWidth: "250px", overflow: "hidden", marginBottom: "5px" }} 
+      style={{ maxWidth: "300px", overflow: "hidden", marginBottom: "5px" }} 
       >      
       <ArrowDropDownCircleIcon onClick={() => addQuestion("DropDown")} style={{ cursor: 'pointer' }} />
       <Typography onClick={() => addQuestion("DropDown")}
@@ -442,7 +446,7 @@ export default function CreateForm() {
       border="solid"
       borderCollapse="collapse"
       alignItems="center"
-      style={{ maxWidth: "250px", overflow: "hidden", marginBottom: "5px" }} 
+      style={{ maxWidth: "300px", overflow: "hidden", marginBottom: "5px" }} 
       >      
       <CheckBoxIcon onClick={() => addQuestion("CheckBox")} style={{ cursor: 'pointer' }} />
       <Typography onClick={() => addQuestion("CheckBox")}
@@ -466,7 +470,31 @@ export default function CreateForm() {
       border="solid"
       borderCollapse="collapse"
       alignItems="center"
-      style={{ maxWidth: "250px", overflow: "hidden", marginBottom: "5px" }} 
+      style={{ maxWidth: "300px", overflow: "hidden", marginBottom: "5px" }} 
+      >      
+      <FlakyIcon onClick={() => addQuestion("Boolean")} style={{ cursor: 'pointer' }} />
+      <Typography onClick={() => addQuestion("Boolean")}
+        component="span"
+        style={{
+          cursor: 'pointer',
+          marginLeft: 8,
+          borderWidth: "2px",
+          flexShrink: 0, // テキストが縮小しないようにする
+          whiteSpace: "nowrap", // テキストを折り返さずに表示
+          overflow: "hidden", // 溢れたテキストを隠す
+          textOverflow: "ellipsis" // 溢れたテキストに省略記号を表示
+        }}
+      >
+      クローズドクエスチョンを追加      
+      </Typography>
+    </Stack> 
+
+    <Stack
+      direction="row"
+      border="solid"
+      borderCollapse="collapse"
+      alignItems="center"
+      style={{ maxWidth: "300px", overflow: "hidden", marginBottom: "5px" }} 
       >      
       <BrushIcon onClick={() => addQuestion("FormDesign")} style={{ cursor: 'pointer' }} />
       <Typography onClick={() => addQuestion("FormDesign")}

@@ -13,7 +13,7 @@ const Environment = () => {
   const { GetTagAllListFunction } = GetTagAllList();
 
   useEffect(() => {
-    let optionArrayPromise = GetTagAllListFunction("development_environment");
+    let optionArrayPromise = GetTagAllListFunction("student_development_environment");
     optionArrayPromise.then((result) => {
       setOptions(result);
     });

@@ -246,8 +246,7 @@ export default function NotificationsPopover() {
     // console.log("DeleteNotice: ", DeleteNotice);
 
     // console.log("notifications: ", notifications);
-    var test = [];
-    test = notifications.filter((value) => {
+    notifications.filter((value) => {
       return value.isUnRead == true && !DeleteNotice.includes(value.id);
     });
     // console.log("test: ", test);
@@ -278,7 +277,7 @@ export default function NotificationsPopover() {
   };
 
   // 選択状態の通知を削除する
-  const deleteSelectNotice = async (e) => {
+  const deleteSelectNotice = async () => {
     // console.log("delete!! ", e.target.dataset.notice);
     noticeDeleteFlg = false;
     try {
@@ -321,16 +320,12 @@ export default function NotificationsPopover() {
 
   // 1つの通知をクリックしたときにその通知を選択状態にする
   const clickOneNotice = (e) => {
-    const clickElement = e.target;
     // console.log("clickOneNotice!!!!", clickElement);
     if (!e.target.classList.contains("deleteSingleNoticeButton")) {
       // console.log("通知をクリックしました");
       if (NoticeSelectMode) {
         const haveNoticeIdElement = e.target.closest("[data-notice_id]");
         if (haveNoticeIdElement != null) {
-          const selectNotice = document.querySelector(
-            `[data-notice_check_box="${haveNoticeIdElement.dataset.notice_id}"]`
-          );
           const noticeId = haveNoticeIdElement.dataset.notice_id;
           // console.log("e.target.dataset.notice_id: ", noticeId);
           // console.log("selectNotice: ", selectNotice);

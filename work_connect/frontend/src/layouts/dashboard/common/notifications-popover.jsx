@@ -172,7 +172,7 @@ export default function NotificationsPopover() {
               value.student_surname +
               "さんと相互フォローになりました";
           } else if (value.send_user_id[0] == "C") {
-            description = value.abc + "と相互フォローになりました";
+            description = value.company_name + "と相互フォローになりました";
           }
         } else if (value.detail == "") {
           if (value.send_user_id[0] == "S") {
@@ -181,7 +181,7 @@ export default function NotificationsPopover() {
               value.student_surname +
               "さんにフォローされました";
           } else if (value.send_user_id[0] == "C") {
-            description = value.abc + "にフォローされました";
+            description = value.company_name + "にフォローされました";
           }
         }
       }

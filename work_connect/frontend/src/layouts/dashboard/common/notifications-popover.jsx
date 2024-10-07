@@ -28,69 +28,18 @@ import Scrollbar from "../../../components/scrollbar/scrollbar";
 import axios from "axios";
 
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import { useNavigate } from "react-router-dom";
 
 // ----------------------------------------------------------------------
 
 var noticeDeleteFlg = true;
 
 export default function NotificationsPopover() {
+  // 通知をクリックしたときに適したページに飛ばす用
+  const navigate = useNavigate();
+
   // laravelから取得した通知を入れる用
-  const [NOTIFICATIONS, setNOTIFICATIONS] = useState([
-    // {
-    //   id: faker.string.uuid(),
-    //   title: "Your order is placed",
-    //   description: "waiting for shipping",
-    //   avatar: null,
-    //   type: "order_placed",
-    //   createdAt: set(new Date(), { hours: 10, minutes: 30 }),
-    //   isUnRead: true,
-    // },
-    // {
-    //   id: faker.string.uuid(),
-    //   title: "aaaaaaaaaaaaaaa",
-    //   description: "bbbbbbbbbbb",
-    //   avatar: null,
-    //   type: "order_placed",
-    //   createdAt: set(new Date(), { hours: 10, minutes: 30 }),
-    //   isUnRead: true,
-    // },
-    // {
-    //   id: faker.string.uuid(),
-    //   title: faker.person.fullName(),
-    //   description: "answered to your comment on the Minimal",
-    //   avatar: "/assets/images/avatars/avatar_2.jpg",
-    //   type: "friend_interactive",
-    //   createdAt: sub(new Date(), { hours: 3, minutes: 30 }),
-    //   isUnRead: true,
-    // },
-    // {
-    //   id: faker.string.uuid(),
-    //   title: "You have new message",
-    //   description: "5 unread messages",
-    //   avatar: null,
-    //   type: "chat_message",
-    //   createdAt: sub(new Date(), { days: 1, hours: 3, minutes: 30 }),
-    //   isUnRead: false,
-    // },
-    // {
-    //   id: faker.string.uuid(),
-    //   title: "You have new mail",
-    //   description: "sent from Guido Padberg",
-    //   avatar: null,
-    //   type: "mail",
-    //   createdAt: sub(new Date(), { days: 2, hours: 3, minutes: 30 }),
-    //   isUnRead: false,
-    // },
-    // {
-    //   id: faker.string.uuid(),
-    //   title: "Delivery processing",
-    //   description: "Your order is being shipped",
-    //   avatar: null,
-    //   type: "order_shipped",
-    //   createdAt: sub(new Date(), { days: 3, hours: 3, minutes: 30 }),
-    //   isUnRead: false,
-    // },
-  ]);
+  const [NOTIFICATIONS, setNOTIFICATIONS] = useState([]);
 
   // セッションからログインしているアカウントのデータ取得
   const { getSessionData } = useSessionStorage();
@@ -100,6 +49,9 @@ export default function NotificationsPopover() {
   const [notifications, setNotifications] = useState(NOTIFICATIONS);
 
   const Display = useContext(MyContext);
+
+  // 通知選択可能状態を管理する用
+  const [NoticeSelectMode, setNoticeSelectMode] = useState(false);
 
   // 未読の件数を取得
   const totalUnRead = notifications.filter(
@@ -138,7 +90,7 @@ export default function NotificationsPopover() {
 
   // 未読の通知をすべて既読状態にする
   const handleMarkAllAsRead = () => {
-    console.log("handleMarkAllAsRead!!!");
+    // console.log("handleMarkAllAsRead!!!");
 
     setNotifications(
       notifications.map((notification) => ({
@@ -177,67 +129,15 @@ export default function NotificationsPopover() {
 
       noticeData = response.data.filter((value) => {
         return !DeleteNotice.includes(value.id);
-      })
+      });
 
-      console.log("!DeleteNotice.includes(value.id):noticeData: ", noticeData);
+      // console.log("!DeleteNotice.includes(value.id):noticeData: ", noticeData);
 
       if (noticeDeleteFlg) {
         setNoticeArray(noticeData);
       } else {
         noticeDeleteFlg = true;
       }
-
-      // var noticeIdArray = [];
-
-      // response.data.map((value) => {
-      //   // console.log('response.data.map!!!', value.id);
-      //   noticeIdArray.push(value.id);
-      // });
-      // // console.log('noticeIdArray: ', noticeIdArray);
-
-      // const arrayComparison = (expense1, expense2) => {
-      //   const duplication = expense1.filter((cost1) =>
-      //     expense2.find((cost2) => cost2.name === cost1.name)
-      //   );
-
-      //   const duplicationName = duplication.map((cost) => {
-      //     return cost.name;
-      //   });
-
-      //   const expenseDiff = expense1.filter((cost) => {
-      //     return !duplicationName.includes(cost.name);
-      //   });
-
-      //   return expenseDiff;
-      // };
-
-      // if (noticeIdArray.toString() !== NoticeId.toString()) {
-      //   console.log("if (noticeIdArray.toString() !== NoticeId.toString())");
-      //   // console.log("noticeIdArray.toString(): ", noticeIdArray.toString());
-
-      //   // console.log('NoticeIdNoticeIdNoticeId');
-      //   // console.log('noticeIdArray: ', noticeIdArray);
-      //   console.log('NoticeId: ', NoticeId);
-      //   var newNoticeId = arrayComparison(noticeIdArray, NoticeId);
-      //   console.log('newNoticeId: ', newNoticeId);
-      //   // newNoticeId.map((value) => {
-      //   //   // console.log('newNoticeId.map((value): ', value);
-      //   //   setNoticeId((prevNoticeId) => [...prevNoticeId, value]);
-      //   // });
-      //   // ここでまとめてNoticeIdを更新する
-      //   // setNoticeId([]);
-      //   if (newNoticeId.length > 0) {
-      //     setNoticeId((prevNoticeId) => [...prevNoticeId, ...newNoticeId]);
-      //   }
-
-      //   setResponseData(response.data);
-      // }
-
-      // if([noticeIdArray, NoticeId].filter(item => arr1.includes(item) && arr2.includes(item)).length == NoticeId.length) {
-      //   setNoticeId(noticeIdArray);
-      // }
-      // setNOTIFICATIONS(NOTIFICATIONS);
-      // console.log("response.data:", response.data);
     } catch (err) {
       console.log("err:", err);
     }
@@ -245,6 +145,7 @@ export default function NotificationsPopover() {
 
   // 通知監視用
   useEffect(() => {
+    noticeListFunction();
     const interval = setInterval(() => {
       noticeListFunction();
     }, 5000);
@@ -254,7 +155,7 @@ export default function NotificationsPopover() {
   // Laravelから取得した通知データをもとに表示に適した形に変換する
   useEffect(() => {
     // console.log("useEffect[NoticeArray]:NoticeId:", NoticeId);
-    console.log("NoticeArray:", NoticeArray);
+    // console.log("NoticeArray:", NoticeArray);
 
     var noticeData = [];
 
@@ -294,6 +195,18 @@ export default function NotificationsPopover() {
         isUnRead = false;
       }
 
+      var selectCheckBox = false;
+      const findNotice = NOTIFICATIONS.find(
+        (NOTIFICATIONS) => NOTIFICATIONS.id === value.id
+      );
+      if (findNotice != undefined) {
+        if (findNotice.selectCheckBox) {
+          selectCheckBox = true;
+        }
+      }
+
+      const userName = value.user_name;
+
       const oneNoticeData = {
         id: id,
         title: title,
@@ -302,63 +215,47 @@ export default function NotificationsPopover() {
         type: type,
         createdAt: createdAt,
         isUnRead: isUnRead,
+        selectCheckBox: selectCheckBox,
+        userName: userName,
       };
       noticeData.push(oneNoticeData);
     });
 
-    setNOTIFICATIONS(noticeData);
+    if(noticeDeleteFlg) {
+      setNOTIFICATIONS(noticeData);
+    }
   }, [NoticeArray]);
 
   // 表示するのに適した形になった通知データを表示用配列にセット
   useEffect(() => {
-    console.log("NOTIFICATIONS: ", NOTIFICATIONS);
+    // console.log("NOTIFICATIONS: ", NOTIFICATIONS);
     setNotifications(NOTIFICATIONS);
   }, [NOTIFICATIONS]);
 
   // 通知モーダルが閉じられたときに未読の通知をすべて既読状態にする
   useEffect(() => {
-    console.log("open!!!");
+    // console.log("open!!!");
     if (!open) {
       handleMarkAllAsRead();
     }
   }, [open]);
 
-  // useEffect(() => {
-  //   // console.log("useEffect[NoticeId]:NoticeId:", NoticeId);
-
-  //   // var newNotice = [];
-  //   // ResponseData.map((value) => {
-  //   //   console.log("response.data.map!!!", value);
-  //   //   newNotice.push(ResponseData.find((notice) => notice.id === value));
-  //   // });
-
-  //   // NoticeIdに含まれているIDと一致するResponseDataのデータのみを抽出
-  //   const newNotice = ResponseData.filter((value) => NoticeId.includes(value.id));
-
-  //   console.log("newNotice: ", newNotice);
-  //   // setNoticeArray(newNotice);
-  //   // setNoticeArray((prevNoticeArray) => [...prevNoticeArray, ...newNotice]);
-  // }, [ResponseData]);
-
   const [DeleteNotice, setDeleteNotice] = useState([]);
 
   useEffect(() => {
-    console.log("DeleteNotice: ", DeleteNotice);
+    // console.log("DeleteNotice: ", DeleteNotice);
 
-    console.log("notifications: ", notifications);
+    // console.log("notifications: ", notifications);
     var test = [];
     test = notifications.filter((value) => {
       return value.isUnRead == true && !DeleteNotice.includes(value.id);
     });
-    console.log("test: ", test);
+    // console.log("test: ", test);
   }, [DeleteNotice]);
 
-  // useEffect(() => {
-  //   console.log("notifications: ", notifications);
-  // }, [notifications]);
-
+  // 削除ボタンを押した通知を削除する
   const deleteSingleNotice = async (e) => {
-    console.log("delete!! ", e.target.dataset.notice);
+    // console.log("delete!! ", e.target.dataset.notice);
     noticeDeleteFlg = false;
     try {
       const noticeId = e.target.dataset.notice;
@@ -380,6 +277,91 @@ export default function NotificationsPopover() {
     }
   };
 
+  // 選択状態の通知を削除する
+  const deleteSelectNotice = async (e) => {
+    // console.log("delete!! ", e.target.dataset.notice);
+    noticeDeleteFlg = false;
+    try {
+      const selectNoticeArray = NOTIFICATIONS.filter(
+        (value) => value.selectCheckBox == true
+      );
+      const noticeIdArray = [];
+      selectNoticeArray.map((value) => {
+        noticeIdArray.push(value.id);
+      });
+
+      noticeIdArray.map((noticeId) => {
+        setNOTIFICATIONS(NOTIFICATIONS.filter((value) => value.id != noticeId));
+        setNotifications(notifications.filter((value) => value.id != noticeId));
+        setDeleteNotice((prevNoticeId) => [...prevNoticeId, noticeId]);
+      });
+
+      // 通知削除用URL
+      const url = "http://localhost:8000/post_select_notice_delete";
+
+      // console.log("accountData: ", accountData);
+      // Laravel側か通知一覧データを取得
+      await axios.post(url, {
+        noticeIdArray: noticeIdArray,
+      });
+    } catch (err) {
+      console.log("err:", err);
+    }
+  };
+
+  // 通知を複数選択可能/不可能状態にする
+  const startNoticeSelectMode = () => {
+    // console.log("startNoticeSelectMode!!!!!!");
+    if (NoticeSelectMode) {
+      setNoticeSelectMode(false);
+    } else {
+      setNoticeSelectMode(true);
+    }
+  };
+
+  // 1つの通知をクリックしたときにその通知を選択状態にする
+  const clickOneNotice = (e) => {
+    const clickElement = e.target;
+    // console.log("clickOneNotice!!!!", clickElement);
+    if (!e.target.classList.contains("deleteSingleNoticeButton")) {
+      // console.log("通知をクリックしました");
+      if (NoticeSelectMode) {
+        const haveNoticeIdElement = e.target.closest("[data-notice_id]");
+        if (haveNoticeIdElement != null) {
+          const selectNotice = document.querySelector(
+            `[data-notice_check_box="${haveNoticeIdElement.dataset.notice_id}"]`
+          );
+          const noticeId = haveNoticeIdElement.dataset.notice_id;
+          // console.log("e.target.dataset.notice_id: ", noticeId);
+          // console.log("selectNotice: ", selectNotice);
+          const noticeItemArray = [];
+          NOTIFICATIONS.forEach((item) => {
+            if (item.id == noticeId) {
+              if (item.selectCheckBox) {
+                noticeItemArray.push({ ...item, selectCheckBox: false });
+              } else {
+                noticeItemArray.push({ ...item, selectCheckBox: true });
+              }
+              // console.log("item.id == noticeId!!!!!!!");
+            } else {
+              noticeItemArray.push(item);
+            }
+          });
+          setNOTIFICATIONS(noticeItemArray);
+        }
+      } else {
+        const haveNoticeIdElement = e.target.closest("[data-notice_id]");
+        const noticeId = haveNoticeIdElement.dataset.notice_id;
+        var userName = "";
+        NOTIFICATIONS.filter((value) => value.id == noticeId).map((value) => {
+          userName = value.userName;
+        });
+
+        navigate(`/Profile/${userName}?page=mypage`);
+      }
+    }
+  };
+
   function NotificationItem({ notification }) {
     const { avatar, title } = renderContent(notification);
 
@@ -393,6 +375,8 @@ export default function NotificationsPopover() {
             bgcolor: "action.selected",
           }),
         }}
+        onClick={clickOneNotice}
+        data-notice_id={notification.id}
       >
         <ListItemAvatar>
           <Avatar sx={{ bgcolor: "background.neutral" }}>{avatar}</Avatar>
@@ -417,13 +401,29 @@ export default function NotificationsPopover() {
             </Typography>
           }
         />
-        <button
-          type="button"
-          data-notice={notification.id}
-          onClick={deleteSingleNotice}
-        >
-          ✕
-        </button>
+        {!NoticeSelectMode ? (
+          <>
+            <button
+              type="button"
+              data-notice={notification.id}
+              onClick={deleteSingleNotice}
+              className="deleteSingleNoticeButton"
+            >
+              ✕
+            </button>
+          </>
+        ) : (
+          <>
+            <input
+              type="checkbox"
+              name=""
+              id=""
+              checked={notification.selectCheckBox}
+              readOnly
+              data-notice_check_box={notification.id}
+            />
+          </>
+        )}
       </ListItemButton>
     );
   }
@@ -458,13 +458,19 @@ export default function NotificationsPopover() {
         <Box sx={{ display: "flex", alignItems: "center", py: 2, px: 2.5 }}>
           <Box sx={{ flexGrow: 1 }}>
             <Typography variant="subtitle1">通知</Typography>
-            <button
-              type="button"
-              className="noticeDeleteButton"
-              style={{ border: "0px" }}
-            >
-              選択した通知を削除
-            </button>
+            {NOTIFICATIONS.filter((value) => value.selectCheckBox == true)
+              .length > 0 && NoticeSelectMode ? (
+              <button
+                type="button"
+                className="noticeDeleteButton"
+                style={{ border: "0px" }}
+                onClick={deleteSelectNotice}
+              >
+                選択した通知を削除
+              </button>
+            ) : (
+              ""
+            )}
             <Typography variant="body2" sx={{ color: "text.secondary" }}>
               未読： {totalUnRead} 件
             </Typography>
@@ -472,6 +478,7 @@ export default function NotificationsPopover() {
               type="button"
               className="noticeSelectButton"
               style={{ border: "0px" }}
+              onClick={startNoticeSelectMode}
             >
               選択
             </button>
@@ -567,22 +574,6 @@ export default function NotificationsPopover() {
   );
 }
 
-// ----------------------------------------------------------------------
-
-// NotificationItem.propTypes = {
-//   notification: PropTypes.shape({
-//     createdAt: PropTypes.instanceOf(Date),
-//     id: PropTypes.string,
-//     isUnRead: PropTypes.bool,
-//     title: PropTypes.string,
-//     description: PropTypes.string,
-//     type: PropTypes.string,
-//     avatar: PropTypes.any,
-//   }),
-// };
-
-// ----------------------------------------------------------------------
-
 function renderContent(notification) {
   const title = (
     <Typography variant="subtitle2">
@@ -651,4 +642,4 @@ function renderContent(notification) {
 
 NotificationsPopover.propTypes = {
   notification: PropTypes.object,
-}
+};

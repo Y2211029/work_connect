@@ -816,6 +816,12 @@ textarea {
   margin: 10px;
 }
 
+.WorkDetail_info-intro {
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+  width: 100%;
+}
+
 
 .top_comment_area {
   margin: 0px auto;
@@ -889,7 +895,7 @@ textarea {
 }
 
 /* 通知削除ボタン */
-.noticeDeleteButton:hover{
-  cursor:pointer;
+.noticeDeleteButton:hover {
+  cursor: pointer;
   background-color: #ffcccc;
 }

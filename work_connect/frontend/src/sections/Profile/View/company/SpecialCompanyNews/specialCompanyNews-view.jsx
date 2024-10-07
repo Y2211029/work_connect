@@ -5,20 +5,19 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
 import { AllItemsContext } from "src/layouts/dashboard/index";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import ListView from "src/components/view/list-view";
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 function samePageLinkNavigation(event) {
-  if (
+  return !(
     event.defaultPrevented ||
     event.button !== 0 ||
     event.metaKey ||
     event.ctrlKey ||
     event.altKey ||
     event.shiftKey
-  ) {
-    return false;
-  }
-  return true;
+  );
 }
 
 function LinkTab(props) {
@@ -30,7 +29,7 @@ function LinkTab(props) {
           event.preventDefault();
         }
       }}
-      aria-current={props.selected && 'page'}
+      aria-current={props.selected ? 'page' : undefined}
       {...props}
     />
   );
@@ -42,53 +41,112 @@ LinkTab.propTypes = {
 
 export default function NavTabs() {
   const { setAllItems } = useContext(AllItemsContext);
-  const [value, setValue] = useState(1);
   const { user_name } = useParams();
-  const navigate = useNavigate();
+  const { getSessionData, updateSessionData } = useSessionStorage();
+  const [value, setValue] = useState(0);
+  const [ProfileTabState, setProfileTabState] = useState(getInitialProfileTabState());
 
   useEffect(() => {
-    if (value === 1) {
-      navigate(`/Profile/${user_name}/News/JobOffers`);
-    } else if (value === 2) {
-      navigate(`/Profile/${user_name}/News/Internships`);
-    } else if (value === 3) {
-      navigate(`/Profile/${user_name}/News/Blogs`);
-    }else if(value === 4){
-      navigate(`/Profile/${user_name}/News/Forms`);
-    }
-  }, [value, navigate, user_name]);
+    updateSessionData("accountData", "ProfileTabState", ProfileTabState);
+  }, [ProfileTabState, updateSessionData]);
 
-  const handleChange = (event, newValue) => {
+  function getInitialProfileTabState() {
+    const accountData = getSessionData("accountData");
+    return accountData.ProfileTabState || 0; // 初期値をセッションから取得
+  }
+
+    useEffect(() => {
+      setAllItems((prevItems) => ({
+        ...prevItems,
+        ResetItem: true,
+        DataList: [],
+        IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
+        Page: 1,
+        sortOption: "orderNewPostsDate",
+      }));
+    }, [setAllItems]);
+
+    // popstate イベントでURLのクエリパラメータを確認し、タブの状態を再設定する
+    useEffect(() => {
+      const handlePopState = () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const category = urlParams.get('category');
+        let newValue;
+
+        switch (category) {
+          case 'internships':
+            newValue = 1;
+            break;
+          case 'blogs':
+            newValue = 2;
+            break;
+          case 'joboffers':
+          default:
+            newValue = 0;
+            break;
+        }
+
+        setValue(newValue);  // 正しいタブの値を設定
+        setProfileTabState(newValue);
+      };
+
+      // popstate イベントをリスニング
+      window.addEventListener('popstate', handlePopState);
+
+      // コンポーネントのアンマウント時にリスナーを削除
+      return () => {
+        window.removeEventListener('popstate', handlePopState);
+      };
+    }, []);
+
+  const handleTabClick = (event, newValue) => {
     if (
       event.type !== 'click' ||
       (event.type === 'click' && samePageLinkNavigation(event))
     ) {
       setValue(newValue);
-    }
+      setProfileTabState(newValue);  // インデックスをそのまま保存
 
-    setAllItems((prevItems) => ({
-      ...prevItems,
-      ResetItem: true,
-      DataList: [],
-      IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
-      Page: 1,
-      sortOption: "orderNewPostsDate",
-    }));
+      let category;
+      switch (newValue) {
+        case 0:
+          category = 'joboffers';
+          break;
+        case 1:
+          category = 'internships';
+          break;
+        case 2:
+          category = 'blogs';
+          break;
+        default:
+          category = 'joboffers';
+      }
+
+      // ページ遷移または状態の更新処理
+      pageCheck(`news&category=${category}`);
+    }
   };
+
+  function pageCheck(pageStr) {
+    const url = new URL(window.location.href);
+    const urlStr = url.pathname.split('?')[0]; // クエリパラメータを取り除く
+    window.history.pushState({}, '', `${urlStr}?page=${pageStr}`);
+  }
 
   return (
     <Box sx={{ width: '100%' }}>
       <Tabs
         value={value}
-        onChange={handleChange}
         aria-label="nav tabs example"
         role="navigation"
       >
-        <LinkTab label="求人" value={1} />
-        <LinkTab label="インターンシップ" value={2} />
-        <LinkTab label="ブログ" value={3} />
-        <LinkTab label="フォームを見る" value={4} />
+        <LinkTab label="求人" onClick={(e) => handleTabClick(e, 0)} />
+        <LinkTab label="インターンシップ" onClick={(e) => handleTabClick(e, 1)} />
+        <LinkTab label="ブログ" onClick={(e) => handleTabClick(e, 2)} />
       </Tabs>
+      {value === 0 && <ListView type="specialjoboffers" ParamUserName={user_name} />}
+      {value === 1 && <ListView type="specialinternships" ParamUserName={user_name} />}
+      {value === 2 && <ListView type="specialblogs" ParamUserName={user_name} />}
     </Box>
   );
 }

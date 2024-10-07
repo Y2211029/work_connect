@@ -40,7 +40,7 @@ const InternshipJobOfferPage = () => {
 
     useEffect(() => {
         console.log("Myid", data.id);
-        console.log("newsdetail_id",newsdetail_id);
+        console.log("newsdetail_id", newsdetail_id);
         //ニュースのデータを抽出するc
         async function fetchData() {
             try {
@@ -80,14 +80,14 @@ const InternshipJobOfferPage = () => {
 
     const handleFollowClick = async () => {
         try {
-          const updatedFollowStatus = await follow(data.id, NewsDetail.company_id);
-          if (updatedFollowStatus) {
-            setFollowStatus(updatedFollowStatus);
-          }
+            const updatedFollowStatus = await follow(data.id, NewsDetail.company_id);
+            if (updatedFollowStatus) {
+                setFollowStatus(updatedFollowStatus);
+            }
         } catch (error) {
-          console.error("フォロー処理中にエラーが発生しました！", error);
+            console.error("フォロー処理中にエラーが発生しました！", error);
         }
-      };
+    };
 
     //日付をYY/MM/DDに変換する
     const formatDate = (dateString) => {
@@ -129,7 +129,7 @@ const InternshipJobOfferPage = () => {
         navigate(`/Profile/${NewsDetail.company_name}`);
     }
 
-    const handleFormJump = () =>{
+    const handleFormJump = () => {
         navigate(`/WriteForm/${newsdetail_id}`);
     }
 
@@ -162,19 +162,18 @@ const InternshipJobOfferPage = () => {
     return (
         <>
             <Helmet>
-                <title>ニュース詳細 | Work&Connect</title>
+                <title>ニュースの詳細 | Work&Connect</title>
             </Helmet>
 
 
             {NewsDetail ? (
-
                 <div className="NewsDetailContainer">
-
                     {/* ある程度下へスクロールしたら出てくるメニュー */}
-                    {showNav &&
-                        <div className={`popup_menu ${showNav ? 'visible' : 'invisible'}`}>
+                    {showNav && (
+                        <div className="popup_menu visible">
                             <Stack direction="row" spacing={2}>
                                 <p>{NewsDetail.article_title}</p>
+
                                 <Button
                                     variant="contained"
                                     sx={{
@@ -190,107 +189,120 @@ const InternshipJobOfferPage = () => {
                                 >
                                     企業プロフィールはこちらから
                                 </Button>
-                                <Button
-                                    variant="contained"
-                                    sx={{
-                                        fontSize: "10px",
-                                        padding: "8px 16px",
-                                        margin: "4px",
-                                        background: "linear-gradient(#41A4FF, #9198e5)",
-                                        "&:hover": {
-                                            background: "linear-gradient(#c2c2c2, #e5ad91)",
-                                        },
-                                    }}
-                                    onClick={handleFollowClick}
-                                >
-                                {followStatus}
-                                {/* usestateから持ってくる */}
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    sx={{
-                                        fontSize: "10px",
-                                        padding: "8px 16px",
-                                        margin: "4px",
-                                        background: "linear-gradient(#41A4FF, #9198e5)",
-                                        "&:hover": {
-                                            background: "linear-gradient(#c2c2c2, #e5ad91)",
-                                        },
-                                    }}
-                                    onClick={handleFormJump}
-                                >
-                                    応募する
-                                </Button>
+
+                                {/* data?.id?.[0] === "S" が true の場合にボタンを表示 */}
+                                {data?.id?.[0] === "S" && (
+                                    <>
+                                        <Button
+                                            variant="contained"
+                                            sx={{
+                                                fontSize: "10px",
+                                                padding: "8px 16px",
+                                                margin: "4px",
+                                                background: "linear-gradient(#41A4FF, #9198e5)",
+                                                "&:hover": {
+                                                    background: "linear-gradient(#c2c2c2, #e5ad91)",
+                                                },
+                                            }}
+                                            onClick={handleFollowClick}
+                                        >
+                                            {followStatus}
+                                            {/* useStateから持ってくる */}
+                                        </Button>
+
+                                        <Button
+                                            variant="contained"
+                                            sx={{
+                                                fontSize: "10px",
+                                                padding: "8px 16px",
+                                                margin: "4px",
+                                                background: "linear-gradient(#41A4FF, #9198e5)",
+                                                "&:hover": {
+                                                    background: "linear-gradient(#c2c2c2, #e5ad91)",
+                                                },
+                                            }}
+                                            onClick={handleFormJump}
+                                        >
+                                            応募する
+                                        </Button>
+                                    </>
+                                )}
                             </Stack>
                         </div>
-                    }
+                    )}
+
 
                     <Button
-                                    variant="contained"
-                                    sx={{
-                                        fontSize: "10px",
-                                        padding: "8px 16px",
-                                        margin: "4px",
-                                        background: "linear-gradient(#41A4FF, #9198e5)",
-                                        "&:hover": {
-                                            background: "linear-gradient(#c2c2c2, #e5ad91)",
-                                        },
-                                    }}
-                                >
-                                {NewsDetail.genre}
+                        variant="contained"
+                        sx={{
+                            fontSize: "10px",
+                            padding: "8px 16px",
+                            margin: "4px",
+                            background: "linear-gradient(#41A4FF, #9198e5)",
+                            "&:hover": {
+                                background: "linear-gradient(#c2c2c2, #e5ad91)",
+                            },
+                        }}
+                    >
+                        {NewsDetail.genre}
                     </Button>
                     <h1 className="news_title">{NewsDetail.article_title}</h1>
                     <Stack direction="row" spacing={2}>
-                    <p className="news_company_name">{NewsDetail.company_name}</p>
-                    <p className="news_created_at">{formatDate(NewsDetail.news_created_at)}</p>
-                    <Stack direction="row" spacing={2}>
-                                <Button
-                                    variant="contained"
-                                    sx={{
-                                        fontSize: "10px",
-                                        padding: "8px 16px",
-                                        margin: "4px",
-                                        background: "linear-gradient(#41A4FF, #9198e5)",
-                                        "&:hover": {
-                                            background: "linear-gradient(#c2c2c2, #e5ad91)",
-                                        },
-                                    }}
-                                    onClick={handleProfileJump}
-                                >
-                                    企業プロフィールはこちらから
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    sx={{
-                                        fontSize: "10px",
-                                        padding: "8px 16px",
-                                        margin: "4px",
-                                        background: "linear-gradient(#41A4FF, #9198e5)",
-                                        "&:hover": {
-                                            background: "linear-gradient(#c2c2c2, #e5ad91)",
-                                        },
-                                    }}
-                                    onClick={handleFollowClick}
-                                >
-                                {followStatus}
-                                {/* usestateから持ってくる */}
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    sx={{
-                                        fontSize: "10px",
-                                        padding: "8px 16px",
-                                        margin: "4px",
-                                        background: "linear-gradient(#41A4FF, #9198e5)",
-                                        "&:hover": {
-                                            background: "linear-gradient(#c2c2c2, #e5ad91)",
-                                        },
-                                    }}
-                                    onClick={handleFormJump}
-                                >
-                                    応募する
-                                </Button>
-                            </Stack>
+                        <p className="news_company_name">{NewsDetail.company_name}</p>
+                        <p className="news_created_at">{formatDate(NewsDetail.news_created_at)}</p>
+                        <Stack direction="row" spacing={2}>
+                            <Button
+                                variant="contained"
+                                sx={{
+                                    fontSize: "10px",
+                                    padding: "8px 16px",
+                                    margin: "4px",
+                                    background: "linear-gradient(#41A4FF, #9198e5)",
+                                    "&:hover": {
+                                        background: "linear-gradient(#c2c2c2, #e5ad91)",
+                                    },
+                                }}
+                                onClick={handleProfileJump}
+                            >
+                                企業プロフィールはこちらから
+                            </Button>
+                            {data?.id?.[0] === "S" && (
+                                    <>
+                                        <Button
+                                            variant="contained"
+                                            sx={{
+                                                fontSize: "10px",
+                                                padding: "8px 16px",
+                                                margin: "4px",
+                                                background: "linear-gradient(#41A4FF, #9198e5)",
+                                                "&:hover": {
+                                                    background: "linear-gradient(#c2c2c2, #e5ad91)",
+                                                },
+                                            }}
+                                            onClick={handleFollowClick}
+                                        >
+                                            {followStatus}
+                                            {/* useStateから持ってくる */}
+                                        </Button>
+
+                                        <Button
+                                            variant="contained"
+                                            sx={{
+                                                fontSize: "10px",
+                                                padding: "8px 16px",
+                                                margin: "4px",
+                                                background: "linear-gradient(#41A4FF, #9198e5)",
+                                                "&:hover": {
+                                                    background: "linear-gradient(#c2c2c2, #e5ad91)",
+                                                },
+                                            }}
+                                            onClick={handleFormJump}
+                                        >
+                                            応募する
+                                        </Button>
+                                    </>
+                                )}
+                        </Stack>
                     </Stack>
                     {/* NewsDetailHeader要素 サムネイルと会社名・お気に入りボタンを一括りにする */}
                     <div className="NewsDetailHeader">
@@ -412,7 +424,7 @@ const InternshipJobOfferPage = () => {
                             }
                         })}
                     </div>
-                </div>
+                </div >
             ) : (
                 <p>Loading...</p>
             )}

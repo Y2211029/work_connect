@@ -20,6 +20,8 @@ class PostChatController extends Controller
             $PairUserId = $request->input('PairUserId');
             $Message = $request->input('Message');
 
+
+            $check_read = false;
             // 現在の日時を取得
             $sendDateTime = Carbon::now();
 
@@ -27,6 +29,7 @@ class PostChatController extends Controller
                 'send_user_id' => $MyUserId,
                 'get_user_id' => $PairUserId,
                 'message' => $Message,
+                'check_read' => "未読",
                 'send_datetime' => $sendDateTime,
             ]);
 

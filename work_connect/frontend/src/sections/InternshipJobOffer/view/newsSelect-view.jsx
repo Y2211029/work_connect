@@ -43,40 +43,49 @@ LinkTab.propTypes = {
 };
 
 export default function NavTabs() {
-  const { getSessionData, updateSessionData } = useSessionStorage();
+  const { getSessionData } = useSessionStorage();
   const { setAllItems } = useContext(AllItemsContext);
 
   const getInitialNewsTabState = () => {
     const accountData = getSessionData("accountData");
     return accountData.NewsTabState ? accountData.NewsTabState : 0;
   };
-
   const [value, setValue] = useState(getInitialNewsTabState);
-  const [currentView, setCurrentView] = useState("");
 
-  useEffect(() => {
-    updateSessionData("accountData", "NewsTabState", value);
-
-    let newView;
-    if (value === 0) {
-      newView = <ListView type={"joboffers"} />;
-    } else if (value === 1) {
-      newView = <ListView type={"internships"} />;
-    } else if (value === 2) {
-      newView = <ListView type={"blogs"} />;
-    }
-    setCurrentView(newView);
-
-  }, [value]);
-
-  const handleChange = (event, newValue) => {
+  const handleTabClick = (event, newValue) => {
     if (
       event.type !== 'click' ||
       (event.type === 'click' && samePageLinkNavigation(event))
     ) {
       setValue(newValue);
-    }
 
+      let category;
+      switch (newValue) {
+        case 0:
+          category = 'joboffers';
+          break;
+        case 1:
+          category = 'internships';
+          break;
+        case 2:
+          category = 'blogs';
+          break;
+        default:
+          category = 'joboffers';
+      }
+
+      // ページ遷移または状態の更新処理
+      pageCheck(category);
+    }
+  };
+
+  function pageCheck(pageStr) {
+    const url = new URL(window.location.href);
+    const urlStr = url.pathname.split('?')[0]; // クエリパラメータを取り除く
+    window.history.pushState({}, '', `${urlStr}?page=${pageStr}`);
+  }
+
+  useEffect(() => {
     setAllItems((prevItems) => ({
       ...prevItems,
       ResetItem: true,
@@ -85,22 +94,60 @@ export default function NavTabs() {
       Page: 1,
       sortOption: "orderNewPostsDate",
     }));
-  };
+  }, [setAllItems]);
+
+  //ブラウザの戻るボタンを押してもタブやURLに合ったニュースを表示させる
+  useEffect(() => {
+    const handlePopState = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const page = urlParams.get('page');
+      let number = 0;
+
+      switch (page) {
+        case 'joboffers':
+          setValue(0);
+          number = 0;
+          break;
+        case 'internships':
+          setValue(1);
+          number = 1;
+          break;
+        case 'blogs':
+          setValue(2);
+          number = 2;
+          break;
+        default:
+          setValue(0); // デフォルトは求人に戻す
+          number = 0;
+          break;
+      }
+
+      console.log("値は→", number);
+    };
+
+    // popstate イベントをリスニング
+    window.addEventListener('popstate', handlePopState);
+
+    // コンポーネントのアンマウント時にリスナーを削除
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
 
   return (
     <Box sx={{ width: '100%' }}>
       <Tabs
         value={value}
-        onChange={handleChange}
         aria-label="nav tabs example"
         role="navigation"
       >
-        <Tab label="求人" />
-        <Tab label="インターンシップ" />
-        <Tab label="ブログ" />
+        <Tab label="求人" onClick={(e) => handleTabClick(e, 0)} />
+        <Tab label="インターンシップ" onClick={(e) => handleTabClick(e, 1)} />
+        <Tab label="ブログ" onClick={(e) => handleTabClick(e, 2)} />
       </Tabs>
-
-      {currentView}
+      {value === 0 && <ListView type="joboffers"/>}
+      {value === 1 && <ListView type="internships"/>}
+      {value === 2 && <ListView type="blogs"/>}
     </Box>
   );
 }

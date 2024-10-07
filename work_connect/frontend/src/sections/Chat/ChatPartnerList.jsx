@@ -125,7 +125,7 @@ export default function ChatPartnerList() {
         maxWidth: 360,
         marginLeft: '0', // デフォルトは0に設定
         bgcolor: 'background.paper',
-        maxHeight: 600,  // スクロール可能な最大の高さ
+        maxHeight: 500,  // スクロール可能な最大の高さ
         overflow: 'auto', // 自動でスクロールバーを表示
         border: '#DAE2ED 2px solid',
         borderRadius: '10px',

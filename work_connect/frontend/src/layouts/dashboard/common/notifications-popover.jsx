@@ -185,7 +185,7 @@ export default function NotificationsPopover() {
           }
         }
       }
-      const avatar = null; // ここにアイコンのURLを入れる
+      const avatar = `http://localhost:8000/storage/images/userIcon/${value.icon}`; // ここにアイコンのURLを入れる
       const type = "friend_interactive";
       const createdAt = value.created_at;
       // const createdAt = set(new Date(), { hours: 10, minutes: 30 });
@@ -228,7 +228,7 @@ export default function NotificationsPopover() {
 
   // 表示するのに適した形になった通知データを表示用配列にセット
   useEffect(() => {
-    // console.log("NOTIFICATIONS: ", NOTIFICATIONS);
+    console.log("NOTIFICATIONS: ", NOTIFICATIONS);
     setNotifications(NOTIFICATIONS);
   }, [NOTIFICATIONS]);
 
@@ -374,7 +374,7 @@ export default function NotificationsPopover() {
         data-notice_id={notification.id}
       >
         <ListItemAvatar>
-          <Avatar sx={{ bgcolor: "background.neutral" }}>{avatar}</Avatar>
+          <Avatar sx={{ bgcolor: "background.neutral" }} src={avatar}>{avatar}</Avatar>
         </ListItemAvatar>
         <ListItemText
           primary={title}

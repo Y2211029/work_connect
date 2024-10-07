@@ -1,8 +1,10 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+
+import Container from "@mui/material/Container";
 
 const ChangeEmail = () => {
-
     const [CheckEmailComplete, SetCheckEmailComplete] = useState("");
 
     useEffect(() => {
@@ -19,9 +21,9 @@ const ChangeEmail = () => {
                     urltoken: params.get("urltoken"),
                     email: params.get("key"),
                 });
+
                 SetCheckEmailComplete(response.data);
 
-                console.log("response", response);
             } catch (e) {
                 console.log("ChangeEmailerror", e);
             }
@@ -29,10 +31,21 @@ const ChangeEmail = () => {
         renderCheckEmail();
     }, [])
 
+    const Success = (
+        <>
+            <p>メールアドレスが確認されました。</p>
+            <span>再度</span>
+            <Link to="/Top">
+                ログイン
+            </Link>
+            <span>してください</span>
+        </>
+
+    );
+
     return (
         <>
-            <h1>{CheckEmailComplete && CheckEmailComplete}</h1>
-            {/* <p>再度ログインしなおしてください。</p> */}
+            <Container>{CheckEmailComplete == "success" ? Success : CheckEmailComplete}</Container>
         </>
 
     )

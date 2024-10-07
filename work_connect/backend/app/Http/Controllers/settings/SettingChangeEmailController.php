@@ -52,11 +52,27 @@ class SettingChangeEmailController extends Controller
 
                 \Log::info('ChangeEmail STUDENTS');
             } else {
-                w_company::where('id', $id)->update([
-                    'mail' => $encryptedEmail,
+                w_pre_check_email::where("user_id", $id)->delete();
+
+                $w_pre_check_email = w_pre_check_email::create([
+                    'user_id' => $id,
+                    'urltoken' => Str::random(60), // urltokenに値を設定
+                    'mail' => "$encryptedEmail",
                 ]);
-                \Log::info('ChangeEmail COMPANT');
+
+                $details = [
+                    'title' => '【Work&Connect : メールアドレス確認】',
+                    'body' => '下記URLをクリックし、メールアドレス変更を完了してください',
+                    'url' => 'http://localhost:5174/Settings/CheckEmail/?kind=c&urltoken=' . $w_pre_check_email->urltoken . '&key=' . $encryptedEmail . '&ui=' . $id
+                ];
+
+                $w_pre_check_email['mail'] = $email;
+
+                Mail::to($email)->send(new mailSend($w_pre_check_email, $details));
+
+                \Log::info('ChangeEmail COMPANY');
             }
+
 
             return json_encode("メールを送信しましたので確認してください");
             \Log::info('ChangeEmailerror' . $encryptedEmail);

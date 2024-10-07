@@ -37,26 +37,6 @@ const navConfig = [
     path: '/Internship_JobOffer/joboffers',
     icon: <NewspaperOutlinedIcon />,
   },
-  {
-    title: '設定',
-    path: '/Settings',
-    icon: icon('ic_disabled'),
-  },
-  {
-    title: 'ニュースの投稿',
-    path: '/Editor',
-    icon: <NewspaperOutlinedIcon />,
-  },
-  {
-    title: 'テストページ何か試したいものはここで',
-    path: '/TestPage',
-    icon: <NewspaperOutlinedIcon />,
-  },
-  // {
-  //   title: 'Not found',
-  //   path: '/404',
-  //   icon: icon('ic_disabled'),
-  // },
 ];
 
 export default navConfig;

@@ -4,10 +4,10 @@ import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import { Model } from 'survey-core';
 import { Survey } from 'survey-react-ui';
 import 'survey-core/defaultV2.min.css';
-import './writeform.css';
+// import './writeform.css';
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Tooltip from '@mui/material/Tooltip';
 import Stack from "@mui/material/Stack";
@@ -15,7 +15,8 @@ import Stack from "@mui/material/Stack";
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef(({ post },) => {
-  const { company_id, wright_form, news_id, article_title, answerer_name, icon_id } = post;
+  const { company_id, wright_form, news_id } = post;
+  // answerer_name, icon_id
 
   const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData");
@@ -76,47 +77,70 @@ const PostCard = forwardRef(({ post },) => {
   const survey = new Model(surveyData);
   console.log(survey);
 
-  const renderTitle = (
-    <Tooltip title={article_title} arrow>
-      <Typography
-        className="article-title"
-        onClick={() => setShowForm(true)}
-      >
-        {article_title}
-      </Typography>
-    </Tooltip>
-  );
+  // const renderTitle = (
+  //   <Stack
+  //     direction="column" // 縦に並べる
+  //     alignItems="center" // 中央揃え
+  //   >
+  //     <Tooltip title={answerer_name} arrow>
+  //       <Typography
+  //         className="article-title"
+  //         onClick={() => setShowForm(true)}
+  //       >
+  //         {answerer_name}さん
+  //       </Typography>
+  //     </Tooltip>
+  //     <Avatar
+  //       alt={answerer_name}
+  //       src={icon_id}
+  //       className="answerer-avatar"
+  //     />
+  //   </Stack>
+  // );
 
   const renderAnswererProfile = (
     <div className="answerer-profile">
-      <div className="profile-header">
-        <Link to={`/Profile/${answerer_name}`} className="profile-link">
-          <Typography className="answerer-name">
-            {answerer_name}さん
-          </Typography>
-        </Link>
-        <Avatar
-          alt={answerer_name}
-          src={icon_id}
-          className="answerer-avatar"
-        />
-      </div>
       <Box className="survey-box">
         <Survey model={survey} className="survey" />
       </Box>
     </div>
   );
 
+  // 複数の名前とアバターを持つための配列
+  const answerers = [
+    { name: 'yoshioka', icon: 'path_to_yoshioka_icon' },
+    { name: 'bandou', icon: 'path_to_bandou_icon' },
+    // 他の回答者も追加可能
+  ];
 
   return (
     <Stack
-      direction="row"
+      direction="row" // 横並び
       justifyContent="center"
       alignItems="flex-start"
     >
-      <Box className="title-box">
-        {renderTitle}
-      </Box>
+      {answerers.map((answerer) => (
+        <Box key={answerer.name} className="title-box">
+          <Stack
+            direction="column" // 縦に並べる
+            alignItems="center" // 中央揃え
+          >
+            <Tooltip title={`${answerer.name}さん`} arrow>
+              <Typography
+                className="article-title"
+                onClick={() => setShowForm(true)}
+              >
+                {answerer.name}さん
+              </Typography>
+            </Tooltip>
+            <Avatar
+              alt={answerer.name}
+              src={answerer.icon}
+              className="answerer-avatar"
+            />
+          </Stack>
+        </Box>
+      ))}
 
       <Stack display={showForm ? "block" : "none"} className="form-stack" direction="column" alignItems="flex-start">
         {renderAnswererProfile}

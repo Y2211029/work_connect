@@ -5,18 +5,16 @@ import { useSortable, SortableContext, arrayMove, verticalListSortingStrategy } 
 import { CSS } from '@dnd-kit/utilities';
 import Box from '@mui/material/Box';
 import DragHandleIcon from '@mui/icons-material/DragHandle';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ColorPicker from './ColorPicker';
 import axios from 'axios';
 import './setting.css';
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 const Settings = () => {
   const [rows, setRows] = useState([]);
   const [sessionId, setSessionId] = useState(null);
   const [companyInformation, setCompanyInformation] = useState([]);
-  const [errors, setErrors] = useState({});
 
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const dataString = sessionStorage.getItem("accountData");
@@ -58,7 +56,7 @@ const Settings = () => {
 
       set_information_data();
     }
-  }, [companyInformation]);
+  }, [companyInformation]); // Add companyInformation as a dependency
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
@@ -68,39 +66,8 @@ const Settings = () => {
       const newIndex = rows.findIndex(row => row.id === over.id);
 
       setRows((items) => arrayMove(items, oldIndex, newIndex));
-      console.log("ドラッグしました");
-      console.log(rows); // 並び替え後の rows をコンソールログに出力
     }
   };
-
-  useEffect(() => {
-    const sortable_row_number = async () => {
-      console.log("Rows changed:", rows);
-      console.log(sessionId);
-      if (sessionId) {
-        try {
-          // rows配列の中の各オブジェクトのidプロパティを変換する
-          const change_rows = rows.map(row => ({
-            ...row,
-            id: row.id.replace('row', '')
-          }));
-
-          const response = await axios.post(
-            `http://localhost:8000/sortable_row_number/${sessionId}`,
-            { rowsData: change_rows }
-          );
-          console.log("Data sent successfully:", response.data);
-          console.log("rows_data:", response.data.rows_data);
-        } catch (error) {
-          console.error("Error fetching data!", error);
-        }
-      }
-    };
-
-    sortable_row_number();
-  }, [rows]);
-
-
 
   const SortableRow = ({ id, children }) => {
     const { attributes, listeners, setNodeRef, transform, transition, setActivatorNodeRef, isDragging } = useSortable({
@@ -114,27 +81,21 @@ const Settings = () => {
     };
 
     return (
-      <tr
-        ref={setNodeRef}
-        style={style}
-        {...attributes}
-        className={isDragging ? 'dragging-row' : ''}
-      >
-        <th {...listeners}>
+      <tr ref={setNodeRef} style={style} {...attributes}>
+        <td {...listeners}>
           <Box
             ref={setActivatorNodeRef}
             sx={{
-              width: '50px',
+              width: '20px',
               justifyContent: 'center',
               display: 'flex',
               verticalAlign: 'middle',
               cursor: isDragging ? 'grabbing' : 'grab',
-              backgroundColor: isDragging ? 'red' : 'white',
             }}
           >
             <DragHandleIcon />
           </Box>
-        </th>
+        </td>
         {children}
       </tr>
     );
@@ -205,17 +166,13 @@ const Settings = () => {
       // 入力内容が変更されたときにデータを送信
       const row = rows.find(r => r.id === rowId);
       if (row) {
-        console.log(row);
-        console.log("inputName", inputName);
-        console.log("row_number", row.id.replace('row', ''));
-        console.log("public_status", row.public_status);
         try {
           const response = await axios.post(
             `http://localhost:8000/company_information/${sessionId}`,
             {
               ...(inputName === "title" && { title: value }),
               ...(inputName === "contents" && { contents: value }),
-              row_number: row.id.replace('row', ''), //row1であれば「1」を取得する
+              row_number: row.id.replace('row', ''), // Convert "row1" to "1"
               public_status: row.public_status,
             }
           );
@@ -227,63 +184,29 @@ const Settings = () => {
     }
   };
 
-  const addNewRow = async () => {
+  const addNewRow = () => {
     const newRowId = `row${rows.length + 1}`;
-    try {
-      const response = await axios.post(`http://localhost:8000/add_new_row/${sessionId}`,
-        {
-          title: "新規タイトル",
-          contents: "新規内容",
-          row_number: newRowId.replace('row', ''),
-          public_status: 0,
-        }
-      );
-      const savedRow = response.data.saved_row;
-      console.log("savedrow", savedRow);
-      setRows((prevRows) => [...prevRows, savedRow]);
-    } catch (error) {
-      console.error("Error saving new row!", error);
-    }
-  };
-
-  const row_delete = async (rowId) => {
-    confirm("本当に削除しますか");
-    if (confirm && rowId) {
-      console.log("delete_id", rowId);
-      try {
-        const response = await axios.post(
-          `http://localhost:8000/row_delete/${sessionId}`,
-          {
-            delete_id: rowId.replace('row', ''),
-          }
-        );
-        console.log(response.data);
-        setRows((prevRows) => prevRows.filter((row) => row.id !== rowId));
-      } catch (error) {
-        console.error("Error sending data!", error);
-      }
-    }
-
+    const newRow = {
+      id: newRowId,
+      title: '新規タイトル',
+      contents: '新規内容',
+      public_status: 0,
+    };
+    setRows((prevRows) => [...prevRows, newRow]); // 新しい行を配列の最後に追加
   };
 
   return (
     <div className="setting">
+
       <div>
         <Link to={`/Settings/ChangeEmail`}>メールアドレス変更</Link>
       </div>
-
-      <div>
-      </div>
-
-      <p>色を設定する</p>
-      <ColorPicker />
 
       <p>企業の詳細な情報</p>
 
       <p onClick={addNewRow} style={{ cursor: 'pointer', color: 'blue' }}>
         企業情報を追加する
       </p>
-
 
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={rows.map(row => row.id)} strategy={verticalListSortingStrategy}>
@@ -294,7 +217,6 @@ const Settings = () => {
                 <th>企業情報</th>
                 <th>内容</th>
                 <th>公開状態</th>
-                <th>削除</th>
               </tr>
             </thead>
             <tbody>
@@ -333,9 +255,6 @@ const Settings = () => {
                       />
                       <label htmlFor={`toggle_${row.id}`} className="toggle_label" />
                     </div>
-                  </td>
-                  <td>
-                    <DeleteIcon onClick={() => row_delete(row.id)} />
                   </td>
                 </SortableRow>
               ))}

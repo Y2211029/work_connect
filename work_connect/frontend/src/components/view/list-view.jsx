@@ -40,7 +40,12 @@ const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, s
 
     const existingIds = new Set(currentWorkList.map(item => item[idKey]));
 
-    const filteredNewWorks = newWorks.filter(element => !existingIds.has(element[idKey]));
+    let filteredNewWorks;
+    if(newWorks.title_contents){
+      filteredNewWorks = newWorks.title_contents.filter(element => !existingIds.has(element[idKey]));
+    }else{
+      filteredNewWorks = newWorks.filter(element => !existingIds.has(element[idKey]));
+    }
 
     // 全作品アイテム
     filteredNewWorks.forEach((element) => {
@@ -89,7 +94,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName, NewsId }) {
 
   useEffect(() => {
     setSessionAccountData(SessionAccountData);
-  }, [SessionAccountData]);
+  }, []);
 
   useEffect(() => {
     const currentPath = window.location.pathname;
@@ -148,7 +153,12 @@ export default function ItemObjectAndPostCard({ type, ParamUserName, NewsId }) {
         const { default: CheckFormPostCard } = await import("src/sections/CheckForm/post-card");
         setPostCard(() => CheckFormPostCard);
         console.log("CheckFormPostCard");
-      }
+      }else if(DecodeURL === `/Profile/${ParamUserName}` &&
+        page === "companyinformation"){
+          const { default: CompanyInformationPostCard } = await import("src/sections/CompanyInformation/post-card");
+          setPostCard(() => CompanyInformationPostCard);
+          console.log("CompanyInformationPostCard");
+        }
     };
     loadComponents();
   }, [SessionAccountData.user_name, PathName, NewsDetailId, ParamUserName, DecodeURL, NewsId,category,page]);
@@ -397,6 +407,20 @@ export default function ItemObjectAndPostCard({ type, ParamUserName, NewsId }) {
         }));
       },
     },
+    companyinformations: {
+      ItemName: `${ParamUserName}さんの詳細な企業情報`,
+      url: `http://localhost:8000/company_informations/${ParamUserName}`,
+      idKey: "id",
+      tags: ["company_name"],
+      generatePosts: (WorkOfList) => {
+        if (Array.isArray(WorkOfList)) {
+          console.log(WorkOfList);
+        }
+        return WorkOfList.map((company) => ({
+          title_contents: company.title_contents,
+        }));
+      }
+    },
   };
 
   return (
@@ -479,6 +503,8 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     || DecodeURL === `/Profile/${ParamUserName}` &&
         page === "news" &&
       (category === "joboffers" || category === "internships" || category === "blogs")
+    || DecodeURL === `/Profile/${ParamUserName}` &&
+        page === "companyinformation"
   )) {
     // console.log(" URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合");
     lastUrl = `${url}?page=${Page}&sort=${sortOption}`;

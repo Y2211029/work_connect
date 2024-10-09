@@ -176,7 +176,14 @@ class NewsController extends Controller
         ->join('w_news', 'w_wright_forms.news_id', '=', 'w_news.id')
         ->join('w_users', 'w_wright_forms.user_id', '=', 'w_users.id')
         ->where('w_news.public_status', 1)
-        ->select('w_wright_forms.*', 'w_news.*', 'w_users.*','w_news.created_at as news_created_at');
+        ->select('w_wright_forms.*', 'w_news.*', 'w_users.*', 'w_news.created_at as news_created_at');
+
+        // クエリの実行: データを取得
+        $results = $query->get();
+
+        // データの内容をログに出力
+        Log::info('取得したデータ:', $results->toArray());
+
 
         // ソート処理
         if ($sortOption === 'orderNewPostsDate') {
@@ -203,7 +210,7 @@ class NewsController extends Controller
         }
 
         //回答者のデータを持ってくる
-        
+
 
         // foreach ($posts as $post) {
         //     $isFollowing = w_follow::where('follow_sender_id', $Myid)

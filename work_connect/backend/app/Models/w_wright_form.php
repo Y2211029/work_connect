@@ -11,6 +11,7 @@ class w_wright_form extends Model
 
     protected $table = 'w_wright_forms';
     protected $keyType = 'int';
+
     protected $fillable = [
         'id',
         'user_id',

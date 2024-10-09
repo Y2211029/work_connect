@@ -12,8 +12,9 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import './CompanyInformation.css'; // CSSファイルをインポート
 
-const PostCard = forwardRef(function PostCard({ post },) {
-  const { company_id,title_contents } = post;
+const PostCard = forwardRef(({ post }) => {
+  const { title_contents } = post; // title_contents を取得
+  console.log("title_contentsの内容", title_contents);
 
   const [MyUserId, setMyUserId] = useState(0);
 
@@ -22,33 +23,27 @@ const PostCard = forwardRef(function PostCard({ post },) {
     setMyUserId(accountData?.id || 0);
   }, []);
 
-  // post が存在しない場合は早期リターン
+  // データがない場合は早期リターン
   if (!title_contents || title_contents.length === 0) {
     return <div>No post available</div>;
   }
 
-  console.log(title_contents);
-  console.log(company_id);
-
-
   const handleEditClick = (postId) => {
     console.log(`編集ボタンがクリックされました: ${postId}`);
-    // 編集処理をここに追加
+    // 編集処理を追加する
   };
 
   const renderEditButton = (companyId) => (
     companyId === MyUserId && (
-      <div className="company-info-edit">
-        <Tooltip title="編集する">
-          <IconButton onClick={() => handleEditClick(companyId)}>
-            <ModeEditIcon />
-          </IconButton>
-        </Tooltip>
-      </div>
+      <Tooltip title="編集する">
+        <IconButton onClick={() => handleEditClick(companyId)}>
+          <ModeEditIcon />
+        </IconButton>
+      </Tooltip>
     )
   );
 
-  const renderTable = (
+  return (
     <TableContainer component={Paper} style={{ marginTop: '16px', marginBottom: '20px' }}>
       <Table style={{ width: '70%', borderCollapse: 'collapse' }}>
         <TableHead>
@@ -58,11 +53,12 @@ const PostCard = forwardRef(function PostCard({ post },) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {title_contents.map((item, index) => ( // title_contentsをループして行を生成
-            <TableRow key={index}>
+          {title_contents.map((item) => (
+            <TableRow key={item.id}>
               <TableCell>
                 {item.title}
-                {renderEditButton(company_id)} {/* 編集ボタンを各タイトルの横に表示 */}
+                {item.id}
+                {renderEditButton(item.company_id,item.id)} {/* 編集ボタンを各行に表示 */}
               </TableCell>
               <TableCell>{item.contents}</TableCell>
             </TableRow>
@@ -71,14 +67,14 @@ const PostCard = forwardRef(function PostCard({ post },) {
       </Table>
     </TableContainer>
   );
-
-  return <>{renderTable}</>;
 });
+
+PostCard.displayName = "PostCard";
 
 PostCard.propTypes = {
   post: PropTypes.shape({
-    company_id: PropTypes.string,
-    company_name: PropTypes.string,
+    company_id: PropTypes.string, // ここで company_id を追加
+    id: PropTypes.number.isRequired,
     title_contents: PropTypes.arrayOf(
       PropTypes.shape({
         title: PropTypes.string.isRequired,
@@ -87,6 +83,5 @@ PostCard.propTypes = {
     ).isRequired,
   }).isRequired,
 };
-
 
 export default PostCard;

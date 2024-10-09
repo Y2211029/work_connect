@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import {useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+// import axios from 'axios';
 
 import PropTypes from 'prop-types';
 
@@ -10,28 +10,16 @@ import { CSS } from '@dnd-kit/utilities';
 import Container from "@mui/material/Container";
 import Box from '@mui/material/Box';
 import DragHandleIcon from '@mui/icons-material/DragHandle';
-<<<<<<< HEAD
-import axios from 'axios';
-import './setting.css';
-import { Link } from "react-router-dom";
-=======
 // import DeleteIcon from '@mui/icons-material/Delete';
 // import { DndContext, closestCenter } from '@dnd-kit/core';
 import './setting.css';
->>>>>>> 78a426677ad771a7e27efac6dc40e4924d52dcff
 
-import ColorPicker from './ColorPicker';
 // ----------------------------------------------------------------------------------------------
 const Settings = () => {
-  const [rows, setRows] = useState([]);
+  // const [rows, setRows] = useState([]);
   const [sessionId, setSessionId] = useState(null);
-  const [companyInformation, setCompanyInformation] = useState([]);
-<<<<<<< HEAD
-=======
+  // const [companyInformation, setCompanyInformation] = useState([]);
   // const [errors, setErrors] = useState({});
->>>>>>> 78a426677ad771a7e27efac6dc40e4924d52dcff
-
-  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const dataString = sessionStorage.getItem("accountData");
@@ -43,47 +31,44 @@ const Settings = () => {
     }
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (sessionId) {
-        try {
-          const response = await axios.get(
-            `http://localhost:8000/setting_company_information/${sessionId}`
-          );
-          console.log(response.data);
-          setCompanyInformation(response.data.company_information);
-        } catch (error) {
-          console.error("Error fetching data!", error);
-        }
-      }
-    };
-    fetchData();
-  }, [sessionId]);
+  console.log(sessionId);
 
-  useEffect(() => {
-    if (companyInformation) {
-      const set_information_data = () => {
-        setRows(companyInformation.map(info => ({
-          id: `row${info.id}`, // Assuming `info.id` is a unique identifier
-          title: info.title,
-          contents: info.contents,
-          public_status: info.public_status,
-        })));
-      };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     if (sessionId) {
+  //       try {
+  //         const response = await axios.get(
+  //           `http://localhost:8000/setting_company_information/${sessionId}`
+  //         );
+  //         console.log(response.data);
+  //         setCompanyInformation(response.data.company_information);
+  //       } catch (error) {
+  //         console.error("Error fetching data!", error);
+  //       }
+  //     }
+  //   };
+  //   fetchData();
+  // }, [sessionId]);
 
-      set_information_data();
-    }
-  }, [companyInformation]); // Add companyInformation as a dependency
+  // useEffect(() => {
+  //   if (companyInformation) {
+  //     const set_information_data = () => {
+  //       setRows(companyInformation.map(info => ({
+  //         id: `row${info.id}`, // Assuming `info.id` is a unique identifier
+  //         title: info.title,
+  //         contents: info.contents,
+  //         public_status: info.public_status,
+  //       })));
+  //     };
+
+  //     set_information_data();
+  //   }
+  // }, [companyInformation]); // Add companyInformation as a dependency
 
 
   // const handleDragEnd = (event) => {
   //   const { active, over } = event;
 
-<<<<<<< HEAD
-      setRows((items) => arrayMove(items, oldIndex, newIndex));
-    }
-  };
-=======
   //   if (active.id !== over.id) {
   //     const oldIndex = rows.findIndex(row => row.id === active.id);
   //     const newIndex = rows.findIndex(row => row.id === over.id);
@@ -93,7 +78,6 @@ const Settings = () => {
   //     console.log(rows); // 並び替え後の rows をコンソールログに出力
   //   }
   // };
->>>>>>> 78a426677ad771a7e27efac6dc40e4924d52dcff
 
   const SortableRow = ({ id, children }) => {
     const { attributes, listeners, setNodeRef, transform, transition, setActivatorNodeRef, isDragging } = useSortable({
@@ -189,47 +173,6 @@ const Settings = () => {
   //       };
   //     });
 
-<<<<<<< HEAD
-      // 入力内容が変更されたときにデータを送信
-      const row = rows.find(r => r.id === rowId);
-      if (row) {
-        try {
-          const response = await axios.post(
-            `http://localhost:8000/company_information/${sessionId}`,
-            {
-              ...(inputName === "title" && { title: value }),
-              ...(inputName === "contents" && { contents: value }),
-              row_number: row.id.replace('row', ''), // Convert "row1" to "1"
-              public_status: row.public_status,
-            }
-          );
-          console.log(response.data);
-        } catch (error) {
-          console.error("Error sending data!", error);
-        }
-      }
-    }
-  };
-
-  const addNewRow = () => {
-    const newRowId = `row${rows.length + 1}`;
-    const newRow = {
-      id: newRowId,
-      title: '新規タイトル',
-      contents: '新規内容',
-      public_status: 0,
-    };
-    setRows((prevRows) => [...prevRows, newRow]); // 新しい行を配列の最後に追加
-  };
-
-  return (
-    <div className="setting">
-
-      <div>
-        <Link to={`/Settings/ChangeEmail`}>メールアドレス変更</Link>
-      </div>
-
-=======
   //     // 入力内容が変更されたときにデータを送信
   //     const row = rows.find(r => r.id === rowId);
   //     if (row) {
@@ -294,6 +237,8 @@ const Settings = () => {
 
   // };
 
+
+
   return (
     <Container maxWidth="xl" >
       <div className="setting">
@@ -304,27 +249,23 @@ const Settings = () => {
         <div>
         </div>
 
-        <p>色を設定する</p>
-        <ColorPicker />
-        {/* 
->>>>>>> 78a426677ad771a7e27efac6dc40e4924d52dcff
+        {/* <p>色を設定する</p>
+        <ColorPicker /> */}
+        {/*
       <p>企業の詳細な情報</p>
 
       <p onClick={addNewRow} style={{ cursor: 'pointer', color: 'blue' }}>
         企業情報を追加する
       </p> */}
 
-<<<<<<< HEAD
-=======
 
-        {/*     
->>>>>>> 78a426677ad771a7e27efac6dc40e4924d52dcff
+        {/*
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={rows.map(row => row.id)} strategy={verticalListSortingStrategy}>
           <table className="company_information_table">
             <thead>
               <tr>
-                <th></th> 
+                <th></th>
                 <th>企業情報</th>
                 <th>内容</th>
                 <th>公開状態</th>

@@ -39,7 +39,7 @@ class CompanyInformationController extends Controller
                     'title' => $item->title,
                     'contents' => $item->contents,
                     'company_name' => $item->company_name,  // 直接アクセス
-                    'id' => $item->id,                      // 直接アクセス
+                    'id' => $item->company_information_id,  // 直接アクセス
                     'company_id' => $item->company_id       // 直接アクセス
                 ];
             });

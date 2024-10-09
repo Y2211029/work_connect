@@ -398,15 +398,12 @@ export default function ItemObjectAndPostCard({ type, ParamUserName, NewsId }) {
       tags: ["company_name"],
       generatePosts: (WorkOfList) => {
         return WorkOfList.map((company) => ({
-          company_id: company.company_id,
-          wright_form: company.wright_form,
-          news_id: company.news_id,
           article_title: company.article_title,
-          answerer_name: company.user_name,
-          icon_id: company.icon_id
+          user_name: company.users,
         }));
       },
     },
+
     companyinformations: {
       ItemName: `${ParamUserName}さんの詳細な企業情報`,
       url: `http://localhost:8000/company_informations/${ParamUserName}`,
@@ -414,13 +411,18 @@ export default function ItemObjectAndPostCard({ type, ParamUserName, NewsId }) {
       tags: ["company_name"],
       generatePosts: (WorkOfList) => {
         if (Array.isArray(WorkOfList)) {
-          console.log(WorkOfList);
+          const title_contents = WorkOfList.map((company) => ({
+            title: company.title,
+            contents: company.contents,
+            company_id: company.company_id,
+            id: company.id
+          }));
+
+          return [{ title_contents }]; // 1つのオブジェクトにまとめた配列として返す
         }
-        return WorkOfList.map((company) => ({
-          title_contents: company.title_contents,
-        }));
-      }
+      },
     },
+
   };
 
   return (
@@ -688,3 +690,4 @@ ListView.propTypes = {
   page: PropTypes.string,
   category: PropTypes.string,
 };
+

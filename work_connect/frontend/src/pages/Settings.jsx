@@ -1,18 +1,35 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
+
 import PropTypes from 'prop-types';
-import { DndContext, closestCenter } from '@dnd-kit/core';
-import { useSortable, SortableContext, arrayMove, verticalListSortingStrategy } from '@dnd-kit/sortable';
+
+import { useSortable, /*SortableContext, arrayMove, verticalListSortingStrategy*/ } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+
+import Container from "@mui/material/Container";
 import Box from '@mui/material/Box';
 import DragHandleIcon from '@mui/icons-material/DragHandle';
+<<<<<<< HEAD
 import axios from 'axios';
 import './setting.css';
 import { Link } from "react-router-dom";
+=======
+// import DeleteIcon from '@mui/icons-material/Delete';
+// import { DndContext, closestCenter } from '@dnd-kit/core';
+import './setting.css';
+>>>>>>> 78a426677ad771a7e27efac6dc40e4924d52dcff
 
+import ColorPicker from './ColorPicker';
+// ----------------------------------------------------------------------------------------------
 const Settings = () => {
   const [rows, setRows] = useState([]);
   const [sessionId, setSessionId] = useState(null);
   const [companyInformation, setCompanyInformation] = useState([]);
+<<<<<<< HEAD
+=======
+  // const [errors, setErrors] = useState({});
+>>>>>>> 78a426677ad771a7e27efac6dc40e4924d52dcff
 
   const [errors, setErrors] = useState({});
 
@@ -58,16 +75,25 @@ const Settings = () => {
     }
   }, [companyInformation]); // Add companyInformation as a dependency
 
-  const handleDragEnd = (event) => {
-    const { active, over } = event;
 
-    if (active.id !== over.id) {
-      const oldIndex = rows.findIndex(row => row.id === active.id);
-      const newIndex = rows.findIndex(row => row.id === over.id);
+  // const handleDragEnd = (event) => {
+  //   const { active, over } = event;
 
+<<<<<<< HEAD
       setRows((items) => arrayMove(items, oldIndex, newIndex));
     }
   };
+=======
+  //   if (active.id !== over.id) {
+  //     const oldIndex = rows.findIndex(row => row.id === active.id);
+  //     const newIndex = rows.findIndex(row => row.id === over.id);
+
+  //     setRows((items) => arrayMove(items, oldIndex, newIndex));
+  //     console.log("ドラッグしました");
+  //     console.log(rows); // 並び替え後の rows をコンソールログに出力
+  //   }
+  // };
+>>>>>>> 78a426677ad771a7e27efac6dc40e4924d52dcff
 
   const SortableRow = ({ id, children }) => {
     const { attributes, listeners, setNodeRef, transform, transition, setActivatorNodeRef, isDragging } = useSortable({
@@ -109,60 +135,61 @@ const Settings = () => {
     children: PropTypes.arrayOf(PropTypes.element).isRequired,
   };
 
-  const ChangeToggle = async (e, rowId) => {
-    const newStatus = e.target.checked ? 1 : 0;
-    setRows((prevRows) =>
-      prevRows.map((row) =>
-        row.id === rowId ? { ...row, public_status: newStatus } : row
-      )
-    );
+  // const ChangeToggle = async (e, rowId) => {
+  //   const newStatus = e.target.checked ? 1 : 0;
+  //   setRows((prevRows) =>
+  //     prevRows.map((row) =>
+  //       row.id === rowId ? { ...row, public_status: newStatus } : row
+  //     )
+  //   );
 
-    const row = rows.find(r => r.id === rowId);
-    if (row) {
-      console.log(`Title: ${row.title}, Contents: ${row.contents}, Number: ${row.id}`);
-      console.log(row);
-      try {
-        const response = await axios.post(
-          `http://localhost:8000/company_information/${sessionId}`,
-          {
-            title: row.title,
-            contents: row.contents,
-            row_number: row.id.replace('row', ''), // Convert "row1" to "1"
-            public_status: newStatus,
-          }
-        );
-        console.log(response.data);
-      } catch (error) {
-        console.error("Error sending data!", error);
-      }
-    }
-  };
+  //   const row = rows.find(r => r.id === rowId);
+  //   if (row) {
+  //     console.log(`Title: ${row.title}, Contents: ${row.contents}, Number: ${row.id}`);
+  //     console.log(row);
+  //     try {
+  //       const response = await axios.post(
+  //         `http://localhost:8000/company_information/${sessionId}`,
+  //         {
+  //           title: row.title,
+  //           contents: row.contents,
+  //           row_number: row.id.replace('row', ''), // Convert "row1" to "1"
+  //           public_status: newStatus,
+  //         }
+  //       );
+  //       console.log(response.data);
+  //     } catch (error) {
+  //       console.error("Error sending data!", error);
+  //     }
+  //   }
+  // };
 
   // フォーカス外したときに保存
-  const handleInputBlur = async (e, rowId, inputName) => {
-    const value = e.target.value;
+  // const handleInputBlur = async (e, rowId, inputName) => {
+  //   const value = e.target.value;
 
-    setRows((prevRows) =>
-      prevRows.map((row) =>
-        row.id === rowId ? { ...row, [inputName]: value } : row
-      )
-    );
+  //   setRows((prevRows) =>
+  //     prevRows.map((row) =>
+  //       row.id === rowId ? { ...row, [inputName]: value } : row
+  //     )
+  //   );
 
-    // 入力が空の場合にエラーメッセージを設定
-    if (!value) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [rowId]: { ...prevErrors[rowId], [inputName]: 'このフィールドは必須です' },
-      }));
-    } else {
-      setErrors((prevErrors) => {
-        const { [inputName]: restErrors } = prevErrors[rowId] || {};
-        return {
-          ...prevErrors,
-          [rowId]: restErrors,
-        };
-      });
+  //   // 入力が空の場合にエラーメッセージを設定
+  //   if (!value) {
+  //     setErrors((prevErrors) => ({
+  //       ...prevErrors,
+  //       [rowId]: { ...prevErrors[rowId], [inputName]: 'このフィールドは必須です' },
+  //     }));
+  //   } else {
+  //     setErrors((prevErrors) => {
+  //       const { [inputName]: restErrors } = prevErrors[rowId] || {};
+  //       return {
+  //         ...prevErrors,
+  //         [rowId]: restErrors,
+  //       };
+  //     });
 
+<<<<<<< HEAD
       // 入力内容が変更されたときにデータを送信
       const row = rows.find(r => r.id === rowId);
       if (row) {
@@ -202,18 +229,102 @@ const Settings = () => {
         <Link to={`/Settings/ChangeEmail`}>メールアドレス変更</Link>
       </div>
 
+=======
+  //     // 入力内容が変更されたときにデータを送信
+  //     const row = rows.find(r => r.id === rowId);
+  //     if (row) {
+  //       console.log(row);
+  //       console.log("inputName", inputName);
+  //       console.log("row_number", row.id.replace('row', ''));
+  //       console.log("public_status", row.public_status);
+  //       try {
+  //         const response = await axios.post(
+  //           `http://localhost:8000/company_information/${sessionId}`,
+  //           {
+  //             ...(inputName === "title" && { title: value }),
+  //             ...(inputName === "contents" && { contents: value }),
+  //             row_number: row.id.replace('row', ''), //row1であれば「1」を取得する
+  //             public_status: row.public_status,
+  //           }
+  //         );
+  //         console.log(response.data);
+  //       } catch (error) {
+  //         console.error("Error sending data!", error);
+  //       }
+  //     }
+  //   }
+  // };
+
+  // const addNewRow = async () => {
+  //   const newRowId = `row${rows.length + 1}`;
+  //   try {
+  //     const response = await axios.post(`http://localhost:8000/add_new_row/${sessionId}`,
+  //       {
+  //         title: "新規タイトル",
+  //         contents: "新規内容",
+  //         row_number: newRowId.replace('row', ''),
+  //         public_status: 0,
+  //       }
+  //     );
+  //     const savedRow = response.data.saved_row;
+  //     console.log("savedrow", savedRow);
+  //     setRows((prevRows) => [...prevRows, savedRow]);
+  //   } catch (error) {
+  //     console.error("Error saving new row!", error);
+  //   }
+  // };
+
+  // const row_delete = async (rowId) => {
+  //   confirm("本当に削除しますか");
+  //   if (confirm && rowId) {
+  //     console.log("delete_id", rowId);
+  //     try {
+  //       const response = await axios.post(
+  //         `http://localhost:8000/row_delete/${sessionId}`,
+  //         {
+  //           delete_id: rowId.replace('row', ''),
+  //         }
+  //       );
+  //       console.log(response.data);
+  //       setRows((prevRows) => prevRows.filter((row) => row.id !== rowId));
+  //     } catch (error) {
+  //       console.error("Error sending data!", error);
+  //     }
+  //   }
+
+  // };
+
+  return (
+    <Container maxWidth="xl" >
+      <div className="setting">
+        <div>
+          <Link to={`/Settings/ChangeEmail`}>メールアドレス変更</Link>
+        </div>
+
+        <div>
+        </div>
+
+        <p>色を設定する</p>
+        <ColorPicker />
+        {/* 
+>>>>>>> 78a426677ad771a7e27efac6dc40e4924d52dcff
       <p>企業の詳細な情報</p>
 
       <p onClick={addNewRow} style={{ cursor: 'pointer', color: 'blue' }}>
         企業情報を追加する
-      </p>
+      </p> */}
 
+<<<<<<< HEAD
+=======
+
+        {/*     
+>>>>>>> 78a426677ad771a7e27efac6dc40e4924d52dcff
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={rows.map(row => row.id)} strategy={verticalListSortingStrategy}>
           <table className="company_information_table">
             <thead>
               <tr>
-                <th></th> {/* This is where you should place the drag handle */}
+                <th></th> 
                 <th>企業情報</th>
                 <th>内容</th>
                 <th>公開状態</th>
@@ -261,8 +372,10 @@ const Settings = () => {
             </tbody>
           </table>
         </SortableContext>
-      </DndContext>
-    </div>
+      </DndContext> */}
+      </div>
+    </Container>
+
   );
 };
 

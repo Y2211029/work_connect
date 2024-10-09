@@ -3,28 +3,22 @@ import { useState } from "react";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 const ChangeEmail = () => {
-
     const { getSessionData } = useSessionStorage();
-
     let sessionData = getSessionData("accountData");
     let sessionEmail = sessionData.mail;
     let sessionId = sessionData.id;
 
     console.log("sessionEmail", sessionEmail);
-    // 確認メール送信ボタンクリック
-    // バックエンド側
-    // メール取得
-    // パスワード取得
-    // ユーザーネーム取得
-    // データベースと照らし合わせて正しいか確認
-    // trueだったらメールアドレス変更して戻り値に（”success”）を返す。
-    // falseだったら戻り値に（"パスワードが違います。"）
-    // ※時間があればpasswordを間違えれるのは3回までにする
 
     const [NewEmail, SetNewEmail] = useState("");
     const [CheckEmail, SetCheckEmail] = useState("");
+    const [PostCheck, SetPostCheck] = useState("確認メールを送信");
+    const [MailCheck, SetMailCheck] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false); // 追加: 送信中かどうかの状態管理
 
     async function handleClickCheckMail() {
+        setIsSubmitting(true); // 送信開始
+        SetPostCheck("送信中...");
         try {
             if (NewEmail === CheckEmail) {
                 const url = `http://localhost:8000/change_email`;
@@ -34,26 +28,32 @@ const ChangeEmail = () => {
                 });
 
                 console.log("response", response);
+                if (response.data) {
+                    SetPostCheck(response.data);
+                    SetMailCheck("");
+                    alert("メールアドレス変更確認メールが送信されました。ログアウトします。"); // ここでアラートを表示
+                    window.location.href = "/Top";
+                }
             } else {
-                console.log("メールアドレスが一致していません。");
+                SetMailCheck("メールアドレスが一致していません。");
             }
-        } catch(e) {
-            console.log("ChangeEmailerror",e);
+        } catch (e) {
+            console.log("ChangeEmailerror", e);
+        } finally {
+            setIsSubmitting(false); // 送信終了
         }
     }
-
 
     return (
         <>
             <h1>メールアドレス変更</h1>
-            <p>現在のメールアドレス:{sessionEmail}</p>
+            <p>現在のメールアドレス: {sessionEmail}</p>
             <p>新しいメールアドレス: <input type="email" onChange={(e) => { SetNewEmail(e.target.value) }} value={NewEmail} /></p>
             <p>新しいメールアドレス（確認）: <input type="email" onChange={(e) => { SetCheckEmail(e.target.value) }} value={CheckEmail} /></p>
-            <p>パスワードの入力：<input type="email" name="" id="" /></p>
-            <button onClick={handleClickCheckMail}>確認メールを送信します。</button>
+            {MailCheck && <p key={MailCheck}>{MailCheck}</p>}
+            <button onClick={handleClickCheckMail} disabled={isSubmitting || PostCheck === "送信中..."}>{PostCheck}</button>
         </>
-
     )
 }
 
-export default ChangeEmail
+export default ChangeEmail;

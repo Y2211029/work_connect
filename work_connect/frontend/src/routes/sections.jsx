@@ -73,10 +73,15 @@ export default function Router() {
     {
       element: (
         <DashboardLayout>
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense>
             <Outlet />
           </Suspense>
         </DashboardLayout>
+        // <DashboardLayout>
+        //   <Suspense fallback={<div>Loading...</div>}>
+        //     <Outlet />
+        //   </Suspense>
+        // </DashboardLayout>
       ),
       children: [
         { path: "SignRegistar", element: <SignRegistar /> },

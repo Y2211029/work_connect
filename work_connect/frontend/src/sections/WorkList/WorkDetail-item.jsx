@@ -491,7 +491,7 @@ const WorkDetailItem = () => {
   const renderIntro = workDetail.work_intro && (
     <>
       <Typography variant="h4" className="WorkDetail_typo">●作品の紹介</Typography>
-      <div className="WorkDetail_info">{workDetail.work_intro}</div>
+      <div className="WorkDetail_info-intro">{workDetail.work_intro}</div>
     </>
   );
 

@@ -204,7 +204,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   return (
     <div ref={ref} >
       <Stack>
-        <div className="postCard" style={{ width: "500px" }}>
+        <div className="postCard">
           {renderShape}
           {renderMovie}
           {renderTitle}

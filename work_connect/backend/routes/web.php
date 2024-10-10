@@ -40,6 +40,9 @@ use App\Http\Controllers\follow\FollowController;
 use App\Http\Controllers\chat\GetChannelListController;
 use App\Http\Controllers\chat\GetChatController;
 use App\Http\Controllers\chat\PostChatController;
+use App\Http\Controllers\chat\EditChatController;
+use App\Http\Controllers\chat\DeleteChatController;
+use App\Http\Controllers\chat\AlreadyReadChatController;
 use App\Http\Controllers\tag\InsertTagController;
 use App\Http\Controllers\tag\GetGenreTagController;
 use App\Http\Controllers\tag\GetLanguageTagController;
@@ -214,6 +217,12 @@ Route::get('/get_channel_list', [GetChannelListController::class, 'GetChannelLis
 Route::get('/get_chat', [GetChatController::class, 'GetChatController']);
 // チャット送信
 Route::post('/post_chat', [PostChatController::class, 'PostChatController']);
+// チャット編集
+Route::post('/edit_chat', [EditChatController::class, 'EditChatController']);
+// チャット削除
+Route::post('/delete_chat', [DeleteChatController::class, 'DeleteChatController']);
+// チャット既読
+Route::post('/already_read_chat', [AlreadyReadChatController::class, 'AlreadyReadChatController']);
 
 // 通知取得
 Route::get('/get_notice', [GetNoticeController::class, 'GetNoticeController']);

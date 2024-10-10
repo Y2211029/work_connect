@@ -11,7 +11,13 @@ import Paper from '@mui/material/Paper';
 import Typography from "@mui/material/Typography";
 import SendIcon from '@mui/icons-material/Send';
 import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import Tooltip from '@mui/material/Tooltip';
+
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CheckIcon from '@mui/icons-material/Check';
 
 // import "../css/App.css";
 
@@ -49,7 +55,7 @@ const Textarea = styled(BaseTextareaAutosize)(
   border-radius: 8px;
   color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
   background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
-  border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
+  border: 2px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[400]};
   box-shadow: 0px 2px 2px ${theme.palette.mode === 'dark' ? grey[900] : grey[50]};
 
   &:hover {
@@ -74,8 +80,14 @@ const ChatView = () => {
   const { getSessionData } = useSessionStorage();
   // セッションストレージからaccountDataを取得し、idを初期値として設定(ログイン中のIDを取得)
   const [accountData, setAccountData] = useState(getSessionData("accountData"));
+
   // DBからのレスポンスが入る変数
   const [ResponseData, setResponseData] = useState([]);
+
+  // ポップメニューの変数設定
+  const [popMenuId, setPopMenuId] = useState(null);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const anchorElOpen = Boolean(anchorEl);
 
   // デフォルトでチャットを一番下にスクロールする
   const chatBoxscroll = useRef(null);
@@ -85,15 +97,17 @@ const ChatView = () => {
   // テキストの文章を保持する変数
   const [TextData, setTextData] = useState(null);
 
-  // const [PrevChatDate, setPrevChatDate] = useState(null);
-  // const [PrevChatDateCount, setPrevChatDateCount] = useState(false);
+  // useStateだと無限ループが発生するためletで初期値設定
+  // メッセージの送信日時を記憶しておく
+  let PrevChatDate = null;
 
   // ログイン中のid
   const MyUserId = accountData.id;
 
   // Laravelとの通信用URL
-  const chat_url = "http://localhost:8000/get_chat";
-  const chat_post_url = "http://localhost:8000/post_chat";
+  const get_chat = "http://localhost:8000/get_chat";
+  const post_chat = "http://localhost:8000/post_chat";
+  const delete_chat = "http://localhost:8000/delete_chat";
 
   // 1回のみ実行(1秒単位でデータを取得)
   useEffect(() => {
@@ -170,13 +184,11 @@ const ChatView = () => {
 
   // 最新のチャットを取得する処理
   const GetChat = () => {
-
     async function GetData() {
-
       console.log('チャットデータを取得中...'+getSessionData("accountData").ChatOpenId);
       try {
         // Laravel側からデータを取得
-        const response = await axios.get(chat_url, {
+        const response = await axios.get(get_chat, {
           params: {
             MyUserId: MyUserId, // ログイン中のID
             PairUserId: getSessionData("accountData").ChatOpenId // チャット相手のID
@@ -207,13 +219,13 @@ const ChatView = () => {
       try {
         console.log("TextData:"+TextData);
         // Laravelにデータを送信
-        const response = await axios.post(chat_post_url, {
+        const response = await axios.post(post_chat, {
           MyUserId: MyUserId, // ログイン中のID
           PairUserId: getSessionData("accountData").ChatOpenId, // チャット相手のID
           Message: TextData // メッセージ
         });
         if (response.data) {
-          console.log("送信成功しました＿＿＿");
+          console.log("送信成功しました");
           setTextData("");
         }
       } catch (err) {
@@ -228,19 +240,47 @@ const ChatView = () => {
     }
   };
 
+  // チャットを削除する処理
+  const DeleteChat = (id) => {
+    async function PostData() {
+      try {
+        console.log("TextData:");
+
+        const response = await axios.post(delete_chat, {
+          Id: id, // ログイン中のID
+        });
+        if (response.data) {
+          console.log("チャットの削除に成功しました");
+        }
+      } catch (err) {
+        console.log("err:", err);
+      }
+    }
+    // DBからデータを取得
+    if (id) {
+      PostData();
+    }
+  };
+
   // 送信時間から日にちを取り出す関数
+
   const GetDay = (time) => {
-    //setPrevChatDateCount(true);
     // 日付部分を切り取る
-    const dateString = time.slice(0, 10); // "2024-10-07" などを取得
-    //setPrevChatDate(dateString);
-    const [year, month, day] = dateString.split('-'); // 年、月、日を分割
+    const ChatDate = time.slice(0, 10); // "2024-10-07" などを取得
+    if(PrevChatDate && PrevChatDate === ChatDate){
+      // 前のデータと日付が同じ場合は、日付を表示しないのでreturnで空文字列を返す
+      return "";
+    }
+    // メッセージの送信日時を更新しておく
+    PrevChatDate = ChatDate;
+
+    const [year, month, day] = ChatDate.split('-'); // 年、月、日を分割
     console.log("テストですテストですテストですテストです"+year);
     // 月と日を整数に変換し、形式を整える
     const formattedDate = `${parseInt(month, 10)}月${parseInt(day, 10)}日`; // "10月7日"
 
     // 曜日を取得
-    const date = new Date(`${dateString}T00:00:00+09:00`); // UTCからDateオブジェクトに変換
+    const date = new Date(`${ChatDate}T00:00:00+09:00`); // UTCからDateオブジェクトに変換
     const options = { weekday: 'long' }; // 曜日のオプション
     const dayOfWeek = date.toLocaleDateString('ja-JP', options); // 日本語の曜日を取得
 
@@ -261,6 +301,33 @@ const ChatView = () => {
     }
 
     return `${hour}:${timeString.slice(3)}`; // 分はそのまま返す
+  };
+
+  ///////////////////// ポップメニューの処理 /////////////////////
+  // 開く
+  const popMenu = (e) => {
+    setAnchorEl(e.currentTarget);
+    // PopMenuIdを上書きする
+    setPopMenuId(e.currentTarget.id);
+    console.log("e.idは"+e.currentTarget.id);
+  };
+  // 閉じる
+  const popMenuClose = () => {
+    setAnchorEl(null);
+  };
+  // 削除
+  const popMenuDelete = (id) => {
+    if (confirm("チャットを削除してよろしいですか？")) {
+      // OK（はい）が押された場合の処理
+      // 関数呼び出し
+      DeleteChat(id);
+      // アラート
+      alert("チャットを削除しました。");
+      // リロード
+      window.location.reload();
+    } else {
+      // キャンセル（いいえ）が押された場合の処理
+    }
   };
 
 
@@ -337,53 +404,136 @@ const ChatView = () => {
           justifyContent="center"
           variant="caption"
           component="div"
-          sx={{ margin: '5px 10px 0 10px' }}
+          sx={{
+            margin: '0 10px',
+            position: 'sticky',
+            top: '0',
+            backgroundColor: '#F9FAFB',
+            zIndex: 1,
+            fontSize: '16px'
+          }}
         >
           {GetDay(element.send_datetime)}
         </Typography>
 
-        <Typography
-          display="flex"
-          justifyContent={element.send_user_id === MyUserId ? 'flex-end' : 'flex-start'}
-          variant="caption"
-          component="div"
-          sx={{margin:'5px 10px 0 10px',}}>
-          {GetTime(element.send_datetime)}
-        </Typography>
-        <Box
-          display="flex"
-          justifyContent={element.send_user_id === MyUserId ? 'flex-end' : 'flex-start'}
-          mb={2}
-        >
-
-          <Paper
-            sx={{
-              padding: '10px',
-              margin:'0px 10px',
-              color: element.send_user_id === MyUserId ?'black':'black',
-              borderRadius: '10px',
-              maxWidth: '60%',
-              // 背景色
-              bgcolor: element.send_user_id === MyUserId ?'#dbdbff':'#dbdbdb',
-              // 背景色(ホバー時)
-              '&:hover': {
-                bgcolor: element.send_user_id === MyUserId ? 'rgba(199, 199, 255)':'rgba(199, 199, 199)',
-              },
-            }}
-          >
-            <Typography variant="body1">
-              {/* 改行に対応 */}
-              {element.message.split('\n').map((msg, idx) => (
-                <React.Fragment key={idx}>
-                  {msg}
-                  {idx < element.message.split('\n').length - 1 && <br />} {/* 最後の要素以外で改行 */}
-                </React.Fragment>
-              ))}
+        {element.check_read !== '削除' ? (
+          <>
+            <Typography
+              display="flex"
+              justifyContent={element.send_user_id === MyUserId ? 'flex-end' : 'flex-start'}
+              variant="caption"
+              component="div"
+              sx={{
+                margin:'5px 15px 0 65px'
+                }}>
+              {GetTime(element.send_datetime)}
             </Typography>
-          </Paper>
-        </Box>
 
+            <Box
+              display="flex"
+              justifyContent={element.send_user_id === MyUserId ? 'flex-end' : 'flex-start'}
+              sx={{
+                margin:0
+                }}
+              mb={2}
+            >
+            {/* アイコン (相手のメッセージのみ) */}
+            {(element.send_user_id !== MyUserId)?(
+            <img src={avatarSrc}
+            style={{
+              width: '40px',
+              height: '40px',
+              margin: '0 10px',
+              borderRadius: '50%' }}
+            />
+            ):(null)}
+
+              <Paper
+                id={element.id}
+                aria-controls={anchorElOpen ? 'demo-positioned-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={anchorElOpen ? 'true' : undefined}
+                onClick={element.send_user_id === MyUserId ? (e) => popMenu(e) : null}
+                sx={{
+                  padding: '10px',
+                  margin:element.send_user_id === MyUserId ?'0px 10px':'0px',
+                  color: 'black',
+                  borderRadius: '10px',
+                  maxWidth: '60%',
+                  // 背景色
+                  bgcolor: element.send_user_id === MyUserId ?'#dbdbff':'#dbdbdb',
+                  // 背景色(ホバー時)
+                  '&:hover': {
+                    bgcolor: element.send_user_id === MyUserId ? 'rgba(199, 199, 255)':'rgba(199, 199, 199)',
+                  },
+                }}
+              >
+                <Typography variant="body1">
+                  {/* 改行に対応 */}
+                  {element.message.split('\n').map((msg, idx) => (
+                    <React.Fragment key={idx}>
+                      {msg}
+                      {idx < element.message.split('\n').length - 1 && <br />} {/* 最後の要素以外で改行 */}
+                    </React.Fragment>
+                  ))}
+                </Typography>
+              </Paper>
+
+            </Box>
+
+            {/* チャットのメッセージを押したときのメニュー (自分のメッセージのみ) */}
+            {(element.send_user_id === MyUserId)?(
+              <Menu
+                id="demo-positioned-menu"
+                aria-labelledby="demo-positioned-button"
+                anchorEl={anchorEl}
+                open={anchorElOpen}
+                onClose={popMenuClose}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+              >
+                <MenuItem onClick={popMenuClose}><EditIcon />&nbsp;編集</MenuItem>
+                <MenuItem onClick={() => popMenuDelete(popMenuId)} sx={{color:'red'}}><DeleteIcon color="error"/>&nbsp;削除</MenuItem>
+              </Menu>
+            ):(null)}
+
+            {/* 既読マーク (自分のメッセージのみ) */}
+            {(element.send_user_id === MyUserId)?(
+              <Box
+              display="flex"
+              justifyContent="flex-end"
+              sx={{
+                margin:'0 10px'
+              }}>
+                <CheckIcon sx={{ fontSize: 20 }}/>
+              </Box>
+            ):(
+              <Box
+                sx={{
+                  margin:'0 0 20px 0'
+                }}>
+              </Box>)}
+          </>
+          ) : (
+            <Typography
+              variant="caption"
+              justifyContent={element.send_user_id === MyUserId ? 'flex-end' : 'flex-start'}
+              sx={{
+                margin: '10px',
+                color: 'gray',
+                display:'flex',
+                }}>
+              このメッセージは削除されました
+            </Typography>
+          )}
       </div>
+
     ))):(
       // チャット履歴がまだないとき
       <div>
@@ -421,7 +571,7 @@ const ChatView = () => {
           }}
           value={TextData}
           onChange={textChange}
-          //label="内容を入力してください"
+          //label="メッセージを入力"
         />
         <IconButton
             onClick={sendClick}

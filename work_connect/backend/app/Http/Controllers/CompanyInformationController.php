@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\w_company_information;
 use App\Models\w_company;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
 
 class CompanyInformationController extends Controller
 {
-    public function company_information($CompanyName)
+    public function company_informations($CompanyName)
     {
         // company_name で w_companies テーブルから ID を取得
         $company = w_company::where('company_name', $CompanyName)->first();
@@ -40,7 +41,8 @@ class CompanyInformationController extends Controller
                     'contents' => $item->contents,
                     'company_name' => $item->company_name,  // 直接アクセス
                     'id' => $item->company_information_id,  // 直接アクセス
-                    'company_id' => $item->company_id       // 直接アクセス
+                    'company_id' => $item->company_id,       // 直接アクセス
+                    'public_status' => $item->public_status // 直接アクセス
                 ];
             });
 
@@ -63,6 +65,36 @@ class CompanyInformationController extends Controller
         return response()->json([
             'title_contents' => $title_contents_array,
         ]);
+    }
+
+    public function company_informations_save(Request $request)
+    {
+        Log::info("company_informations_save通りました");
+    
+        // リクエストからCompanyInformationを取得
+        $companyInformationArray = $request->input("CompanyInformation");
+    
+        foreach ($companyInformationArray as $companyInformation) {
+            // IDに基づいてデータベースのレコードを更新
+            $updated = w_company_information::where('id', $companyInformation['id'])
+                ->update([
+                    'title' => $companyInformation['title'],
+                    'contents' => $companyInformation['contents'],
+                    'company_id' => $companyInformation['company_id'],
+                ]);
+    
+            // レコードが更新されなかった場合、新しいレコードを挿入
+            if ($updated === 0) { // 更新がなかった場合
+                w_company_information::create([
+                    'title' => $companyInformation['title'],
+                    'contents' => $companyInformation['contents'],
+                    'company_id' => $companyInformation['company_id'],
+                ]);
+            }
+        }
+    
+        Log::info("カンパニーインフォメーションの処理完了", ['data' => $companyInformationArray]);
+        return response()->json(['message' => '処理が完了しました']);
     }
 
 

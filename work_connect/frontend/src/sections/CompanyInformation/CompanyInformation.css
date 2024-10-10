@@ -1,0 +1,63 @@
+.Table {
+    width: 100%;
+    /* 親要素の幅に合わせる */
+    table-layout: auto;
+    /* 列幅を自動調整 */
+}
+
+.Table td,
+.Table th {
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    padding: 8px;
+}
+
+.tableContainer {
+    width: 60%;
+    /* 親要素にフィット */
+    max-width: 200%;
+    /* 最大幅を100%に制限 */
+    overflow-y:hidden;
+}
+
+
+/* モーダル編集画面 */
+.modal_overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+
+    /*　画面の中央に要素を表示させる設定　*/
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal_window {
+    z-index: 2;
+    width: 70%;
+    height: 70%;
+    padding: 1em;
+    background: #fff;
+}
+
+.Table textarea {
+    height: auto; /* 高さは自動で調整するように */
+    min-height: 100px; /* 最小の高さを指定（任意） */
+    max-height: 300px; /* 最大の高さを指定（任意） */
+    resize: vertical; /* 垂直方向のリサイズを許可 */
+    box-sizing: border-box; /* パディングとボーダーを含めたサイズ計算 */
+    overflow: hidden; /* 内容が溢れた場合は隠す */
+    font-size: 16px; /* フォントサイズを設定 */
+}
+
+/* テキスト入力のスタイル（必要に応じて） */
+.Table input[type="text"] {
+    padding: 8px; /* 内側の余白を設定 */
+    font-size: 16px; /* フォントサイズを設定 */
+    width: 100%; /* 幅を100%にして親要素にフィットさせる */
+    box-sizing: border-box; /* ボックスのサイズを調整 */
+}

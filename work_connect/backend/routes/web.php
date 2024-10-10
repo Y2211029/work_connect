@@ -254,7 +254,8 @@ Route::get('/thumbnail_img_delete/{id}', [EditorController::class, 'thumbnail_im
 Route::get('/api/embed', action: [EditorController::class, 'embed']);
 
 //企業の詳細情報を取得
-Route::get('/company_informations/{CompanyName}', action: [CompanyInformationController::class, 'company_information']);
+Route::get('/company_informations/{CompanyName}', action: [CompanyInformationController::class, 'company_informations']);
+Route::post('/company_informations_save', action: [CompanyInformationController::class, 'company_informations_save']);
 
 
 //応募用フォーム作成機能

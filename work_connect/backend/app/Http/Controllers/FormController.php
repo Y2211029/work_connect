@@ -66,41 +66,41 @@ class FormController extends Controller
         Log::info("write_form_get通っています");
         $newsdetail_id = (string) $NewsDetailId;
         Log::info('newsdetail_id: ' . $newsdetail_id);
-    
+
         try {
-    
+
             $page = (int) $request->query('page', 1);
             $perPage = 20;
             $offset = ($page - 1) * $perPage;
             $sortOption = $request->query('sort');
             $userName = $request->query('userName');
-    
+
             // 基本クエリ: news_idを元にw_newsテーブルと結合し、その後company_idを元にw_companiesテーブルと結合する
             $query = w_create_form::where('w_create_forms.news_id', $newsdetail_id)
                 ->join('w_news', 'w_create_forms.news_id', '=', 'w_news.id') // news_idでw_newsと結合
                 ->join('w_companies', 'w_news.company_id', '=', 'w_companies.id') // company_idでw_companiesと結合
                 ->select('w_create_forms.*', 'w_news.*', 'w_companies.*'); // 必要なカラムを選択
-    
+
             // ユーザー名によるフィルタリング
             if ($userName !== null) {
                 $query->where('w_companies.user_name', $userName);
             }
-    
+
             // ソートオプションによる並び替え
             if ($sortOption === 'orderNewPostsDate') {
                 $query->orderBy('w_create_forms.createformDateTime', 'desc');
             } elseif ($sortOption === 'orderOldPostsDate') {
                 $query->orderBy('w_create_forms.createformDateTime', 'asc');
             }
-    
+
             // ページネーション
             $posts = $query->skip($offset)
                 ->take($perPage)
                 ->get();
-    
+
             // クエリログを確認
             Log::info(\DB::getQueryLog());
-    
+
             // JSON デコード
             foreach ($posts as $post) {
                 $decodedForm = json_decode($post->create_form);
@@ -111,7 +111,7 @@ class FormController extends Controller
                     Log::info($decodedForm);
                 }
             }
-    
+
             Log::info($posts);
             return response()->json($posts);
         } catch (\Exception $e) {
@@ -119,7 +119,7 @@ class FormController extends Controller
             return response()->json(['error' => 'データ取得中にエラーが発生しました。'], 500);
         }
     }
-    
+
 
     public function wright_form_save(Request $request)
     {

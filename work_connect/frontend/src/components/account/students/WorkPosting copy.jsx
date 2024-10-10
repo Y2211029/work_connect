@@ -62,24 +62,7 @@ const WorkPosting = () => {
         );
       }
     }
-    const imagesArray = Array.from(images);
-    setImageFiles(imagesArray);
-    console.log("imageFiles: ",imageFiles);
-
-    // 現在のFileListを維持するために新しいDataTransferを作成
-    let dt = new DataTransfer();
-
-    // 既存のimageFilesをDataTransferに追加
-    imageFiles.forEach((file) => {
-      dt.items.add(file);
-    });
-
-    // 新しい画像をDataTransferに追加
-    images.forEach((image) => {
-      dt.items.add(image);
-    });
-    // 新しいFileListを状態に設定
-    setImage(dt.files);
+    setImageFiles(images);
     // setImagesName(images.map((item) => item.name).join(", "));
 
     console.log("Image: ", Image);

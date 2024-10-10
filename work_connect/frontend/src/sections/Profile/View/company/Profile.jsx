@@ -5,6 +5,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import ProfileMypage from './Mypage';
 import ProfileNews from './News';
+import ProfileCompanyInformation from './CompanyInformation';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import { AllItemsContext } from "src/layouts/dashboard/index";
 
@@ -93,6 +94,10 @@ export function NavTabs({ initialTabValue = 0 }) {
       // 作品が押されたとき
       setProfileTabState(1);
       pageCheck('news&category=joboffers');
+    }else if (newValue === 2) {
+      // 作品が押されたとき
+      setProfileTabState(2);
+      pageCheck('companyinformation');
     }
     setAllItems((prevItems) => ({
       ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
@@ -119,9 +124,11 @@ export function NavTabs({ initialTabValue = 0 }) {
       >
         <Tab label="マイページ" onClick={(e) => handleTabClick(e, 0)} />
         <Tab label="ニュース" onClick={(e) => handleTabClick(e, 1)} />
+        <Tab label="企業情報" onClick={(e) => handleTabClick(e, 2)} />
       </Tabs>
       {value === 0 && <ProfileMypage />} {/* value が 0 の場合マイページ */}
       {value === 1 && <ProfileNews />}   {/* value が 1 の場合ニュース */}
+      {value === 2 && <ProfileCompanyInformation />}   {/* value が 2 の場合企業の詳細情報 */}
     </Box>
   );
 }

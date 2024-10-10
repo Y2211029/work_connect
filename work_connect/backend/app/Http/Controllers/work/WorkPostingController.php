@@ -21,6 +21,7 @@ class WorkPostingController extends Controller
         $Environment = $request->input('Environment');
         $images = $request->input('imagesName'); // 画像のバリデーション
         $imagesArray = $request->file('images');
+        $annotation = $request->input('annotation');
 
         $pathArray = [];
         if (is_array($imagesArray) && count($imagesArray) > 0) {
@@ -34,10 +35,10 @@ class WorkPostingController extends Controller
         }
 
         \Log::info('$pathArray: ', $pathArray);
-
+        $annotation_json = json_encode($annotation);
 
         // データ保存 (例: DBに保存)
-        w_works::create([
+        $work = w_works::create([
             'work_name' => $WorkTitle,
             'work_genre' => $WorkGenre,
             'youtube_url' => $YoutubeURL,
@@ -45,8 +46,18 @@ class WorkPostingController extends Controller
             'obsession' => $Obsession,
             'programming_language' => $Language,
             'development_environment' => $Environment,
-            'thumbnail' => implode(',', $pathArray)
+            'thumbnail' => $pathArray[0]
         ]);
+
+        // 作成したw_worksのIDを取得
+        $work_id = $work->id;
+        foreach ($pathArray as $index => $data) {
+            w_images::create([
+                'image' => $data, // 'column_name'は実際のカラム名に変更
+                'annotation' => $annotation[$index],
+                'work_id' => $work_id // w_worksのIDを関連付け
+            ]);
+        }
 
 
         return response()->json(['message' => 'Work data saved successfully'], 200);

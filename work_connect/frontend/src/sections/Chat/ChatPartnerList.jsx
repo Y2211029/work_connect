@@ -104,18 +104,18 @@ export default function ChatPartnerList() {
   // ListItemButtonが押された時の処理
   const ChatOpen = (element) => {
 
-   // element.idが存在するときのみ実行
-   element.id && updateSessionData("accountData", "ChatOpenId", element.id);
-   // element.user_nameが存在するときのみ実行
-   element.user_name && updateSessionData("accountData", "ChatOpenUserName", element.user_name);
-   // element.company_nameが存在するときのみ実行
-   element.company_name && updateSessionData("accountData", "ChatOpenCompanyName", element.company_name);
-   // element.iconが存在するときのみ実行
-   element.icon ? updateSessionData("accountData", "ChatOpenIcon", element.icon) : updateSessionData("accountData", "ChatOpenIcon", "");
-   // element.follow_statusが存在するときのみ実行
-   element.follow_status && updateSessionData("accountData", "ChatOpenFollowStatus", element.follow_status);
+    // element.idが存在するときのみ実行
+    element.id && updateSessionData("accountData", "ChatOpenId", element.id);
+    // element.user_nameが存在するときのみ実行
+    element.user_name && updateSessionData("accountData", "ChatOpenUserName", element.user_name);
+    // element.company_nameが存在するときのみ実行
+    element.company_name && updateSessionData("accountData", "ChatOpenCompanyName", element.company_name);
+    // element.iconが存在するときのみ実行
+    element.icon ? updateSessionData("accountData", "ChatOpenIcon", element.icon) : updateSessionData("accountData", "ChatOpenIcon", "");
+    // element.follow_statusが存在するときのみ実行
+    element.follow_status && updateSessionData("accountData", "ChatOpenFollowStatus", element.follow_status);
 
-  };
+   };
 
   return (
     <List

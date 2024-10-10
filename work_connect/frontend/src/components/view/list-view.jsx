@@ -40,7 +40,12 @@ const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, s
 
     const existingIds = new Set(currentWorkList.map(item => item[idKey]));
 
-    const filteredNewWorks = newWorks.filter(element => !existingIds.has(element[idKey]));
+    let filteredNewWorks;
+    if(newWorks.title_contents){
+      filteredNewWorks = newWorks.title_contents.filter(element => !existingIds.has(element[idKey]));
+    }else{
+      filteredNewWorks = newWorks.filter(element => !existingIds.has(element[idKey]));
+    }
 
     // 全作品アイテム
     filteredNewWorks.forEach((element) => {
@@ -89,7 +94,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName, NewsId }) {
 
   useEffect(() => {
     setSessionAccountData(SessionAccountData);
-  }, [SessionAccountData]);
+  }, []);
 
   useEffect(() => {
     const currentPath = window.location.pathname;
@@ -148,7 +153,12 @@ export default function ItemObjectAndPostCard({ type, ParamUserName, NewsId }) {
         const { default: CheckFormPostCard } = await import("src/sections/CheckForm/post-card");
         setPostCard(() => CheckFormPostCard);
         console.log("CheckFormPostCard");
-      }
+      }else if(DecodeURL === `/Profile/${ParamUserName}` &&
+        page === "companyinformation"){
+          const { default: CompanyInformationPostCard } = await import("src/sections/CompanyInformation/post-card");
+          setPostCard(() => CompanyInformationPostCard);
+          console.log("CompanyInformationPostCard");
+        }
     };
     loadComponents();
   }, [SessionAccountData.user_name, PathName, NewsDetailId, ParamUserName, DecodeURL, NewsId,category,page]);
@@ -388,15 +398,32 @@ export default function ItemObjectAndPostCard({ type, ParamUserName, NewsId }) {
       tags: ["company_name"],
       generatePosts: (WorkOfList) => {
         return WorkOfList.map((company) => ({
-          company_id: company.company_id,
-          wright_form: company.wright_form,
-          news_id: company.news_id,
           article_title: company.article_title,
-          answerer_name: company.user_name,
-          icon_id: company.icon_id
+          user_name: company.users,
         }));
       },
     },
+
+    companyinformations: {
+      ItemName: `${ParamUserName}さんの詳細な企業情報`,
+      url: `http://localhost:8000/company_informations/${ParamUserName}`,
+      idKey: "id",
+      tags: ["company_name"],
+      generatePosts: (WorkOfList) => {
+        if (Array.isArray(WorkOfList)) {
+          const title_contents = WorkOfList.map((company) => ({
+            title: company.title,
+            contents: company.contents,
+            company_id: company.company_id,
+            id: company.id,
+            public_status:company.public_status
+          }));
+
+          return [{ title_contents }]; // 1つのオブジェクトにまとめた配列として返す
+        }
+      },
+    },
+
   };
 
   return (
@@ -479,6 +506,8 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     || DecodeURL === `/Profile/${ParamUserName}` &&
         page === "news" &&
       (category === "joboffers" || category === "internships" || category === "blogs")
+    || DecodeURL === `/Profile/${ParamUserName}` &&
+        page === "companyinformation"
   )) {
     // console.log(" URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合");
     lastUrl = `${url}?page=${Page}&sort=${sortOption}`;
@@ -662,3 +691,4 @@ ListView.propTypes = {
   page: PropTypes.string,
   category: PropTypes.string,
 };
+

@@ -104,18 +104,18 @@ export default function ChatPartnerList() {
   // ListItemButtonが押された時の処理
   const ChatOpen = (element) => {
 
-   // element.idが存在するときのみ実行
-   element.id && updateSessionData("accountData", "ChatOpenId", element.id);
-   // element.user_nameが存在するときのみ実行
-   element.user_name && updateSessionData("accountData", "ChatOpenUserName", element.user_name);
-   // element.company_nameが存在するときのみ実行
-   element.company_name && updateSessionData("accountData", "ChatOpenCompanyName", element.company_name);
-   // element.iconが存在するときのみ実行
-   element.icon ? updateSessionData("accountData", "ChatOpenIcon", element.icon) : updateSessionData("accountData", "ChatOpenIcon", "");
-   // element.follow_statusが存在するときのみ実行
-   element.follow_status && updateSessionData("accountData", "ChatOpenFollowStatus", element.follow_status);
+    // element.idが存在するときのみ実行
+    element.id && updateSessionData("accountData", "ChatOpenId", element.id);
+    // element.user_nameが存在するときのみ実行
+    element.user_name && updateSessionData("accountData", "ChatOpenUserName", element.user_name);
+    // element.company_nameが存在するときのみ実行
+    element.company_name && updateSessionData("accountData", "ChatOpenCompanyName", element.company_name);
+    // element.iconが存在するときのみ実行
+    element.icon ? updateSessionData("accountData", "ChatOpenIcon", element.icon) : updateSessionData("accountData", "ChatOpenIcon", "");
+    // element.follow_statusが存在するときのみ実行
+    element.follow_status && updateSessionData("accountData", "ChatOpenFollowStatus", element.follow_status);
 
-  };
+   };
 
   return (
     <List
@@ -125,7 +125,7 @@ export default function ChatPartnerList() {
         maxWidth: 360,
         marginLeft: '0', // デフォルトは0に設定
         bgcolor: 'background.paper',
-        maxHeight: 600,  // スクロール可能な最大の高さ
+        maxHeight: 500,  // スクロール可能な最大の高さ
         overflow: 'auto', // 自動でスクロールバーを表示
         border: '#DAE2ED 2px solid',
         borderRadius: '10px',

@@ -133,6 +133,10 @@ const InternshipJobOfferPage = () => {
         navigate(`/WriteForm/${newsdetail_id}`);
     }
 
+    const handleChatJump = () => {
+        navigate(`/Chat`);
+    }
+
     useEffect(() => {
         // スクロールイベントのハンドラー関数
         const handleScroll = () => {
@@ -157,7 +161,14 @@ const InternshipJobOfferPage = () => {
         };
     }, []);
 
-
+    let Genre;
+    if (NewsDetail && NewsDetail.genre === "internships") {
+        Genre = "インターンシップ";
+    } else if (NewsDetail && NewsDetail.genre === "blogs") {
+        Genre = "ブログ";
+    } else {
+        Genre = "求人";
+    }
 
     return (
         <>
@@ -187,7 +198,7 @@ const InternshipJobOfferPage = () => {
                                     }}
                                     onClick={handleProfileJump}
                                 >
-                                    企業プロフィールはこちらから
+                                    プロフィール
                                 </Button>
 
                                 {/* data?.id?.[0] === "S" が true の場合にボタンを表示 */}
@@ -225,6 +236,22 @@ const InternshipJobOfferPage = () => {
                                         >
                                             応募する
                                         </Button>
+
+                                        <Button
+                                            variant="contained"
+                                            sx={{
+                                                fontSize: "10px",
+                                                padding: "8px 16px",
+                                                margin: "4px",
+                                                background: "linear-gradient(#41A4FF, #9198e5)",
+                                                "&:hover": {
+                                                    background: "linear-gradient(#c2c2c2, #e5ad91)",
+                                                },
+                                            }}
+                                            onClick={handleChatJump}
+                                        >
+                                            チャットする
+                                        </Button>
                                     </>
                                 )}
                             </Stack>
@@ -244,7 +271,9 @@ const InternshipJobOfferPage = () => {
                             },
                         }}
                     >
-                        {NewsDetail.genre}
+
+                    {Genre}
+
                     </Button>
                     <h1 className="news_title">{NewsDetail.article_title}</h1>
                     <Stack direction="row" spacing={2}>
@@ -264,7 +293,7 @@ const InternshipJobOfferPage = () => {
                                 }}
                                 onClick={handleProfileJump}
                             >
-                                企業プロフィールはこちらから
+                                プロフィール
                             </Button>
                             {data?.id?.[0] === "S" && (
                                     <>
@@ -300,6 +329,24 @@ const InternshipJobOfferPage = () => {
                                         >
                                             応募する
                                         </Button>
+
+                                        {followStatus === "フォローしています" && (
+                                        <Button
+                                            variant="contained"
+                                            sx={{
+                                                fontSize: "10px",
+                                                padding: "8px 16px",
+                                                margin: "4px",
+                                                background: "linear-gradient(#41A4FF, #9198e5)",
+                                                "&:hover": {
+                                                    background: "linear-gradient(#c2c2c2, #e5ad91)",
+                                                },
+                                            }}
+                                            onClick={handleChatJump}
+                                        >
+                                            チャットする
+                                        </Button>
+                                        )}
                                     </>
                                 )}
                         </Stack>

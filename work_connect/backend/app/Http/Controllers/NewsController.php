@@ -162,73 +162,64 @@ class NewsController extends Controller
     //応募フォームの回答(面談の日程とか?)とその人のプロフィールを確認することができる
     public function special_forms(Request $request, $NewsId)
     {
-        //$Myidはログイン中のid
-
         Log::info("special_forms通ってます");
         $page = (int) $request->query('page', 1);
         $perPage = 20;
         $offset = ($page - 1) * $perPage;
         $sortOption = $request->query('sort');
 
-        // ニュースの取得
-        //w_wright_formsテーブルのnews_idとw_newsのidを結合
+        // ニュースタイトル一覧を取得
+        $title = w_wright_form::where('news_id', $NewsId)
+            ->join('w_news', 'w_wright_forms.news_id', '=', 'w_news.id')
+            ->where('w_news.public_status', 1)
+            ->groupBy('w_news.article_title')
+            ->select('w_news.article_title');
+
+        // ニュースデータを取得
         $query = w_wright_form::where('news_id', $NewsId)
-        ->join('w_news', 'w_wright_forms.news_id', '=', 'w_news.id')
-        ->join('w_users', 'w_wright_forms.user_id', '=', 'w_users.id')
-        ->where('w_news.public_status', 1)
-        ->select('w_wright_forms.*', 'w_news.*', 'w_users.*','w_news.created_at as news_created_at');
+            ->join('w_news', 'w_wright_forms.news_id', '=', 'w_news.id')
+            ->join('w_users', 'w_wright_forms.user_id', '=', 'w_users.id')
+            ->where('w_news.public_status', 1)
+            ->select('w_wright_forms.*', 'w_news.*', 'w_users.*', 'w_news.created_at as news_created_at','w_wright_forms.id as wright_form_id')
+            ->get();
 
         // ソート処理
         if ($sortOption === 'orderNewPostsDate') {
-            $query->orderBy('w_news.created_at', 'desc');
+            $title->orderBy('w_news.created_at', 'desc');
         } elseif ($sortOption === 'orderOldPostsDate') {
-            $query->orderBy('w_news.created_at', 'asc');
+            $title->orderBy('w_news.created_at', 'asc');
         } else {
-            // デフォルトのソート（最新の投稿が最初）
-            $query->orderBy('news_created_at', 'desc');
+            $title->orderBy('news_created_at', 'desc');
         }
 
-        // ページネーションの適用
-        $posts = $query->skip($offset)->take($perPage)->get();
+        // ページネーション適用
+        $posts = $title->skip($offset)->take($perPage)->get();
 
-        // JSON デコード
+
+        // ユーザー情報の追加
         foreach ($posts as $post) {
-            $decodedForm = json_decode($post->wright_form);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                Log::error('JSON デコードエラー: ' . json_last_error_msg());
-            } else {
-                $post->wright_form = $decodedForm;
-                Log::info($decodedForm);
+            // usersプロパティを配列として初期化
+            $users = [];
+
+            // $queryのデータから一致するタイトルのユーザーデータを追加
+            foreach ($query as $q) {
+                if ($q->article_title === $post->article_title) {
+                    // 該当するユーザー情報を配列として追加
+                    $users[] = [
+                        'wright_form' => json_decode($q->wright_form), // ここでデコード
+                        'user_name' => $q->user_name,
+                        'wright_form_id' => $q->wright_form_id,
+                        'news_created_at' => $q->news_created_at,
+                        // 他の必要なフィールドもここで追加
+                    ];
+                }
             }
+
+            // ここで users を設定
+            $post->users = $users;
         }
 
-        //回答者のデータを持ってくる
-        
 
-        // foreach ($posts as $post) {
-        //     $isFollowing = w_follow::where('follow_sender_id', $Myid)
-        //         ->where('follow_recipient_id', $post->company_id)
-        //         ->exists();
-
-        //     $isFollowedByUser = w_follow::where('follow_sender_id', $post->company_id)
-        //         ->where('follow_recipient_id', $Myid)
-        //         ->exists();
-
-        //     Log::info($Myid);
-        //     Log::info($post->company_id);
-
-        //     if($Myid[0] == $post->company_id[0]){
-        //         $post->follow_status = 'フォローできません';
-        //     }else if ($isFollowing && $isFollowedByUser) {
-        //         $post->follow_status = '相互フォローしています';
-        //     } elseif ($isFollowing) {
-        //         $post->follow_status = 'フォローしています';
-        //     } elseif ($isFollowedByUser) {
-        //         $post->follow_status = 'フォローされています';
-        //     } else {
-        //         $post->follow_status = 'フォローする';
-        //     }
-        // }
 
         return response()->json($posts);
     }
@@ -265,11 +256,11 @@ class NewsController extends Controller
 
             foreach ($posts as $post) {
 
-            // w_wright_formsテーブルからすべてのフォームデータを取得
-            $formData = w_wright_form::where('news_id', $post->news_id)->get();
+                // w_wright_formsテーブルからすべてのフォームデータを取得
+                $formData = w_wright_form::where('news_id', $post->news_id)->get();
 
-            // 取得したフォームデータの数をpostsに追加
-            $post->form_data_count = $formData->count();
+                // 取得したフォームデータの数をpostsに追加
+                $post->form_data_count = $formData->count();
 
                 $isFollowing = w_follow::where('follow_sender_id', $id)
                     ->where('follow_recipient_id', $post->id)
@@ -368,6 +359,4 @@ class NewsController extends Controller
 
         return response()->json($posts);
     }
-
-
 }

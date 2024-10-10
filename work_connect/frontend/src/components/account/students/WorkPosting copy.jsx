@@ -51,7 +51,7 @@ const WorkPosting = () => {
 
   const [imageFiles, setImageFiles] = useState([]);
   const [message, setMessage] = useState("");
-  // const [imagesName, setImagesName] = useState("");
+  const [imagesName, setImagesName] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [videoId, setVideoId] = useState("");
   const [hasError, setHasError] = useState(false);
@@ -83,7 +83,7 @@ const WorkPosting = () => {
         }
     }
       setImageFiles(images);
-      // setImagesName(images.map((item) => item.name).join(", "));
+      setImagesName(images.map((item) => item.name).join(", "));
 
     console.log("Image: ", Image);
     // ImageがFileListか確認し、正しい場合のみ処理を続行
@@ -103,9 +103,9 @@ const WorkPosting = () => {
   };
 
   // useEffectでstateが更新された直後に処理を実行する
-  // useEffect(() => {
-  //   console.log("imagesName updated: ", imagesName);
-  // }, [imagesName]);
+  useEffect(() => {
+    console.log("imagesName updated: ", imagesName);
+  }, [imagesName]);
 
   useEffect(() => {
     console.log("imageFiles updated: ", imageFiles);

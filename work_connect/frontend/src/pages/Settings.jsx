@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import {useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+// import axios from 'axios';
 
 import PropTypes from 'prop-types';
 
@@ -14,14 +14,12 @@ import DragHandleIcon from '@mui/icons-material/DragHandle';
 // import { DndContext, closestCenter } from '@dnd-kit/core';
 import './setting.css';
 
-import ColorPicker from './ColorPicker';
 // ----------------------------------------------------------------------------------------------
 const Settings = () => {
-  const [rows, setRows] = useState([]);
+  // const [rows, setRows] = useState([]);
   const [sessionId, setSessionId] = useState(null);
-  const [companyInformation, setCompanyInformation] = useState([]);
+  // const [companyInformation, setCompanyInformation] = useState([]);
   // const [errors, setErrors] = useState({});
-
 
   useEffect(() => {
     const dataString = sessionStorage.getItem("accountData");
@@ -33,37 +31,39 @@ const Settings = () => {
     }
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (sessionId) {
-        try {
-          const response = await axios.get(
-            `http://localhost:8000/setting_company_information/${sessionId}`
-          );
-          console.log(response.data);
-          setCompanyInformation(response.data.company_information);
-        } catch (error) {
-          console.error("Error fetching data!", error);
-        }
-      }
-    };
-    fetchData();
-  }, [sessionId]);
+  console.log(sessionId);
 
-  useEffect(() => {
-    if (companyInformation) {
-      const set_information_data = () => {
-        setRows(companyInformation.map(info => ({
-          id: `row${info.id}`, // Assuming `info.id` is a unique identifier
-          title: info.title,
-          contents: info.contents,
-          public_status: info.public_status,
-        })));
-      };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     if (sessionId) {
+  //       try {
+  //         const response = await axios.get(
+  //           `http://localhost:8000/setting_company_information/${sessionId}`
+  //         );
+  //         console.log(response.data);
+  //         setCompanyInformation(response.data.company_information);
+  //       } catch (error) {
+  //         console.error("Error fetching data!", error);
+  //       }
+  //     }
+  //   };
+  //   fetchData();
+  // }, [sessionId]);
 
-      set_information_data();
-    }
-  }, [companyInformation]);
+  // useEffect(() => {
+  //   if (companyInformation) {
+  //     const set_information_data = () => {
+  //       setRows(companyInformation.map(info => ({
+  //         id: `row${info.id}`, // Assuming `info.id` is a unique identifier
+  //         title: info.title,
+  //         contents: info.contents,
+  //         public_status: info.public_status,
+  //       })));
+  //     };
+
+  //     set_information_data();
+  //   }
+  // }, [companyInformation]); // Add companyInformation as a dependency
 
 
   // const handleDragEnd = (event) => {
@@ -79,35 +79,6 @@ const Settings = () => {
   //   }
   // };
 
-  useEffect(() => {
-    const sortable_row_number = async () => {
-      console.log("Rows changed:", rows);
-      console.log(sessionId);
-      if (sessionId) {
-        try {
-          // rows配列の中の各オブジェクトのidプロパティを変換する
-          const change_rows = rows.map(row => ({
-            ...row,
-            id: row.id.replace('row', '')
-          }));
-
-          const response = await axios.post(
-            `http://localhost:8000/sortable_row_number/${sessionId}`,
-            { rowsData: change_rows }
-          );
-          console.log("Data sent successfully:", response.data);
-          console.log("rows_data:", response.data.rows_data);
-        } catch (error) {
-          console.error("Error fetching data!", error);
-        }
-      }
-    };
-
-    sortable_row_number();
-  }, [rows]);
-
-
-
   const SortableRow = ({ id, children }) => {
     const { attributes, listeners, setNodeRef, transform, transition, setActivatorNodeRef, isDragging } = useSortable({
       id,
@@ -120,27 +91,21 @@ const Settings = () => {
     };
 
     return (
-      <tr
-        ref={setNodeRef}
-        style={style}
-        {...attributes}
-        className={isDragging ? 'dragging-row' : ''}
-      >
-        <th {...listeners}>
+      <tr ref={setNodeRef} style={style} {...attributes}>
+        <td {...listeners}>
           <Box
             ref={setActivatorNodeRef}
             sx={{
-              width: '50px',
+              width: '20px',
               justifyContent: 'center',
               display: 'flex',
               verticalAlign: 'middle',
               cursor: isDragging ? 'grabbing' : 'grab',
-              backgroundColor: isDragging ? 'red' : 'white',
             }}
           >
             <DragHandleIcon />
           </Box>
-        </th>
+        </td>
         {children}
       </tr>
     );
@@ -272,6 +237,8 @@ const Settings = () => {
 
   // };
 
+
+
   return (
     <Container maxWidth="xl" >
       <div className="setting">
@@ -282,9 +249,9 @@ const Settings = () => {
         <div>
         </div>
 
-        <p>色を設定する</p>
-        <ColorPicker />
-        {/* 
+        {/* <p>色を設定する</p>
+        <ColorPicker /> */}
+        {/*
       <p>企業の詳細な情報</p>
 
       <p onClick={addNewRow} style={{ cursor: 'pointer', color: 'blue' }}>
@@ -292,17 +259,16 @@ const Settings = () => {
       </p> */}
 
 
-        {/*     
+        {/*
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={rows.map(row => row.id)} strategy={verticalListSortingStrategy}>
           <table className="company_information_table">
             <thead>
               <tr>
-                <th></th> 
+                <th></th>
                 <th>企業情報</th>
                 <th>内容</th>
                 <th>公開状態</th>
-                <th>削除</th>
               </tr>
             </thead>
             <tbody>
@@ -341,9 +307,6 @@ const Settings = () => {
                       />
                       <label htmlFor={`toggle_${row.id}`} className="toggle_label" />
                     </div>
-                  </td>
-                  <td>
-                    <DeleteIcon onClick={() => row_delete(row.id)} />
                   </td>
                 </SortableRow>
               ))}

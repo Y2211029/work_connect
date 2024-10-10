@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import { TextareaAutosize as BaseTextareaAutosize } from '@mui/base/TextareaAutosize';
-import { styled } from '@mui/system';
+import { TextareaAutosize as BaseTextareaAutosize } from "@mui/base/TextareaAutosize";
+import { styled } from "@mui/system";
 import {
   DndContext, // DnDのコンテキストを提供
   DragOverlay, // ドラッグ中のオーバーレイ表示
@@ -75,7 +75,14 @@ const Textarea = styled(BaseTextareaAutosize)(
 );
 
 // 並べ替え可能なアイテムのコンポーネント
-const SortableItem = ({ id, image, description, onDelete, onDescriptionChange, activeId }) => {
+const SortableItem = ({
+  id,
+  image,
+  description,
+  onDelete,
+  onDescriptionChange,
+  activeId,
+}) => {
   // useSortable フックを使ってドラッグ＆ドロップ操作を管理
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id });
@@ -193,9 +200,17 @@ const ImageUpload = ({ onImagesUploaded, coleSetImage }) => {
 
   // アイテム削除の処理
   const handleDelete = (id) => {
+    event.preventDefault(); // デフォルトの動作を防止
+    event.stopPropagation(); // イベントのバブリングを防止
+
+    // DataTransferオブジェクトを利用
+    const dataTransfer = new DataTransfer();
+    dataTransfer.setData("text/plain", id); // 削除するアイテムのIDを設定
+
+    // アイテムを削除するロジック
     setItems((items) => {
-      const updatedItems = items.filter((item) => item.id !== id); // 削除対象をフィルタリング
-      onImagesUploaded(updatedItems); // 親コンポーネントに更新を通知
+      const updatedItems = items.filter((item) => item.id !== id);
+      onImagesUploaded(updatedItems);
       return updatedItems;
     });
   };

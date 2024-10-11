@@ -76,7 +76,7 @@ const PostCard = forwardRef(({ post },) => {
     }
 
     return {
-      title: user_name,  // タイトルが空だったためデフォルトを追加
+      title: user_name,  
       pages: [
         {
           name: "page1",
@@ -123,13 +123,6 @@ const PostCard = forwardRef(({ post },) => {
 
       <ListItemButton
         onClick={handleClick}
-        sx={{
-          pl: 4,
-          background: user_name.some(u => u.wright_form_id === accountData.ChatOpenId) ? '#cce5ff' : 'blue',
-          '&:hover': {
-            background: user_name.some(u => u.wright_form_id === accountData.ChatOpenId) ? '#cce5ff' : '#eee',
-          },
-        }}
       >
         <ListItemText
           primary={
@@ -143,7 +136,15 @@ const PostCard = forwardRef(({ post },) => {
 
       {/* 送信者の名前一覧 */}
       <Collapse in={open} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
+        <List component="div" disablePadding 
+                  sx={{
+                    pl: 4,
+                    background: user_name.some(u => u.wright_form_id === accountData.ChatOpenId) ? '#cce5ff' : 'blue',
+                    '&:hover': {
+                      background: user_name.some(u => u.wright_form_id === accountData.ChatOpenId) ? '#cce5ff' : '#eee',
+                    },
+                  }}
+        >
           {user_name.map((user, index) => (
             <Typography
               key={user.wright_form_id || index} // ユーザーIDまたはインデックスをキーにする

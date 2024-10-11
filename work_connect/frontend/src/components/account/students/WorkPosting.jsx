@@ -13,31 +13,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-// ログインのモーダル CSS設定
-// const modalStyle = {
-//   content: {
-//     position: "none",
-//     backgroundColor: "rgb(0 0 0 / 70%)",
-//     border: "none",
-//     borderRadius: "0",
-//     padding: "1.5rem",
-//     overflow: "none",
-//   },
-// };
-
 const WorkPosting = () => {
-  // const [showModal, setShowModal] = useState(false);
   let navigation = useNavigate();
 
-  // const handleOpenModal = () => {
-  //   // setShowModal(true);
-  //   navigation("WorkPosting");
-  // };
-
-  // const handleCloseModal = () => {
-  //   setShowModal(false);
-  //   // setFormErrors({}); // エラーメッセージをリセット
-  // };
 
   const [workData, setWorkData] = useState({
     YoutubeURL: "",
@@ -75,37 +53,38 @@ const WorkPosting = () => {
   };
 
   const handleImageChange = (images) => {
-      console.log("images: ", images);
-      if (images.length > 0) {
-        // Fileオブジェクトのプロパティをログに表示
-        for (let i = 0; i < images.length; i++) {
-            console.log(`File ${i} - Name: ${images[i].name}, Size: ${images[i].size}, Type: ${images[i].type}`);
-        }
+    console.log("images: ", images);
+    if (images.length > 0) {
+      // Fileオブジェクトのプロパティをログに表示
+      for (let i = 0; i < images.length; i++) {
+        console.log(
+          `File ${i} - Name: ${images[i].name}, Size: ${images[i].size}, Type: ${images[i].type}`
+        );
+      }
     }
-      setImageFiles(images);
-      // setImagesName(images.map((item) => item.name).join(", "));
+    const imagesArray = Array.from(images);
+    setImageFiles(imagesArray);
+    console.log("imageFiles: ",imageFiles);
+
+    // 現在のFileListを維持するために新しいDataTransferを作成
+    let dt = new DataTransfer();
+
+    // 既存のimageFilesをDataTransferに追加
+    imageFiles.forEach((file) => {
+      dt.items.add(file);
+    });
+
+    // 新しい画像をDataTransferに追加
+    images.forEach((image) => {
+      dt.items.add(image);
+    });
+    // 新しいFileListを状態に設定
+    setImage(dt.files);
+    // setImagesName(images.map((item) => item.name).join(", "));
 
     console.log("Image: ", Image);
-    // ImageがFileListか確認し、正しい場合のみ処理を続行
-    // if (Image && (Image instanceof FileList || (Array.isArray(Image) && Image.length > 0 && Image[0] instanceof File)))
-    // {
-    //   setImageFiles(Image); // ImageをimageFilesにセット
-    //   setImagesName(
-    //     Array.from(Image)
-    //       .map((item) => item.name)
-    //       .join(", ")
-    //   ); // ファイル名をセット
-    //   console.log("imageFiles",imageFiles);
-
-    // } else {
-    //   console.error("Invalid Image input: ", Image);
-    // }
   };
 
-  // useEffectでstateが更新された直後に処理を実行する
-  // useEffect(() => {
-  //   console.log("imagesName updated: ", imagesName);
-  // }, [imagesName]);
 
   useEffect(() => {
     console.log("imageFiles updated: ", imageFiles);
@@ -175,27 +154,18 @@ const WorkPosting = () => {
         return;
       }
       const formData = new FormData();
-      // console.log("Image: ", Image);
-      // imageFiles.forEach((file) => {
-      //   formData.append(`images[]`, file);
-      //   console.log(file);
-      // });
 
       // formDataに画像データを1個追加
       // Imageに入っているデータの形がfileListのため、mapやforEachでループできない
       // imageFilesが配列として扱える場合
       for (let i = 0; i < imageFiles.length; i++) {
         formData.append("images[]", Image[i]);
+        formData.append("annotation[]", imageFiles[i].description);
       }
-
-      // for (let i = 0; i < Image.length; i++) {
-      //   formData.append("images[]", Image[i]);
-      // }
 
       for (const key in workData) {
         formData.append(key, workData[key]);
       }
-      // formData.append("imagesName", imagesName);
       // formData.entries()の中身を確認
       for (let pair of formData.entries()) {
         // ファイル名が 'images[]' で、File オブジェクトの場合のみ詳細を表示

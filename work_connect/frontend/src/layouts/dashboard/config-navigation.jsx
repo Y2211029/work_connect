@@ -38,6 +38,11 @@ const navConfig = [
     path: '/Internship_JobOffer?page=joboffers',
     icon: <NewspaperOutlinedIcon />,
   },
+  {
+    title: '通知テスト',
+    path: '/TestPage',
+    icon: <NewspaperOutlinedIcon />,
+  },
 ];
 
 export default navConfig;

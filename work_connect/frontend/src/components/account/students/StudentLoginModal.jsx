@@ -264,12 +264,6 @@ const StudentLoginModal = (props) => {
               <Button type="button" onClick={fillDemoCredentials} className="submitButton">
                 ユーザーネーム:yoshioka パスワード:2023gakusei
               </Button>
-              <Button type="button" onClick={fillDemoCredentials} className="submitButton">
-                ユーザーネーム:yoshioka パスワード:2023gakusei
-              </Button>
-              <Button type="button" onClick={fillDemoCredentials} className="submitButton">
-                ユーザーネーム:yoshioka パスワード:2023gakusei
-              </Button>
               <button type="submit" className="submitButton">
                 ログイン
               </button>

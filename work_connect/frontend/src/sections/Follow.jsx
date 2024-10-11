@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 
 // フォローボタンと通知コンポーネント
-const TestPage = (/*{ userId, followId }*/) => {
+const Follow = (/*{ userId, followId }*/) => {
   const [notifications, setNotifications] = useState([]);
   const [ws, setWs] = useState(null);
 
-  const userId = "S_000000000002";
-  const followId = "C_0000000002";
+  const userId = "C_0000000002";
+  const followId = "S_000000000002";
   // WebSocket接続
   useEffect(() => {
     const newWs = new WebSocket(`ws://localhost:3000?userId=${userId}`); // 修正: ws://を使用
@@ -50,12 +50,12 @@ const TestPage = (/*{ userId, followId }*/) => {
 
       <h2>通知</h2>
       <ul>
-        {notifications.map((notification, index) => (
-          <li key={index}>{notification}</li>
-        ))}
+        {notifications &&
+          notifications.map((notification, index) => (
+            <li key={index}>{notification}</li>
+          ))}
       </ul>
     </div>
   );
 };
-
-export default TestPage;
+export default Follow;

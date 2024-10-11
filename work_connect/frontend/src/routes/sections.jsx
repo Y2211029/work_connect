@@ -27,6 +27,7 @@ export const CompanyListPage = lazy(() => import("src/pages/companyList"));
 export const WorkDetail = lazy(() => import("src/sections/WorkList/view/WorkDetail"));
 export const VideoDetail = lazy(() => import("src/sections/VideoList/view/VideoDetail"));
 export const TestPage = lazy(() => import("src/sections/TestPage"));
+export const Follow = lazy(() => import("src/sections/follow"));
 
 // export const StudentListPage = lazy(() => import("src/sections/WorkList/view/WorkDetail.jsx"));
 // export const CompanyListPage = lazy(() => import("src/sections/WorkList/view/WorkDetail.jsx"));
@@ -129,6 +130,7 @@ export default function Router() {
         { path: "Chat", element: <Chat /> },
         // テストページ何か試したいものがあればこのページで行う。
         { path: "TestPage", element: <TestPage /> },
+        { path: "follow", element: <Follow /> },
       ],
     },
     {

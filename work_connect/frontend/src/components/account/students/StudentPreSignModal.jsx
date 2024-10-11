@@ -29,7 +29,11 @@ const StudentPreSignModal = (props) => {
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [csrfToken, setCsrfToken] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState({
+    // 二回目仮登録メール送ろうとした際にボタンの文字を”再送信”に変える
+    retransmissionFlag: false,
+    setIsSubmitting: false,
+  });
 
   const url = "http://localhost:8000/s_pre_register";
   const csrf_url = "http://localhost:8000/csrf-token";
@@ -64,8 +68,12 @@ const StudentPreSignModal = (props) => {
   }, []); // 空の依存配列を渡して、初回のみ実行するようにする
 
   const handleSubmit = async (e) => {
-    setIsSubmitting(true); // ボタンを無効化する
-    // 
+    setIsSubmitting({
+      ...setIsSubmitting,
+      retransmissionFlag: true, // 二回目仮登録メール送ろうとした際にボタンの文字を”再送信”に変える
+      setIsSubmitting: true, //  "仮登録"から"送信中..."にボタンの文字を変える
+    });
+
     e.preventDefault();
 
     // フォームの送信処理
@@ -97,7 +105,11 @@ const StudentPreSignModal = (props) => {
     })
       .done(function (data) {
         // ajax成功時の処理
-
+        setIsSubmitting({
+          ...setIsSubmitting,
+          retransmissionFlag: true,
+          setIsSubmitting: false, //  "仮登録"から"送信中..."にボタンの文字を変える
+        });
         if (data != null) {
           // すでに入力されたメールアドレスが存在している場合に警告文を表示
           if (data == "true") {
@@ -108,7 +120,9 @@ const StudentPreSignModal = (props) => {
             // 二重送信を防ぐため初期化
             formValues.mail = "";
           } else {
-            alert("このメールアドレスは使用できません。");
+            // "2024/10/11 ryudayo64
+            // alertの代わりに"このメールアドレスは既に登録されています。"があるので非表示にしました。
+            // alert("このメールアドレスは使用できません。");
             console.log(data);
             console.log("つくれません");
             setFormErrors(validate(null, false));
@@ -122,7 +136,9 @@ const StudentPreSignModal = (props) => {
           }
         } else {
           console.log("login失敗");
-          alert("ログインに失敗しました。\nユーザー名、メールアドレス、パスワードをご確認ください。");
+          alert(
+            "ログインに失敗しました。\nユーザー名、メールアドレス、パスワードをご確認ください。"
+          );
         }
       })
       .fail(function (textStatus, errorThrown) {
@@ -135,7 +151,8 @@ const StudentPreSignModal = (props) => {
 
   const validate = (values, boolean) => {
     const errors = {};
-    const regex = /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/;
+    const regex =
+      /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/;
     // メールアドレスがまだ存在しないときはboolean == "true"
     if (boolean == true && !values.mail) {
       errors.mail = "メールアドレスを入力してください";
@@ -170,12 +187,25 @@ const StudentPreSignModal = (props) => {
                 variant="outlined"
               />
               <p className="errorMsg">{formErrors.mail}</p>
-              <button type="submit" className="submitButton" disabled={isSubmitting}>
-                {isSubmitting ? '送信中...' : '仮登録'}
+              <button
+                type="submit"
+                className="submitButton"
+                disabled={isSubmitting.setIsSubmitting}
+              >
+                {isSubmitting.setIsSubmitting == true
+                  ? "送信中..."
+                  : isSubmitting.retransmissionFlag == true
+                    ? "再送信"
+                    : "仮登録"}
               </button>
-              {Object.keys(formErrors).length === 0 && isSubmit && handleCloseModal}
+              {Object.keys(formErrors).length === 0 &&
+                isSubmit &&
+                handleCloseModal}
               <button onClick={handleCloseModal}>閉じる</button>
-              <div onClick={handleOpenCompanyPreModal} id="PreSignCompanyModalLink">
+              <div
+                onClick={handleOpenCompanyPreModal}
+                id="PreSignCompanyModalLink"
+              >
                 企業の方はこちら
               </div>
             </div>

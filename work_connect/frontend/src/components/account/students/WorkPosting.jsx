@@ -52,35 +52,39 @@ const WorkPosting = () => {
     });
   };
 
-  const handleImageChange = (images) => {
-    console.log("images: ", images);
-    if (images.length > 0) {
+  const handleImageChange = (e) => {
+    console.log("e: ", e);
+    if (e.length > 0) {
       // Fileオブジェクトのプロパティをログに表示
-      for (let i = 0; i < images.length; i++) {
+      for (let i = 0; i < e.length; i++) {
         console.log(
-          `File ${i} - Name: ${images[i].name}, Size: ${images[i].size}, Type: ${images[i].type}`
+          `File ${i} - Name: ${e[i].name}, Size: ${e[i].size}, Type: ${e[i].type}`
         );
       }
     }
-    const imagesArray = Array.from(images);
+    const imagesArray = Array.from(e);
     setImageFiles(imagesArray);
-    console.log("imageFiles: ",imageFiles);
+    // setImage()
+    console.log("imageArray: ",imagesArray);
 
     // 現在のFileListを維持するために新しいDataTransferを作成
     let dt = new DataTransfer();
 
     // 既存のimageFilesをDataTransferに追加
     imageFiles.forEach((file) => {
-      dt.items.add(file);
+      for (let i = 0; i <= imagesArray.length; i++){
+        if (file.name == imagesArray[i].name) {
+          console.log("file.name",file.name);
+          console.log("file.name",file);
+          dt.items.add(file);
+        }
+
+      }
+
     });
 
-    // 新しい画像をDataTransferに追加
-    images.forEach((image) => {
-      dt.items.add(image);
-    });
     // 新しいFileListを状態に設定
     setImage(dt.files);
-    // setImagesName(images.map((item) => item.name).join(", "));
 
     console.log("Image: ", Image);
   };

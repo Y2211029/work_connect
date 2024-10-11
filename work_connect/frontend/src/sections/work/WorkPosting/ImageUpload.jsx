@@ -130,8 +130,8 @@ const SortableItem = ({
   };
 
   // 画像削除のハンドラ
-  const handleDelete = (event) => {
-    event.preventDefault();
+  const handleDelete = (e) => {
+    e.preventDefault();
     onDelete(id);
   };
 

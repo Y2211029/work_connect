@@ -1,5 +1,6 @@
 import React from 'react';
 import { useEffect, useState, useRef } from "react";
+import PropTypes from 'prop-types';
 import axios from "axios";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import { Link } from "react-router-dom";
@@ -18,6 +19,25 @@ import Tooltip from '@mui/material/Tooltip';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
+import { green } from '@mui/material/colors';
+
+// import "../css/App.css";
+
+
+import ListSubheader from '@mui/material/ListSubheader';
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Collapse from '@mui/material/Collapse';
+// import InboxIcon from '@mui/icons-material/MoveToInbox';
+import PersonIcon from '@mui/icons-material/Person';
+import SyncAltIcon from '@mui/icons-material/SyncAlt';
+import WestIcon from '@mui/icons-material/West';
+import EastIcon from '@mui/icons-material/East';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+//import { display } from '@mui/system';
 
 // import "../css/App.css";
 
@@ -74,14 +94,98 @@ const Textarea = styled(BaseTextareaAutosize)(
 `,
 );
 
+// フォローリストのコンポーネント
+const FollowGroup = ({ title, followStatusCount, followStatus, groupingOpen, handleClick, accountData, chatOpen }) => {
+  return (
+    <>
+      {/* 見出し部分 */}
+      <ListItemButton onClick={handleClick}>
+        <ListItemIcon>
+          <PersonIcon />
+          {title === "相互フォロー" && <SyncAltIcon />}
+          {title === "フォローしています" && <EastIcon />}
+          {title === "フォローされています" && <WestIcon />}
+        </ListItemIcon>
+        <ListItemText
+          primary={
+            <Typography sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>
+              {title} ({followStatusCount})
+            </Typography>
+          }
+        />
+        {groupingOpen ? <ExpandLess /> : <ExpandMore />}
+      </ListItemButton>
+
+      {/* フォローリスト部分 */}
+      <Collapse in={groupingOpen} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          {/* ユーザーリスト */}
+          {followStatus.map((element) => (
+            <ListItemButton
+              key={element.id}
+              sx={{
+                pl: 4,
+                background: element.id === accountData.ChatOpenId ? '#cce5ff' : 'initial',
+                '&:hover': {
+                  background: element.id === accountData.ChatOpenId ? '#cce5ff' : '#eee',
+                },
+              }}
+              onClick={() => chatOpen(element)}>
+              {/* アイコン */}
+              <ListItemIcon>
+                <img
+                  src={element.icon ?
+                    `http://localhost:8000/storage/images/userIcon/${element.icon}` :
+                    'assets/images/avatars/avatar_4.jpg'}
+                  alt={element.user_name}
+                  style={{ width: '40px', height: '40px', borderRadius: '50%', border: '3px solid #bbb' }}
+                />
+              </ListItemIcon>
+              {/* ユーザー名 */}
+              <ListItemText primary={element.company_name ? element.company_name : element.user_name} />
+            </ListItemButton>
+          ))}
+        </List>
+      </Collapse>
+    </>
+  );
+};
+
 const ChatView = () => {
 
+  const [GroupingOpen_1, setGroupingOpen_1] = React.useState(true);
+  const [GroupingOpen_2, setGroupingOpen_2] = React.useState(true);
+  const [GroupingOpen_3, setGroupingOpen_3] = React.useState(true);
+
+  const [FollowStatus_1, setFollowStatus_1] = useState([]);
+  const [FollowStatus_2, setFollowStatus_2] = useState([]);
+  const [FollowStatus_3, setFollowStatus_3] = useState([]);
+
+  const [FollowStatusCount_1, setFollowStatusCount_1] = useState(null);
+  const [FollowStatusCount_2, setFollowStatusCount_2] = useState(null);
+  const [FollowStatusCount_3, setFollowStatusCount_3] = useState(null);
+
+  const groupinghandleClick_1 = () => {
+    setGroupingOpen_1(!GroupingOpen_1);
+  };
+  const groupinghandleClick_2 = () => {
+    setGroupingOpen_2(!GroupingOpen_2);
+  };
+  const groupinghandleClick_3 = () => {
+    setGroupingOpen_3(!GroupingOpen_3);
+  };
   // セッションストレージ
-  const { getSessionData } = useSessionStorage();
+  const { getSessionData , updateSessionData } = useSessionStorage();
   // セッションストレージからaccountDataを取得し、idを初期値として設定(ログイン中のIDを取得)
   const [accountData, setAccountData] = useState(getSessionData("accountData"));
 
-  // DBからのレスポンスが入る変数
+  // ログイン中のid
+  const MyUserId = accountData.id;
+
+  // DBからのレスポンスが入る変数(リスト)
+  const [ResponseChannelListData, setResponseChannelListData] = useState([]);
+
+  // DBからのレスポンスが入る変数(チャット)
   const [ResponseData, setResponseData] = useState([]);
 
   // ポップメニューの変数設定
@@ -101,56 +205,6 @@ const ChatView = () => {
   // メッセージの送信日時を記憶しておく
   let PrevChatDate = null;
 
-  // ログイン中のid
-  const MyUserId = accountData.id;
-
-  // Laravelとの通信用URL
-  const get_chat = "http://localhost:8000/get_chat";
-  const post_chat = "http://localhost:8000/post_chat";
-  const delete_chat = "http://localhost:8000/delete_chat";
-
-  // 1回のみ実行(1秒単位でデータを取得)
-  useEffect(() => {
-    // セッションストレージ取得
-    setAccountData(getSessionData("accountData"));
-    GetChat();
-    const interval = setInterval(() => {
-     // セッションストレージ取得
-    setAccountData(getSessionData("accountData"));
-    GetChat();
-    }, 1000);
-
-    // コンポーネントがアンマウントされたらintervalをクリア
-    return () => clearInterval(interval);
-  }, []);
-
-  // ResponseDataが更新されたら実行
-  useEffect(() => {
-    const chatBox = chatBoxscroll.current;
-    // chatBoxがなければ中断
-    if (!chatBox) return;
-
-    // MutationObserverの設定
-    const observer = new MutationObserver(() => {
-      // 現在のscrollHeight
-      const currentScrollHeight = chatBox.scrollHeight;
-
-      // scrollHeightが変わったときにのみスクロール
-      if (currentScrollHeight !== prevScrollHeight) {
-        chatBox.scrollTop = chatBox.scrollHeight;
-        setPrevScrollHeight(currentScrollHeight); // 更新
-      }
-    });
-    // observerの監視対象を設定
-    observer.observe(chatBox, { childList: true, subtree: true });
-
-    // クリーンアップ
-    return () => {
-      observer.disconnect(); // コンポーネントがアンマウントされたときにobserverを解除
-    };
-  }, [ResponseData]);
-
-
   // チャットアイコンの設定
   const avatarSrc = accountData.ChatOpenIcon
   ? `http://localhost:8000/storage/images/userIcon/${accountData.ChatOpenIcon}`
@@ -167,6 +221,88 @@ const ChatView = () => {
       }
     })();
 
+  // Laravelとの通信用URL
+  const get_channel_list = "http://localhost:8000/get_channel_list";
+  const get_chat = "http://localhost:8000/get_chat";
+  const post_chat = "http://localhost:8000/post_chat";
+  const delete_chat = "http://localhost:8000/delete_chat";
+  const already_read_chat = "http://localhost:8000/already_read_chat";
+
+  // ResponseChannelListDataが変化したとき
+  useEffect(() => {
+    async function GetData() {
+      try {
+        // Laravel側からデータを取得
+        const response = await axios.get(get_channel_list, {
+          params: {
+            MyUserId: MyUserId, //ログイン中のID
+          },
+        });
+        if (response) {
+          console.log(response.data);
+          setResponseChannelListData(response.data);
+          // follow_statusが「相互フォローしています」の相手はfollow_item_1に入れる
+          const follow_item_1 = response.data.filter(item => item.follow_status === '相互フォローしています');
+          setFollowStatus_1(follow_item_1);
+          setFollowStatusCount_1(follow_item_1.length);
+          // follow_statusが「相互フォローしています」の相手はfollow_item_2に入れる
+          const follow_item_2 = response.data.filter(item => item.follow_status === 'フォローしています');
+          setFollowStatus_2(follow_item_2);
+          setFollowStatusCount_2(follow_item_2.length);
+          // follow_statusが「相互フォローしています」の相手はfollow_item_3に入れる
+          const follow_item_3 = response.data.filter(item => item.follow_status === 'フォローされています');
+          setFollowStatus_3(follow_item_3);
+          setFollowStatusCount_3(follow_item_3.length);
+
+        }
+      } catch (err) {
+        console.log("err:", err);
+        alert("フォロワーがいません");
+      }
+    }
+    // DBからデータを取得
+    if (MyUserId) {
+      GetData();
+    }
+  }, [ResponseChannelListData]);
+
+  // ListItemButtonが押された時の処理
+  const ChatOpen = (element) => {
+
+    // element.idが存在するときのみ実行
+    element.id && updateSessionData("accountData", "ChatOpenId", element.id);
+    // element.user_nameが存在するときのみ実行
+    element.user_name && updateSessionData("accountData", "ChatOpenUserName", element.user_name);
+    // element.company_nameが存在するときのみ実行
+    element.company_name && updateSessionData("accountData", "ChatOpenCompanyName", element.company_name);
+    // element.iconが存在するときのみ実行
+    element.icon ? updateSessionData("accountData", "ChatOpenIcon", element.icon) : updateSessionData("accountData", "ChatOpenIcon", "");
+    // element.follow_statusが存在するときのみ実行
+    element.follow_status && updateSessionData("accountData", "ChatOpenFollowStatus", element.follow_status);
+
+   };
+
+  // 1回のみ実行(1秒単位でデータを取得)
+  useEffect(() => {
+    // セッションストレージ取得
+    setAccountData(getSessionData("accountData"));
+    GetChat();
+    // チャットのスクロールを下にする
+    scrollToBottom();
+    const interval = setInterval(() => {
+     // セッションストレージ取得
+    setAccountData(getSessionData("accountData"));
+    GetChat();
+    // 既読をつける
+    AlreadyReadChat(accountData.ChatOpenId);
+    }, 3000);
+
+    // コンポーネントがアンマウントされたらintervalをクリア
+    return () => clearInterval(interval);
+  }, []);
+
+
+
   // テキストが変更されたとき
   const textChange = (e) => {
     const newValue = e.target.value;
@@ -180,6 +316,8 @@ const ChatView = () => {
     const newValue = TextData;
     console.log("送信内容は:"+newValue+"です");
     PostChat();
+    // チャットのスクロールを下にする
+    scrollToBottom();
   };
 
   // 最新のチャットを取得する処理
@@ -262,6 +400,30 @@ const ChatView = () => {
     }
   };
 
+  // 既読をつける処理
+  const AlreadyReadChat = (id) => {
+    async function PostData() {
+      try {
+        console.log("TextData:");
+
+        const response = await axios.post(already_read_chat, {
+          MyUserId: MyUserId, //ログイン中のID
+          PairUserId: id, // 相手のID
+        });
+        if (response.data) {
+          console.log("チャットの既読に成功しました");
+        }
+      } catch (err) {
+        console.log("err:", err);
+      }
+    }
+    // DBからデータを取得
+    if (id) {
+      PostData();
+    }
+  };
+
+
   // 送信時間から日にちを取り出す関数
 
   const GetDay = (time) => {
@@ -303,6 +465,32 @@ const ChatView = () => {
     return `${hour}:${timeString.slice(3)}`; // 分はそのまま返す
   };
 
+  // チャットのスクロールを下にする関数
+  const scrollToBottom = () => {
+    const chatBox = chatBoxscroll.current;
+    // chatBoxがなければ中断
+    if (!chatBox) return;
+
+    // MutationObserverの設定
+    const observer = new MutationObserver(() => {
+      // 現在のscrollHeight
+      const currentScrollHeight = chatBox.scrollHeight;
+
+      // scrollHeightが変わったときにのみスクロール
+      if (currentScrollHeight !== prevScrollHeight) {
+        chatBox.scrollTop = chatBox.scrollHeight;
+        setPrevScrollHeight(currentScrollHeight); // 更新
+      }
+    });
+    // observerの監視対象を設定
+    observer.observe(chatBox, { childList: true, subtree: true });
+
+    // クリーンアップ
+    return () => {
+      observer.disconnect(); // コンポーネントがアンマウントされたときにobserverを解除
+    };
+  };
+
   ///////////////////// ポップメニューの処理 /////////////////////
   // 開く
   const popMenu = (e) => {
@@ -333,7 +521,67 @@ const ChatView = () => {
 
   return (
     <div style={{
-      width: '100%',
+      display: 'flex'
+      }}>
+    <List
+      sx={(theme) => ({
+        width: 360,
+        height: '80%',
+        marginLeft: '0', // デフォルトは0に設定
+        bgcolor: 'background.paper',
+        maxHeight: 500,  // スクロール可能な最大の高さ
+        overflow: 'auto', // 自動でスクロールバーを表示
+        border: '#DAE2ED 2px solid',
+        borderRadius: '10px',
+        [theme.breakpoints.down('1200')]: { // 1200px以下のとき
+          marginLeft: '2%',
+        },
+      })}
+      component="nav"
+      aria-labelledby="nested-list-subheader"
+      subheader={
+        // ヘッダー
+        <ListSubheader component="div" id="nested-list-subheader">
+          チャット
+        </ListSubheader>
+      }
+    >
+
+      <FollowGroup
+        title="相互フォロー"
+        followStatusCount={FollowStatusCount_1}
+        followStatus={FollowStatus_1}
+        groupingOpen={GroupingOpen_1}
+        handleClick={groupinghandleClick_1}
+        accountData={accountData}
+        chatOpen={ChatOpen}
+      />
+
+      <FollowGroup
+        title="フォローしています"
+        followStatusCount={FollowStatusCount_2}
+        followStatus={FollowStatus_2}
+        groupingOpen={GroupingOpen_2}
+        handleClick={groupinghandleClick_2}
+        accountData={accountData}
+        chatOpen={ChatOpen}
+      />
+
+      <FollowGroup
+        title="フォローされています"
+        followStatusCount={FollowStatusCount_3}
+        followStatus={FollowStatus_3}
+        groupingOpen={GroupingOpen_3}
+        handleClick={groupinghandleClick_3}
+        accountData={accountData}
+        chatOpen={ChatOpen}
+      />
+
+
+    </List>
+
+    <div style={{
+      width: 1200,
       height: 'auto',
       maxHeight: 700,
       marginLeft: '2%',
@@ -447,6 +695,20 @@ const ChatView = () => {
               borderRadius: '50%' }}
             />
             ):(null)}
+            {/* 既読マーク (自分のメッセージのみ) */}
+            {(element.send_user_id === MyUserId && element.check_read === '既読')?(
+              <Box
+              display="flex"
+              justifyContent="flex-end"
+              alignItems="flex-end"
+              sx={{
+                margin:'0 5px 10px 0'
+              }}><Tooltip title={"既読"}>
+                <CheckIcon sx={{ color: green[500] ,fontSize: 20 }}/>
+                </Tooltip>
+              </Box>
+            ):(
+             null)}
 
               <Paper
                 id={element.id}
@@ -456,7 +718,7 @@ const ChatView = () => {
                 onClick={element.send_user_id === MyUserId ? (e) => popMenu(e) : null}
                 sx={{
                   padding: '10px',
-                  margin:element.send_user_id === MyUserId ?'0px 10px':'0px',
+                  margin:element.send_user_id === MyUserId ?'0 10px 10px 0':'0 0 10px 0',
                   color: 'black',
                   borderRadius: '10px',
                   maxWidth: '60%',
@@ -503,22 +765,7 @@ const ChatView = () => {
               </Menu>
             ):(null)}
 
-            {/* 既読マーク (自分のメッセージのみ) */}
-            {(element.send_user_id === MyUserId)?(
-              <Box
-              display="flex"
-              justifyContent="flex-end"
-              sx={{
-                margin:'0 10px'
-              }}>
-                <CheckIcon sx={{ fontSize: 20 }}/>
-              </Box>
-            ):(
-              <Box
-                sx={{
-                  margin:'0 0 20px 0'
-                }}>
-              </Box>)}
+
           </>
           ) : (
             <Typography
@@ -598,7 +845,19 @@ const ChatView = () => {
         </Box>
       )}
     </div>
+    </div>
   )
 }
+
+// PropTypesの定義
+FollowGroup.propTypes = {
+  title: PropTypes.string.isRequired,
+  followStatusCount: PropTypes.number.isRequired,
+  followStatus: PropTypes.arrayOf(PropTypes.object).isRequired,
+  groupingOpen: PropTypes.bool.isRequired,
+  handleClick: PropTypes.func.isRequired,
+  accountData: PropTypes.object.isRequired,
+  chatOpen: PropTypes.func.isRequired,
+};
 
 export default ChatView;

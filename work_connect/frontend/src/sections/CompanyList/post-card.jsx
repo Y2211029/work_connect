@@ -81,6 +81,12 @@ const PostCard = forwardRef(({ post, index }, ref) => {
       }}
     />
   );
+  
+    <Link
+      to={`/Profile/${userName}`}
+    >
+      {companyName}
+    </Link>
 
   const renderUserName = (
     <Link

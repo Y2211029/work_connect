@@ -614,6 +614,8 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
           wrapperStyle={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
           wrapperClass="custom-color-ring-wrapper" // カスタムクラスを指定
           colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+
+          style={{ flexDirection: column}}
         />
       )}
       {/* <Container  style={{ width: "100%" }}> */}

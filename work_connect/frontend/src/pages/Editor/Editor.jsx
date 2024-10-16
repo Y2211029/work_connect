@@ -640,7 +640,7 @@ const Editor = () => {
   const postsFrominternshipJobOffer = specialCompanyNewsItem();
   console.log("postsFromCompany", postsFrominternshipJobOffer);
 
-  const create_form_jump = async () => {    
+  const create_form_jump = async () => {
     const savedNewsId = await news_save(); // news_save関数が完了するまで待つ
     navigate(`/CreateForm/${savedNewsId}`); // 保存されたnews_idでnavigateする
   }
@@ -1161,6 +1161,8 @@ const Editor = () => {
       NewsTitle = "インターンニュースの編集";
     } else if (genre === "JobOffer") {
       NewsTitle = "求人ニュースの編集";
+    } else if (genre === "Session") {
+      NewsTitle = "説明会ニュースの編集";
     }
 
     return (

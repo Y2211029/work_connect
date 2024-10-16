@@ -166,7 +166,9 @@ const InternshipJobOfferPage = () => {
         Genre = "インターンシップ";
     } else if (NewsDetail && NewsDetail.genre === "blogs") {
         Genre = "ブログ";
-    } else {
+    } else if(NewsDetail && NewsDetail.genre === "sessions"){
+        Genre = "説明会";
+    }else {
         Genre = "求人";
     }
 

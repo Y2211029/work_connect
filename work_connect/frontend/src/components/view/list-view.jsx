@@ -297,6 +297,25 @@ export default function ItemObjectAndPostCard({ type, ParamUserName, NewsId }) {
           count: company.form_data_count
         })),
     },
+    sessions: {
+      ItemName: "説明会一覧",
+      url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/sessions`,
+      idKey: "id",
+      tags: ["company_name"],
+      generatePosts: (WorkOfList) =>
+        WorkOfList.map((company) => ({
+          company_id: company.company_id,
+          news_id: company.news_id,
+          company_name: company.company_name[0].props.children,
+          article_title: company.article_title,
+          genre: company.genre,
+          header_img: company.header_img,
+          news_created_at: company.news_created_at,
+          icon_id: company.icon_id,
+          followStatus: company.follow_status,
+          count: company.form_data_count
+        })),
+    },
     blogs: {
       ItemName: "ブログ一覧",
       url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/blogs`,
@@ -354,6 +373,26 @@ export default function ItemObjectAndPostCard({ type, ParamUserName, NewsId }) {
     specialinternships: {
       ItemName: `${ParamUserName}さんのインターンシップ一覧`,
       url: `http://localhost:8000/Internship_JobOffer/special_company_news/${ParamUserName}/${SessionAccountData.id}/internships`,
+      idKey: "id",
+      tags: ["company_name"],
+      generatePosts: (WorkOfList) => {
+        return WorkOfList.map((company) => ({
+          company_id: company.company_id,
+          news_id: company.news_id,
+          company_name: company.company_name[0].props.children,
+          article_title: company.article_title,
+          genre: company.genre,
+          header_img: company.header_img,
+          news_created_at: company.news_created_at,
+          icon_id: company.icon_id,
+          follow_status: company.follow_status,
+          count: company.form_data_count
+        }));
+      },
+    },
+    specialsessions: {
+      ItemName: `${ParamUserName}さんの説明会一覧`,
+      url: `http://localhost:8000/Internship_JobOffer/special_company_news/${ParamUserName}/${SessionAccountData.id}/sessions`,
       idKey: "id",
       tags: ["company_name"],
       generatePosts: (WorkOfList) => {

@@ -1,69 +1,74 @@
-import { useState } from "react";
+import { useEffect,useState } from "react";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import PropTypes from "prop-types";
-import Checkbox from "@mui/material/Checkbox";
+import Autocomplete from '@mui/material/Autocomplete';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
-export default function CheckBox({ onSave }) {
+
+export default function Boolean({ onSave,onCancel,questionData }) {
     const [title, setTitle] = useState("");
-    const [isRequired, setIsRequired] = useState(false);
-    const [showNoneItem, setShowNoneItem] = useState(false);
-    const [showOtherItem, setShowOtherItem] = useState(false);
-    const [showSelectAllItem, setshowSelectAllItem] = useState(false);
-    const [separateSpecialChoices, setseparateSpecialChoices] = useState(false);
-    const [colCount, setColCount] = useState(1);
+    const [description, setDescription] = useState("");
+    const [renderAs, setRenderAs] = useState("");
+    const [titleLocation,setTitleLocation] = useState("top");
 
-    
-    const [choices, setChoices] = useState([""]);
+        // questionData が変更されたら、各フィールドにデータをセットする
+        useEffect(() => {
+            if (questionData) {
+                console.log("質問の内容",questionData);
+                setTitle(questionData.title || "");
+                setDescription(questionData.description || "");
+                setRenderAs(questionData.renderAs || "");
+                setTitleLocation(questionData.titleLocation || "top");
 
-    
+            }
+        }, [questionData]);
 
-    const handleChoiceChange = (index, value) => {
-        const updatedChoices = [...choices];
-        updatedChoices[index] = value;
-        setChoices(updatedChoices);
-    };
 
-    const addChoiceField = () => {
-        setChoices([...choices, ""]);
-    };
 
     const handleSave = () => {
         const settings = {
             title: title || "新しい質問",
-            fitToContainer: false,
-            isRequired: isRequired || false,
-            showNoneItem: showNoneItem || false,
-            showOtherItem: showOtherItem || false,
-            showSelectAllItem: showSelectAllItem || false,
-            separateSpecialChoices: separateSpecialChoices || false,
-            colCount: colCount || 1,
-            choices: choices.filter((choice) => choice.trim() !== ""), // 空白の選択肢を除く
+            description: description || "",
+            renderAs: renderAs.name || undefined,
+            titleLocation: titleLocation || "",
+            valueTrue: "Yes",
+            valueFalse: "No",
         };
-
-        if (showNoneItem) {
-            settings.noneText = "該当なし";
-        }
-
-        if (showOtherItem) {
-            settings.otherText = "その他";
-        }
-
-        if (showSelectAllItem) {
-            settings.selectallText = "すべて選択";
-        }
 
         onSave(settings);
         console.log("設定", settings);
     };
 
+        //編集をキャンセルして追加したフォームを削除
+        const handleCancel = () => {
+            onCancel();
+        }
+
+    const inputtype = [
+        { label: 'デフォルト', id: 1, name: "" },
+        { label: 'ラジオボタン', id: 2, name: "radio" },
+        { label: 'チェックボックス', id: 3, name: "checkbox" },
+    ];
 
     return (
         <div className="TextSetting">
             <Stack spacing={2}>
-                <Typography variant="h6">チェックボックスメニューフォーム設定</Typography>
+                <Typography variant="h6">クローズドクエスチョンメニューフォーム設定</Typography>
+
+                <Autocomplete
+                    disablePortal
+                    options={inputtype}
+                    value={renderAs}
+                    onChange={(event, newValue) => setRenderAs(newValue)}
+                    isOptionEqualToValue={(option, value) => option.name === value.name}
+                    fullWidth
+                    renderInput={(params) => <TextField {...params} label="種類" />}
+                />
 
                 <TextField
                     label="タイトル"
@@ -72,84 +77,45 @@ export default function CheckBox({ onSave }) {
                     fullWidth
                 />
 
-                <Stack direction="row" alignItems="center" spacing={1}>
-                    <Checkbox
-                        checked={showNoneItem}
-                        onChange={(e) => setShowNoneItem(e.target.checked)}
-                    />
-                    <Typography>「該当なし」の選択肢を追加する</Typography>
-                </Stack>
-
-                <Stack direction="row" alignItems="center" spacing={1}>
-                    <Checkbox
-                        checked={showOtherItem}
-                        onChange={(e) => setShowOtherItem(e.target.checked)}
-                    />
-                    <Typography>「その他」の選択肢を追加する</Typography>
-                </Stack>
-
-                
-                <Stack direction="row" alignItems="center" spacing={1}>
-                    <Checkbox
-                        checked={showOtherItem}
-                        onChange={(e) => setshowSelectAllItem(e.target.checked)}
-                    />
-                    <Typography>「すべて選択」の選択肢を追加する</Typography>
-                </Stack>
-
-                <Stack direction="row" alignItems="center" spacing={1}>
-                    <Checkbox
-                        checked={showOtherItem}
-                        onChange={(e) => setseparateSpecialChoices(e.target.checked)}
-                    />
-                    <Typography>特別な質問を区切る</Typography>
-                </Stack>
-
-             
-
-                <Stack direction="row" alignItems="center" spacing={1}>
-                    <Checkbox
-                        checked={isRequired}
-                        onChange={(e) => setIsRequired(e.target.checked)}
-                    />
-                    <Typography>フォームを必須にする</Typography>
-                </Stack>
-
                 <TextField
-                    label="列数"
-                    type="number"
-                    value={colCount}
-                    onChange={(e) => {
-                        const value = e.target.value;
-                        // 空の文字列の場合は状態を空にする
-                        setColCount(value === "" ? "" : Number(value));
-                    }}
+                    label="説明"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                     fullWidth
                 />
 
+                {renderAs?.name === "checkbox" && (
+                    <div>
+                        <Typography>テキストの位置</Typography>
+                        <Stack direction="row" alignItems="center" spacing={1}>
+                            <RadioGroup
+                                value={titleLocation}
+                                onChange={(e) => setTitleLocation(e.target.value)}
+                            >
+                                <FormControlLabel value="top" control={<Radio />} label="上側" />
+                                <FormControlLabel value="bottom" control={<Radio />} label="下側" />
+                                <FormControlLabel value="left" control={<Radio />} label="左側" />
+                                <FormControlLabel value="hidden" control={<Radio />} label="隠す" />
+                            </RadioGroup>
+                        </Stack>
+                    </div>
+                )}
 
-                <Typography>チェックボックスの選択肢</Typography>
-                {choices.map((choice, index) => (
-                    <TextField
-                        key={index}
-                        label={`選択肢 ${index + 1}`}
-                        value={choice}
-                        onChange={(e) => handleChoiceChange(index, e.target.value)}
-                        fullWidth
-                    />
-                ))}
-                <Button variant="outlined" onClick={addChoiceField}>
-                    選択肢を追加
-                </Button>
 
                 <Button variant="contained" color="primary" onClick={handleSave}>
                     保存
+                </Button>
+
+                <Button variant="contained" color="primary" onClick={handleCancel}>
+                    キャンセル
                 </Button>
             </Stack>
         </div>
     );
 }
 
-CheckBox.propTypes = {
+Boolean.propTypes = {
     onSave: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
+    questionData: PropTypes.object
 };

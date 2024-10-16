@@ -136,6 +136,11 @@ export default function Header({ onOpenNav }) {
       icon: "eva:person-fill",
     },
     {
+      label: "説明会の記事を投稿する",
+      path: `/Editor/Session`,
+      icon: "eva:person-fill",
+    },
+    {
       label: "求人の記事を投稿する",
       path: "/Editor/JobOffer",
       icon: "eva:settings-2-fill",

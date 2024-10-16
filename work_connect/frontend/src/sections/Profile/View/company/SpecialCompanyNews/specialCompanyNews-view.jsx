@@ -55,49 +55,53 @@ export default function NavTabs() {
     return accountData.ProfileTabState || 0; // 初期値をセッションから取得
   }
 
-    useEffect(() => {
-      setAllItems((prevItems) => ({
-        ...prevItems,
-        ResetItem: true,
-        DataList: [],
-        IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
-        Page: 1,
-        sortOption: "orderNewPostsDate",
-      }));
-    }, [setAllItems]);
+  useEffect(() => {
+    setAllItems((prevItems) => ({
+      ...prevItems,
+      ResetItem: true,
+      DataList: [],
+      IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
+      Page: 1,
+      sortOption: "orderNewPostsDate",
+    }));
+  }, [setAllItems]);
 
-    // popstate イベントでURLのクエリパラメータを確認し、タブの状態を再設定する
-    useEffect(() => {
-      const handlePopState = () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const category = urlParams.get('category');
-        let newValue;
+  // popstate イベントでURLのクエリパラメータを確認し、タブの状態を再設定する
+  useEffect(() => {
+    const handlePopState = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const category = urlParams.get('category');
+      let newValue;
 
-        switch (category) {
-          case 'internships':
-            newValue = 1;
-            break;
-          case 'blogs':
-            newValue = 2;
-            break;
-          case 'joboffers':
-          default:
-            newValue = 0;
-            break;
-        }
+      switch (category) {
+        case 'internships':
+          newValue = 1;
+          break;
+        case 'sessions':
+          newValue = 2;
+          break;
+        case 'blogs':
+          newValue = 3;
+          break;
 
-        setValue(newValue);  // 正しいタブの値を設定
-        setProfileTabState(newValue);
-      };
+        case 'joboffers':
+        default:
+          newValue = 0;
+          break;
+      }
 
-      // popstate イベントをリスニング
-      window.addEventListener('popstate', handlePopState);
+      setValue(newValue);  // 正しいタブの値を設定
+      setProfileTabState(newValue);
+    };
 
-      // コンポーネントのアンマウント時にリスナーを削除
-      return () => {
-        window.removeEventListener('popstate', handlePopState);
-      };
-    }, []);
+    // popstate イベントをリスニング
+    window.addEventListener('popstate', handlePopState);
+
+    // コンポーネントのアンマウント時にリスナーを削除
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
 
   const handleTabClick = (event, newValue) => {
     if (
@@ -115,8 +119,11 @@ export default function NavTabs() {
         case 1:
           category = 'internships';
           break;
-        case 2:
+        case 3:
           category = 'blogs';
+          break;
+        case 2:
+          category = 'sessions';
           break;
         default:
           category = 'joboffers';
@@ -142,11 +149,13 @@ export default function NavTabs() {
       >
         <LinkTab label="求人" onClick={(e) => handleTabClick(e, 0)} />
         <LinkTab label="インターンシップ" onClick={(e) => handleTabClick(e, 1)} />
-        <LinkTab label="ブログ" onClick={(e) => handleTabClick(e, 2)} />
+        <LinkTab label="説明会" onClick={(e) => handleTabClick(e, 2)} />
+        <LinkTab label="ブログ" onClick={(e) => handleTabClick(e, 3)} />
       </Tabs>
       {value === 0 && <ListView type="specialjoboffers" ParamUserName={user_name} />}
       {value === 1 && <ListView type="specialinternships" ParamUserName={user_name} />}
-      {value === 2 && <ListView type="specialblogs" ParamUserName={user_name} />}
+      {value === 2 && <ListView type="specialsessions" ParamUserName={user_name} />}
+      {value === 3 && <ListView type="specialblogs" ParamUserName={user_name} />}
     </Box>
   );
 }

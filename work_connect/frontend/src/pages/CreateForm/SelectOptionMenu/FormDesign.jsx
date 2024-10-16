@@ -7,7 +7,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
-export default function FormDesign({ onSave }) {
+export default function FormDesign({ onSave,onCancel }) {
     const [themeName, setThemeName] = useState("default");
     const [colorPalette, setColorPalette] = useState("light");
 
@@ -19,6 +19,11 @@ export default function FormDesign({ onSave }) {
         };
         onSave(settings);
     };
+
+        //編集をキャンセルして追加したフォームを削除
+        const handleCancel = () =>{
+            onCancel();
+        }
 
     return (
         <div className="TextSetting">
@@ -53,6 +58,10 @@ export default function FormDesign({ onSave }) {
                 <Button variant="contained" onClick={handleSave}>
                     保存
                 </Button>
+
+                <Button variant="contained" color="primary" onClick={handleCancel}>
+                    キャンセル
+                </Button>
             </Stack>
         </div>
     );
@@ -60,4 +69,5 @@ export default function FormDesign({ onSave }) {
 
 FormDesign.propTypes = {
     onSave: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
 };

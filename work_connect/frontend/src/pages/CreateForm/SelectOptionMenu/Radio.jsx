@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import PropTypes from "prop-types";
 import Checkbox from "@mui/material/Checkbox";
 
-export default function Radio({ onSave }) {
+export default function Radio({ onSave, onCancel, questionData }) {
     const [title, setTitle] = useState("");
     const [isRequired, setIsRequired] = useState(false);
     const [showNoneItem, setShowNoneItem] = useState(false);
@@ -15,8 +15,6 @@ export default function Radio({ onSave }) {
     const [colCount, setColCount] = useState(1);
     const [separateSpecialChoices, setseparateSpecialChoices] = useState(false);
     const [showClearButton, setshowClearButton] = useState(false);
-
-
 
     const handleChoiceChange = (index, value) => {
         const updatedChoices = [...choices];
@@ -27,6 +25,29 @@ export default function Radio({ onSave }) {
     const addChoiceField = () => {
         setChoices([...choices, ""]);
     };
+
+    // questionData が変更されたら、各フィールドにデータをセットする
+    useEffect(() => {
+        if (questionData) {
+            setTitle(questionData.title || "");
+            setIsRequired(questionData.isRequired || false);
+            setShowNoneItem(questionData.showNoneItem || false);
+            setShowOtherItem(questionData.showOtherItem || false);
+
+            // choicesが存在する場合、テキストを抽出してセットする
+            const processedChoices = (questionData.choices || []).map(choice => {
+                // `text` または `jsonObj` からテキストを取り出す
+                return choice.text || choice.jsonObj || "";
+            });
+            setChoices(processedChoices);
+
+            setColCount(questionData.colCount || 1);
+            setseparateSpecialChoices(questionData.separateSpecialChoices || false);
+            setshowClearButton(questionData.showClearButton || false);
+
+        }
+    }, [questionData]);
+
 
     const handleSave = () => {
         const settings = {
@@ -48,7 +69,7 @@ export default function Radio({ onSave }) {
             settings.otherText = "その他";
         }
 
-        if(showClearButton){
+        if (showClearButton) {
             settings.clearText = "クリア";
         }
 
@@ -56,6 +77,10 @@ export default function Radio({ onSave }) {
         console.log("設定", settings);
     };
 
+    //編集をキャンセルして追加したフォームを削除
+    const handleCancel = () => {
+        onCancel();
+    }
 
     return (
         <div className="TextSetting">
@@ -143,6 +168,10 @@ export default function Radio({ onSave }) {
                 <Button variant="contained" color="primary" onClick={handleSave}>
                     保存
                 </Button>
+
+                <Button variant="contained" color="primary" onClick={handleCancel}>
+                    キャンセル
+                </Button>
             </Stack>
         </div>
     );
@@ -150,4 +179,6 @@ export default function Radio({ onSave }) {
 
 Radio.propTypes = {
     onSave: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
+    questionData: PropTypes.object
 };

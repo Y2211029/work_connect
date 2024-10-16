@@ -10,10 +10,10 @@ import Divider from "@mui/material/Divider";
 
 
 
-export default function Number({ onSave }) {
+export default function Number({ onSave, onCancel, questionData }) {
     const [title, setTitle] = useState("");
     const [selectedType, setSelectedType] = useState(null);
-    const [isrequired, setisrequired] = useState(false);
+    const [isrequired, setIsrequired] = useState(false);
     const [defaultValue, setDefaultValue] = useState(0);
     const [step, setStep] = useState(0);
     const [validatorstext, setValidatorstext] = useState("電話番号として認識できません");
@@ -31,17 +31,17 @@ export default function Number({ onSave }) {
 
         const validators = [];
         if (validatorstext) {
-            if(hyphen){
+            if (hyphen) {
                 validators.push({
                     type: 'regex',
                     regex: '^0\\d{1,4}-\\d{1,4}-\\d{4}$',
                     text: validatorstext || ""
                 });
-                
-            }else{
+
+            } else {
                 validators.push({
                     type: 'regex',
-                    regex: '^0\\d{9,10}$',                    
+                    regex: '^0\\d{9,10}$',
                     text: validatorstext || ""
                 });
             }
@@ -64,12 +64,34 @@ export default function Number({ onSave }) {
         console.log("設定", settings);
     };
 
+    //編集をキャンセルして追加したフォームを削除
+    const handleCancel = () => {
+        onCancel();
+    }
+
     const inputtype = [
         { label: '数値', id: 1, name: "number" },
         { label: '範囲', id: 2, name: "range" },
         { label: '電話番号', id: 3, name: "tel" },
-
     ];
+
+    // questionData が変更されたら、各フィールドにデータをセットする
+    useEffect(() => {
+        if (questionData) {
+            setTitle(questionData.title || "");
+            setSelectedType(inputtype.find(type => type.name === questionData.inputType) || null);
+            setIsrequired(questionData.isrequired || false);
+            setDefaultValue(questionData.defaultValue || 0);
+            setMax(questionData.max || "");
+            setMin(questionData.min || "");
+            setStep(questionData.step || 0);
+            setPlaceholder(questionData.placeholder || "");
+
+            if (questionData.validators && questionData.validators[0]) {
+                setValidatorstext(questionData.validators[0].text || "");
+            }
+        }
+    }, [questionData]);
 
     useEffect(() => {
         if (selectedType?.name === "number") {
@@ -123,7 +145,7 @@ export default function Number({ onSave }) {
                         <Stack direction="row" alignItems="center" spacing={1}>
                             <Checkbox
                                 checked={isrequired}
-                                onChange={(e) => setisrequired(e.target.checked)}
+                                onChange={(e) => setIsrequired(e.target.checked)}
                             />
                             <Typography>フォームを必須にする</Typography>
                         </Stack>
@@ -132,7 +154,7 @@ export default function Number({ onSave }) {
 
                 {selectedType?.name === "range" && (
                     <div>
-                       <TextField
+                        <TextField
                             label="最小値"
                             value={min}
                             onChange={(e) => setMin(e.target.value)}
@@ -163,18 +185,18 @@ export default function Number({ onSave }) {
                 {selectedType?.name === "tel" && (
                     <div>
 
-                            <TextField
+                        <TextField
                             label="プレースホルダー"
                             value={placeholder}
                             onChange={(e) => setPlaceholder(e.target.value)}
                             type="text"
                             fullWidth
-                            />  
+                        />
 
                         <Stack direction="row" alignItems="center" spacing={1}>
                             <Checkbox
                                 checked={isrequired}
-                                onChange={(e) => setisrequired(e.target.checked)}
+                                onChange={(e) => setIsrequired(e.target.checked)}
                             />
                             <Typography>フォームを必須にする</Typography>
                         </Stack>
@@ -229,7 +251,7 @@ export default function Number({ onSave }) {
                         <Stack direction="row" alignItems="center" spacing={1}>
                             <Checkbox
                                 checked={isrequired}
-                                onChange={(e) => setisrequired(e.target.checked)}
+                                onChange={(e) => setIsrequired(e.target.checked)}
                             />
                             <Typography>フォームを必須にする</Typography>
                         </Stack>
@@ -241,7 +263,7 @@ export default function Number({ onSave }) {
                         <Stack direction="row" alignItems="center" spacing={1}>
                             <Checkbox
                                 checked={isrequired}
-                                onChange={(e) => setisrequired(e.target.checked)}
+                                onChange={(e) => setIsrequired(e.target.checked)}
                             />
                             <Typography>フォームを必須にする</Typography>
                         </Stack>
@@ -252,6 +274,10 @@ export default function Number({ onSave }) {
                 <Button variant="contained" color="primary" onClick={handleSave}>
                     保存
                 </Button>
+
+                <Button variant="contained" color="primary" onClick={handleCancel}>
+                    キャンセル
+                </Button>
             </Stack>
         </div>
     );
@@ -259,4 +285,6 @@ export default function Number({ onSave }) {
 
 Number.propTypes = {
     onSave: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
+    questionData: PropTypes.object
 };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import PropTypes from "prop-types";
 import Checkbox from "@mui/material/Checkbox";
 
-export default function DropDown({ onSave }) {
+export default function DropDown({ onSave, onCancel, questionData }) {
     const [title, setTitle] = useState("");
     const [isRequired, setIsRequired] = useState(false);
     const [showNoneItem, setShowNoneItem] = useState(false);
@@ -25,6 +25,34 @@ export default function DropDown({ onSave }) {
     const addChoiceField = () => {
         setChoices([...choices, ""]);
     };
+
+
+
+    // questionData が変更されたら、各フィールドにデータをセットする
+    useEffect(() => {
+        if (questionData) {
+            console.log("質問の内容",questionData);
+            setTitle(questionData.title || "");
+            setIsRequired(questionData.isRequired || false);
+            setShowNoneItem(questionData.showNoneItem || false);
+            setShowOtherItem(questionData.showOtherItem || false);
+            // choicesが存在する場合、テキストを抽出してセットする
+            const processedChoices = (questionData.choices || []).map(choice => {
+                // `text` または `jsonObj` からテキストを取り出す
+                return choice.text || choice.jsonObj || "";
+            });
+            setChoices(processedChoices);
+
+            if (questionData?.Type === "tagbox" || questionData?.jsonObj?.type === "tagbox") {
+                setType(true);
+                console.log("タグボックスです!");
+            } else if (questionData?.Type === "dropdown" || questionData?.jsonObj?.type === "dropdown") {
+                setType(false);
+                console.log(questionData?.jsonObj?.type);
+                console.log("タグボックスではありません!");
+            }
+        }
+    }, [questionData]);
 
     const handleSave = () => {
         const settings = {
@@ -46,7 +74,7 @@ export default function DropDown({ onSave }) {
 
         if (Type) {
             settings.type = "tagbox";
-        }else{
+        } else {
             settings.type = "dropdown";
         }
 
@@ -54,6 +82,11 @@ export default function DropDown({ onSave }) {
         onSave(settings);
         console.log("設定", settings);
     };
+
+    //編集をキャンセルして追加したフォームを削除
+    const handleCancel = () => {
+        onCancel();
+    }
 
 
     return (
@@ -118,6 +151,10 @@ export default function DropDown({ onSave }) {
                 <Button variant="contained" color="primary" onClick={handleSave}>
                     保存
                 </Button>
+
+                <Button variant="contained" color="primary" onClick={handleCancel}>
+                    キャンセル
+                </Button>
             </Stack>
         </div>
     );
@@ -125,4 +162,6 @@ export default function DropDown({ onSave }) {
 
 DropDown.propTypes = {
     onSave: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
+    questionData: PropTypes.object
 };

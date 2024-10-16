@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect,useState } from "react";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -6,19 +6,17 @@ import Typography from "@mui/material/Typography";
 import PropTypes from "prop-types";
 import Checkbox from "@mui/material/Checkbox";
 
-export default function CheckBox({ onSave }) {
+export default function CheckBox({ onSave, onCancel, questionData }) {
     const [title, setTitle] = useState("");
     const [isRequired, setIsRequired] = useState(false);
     const [showNoneItem, setShowNoneItem] = useState(false);
     const [showOtherItem, setShowOtherItem] = useState(false);
-    const [showSelectAllItem, setshowSelectAllItem] = useState(false);
-    const [separateSpecialChoices, setseparateSpecialChoices] = useState(false);
+    const [showSelectAllItem, setShowSelectAllItem] = useState(false);
+    const [separateSpecialChoices, setSeparateSpecialChoices] = useState(false);
     const [colCount, setColCount] = useState(1);
-
-    
     const [choices, setChoices] = useState([""]);
 
-    
+
 
     const handleChoiceChange = (index, value) => {
         const updatedChoices = [...choices];
@@ -29,6 +27,25 @@ export default function CheckBox({ onSave }) {
     const addChoiceField = () => {
         setChoices([...choices, ""]);
     };
+
+    // questionData が変更されたら、各フィールドにデータをセットする
+    useEffect(() => {
+        if (questionData) {
+            setTitle(questionData.title || "");
+            setIsRequired(questionData.isRequired || false);
+            setShowNoneItem(questionData.showNoneItem || false);
+            setShowOtherItem(questionData.showOtherItem || false);
+            setShowSelectAllItem(questionData.showSelectAllItem || false);
+            setSeparateSpecialChoices(questionData.separateSpecialChoices || false);
+            setColCount(questionData.colCount || 1);
+            // choicesが存在する場合、テキストを抽出してセットする
+            const processedChoices = (questionData.choices || []).map(choice => {
+                // `text` または `jsonObj` からテキストを取り出す
+                return choice.text || choice.jsonObj || "";
+            });
+            setChoices(processedChoices);
+        }
+    }, [questionData]);
 
     const handleSave = () => {
         const settings = {
@@ -59,6 +76,11 @@ export default function CheckBox({ onSave }) {
         console.log("設定", settings);
     };
 
+    //編集をキャンセルして追加したフォームを削除
+    const handleCancel = () => {
+        onCancel();
+    }
+
 
     return (
         <div className="TextSetting">
@@ -88,11 +110,11 @@ export default function CheckBox({ onSave }) {
                     <Typography>「その他」の選択肢を追加する</Typography>
                 </Stack>
 
-                
+
                 <Stack direction="row" alignItems="center" spacing={1}>
                     <Checkbox
                         checked={showOtherItem}
-                        onChange={(e) => setshowSelectAllItem(e.target.checked)}
+                        onChange={(e) => setShowSelectAllItem(e.target.checked)}
                     />
                     <Typography>「すべて選択」の選択肢を追加する</Typography>
                 </Stack>
@@ -100,12 +122,12 @@ export default function CheckBox({ onSave }) {
                 <Stack direction="row" alignItems="center" spacing={1}>
                     <Checkbox
                         checked={showOtherItem}
-                        onChange={(e) => setseparateSpecialChoices(e.target.checked)}
+                        onChange={(e) => setSeparateSpecialChoices(e.target.checked)}
                     />
                     <Typography>特別な質問を区切る</Typography>
                 </Stack>
 
-             
+
 
                 <Stack direction="row" alignItems="center" spacing={1}>
                     <Checkbox
@@ -145,6 +167,10 @@ export default function CheckBox({ onSave }) {
                 <Button variant="contained" color="primary" onClick={handleSave}>
                     保存
                 </Button>
+
+                <Button variant="contained" color="primary" onClick={handleCancel}>
+                    キャンセル
+                </Button>
             </Stack>
         </div>
     );
@@ -152,4 +178,6 @@ export default function CheckBox({ onSave }) {
 
 CheckBox.propTypes = {
     onSave: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
+    questionData: PropTypes.object,
 };

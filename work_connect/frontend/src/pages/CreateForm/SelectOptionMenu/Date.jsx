@@ -8,17 +8,34 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Checkbox from '@mui/material/Checkbox';
 
 
-export default function Data({ onSave }) {
+export default function Data({ onSave,onCancel,questionData }) {
     const [title, setTitle] = useState("");
     const [selectedType, setSelectedType] = useState(null);
-    const [isrequired, setisrequired] = useState(false);
+    const [isrequired, setIsrequired] = useState(false);
     const [pastdate, setPastDate] = useState(false);
-    const [defaultValueExpressiont, setdefaultValueExpressiont] = useState("");
+    const [defaultValueExpression, setdefaultValueExpression] = useState("");
 
 
     const [max, setMax] = useState("");
     const [min, setMin] = useState("");
 
+        // questionData が変更されたら、各フィールドにデータをセットする
+        useEffect(() => {
+            if (questionData) {
+                setTitle(questionData.title || "");
+                setSelectedType(inputtype.find(type => type.name === questionData.inputType) || null);
+                setIsrequired(questionData.isRequired || false);
+                // setPastDate(questionData.isRequired || false);
+                setMin(questionData.min || "");
+                setMax(questionData.max || "");
+                setdefaultValueExpression(questionData.defaultValueExpression || "");
+
+                if(questionData.minValueExpression){
+                    setPastDate(true)
+                }
+
+            }
+        }, [questionData]);
 
 
 
@@ -29,7 +46,7 @@ export default function Data({ onSave }) {
             title: title || "新しい質問",
             inputType: selectedType ? selectedType.name : "date",
             isRequired: isrequired || false,
-            defaultValueExpressiont: defaultValueExpressiont || "",
+            defaultValueExpression: defaultValueExpression || "",
             minValueExpression: pastdate ? "today()" : undefined,
             min: min || undefined,
             max: max || undefined,
@@ -38,6 +55,11 @@ export default function Data({ onSave }) {
         onSave(settings);
         console.log("設定", settings);
     };
+
+    //編集をキャンセルして追加したフォームを削除
+    const handleCancel = () =>{
+        onCancel();
+    }
 
     const inputtype = [
         { label: '日付', id: 1, name: "date" },
@@ -50,11 +72,11 @@ export default function Data({ onSave }) {
 
     useEffect(() => {
         if (selectedType?.name === "datetime-local") {
-          setdefaultValueExpressiont("currentDate()");
+          setdefaultValueExpression("currentDate()");
         }else if(selectedType?.name === "date"){
-            setdefaultValueExpressiont("today()");
+            setdefaultValueExpression("today()");
         }
-      }, [selectedType, setdefaultValueExpressiont]);
+      }, [selectedType, setdefaultValueExpression]);
 
 
 
@@ -92,7 +114,7 @@ export default function Data({ onSave }) {
                         <Stack direction="row" alignItems="center" spacing={1}>
                             <Checkbox
                                 checked={isrequired}
-                                onChange={(e) => setisrequired(e.target.checked)}
+                                onChange={(e) => setIsrequired(e.target.checked)}
                             />
                             <Typography>フォームを必須にする</Typography>
                         </Stack>
@@ -121,7 +143,7 @@ export default function Data({ onSave }) {
                         <Stack direction="row" alignItems="center" spacing={1}>
                             <Checkbox
                                 checked={isrequired}
-                                onChange={(e) => setisrequired(e.target.checked)}
+                                onChange={(e) => setIsrequired(e.target.checked)}
                             />
                             <Typography>フォームを必須にする</Typography>
                         </Stack>
@@ -133,7 +155,7 @@ export default function Data({ onSave }) {
                         <Stack direction="row" alignItems="center" spacing={1}>
                             <Checkbox
                                 checked={isrequired}
-                                onChange={(e) => setisrequired(e.target.checked)}
+                                onChange={(e) => setIsrequired(e.target.checked)}
                             />
                             <Typography>フォームを必須にする</Typography>
                         </Stack>
@@ -144,6 +166,9 @@ export default function Data({ onSave }) {
                 <Button variant="contained" color="primary" onClick={handleSave}>
                     保存
                 </Button>
+                <Button variant="contained" color="primary" onClick={handleCancel}>
+                    キャンセル
+                </Button>
             </Stack>
         </div>
     );
@@ -151,4 +176,6 @@ export default function Data({ onSave }) {
 
 Data.propTypes = {
     onSave: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
+    questionData: PropTypes.object
 };

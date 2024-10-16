@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import Button from "@mui/material/Button";
 import PropTypes from 'prop-types';
 
-export default function Text({ onSave, questionData }) {
+export default function Text({ onSave, onCancel,questionData }) {
     const [title, setTitle] = useState("");
     const [maxLength, setMaxLength] = useState("");
     const [minLength, setMinLength] = useState("");
@@ -74,6 +74,11 @@ export default function Text({ onSave, questionData }) {
         console.log("設定", settings);
     };
 
+        //編集をキャンセルして追加したフォームを削除
+        const handleCancel = () =>{
+            onCancel();
+        }
+
     return (
         <div className="TextSetting">
             <Stack spacing={2}>
@@ -99,6 +104,10 @@ export default function Text({ onSave, questionData }) {
                 <Button variant="contained" color="primary" onClick={handleSave}>
                     保存
                 </Button>
+
+                <Button variant="contained" color="primary" onClick={handleCancel}>
+                    キャンセル
+                </Button>
             </Stack>
         </div>
     );
@@ -106,5 +115,6 @@ export default function Text({ onSave, questionData }) {
 
 Text.propTypes = {
     onSave: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
     questionData: PropTypes.object
 };

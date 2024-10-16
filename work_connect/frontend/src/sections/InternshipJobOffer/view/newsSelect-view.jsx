@@ -116,6 +116,10 @@ export default function NavTabs() {
           setValue(2);
           number = 2;
           break;
+        case 'sessions':
+          setValue(3);
+          number = 3;
+          break;
         default:
           setValue(0); // デフォルトは求人に戻す
           number = 0;
@@ -143,11 +147,14 @@ export default function NavTabs() {
       >
         <Tab label="求人" onClick={(e) => handleTabClick(e, 0)} />
         <Tab label="インターンシップ" onClick={(e) => handleTabClick(e, 1)} />
-        <Tab label="ブログ" onClick={(e) => handleTabClick(e, 2)} />
+        <Tab label="説明会" onClick={(e) => handleTabClick(e, 2)} />
+        <Tab label="ブログ" onClick={(e) => handleTabClick(e, 3)} />
+
       </Tabs>
-      {value === 0 && <ListView type="joboffers"/>}
-      {value === 1 && <ListView type="internships"/>}
-      {value === 2 && <ListView type="blogs"/>}
+      {value === 0 && <ListView type="joboffers" />}
+      {value === 1 && <ListView type="internships" />}
+      {value === 2 && <ListView type="sessions" />}
+      {value === 3 && <ListView type="blogs" />}
     </Box>
   );
 }

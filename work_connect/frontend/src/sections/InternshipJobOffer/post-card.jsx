@@ -80,20 +80,24 @@ const PostCard = forwardRef(({ post }, ref) => {
       padding: "5px",
     }}
   >
-    
+
     <Button
       variant="contained"
       sx={{
         padding: "2px",
-        margin: "2px",       
+        margin: "2px",
         background: "linear-gradient(#41A4FF, #9198e5)",
         "&:hover": {
           background: "linear-gradient(#c2c2c2, #e5ad91)",
         },
       }}
     >
-    {genre === 'internships' ? 'インターンシップ' : genre === 'blogs' ? 'ブログ' : genre === 'joboffers' ? '求人' : genre}    </Button>
-    
+    {genre === 'internships' ? 'インターンシップ' :
+    genre === 'blogs' ? 'ブログ' :
+    genre === 'joboffers' ? '求人' :
+    genre === 'sessions' ? '説明会' :
+    genre}    </Button>
+
     {renderForm}
 
     </Stack>

@@ -46,16 +46,16 @@ class CompanyInformationController extends Controller
                 ];
             });
 
-            // 最初の企業情報を取得
-            $first_company = $company_information->first(); // 最初のアイテムを取得
+            // // 最初の企業情報を取得
+            // $first_company = $company_information->first(); // 最初のアイテムを取得
 
-            // Logのために企業情報を記録
-            Log::info("タイトルコンテンツ配列の中身", $title_contents_array->toArray());
-            Log::info("Company information", [
-                'company_name' => $first_company->company_name ?? 'Not found',  // nullチェックを追加
-                'company_id' => $first_company->company_id ?? 'Not found',      // nullチェックを追加
-                'id' => $first_company->id ?? 'Not found'                        // nullチェックを追加
-            ]);
+            // // Logのために企業情報を記録
+            // Log::info("タイトルコンテンツ配列の中身", $title_contents_array->toArray());
+            // Log::info("Company information", [
+            //     'company_name' => $first_company->company_name ?? 'Not found',  // nullチェックを追加
+            //     'company_id' => $first_company->company_id ?? 'Not found',      // nullチェックを追加
+            //     'id' => $first_company->id ?? 'Not found'                        // nullチェックを追加
+            // ]);
 
         } else {
             $title_contents_array = []; // 企業情報がない場合は空配列
@@ -70,27 +70,30 @@ class CompanyInformationController extends Controller
     public function company_informations_save(Request $request)
     {
         Log::info("company_informations_save通りました");
-    
+
         // リクエストからCompanyInformationを取得
         $companyInformationArray = $request->input("CompanyInformation");
     
         foreach ($companyInformationArray as $companyInformation) {
+            Log::info("Updating ID: {$companyInformation['id']}");
             // IDに基づいてデータベースのレコードを更新
             $updated = w_company_information::where('id', $companyInformation['id'])
                 ->update([
                     'title' => $companyInformation['title'],
                     'contents' => $companyInformation['contents'],
                     'company_id' => $companyInformation['company_id'],
+                    'public_status' => $companyInformation['public_status'],
                 ]);
     
-            // レコードが更新されなかった場合、新しいレコードを挿入
-            if ($updated === 0) { // 更新がなかった場合
-                w_company_information::create([
-                    'title' => $companyInformation['title'],
-                    'contents' => $companyInformation['contents'],
-                    'company_id' => $companyInformation['company_id'],
-                ]);
-            }
+            // // レコードが更新されなかった場合、新しいレコードを挿入
+            // if ($updated === 0) { // 更新がなかった場合
+            //     w_company_information::create([
+            //         'title' => $companyInformation['title'],
+            //         'contents' => $companyInformation['contents'],
+            //         'company_id' => $companyInformation['company_id'],
+            //         'public_status' => $companyInformation['public_status'],
+            //     ]);
+            // }
         }
     
         Log::info("カンパニーインフォメーションの処理完了", ['data' => $companyInformationArray]);

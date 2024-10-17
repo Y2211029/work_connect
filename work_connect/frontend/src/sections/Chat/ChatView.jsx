@@ -6,6 +6,7 @@ import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import { Link } from "react-router-dom";
 import { TextareaAutosize as BaseTextareaAutosize } from '@mui/base/TextareaAutosize';
 import { styled } from '@mui/material/styles';
+import { ColorRing } from "react-loader-spinner";
 
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -95,7 +96,7 @@ const Textarea = styled(BaseTextareaAutosize)(
 );
 
 // フォローリストのコンポーネント
-const FollowGroup = ({ title, followStatusCount, followStatus, groupingOpen, handleClick, accountData, chatOpen }) => {
+const FollowGroup = ({ title, followStatusCount, followStatus, groupingOpen, handleClick, chatViewId, chatOpen }) => {
   return (
     <>
       {/* 見出し部分 */}
@@ -125,9 +126,9 @@ const FollowGroup = ({ title, followStatusCount, followStatus, groupingOpen, han
               key={element.id}
               sx={{
                 pl: 4,
-                background: element.id === accountData.ChatOpenId ? '#cce5ff' : 'initial',
+                background: element.id === chatViewId ? '#cce5ff' : 'initial',
                 '&:hover': {
-                  background: element.id === accountData.ChatOpenId ? '#cce5ff' : '#eee',
+                  background: element.id === chatViewId ? '#cce5ff' : '#eee',
                 },
               }}
               onClick={() => chatOpen(element)}>
@@ -151,7 +152,64 @@ const FollowGroup = ({ title, followStatusCount, followStatus, groupingOpen, han
   );
 };
 
+// 「ここから未読」のコンポーネント
+const UnreadStart = () => {
+  return (
+    <Typography
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      variant="caption"
+      component="div"
+      sx={{
+        position: 'relative',
+        margin: '0 10px',
+        backgroundColor: '#F9FAFB',
+        zIndex: 1,
+        fontSize: '13px',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          left: 0,
+          top: '50%',
+          width: '45%',
+          borderBottom: '1px dashed #000',
+        },
+        '&::after': {
+          content: '""',
+          position: 'absolute',
+          right: 0,
+          top: '50%',
+          width: '45%',
+          borderBottom: '1px dashed #000',
+        },
+      }}
+    >
+      ここから未読
+    </Typography>
+  );
+};
+
 const ChatView = () => {
+
+
+
+  // セッションストレージ
+  const { getSessionData , updateSessionData } = useSessionStorage();
+  // セッションストレージからaccountDataを取得し、idを初期値として設定(ログイン中のIDを取得)
+  const [accountData, setAccountData] = useState(getSessionData("accountData"));
+
+  //const [Circul, setCircul] = useState("block");
+
+  const coloRing = {
+    visible: true,  // コロンで区切る
+    margin: "0px",
+    height: "10",
+    width: "10",
+    ariaLabel: "color-ring-loading",
+    wrapperClass: "custom-color-ring-wrapper", // コメントを外に
+    colors: ["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]
+  };
 
   const [GroupingOpen_1, setGroupingOpen_1] = React.useState(true);
   const [GroupingOpen_2, setGroupingOpen_2] = React.useState(true);
@@ -165,6 +223,12 @@ const ChatView = () => {
   const [FollowStatusCount_2, setFollowStatusCount_2] = useState(null);
   const [FollowStatusCount_3, setFollowStatusCount_3] = useState(null);
 
+  const [chatViewId, setChatViewId] = useState(accountData.ChatOpenId ? accountData.ChatOpenId : null);
+  const [chatViewUserName, setChatViewUserName] = useState(accountData.ChatOpenUserName ? accountData.ChatOpenUserName : null);
+  const [chatViewCompanyName, setChatViewCompanyName] = useState(accountData.ChatOpenCompanyName ? accountData.ChatOpenCompanyName : null);
+  const [chatViewIcon, setChatViewIcon] = useState(accountData.ChatOpenIcon ? accountData.ChatOpenIcon : null);
+  const [chatViewFollowStatus, setChatViewFollowStatus] = useState(accountData.ChatOpenFollowStatus ? accountData.ChatOpenFollowStatus : null);
+
   const groupinghandleClick_1 = () => {
     setGroupingOpen_1(!GroupingOpen_1);
   };
@@ -174,10 +238,6 @@ const ChatView = () => {
   const groupinghandleClick_3 = () => {
     setGroupingOpen_3(!GroupingOpen_3);
   };
-  // セッションストレージ
-  const { getSessionData , updateSessionData } = useSessionStorage();
-  // セッションストレージからaccountDataを取得し、idを初期値として設定(ログイン中のIDを取得)
-  const [accountData, setAccountData] = useState(getSessionData("accountData"));
 
   // ログイン中のid
   const MyUserId = accountData.id;
@@ -197,19 +257,22 @@ const ChatView = () => {
   const chatBoxscroll = useRef(null);
   // スクロールの高さが変わったときに、元のスクロールの高さを保持しておく
   const [prevScrollHeight, setPrevScrollHeight] = useState(0);
-
   // テキストの文章を保持する変数
   const [TextData, setTextData] = useState(null);
+
+  // 「ここから未読」の位置を保持する変数
+  let unreadMessage2 = false;
+  let unreadid = accountData.GetStartUnread ? accountData.GetStartUnread : 0;
 
   // useStateだと無限ループが発生するためletで初期値設定
   // メッセージの送信日時を記憶しておく
   let PrevChatDate = null;
 
   // チャットアイコンの設定
-  const avatarSrc = accountData.ChatOpenIcon
-  ? `http://localhost:8000/storage/images/userIcon/${accountData.ChatOpenIcon}`
+  const avatarSrc = chatViewIcon
+  ? `http://localhost:8000/storage/images/userIcon/${chatViewIcon}`
   : (() => {
-      switch (accountData.ChatOpenFollowStatus) {
+      switch (chatViewFollowStatus) {
         case '相互フォローしています':
           return 'assets/images/avatars/avatar_1.jpg';
         case 'フォローしています':
@@ -280,28 +343,35 @@ const ChatView = () => {
     // element.follow_statusが存在するときのみ実行
     element.follow_status && updateSessionData("accountData", "ChatOpenFollowStatus", element.follow_status);
 
+    window.location.reload();
    };
+
+  // 一番最初に実行(「ここから未読」の位置を記憶しておくGetStartUnreadを初期化しておく)
+  useEffect(() => {
+    updateSessionData("accountData", "GetStartUnread", 0);
+    updateSessionData("accountData", "DeleteStart", false);
+  }, []);
 
   // 1回のみ実行(1秒単位でデータを取得)
   useEffect(() => {
     // セッションストレージ取得
     setAccountData(getSessionData("accountData"));
-    GetChat();
+    GetChat(chatViewId);
     // チャットのスクロールを下にする
     scrollToBottom();
     const interval = setInterval(() => {
      // セッションストレージ取得
     setAccountData(getSessionData("accountData"));
-    GetChat();
+    console.log("passing222__"+chatViewId);
+    GetChat(chatViewId);
     // 既読をつける
-    AlreadyReadChat(accountData.ChatOpenId);
-    }, 3000);
+    AlreadyReadChat(chatViewId);
+
+    }, 2000);
 
     // コンポーネントがアンマウントされたらintervalをクリア
     return () => clearInterval(interval);
-  }, []);
-
-
+  }, [chatViewId]);
 
   // テキストが変更されたとき
   const textChange = (e) => {
@@ -321,30 +391,37 @@ const ChatView = () => {
   };
 
   // 最新のチャットを取得する処理
-  const GetChat = () => {
+  const GetChat = (id) => {
     async function GetData() {
-      console.log('チャットデータを取得中...'+getSessionData("accountData").ChatOpenId);
+      console.log('チャットデータを取得中...'+id);
+
       try {
         // Laravel側からデータを取得
         const response = await axios.get(get_chat, {
           params: {
             MyUserId: MyUserId, // ログイン中のID
-            PairUserId: getSessionData("accountData").ChatOpenId // チャット相手のID
+            PairUserId: id // チャット相手のID
           },
         });
         if (response.data !== "null") {
-          console.log("チャットのレスポンスは"+JSON.stringify(response.data, null, 2));
+          //console.log("チャットのレスポンスは"+JSON.stringify(response.data, null, 2));
           setResponseData(response.data);
+
         } else {
           console.log("まだチャットしてない");
-          setResponseData([]);
+          setResponseData("null");
         }
       } catch (err) {
         console.log("err:", err);
+        setChatViewId();
+        setChatViewUserName();
+        setChatViewCompanyName();
+        setChatViewIcon();
+        setChatViewFollowStatus();
       }
     }
     // DBからデータを取得
-    if (getSessionData("accountData").ChatOpenId) {
+    if (id) {
       GetData();
     } else {
       console.log("できません");
@@ -365,6 +442,7 @@ const ChatView = () => {
         if (response.data) {
           console.log("送信成功しました");
           setTextData("");
+          updateSessionData("accountData", "GetStartUnread", 0);
         }
       } catch (err) {
         console.log("err:", err);
@@ -383,12 +461,16 @@ const ChatView = () => {
     async function PostData() {
       try {
         console.log("TextData:");
-
         const response = await axios.post(delete_chat, {
           Id: id, // ログイン中のID
         });
         if (response.data) {
           console.log("チャットの削除に成功しました");
+          // 削除状態終了
+          // 3秒遅延させて実行
+          setTimeout(() => {
+            updateSessionData("accountData", "DeleteStart", false);
+          }, 3000); // 3000ミリ秒 = 3秒
         }
       } catch (err) {
         console.log("err:", err);
@@ -437,7 +519,7 @@ const ChatView = () => {
     PrevChatDate = ChatDate;
 
     const [year, month, day] = ChatDate.split('-'); // 年、月、日を分割
-    console.log("テストですテストですテストですテストです"+year);
+    console.log(year);
     // 月と日を整数に変換し、形式を整える
     const formattedDate = `${parseInt(month, 10)}月${parseInt(day, 10)}日`; // "10月7日"
 
@@ -451,18 +533,36 @@ const ChatView = () => {
 
   // 送信時間から時:分だけを取り出す関数
   const GetTime = (time) => {
+
     // 文字列を切り取って時間と分を取得
-    const timeString = time.slice(11, 16); // "14:07" などを取得
+    const timeString = time.slice(11, 16);
 
     // timeStringの最初の2文字を取得
-    let hour = timeString.slice(0, 2); // "14" の場合、"14" を取得
+    let hour = timeString.slice(0, 2);
 
     // 最初の文字が 0 の場合は切り取る
     if (hour.startsWith('0')) {
-      hour = hour.slice(1); // "14" なら "4" になる
+      hour = hour.slice(1);
     }
 
     return `${hour}:${timeString.slice(3)}`; // 分はそのまま返す
+  };
+
+  // 「ここから未読」を表示する関数
+  const GetStartUnread = (read,id) => {
+
+    if (read === "未読" && unreadMessage2 === false) {
+      unreadMessage2 = true;
+      unreadid = id;
+      updateSessionData("accountData", "GetStartUnread", unreadid);
+    }
+    // 「ここから未読」を表示
+    if(unreadid === id){
+      // コンポーネント呼び出し
+      return <UnreadStart />;
+    }
+
+    return "";
   };
 
   // チャットのスクロールを下にする関数
@@ -473,13 +573,16 @@ const ChatView = () => {
 
     // MutationObserverの設定
     const observer = new MutationObserver(() => {
+
       // 現在のscrollHeight
       const currentScrollHeight = chatBox.scrollHeight;
 
-      // scrollHeightが変わったときにのみスクロール
-      if (currentScrollHeight !== prevScrollHeight) {
+      // scrollHeightが変わったときのみスクロール
+      // リアルタイムで情報を取得するためgetSessionData("accountData")から取得する
+      if (currentScrollHeight !== prevScrollHeight && getSessionData("accountData").DeleteStart === false) {
         chatBox.scrollTop = chatBox.scrollHeight;
         setPrevScrollHeight(currentScrollHeight); // 更新
+        //alert(accountData.DeleteStart);
       }
     });
     // observerの監視対象を設定
@@ -507,19 +610,33 @@ const ChatView = () => {
   const popMenuDelete = (id) => {
     if (confirm("チャットを削除してよろしいですか？")) {
       // OK（はい）が押された場合の処理
+
+      // 削除状態スタート
+      updateSessionData("accountData", "DeleteStart", true);
+
       // 関数呼び出し
       DeleteChat(id);
       // アラート
       alert("チャットを削除しました。");
+
+      // ポップメニューを閉じる
+      popMenuClose();
+
+
+
       // リロード
-      window.location.reload();
+      //window.location.reload();
     } else {
       // キャンセル（いいえ）が押された場合の処理
     }
   };
 
 
+
+
   return (
+    <>
+
     <div style={{
       display: 'flex'
       }}>
@@ -553,7 +670,7 @@ const ChatView = () => {
         followStatus={FollowStatus_1}
         groupingOpen={GroupingOpen_1}
         handleClick={groupinghandleClick_1}
-        accountData={accountData}
+        chatViewId={chatViewId}
         chatOpen={ChatOpen}
       />
 
@@ -563,7 +680,7 @@ const ChatView = () => {
         followStatus={FollowStatus_2}
         groupingOpen={GroupingOpen_2}
         handleClick={groupinghandleClick_2}
-        accountData={accountData}
+        chatViewId={chatViewId}
         chatOpen={ChatOpen}
       />
 
@@ -573,7 +690,7 @@ const ChatView = () => {
         followStatus={FollowStatus_3}
         groupingOpen={GroupingOpen_3}
         handleClick={groupinghandleClick_3}
-        accountData={accountData}
+        chatViewId={chatViewId}
         chatOpen={ChatOpen}
       />
 
@@ -590,7 +707,7 @@ const ChatView = () => {
       borderRadius: '10px'}}>
 
       {/****** チャット相手のアイコン、名前を表示させる ******/}
-      {(accountData.ChatOpenId) ? (
+      {(chatViewId) ? (
         // 選択状態
         <Box sx={{
           padding: '5px 0',
@@ -600,11 +717,11 @@ const ChatView = () => {
 
           {/* 企業名もしくはユーザーネームを表示(企業は企業名、学生はユーザーネーム) */}
           <Tooltip title={
-            (accountData.ChatOpenCompanyName ?
-             accountData.ChatOpenCompanyName :
-             accountData.ChatOpenUserName) + "さんのマイページ"}>
+            (chatViewCompanyName ?
+              chatViewCompanyName :
+             chatViewUserName) + "さんのマイページ"}>
             <Link
-              to={`/Profile/${accountData.ChatOpenUserName}`}
+              to={`/Profile/${chatViewUserName}`}
             >
               <img src={avatarSrc}
 
@@ -614,9 +731,9 @@ const ChatView = () => {
                 margin: '0 5px',
                 borderRadius: '50%' }}
               />
-              {accountData.ChatOpenCompanyName ?
-               accountData.ChatOpenCompanyName :
-               accountData.ChatOpenUserName}
+              {chatViewCompanyName ?
+               chatViewCompanyName :
+               chatViewUserName}
             </Link>
           </Tooltip>
         </Box>
@@ -629,7 +746,7 @@ const ChatView = () => {
           }}>
 
 
-          &nbsp;
+          &emsp;←選んでください
         </Box>
       )}
 
@@ -642,11 +759,12 @@ const ChatView = () => {
         overflow: 'auto',
           }}>
 
-    {(ResponseData && ResponseData.length > 0) ? (ResponseData.map((element, index) => (
+    {(ResponseData && ResponseData.length > 0 && ResponseData !== "null") ? (ResponseData.map((element, index) => (
       // チャット履歴があるとき
       // element.send_user_id(チャットの送信者のid)とMyUserId(自分のid)が一致すれば右側、そうでなければ左側
       <div key={index}>
 
+        {/* 日にち(毎回表示するわけではない。同じ日にちが2回以上続く場合は省略) */}
         <Typography
           display="flex"
           justifyContent="center"
@@ -664,8 +782,17 @@ const ChatView = () => {
           {GetDay(element.send_datetime)}
         </Typography>
 
+        {/* ここから未読 */}
+        {/* メッセージが相手、かつcheck_readが未読 */}
+        {element.send_user_id !== MyUserId ? (
+          GetStartUnread(element.check_read,element.id)
+
+        ):(null)}
+
+
         {element.check_read !== '削除' ? (
           <>
+            {/* 時間 */}
             <Typography
               display="flex"
               justifyContent={element.send_user_id === MyUserId ? 'flex-end' : 'flex-start'}
@@ -781,19 +908,35 @@ const ChatView = () => {
           )}
       </div>
 
-    ))):(
-      // チャット履歴がまだないとき
+    ))):(ResponseData === "null") ? (
+        // ローディング
+        <div>
+          メッセージがありません
+        </div>
+    ):(chatViewId !== null) ? (
+      // ローディング
       <div>
-        メッセージがありません
+        <Box
+          sx={{
+            marginTop: '20%',
+            display: 'flex', // Flexboxを使用
+            justifyContent: 'center', // 水平方向中央
+            alignItems: 'center', // 垂直方向中央
+          }}
+        >
+          <ColorRing
+              style={coloRing}
+            />
+        </Box>
       </div>
-    )}
+    ):(null)}
 
 
 
       </Box>
 
       {/****** チャット送信フォーム ******/}
-      {(accountData.ChatOpenId) ? (
+      {(chatViewId) ? (
       // 選択状態
       <Box sx={{
         display: 'flex',
@@ -846,6 +989,7 @@ const ChatView = () => {
       )}
     </div>
     </div>
+    </>
   )
 }
 
@@ -856,8 +1000,10 @@ FollowGroup.propTypes = {
   followStatus: PropTypes.arrayOf(PropTypes.object).isRequired,
   groupingOpen: PropTypes.bool.isRequired,
   handleClick: PropTypes.func.isRequired,
-  accountData: PropTypes.object.isRequired,
+  chatViewId: PropTypes.object.isRequired,
   chatOpen: PropTypes.func.isRequired,
+};
+UnreadStart.propTypes = {
 };
 
 export default ChatView;

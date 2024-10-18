@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import { useEffect, useState, useRef } from "react";
 import PropTypes from 'prop-types';
 import axios from "axios";
@@ -144,6 +145,27 @@ const FollowGroup = ({ title, followStatusCount, followStatus, groupingOpen, han
               </ListItemIcon>
               {/* ユーザー名 */}
               <ListItemText primary={element.company_name ? element.company_name : element.user_name} />
+              <Box>
+                {element.unread !== 0 ? (
+                  <Box
+                    sx={{
+                      backgroundColor: '#ff6060',   // バッジの背景色
+                      color: 'white',           // テキスト色
+                      borderRadius: '50%',      // 丸いデザインにする
+                      width: '22px',            // 幅を小さくする
+                      height: '22px',           // 高さを小さくする
+                      display: 'flex',          // 中央揃えのためにflexを使う
+                      justifyContent: 'center', // 中央揃え
+                      alignItems: 'center',     // 中央揃え
+                      fontSize: '13px',         // フォントサイズを小さくする
+                    }}
+                  >
+                    {element.unread} {/* ①のような表示 */}
+                  </Box>
+                ) : (
+                  ""
+                )}
+            </Box>
             </ListItemButton>
           ))}
         </List>
@@ -260,8 +282,51 @@ const ChatView = () => {
   // テキストの文章を保持する変数
   const [TextData, setTextData] = useState(null);
 
+  // 外部からのリンクでチャットを開けるよう、パラメータを取得する。
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const ParamsuserName = searchParams.get('userName');
+
+  useEffect(() => {
+    // ResponseChannelListDataが存在しているか確認
+    if (ResponseChannelListData && ResponseChannelListData.length > 0) {
+
+      ResponseChannelListData.forEach((item) => {
+        if (item.user_name === ParamsuserName) {
+            // element.idが存在するときのみ実行
+            if (item.id) {
+              updateSessionData("accountData", "ChatOpenId", item.id);
+              setChatViewId(item.id);
+            }
+            if (item.user_name) {
+              updateSessionData("accountData", "ChatOpenUserName", item.user_name);
+              setChatViewUserName(item.user_name);
+            }
+            if (item.company_name) {
+              updateSessionData("accountData", "ChatOpenCompanyName", item.company_name);
+              setChatViewCompanyName(item.company_name);
+            }
+            if (item.icon) {
+              updateSessionData("accountData", "ChatOpenIcon", item.icon);
+              setChatViewIcon(item.icon);
+            } else {
+              updateSessionData("accountData", "ChatOpenIcon", "");
+            }
+            if (item.follow_status) {
+              updateSessionData("accountData", "ChatOpenFollowStatus", item.follow_status);
+              setChatViewFollowStatus(item.follow_status);
+            }
+        } else {
+          // 見つからない場合、404ページにリダイレクト
+          location.href = "/404";
+        }
+      });
+    }
+  }, [ResponseChannelListData]);
+
+
   // 「ここから未読」の位置を保持する変数
-  let unreadMessage2 = false;
+  let unreadMessageFlag = false;
   let unreadid = accountData.GetStartUnread ? accountData.GetStartUnread : 0;
 
   // useStateだと無限ループが発生するためletで初期値設定
@@ -292,6 +357,7 @@ const ChatView = () => {
   const already_read_chat = "http://localhost:8000/already_read_chat";
 
   // ResponseChannelListDataが変化したとき
+  // フォローリストを作成
   useEffect(() => {
     async function GetData() {
       try {
@@ -302,7 +368,7 @@ const ChatView = () => {
           },
         });
         if (response) {
-          console.log(response.data);
+          console.log(JSON.stringify(response, null, 2));
           setResponseChannelListData(response.data);
           // follow_statusが「相互フォローしています」の相手はfollow_item_1に入れる
           const follow_item_1 = response.data.filter(item => item.follow_status === '相互フォローしています');
@@ -343,6 +409,10 @@ const ChatView = () => {
     // element.follow_statusが存在するときのみ実行
     element.follow_status && updateSessionData("accountData", "ChatOpenFollowStatus", element.follow_status);
 
+    // 現在のURLのクエリパラメータを削除する
+    window.history.replaceState(null, null, window.location.pathname);
+
+    // ページをリロードする
     window.location.reload();
    };
 
@@ -413,11 +483,7 @@ const ChatView = () => {
         }
       } catch (err) {
         console.log("err:", err);
-        setChatViewId();
-        setChatViewUserName();
-        setChatViewCompanyName();
-        setChatViewIcon();
-        setChatViewFollowStatus();
+
       }
     }
     // DBからデータを取得
@@ -551,8 +617,9 @@ const ChatView = () => {
   // 「ここから未読」を表示する関数
   const GetStartUnread = (read,id) => {
 
-    if (read === "未読" && unreadMessage2 === false) {
-      unreadMessage2 = true;
+    if (read === "未読" && unreadMessageFlag === false) {
+      // 1度きりの表示なので2回目以降は出さないようにする
+      unreadMessageFlag = true;
       unreadid = id;
       updateSessionData("accountData", "GetStartUnread", unreadid);
     }

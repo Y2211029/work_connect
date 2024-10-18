@@ -38,6 +38,7 @@ use App\Http\Controllers\student\GetStudentListController;
 use App\Http\Controllers\company\GetCompanyListController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\follow\FollowController;
+use App\Http\Controllers\follow\FollowCheckController;
 use App\Http\Controllers\chat\GetChannelListController;
 use App\Http\Controllers\chat\GetChatController;
 use App\Http\Controllers\chat\PostChatController;
@@ -211,6 +212,11 @@ Route::post('/post_movie_comment_delete', [PostMovieCommentDeleteController::cla
 
 // フォロー
 Route::post('/follow', [FollowController::class, 'FollowController']);
+
+
+// フォローチェック
+Route::post('/followCheck', [FollowCheckController::class, 'FollowCheckController']);
+
 
 // チャット相手取得
 Route::get('/get_channel_list', [GetChannelListController::class, 'GetChannelListController']);

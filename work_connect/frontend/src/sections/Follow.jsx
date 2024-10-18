@@ -6,7 +6,8 @@ const Follow = (/*{ userId, followId }*/) => {
   const [ws, setWs] = useState(null);
 
   const userId = "C_0000000002";
-  const followId = "S_000000000002";
+  const followId = "S_000000000001";
+
   // WebSocket接続
   useEffect(() => {
     const newWs = new WebSocket(`ws://localhost:3000?userId=${userId}`); // 修正: ws://を使用

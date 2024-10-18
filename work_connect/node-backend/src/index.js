@@ -46,15 +46,40 @@ app.post("/follow", async (req, res) => {
       recipient_id: followedId,
     });
 
+
+
     if (response.data.message == "フォロー処理が完了しました") {
-      res.json(response.data);
-      if (clients[followedId]) {
-        clients[followedId].send(
-          JSON.stringify({
-            type: "follow",
-            message: `ユーザー${followerId}があなたをフォローしました！`,
-          })
-        );
+      if (response.data.follow_status == "フォローしています" || response.data.follow_status == "相互フォローしています") {
+        res.json(response.data);
+        if (clients[followedId]) {
+          clients[followedId].send(
+            JSON.stringify({
+              kind: "notification",
+              type: "follow",
+              message: `ユーザー${followerId}があなたをフォローしました！`,
+              follow_status: response.data.follow_status,
+              noticeData: response.data.notice_data[0],
+              followData: {
+                kind: "follow",
+                type: "follow",
+                message: `ユーザー${followerId}があなたをフォローしました！`,
+                follow_status: response.data.follow_status,
+              },
+            })
+          );
+        }
+      } else if (response.data.follow_status == "フォローされています" || response.data.follow_status == "フォローする") {
+        res.json(response.data);
+        if (clients[followedId]) {
+          clients[followedId].send(
+            JSON.stringify({
+              kind: "follow",
+              type: "follow",
+              message: `ユーザー${followerId}があなたをフォローしました！`,
+              follow_status: response.data.follow_status,
+            })
+          );
+        }
       }
     } else {
       res.json("何らかの原因でエラーが起きました");
@@ -63,6 +88,7 @@ app.post("/follow", async (req, res) => {
           JSON.stringify({
             type: "follow",
             message: `何らかの原因でエラーが起きました`,
+            follow_status: response.data.follow_status,
           })
         );
       }

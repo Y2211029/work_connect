@@ -27,7 +27,7 @@ export const CompanyListPage = lazy(() => import("src/pages/companyList"));
 export const WorkDetail = lazy(() => import("src/sections/WorkList/view/WorkDetail"));
 export const VideoDetail = lazy(() => import("src/sections/VideoList/view/VideoDetail"));
 export const TestPage = lazy(() => import("src/sections/TestPage"));
-export const Follow = lazy(() => import("src/sections/follow"));
+export const Follow = lazy(() => import("src/sections/Follow"));
 
 // export const StudentListPage = lazy(() => import("src/sections/WorkList/view/WorkDetail.jsx"));
 // export const CompanyListPage = lazy(() => import("src/sections/WorkList/view/WorkDetail.jsx"));

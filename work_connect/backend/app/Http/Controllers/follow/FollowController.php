@@ -46,6 +46,8 @@ class FollowController extends Controller
             ->where('follow_recipient_id', $sender_id)
             ->exists();
 
+        $w_notice = [];
+
         // フォロー状態を決定
         if ($isFollowing && $isFollowedByUser) {
             $followStatus = '相互フォローしています';
@@ -72,10 +74,37 @@ class FollowController extends Controller
         }
 
 
+        $query = w_notice::query();
+
+        if ($recipient_id[0] == 'S') {
+            $query->select(
+                'w_companies.*',
+                'w_notices.*',
+            );
+        } else {
+            $query->select(
+                'w_users.*',
+                'w_notices.*',
+            );
+        }
+
+        $query->where('w_notices.get_user_id', $recipient_id);
+
+        if ($recipient_id[0] == 'S') {
+            $query->join('w_companies', 'w_companies.id', '=', 'w_notices.send_user_id');
+        } else {
+            $query->join('w_users', 'w_users.id', '=', 'w_notices.send_user_id');
+        }
+
+        $query->orderBy('w_notices.created_at', 'asc');
+
+        $noticeData = $query->get();
+
         // フォロー状況を JSON 形式で返す
         return response()->json([
             'message' => 'フォロー処理が完了しました',
-            'follow_status' => $followStatus
+            'follow_status' => $followStatus,
+            'notice_data' => $noticeData
         ]);
     }
 }

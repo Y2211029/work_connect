@@ -132,12 +132,19 @@ const PostCard = forwardRef(({ post }, ref) => {
     />
   );
 
-  // フォローステータス
-  const renderFollow = (
-    <Typography opacity="0.48" onClick={handleFollowClick}>
-      {followStatus}
-    </Typography>
-  );
+  //フォローステータス
+  const renderFollow = () => {
+    if (followStatus === "フォローできません") {
+      return <Typography opacity="0.48"></Typography>;
+    } else {
+      return (
+        <Typography opacity="0.48" onClick={handleFollowClick}>
+          {followStatus}
+        </Typography>
+      );
+    }
+  };
+
 
   // 投稿日
   const renderDate = (

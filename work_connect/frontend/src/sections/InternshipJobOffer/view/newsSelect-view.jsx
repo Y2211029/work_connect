@@ -68,6 +68,9 @@ export default function NavTabs() {
           category = 'internships';
           break;
         case 2:
+          category = 'sessions';
+          break;
+        case 3:
           category = 'blogs';
           break;
         default:

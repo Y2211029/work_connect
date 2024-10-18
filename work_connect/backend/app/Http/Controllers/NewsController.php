@@ -40,7 +40,7 @@ class NewsController extends Controller
                 $followStatus = 'フォローしています';
             } elseif ($isFollowedByUser) {
                 $followStatus = 'フォローされています';
-            } elseif ($news_detail->id == $MyId) {
+            } elseif ($news_detail->id === $MyId) {
                 $followStatus = 'フォローできません';
             } else {
                 $followStatus = 'フォローする';

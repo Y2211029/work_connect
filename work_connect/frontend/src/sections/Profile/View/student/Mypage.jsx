@@ -1,5 +1,5 @@
 //import * as React from 'react';
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import axios from "axios";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import { useParams } from 'react-router-dom';
@@ -21,7 +21,7 @@ import { ColorRing } from "react-loader-spinner";
 
 import ProfileMypageEdit from './MypageEdit';
 import { follow } from "src/_mock/follow";
-
+import { WebScokectContext } from "src/layouts/dashboard/index";
 // Itemのスタイルを定義
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -73,6 +73,8 @@ const ProfileMypage = () => {
   //フォローの状況がセットされる関数
   const [followStatus, setFollowStatus] = useState([]);
 
+  //フォローステータスが変更されるまでの間ボタンを押せなくする
+  const [ButtonDisable, setButtonDisable] = useState(false);
 
   const coloRing = {
     visible: true,  // コロンで区切る
@@ -84,6 +86,8 @@ const ProfileMypage = () => {
     colors: ["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]
   };
 
+  // websocket通信のデータ保存先
+  const notificationContext = useContext(WebScokectContext);
 
   // // セッションストレージからaccountDataを取得し、MypageEditStateを初期値として設定
   // // マイページ編集時なら"1",マイページ時なら"0"
@@ -134,7 +138,8 @@ const ProfileMypage = () => {
           // console.log(response.data[0].follow_status);
           setResponseData(response.data[0]);
           setFollowStatus(response.data[0].follow_status);
-          //console.log("ResponseDataaaaaaaaaaaaa:", ResponseData.icon);
+
+          console.log("follow_status:", response.data[0].follow_status);
         }
         // console.log("ResponseData:", ResponseData);
       } catch (err) {
@@ -145,7 +150,7 @@ const ProfileMypage = () => {
     if (user_name) {
       GetData();
     }
-  }, [ResponseData]);
+  }, []);
 
   // 初回レンダリング時の一度だけ実行させる
   useEffect(() => {
@@ -154,6 +159,45 @@ const ProfileMypage = () => {
       if (ref) ref.style.display = 'none';
     });
   }, []);
+
+
+  // フォロー
+  useEffect(() => {
+    let followStatusDetail;
+    if (notificationContext.WebSocketState.notification.noticeData) {
+      followStatusDetail = notificationContext.WebSocketState.notification.noticeData;
+      console.log("followStatusDetail.detail", followStatusDetail.detail)
+      if (followStatusDetail.detail == "相互フォロー") {
+        setFollowStatus("相互フォローしています");
+      } else if (followStatus == "フォローする") {
+        setFollowStatus("フォローされています");
+      }
+    }
+  }, [notificationContext.WebSocketState.notification.noticeData]);
+
+  useEffect(() => {
+    // let followStatusDetail;
+    console.log("notificationContext.WebSocketState.websocketFollowStatus.follow_status", notificationContext.WebSocketState.websocketFollowStatus.follow_status)
+    if (notificationContext.WebSocketState.websocketFollowStatus.follow_status) {
+      // followStatusDetail = notificationContext.WebSocketState.websocketFollowStatus.follow_status;
+      console.log("notificationContext.WebSocketState.websocketFollowStatus.follow_status", notificationContext.WebSocketState.websocketFollowStatus.follow_status)
+      if (followStatus == "フォローされています") {
+        console.log("notificationContext.WebSocketState.websocketFollowStatus.follow_status", notificationContext.WebSocketState.websocketFollowStatus.follow_status)
+        setFollowStatus("フォローする");
+      } else if (followStatus == "相互フォローしています") {
+        console.log("notificationContext.WebSocketState.websocketFollowStatus.follow_status", notificationContext.WebSocketState.websocketFollowStatus.follow_status)
+        setFollowStatus("フォローしています");
+      }
+      console.log("notificationContext.WebSocketState.websocketFollowStatus.follow_status", notificationContext.WebSocketState.websocketFollowStatus.follow_status)
+
+    }
+  }, [notificationContext.WebSocketState.websocketFollowStatus.follow_status]);
+
+  useEffect(() => {
+    console.log("notificationContext", notificationContext)
+
+  }, [notificationContext]);
+
 
   // 編集ボタンを押したときの処理
   const handleEditClick = () => {
@@ -227,10 +271,38 @@ const ProfileMypage = () => {
       //id = 今見ているプロフィールの人のid
       console.log(MyUserId[0]);
       console.log(profile_id);
+      setButtonDisable(true);
       const updatedFollowStatus = await follow(MyUserId[0], profile_id);
-      if (updatedFollowStatus) {
-        setFollowStatus(updatedFollowStatus);
+
+
+
+
+
+
+      setButtonDisable(false);
+
+      if (updatedFollowStatus == "成功") {
+        if (followStatus == "フォローする") {
+          setFollowStatus("フォローしています");
+        } else if (followStatus == "フォローされています") {
+          setFollowStatus("相互フォローしています");
+        } else if (followStatus == "フォローしています") {
+          setFollowStatus("フォローする");
+        } else if (followStatus == "相互フォローしています") {
+          setFollowStatus("フォローされています");
+        }
+
       }
+      const response = await axios.post("http://localhost:8000/followCheck", {
+        sender_id: MyUserId[0],
+        recipient_id: profile_id,
+      });
+
+      if (response.data !== followStatus) {
+        console.log("setFollowStatusresponse.data",response.data);
+        setFollowStatus(response.data);
+      }
+      console.log("updatedFollowStatus", updatedFollowStatus);
     } catch (error) {
       console.error('フォロー処理中にエラーが発生しました！', error);
     }
@@ -245,9 +317,9 @@ const ProfileMypage = () => {
       );
     } else {
       return (
-        <Typography opacity="0.48" onClick={handleFollowClick}>
+        <Button disabled={ButtonDisable} onClick={handleFollowClick} variant="outlined">
           {followStatus}
-        </Typography>
+        </Button>
       );
     }
   };
@@ -282,7 +354,7 @@ const ProfileMypage = () => {
           // ResponseData.id(プロフィールのID)の1文字目 と MyUserId(ログイン中のID)の1文字目が一致しない場合はフォローの状況を表示
           // 学生側はS、企業側はCで始まる。
           <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Tooltip title="フォロー">
+            <Tooltip>
               {/* <IconButton
              sx={{
                marginLeft: 'auto', // 右揃え

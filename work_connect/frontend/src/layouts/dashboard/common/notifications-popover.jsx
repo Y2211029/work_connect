@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 // import { set } from "date-fns";
 // import { set, sub } from "date-fns";
@@ -28,11 +29,12 @@ import Scrollbar from "../../../components/scrollbar/scrollbar";
 import axios from "axios";
 
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
-import { useNavigate } from "react-router-dom";
+
+import { WebScokectContext } from "src/layouts/dashboard/index";
 
 // ----------------------------------------------------------------------
 
-var noticeDeleteFlg = true;
+// var noticeDeleteFlg = true;
 
 export default function NotificationsPopover() {
   // 通知をクリックしたときに適したページに飛ばす用
@@ -61,6 +63,10 @@ export default function NotificationsPopover() {
   // 通知モーダルを開く用
   const [open, setOpen] = useState(null);
 
+  // websocket通信のデータ保存先
+  const notificationContext = useContext(WebScokectContext);
+
+
   // 通知モーダルを開いたときに動く
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -70,6 +76,7 @@ export default function NotificationsPopover() {
   const handleClose = () => {
     setOpen(null);
   };
+
 
   // 通知を未読から既読にする命令をLaravelに送信
   async function noticeAlreadyReadFunction() {
@@ -133,27 +140,52 @@ export default function NotificationsPopover() {
 
       // console.log("!DeleteNotice.includes(value.id):noticeData: ", noticeData);
 
-      if (noticeDeleteFlg) {
-        setNoticeArray(noticeData);
-      } else {
-        noticeDeleteFlg = true;
-      }
+      setNoticeArray(noticeData);
+      // if (noticeDeleteFlg) {
+      //   setNoticeArray(noticeData);
+      // } else {
+      //   noticeDeleteFlg = true;
+      // }
     } catch (err) {
       console.log("err:", err);
     }
   }
 
-  // 通知監視用
   useEffect(() => {
     noticeListFunction();
-    const interval = setInterval(() => {
-      noticeListFunction();
-    }, 5000);
-    return () => clearInterval(interval);
   }, []);
 
+  // 通知監視用
+  useEffect(() => {
+    console.log("notificationContext.notification", notificationContext.WebSocketState.notification.noticeData);
+
+    let noticeContextDataObject = {};
+    noticeContextDataObject = notificationContext.WebSocketState.notification.noticeData;
+
+    console.log("noticeContextDataObject", noticeContextDataObject);
+
+    if(noticeContextDataObject != undefined) {
+      if (NoticeArray == undefined) {
+        console.log("setNoticeArray(noticeContextDataObject) : undefined");
+        console.log("setNoticeArray(noticeContextDataObject) : undefined");
+        setNoticeArray(noticeContextDataObject);
+      } else {
+      console.log("setNoticeArray(noticeContextDataObject) : ", noticeContextDataObject);
+      setNoticeArray((prevItems) => {
+          return [...prevItems, noticeContextDataObject];  // スプレッド構文で配列を展開して追加
+        });
+      }
+    }
+
+  }, [notificationContext.WebSocketState.notification.noticeData]);
+
+  // useEffect(() => {
+  //   console.log("NoticeArray", NoticeArray);
+    
+  // }, [NoticeArray])
   // Laravelから取得した通知データをもとに表示に適した形に変換する
   useEffect(() => {
+    console.log("NoticeArray", NoticeArray);
     // console.log("useEffect[NoticeArray]:NoticeId:", NoticeId);
     // console.log("NoticeArray:", NoticeArray);
 
@@ -221,9 +253,9 @@ export default function NotificationsPopover() {
       noticeData.push(oneNoticeData);
     });
 
-    if(noticeDeleteFlg) {
+    // if (noticeDeleteFlg) {
       setNOTIFICATIONS(noticeData);
-    }
+    // }
   }, [NoticeArray]);
 
   // 表示するのに適した形になった通知データを表示用配列にセット
@@ -255,7 +287,7 @@ export default function NotificationsPopover() {
   // 削除ボタンを押した通知を削除する
   const deleteSingleNotice = async (e) => {
     // console.log("delete!! ", e.target.dataset.notice);
-    noticeDeleteFlg = false;
+    // noticeDeleteFlg = false;
     try {
       const noticeId = e.target.dataset.notice;
 
@@ -279,7 +311,7 @@ export default function NotificationsPopover() {
   // 選択状態の通知を削除する
   const deleteSelectNotice = async () => {
     // console.log("delete!! ", e.target.dataset.notice);
-    noticeDeleteFlg = false;
+    // noticeDeleteFlg = false;
     try {
       const selectNoticeArray = NOTIFICATIONS.filter(
         (value) => value.selectCheckBox == true

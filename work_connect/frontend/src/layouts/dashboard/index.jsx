@@ -3,9 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import PropTypes from "prop-types";
 export const MyContext = createContext();
 export const AllItemsContext = createContext();
-// export const DataListContext = createContext();
-// export const SearchCheckContext = createContext();
-// export const SortOption = createContext();
+export const WebScokectContext = createContext();
 
 import Box from "@mui/material/Box";
 
@@ -13,15 +11,26 @@ import Nav from "./nav";
 import Main from "./main";
 import Header from "./header";
 
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
 // ----------------------------------------------------------------------
 
 export default function DashboardLayout({ children }) {
+  // セッションからログインしているアカウントのデータ取得
+  const { getSessionData } = useSessionStorage();
+  let accountData = getSessionData("accountData");
+
   const [openNav, setOpenNav] = useState(false);
   const [searchParams] = useSearchParams();
   const [pageStyles, setPageStyles] = useState({
     HomePage: location.pathname === "/Top" ? "none" : "",
     MyPage: "block"
   });
+
+  if (accountData == undefined) {
+    accountData = {
+      id: "029",
+    }
+  }
 
   useEffect(() => {
 
@@ -43,26 +52,79 @@ export default function DashboardLayout({ children }) {
     sortOption: "orderNewPostsDate",
   });
 
+  const [WebSocketState, setWebSocketState] = useState({
+    notification: {},
+    Chat: "",
+    workComment: "",
+    websocketFollowStatus: "",
+  });
+
   const value1 = {
     AllItems,
     setAllItems,
   };
 
+
+
+  // WebSocket接続
+  useEffect(() => {
+    if (accountData !== undefined) {
+      const newWs = new WebSocket(`ws://localhost:3000?userId=${accountData.id}`);
+      newWs.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.kind === "notification") {
+          if (data.type === "follow") {
+            console.log("通ってると", data.noticeData);
+            setWebSocketState((prev) => ({
+              ...prev,
+              notification: data,
+              websocketFollowStatus: data.followData,
+            }));
+          }
+        }
+        if (data.kind === "follow") {
+          if (data.type === "follow") {
+            console.log("通ってると", data);
+            setWebSocketState((prev) => ({
+              ...prev,
+              websocketFollowStatus: data,
+            }));
+          }
+        }
+      };
+      newWs.onclose = () => {
+        console.log("WebSocket connection closed");
+      };
+
+      return () => {
+        newWs.close();
+      };
+    }
+  }, [accountData.id]);
+
+  const value2 = {
+    WebSocketState,
+    setWebSocketState,
+  };
+
+
   return (
     <>
       <MyContext.Provider value={pageStyles}>
         <AllItemsContext.Provider value={value1}>
-          <Header onOpenNav={() => setOpenNav(true)} />
-          <Box
-            sx={{
-              minHeight: 1,
-              display: "flex",
-              flexDirection: { xs: "column", lg: "row" },
-            }}
-          >
-            <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} />
-            <Main>{children}</Main>
-          </Box>
+          <WebScokectContext.Provider value={value2}>
+            <Header onOpenNav={() => setOpenNav(true)} />
+            <Box
+              sx={{
+                minHeight: 1,
+                display: "flex",
+                flexDirection: { xs: "column", lg: "row" },
+              }}
+            >
+              <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} />
+              <Main>{children}</Main>
+            </Box>
+          </WebScokectContext.Provider>
         </AllItemsContext.Provider>
       </MyContext.Provider>
     </>

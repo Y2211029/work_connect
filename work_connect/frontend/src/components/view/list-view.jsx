@@ -455,7 +455,8 @@ export default function ItemObjectAndPostCard({ type, ParamUserName, NewsId }) {
             contents: company.contents,
             company_id: company.company_id,
             id: company.id,
-            public_status:company.public_status
+            public_status:company.public_status,
+            row_number:company.row_number
           }));
 
           return [{ title_contents }]; // 1つのオブジェクトにまとめた配列として返す

@@ -15,7 +15,6 @@
 .tableContainer {
     width: 200%; /* 親要素の幅に合わせる */
     max-width: 1000px; /* 必要に応じて最大幅を設定 */
-    overflow-x: auto; /* 水平方向のスクロールを有効にする */
     margin-bottom: 20px; /* テーブル下に余白を追加 */
 }
 

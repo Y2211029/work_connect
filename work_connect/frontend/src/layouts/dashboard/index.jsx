@@ -3,14 +3,11 @@ import { useSearchParams } from "react-router-dom";
 import PropTypes from "prop-types";
 export const MyContext = createContext();
 export const AllItemsContext = createContext();
-<<<<<<< HEAD
 export const WorkImageContext = createContext();
 // export const DataListContext = createContext();
 // export const SearchCheckContext = createContext();
 // export const SortOption = createContext();
-=======
 export const WebScokectContext = createContext();
->>>>>>> 22c4975d546402fda792f6cf3c2215860da22a92
 
 import Box from "@mui/material/Box";
 
@@ -70,13 +67,11 @@ export default function DashboardLayout({ children }) {
     setAllItems,
   };
 
-<<<<<<< HEAD
   const value3 = {
     workImage,
     setWorkImage,
   };
 
-=======
 
 
   // WebSocket接続
@@ -121,16 +116,12 @@ export default function DashboardLayout({ children }) {
   };
 
 
->>>>>>> 22c4975d546402fda792f6cf3c2215860da22a92
   return (
     <>
       <MyContext.Provider value={pageStyles}>
         <AllItemsContext.Provider value={value1}>
-<<<<<<< HEAD
           <WorkImageContext.Provider value={value3}>
-=======
           <WebScokectContext.Provider value={value2}>
->>>>>>> 22c4975d546402fda792f6cf3c2215860da22a92
             <Header onOpenNav={() => setOpenNav(true)} />
             <Box
               sx={{
@@ -142,11 +133,9 @@ export default function DashboardLayout({ children }) {
               <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} />
               <Main>{children}</Main>
             </Box>
-<<<<<<< HEAD
+            </WebScokectContext.Provider>
           </WorkImageContext.Provider>
-=======
-          </WebScokectContext.Provider>
->>>>>>> 22c4975d546402fda792f6cf3c2215860da22a92
+
         </AllItemsContext.Provider>
       </MyContext.Provider>
     </>

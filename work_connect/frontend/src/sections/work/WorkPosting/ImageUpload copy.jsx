@@ -157,7 +157,7 @@ SortableItem.propTypes = {
 };
 
 // 画像アップロード機能を提供するコンポーネント
-const ImageUpload = ({ onImagesUploaded, coleSetImage }) => {
+const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
   const [items, setItems] = useState([]); // 画像アイテムの状態管理
   const [activeId, setActiveId] = useState(null); // ドラッグ中のアイテムIDを管理
   const fileInputRef = useRef(null); // ファイルインプットの参照を保持
@@ -174,7 +174,7 @@ const ImageUpload = ({ onImagesUploaded, coleSetImage }) => {
 
   // 画像アップロードの処理
   const handleImageUpload = (event) => {
-    coleSetImage(event.target.files); // アップロードしたファイルを処理
+    callSetImage(event.target.files); // アップロードしたファイルを処理
     const files = Array.from(event.target.files); // アップロードされたファイルを配列に変換
     const newItems = files.map((file, index) => ({
       id: `${file.name}-${index}-${Date.now()}`, // 一意のIDを生成
@@ -335,7 +335,7 @@ const ImageUpload = ({ onImagesUploaded, coleSetImage }) => {
 // PropTypesを使用してプロパティの型チェックを定義
 ImageUpload.propTypes = {
   onImagesUploaded: PropTypes.func.isRequired,
-  coleSetImage: PropTypes.func.isRequired,
+  callSetImage: PropTypes.func.isRequired,
 };
 
 export default ImageUpload;

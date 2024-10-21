@@ -1,5 +1,5 @@
 .Table {
-    width: 100%;
+    max-width: 100%;
     /* 親要素の幅に合わせる */
     table-layout: auto;
     /* 列幅を自動調整 */
@@ -13,12 +13,11 @@
 }
 
 .tableContainer {
-    width: 60%;
-    /* 親要素にフィット */
-    max-width: 200%;
-    /* 最大幅を100%に制限 */
-    overflow-y:hidden;
+    width: 200%; /* 親要素の幅に合わせる */
+    max-width: 1000px; /* 必要に応じて最大幅を設定 */
+    margin-bottom: 20px; /* テーブル下に余白を追加 */
 }
+
 
 
 /* モーダル編集画面 */
@@ -34,17 +33,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 2;
+
 }
 
 .modal_window {
     z-index: 2;
     width: 70%;
-    height: 70%;
+    height: auto;
     padding: 1em;
-    background: #fff;
+    background: blue;
 }
 
-.Table textarea {
+.Modal_Table textarea {
     height: auto; /* 高さは自動で調整するように */
     min-height: 100px; /* 最小の高さを指定（任意） */
     max-height: 300px; /* 最大の高さを指定（任意） */
@@ -55,9 +56,22 @@
 }
 
 /* テキスト入力のスタイル（必要に応じて） */
-.Table input[type="text"] {
+.Modal_Table input[type="text"] {
     padding: 8px; /* 内側の余白を設定 */
     font-size: 16px; /* フォントサイズを設定 */
     width: 100%; /* 幅を100%にして親要素にフィットさせる */
     box-sizing: border-box; /* ボックスのサイズを調整 */
+}
+
+.editButtonContainer {
+    display: block; /* フレックスボックスを無効化 */
+    text-align: left; /* ボタンを左揃え */
+    margin-left:100%;
+}
+  
+.Modal_Table{
+    max-width: 120%;
+    /* 親要素の幅に合わせる */
+    table-layout: auto;
+    /* 列幅を自動調整 */
 }

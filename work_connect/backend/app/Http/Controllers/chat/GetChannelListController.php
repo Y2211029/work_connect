@@ -5,6 +5,7 @@ namespace App\Http\Controllers\chat;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\w_follow;
+use App\Models\w_chat;
 use App\Models\w_users;
 use App\Models\w_company;
 use Illuminate\Support\Facades\Log;
@@ -63,6 +64,13 @@ class GetChannelListController extends Controller
 
                 //  in_array関数で$unique_list配列にidが存在しない場合、$channel_listに追加する
                 if (!in_array($data->id, $unique_list)) {
+
+                    // 未読の件数取得
+                    $unreadCount = w_chat::where('get_user_id', $MyUserId)
+                    ->where('send_user_id', $data->id)
+                    ->where('check_read', '未読')
+                    ->count();
+
                     if($MyUserId[0] === "S"){
                         // 自分のidが学生(1文字目がS)の場合、企業のテーブルを参照
                         $channel_list[] = [
@@ -71,6 +79,7 @@ class GetChannelListController extends Controller
                             'company_name' => $data->company_name,
                             'icon' => $data->icon,
                             'follow_status' => $followStatus,
+                            'unread' => $unreadCount,
                         ];
                     } else if($MyUserId[0] === "C"){
                         // 自分のidが企業(1文字目がC)の場合、学生のテーブルを参照
@@ -79,6 +88,7 @@ class GetChannelListController extends Controller
                             'user_name' => $data->user_name,
                             'icon' => $data->icon,
                             'follow_status' => $followStatus,
+                            'unread' => $unreadCount,
                         ];
                     }
                 }

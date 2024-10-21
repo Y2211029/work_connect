@@ -10,14 +10,49 @@ import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Box from '@mui/material/Box';
-
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
 
 //Survey.js
 import { Model } from 'survey-core';
 import { Survey } from 'survey-react-ui';
 import 'survey-core/defaultV2.min.css';
+import ListView from "src/components/view/list-view";
+import './writeform.css';
+
+
 
 // ----------------------------------------------------------------------
+
+function samePageLinkNavigation(event) {
+  return !(
+    event.defaultPrevented ||
+    event.button !== 0 ||
+    event.metaKey ||
+    event.ctrlKey ||
+    event.altKey ||
+    event.shiftKey
+  );
+}
+
+function LinkTab(props) {
+  return (
+    <Tab
+      component="a"
+      onClick={(event) => {
+        if (samePageLinkNavigation(event)) {
+          event.preventDefault();
+        }
+      }}
+      aria-current={props.selected ? 'page' : undefined}
+      {...props}
+    />
+  );
+}
+
+LinkTab.propTypes = {
+  selected: PropTypes.bool,
+};
 
 const PostCard = forwardRef(({ post },) => {
   const { article_title, user_name } = post;
@@ -30,6 +65,9 @@ const PostCard = forwardRef(({ post },) => {
 
   const [open, setOpen] = useState(false);
   const [surveyModel, setSurveyModel] = useState(null);
+  const [value, setValue] = useState(0);
+  const [FormTabState, setFormTabState] = useState(getInitialFormTabState());
+
 
   // ログイン中のid
   const MyUserId = data.account_id;
@@ -49,6 +87,17 @@ const PostCard = forwardRef(({ post },) => {
     styleSheet.innerText = css;
     document.head.appendChild(styleSheet);
   }, []);
+
+  useEffect(() => {
+    updateSessionData("accountData", "FormTabState", FormTabState);
+  }, [FormTabState]);
+
+
+  function getInitialFormTabState() {
+    const accountData = getSessionData("accountData");
+    return accountData.FormTabState || 0; // 初期値をセッションから取得
+  }
+
 
   const FormOpen = (user) => {
     if (user) {
@@ -94,10 +143,53 @@ const PostCard = forwardRef(({ post },) => {
     };
   };
 
+  const handleTabClick = (event, newValue) => {
+    if (
+      event.type !== 'click' ||
+      (event.type === 'click' && samePageLinkNavigation(event))
+    ) {
+      setValue(newValue);
+      setFormTabState(newValue);  // インデックスをそのまま保存
 
+      let category;
+      switch (newValue) {
+        case 1:
+          category = 'application_form_list';
+          break;
+        case 2:
+          category = 'statistical_data';
+          break;
+        default:
+          category = 'application_form_list';
+      }
+
+      // ページ遷移または状態の更新処理
+      pageCheck(`category=${category}`);
+    }
+  };
+
+  
+  function pageCheck(pageStr) {
+    const url = new URL(window.location.href);
+    const urlStr = url.pathname.split('?')[0]; // クエリパラメータを取り除く
+    window.history.pushState({}, '', `${urlStr}&${pageStr}`);
+  }
 
   return (
     <>
+
+      <Box sx={{ width: '100%' }}>
+        <Tabs
+          aria-label="nav tabs example"
+          role="navigation"
+        >
+          <Tab label="フォームを見る" onClick={(e) => handleTabClick(e, 1)} />
+          <Tab label="統計データを見る" onClick={(e) => handleTabClick(e, 2)} />
+        </Tabs>
+        {value === 1 &&  <ListView type="specialforms" ParamUserName={user_name} />}
+        {value === 2 && <ListView type="specialstatisticaldata" ParamUserName={user_name} />}
+      </Box>
+
     <List
       sx={(theme) => ({
         width: '100%',
@@ -120,7 +212,7 @@ const PostCard = forwardRef(({ post },) => {
         </ListSubheader>
       }
     >
-
+    
       <ListItemButton
         onClick={handleClick}
       >

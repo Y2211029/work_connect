@@ -1,7 +1,7 @@
 .editor_title{
   position: relative;
   width:1000px;
-  height:50px;
+  height:200px;
   font-weight:bold;
   font-size: 30px;
   outline: none;
@@ -216,7 +216,7 @@ input[type="radio"]:checked + .label {
 }
 
 .draftlisttable {
-  width: 100%; /* テーブルの幅を親要素に合わせる */
+  width: 90%; /* テーブルの幅を親要素に合わせる */
   border: solid black;
   border-width: 1px;
   margin-bottom: 20px;

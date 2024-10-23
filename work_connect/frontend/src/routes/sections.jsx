@@ -46,7 +46,8 @@ export const InternshipJobOfferPage = lazy(() => import("src/pages/internshipJob
 export const EditorPage = lazy(() => import("src/pages/Editor/Editor"));
 
 //応募用フォームを編集・回答画面
-export const CreateFormPage = lazy(() => import("src/pages/CreateForm/CreateForm"));
+export const CreateFormPage = lazy(() => import("src/pages/CreateForm/form"));
+
 export const WriteFormPage = lazy(() => import("src/pages/WriteForm/WriteForm"));
 
 
@@ -57,8 +58,7 @@ export const Page404 = lazy(() => import("src/pages/page-not-found"));
 export const ProfilePage = lazy(() => import("src/pages/Profile"));
 export const ProfileNewsPage = lazy(() => import("src/sections/Profile/View/company/News"));
 export const SpecialCompanyNewsPage = lazy(() => import("src/sections/Profile/View/company/SpecialCompanyNews/specialCompanyNews-view"));
-export const CheckFormPage = lazy(() => import("src/sections/CheckForm/View/CheckForm"));
-
+export const CheckFormPage = lazy(() => import("src/sections/Profile/View/company/CheckForm"));
 // チャット
 export const Chat = lazy(() => import("src/pages/Chat"));
 
@@ -101,7 +101,7 @@ export default function Router() {
         { path: "Settings/ChangeEmail", element: <ChangeEmail /> },
         { path: "Settings/CheckEmail", element: <CheckEmail /> },
         { path: "Editor/:genre", element: <EditorPage /> },
-        { path: "CreateForm/:news_id", element: <CreateFormPage /> },
+        { path: "CreateForm/:NewsId", element: <CreateFormPage /> },
         { path: "WriteForm/:newsdetail_id", element: <WriteFormPage /> },
 
 
@@ -123,9 +123,9 @@ export default function Router() {
         { path: "Profile/:user_name", element: <ProfilePage /> },
         { path: "Profile/:user_name/News", element: <ProfileNewsPage /> },
         { path: "Profile/:user_name", element: <SpecialCompanyNewsPage /> },
-
         //企業が応募フォームを見る画面
-        { path: "CheckForm/:NewsId", element: <CheckFormPage /> },
+        { path: "Profile/:user_name", element: <CheckFormPage /> },
+
         // チャット
         { path: "Chat", element: <Chat /> },
         // テストページ何か試したいものがあればこのページで行う。

@@ -22,7 +22,7 @@ const PostCard = forwardRef(({ post }, ref) => {
     account_id: accountData.id,
   };
 
-  const wrightformsaveurl = `http://localhost:8000/wright_form_save`;
+  const wrightformsaveurl = `http://localhost:8000/write_form_save`;
 
   useEffect(() => {
     console.log("company_id", company_id);
@@ -112,6 +112,7 @@ const PostCard = forwardRef(({ post }, ref) => {
       axios.post(wrightformsaveurl, {
         FormData: formDefinitionWithResponses,
         NewsId: news_id,
+        RecipientCompanyId: company_id,
         MyId: data.account_id,
       })
         .then(response => {

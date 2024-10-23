@@ -3,6 +3,10 @@ import { useSearchParams } from "react-router-dom";
 import PropTypes from "prop-types";
 export const MyContext = createContext();
 export const AllItemsContext = createContext();
+export const WorkImageContext = createContext();
+// export const DataListContext = createContext();
+// export const SearchCheckContext = createContext();
+// export const SortOption = createContext();
 export const WebScokectContext = createContext();
 
 import Box from "@mui/material/Box";
@@ -23,8 +27,9 @@ export default function DashboardLayout({ children }) {
   const [searchParams] = useSearchParams();
   const [pageStyles, setPageStyles] = useState({
     HomePage: location.pathname === "/Top" ? "none" : "",
-    MyPage: "block"
+    MyPage: "block",
   });
+  const [workImage, setWorkImage] = useState([]);
 
   if (accountData == undefined) {
     accountData = {
@@ -33,16 +38,14 @@ export default function DashboardLayout({ children }) {
   }
 
   useEffect(() => {
-
     const page = searchParams.get("page");
-    console.log("header-Mypage-page", page)
+    console.log("header-Mypage-page", page);
     // ページパラメータが"mypage"の場合、MyPageを"none"に設定
     setPageStyles({
       HomePage: location.pathname === "/Top" ? "none" : "",
-      MyPage: page === "mypage" ? "none" : "block"
+      MyPage: page === "mypage" ? "none" : "block",
     });
   }, [location.pathname, searchParams]); // location.pathname や searchParams が変わるたびに実行
-
 
   const [AllItems, setAllItems] = useState({
     DataList: [],
@@ -62,6 +65,11 @@ export default function DashboardLayout({ children }) {
   const value1 = {
     AllItems,
     setAllItems,
+  };
+
+  const value3 = {
+    workImage,
+    setWorkImage,
   };
 
 
@@ -112,6 +120,7 @@ export default function DashboardLayout({ children }) {
     <>
       <MyContext.Provider value={pageStyles}>
         <AllItemsContext.Provider value={value1}>
+          <WorkImageContext.Provider value={value3}>
           <WebScokectContext.Provider value={value2}>
             <Header onOpenNav={() => setOpenNav(true)} />
             <Box
@@ -124,7 +133,9 @@ export default function DashboardLayout({ children }) {
               <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} />
               <Main>{children}</Main>
             </Box>
-          </WebScokectContext.Provider>
+            </WebScokectContext.Provider>
+          </WorkImageContext.Provider>
+
         </AllItemsContext.Provider>
       </MyContext.Provider>
     </>

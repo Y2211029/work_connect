@@ -35,7 +35,7 @@ const WorkPosting = () => {
   const [hasError, setHasError] = useState(false);
   const [Image, setImage] = useState();
 
-  const coleSetImage = (e) => {
+  const callSetImage = (e) => {
     setImage(e);
     console.log("image: ", Image);
     handleImageChange(e);
@@ -233,7 +233,7 @@ const WorkPosting = () => {
                 <div className="WorkPostingImageFormField">
                   <ImageUpload
                     onImagesUploaded={handleImageChange}
-                    coleSetImage={coleSetImage}
+                    callSetImage={callSetImage}
                   />
                 </div>
               </div>

@@ -91,7 +91,14 @@ const Textarea = styled(BaseTextareaAutosize)(
 );
 
 // フォローリストのコンポーネント
-const FollowGroup = ({ title, followStatusCount, followStatus, groupingOpen, handleClick, chatViewId, chatOpen }) => {
+const FollowGroup = ({
+  title,
+  followStatusCount,
+  followStatus,
+  groupingOpen,
+  handleClick,
+  chatViewId,
+  chatOpen }) => {
   return (
     <>
       {/* 見出し部分 */}
@@ -207,66 +214,82 @@ const UnreadStart = () => {
 };
 
 // モーダルのコンポーネント
-const ChatEditModal = ({modalOpen,handleModalClose}) => {
-return(
-  <Modal
+const ChatEditModal = ({
+  modalOpen,
+  handleModalClose,
+  chatEditData,
+  chatEditChange,
+  chatEditUpDate }) => {
+  return(
+    <Modal
         open={modalOpen}
         onClose={handleModalClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-      >
-        <Box sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: 600,
-          bgcolor: 'background.paper',
-          border: '2px solid #DAE2ED',
-          borderRadius: '10px',
-          boxShadow: 24,
-          p: 4,}}>
+    >
+      <Box sx={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 600,
+        bgcolor: 'background.paper',
+        border: '2px solid #DAE2ED',
+        borderRadius: '10px',
+        boxShadow: 24,
+        p: 4,}}>
 
-          <Typography
-            id="modal-modal-title"
-            variant="h6"
-            sx={{
-              mb: 0.5,
-            }}>
-            チャットの編集
-          </Typography>
+        <Typography
+          id="modal-modal-title"
+          variant="h6"
+          sx={{
+            mb: 0.5,
+          }}>
+          チャットの編集
+        </Typography>
 
-          <Textarea
-            multiline
-            minRows={1} // 最小行数を設定
-            maxRows={4} // 最大行数を設定
-            sx={{
-              height: '100%', // 親要素の高さの50%に設定
-              width: '100%', // 必要に応じて幅を調整
-              fontSize: '1rem',
-            }}
-            InputProps={{
-              sx: {
-                height: '100%' // TextFieldの内部要素も親の高さに合わせる
-              }
-            }}
-            // value={TextData}
-            // onChange={textChange}
-          />
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              mt: 0.5,
-            }}
+        <Textarea
+          multiline
+          minRows={1} // 最小行数を設定
+          maxRows={4} // 最大行数を設定
+          sx={{
+            height: '100%', // 親要素の高さの50%に設定
+            width: '100%', // 必要に応じて幅を調整
+            fontSize: '1rem',
+          }}
+          InputProps={{
+            sx: {
+              height: '100%' // TextFieldの内部要素も親の高さに合わせる
+            }
+          }}
+          value={chatEditData}
+          onChange={chatEditChange}
+        />
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            mt: 0.5,
+          }}
+        >
+          <Button
+          variant="text"
+          sx={{ marginRight: '10px' }}
+          onClick={handleModalClose}
           >
-            <Button variant="contained" size="medium">
-              更新
-            </Button>
-          </Box>
+            キャンセル
+          </Button>
+          <Button
+          variant="contained"
+          size="medium"
+          onClick={chatEditUpDate}
+          >
+            更新
+          </Button>
         </Box>
-      </Modal>
-);
+      </Box>
+    </Modal>
+  );
 };
 
 // メインのコンポーネント
@@ -323,6 +346,7 @@ const ChatView = () => {
 
   // ポップメニューの変数設定
   const [popMenuId, setPopMenuId] = useState(null);
+  const [popMenuMessage, setPopMenuMessage] = useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const anchorElOpen = Boolean(anchorEl);
 
@@ -337,6 +361,9 @@ const ChatView = () => {
   const [prevScrollHeight, setPrevScrollHeight] = useState(0);
   // テキストの文章を保持する変数
   const [TextData, setTextData] = useState(null);
+
+  // テキストの文章を保持する変数(モーダル)
+  const [chatEditData, setChatEditData] = useState(null);
 
   // 外部からのリンクでチャットを開けるよう、パラメータを取得する。
   const location = useLocation();
@@ -374,9 +401,10 @@ const ChatView = () => {
   const post_chat = "http://localhost:8000/post_chat";
   const delete_chat = "http://localhost:8000/delete_chat";
   const already_read_chat = "http://localhost:8000/already_read_chat";
+  const update_chat = "http://localhost:8000/update_chat";
 
-  // ResponseChannelListDataが変化したとき
-  // フォローリストを作成
+  /// ResponseChannelListDataが変化したとき
+  /// フォローリストを作成
   useEffect(() => {
     async function GetData() {
       try {
@@ -448,31 +476,10 @@ const ChatView = () => {
     }
   }, [ResponseChannelListData]);
 
-  /// ListItemButtonが押された時の処理
-  const ChatOpen = (element) => {
-
-    // element.idが存在するときのみ実行
-    element.id && updateSessionData("accountData", "ChatOpenId", element.id);
-    // element.user_nameが存在するときのみ実行
-    element.user_name && updateSessionData("accountData", "ChatOpenUserName", element.user_name);
-    // element.company_nameが存在するときのみ実行
-    element.company_name && updateSessionData("accountData", "ChatOpenCompanyName", element.company_name);
-    // element.iconが存在するときのみ実行
-    element.icon ? updateSessionData("accountData", "ChatOpenIcon", element.icon) : updateSessionData("accountData", "ChatOpenIcon", "");
-    // element.follow_statusが存在するときのみ実行
-    element.follow_status && updateSessionData("accountData", "ChatOpenFollowStatus", element.follow_status);
-
-    // 現在のURLのクエリパラメータを削除する
-    window.history.replaceState(null, null, window.location.pathname);
-
-    // ページをリロードする
-    window.location.reload();
-   };
-
   /// 一番最初に実行(「ここから未読」の位置を記憶しておくGetStartUnreadを初期化しておく)
   useEffect(() => {
     updateSessionData("accountData", "GetStartUnread", 0);
-    updateSessionData("accountData", "DeleteStart", false);
+    updateSessionData("accountData", "Commit", false);
   }, []);
 
   /// 1回のみ実行(1秒単位でデータを取得)
@@ -495,6 +502,33 @@ const ChatView = () => {
     // コンポーネントがアンマウントされたらintervalをクリア
     return () => clearInterval(interval);
   }, [chatViewId]);
+
+  // chatEditDataが変更されたとき
+  useEffect(() => {
+    updateSessionData("accountData", "ChatEditData", chatEditData);
+  }, [chatEditData]);
+
+  /// ListItemButtonが押された時の処理
+  const ChatOpen = (element) => {
+
+  // element.idが存在するときのみ実行
+  element.id && updateSessionData("accountData", "ChatOpenId", element.id);
+  // element.user_nameが存在するときのみ実行
+  element.user_name && updateSessionData("accountData", "ChatOpenUserName", element.user_name);
+  // element.company_nameが存在するときのみ実行
+  element.company_name && updateSessionData("accountData", "ChatOpenCompanyName", element.company_name);
+  // element.iconが存在するときのみ実行
+  element.icon ? updateSessionData("accountData", "ChatOpenIcon", element.icon) : updateSessionData("accountData", "ChatOpenIcon", "");
+  // element.follow_statusが存在するときのみ実行
+  element.follow_status && updateSessionData("accountData", "ChatOpenFollowStatus", element.follow_status);
+
+  // 現在のURLのクエリパラメータを削除する
+  window.history.replaceState(null, null, window.location.pathname);
+
+  // ページをリロードする
+  window.location.reload();
+  };
+
 
   // テキストが変更されたとき
   const textChange = (e) => {
@@ -588,7 +622,7 @@ const ChatView = () => {
           // 削除状態終了
           // 3秒遅延させて実行
           setTimeout(() => {
-            updateSessionData("accountData", "DeleteStart", false);
+            updateSessionData("accountData", "Commit", false);
           }, 3000);
         }
       } catch (err) {
@@ -624,6 +658,31 @@ const ChatView = () => {
     }
   };
 
+  /// チャットを更新する処理
+  const UpDateChat = () => {
+    async function PostData() {
+      try {
+        const response = await axios.post(update_chat, {
+          Id: getSessionData("accountData").ChatEditId, // チャットのid
+          Data: getSessionData("accountData").ChatEditData, // チャットの内容
+        });
+        if (response.data) {
+          console.log("チャットの既読に成功しました");
+          // 更新状態終了
+          // 3秒遅延させて実行
+          setTimeout(() => {
+            updateSessionData("accountData", "Commit", false);
+          }, 3000);
+        }
+      } catch (err) {
+        console.log("err:", err);
+      }
+    }
+    // DBからデータを取得
+
+    PostData();
+
+  };
 
   // 送信時間から日にちを取り出す関数
   const GetDay = (time) => {
@@ -700,10 +759,9 @@ const ChatView = () => {
 
       // scrollHeightが変わったときのみスクロール
       // リアルタイムで情報を取得するためgetSessionData("accountData")から取得する
-      if (currentScrollHeight !== prevScrollHeight && getSessionData("accountData").DeleteStart === false) {
+      if (currentScrollHeight !== prevScrollHeight && getSessionData("accountData").Commit === false) {
         chatBox.scrollTop = chatBox.scrollHeight;
         setPrevScrollHeight(currentScrollHeight); // 更新
-        //alert(accountData.DeleteStart);
       }
     });
     // observerの監視対象を設定
@@ -715,24 +773,55 @@ const ChatView = () => {
     };
   };
 
+  // onChange={chatEditChange}で実行
+  const chatEditChange = (e) => {
+    const newValue = e.target.value;
+    // newValueをセット
+    setChatEditData(newValue);
+  };
+
   ///////////////////// ポップメニューに関する処理 /////////////////////
   // 開く
   const popMenu = (e) => {
+    // 変数の上書き
     setAnchorEl(e.currentTarget);
-    // PopMenuIdを上書きする
     setPopMenuId(e.currentTarget.id);
-    console.log("e.idは"+e.currentTarget.id);
+    setPopMenuMessage(e.currentTarget.dataset.message);
+    setChatEditData(e.currentTarget.dataset.message);
   };
   // 閉じる
   const popMenuClose = () => {
     setAnchorEl(null);
   };
-  // チャットの編集
-  const popMenuEdit = (id) => {
-    console.log(id);
+
+  // チャットの編集(モーダルを開く)
+  const popMenuEdit = (id,message) => {
+    console.log(id+":"+message);
+
+    // 開いたチャットのidを保存しておく
+    updateSessionData("accountData", "ChatEditId", id);
+    // モーダルを開く
     handleModalOpen();
     // ポップメニューを閉じる
     popMenuClose();
+  };
+  // チャットの編集(更新ボタンを押したとき)
+  const chatEditUpDate = () => {
+    if (confirm("チャットを更新してよろしいですか？")) {
+      // OK（はい）が押された場合の処理
+      // 更新状態スタート
+      updateSessionData("accountData", "Commit", true);
+
+      // 関数呼び出し
+      UpDateChat();
+      // アラート
+      alert("チャットを更新しました。");
+      // モーダルを閉じる
+      handleModalClose();
+
+    } else {
+      // キャンセル（いいえ）が押された場合の処理
+    }
   };
   // チャットの削除
   const popMenuDelete = (id) => {
@@ -740,7 +829,7 @@ const ChatView = () => {
       // OK（はい）が押された場合の処理
 
       // 削除状態スタート
-      updateSessionData("accountData", "DeleteStart", true);
+      updateSessionData("accountData", "Commit", true);
 
       // 関数呼び出し
       DeleteChat(id);
@@ -750,8 +839,6 @@ const ChatView = () => {
       // ポップメニューを閉じる
       popMenuClose();
 
-      // リロード
-      //window.location.reload();
     } else {
       // キャンセル（いいえ）が押された場合の処理
     }
@@ -832,7 +919,9 @@ const ChatView = () => {
       <ChatEditModal
         modalOpen={modalOpen}
         handleModalClose={handleModalClose}
-
+        chatEditData={chatEditData}
+        chatEditChange={chatEditChange}
+        chatEditUpDate={chatEditUpDate}
       />
 
       {/****** チャット相手のアイコン、名前を表示させる ******/}
@@ -905,7 +994,7 @@ const ChatView = () => {
             top: '0',
             backgroundColor: '#F9FAFB',
             zIndex: 1,
-            fontSize: '15px'
+            fontSize: '16px'
           }}
         >
           {GetDay(element.send_datetime)}
@@ -941,33 +1030,34 @@ const ChatView = () => {
                 }}
               mb={2}
             >
-            {/* アイコン (相手のメッセージのみ) */}
-            {(element.send_user_id !== MyUserId)?(
-            <img src={avatarSrc}
-            style={{
-              width: '40px',
-              height: '40px',
-              margin: '0 10px',
-              borderRadius: '50%' }}
-            />
-            ):(null)}
-            {/* 既読マーク (自分のメッセージのみ) */}
-            {(element.send_user_id === MyUserId && element.check_read === '既読')?(
-              <Box
-              display="flex"
-              justifyContent="flex-end"
-              alignItems="flex-end"
-              sx={{
-                margin:'0 5px 10px 0'
-              }}><Tooltip title={"既読"}>
-                <CheckIcon sx={{ color: green[500] ,fontSize: 20 }}/>
-                </Tooltip>
-              </Box>
-            ):(
-             null)}
+              {/* アイコン (相手のメッセージのみ) */}
+              {(element.send_user_id !== MyUserId)?(
+              <img src={avatarSrc}
+              style={{
+                width: '40px',
+                height: '40px',
+                margin: '0 10px',
+                borderRadius: '50%' }}
+              />
+              ):(null)}
+              {/* 既読マーク (自分のメッセージのみ) */}
+              {(element.send_user_id === MyUserId && element.check_read === '既読')?(
+                <Box
+                display="flex"
+                justifyContent="flex-end"
+                alignItems="flex-end"
+                sx={{
+                  margin:'0 5px 10px 0'
+                }}><Tooltip title={"既読"}>
+                  <CheckIcon sx={{ color: green[500] ,fontSize: 20 }}/>
+                  </Tooltip>
+                </Box>
+              ):(
+              null)}
 
               <Paper
                 id={element.id}
+                data-message={element.message}
                 aria-controls={anchorElOpen ? 'demo-positioned-menu' : undefined}
                 aria-haspopup="true"
                 aria-expanded={anchorElOpen ? 'true' : undefined}
@@ -1016,7 +1106,7 @@ const ChatView = () => {
                   horizontal: 'right',
                 }}
               >
-                <MenuItem onClick={() => popMenuEdit(popMenuId)} ><EditIcon />&nbsp;編集</MenuItem>
+                <MenuItem onClick={() => popMenuEdit(popMenuId,popMenuMessage)} ><EditIcon />&nbsp;編集</MenuItem>
                 <MenuItem onClick={() => popMenuDelete(popMenuId)} sx={{color:'red'}}><DeleteIcon color="error"/>&nbsp;削除</MenuItem>
               </Menu>
             ):(null)}
@@ -1148,8 +1238,11 @@ FollowGroup.propTypes = {
 UnreadStart.propTypes = {
 };
 ChatEditModal.propTypes = {
-  modalOpen: PropTypes.func.isRequired,
+  modalOpen: PropTypes.bool.isRequired,
   handleModalClose: PropTypes.func.isRequired,
+  chatEditData: PropTypes.string.isRequired,
+  chatEditChange: PropTypes.func.isRequired,
+  chatEditUpDate: PropTypes.func.isRequired,
 };
 
 export default ChatView;

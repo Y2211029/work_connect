@@ -55,13 +55,13 @@ const PostCard = forwardRef(({ post }, ref) => {
     />
   );
 
-    // Profile/株式会社アーキテクト/News/Forms
+    // /Profile/株式会社アーキテクト
   // フォームのレンダリング（企業の投稿の場合）
   const renderForm = company_id === accountData.id && count > 0 ? (
     <Link
-      to={`/CheckForm/${news_id}`}
+      to={`/Profile/${company_name}?page=checkform&category=application_form_list`}
     >
-      <Typography opacity="0.48" onClick={handleFollowClick}>
+      <Typography opacity="0.48">
         {count}件のフォーム回答
       </Typography>
     </Link>

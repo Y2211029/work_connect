@@ -20,6 +20,7 @@ const data = {
 const UserName = data.user_name;
 console.log("企業名",UserName);
 
+
   return (
     <>
       <Helmet>

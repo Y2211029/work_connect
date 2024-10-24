@@ -407,7 +407,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
     },
     createforms: {
       ItemName: "応募用フォームを作成する",
-      url: `http://localhost:8000/write_form_get/${NewsDetailId}`,
+      url: `http://localhost:8000/create_form_get/${NewsDetailId}`,
       idKey: "id",
       tags: ["company_name"],
       generatePosts: (WorkOfList) => {

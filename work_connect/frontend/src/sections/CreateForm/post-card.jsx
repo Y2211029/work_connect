@@ -412,11 +412,14 @@ const PostCard = forwardRef(({ post },) => {
         create_news_id: create_news_id,
       });
       console.log("サーバーからのレスポンス", response.data);
+      window.location.reload()
       alert("保存が完了しました");
     } catch (error) {
       console.error("フォーム保存エラー", error);
     }
   };
+
+
 
   // キャンセル時の処理
   const CreateFormCancel = () => {

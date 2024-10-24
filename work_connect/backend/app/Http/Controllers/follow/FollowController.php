@@ -73,6 +73,8 @@ class FollowController extends Controller
             $followStatus = 'フォローする';
         }
 
+        \Log::info('followStatus:');
+        \Log::info($followStatus);
 
         $query = w_notice::query();
 

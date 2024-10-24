@@ -105,6 +105,12 @@ export default function NotificationsPopover() {
         isUnRead: false,
       }))
     );
+    setNOTIFICATIONS(
+      NOTIFICATIONS.map((notification) => ({
+        ...notification,
+        isUnRead: false,
+      }))
+    );
 
     noticeAlreadyReadFunction();
   };
@@ -157,21 +163,18 @@ export default function NotificationsPopover() {
 
   // 通知監視用
   useEffect(() => {
-    console.log("notificationContext.notification", notificationContext.WebSocketState.notification.noticeData);
-
     let noticeContextDataObject = {};
     noticeContextDataObject = notificationContext.WebSocketState.notification.noticeData;
 
     console.log("noticeContextDataObject", noticeContextDataObject);
 
-    if(noticeContextDataObject != undefined) {
+    if (noticeContextDataObject != undefined) {
       if (NoticeArray == undefined) {
-        console.log("setNoticeArray(noticeContextDataObject) : undefined");
         console.log("setNoticeArray(noticeContextDataObject) : undefined");
         setNoticeArray(noticeContextDataObject);
       } else {
-      console.log("setNoticeArray(noticeContextDataObject) : ", noticeContextDataObject);
-      setNoticeArray((prevItems) => {
+        console.log("setNoticeArray(noticeContextDataObject) : ", noticeContextDataObject);
+        setNoticeArray((prevItems) => {
           return [...prevItems, noticeContextDataObject];  // スプレッド構文で配列を展開して追加
         });
       }
@@ -181,7 +184,7 @@ export default function NotificationsPopover() {
 
   // useEffect(() => {
   //   console.log("NoticeArray", NoticeArray);
-    
+
   // }, [NoticeArray])
   // Laravelから取得した通知データをもとに表示に適した形に変換する
   useEffect(() => {
@@ -216,6 +219,14 @@ export default function NotificationsPopover() {
             description = value.company_name + "にフォローされました";
           }
         }
+      } else if (value.category == "作品") {
+        description = value.student_name +
+          value.student_surname +
+          "さんが作品を投稿しました";
+      } else if (value.category == "動画") {
+        description = value.student_name +
+          value.student_surname +
+          "さんが動画を投稿しました";
       }
       const avatar = `http://localhost:8000/storage/images/userIcon/${value.icon}`; // ここにアイコンのURLを入れる
       const type = "friend_interactive";
@@ -238,6 +249,8 @@ export default function NotificationsPopover() {
       }
 
       const userName = value.user_name;
+      const detail = value.detail;
+      console.log("detail", detail)
 
       const oneNoticeData = {
         id: id,
@@ -249,12 +262,13 @@ export default function NotificationsPopover() {
         isUnRead: isUnRead,
         selectCheckBox: selectCheckBox,
         userName: userName,
+        detail: detail,
       };
       noticeData.push(oneNoticeData);
     });
 
     // if (noticeDeleteFlg) {
-      setNOTIFICATIONS(noticeData);
+    setNOTIFICATIONS(noticeData);
     // }
   }, [NoticeArray]);
 
@@ -263,6 +277,9 @@ export default function NotificationsPopover() {
     console.log("NOTIFICATIONS: ", NOTIFICATIONS);
     setNotifications(NOTIFICATIONS);
   }, [NOTIFICATIONS]);
+  useEffect(() => {
+    console.log("Notifications: ", notifications);
+  }, [notifications]);
 
   // 通知モーダルが閉じられたときに未読の通知をすべて既読状態にする
   useEffect(() => {
@@ -275,12 +292,16 @@ export default function NotificationsPopover() {
   const [DeleteNotice, setDeleteNotice] = useState([]);
 
   useEffect(() => {
-    // console.log("DeleteNotice: ", DeleteNotice);
+    console.log("DeleteNotice: ", DeleteNotice);
+    console.log("DeleteNotice:NOTIFICATIONS ", NOTIFICATIONS);
+    console.log("DeleteNoticeaaaaaaaaaaaaaaa: ", NOTIFICATIONS.filter((value) => {
+      return !DeleteNotice.includes(value.id);
+    }));
 
     // console.log("notifications: ", notifications);
-    notifications.filter((value) => {
-      return value.isUnRead == true && !DeleteNotice.includes(value.id);
-    });
+    setNOTIFICATIONS(NOTIFICATIONS.filter((value) => {
+      return !DeleteNotice.includes(value.id);
+    }));
     // console.log("test: ", test);
   }, [DeleteNotice]);
 
@@ -291,8 +312,8 @@ export default function NotificationsPopover() {
     try {
       const noticeId = e.target.dataset.notice;
 
-      setNOTIFICATIONS(NOTIFICATIONS.filter((value) => value.id != noticeId));
-      setNotifications(notifications.filter((value) => value.id != noticeId));
+      // setNOTIFICATIONS(NOTIFICATIONS.filter((value) => value.id != noticeId));
+      // setNotifications(notifications.filter((value) => value.id != noticeId));
       setDeleteNotice((prevNoticeId) => [...prevNoticeId, noticeId]);
 
       // 通知削除用URL
@@ -322,8 +343,8 @@ export default function NotificationsPopover() {
       });
 
       noticeIdArray.map((noticeId) => {
-        setNOTIFICATIONS(NOTIFICATIONS.filter((value) => value.id != noticeId));
-        setNotifications(notifications.filter((value) => value.id != noticeId));
+        // setNOTIFICATIONS(NOTIFICATIONS.filter((value) => value.id != noticeId));
+        // setNotifications(notifications.filter((value) => value.id != noticeId));
         setDeleteNotice((prevNoticeId) => [...prevNoticeId, noticeId]);
       });
 
@@ -353,13 +374,14 @@ export default function NotificationsPopover() {
   // 1つの通知をクリックしたときにその通知を選択状態にする
   const clickOneNotice = (e) => {
     // console.log("clickOneNotice!!!!", clickElement);
+    console.log("e.target", e.target);
     if (!e.target.classList.contains("deleteSingleNoticeButton")) {
       // console.log("通知をクリックしました");
       if (NoticeSelectMode) {
         const haveNoticeIdElement = e.target.closest("[data-notice_id]");
         if (haveNoticeIdElement != null) {
+          // 通知ID
           const noticeId = haveNoticeIdElement.dataset.notice_id;
-          // console.log("e.target.dataset.notice_id: ", noticeId);
           // console.log("selectNotice: ", selectNotice);
           const noticeItemArray = [];
           NOTIFICATIONS.forEach((item) => {
@@ -377,14 +399,44 @@ export default function NotificationsPopover() {
           setNOTIFICATIONS(noticeItemArray);
         }
       } else {
-        const haveNoticeIdElement = e.target.closest("[data-notice_id]");
-        const noticeId = haveNoticeIdElement.dataset.notice_id;
-        var userName = "";
-        NOTIFICATIONS.filter((value) => value.id == noticeId).map((value) => {
-          userName = value.userName;
-        });
+        if (e.target) {
 
-        navigate(`/Profile/${userName}?page=mypage`);
+          const haveNoticeIdElement = e.target.closest("[data-notice_id]");
+          const noticeId = haveNoticeIdElement.dataset.notice_id;
+          var clickTitle = "";
+          NOTIFICATIONS.filter((value) => value.id == noticeId).map((value) => {
+            clickTitle = value.title;
+          });
+
+          // カテゴリーごとに分けて、リンク先を変更する。・
+          if (clickTitle === "フォロー") {
+
+            const haveNoticeIdElement = e.target.closest("[data-notice_id]");
+            const noticeId = haveNoticeIdElement.dataset.notice_id;
+            var userName = "";
+            NOTIFICATIONS.filter((value) => value.id == noticeId).map((value) => {
+              userName = value.userName;
+            });
+            navigate(`/Profile/${userName}?page=mypage`);
+            setOpen(null);
+          } else if (clickTitle === "動画") {
+            console.log("clickTitle", clickTitle)
+            console.log("clickTitle'NOTIFICATIONS", NOTIFICATIONS)
+            // 通知の中でもdata-notice_idが含まれる要素を代入
+            const haveNoticeIdElement = e.target.closest("[data-notice_id]");
+            // そしてクリックしたnotice_idが代入
+            const noticeId = haveNoticeIdElement.dataset.notice_id;
+            var movieId = "";
+            NOTIFICATIONS.filter((value) => value.id == noticeId).map((value) => {
+              movieId = value.detail;
+            });
+
+            console.log("clickTitle'movieId", movieId)
+            navigate(`/VideoDetail/${movieId}`);
+            setOpen(null);
+
+          }
+        }
       }
     }
   };
@@ -519,7 +571,7 @@ export default function NotificationsPopover() {
             </Tooltip>
           )} */}
         </Box>
-
+        
         <Divider sx={{ borderStyle: "dashed" }} />
 
         <Scrollbar sx={{ height: { xs: 340, sm: "auto" } }}>

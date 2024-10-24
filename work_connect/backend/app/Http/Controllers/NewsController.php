@@ -6,7 +6,7 @@ use App\Models\w_news;
 use App\Models\w_follow;
 use App\Models\w_company;
 use App\Models\w_bookmark;
-use App\Models\w_wright_form;
+use App\Models\w_write_form;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -160,7 +160,7 @@ class NewsController extends Controller
 
     //自社が投稿したニュースの中で応募フォームを作成したニュースを表示させる
     //応募フォームの回答(面談の日程とか?)とその人のプロフィールを確認することができる
-    public function special_forms(Request $request, $NewsId)
+    public function special_forms(Request $request, $CompanyId)
     {
         Log::info("special_forms通ってます");
         $page = (int) $request->query('page', 1);
@@ -169,18 +169,18 @@ class NewsController extends Controller
         $sortOption = $request->query('sort');
 
         // ニュースタイトル一覧を取得
-        $title = w_wright_form::where('news_id', $NewsId)
-            ->join('w_news', 'w_wright_forms.news_id', '=', 'w_news.id')
+        $title = w_write_form::where('recipient_company_id', $CompanyId)
+            ->join('w_news', 'w_write_forms.news_id', '=', 'w_news.id')
             ->where('w_news.public_status', 1)
             ->groupBy('w_news.article_title')
             ->select('w_news.article_title');
 
         // ニュースデータを取得
-        $query = w_wright_form::where('news_id', $NewsId)
-            ->join('w_news', 'w_wright_forms.news_id', '=', 'w_news.id')
-            ->join('w_users', 'w_wright_forms.user_id', '=', 'w_users.id')
+        $query = w_write_form::where('recipient_company_id', $CompanyId)
+            ->join('w_news', 'w_write_forms.news_id', '=', 'w_news.id')
+            ->join('w_users', 'w_write_forms.user_id', '=', 'w_users.id')
             ->where('w_news.public_status', 1)
-            ->select('w_wright_forms.*', 'w_news.*', 'w_users.*', 'w_news.created_at as news_created_at','w_wright_forms.id as wright_form_id')
+            ->select('w_write_forms.*', 'w_news.*', 'w_users.*', 'w_news.created_at as news_created_at','w_write_forms.id as write_form_id')
             ->get();
 
         // ソート処理
@@ -206,9 +206,9 @@ class NewsController extends Controller
                 if ($q->article_title === $post->article_title) {
                     // 該当するユーザー情報を配列として追加
                     $users[] = [
-                        'wright_form' => json_decode($q->wright_form), // ここでデコード
+                        'write_form' => json_decode($q->write_form), // ここでデコード
                         'user_name' => $q->user_name,
-                        'wright_form_id' => $q->wright_form_id,
+                        'write_form_id' => $q->write_form_id,
                         'news_created_at' => $q->news_created_at,
                         // 他の必要なフィールドもここで追加
                     ];
@@ -217,6 +217,7 @@ class NewsController extends Controller
 
             // ここで users を設定
             $post->users = $users;
+            Log::info("special_forms処理しています");
         }
 
 
@@ -256,8 +257,8 @@ class NewsController extends Controller
 
             foreach ($posts as $post) {
 
-                // w_wright_formsテーブルからすべてのフォームデータを取得
-                $formData = w_wright_form::where('news_id', $post->news_id)->get();
+                // w_write_formsテーブルからすべてのフォームデータを取得
+                $formData = w_write_form::where('news_id', $post->news_id)->get();
 
                 // 取得したフォームデータの数をpostsに追加
                 $post->form_data_count = $formData->count();
@@ -329,8 +330,8 @@ class NewsController extends Controller
 
         // フォームデータの取得
         foreach ($posts as $post) {
-            // w_wright_formsテーブルからすべてのフォームデータを取得
-            $formData = w_wright_form::where('news_id', $post->news_id)->get();
+            // w_write_formsテーブルからすべてのフォームデータを取得
+            $formData = w_write_form::where('news_id', $post->news_id)->get();
 
             // 取得したフォームデータの数をpostsに追加
             $post->form_data_count = $formData->count();

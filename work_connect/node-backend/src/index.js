@@ -99,6 +99,58 @@ app.post("/follow", async (req, res) => {
   }
 });
 
+app.post("/video_posting", async (req, res) => {
+  console.log("req.body.body.workData", req.body.body);
+
+  // laravelにフォロー情報を送信。
+  try {
+    const response = await axios.post(
+      "http://localhost:8000/video_posting",
+      req.body.body,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    // console.log(formData);
+    // console.log(response.data.message);
+
+
+
+    if (response.data.message == "Work data saved successfully") {
+      res.json(response.data);
+      console.log("response.data.notice_data[0]", response.data.noticeData[0]);
+      response.data.follower.map((value) => {
+        if (clients[value]) {
+          clients[value].send(
+            JSON.stringify({
+              kind: "notification",
+              type: "videoPosting",
+              message: `ユーザー${req.body.body.creatorId}が動画を投稿しました！`,
+              noticeData: response.data.noticeData[0],
+            })
+          );
+        }
+      })
+    } else {
+      res.json("何らかの原因でエラーが起きました");
+      if (clients[followedId]) {
+        clients[followedId].send(
+          JSON.stringify({
+            type: "follow",
+            message: `何らかの原因でエラーが起きました`,
+            follow_status: response.data.follow_status,
+          })
+        );
+      }
+    }
+    // res.sendStatus(200); 
+  } catch (error) {
+    console.error("Error sending follow notification:", error);
+  }
+});
+
 // サーバーを起動
 const PORT = 3000;
 server.listen(PORT, () => {

@@ -6,6 +6,7 @@ import Tab from '@mui/material/Tab';
 import ProfileMypage from './Mypage';
 import ProfileNews from './News';
 import ProfileCompanyInformation from './CompanyInformation';
+import ProfileCheckForm from './CheckForm';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import { AllItemsContext } from "src/layouts/dashboard/index";
 
@@ -98,6 +99,10 @@ export function NavTabs({ initialTabValue = 0 }) {
       // 作品が押されたとき
       setProfileTabState(2);
       pageCheck('companyinformation');
+    }else if (newValue === 3) {
+      // 作品が押されたとき
+      setProfileTabState(3);
+      pageCheck('checkform&category=application_form_list');
     }
     setAllItems((prevItems) => ({
       ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
@@ -125,10 +130,12 @@ export function NavTabs({ initialTabValue = 0 }) {
         <Tab label="マイページ" onClick={(e) => handleTabClick(e, 0)} />
         <Tab label="ニュース" onClick={(e) => handleTabClick(e, 1)} />
         <Tab label="企業情報" onClick={(e) => handleTabClick(e, 2)} />
+        <Tab label="応募フォーム" onClick={(e) => handleTabClick(e, 3)} />
       </Tabs>
       {value === 0 && <ProfileMypage />} {/* value が 0 の場合マイページ */}
       {value === 1 && <ProfileNews />}   {/* value が 1 の場合ニュース */}
-      {value === 2 && <ProfileCompanyInformation />}   {/* value が 2 の場合企業の詳細情報 */}
+      {value === 2 && <ProfileCompanyInformation />}   {/* value が 2 の場合応募フォーム一覧 */}
+      {value === 3 && <ProfileCheckForm />}   {/* value が 2 の場合応募フォーム一覧 */}
     </Box>
   );
 }

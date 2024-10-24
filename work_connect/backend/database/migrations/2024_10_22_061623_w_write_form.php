@@ -12,12 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         //
-        Schema::create('w_wright_forms', function (Blueprint $table) {
+        Schema::create('w_write_forms', function (Blueprint $table) {
             $table->id(); // idを主キーとして設定、自動増分
-            $table->string('user_id', 255)->nullable(); //学生のid
+            $table->string('user_id', 255)->nullable(); //学生のID
             $table->string('news_id')->nullable(); // どのニュースの応募用フォームなのか
-            $table->json('wright_form')->nullable(); // JSON形式のフォームデータ
-            $table->dateTime('wrightformDateTime')->nullable(); // 最終編集/公開日時
+            $table->string('recipient_company_id')->nullable(); // 送信先の企業のID
+            $table->json('write_form')->nullable(); // JSON形式のフォームデータ
+            $table->dateTime('writeformDateTime')->nullable(); // 最終編集/公開日時
             $table->timestamps();
         });
     }
@@ -28,7 +29,7 @@ return new class extends Migration
     public function down(): void
     {
         //
-        Schema::dropIfExists('w_wright_forms');
+        Schema::dropIfExists('w_write_forms');
 
     }
 };

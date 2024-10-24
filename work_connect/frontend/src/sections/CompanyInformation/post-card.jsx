@@ -210,6 +210,11 @@ const PostCard = forwardRef(({ post }) => {
     });
   };
 
+  //閉じるボタンを押したら更新後のtitle_contentsを取得しに行って渡す
+  const modalclose = () => {
+    setShowEdit(false)
+  }
+
   const renderEdit = (
     <div>
       <div className="modal_overlay">
@@ -276,11 +281,13 @@ const PostCard = forwardRef(({ post }) => {
               </TableBody>
             </Table>
           </TableContainer>
-          <p><button onClick={() => setShowEdit(false)}>閉じる</button></p>
+          <p><button onClick={() =>modalclose()}>閉じる</button></p>
         </div>
       </div>
     </div>
   );
+
+
 
   return (
     <div>

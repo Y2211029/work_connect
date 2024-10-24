@@ -45,6 +45,7 @@ use App\Http\Controllers\chat\PostChatController;
 use App\Http\Controllers\chat\EditChatController;
 use App\Http\Controllers\chat\DeleteChatController;
 use App\Http\Controllers\chat\AlreadyReadChatController;
+use App\Http\Controllers\chat\UpdateChatController;
 use App\Http\Controllers\tag\InsertTagController;
 use App\Http\Controllers\tag\GetGenreTagController;
 use App\Http\Controllers\tag\GetLanguageTagController;
@@ -230,6 +231,9 @@ Route::post('/edit_chat', [EditChatController::class, 'EditChatController']);
 Route::post('/delete_chat', [DeleteChatController::class, 'DeleteChatController']);
 // チャット既読
 Route::post('/already_read_chat', [AlreadyReadChatController::class, 'AlreadyReadChatController']);
+// チャット更新
+Route::post('/update_chat', [UpdateChatController::class, 'UpdateChatController']);
+
 
 // 通知取得
 Route::get('/get_notice', [GetNoticeController::class, 'GetNoticeController']);
@@ -276,6 +280,7 @@ Route::post('/all_company_informations_pull', action: [CompanyInformationControl
 
 //応募用フォーム作成機能
 Route::post('/create_form_save', [FormController::class, 'create_form_save']);
+Route::get('/create_form_get/{NewsDetailId}', [FormController::class, 'create_form_get']);
 Route::get('/write_form_get/{NewsDetailId}', [FormController::class, 'write_form_get']);
 Route::post('/write_form_save', [FormController::class, 'write_form_save']);
 

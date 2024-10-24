@@ -168,8 +168,6 @@ class NewsController extends Controller
         $offset = ($page - 1) * $perPage;
         $sortOption = $request->query('sort');
 
-
-
         // ニュースタイトル一覧を取得
         $title = w_write_form::where('recipient_company_id', $CompanyId)
             ->join('w_news', 'w_write_forms.news_id', '=', 'w_news.id')
@@ -182,7 +180,7 @@ class NewsController extends Controller
             ->join('w_news', 'w_write_forms.news_id', '=', 'w_news.id')
             ->join('w_users', 'w_write_forms.user_id', '=', 'w_users.id')
             ->where('w_news.public_status', 1)
-            ->select('w_write_forms.*', 'w_news.*', 'w_users.*', 'w_news.created_at as news_created_at','w_write_forms.id as wright_form_id')
+            ->select('w_write_forms.*', 'w_news.*', 'w_users.*', 'w_news.created_at as news_created_at','w_write_forms.id as write_form_id')
             ->get();
 
         // ソート処理
@@ -208,9 +206,9 @@ class NewsController extends Controller
                 if ($q->article_title === $post->article_title) {
                     // 該当するユーザー情報を配列として追加
                     $users[] = [
-                        'wright_form' => json_decode($q->wright_form), // ここでデコード
+                        'write_form' => json_decode($q->write_form), // ここでデコード
                         'user_name' => $q->user_name,
-                        'wright_form_id' => $q->wright_form_id,
+                        'write_form_id' => $q->write_form_id,
                         'news_created_at' => $q->news_created_at,
                         // 他の必要なフィールドもここで追加
                     ];

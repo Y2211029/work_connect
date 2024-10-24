@@ -17,8 +17,8 @@ class w_write_form extends Model
         'user_id',
         'news_id',
         'recipient_company_id',
-        'wright_form',
-        'wrightformDateTime',
+        'write_form',
+        'writeformDateTime',
     ];
 
 }

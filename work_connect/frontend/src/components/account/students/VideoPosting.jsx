@@ -10,11 +10,15 @@ import "../../../App.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 const VideoPosting = () => {
   let navigation = useNavigate();
+  const { getSessionData } = useSessionStorage();
+  const accountData = getSessionData("accountData");
 
   const [workData, setVideoData] = useState({
+    creatorId: "",
     YoutubeURL: "",
     VideoTitle: "",
     VideoGenre: "",
@@ -27,21 +31,25 @@ const VideoPosting = () => {
   const [videoId, setVideoId] = useState("");
   const [hasError, setHasError] = useState(false);
 
+
   useEffect(() => {
     console.log(workData);
   }, [workData]);
 
   const callSetVideoData = (key, value) => {
-    setVideoData({
-      ...workData,
+    setVideoData((prev) => ({
+      ...prev,
       [key]: value,
-    });
+    }));
   };
 
   const handleChange = (event) => {
     const url = event.target.value;
     setVideoUrl(url);
     setHasError(url === "");
+
+
+    callSetVideoData("creatorId", accountData.id)
 
     // 入力が空の場合、videoIdをリセットしてYoutubeURLをクリア
     if (url === "") {
@@ -99,22 +107,27 @@ const VideoPosting = () => {
   const VideoSubmit = async (e) => {
     e.preventDefault();
     console.log("e", e.target);
+    console.log("workData[key]", workData);
 
-    const formData = new FormData();
-    for (const key in workData) {
-      formData.append(key, workData[key]);
-    }
+    // const formData = [];
+    // for (const key in workData) {
+    //   // console.log("keyworkData", workData[key]);
+    //   // console.log("keyworkDatakey", key);
+    //   // console.log("keyworkData", workData[key]);
+    //   formData.push({ [key]: workData[key] });
+    // }
+    // console.log("formData.append", formData);
     try {
       const response = await axios.post(
-        "http://localhost:8000/video_posting",
-        formData,
+        "http://localhost:3000/video_posting",
         {
+          method: "POST",
           headers: {
             "Content-Type": "multipart/form-data",
           },
+          body: workData,
         }
       );
-      console.log(formData);
       console.log(response.data.message);
       navigation("/VideoSelect");
     } catch (error) {

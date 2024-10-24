@@ -18,8 +18,11 @@ import {
   Title,
   Tooltip,
   Legend,
+  BarController, // 追加
+  BarElement,    // 追加
 } from "chart.js";
-import { Line } from 'react-chartjs-2'; // 棒グラフ
+
+import { Bar } from 'react-chartjs-2'; // 棒グラフ
 
 // ----------------------------------------------------------------------
 
@@ -39,7 +42,7 @@ const PostCard = forwardRef(({ post }) => {
     document.head.appendChild(styleSheet);
 
     // グラフデータの取得
-    extractGraphData(user_name);
+    extractGraphData();
   }, [user_name]);
 
   ChartJS.register(
@@ -50,20 +53,23 @@ const PostCard = forwardRef(({ post }) => {
     Title,
     Tooltip,
     Legend,
+    BarController, // 追加
+    BarElement,    // 追加
   );
 
-  const extractGraphData = (userData) => {
-    const labels = [];
-    const values = [];
+  //棒グラフ:チェックボックスやドロップダウンメニューなどの選択肢を表示させるとき
+  const extractGraphData = () => {
+    const labels = ["asasa", "fegsdhgshfaergsdgh"];
+    const values = [40, 30];
 
-    userData.forEach(user => {
-      user.wright_form.forEach(form => {
-        if (form.inputType === "datetime-local") {
-          labels.push(form.response);
-          values.push(1); // 各日付に対して1を入れる例
-        }
-      });
-    });
+    // userData.forEach(user => {
+    //   user.write_form.forEach(form => {
+    //     if (form.inputType === "datetime-local") {
+    //       labels.push(form.response);
+    //       values.push(1); // 各日付に対して1を入れる例
+    //     }
+    //   });
+    // });
 
     setGraphData({ labels, values });
   };
@@ -71,10 +77,11 @@ const PostCard = forwardRef(({ post }) => {
   const Graph = () => {
     const options = {
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         title: {
           display: true,
-          text: "日時",
+          text: "1.新しい質問",
         },
       },
     };
@@ -83,7 +90,7 @@ const PostCard = forwardRef(({ post }) => {
       labels: graphData.labels,
       datasets: [
         {
-          label: "データ1",
+          label: "1.新しい質問",
           data: graphData.values,
           borderColor: "rgb(255, 99, 132)",
           backgroundColor: "rgba(255, 99, 132, 0.5)",
@@ -92,9 +99,9 @@ const PostCard = forwardRef(({ post }) => {
     };
 
     return (
-      <Box>
-        <Line options={options} data={data} />
-      </Box>
+      <Box sx={{ width: '100%', height: '200px' }}>
+      <Bar options={options} data={data} style={{ height: '100%', width: '100%' }} />
+    </Box>
     );
   };
 
@@ -149,12 +156,12 @@ PostCard.propTypes = {
     article_title: PropTypes.string,
     user_name: PropTypes.arrayOf( // 配列の定義に変更
       PropTypes.shape({
-        wright_form_id: PropTypes.number,
+        write_form_id: PropTypes.number,
         user_name: PropTypes.string,
         company_name: PropTypes.string,
         icon: PropTypes.string,
         follow_status: PropTypes.bool,
-        wright_form: PropTypes.arrayOf(PropTypes.shape({
+        write_form: PropTypes.arrayOf(PropTypes.shape({
           type: PropTypes.string,
           name: PropTypes.string,
           title: PropTypes.string,

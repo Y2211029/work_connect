@@ -58,7 +58,7 @@ import TableRow from '@mui/material/TableRow';
 import moment from 'moment';
 import { Helmet } from 'react-helmet-async';
 import TooltipTitle from '@mui/material/Tooltip';
-
+import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 
 //データ保存
 import axios from "axios";
@@ -1141,10 +1141,7 @@ const Editor = () => {
   const header_img_show = (draft) => {
     if (draft.header_img === null) {
       return (
-        <img
-          src="https://msp.c.yimg.jp/images/v2/FUTi93tXq405grZVGgDqG3-G3MODLKkxekMXltDQVWcrr88_sWJnCA4cec0bHJK56FbmsAnYK6LCbNnWBPG6ekEZ_Gjoz0WTwCbzDqIt-m9uJsn3KHJ0vf7KfIvTPnn-wTKD2Bvh1DUWRdcfAg8xrMviI_Aq2JEKaeaQdv5YXmiB_0GGXnHU1dgclEeB1knOfLGb-WAst5Hz1zhmlUGE3Y-PDXNJZAnGF-5rDkneFTxzi09UWjQIcS00HcPAxA5NlFPFH6Ps3jieBYzfejIGW1cJbD7j8UcOqw0NgOE1OHA=/6000_main.jpg"
-          alt="Default Image"
-        />
+        <ImageNotSupportedIcon fontSize="large"/>
       );
     } else {
       return <img src={draft.header_img} alt="Draft Image" />;

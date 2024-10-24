@@ -148,20 +148,19 @@ const ProfileMypage = () => {
 
   useEffect(() => {
     // let followStatusDetail;
-    console.log("notificationContext.WebSocketState.websocketFollowStatus.follow_status", notificationContext.WebSocketState.websocketFollowStatus.follow_status)
+    // console.log("notificationContext.WebSocketState.websocketFollowStatus.follow_status", notificationContext.WebSocketState.websocketFollowStatus.follow_status)
 
     if (notificationContext.WebSocketState.websocketFollowStatus.follow_status) {
       // followStatusDetail = notificationContext.WebSocketState.websocketFollowStatus.follow_status;
-      console.log("notificationContext.WebSocketState.websocketFollowStatus.follow_status", notificationContext.WebSocketState.websocketFollowStatus.follow_status)
+      // console.log("notificationContext.WebSocketState.websocketFollowStatus.follow_status", notificationContext.WebSocketState.websocketFollowStatus.follow_status)
       if (followStatus == "フォローされています") {
-        console.log("notificationContext.WebSocketState.websocketFollowStatus.follow_status", notificationContext.WebSocketState.websocketFollowStatus.follow_status)
+        // console.log("notificationContext.WebSocketState.websocketFollowStatus.follow_status", notificationContext.WebSocketState.websocketFollowStatus.follow_status)
         setFollowStatus("フォローする");
       } else if (followStatus == "相互フォローしています") {
-        console.log("notificationContext.WebSocketState.websocketFollowStatus.follow_status", notificationContext.WebSocketState.websocketFollowStatus.follow_status)
+        // console.log("notificationContext.WebSocketState.websocketFollowStatus.follow_status", notificationContext.WebSocketState.websocketFollowStatus.follow_status)
         setFollowStatus("フォローしています");
       }
-      console.log("notificationContext.WebSocketState.websocketFollowStatus.follow_status", notificationContext.WebSocketState.websocketFollowStatus.follow_status)
-
+      // console.log("notificationContext.WebSocketState.websocketFollowStatus.follow_status", notificationContext.WebSocketState.websocketFollowStatus.follow_status)
     }
   }, [notificationContext.WebSocketState.websocketFollowStatus.follow_status]);
 
@@ -296,6 +295,7 @@ const ProfileMypage = () => {
       setButtonDisable(true);
       const updatedFollowStatus = await follow(MyUserId[0], profile_id);
       setButtonDisable(false);
+
 
       if (updatedFollowStatus == "成功") {
         if (followStatus == "フォローする") {

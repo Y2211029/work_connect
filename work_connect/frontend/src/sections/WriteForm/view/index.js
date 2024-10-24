@@ -1,1 +1,1 @@
-export { default as CreateFormView } from './createform-view';
+export { default as WriteFormView } from './createform-view';

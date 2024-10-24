@@ -113,7 +113,7 @@ export default function CheckBox({ onSave, onCancel, questionData }) {
 
                 <Stack direction="row" alignItems="center" spacing={1}>
                     <Checkbox
-                        checked={showOtherItem}
+                        checked={showSelectAllItem}
                         onChange={(e) => setShowSelectAllItem(e.target.checked)}
                     />
                     <Typography>「すべて選択」の選択肢を追加する</Typography>

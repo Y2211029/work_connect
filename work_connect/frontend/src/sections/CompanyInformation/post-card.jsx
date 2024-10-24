@@ -11,10 +11,11 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Switch from '@mui/material/Switch';
-import './CompanyInformation.css'; // CSSファイルをインポート
+import './CompanyInformation.css';
 import axios from "axios";
 import DeleteIcon from '@mui/icons-material/Delete';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import { SortableContext, arrayMove, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
@@ -22,38 +23,56 @@ import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 const PostCard = forwardRef(({ post }) => {
   const { title_contents } = post;
   const CompanyInformationsSaveURL = "http://localhost:8000/company_informations_save";
+  const AllCompanyInformationsPullURL = "http://localhost:8000/all_company_informations_pull";
 
   const [MyUserId, setMyUserId] = useState(0);
   const [showEdit, setShowEdit] = useState(false);
-  const [editedContents, setEditedContents] = useState(title_contents);
+  const [editedContents, setEditedContents] = useState([]);
 
   useEffect(() => {
     const accountData = JSON.parse(sessionStorage.getItem("accountData"));
     setMyUserId(accountData?.id || 0);
   }, []);
 
-  useEffect(() => {
-    setEditedContents(title_contents);
-  }, [title_contents]);
 
   useEffect(() => {
     async function CompanyInformationSave() {
+      console.log("保存するデータ", editedContents);
       try {
         const response = await axios.post(CompanyInformationsSaveURL, {
           CompanyInformation: editedContents,
         });
         if (response) {
-          console.log("成功です");
+          console.log("saveが成功です");
         }
       } catch (err) {
         console.error("Error saving company information:", err.response ? err.response.data : err.message);
       }
     }
 
-    if (editedContents.length) {
+    // editedContentsのタイトルまたはコンテンツがnullでないことを確認
+    const hasValidData = editedContents.every(item => item.title !== "" && item.contents !== "");
+
+    if (editedContents.length && hasValidData) {
       CompanyInformationSave();
     }
   }, [editedContents]);
+
+  // 編集時に公開・非公開含めたすべての企業情報を取得する
+  async function AllCompanyInformationsPull() {
+    try {
+      // Laravel側から企業一覧データを取得
+      const response = await axios.post(AllCompanyInformationsPullURL, {
+        InformationId: title_contents[0].company_id
+      });
+      setEditedContents(response.data.title_contents);
+      console.log(response.data.title_contents);
+      console.log("pullが成功です");
+    } catch (err) {
+      console.log("err:", err);
+    }
+  }
+
 
   useEffect(() => {
     if (showEdit) {
@@ -83,8 +102,10 @@ const PostCard = forwardRef(({ post }) => {
 
   const handleEditClick = (postId) => {
     console.log("編集ボタンがクリックされました", postId);
-    setShowEdit(true);
-    setEditedContents(title_contents);
+    AllCompanyInformationsPull();
+    if (editedContents) {
+      setShowEdit(true);
+    }
   };
 
   const handlePublicStatusChange = (index) => {
@@ -95,10 +116,21 @@ const PostCard = forwardRef(({ post }) => {
     });
   };
 
+  // const handleTextChange = (index, field, value) => {
+  //   setEditedContents(prevContents => {
+  //     const newContents = [...prevContents];
+  //     newContents[index][field] = value;
+  //     return newContents;
+  //   });
+  // };
+
   const handleTextChange = (index, field, value) => {
     setEditedContents(prevContents => {
       const newContents = [...prevContents];
-      newContents[index][field] = value;
+      newContents[index] = {
+        ...newContents[index],
+        [field]: value, // ここを修正
+      };
       return newContents;
     });
   };
@@ -110,27 +142,27 @@ const PostCard = forwardRef(({ post }) => {
     }
   };
 
-const SortableRow = ({ id, children }) => {
+  const SortableRow = ({ id, children }) => {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
-
+  
     const style = {
       transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : 'none',
       transition,
       cursor: isDragging ? 'grabbing' : 'grab',
     };
-
+  
     return (
       <TableRow ref={setNodeRef} style={style} {...attributes}>
-        {children} {/* childrenにlistenersを渡さない */}
+        {children}
         <TableCell>
           <Tooltip title={"ドラッグすることで並び替えができます"}>
-            <SwapVertIcon {...listeners} style={{ cursor: 'grab' }} /> {/* SwapVertIconにのみlistenersを適用 */}
+            <SwapVertIcon {...listeners} style={{ cursor: 'grab' }} />
           </Tooltip>
         </TableCell>
       </TableRow>
     );
-};
-
+  };
+  
   SortableRow.propTypes = {
     id: PropTypes.number.isRequired,
     children: PropTypes.func.isRequired,
@@ -139,14 +171,43 @@ const SortableRow = ({ id, children }) => {
   const handleDragEnd = (event) => {
     const { active, over } = event;
 
-    console.log('Drag ended:', { active, over });
-
     if (active.id !== over.id) {
       const oldIndex = editedContents.findIndex(item => item.id === active.id);
       const newIndex = editedContents.findIndex(item => item.id === over.id);
 
-      setEditedContents((items) => arrayMove(items, oldIndex, newIndex));
+      // 並び替え処理
+      const reorderedItems = arrayMove(editedContents, oldIndex, newIndex);
+
+      // row_numberを更新
+      const updatedItems = reorderedItems.map((item, index) => {
+        return {
+          ...item,
+          row_number: index + 1, // 1から順にrow_numberを設定
+        };
+      });
+
+      console.log(updatedItems);
+
+      setEditedContents(updatedItems);
     }
+  };
+
+  const handleAddRow = (index) => {
+    const newRow = {
+      id: editedContents.length + 1, // ユニークなIDを生成
+      title: '',      // 新しい行の初期タイトル
+      contents: '',   // 新しい行の初期内容
+      public_status: 0, // 新しい行の公開状態（初期は非公開）
+      company_id: title_contents[0].company_id, // 既存の企業IDを設定
+      row_number: editedContents.length + 1 // 新しい行のrow_numberを設定
+    };
+
+    setEditedContents(prevContents => {
+      // 新しい行を指定されたインデックスの1つ下に追加
+      const newContents = [...prevContents];
+      newContents.splice(index + 1, 0, newRow);
+      return newContents;
+    });
   };
 
   const renderEdit = (
@@ -158,9 +219,10 @@ const SortableRow = ({ id, children }) => {
               <TableHead>
                 <TableRow>
                   <TableCell style={{ fontWeight: 'bold', width: '20%' }}>タイトル</TableCell>
-                  <TableCell style={{ fontWeight: 'bold', width: '20%' }}>内容</TableCell>
+                  <TableCell style={{ fontWeight: 'bold', width: '30%' }}>内容</TableCell>
                   <TableCell style={{ fontWeight: 'bold', width: '5%' }}>公開状態</TableCell>
                   <TableCell style={{ fontWeight: 'bold', width: '5%' }}>削除</TableCell>
+                  <TableCell style={{ fontWeight: 'bold', width: '5%' }}>追加</TableCell>
                   <TableCell style={{ fontWeight: 'bold', width: '5%' }}>並び変え</TableCell>
                 </TableRow>
               </TableHead>
@@ -199,6 +261,13 @@ const SortableRow = ({ id, children }) => {
                               </IconButton>
                             </Tooltip>
                           </TableCell>
+                          <TableCell>
+                            <Tooltip title={"次の行にフォームを追加します"}>
+                              <IconButton onClick={() => handleAddRow(index)}>
+                                <AddCircleOutlineIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </TableCell>
                         </>
                       </SortableRow>
                     ))}
@@ -207,7 +276,7 @@ const SortableRow = ({ id, children }) => {
               </TableBody>
             </Table>
           </TableContainer>
-          <p><button onClick={() => setShowEdit(false)}>close</button></p>
+          <p><button onClick={() => setShowEdit(false)}>閉じる</button></p>
         </div>
       </div>
     </div>

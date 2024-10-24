@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import PropTypes from "prop-types";
 import { TextareaAutosize as BaseTextareaAutosize } from "@mui/base/TextareaAutosize";
 import { styled } from "@mui/system";
@@ -19,6 +19,7 @@ import {
 } from "@dnd-kit/sortable";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers"; // ドラッグを画面端までに制限
 import { CSS } from "@dnd-kit/utilities";
+import { WorkImageContext } from "src/layouts/dashboard";
 
 // カラーパレットの定義（ブルーとグレーの色を設定）
 const blue = {
@@ -164,24 +165,35 @@ SortableItem.propTypes = {
 };
 
 // 画像アップロード機能を提供するコンポーネント
-const ImageUpload = ({ onImagesUploaded, coleSetImage }) => {
-  const [items, setItems] = useState([]); // 画像アイテムの状態管理
+const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
   const [activeId, setActiveId] = useState(null); // ドラッグ中のアイテムIDを管理
   const fileInputRef = useRef(null); // ファイルインプットの参照を保持
+  // AllItemsContextから状態を取得
+  const { workImage, setWorkImage } = useContext(WorkImageContext);
 
+  // 10/21追加
+  const [items, setItems] = useState([]); // 画像アイテムの状態管理
+  console.log(items);
+  
   // 画像リストを初期化する関数
   const resetItems = () => {
-    setItems([]); // アイテムをリセット
-    localStorage.removeItem("items"); // ローカルストレージもリセット
+    setWorkImage([]); // アイテムをリセット
+    setItems([]); // 10/21追加
+    localStorage.removeItem("workImage"); // ローカルストレージもリセット
   };
 
   useEffect(() => {
     resetItems(); // 初回レンダリング時にリセット
   }, []);
 
+  useEffect(() => {
+    console.log("workImage", workImage);
+  }, [workImage]);
+
   // 画像アップロードの処理
   const handleImageUpload = (event) => {
-    coleSetImage(event.target.files); // アップロードしたファイルを処理
+    callSetImage(event.target.files); // アップロードしたファイルを処理
+    setWorkImage(event.target.files); // File型のデータを追加
     const files = Array.from(event.target.files); // アップロードされたファイルを配列に変換
     const newItems = files.map((file, index) => ({
       id: `${file.name}-${index}-${Date.now()}`, // 一意のIDを生成
@@ -190,12 +202,26 @@ const ImageUpload = ({ onImagesUploaded, coleSetImage }) => {
       description: "", // 初期状態は空の説明
     }));
 
+    // setWorkImage((prevItems) => {
+    //   const updatedItems = [...prevItems, ...newItems];
+    //   onImagesUploaded(updatedItems); // 親コンポーネントに通知
+    //   return updatedItems;
+    // });
+
+
     // 新しいアイテムを追加し、状態を更新
+    /*
+    10/21 未修整
+    !!!!!!!!!!!要修正!!!!!!!!!!!
+    setWorkImageだとよくないので別のものに変える。
+    setWorkImageにはFile型のみを入れる!!
+    */
     setItems((prevItems) => {
       const updatedItems = [...prevItems, ...newItems];
       onImagesUploaded(updatedItems); // 親コンポーネントに通知
       return updatedItems;
     });
+
   };
 
   // アイテム削除の処理
@@ -204,23 +230,42 @@ const ImageUpload = ({ onImagesUploaded, coleSetImage }) => {
     event.stopPropagation(); // イベントのバブリングを防止
 
     // DataTransferオブジェクトを利用
-    const dataTransfer = new DataTransfer();
-    dataTransfer.setData("text/plain", id); // 削除するアイテムのIDを設定
+    const dt = new DataTransfer();
+    dt.setData("text/plain", id); // 削除するアイテムのIDを設定
 
     // アイテムを削除するロジック
-    setItems((items) => {
-      const updatedItems = items.filter((item) => item.id !== id);
+    setWorkImage((workImage) => {
+      const updatedItems = workImage.filter((item) => item.id !== id);
       onImagesUploaded(updatedItems);
+      return updatedItems;
+    });
+
+    // 10/21追加
+    setItems((items) => {
+      const updatedItems = items.filter((item) => item.id !== id); // 削除対象をフィルタリング
+      onImagesUploaded(updatedItems); // 親コンポーネントに更新を通知
       return updatedItems;
     });
   };
 
   // 説明の変更を処理する関数
   const handleDescriptionChange = (id, value) => {
+    // setWorkImage((workImage) => {
+    //   const updatedItems =
+    //     workImage &&
+    //     workImage.map((item) =>
+    //       item.id === id ? { ...item, description: value } : item
+    //     );
+    //   onImagesUploaded(updatedItems); // 親コンポーネントに更新を通知
+    //   return updatedItems;
+    // });
+    // 10/21追加
     setItems((items) => {
-      const updatedItems = items.map((item) =>
-        item.id === id ? { ...item, description: value } : item
-      );
+      const updatedItems =
+        items &&
+        items.map((item) =>
+          item.id === id ? { ...item, description: value } : item
+        );
       onImagesUploaded(updatedItems); // 親コンポーネントに更新を通知
       return updatedItems;
     });
@@ -238,10 +283,19 @@ const ImageUpload = ({ onImagesUploaded, coleSetImage }) => {
 
     // ドラッグ先のアイテムが異なる場合にのみ順序を変更
     if (active.id !== over.id) {
+      setWorkImage((workImage) => {
+        const oldIndex = workImage.findIndex((item) => item.id === active.id);
+        const newIndex = workImage.findIndex((item) => item.id === over.id);
+        const updatedItems = arrayMove(workImage, oldIndex, newIndex); // アイテムを並べ替え
+        onImagesUploaded(updatedItems); // 親コンポーネントに更新を通知
+        return updatedItems;
+      });
+
+      // 10/21追加
       setItems((items) => {
         const oldIndex = items.findIndex((item) => item.id === active.id);
         const newIndex = items.findIndex((item) => item.id === over.id);
-        const updatedItems = arrayMove(items, oldIndex, newIndex); // アイテムを並べ替え
+        const updatedItems = arrayMove(workImage, oldIndex, newIndex); // アイテムを並べ替え
         onImagesUploaded(updatedItems); // 親コンポーネントに更新を通知
         return updatedItems;
       });
@@ -279,7 +333,8 @@ const ImageUpload = ({ onImagesUploaded, coleSetImage }) => {
     minWidth: "300px",
   };
 
-  const activeItem = items.find((item) => item.id === activeId); // ドラッグ中のアイテム
+  const activeItem =
+    workImage && workImage.find((item) => item.id === activeId); // ドラッグ中のアイテム
 
   const overlayStyle = {
     width: "100%",
@@ -303,6 +358,7 @@ const ImageUpload = ({ onImagesUploaded, coleSetImage }) => {
       <input
         type="file"
         multiple
+        id="inputElement"
         onChange={handleImageUpload} // 画像アップロードのイベントハンドラ
         ref={fileInputRef} // ファイルインプットの参照
         style={inputStyle} // 見えないようにスタイルを設定
@@ -315,21 +371,22 @@ const ImageUpload = ({ onImagesUploaded, coleSetImage }) => {
         modifiers={[restrictToWindowEdges]} // ドラッグが画面内に制限されるようにする
       >
         <SortableContext
-          items={items.map((item) => item.id)} // 並べ替え対象のアイテムIDを渡す
-          strategy={rectSortingStrategy} // 並べ替えの戦略を設定
+          items={workImage && workImage.map((item) => item.id)} // 安全に配列を扱う
+          strategy={rectSortingStrategy}
         >
           <div style={{ gap: "10px" }}>
-            {items.map((item) => (
-              <SortableItem
-                key={item.id}
-                id={item.id}
-                image={item.image} // 画像URLを渡す
-                description={item.description} // 説明テキストを渡す
-                onDelete={handleDelete} // 削除イベントを渡す
-                onDescriptionChange={handleDescriptionChange} // 説明の変更イベントを渡す
-                activeId={activeId} // ドラッグ中のアイテムIDを渡す
-              />
-            ))}
+            {workImage &&
+              workImage.map((item) => (
+                <SortableItem
+                  key={item.id}
+                  id={item.id}
+                  image={item.image}
+                  description={item.description}
+                  onDelete={handleDelete}
+                  onDescriptionChange={handleDescriptionChange}
+                  activeId={activeId}
+                />
+              ))}
           </div>
         </SortableContext>
         <DragOverlay>
@@ -350,7 +407,7 @@ const ImageUpload = ({ onImagesUploaded, coleSetImage }) => {
 // PropTypesを使用してプロパティの型チェックを定義
 ImageUpload.propTypes = {
   onImagesUploaded: PropTypes.func.isRequired,
-  coleSetImage: PropTypes.func.isRequired,
+  callSetImage: PropTypes.func.isRequired,
 };
 
 export default ImageUpload;

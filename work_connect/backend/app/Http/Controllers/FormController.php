@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\w_create_form;
-use App\Models\w_wright_form;
+use App\Models\w_write_form;
 use App\Models\w_news;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -19,36 +19,26 @@ class FormController extends Controller
         $now = Carbon::now('Asia/Tokyo');
 
         // react側からのリクエスト
-        $create_form_id = $request->input('create_form_id');
-        $create_form = json_encode($request->input('create_form')); // 配列をJSONに変換
-        $news_id = $request->input('create_news_id'); // 修正
-        $company_id = $request->input('company_id');
+        $create_form = json_encode($request->input('create_form')); // フォーム内容
+        $news_id = $request->input('create_news_id'); //投稿するニュースのID
+        $company_id = $request->input('company_id'); //企業のID
 
 
-        Log::info('create_form_id: ' . $create_form_id);
-        Log::info('create_form: ' . json_encode($create_form)); // JSONエンコードしてログに出力
+        Log::info('create_form: ' . $create_form); // JSONエンコードしてログに出力
         Log::info('news_id: ' . $news_id);
-        Log::info('company_id: ' . $company_id);
+        Log::info('company_id: ' . $company_id); //企業のID
 
-        // create_form_idのデフォルトが0のため、保存されていない。
-        // 0の場合は新規作成
-        if ($create_form_id == 0) {
-            $w_create_form = w_create_form::create([
-                'company_id' => $company_id,
-                'news_id' => $news_id,
-                'create_form' => $create_form,
-                'createformDateTime' => $now
-            ]);
-        } else {
-            $w_create_form = w_create_form::find($create_form_id);
-            if (!$w_create_form) {
-                return response()->json(['error' => 'Record not found'], 404);
-            }
-            $w_create_form->news_id = $news_id;
-            $w_create_form->create_form = $create_form;
-            $w_create_form->createformDateTime = $now;
-            $w_create_form->save();
-        }
+
+        // news_id と company_id に基づいてレコードを検索
+        $w_create_form = w_create_form::firstOrNew(attributes: [
+            'news_id' => $news_id,
+            'company_id' => $company_id,
+        ]);
+
+        // レコードが見つかれば更新、なければ新規作成
+        $w_create_form->create_form = $create_form;
+        $w_create_form->createformDateTime = $now;
+        $w_create_form->save();
 
         // 作成または更新されたレコードのIDを取得する
         $id = $w_create_form->id;
@@ -68,7 +58,6 @@ class FormController extends Controller
         Log::info('newsdetail_id: ' . $newsdetail_id);
 
         try {
-
             $page = (int) $request->query('page', 1);
             $perPage = 20;
             $offset = ($page - 1) * $perPage;
@@ -101,6 +90,27 @@ class FormController extends Controller
             // クエリログを確認
             Log::info(\DB::getQueryLog());
 
+            // データが見つからなかった場合、テンプレートデータをセット
+            if ($posts->isEmpty()) {
+                Log::info('ポストが空です。テンプレートデータをセットします。');
+
+                $templatePost = (object) [
+                    'create_form' => [
+                        [
+                            'name' => 'Question1',
+                            'title' => 'デモ質問',
+                            'type' => 'text',
+                            'placeholder' => 'この質問はテキストを入力できます'
+                        ]
+                    ],
+                    'news_id' => $newsdetail_id,
+                    'company_id' => null,
+                    'article_title' => 'タイトル未定'
+                ];
+
+                return response()->json([$templatePost], 200);
+            }
+
             // JSON デコード
             foreach ($posts as $post) {
                 $decodedForm = json_decode($post->create_form);
@@ -112,7 +122,7 @@ class FormController extends Controller
                 }
             }
 
-            Log::info($posts);
+            Log::info('ポストの中身'.$posts);
             return response()->json($posts);
         } catch (\Exception $e) {
             Log::error('write_form_get エラー: ' . $e->getMessage());
@@ -121,7 +131,7 @@ class FormController extends Controller
     }
 
 
-    public function wright_form_save(Request $request)
+    public function write_form_save(Request $request)
     {
         // 日本の現在時刻を取得
         $now = Carbon::now('Asia/Tokyo');
@@ -130,10 +140,13 @@ class FormController extends Controller
         $FormData = json_encode($request->input('FormData'));
         $NewsId = strval($request->input('NewsId'));
         $MyId = $request->input('MyId');
+        $RecipientCompanyId = $request->input('RecipientCompanyId');
 
-        $w_wright_form = w_wright_form::create([
+
+        $w_write_form = w_write_form::create([
             'user_id' => $MyId,
             'news_id' => $NewsId,
+            'recipient_company_id' => $RecipientCompanyId,
             'wright_form' => $FormData,
             'wrightformDateTime' => $now
         ]);
@@ -141,7 +154,7 @@ class FormController extends Controller
         //IDを返す
         return response()->json([
             'success' => 0,
-            'form' => $w_wright_form
+            'form' => $w_write_form
         ]);
     }
 }

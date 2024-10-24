@@ -6,8 +6,6 @@ import "./CreateForm.css";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import { useParams } from 'react-router-dom';
 
-
-
 // フォームメニュー
 import Text from "./SelectOptionMenu/Text";
 import DateForm from "./SelectOptionMenu/Date";
@@ -495,27 +493,27 @@ export default function CreateForm() {
   return (
     <>
       <Stack direction="row" alignItems="flex-start" spacing={2}>
-        <div style={{ flexGrow: 1, width: "200px" }}> {/* フォーム部分 */}
+        <div style={{ overflow: 'auto', flexGrow: 1, width: "200px", height: "100vh" }}> {/* フォーム部分 */}
           {questions.length === 0 ? (
             <p>フォームがありません</p>
           ) : (
-            <>
+            <div style={{ maxHeight: '90vh', overflowY: 'auto' }}> {/* Surveyコンポーネントをラップ */}
               <Survey model={survey} />
-
-              <Button
-                variant="outlined"
-                onClick={CreateFormSave}
-                sx={{
-                  borderColor: "#5956FF",
-                  color: "#5956FF",
-                  "&:hover": { borderColor: "#5956FF" },
-                  cursor: "pointer",
-                }}
-              >
-                保存する
-              </Button>
-            </>
+            </div>
           )}
+          <Button
+            variant="outlined"
+            onClick={CreateFormSave}
+            sx={{
+              borderColor: "#5956FF",
+              color: "#5956FF",
+              "&:hover": { borderColor: "#5956FF" },
+              cursor: "pointer",
+              marginTop:"10px"
+            }}
+          >
+            保存する
+          </Button>
         </div>
 
         {modalopen && (
@@ -557,10 +555,9 @@ export default function CreateForm() {
             </Stack>
           </div>
         )}
-      </Stack >
+      </Stack>
     </>
   );
-
 }
 
 // PropTypesバリデーション

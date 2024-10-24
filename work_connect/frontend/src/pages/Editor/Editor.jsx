@@ -49,7 +49,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import ErrorIcon from '@mui/icons-material/Error';
 import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
-
 import NewsMenuTable from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -58,6 +57,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import moment from 'moment';
 import { Helmet } from 'react-helmet-async';
+import TooltipTitle from '@mui/material/Tooltip';
 
 
 //データ保存
@@ -1178,7 +1178,7 @@ const Editor = () => {
     { key: "releaseNews", icon: <CampaignIcon />, text: "ニュースを公開する" },
   ];
 
-  const additionalMenuItem = (genre === "Internship" || genre === "JobOffer") ? (
+  const additionalMenuItem = (genre === "Internship" || genre === "JobOffer" || genre === "Session") ? (
     { key: "createForm", icon: <DisplaySettingsIcon />, text: "応募フォームを作成する" }
   ) : null;
 
@@ -1280,17 +1280,26 @@ const Editor = () => {
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            <TableRow>
-                              <TableCell style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <p
-                                  className="draftlist"
-                                  onClick={() => rewrite_news(draft.id)}
-                                  style={{ cursor: 'pointer', wordBreak: 'break-all' }}
-                                >
-                                  {draft.article_title}
-                                </p>
-                              </TableCell>
-                            </TableRow>
+                              <TableRow>
+                                <TableCell style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                  <TooltipTitle title={draft.article_title}>
+                                    <p
+                                      className="draftlist"
+                                      onClick={() => rewrite_news(draft.id)}
+                                      style={{
+                                        cursor: 'pointer',
+                                        wordBreak: 'break-all',
+                                        whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        maxWidth: '200px', // 必要に応じて適切な最大幅を設定してください
+                                      }}
+                                    >
+                                      {draft.article_title}
+                                    </p>
+                                  </TooltipTitle>
+                                </TableCell>
+                              </TableRow>
                           </TableBody>
                         </NewsMenuTable>
                       ))

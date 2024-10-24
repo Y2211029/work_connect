@@ -35,9 +35,21 @@ const WorkPosting = () => {
   const [hasError, setHasError] = useState(false);
   const [Image, setImage] = useState();
 
-  const coleSetImage = (e) => {
+  const callSetImage = (e) => {
+    // const image = Array.from(e);
     setImage(e);
     console.log("image: ", Image);
+    if (e.length > 0) {
+      // Fileオブジェクトのプロパティをログに表示
+      for (let i = 0; i < e.length; i++) {
+        console.log(
+          `File ${i} - Name: ${e[i].name}, Size: ${e[i].size}, Type: ${e[i].type}`
+        );
+      }
+    }
+    const imagesArray = Array.from(e);
+    setImageFiles(imagesArray);
+    console.log("imageArray: ",imagesArray);
     handleImageChange(e);
   };
 
@@ -54,38 +66,32 @@ const WorkPosting = () => {
 
   const handleImageChange = (e) => {
     console.log("e: ", e);
-    if (e.length > 0) {
-      // Fileオブジェクトのプロパティをログに表示
-      for (let i = 0; i < e.length; i++) {
-        console.log(
-          `File ${i} - Name: ${e[i].name}, Size: ${e[i].size}, Type: ${e[i].type}`
-        );
-      }
-    }
-    const imagesArray = Array.from(e);
-    setImageFiles(imagesArray);
-    // setImage()
-    console.log("imageArray: ",imagesArray);
 
     // 現在のFileListを維持するために新しいDataTransferを作成
     let dt = new DataTransfer();
 
     // 既存のimageFilesをDataTransferに追加
     imageFiles.forEach((file) => {
-      for (let i = 0; i <= imagesArray.length; i++){
-        if (file.name == imagesArray[i].name) {
+      for (let i = 0; i < e.length; i++){
+        console.log("length",i);
+        console.log("name",e[i].name);
+        // console.log("file.name",file.name);
+        if (file.name == e[i].name) {
           console.log("file.name",file.name);
           console.log("file.name",file);
           dt.items.add(file);
+          console.log(dt);
         }
-
       }
 
     });
 
+    if(e.length == 0){
+      dt.clearData();
+      console.log("dt", dt.files);
+    }
     // 新しいFileListを状態に設定
     setImage(dt.files);
-
     console.log("Image: ", Image);
   };
 
@@ -254,7 +260,7 @@ const WorkPosting = () => {
                 <div className="WorkPostingImageFormField">
                   <ImageUpload
                     onImagesUploaded={handleImageChange}
-                    coleSetImage={coleSetImage}
+                    callSetImage={callSetImage}
                   />
                 </div>
               </div>

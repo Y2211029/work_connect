@@ -11,13 +11,16 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Box from '@mui/material/Box';
 
-
 //Survey.js
 import { Model } from 'survey-core';
 import { Survey } from 'survey-react-ui';
 import 'survey-core/defaultV2.min.css';
+import './writeform.css';
+
+
 
 // ----------------------------------------------------------------------
+
 
 const PostCard = forwardRef(({ post },) => {
   const { article_title, user_name } = post;
@@ -31,6 +34,7 @@ const PostCard = forwardRef(({ post },) => {
   const [open, setOpen] = useState(false);
   const [surveyModel, setSurveyModel] = useState(null);
 
+
   // ログイン中のid
   const MyUserId = data.account_id;
   console.log(MyUserId);
@@ -38,6 +42,8 @@ const PostCard = forwardRef(({ post },) => {
   const handleClick = () => {
     setOpen(!open);
   };
+
+  console.log("post-cardきました!");
 
   useEffect(() => {
     const css =
@@ -76,7 +82,7 @@ const PostCard = forwardRef(({ post },) => {
     }
 
     return {
-      title: user_name,  
+      title: user_name,
       pages: [
         {
           name: "page1",
@@ -98,6 +104,7 @@ const PostCard = forwardRef(({ post },) => {
 
   return (
     <>
+
     <List
       sx={(theme) => ({
         width: '100%',
@@ -136,7 +143,7 @@ const PostCard = forwardRef(({ post },) => {
 
       {/* 送信者の名前一覧 */}
       <Collapse in={open} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding 
+        <List component="div" disablePadding
                   sx={{
                     pl: 4,
                     background: user_name.some(u => u.wright_form_id === accountData.ChatOpenId) ? '#cce5ff' : 'blue',

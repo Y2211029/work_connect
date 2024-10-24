@@ -72,25 +72,33 @@ export default function DashboardLayout({ children }) {
       const newWs = new WebSocket(`ws://localhost:3000?userId=${accountData.id}`);
       newWs.onmessage = (event) => {
         const data = JSON.parse(event.data);
+        console.log("index.js : data:", data);
         if (data.kind === "notification") {
           if (data.type === "follow") {
-            console.log("通ってると", data.noticeData);
+            console.log("index.js : data:", data);
             setWebSocketState((prev) => ({
               ...prev,
               notification: data,
               websocketFollowStatus: data.followData,
             }));
+          } else if(data.type === "videoPosting") {
+            console.log("index.js : data:", data);
+            setWebSocketState((prev) => ({
+              ...prev,
+              notification: data,
+            }));
           }
         }
         if (data.kind === "follow") {
           if (data.type === "follow") {
-            console.log("通ってると", data);
+            console.log("index.js : data.noticeData :", data);
             setWebSocketState((prev) => ({
               ...prev,
               websocketFollowStatus: data,
             }));
           }
         }
+    
       };
       newWs.onclose = () => {
         console.log("WebSocket connection closed");

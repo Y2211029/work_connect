@@ -29,6 +29,7 @@ class w_chat extends Model
         'get_user_id',
         'send_datetime',
         'check_read',
+        'edit_flag',
     ];
 
     // タイムスタンプのカラムが存在しない場合は、$timestampsをfalseに設定

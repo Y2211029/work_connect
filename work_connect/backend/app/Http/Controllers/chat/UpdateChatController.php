@@ -18,8 +18,14 @@ class UpdateChatController extends Controller
             $Id = $request->input('Id');
             $Data = $request->input('Data');
 
+            // 内容を更新、編集済みにする
             w_chat::where('id', $Id)
-            ->update(['message' => $Data]); // 内容を更新
+                ->update([
+                    'message' => $Data,
+                    'edit_flag' => 1
+                ]
+            );
+
 
             // Reactに返す
             return response()->json("succuses");

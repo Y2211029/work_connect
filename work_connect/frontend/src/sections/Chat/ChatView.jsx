@@ -19,6 +19,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Tooltip from '@mui/material/Tooltip';
 import Modal from '@mui/material/Modal';
+import CircleIcon from '@mui/icons-material/Circle';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
@@ -98,7 +99,12 @@ const FollowGroup = ({
   groupingOpen,
   handleClick,
   chatViewId,
-  chatOpen }) => {
+  chatOpen,
+  saveScrollPosition }) => {
+
+  //   /// セッションストレージ取得
+  // const { getSessionData , updateSessionData } = useSessionStorage();
+
   return (
     <>
       {/* 見出し部分 */}
@@ -112,7 +118,7 @@ const FollowGroup = ({
         <ListItemText
           primary={
             <Typography sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>
-              {title} ({followStatusCount})
+              {title} {followStatusCount ? `(${followStatusCount})` : null}
             </Typography>
           }
         />
@@ -133,7 +139,10 @@ const FollowGroup = ({
                   background: element.id === chatViewId ? '#cce5ff' : '#eee',
                 },
               }}
-              onClick={() => chatOpen(element)}>
+              onClick={() => {
+                saveScrollPosition(); // スクロール位置を保存
+                chatOpen(element);
+              }}>
               {/* アイコン */}
               <ListItemIcon>
                 <img
@@ -146,27 +155,29 @@ const FollowGroup = ({
               </ListItemIcon>
               {/* ユーザー名 */}
               <ListItemText primary={element.company_name ? element.company_name : element.user_name} />
+
+              {/* 未読の件数を表示 */}
               <Box>
                 {element.unread !== 0 ? (
                   <Box
                     sx={{
-                      backgroundColor: '#ff6060',   // バッジの背景色
-                      color: 'white',           // テキスト色
-                      borderRadius: '50%',      // 丸いデザインにする
-                      width: '22px',            // 幅を小さくする
-                      height: '22px',           // 高さを小さくする
-                      display: 'flex',          // 中央揃えのためにflexを使う
-                      justifyContent: 'center', // 中央揃え
-                      alignItems: 'center',     // 中央揃え
-                      fontSize: '13px',         // フォントサイズを小さくする
+                      backgroundColor: '#ff6060',
+                      color: 'white',
+                      borderRadius: '50%',
+                      width: '22px',
+                      height: '22px',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      fontSize: '13px',
                     }}
                   >
-                    {element.unread} {/* ①のような表示 */}
+                    {element.unread}
                   </Box>
                 ) : (
                   ""
                 )}
-            </Box>
+              </Box>
             </ListItemButton>
           ))}
         </List>
@@ -355,10 +366,14 @@ const ChatView = () => {
   const handleModalOpen = () => setModalOpen(true);
   const handleModalClose = () => setModalOpen(false);
 
-  // デフォルトでチャットを一番下にスクロールする
+  // チャットのスクロールの高さを保持する
   const chatBoxscroll = useRef(null);
-  // スクロールの高さが変わったときに、元のスクロールの高さを保持しておく
+  // チャットのスクロールの高さが変わったときに、元のスクロールの高さを保持しておく
   const [prevScrollHeight, setPrevScrollHeight] = useState(0);
+
+  // フォローリストのスクロールの高さを保持する
+  const ListBoxscroll = useRef(null);
+
   // テキストの文章を保持する変数
   const [TextData, setTextData] = useState(null);
 
@@ -373,7 +388,8 @@ const ChatView = () => {
   // useStateだと無限ループが発生するためletで初期値設定
   // 「ここから未読」の位置を保持する変数
   let unreadMessageFlag = false;
-  let unreadid = accountData.GetStartUnread ? accountData.GetStartUnread : 0;
+  // accountData.GetStartUnreadがなければ0を代入
+  let unreadid = accountData.GetStartUnread || 0;
 
   // useStateだと無限ループが発生するためletで初期値設定
   // メッセージの送信日時を記憶しておく
@@ -411,68 +427,69 @@ const ChatView = () => {
         // Laravel側からデータを取得
         const response = await axios.get(get_channel_list, {
           params: {
-            MyUserId: MyUserId, //ログイン中のID
+            MyUserId: MyUserId, // ログイン中のID
           },
         });
+
         if (response) {
           console.log(JSON.stringify(response, null, 2));
-          setResponseChannelListData(response.data);
-          // follow_statusが「相互フォローしています」の相手はfollow_item_1に入れる
-          const follow_item_1 = response.data.filter(item => item.follow_status === '相互フォローしています');
-          setFollowStatus_1(follow_item_1);
-          setFollowStatusCount_1(follow_item_1.length);
-          // follow_statusが「相互フォローしています」の相手はfollow_item_2に入れる
-          const follow_item_2 = response.data.filter(item => item.follow_status === 'フォローしています');
-          setFollowStatus_2(follow_item_2);
-          setFollowStatusCount_2(follow_item_2.length);
-          // follow_statusが「相互フォローしています」の相手はfollow_item_3に入れる
-          const follow_item_3 = response.data.filter(item => item.follow_status === 'フォローされています');
-          setFollowStatus_3(follow_item_3);
-          setFollowStatusCount_3(follow_item_3.length);
+          const data = response.data;
+          setResponseChannelListData(data);
 
+          // フォロー状態の処理をまとめる
+          handleFollowStatus(data, '相互フォローしています', setFollowStatus_1, setFollowStatusCount_1);
+          handleFollowStatus(data, 'フォローしています', setFollowStatus_2, setFollowStatusCount_2);
+          handleFollowStatus(data, 'フォローされています', setFollowStatus_3, setFollowStatusCount_3);
         }
       } catch (err) {
         console.log("err:", err);
         alert("フォロワーがいません");
       }
     }
+
+    // フォロー状態の処理を関数化
+    function handleFollowStatus(data, status, setFollowStatus, setFollowStatusCount) {
+      const filteredItems = data.filter(item => item.follow_status === status);
+      setFollowStatus(filteredItems);
+      setFollowStatusCount(filteredItems.length);
+    }
+
+    // セッションデータと状態更新をまとめる関数
+    function updateChatViewData(item) {
+      const sessionData = {
+        ChatOpenId: item.id || "",
+        ChatOpenUserName: item.user_name || "",
+        ChatOpenCompanyName: item.company_name || "",
+        ChatOpenIcon: item.icon || "",
+        ChatOpenFollowStatus: item.follow_status || ""
+      };
+
+      Object.keys(sessionData).forEach(key => {
+        updateSessionData("accountData", key, sessionData[key]);
+      });
+
+      setChatViewId(sessionData.ChatOpenId);
+      setChatViewUserName(sessionData.ChatOpenUserName);
+      setChatViewCompanyName(sessionData.ChatOpenCompanyName);
+      setChatViewIcon(sessionData.ChatOpenIcon);
+      setChatViewFollowStatus(sessionData.ChatOpenFollowStatus);
+    }
+
     // DBからデータを取得
     if (MyUserId) {
       GetData();
     }
-    // ResponseChannelListDataが存在しているか確認
-    if (ResponseChannelListData && ResponseChannelListData.length > 0) {
 
-      ResponseChannelListData.forEach((item) => {
-        if (item.user_name === ParamsuserName) {
-            // element.idが存在するときのみ実行
-            if (item.id) {
-              updateSessionData("accountData", "ChatOpenId", item.id);
-              setChatViewId(item.id);
-            }
-            if (item.user_name) {
-              updateSessionData("accountData", "ChatOpenUserName", item.user_name);
-              setChatViewUserName(item.user_name);
-            }
-            if (item.company_name) {
-              updateSessionData("accountData", "ChatOpenCompanyName", item.company_name);
-              setChatViewCompanyName(item.company_name);
-            }
-            if (item.icon) {
-              updateSessionData("accountData", "ChatOpenIcon", item.icon);
-              setChatViewIcon(item.icon);
-            } else {
-              updateSessionData("accountData", "ChatOpenIcon", "");
-            }
-            if (item.follow_status) {
-              updateSessionData("accountData", "ChatOpenFollowStatus", item.follow_status);
-              setChatViewFollowStatus(item.follow_status);
-            }
-        } else {
-          // 見つからない場合、404ページにリダイレクト
-          location.href = "/404";
-        }
-      });
+    // ResponseChannelListDataが存在している場合のみ処理
+    if (ResponseChannelListData && ResponseChannelListData.length > 0) {
+      const matchedItem = ResponseChannelListData.find(item => item.user_name === ParamsuserName);
+
+      if (matchedItem) {
+        updateChatViewData(matchedItem);
+      } else {
+        // 見つからない場合、404ページにリダイレクト
+        location.href = "/404";
+      }
     }
   }, [ResponseChannelListData]);
 
@@ -480,6 +497,7 @@ const ChatView = () => {
   useEffect(() => {
     updateSessionData("accountData", "GetStartUnread", 0);
     updateSessionData("accountData", "Commit", false);
+    restoreScrollPosition();
   }, []);
 
   /// 1回のみ実行(1秒単位でデータを取得)
@@ -773,6 +791,21 @@ const ChatView = () => {
     };
   };
 
+   // フォローリストのスクロール位置をセッションストレージに保存する関数
+   const saveScrollPosition = () => {
+    updateSessionData("accountData", "ListBoxscroll", ListBoxscroll.current.scrollTop);
+  };
+
+  // セッションストレージを使い、フォローリストのスクロールの高さを調整
+  const restoreScrollPosition = () => {
+    const ListBoxscrollPosition = getSessionData("accountData").ListBoxscroll;
+    if (ListBoxscrollPosition) {
+      setTimeout(() => {
+        ListBoxscroll.current.scrollTop = parseInt(ListBoxscrollPosition, 10);
+      }, 1000); // 0ミリ秒遅延させてスクロール位置を設定
+    }
+  };
+
   // onChange={chatEditChange}で実行
   const chatEditChange = (e) => {
     const newValue = e.target.value;
@@ -850,6 +883,7 @@ const ChatView = () => {
       display: 'flex'
       }}>
     <List
+      ref={ListBoxscroll}
       sx={(theme) => ({
         width: 360,
         height: '80%',
@@ -881,6 +915,7 @@ const ChatView = () => {
         handleClick={groupinghandleClick_1}
         chatViewId={chatViewId}
         chatOpen={ChatOpen}
+        saveScrollPosition={saveScrollPosition}
       />
 
       <FollowGroup
@@ -891,6 +926,7 @@ const ChatView = () => {
         handleClick={groupinghandleClick_2}
         chatViewId={chatViewId}
         chatOpen={ChatOpen}
+        saveScrollPosition={saveScrollPosition}
       />
 
       <FollowGroup
@@ -901,6 +937,7 @@ const ChatView = () => {
         handleClick={groupinghandleClick_3}
         chatViewId={chatViewId}
         chatOpen={ChatOpen}
+        saveScrollPosition={saveScrollPosition}
       />
 
 
@@ -1012,14 +1049,23 @@ const ChatView = () => {
           <>
             {/* 時間 */}
             <Typography
-              display="flex"
-              justifyContent={element.send_user_id === MyUserId ? 'flex-end' : 'flex-start'}
-              variant="caption"
-              component="div"
-              sx={{
-                margin:'5px 15px 0 65px'
-                }}>
+            display="flex"
+            justifyContent={element.send_user_id === MyUserId ? 'flex-end' : 'flex-start'}
+            alignItems="center"  // アイコンとテキストを中央揃え
+            variant="caption"
+            component="div"
+            sx={{
+              margin: '5px 15px 0 55px',
+            }}
+            >
               {GetTime(element.send_datetime)}
+              {(element.send_user_id === MyUserId && element.edit_flag === 1)?(
+                <>
+                  <CircleIcon sx={{ fontSize: '0.4rem', marginLeft: '5px' }} />
+                  <span style={{ marginLeft: '5px' }}>編集済み</span> {/* 文字列を追加 */}
+                </>
+              ):(
+                null)}
             </Typography>
 
             <Box
@@ -1032,13 +1078,23 @@ const ChatView = () => {
             >
               {/* アイコン (相手のメッセージのみ) */}
               {(element.send_user_id !== MyUserId)?(
-              <img src={avatarSrc}
-              style={{
-                width: '40px',
-                height: '40px',
-                margin: '0 10px',
-                borderRadius: '50%' }}
-              />
+              <Tooltip title={
+                (chatViewCompanyName ?
+                  chatViewCompanyName :
+                 chatViewUserName) + "さんのマイページ"}>
+                <Link
+                  to={`/Profile/${chatViewUserName}`}
+                >
+                  <img src={avatarSrc}
+
+                  style={{
+                    width: '40px',
+                    height: '40px',
+                    margin: '0 5px',
+                    borderRadius: '50%' }}
+                  />
+                </Link>
+              </Tooltip>
               ):(null)}
               {/* 既読マーク (自分のメッセージのみ) */}
               {(element.send_user_id === MyUserId && element.check_read === '既読')?(
@@ -1234,6 +1290,7 @@ FollowGroup.propTypes = {
   handleClick: PropTypes.func.isRequired,
   chatViewId: PropTypes.object.isRequired,
   chatOpen: PropTypes.func.isRequired,
+  saveScrollPosition: PropTypes.func.isRequired,
 };
 UnreadStart.propTypes = {
 };

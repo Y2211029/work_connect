@@ -167,7 +167,7 @@ SortableItem.propTypes = {
 // 画像アップロード機能を提供するコンポーネント
 const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
   const [activeId, setActiveId] = useState(null); // ドラッグ中のアイテムIDを管理
-  const fileInputRef = useRef<HTMLInputElement>(null); // ファイルインプットの参照を保持
+  const fileInputRef = useRef(null); // ファイルインプットの参照を保持
   // AllItemsContextから状態を取得
   const { workImage, setWorkImage } = useContext(WorkImageContext);
 
@@ -228,18 +228,30 @@ const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
     event.preventDefault(); // デフォルトの動作を防止
     event.stopPropagation(); // イベントのバブリングを防止
 
-    console.log("id",id);
-
-    // DataTransferオブジェクトを利用
-    const dt = new DataTransfer();
-    dt.setData("text/plain", id); // 削除するアイテムのIDを設定
+    console.log("id", id);
 
     // アイテムを削除するロジック
     setWorkImage((workImage) => {
-      const updateId =id.split('.');
-      const updatedItems = workImage.filter((workImage) => workImage.name !== updateId);
-      onImagesUploaded(updatedItems);
-      return updatedItems;
+      const updateId = id.split(".");
+      console.log("updateId", updateId[0]);
+
+      // const updatedItems = workImage.filter(
+      //   (workImage) => workImage.name !== updateId
+      // );
+      const dt = new DataTransfer();
+      const workImageArray = Array.from(workImage);
+      console.log("workImageArray", workImageArray[0].name.split(".")[0]);
+      // 10/25追加
+      workImageArray.forEach((file) => {
+        if (file.name.split(".")[0] !== updateId) {
+          dt.items.add(file);
+        }
+      });
+      fileInputRef.current.files = dt.files; // input内のFileListを更新
+      console.log("fileInputRef.current.files", fileInputRef.current.files);
+
+      onImagesUploaded(dt.files);
+      return dt.files;
     });
 
     // 10/21追加
@@ -274,26 +286,36 @@ const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
   };
 
   // ドラッグ開始のハンドラ
-  const handleDragStart = (event) => {
-    setActiveId(event.active.id); // ドラッグ中のアイテムIDを保存
+  const handleDragStart = (event, id) => {
+    event.dataTransfer.setData("text/plain", id); // ドラッグしたアイテムのIDを保存
+    setActiveId(id); // ドラッグ中のアイテムIDを保存
   };
 
   // ドラッグ終了のハンドラ
-  const handleDragEnd = (event) => {
+  const handleDragEnd = (event, targetId) => {
+    event.preventDefault();
+    const draggedId = event.dataTransfer.getData("text/plain"); // ドラッグされたアイテムのIDを取得
     const { active, over } = event;
     setActiveId(null); // ドラッグ中のIDをリセット
 
     // ドラッグ先のアイテムが異なる場合にのみ順序を変更
-    if (active.id !== over.id) {
-      setWorkImage((workImage) => {
-        const oldIndex = workImage.findIndex((item) => item.id === active.id);
-        const newIndex = workImage.findIndex((item) => item.id === over.id);
-        const updatedItems = arrayMove(workImage, oldIndex, newIndex); // アイテムを並べ替え
+    // 10/25追加
+    if (draggedId !== targetId) {
+      setWorkImage((prevWorkImage) => {
+        const oldIndex = prevWorkImage.findIndex(
+          (item) => item.id === draggedId
+        );
+        const newIndex = prevWorkImage.findIndex(
+          (item) => item.id === targetId
+        );
+        const updatedItems = arrayMove(prevWorkImage, oldIndex, newIndex); // アイテムを並べ替え
         onImagesUploaded(updatedItems); // 親コンポーネントに更新を通知
         return updatedItems;
       });
-
-      // 10/21追加
+    }
+    // ドラッグ先のアイテムが異なる場合にのみ順序を変更
+    // 10/21追加
+    if (active.id !== over.id) {
       setItems((items) => {
         const oldIndex = items.findIndex((item) => item.id === active.id);
         const newIndex = items.findIndex((item) => item.id === over.id);

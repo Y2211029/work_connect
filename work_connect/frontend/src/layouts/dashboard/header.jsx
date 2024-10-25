@@ -261,31 +261,13 @@ export default function Header({ onOpenNav }) {
             </Stack>
           </>
         ) : null}
-
-        {/* TopPageList-view.jsxに移動しました。藤田2024/09/30 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓*/}
-        {/* <Button id="LoginButton" onClick={handleChange} style={{ display: Display.HomePage === "" ? "none" : "block" }}>
-          ログイン
-        </Button>
-
-        <Button id="PreSignButton" onClick={handleChange} style={{ display: Display.HomePage === "" ? "none" : "block" }}>
-          新規登録
-        </Button>
-
-        {ModalChange === "学生" ? (
-          <StudentLoginModal callSetModalChange={callSetModalChange} />
-        ) : ModalChange === "企業" ? (
-          <CompanyLoginModal callSetModalChange={callSetModalChange} />
-        ) : null}
-
-        {PreModalChange === "学生" ? (
-          <StudentPreSignModal callSetPreModalChange={callSetPreModalChange} />
-        ) : PreModalChange === "企業" ? (
-          <CompanyPreSignModal callSetPreModalChange={callSetPreModalChange} />
-        ) : null} */}
-        {/* TopPageList-view.jsxに移動しました。藤田2024/09/30 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑*/}
-
         <ChatPng />
-        <NotificationsPopover />
+        {login_state == true && (
+          <>
+            <NotificationsPopover />
+          </>
+        )
+        }
         <AccountPopover />
       </Stack>
     </>

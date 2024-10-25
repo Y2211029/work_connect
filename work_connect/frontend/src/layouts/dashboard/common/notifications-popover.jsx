@@ -1,16 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import PropTypes from "prop-types";
-// import { set } from "date-fns";
-// import { set, sub } from "date-fns";
-// import { faker } from "@faker-js/faker";
 
 import List from "@mui/material/List";
 import Badge from "@mui/material/Badge";
-// import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
-// import Tooltip from "@mui/material/Tooltip";
 import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
@@ -22,19 +18,15 @@ import Box from "@mui/material/Box";
 
 import { MyContext } from "..";
 import { fToNow } from "../../../utils/format-time";
-
 import Iconify from "../../../components/iconify";
 import Scrollbar from "../../../components/scrollbar/scrollbar";
 
-import axios from "axios";
-
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
-
 import { WebScokectContext } from "src/layouts/dashboard/index";
 
 // ----------------------------------------------------------------------
 
-// var noticeDeleteFlg = true;
+
 
 export default function NotificationsPopover() {
   // 通知をクリックしたときに適したページに飛ばす用
@@ -56,9 +48,10 @@ export default function NotificationsPopover() {
   const [NoticeSelectMode, setNoticeSelectMode] = useState(false);
 
   // 未読の件数を取得
-  const totalUnRead = notifications.filter(
-    (item) => item.isUnRead === true
-  ).length;
+  const [TotalUnRead, setTotalUnRead] = useState(0);
+
+  // すべての通知の件数
+  const [TotalNotifications, setTotalNotifications] = useState(0);
 
   // 通知モーダルを開く用
   const [open, setOpen] = useState(null);
@@ -66,6 +59,10 @@ export default function NotificationsPopover() {
   // websocket通信のデータ保存先
   const notificationContext = useContext(WebScokectContext);
 
+  const [NoticeArray, setNoticeArray] = useState([]);
+
+  const [DeleteNotice, setDeleteNotice] = useState([]);
+  const [NoticeOpenFlg, setNoticeOpenFlg] = useState(false);
 
   // 通知モーダルを開いたときに動く
   const handleOpen = (event) => {
@@ -99,231 +96,33 @@ export default function NotificationsPopover() {
   const handleMarkAllAsRead = () => {
     // console.log("handleMarkAllAsRead!!!");
 
-    setNotifications(
-      notifications.map((notification) => ({
+    setNoticeArray(
+      NoticeArray.map((notification) => ({
         ...notification,
-        isUnRead: false,
-      }))
-    );
-    setNOTIFICATIONS(
-      NOTIFICATIONS.map((notification) => ({
-        ...notification,
-        isUnRead: false,
+        already_read: 1,
       }))
     );
 
     noticeAlreadyReadFunction();
   };
 
-  // Laravalから取得した通知を一時保存しておく用
-  const [NoticeArray, setNoticeArray] = useState([]);
-  // const [NoticeId, setNoticeId] = useState([]);
-  // const [ResponseData, setResponseData] = useState([]);
-
-  // Laravelから通知データを取得し、NoticeArrayにセットする
-  async function noticeListFunction() {
-    // console.log("NoticeIdNoticeIdNoticeIdNoticeId: ", NoticeId);
-    try {
-      // 通知一覧データを取得する用URL
-      const url = "http://localhost:8000/get_notice";
-
-      // ログインしているアカウントの情報を取得
-      const accountData = getSessionData("accountData");
-
-      // console.log("accountData: ", accountData);
-      // Laravel側か通知一覧データを取得
-      const response = await axios.get(url, {
-        params: {
-          myId: accountData.id,
-        },
-      });
-
-      var noticeData = [];
-
-      noticeData = response.data.filter((value) => {
-        return !DeleteNotice.includes(value.id);
-      });
-
-      // console.log("!DeleteNotice.includes(value.id):noticeData: ", noticeData);
-
-      setNoticeArray(noticeData);
-      // if (noticeDeleteFlg) {
-      //   setNoticeArray(noticeData);
-      // } else {
-      //   noticeDeleteFlg = true;
-      // }
-    } catch (err) {
-      console.log("err:", err);
-    }
-  }
-
-  useEffect(() => {
-    noticeListFunction();
-  }, []);
-
-  // 通知監視用
-  useEffect(() => {
-    let noticeContextDataObject = {};
-    noticeContextDataObject = notificationContext.WebSocketState.notification.noticeData;
-
-    console.log("noticeContextDataObject", noticeContextDataObject);
-
-    if (noticeContextDataObject != undefined) {
-      if (NoticeArray == undefined) {
-        console.log("setNoticeArray(noticeContextDataObject) : undefined");
-        setNoticeArray(noticeContextDataObject);
-      } else {
-        console.log("setNoticeArray(noticeContextDataObject) : ", noticeContextDataObject);
-        setNoticeArray((prevItems) => {
-          return [...prevItems, noticeContextDataObject];  // スプレッド構文で配列を展開して追加
-        });
-      }
-    }
-
-  }, [notificationContext.WebSocketState.notification.noticeData]);
-
-  // useEffect(() => {
-  //   console.log("NoticeArray", NoticeArray);
-
-  // }, [NoticeArray])
-  // Laravelから取得した通知データをもとに表示に適した形に変換する
-  useEffect(() => {
-    console.log("NoticeArray", NoticeArray);
-    // console.log("useEffect[NoticeArray]:NoticeId:", NoticeId);
-    // console.log("NoticeArray:", NoticeArray);
-
-    var noticeData = [];
-
-    NoticeArray.map((value) => {
-      const id = value.id;
-      const title = value.category;
-
-      var description = value.detail;
-      if (value.category == "フォロー") {
-        if (value.detail == "相互フォロー") {
-          if (value.send_user_id[0] == "S") {
-            description =
-              value.student_name +
-              value.student_surname +
-              "さんと相互フォローになりました";
-          } else if (value.send_user_id[0] == "C") {
-            description = value.company_name + "と相互フォローになりました";
-          }
-        } else if (value.detail == "") {
-          if (value.send_user_id[0] == "S") {
-            description =
-              value.student_name +
-              value.student_surname +
-              "さんにフォローされました";
-          } else if (value.send_user_id[0] == "C") {
-            description = value.company_name + "にフォローされました";
-          }
-        }
-      } else if (value.category == "作品") {
-        description = value.student_name +
-          value.student_surname +
-          "さんが作品を投稿しました";
-      } else if (value.category == "動画") {
-        description = value.student_name +
-          value.student_surname +
-          "さんが動画を投稿しました";
-      }
-      const avatar = `http://localhost:8000/storage/images/userIcon/${value.icon}`; // ここにアイコンのURLを入れる
-      const type = "friend_interactive";
-      const createdAt = value.created_at;
-      // const createdAt = set(new Date(), { hours: 10, minutes: 30 });
-      // const isUnRead = value.already_read;
-      var isUnRead = true;
-      if (value.already_read == 1) {
-        isUnRead = false;
-      }
-
-      var selectCheckBox = false;
-      const findNotice = NOTIFICATIONS.find(
-        (NOTIFICATIONS) => NOTIFICATIONS.id === value.id
-      );
-      if (findNotice != undefined) {
-        if (findNotice.selectCheckBox) {
-          selectCheckBox = true;
-        }
-      }
-
-      const userName = value.user_name;
-      const detail = value.detail;
-      console.log("detail", detail)
-
-      const oneNoticeData = {
-        id: id,
-        title: title,
-        description: description,
-        avatar: avatar,
-        type: type,
-        createdAt: createdAt,
-        isUnRead: isUnRead,
-        selectCheckBox: selectCheckBox,
-        userName: userName,
-        detail: detail,
-      };
-      noticeData.push(oneNoticeData);
-    });
-
-    // if (noticeDeleteFlg) {
-    setNOTIFICATIONS(noticeData);
-    // }
-  }, [NoticeArray]);
-
-  // 表示するのに適した形になった通知データを表示用配列にセット
-  useEffect(() => {
-    console.log("NOTIFICATIONS: ", NOTIFICATIONS);
-    setNotifications(NOTIFICATIONS);
-  }, [NOTIFICATIONS]);
-  useEffect(() => {
-    console.log("Notifications: ", notifications);
-  }, [notifications]);
-
-  // 通知モーダルが閉じられたときに未読の通知をすべて既読状態にする
-  useEffect(() => {
-    // console.log("open!!!");
-    if (!open) {
-      handleMarkAllAsRead();
-    }
-  }, [open]);
-
-  const [DeleteNotice, setDeleteNotice] = useState([]);
-
-  useEffect(() => {
-    console.log("DeleteNotice: ", DeleteNotice);
-    console.log("DeleteNotice:NOTIFICATIONS ", NOTIFICATIONS);
-    console.log("DeleteNoticeaaaaaaaaaaaaaaa: ", NOTIFICATIONS.filter((value) => {
-      return !DeleteNotice.includes(value.id);
-    }));
-
-    // console.log("notifications: ", notifications);
-    setNOTIFICATIONS(NOTIFICATIONS.filter((value) => {
-      return !DeleteNotice.includes(value.id);
-    }));
-    // console.log("test: ", test);
-  }, [DeleteNotice]);
-
   // 削除ボタンを押した通知を削除する
   const deleteSingleNotice = async (e) => {
-    // console.log("delete!! ", e.target.dataset.notice);
-    // noticeDeleteFlg = false;
     try {
-      const noticeId = e.target.dataset.notice;
+      const noticeId = Number(e.target.dataset.notice);
+      console.log("noticeId", noticeId);
 
-      // setNOTIFICATIONS(NOTIFICATIONS.filter((value) => value.id != noticeId));
-      // setNotifications(notifications.filter((value) => value.id != noticeId));
       setDeleteNotice((prevNoticeId) => [...prevNoticeId, noticeId]);
 
       // 通知削除用URL
       const url = "http://localhost:8000/post_notice_delete";
 
-      // console.log("accountData: ", accountData);
       // Laravel側か通知一覧データを取得
       await axios.post(url, {
         noticeId: noticeId,
       });
+
+
     } catch (err) {
       console.log("err:", err);
     }
@@ -331,31 +130,27 @@ export default function NotificationsPopover() {
 
   // 選択状態の通知を削除する
   const deleteSelectNotice = async () => {
-    // console.log("delete!! ", e.target.dataset.notice);
-    // noticeDeleteFlg = false;
     try {
       const selectNoticeArray = NOTIFICATIONS.filter(
         (value) => value.selectCheckBox == true
       );
-      const noticeIdArray = [];
-      selectNoticeArray.map((value) => {
-        noticeIdArray.push(value.id);
-      });
+      const noticeIdArray = selectNoticeArray.map((value) => value.id);
 
-      noticeIdArray.map((noticeId) => {
-        // setNOTIFICATIONS(NOTIFICATIONS.filter((value) => value.id != noticeId));
-        // setNotifications(notifications.filter((value) => value.id != noticeId));
-        setDeleteNotice((prevNoticeId) => [...prevNoticeId, noticeId]);
-      });
+      console.log("noticeIdArray", noticeIdArray);
+
+      setDeleteNotice((prevNoticeId) => [
+        ...prevNoticeId,
+        ...noticeIdArray.map(Number),
+      ]);
 
       // 通知削除用URL
       const url = "http://localhost:8000/post_select_notice_delete";
 
-      // console.log("accountData: ", accountData);
       // Laravel側か通知一覧データを取得
       await axios.post(url, {
         noticeIdArray: noticeIdArray,
       });
+
     } catch (err) {
       console.log("err:", err);
     }
@@ -363,7 +158,6 @@ export default function NotificationsPopover() {
 
   // 通知を複数選択可能/不可能状態にする
   const startNoticeSelectMode = () => {
-    // console.log("startNoticeSelectMode!!!!!!");
     if (NoticeSelectMode) {
       setNoticeSelectMode(false);
     } else {
@@ -371,18 +165,26 @@ export default function NotificationsPopover() {
     }
   };
 
+
+  const allNoticeSelect = () => {
+    setNOTIFICATIONS(
+      NOTIFICATIONS.map((notification) => ({
+        ...notification,
+        selectCheckBox: true,
+      }))
+    );
+  };
+
+
+
   // 1つの通知をクリックしたときにその通知を選択状態にする
   const clickOneNotice = (e) => {
-    // console.log("clickOneNotice!!!!", clickElement);
-    console.log("e.target", e.target);
     if (!e.target.classList.contains("deleteSingleNoticeButton")) {
-      // console.log("通知をクリックしました");
       if (NoticeSelectMode) {
         const haveNoticeIdElement = e.target.closest("[data-notice_id]");
         if (haveNoticeIdElement != null) {
           // 通知ID
           const noticeId = haveNoticeIdElement.dataset.notice_id;
-          // console.log("selectNotice: ", selectNotice);
           const noticeItemArray = [];
           NOTIFICATIONS.forEach((item) => {
             if (item.id == noticeId) {
@@ -391,7 +193,6 @@ export default function NotificationsPopover() {
               } else {
                 noticeItemArray.push({ ...item, selectCheckBox: true });
               }
-              // console.log("item.id == noticeId!!!!!!!");
             } else {
               noticeItemArray.push(item);
             }
@@ -420,8 +221,6 @@ export default function NotificationsPopover() {
             navigate(`/Profile/${userName}?page=mypage`);
             setOpen(null);
           } else if (clickTitle === "動画") {
-            console.log("clickTitle", clickTitle)
-            console.log("clickTitle'NOTIFICATIONS", NOTIFICATIONS)
             // 通知の中でもdata-notice_idが含まれる要素を代入
             const haveNoticeIdElement = e.target.closest("[data-notice_id]");
             // そしてクリックしたnotice_idが代入
@@ -431,7 +230,6 @@ export default function NotificationsPopover() {
               movieId = value.detail;
             });
 
-            console.log("clickTitle'movieId", movieId)
             navigate(`/VideoDetail/${movieId}`);
             setOpen(null);
 
@@ -507,6 +305,197 @@ export default function NotificationsPopover() {
     );
   }
 
+
+  // Laravelから通知データを取得し、NoticeArrayにセットする
+  async function noticeListFunction() {
+    console.log("noticeListFunction");
+    try {
+      // 通知一覧データを取得する用URL
+      const url = "http://localhost:8000/get_notice";
+
+      // ログインしているアカウントの情報を取得
+      const accountData = getSessionData("accountData");
+      console.log("noticeListFunction:accountData", accountData);
+
+      // Laravel側か通知一覧データを取得
+      const response = await axios.get(url, {
+        params: {
+          myId: accountData.id,
+        },
+      });
+
+      var noticeData = [];
+
+      noticeData = response.data.filter((value) => {
+        return !DeleteNotice.includes(value.id);
+      });
+
+      console.log("noticeListFunction:noticeData", noticeData);
+
+      setNoticeArray(noticeData);
+    } catch (err) {
+      console.log("err:", err);
+    }
+  }
+
+  useEffect(() => {
+    noticeListFunction();
+  }, []);
+
+  // 通知監視用
+  useEffect(() => {
+    let noticeContextDataObject = {};
+    noticeContextDataObject = notificationContext.WebSocketState.notification.noticeData;
+
+    console.log("noticeContextDataObject", noticeContextDataObject);
+
+    if (noticeContextDataObject != undefined) {
+      if (NoticeArray == undefined) {
+        console.log("setNoticeArray(noticeContextDataObject) : undefined");
+        setNoticeArray(noticeContextDataObject);
+      } else {
+        console.log("setNoticeArray(noticeContextDataObject) : ", noticeContextDataObject);
+        setNoticeArray((prevItems) => {
+          return [...prevItems, noticeContextDataObject];  // スプレッド構文で配列を展開して追加
+        });
+      }
+    }
+
+  }, [notificationContext.WebSocketState.notification.noticeData]);
+
+
+  // Laravelから取得した通知データをもとに表示に適した形に変換する
+  useEffect(() => {
+    var noticeData = [];
+    NoticeArray.map((value) => {
+      const id = value.id;
+      const title = value.category;
+
+      var description = value.detail;
+      if (value.category == "フォロー") {
+        if (value.detail == "相互フォロー") {
+          if (value.send_user_id[0] == "S") {
+            description =
+              value.student_name +
+              value.student_surname +
+              "さんと相互フォローになりました";
+          } else if (value.send_user_id[0] == "C") {
+            description = value.company_name + "と相互フォローになりました";
+          }
+        } else if (value.detail == "") {
+          if (value.send_user_id[0] == "S") {
+            description =
+              value.student_name +
+              value.student_surname +
+              "さんにフォローされました";
+          } else if (value.send_user_id[0] == "C") {
+            description = value.company_name + "にフォローされました";
+          }
+        }
+      } else if (value.category == "作品") {
+        description = value.student_name +
+          value.student_surname +
+          "さんが作品を投稿しました";
+      } else if (value.category == "動画") {
+        description = value.student_name +
+          value.student_surname +
+          "さんが動画を投稿しました";
+      }
+      const avatar = `http://localhost:8000/storage/images/userIcon/${value.icon}`; // ここにアイコンのURLを入れる
+      const type = "friend_interactive";
+      const createdAt = value.created_at;
+
+      var isUnRead = true;
+      if (value.already_read == 1) {
+        isUnRead = false;
+      }
+
+      var selectCheckBox = false;
+      const findNotice = NOTIFICATIONS.find(
+        (NOTIFICATIONS) => NOTIFICATIONS.id === value.id
+      );
+      if (findNotice != undefined) {
+        if (findNotice.selectCheckBox) {
+          selectCheckBox = true;
+        }
+      }
+
+      const userName = value.user_name;
+      const detail = value.detail;
+      console.log("detail", detail)
+
+      const oneNoticeData = {
+        id: id,
+        title: title,
+        description: description,
+        avatar: avatar,
+        type: type,
+        createdAt: createdAt,
+        isUnRead: isUnRead,
+        selectCheckBox: selectCheckBox,
+        userName: userName,
+        detail: detail,
+      };
+      noticeData.push(oneNoticeData);
+    });
+
+    if (noticeData.length !== 0) {
+      setNOTIFICATIONS(noticeData);
+      console.log("空じゃないよ", NOTIFICATIONS);
+    } else {
+      setNOTIFICATIONS([]);
+      console.log("空や", NOTIFICATIONS);
+    }
+
+  }, [NoticeArray]);
+
+  // 表示するのに適した形になった通知データを表示用配列にセット
+  useEffect(() => {
+    if (NoticeArray.length !== 0) {
+      setNotifications(NOTIFICATIONS);
+    } else {
+      setNotifications([]);
+    }
+  }, [NOTIFICATIONS]);
+
+  useEffect(() => {
+    setTotalUnRead(NoticeArray.filter(
+      (item) => item.already_read === 0
+    ).length);
+    setTotalNotifications(notifications.length);
+  }, [notifications]);
+
+
+  // 通知モーダルが閉じられたときに未読の通知をすべて既読状態にする
+  useEffect(() => {
+    // console.log("NoticeOpenFlg",NoticeOpenFlg)
+    if (!open && NoticeOpenFlg) {
+      handleMarkAllAsRead();
+      setNoticeSelectMode(false);
+    } else {
+      setNoticeOpenFlg(true);
+      console.log("NoticeOpenFlg", NoticeOpenFlg)
+    }
+  }, [open]);
+
+  // 
+  useEffect(() => {
+    if (!NoticeSelectMode) {
+      setNOTIFICATIONS(NOTIFICATIONS.map((notification) => ({
+        ...notification,
+        selectCheckBox: false,
+      })));
+    }
+  }, [NoticeSelectMode]);
+
+  useEffect(() => {
+    setNoticeArray(NoticeArray.filter((value) => {
+      return !DeleteNotice.includes(value.id);
+    }));
+
+    setNoticeSelectMode(false);
+  }, [DeleteNotice]);
+
   return (
     <>
       <IconButton
@@ -514,7 +503,7 @@ export default function NotificationsPopover() {
         style={{ display: Display }}
         onClick={handleOpen}
       >
-        <Badge badgeContent={totalUnRead} color="error">
+        <Badge badgeContent={TotalUnRead} color="error">
           <Iconify width={24} icon="solar:bell-bing-bold-duotone" />
         </Badge>
       </IconButton>
@@ -551,27 +540,28 @@ export default function NotificationsPopover() {
               ""
             )}
             <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              未読： {totalUnRead} 件
+              未読： {TotalUnRead} 件
             </Typography>
             <button
               type="button"
               className="noticeSelectButton"
-              style={{ border: "0px" }}
+              style={{ border: "0px", display: TotalNotifications != 0 ? "block" : "none" }}
               onClick={startNoticeSelectMode}
             >
               選択
             </button>
-          </Box>
 
-          {/* {totalUnRead > 0 && (
-            <Tooltip title=" Mark all as read">
-              <IconButton color="primary" onClick={handleMarkAllAsRead}>
-                <Iconify icon="eva:done-all-fill" />
-              </IconButton>
-            </Tooltip>
-          )} */}
+            <button
+              type="button"
+              className="noticeSelectButton"
+              style={{ display: NoticeSelectMode == true ? "block" : "none" }}
+              onClick={allNoticeSelect}
+            >
+              すべて選択
+            </button>
+          </Box>
         </Box>
-        
+
         <Divider sx={{ borderStyle: "dashed" }} />
 
         <Scrollbar sx={{ height: { xs: 340, sm: "auto" } }}>
@@ -642,12 +632,6 @@ export default function NotificationsPopover() {
         </Scrollbar>
 
         <Divider sx={{ borderStyle: "dashed" }} />
-
-        {/* <Box sx={{ p: 1 }}>
-          <Button fullWidth disableRipple>
-            View All
-          </Button>
-        </Box> */}
       </Popover>
     </>
   );

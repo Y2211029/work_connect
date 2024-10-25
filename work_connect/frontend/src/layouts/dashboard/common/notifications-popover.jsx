@@ -392,14 +392,16 @@ export default function NotificationsPopover() {
             description = value.company_name + "にフォローされました";
           }
         }
-      } else if (value.category == "作品") {
+      } else if (value.category == "作品" || value.category == "動画") {
         description = value.student_name +
           value.student_surname +
-          "さんが作品を投稿しました";
-      } else if (value.category == "動画") {
-        description = value.student_name +
-          value.student_surname +
-          "さんが動画を投稿しました";
+          `さんが${value.category}を投稿しました`;
+      } else if (value.category == "インターンシップ"
+        || value.category == "説明会"
+        || value.category == "求人"
+        || value.category == "ブログ") {
+        description = value.company_name +
+          `が${value.category}を投稿しました`;
       }
       const avatar = `http://localhost:8000/storage/images/userIcon/${value.icon}`; // ここにアイコンのURLを入れる
       const type = "friend_interactive";

@@ -90,10 +90,9 @@ const Editor = () => {
   const [charCount, setCharCount] = useState(0);
   const [usedPlugins, setUsedPlugins] = useState(null);
   const [usedImages, setUsedImages] = useState(null);
-
   const news_save_url = "http://127.0.0.1:8000/news_save";
   const thumbnail_image_save_url = "http://127.0.0.1:8000/thumbnail_image_save";
-  const news_upload_url = "http://localhost:8000/news_upload";
+  
   const csrf_url = "http://localhost:8000/csrf-token";
   const navigate = useNavigate();
   const { genre } = useParams();
@@ -132,20 +131,27 @@ const Editor = () => {
       console.log("outputData", outputData);
       console.log("newsContent", newsContent);
 
-      const response = await axios.post(news_upload_url, {
-        company_id: sessionId, // 企業ID
-        news_id: news_id,     //ニュースid
-        title: textValue,     //ニュースタイトル
-        header_img: imageUrl, //ニュースサムネイル画像
-        value: outputData,  //ニュースの内容
-        message: newsContent, //採用担当者からの一言メッセージ
-        genre: genre
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': csrfToken,
+      // websocketサーバーに送信
+      const response = await axios.post(
+        "http://localhost:3000/news_upload",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          body: {
+            company_id: sessionId, // 企業ID
+            news_id: news_id,     //ニュースid
+            title: textValue,     //ニュースタイトル
+            header_img: imageUrl, //ニュースサムネイル画像
+            value: outputData,  //ニュースの内容
+            message: newsContent, //採用担当者からの一言メッセージ
+            genre: genre
+          },
         }
-      });
+      );
+
+
 
       console.log(response.data.id);
       setNewsId(response.data.id);
@@ -1141,7 +1147,7 @@ const Editor = () => {
   const header_img_show = (draft) => {
     if (draft.header_img === null) {
       return (
-        <ImageNotSupportedIcon fontSize="large"/>
+        <ImageNotSupportedIcon fontSize="large" />
       );
     } else {
       return <img src={draft.header_img} alt="Draft Image" />;
@@ -1154,7 +1160,7 @@ const Editor = () => {
 
     if (genre === "Blog") {
       NewsTitle = "ブログニュースの編集";
-    } else if (genre === "Internship") {
+    } else if (genre === "Internships") {
       NewsTitle = "インターンニュースの編集";
     } else if (genre === "JobOffer") {
       NewsTitle = "求人ニュースの編集";
@@ -1175,7 +1181,7 @@ const Editor = () => {
     { key: "releaseNews", icon: <CampaignIcon />, text: "ニュースを公開する" },
   ];
 
-  const additionalMenuItem = (genre === "Internship" || genre === "JobOffer" || genre === "Session") ? (
+  const additionalMenuItem = (genre === "Internships" || genre === "JobOffer" || genre === "Session") ? (
     { key: "createForm", icon: <DisplaySettingsIcon />, text: "応募フォームを作成する" }
   ) : null;
 
@@ -1277,26 +1283,26 @@ const Editor = () => {
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                              <TableRow>
-                                <TableCell style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                  <TooltipTitle title={draft.article_title}>
-                                    <p
-                                      className="draftlist"
-                                      onClick={() => rewrite_news(draft.id)}
-                                      style={{
-                                        cursor: 'pointer',
-                                        wordBreak: 'break-all',
-                                        whiteSpace: 'nowrap',
-                                        overflow: 'hidden',
-                                        textOverflow: 'ellipsis',
-                                        maxWidth: '200px', // 必要に応じて適切な最大幅を設定してください
-                                      }}
-                                    >
-                                      {draft.article_title}
-                                    </p>
-                                  </TooltipTitle>
-                                </TableCell>
-                              </TableRow>
+                            <TableRow>
+                              <TableCell style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <TooltipTitle title={draft.article_title}>
+                                  <p
+                                    className="draftlist"
+                                    onClick={() => rewrite_news(draft.id)}
+                                    style={{
+                                      cursor: 'pointer',
+                                      wordBreak: 'break-all',
+                                      whiteSpace: 'nowrap',
+                                      overflow: 'hidden',
+                                      textOverflow: 'ellipsis',
+                                      maxWidth: '200px', // 必要に応じて適切な最大幅を設定してください
+                                    }}
+                                  >
+                                    {draft.article_title}
+                                  </p>
+                                </TooltipTitle>
+                              </TableCell>
+                            </TableRow>
                           </TableBody>
                         </NewsMenuTable>
                       ))

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\w_follow;
 use App\Models\w_news;
+use App\Models\w_notice;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -242,12 +244,23 @@ class EditorController extends Controller
         $genre = $request->input('genre');
         $public_status = 1;
 
+        $notice_genre = "";
+
+        if ($genre == "internships") {
+            $notice_genre = "インターンシップ";
+        } else if ($genre == "sessions") {
+            $notice_genre = "説明会";
+        } else if ($genre == "joboffers") {
+            $notice_genre = "求人";
+        } else if ($genre == "blogs") {
+            $notice_genre = "ブログ";
+        }
+
+
         Log::info($header_img);
 
         $w_news = w_news::find($news_id);
-        if (!$w_news) {
-            return response()->json(['error' => 'Record not found'], 404);
-        } else {
+        if ($w_news) {
             $w_news->company_id = $company_id;
             $w_news->article_title = $article_title;
             $w_news->genre = $genre;
@@ -258,6 +271,69 @@ class EditorController extends Controller
             $w_news->created_at = $now;
             $w_news->updated_at = $now;
             $w_news->save();
+
+
+
+            // 投稿した人をフォローしている人のIDをすべて挙げる
+            $followData = [];
+            $followAllData = [];
+
+            $query = w_follow::query();
+            $query->select('w_follow.follow_sender_id');
+            $followData = $query->where("follow_recipient_id", $company_id)->get();
+
+            foreach ($followData as $follow) {
+                $followAllData[] = $follow["follow_sender_id"];
+            }
+
+            $oneNoticeData = [];
+            foreach ($followData as $follow) {
+                if ($oneNoticeData == []) {
+                    \Log::info($follow);
+
+                    $oneNoticeData = w_notice::create([
+                        'get_user_id' => $follow["follow_sender_id"],
+                        'send_user_id' => $company_id,
+                        'category' => $notice_genre,
+                        'detail' => $news_id,
+                        'already_read' => 0,
+                    ]);
+                    \Log::info("ID");
+                    \Log::info($news_id);
+                } else {
+                    w_notice::create([
+                        'get_user_id' => $follow["follow_sender_id"],
+                        'send_user_id' => $company_id,
+                        'category' => $notice_genre,
+                        'detail' => $news_id,
+                        'already_read' => 0,
+                    ]);
+                    \Log::info("ID");
+                    \Log::info($news_id);
+                }
+            }
+
+
+            // IDに通知を送る
+            $queryNotice = w_notice::query();
+
+            $queryNotice->select(
+                'w_companies.*',
+                'w_notices.*',
+            );
+
+            $queryNotice->where('w_notices.id', $oneNoticeData['id']);
+
+            $queryNotice->join('w_companies', 'w_companies.id', '=', 'w_notices.send_user_id');
+
+
+            $queryNotice->orderBy('w_notices.created_at', 'asc');
+
+            $noticeData = $queryNotice->get();
+
+            return response()->json(['message' => 'successfully', 'follower' => $followAllData, 'noticeData' => $noticeData], 200);
+        } else {
+            return response()->json(['error' => 'Record not found'], 404);
         }
     }
 
@@ -272,7 +348,7 @@ class EditorController extends Controller
                 ->get();
 
 
-        Log::info($newsDraftList);
+            Log::info($newsDraftList);
 
             return $newsDraftList;
         } catch (\Exception $e) {

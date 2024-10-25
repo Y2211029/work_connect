@@ -34,7 +34,7 @@ export default function DashboardLayout({ children }) {
   if (accountData == undefined) {
     accountData = {
       id: "029",
-    }
+    };
   }
 
   useEffect(() => {
@@ -72,12 +72,12 @@ export default function DashboardLayout({ children }) {
     setWorkImage,
   };
 
-
-
   // WebSocket接続
   useEffect(() => {
     if (accountData !== undefined) {
-      const newWs = new WebSocket(`ws://localhost:3000?userId=${accountData.id}`);
+      const newWs = new WebSocket(
+        `ws://localhost:3000?userId=${accountData.id}`
+      );
       newWs.onmessage = (event) => {
         const data = JSON.parse(event.data);
         console.log("index.js : data:", data);
@@ -123,27 +123,25 @@ export default function DashboardLayout({ children }) {
     setWebSocketState,
   };
 
-
   return (
     <>
       <MyContext.Provider value={pageStyles}>
         <AllItemsContext.Provider value={value1}>
           <WorkImageContext.Provider value={value3}>
-          <WebScokectContext.Provider value={value2}>
-            <Header onOpenNav={() => setOpenNav(true)} />
-            <Box
-              sx={{
-                minHeight: 1,
-                display: "flex",
-                flexDirection: { xs: "column", lg: "row" },
-              }}
-            >
-              <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} />
-              <Main>{children}</Main>
-            </Box>
+            <WebScokectContext.Provider value={value2}>
+              <Header onOpenNav={() => setOpenNav(true)} />
+              <Box
+                sx={{
+                  minHeight: 1,
+                  display: "flex",
+                  flexDirection: { xs: "column", lg: "row" },
+                }}
+              >
+                <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} />
+                <Main>{children}</Main>
+              </Box>
             </WebScokectContext.Provider>
           </WorkImageContext.Provider>
-
         </AllItemsContext.Provider>
       </MyContext.Provider>
     </>

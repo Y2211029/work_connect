@@ -46,7 +46,7 @@ export const InternshipJobOfferPage = lazy(() => import("src/pages/internshipJob
 export const EditorPage = lazy(() => import("src/pages/Editor/Editor"));
 
 //応募用フォームを編集・回答画面
-export const CreateFormPage = lazy(() => import("src/pages/CreateForm/form"));
+export const CreateFormPage = lazy(() => import("src/pages/CreateForm/CreateForm"));
 
 export const WriteFormPage = lazy(() => import("src/pages/WriteForm/WriteForm"));
 

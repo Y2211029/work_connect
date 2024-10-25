@@ -107,16 +107,16 @@ const PostCard = forwardRef(({ post },) => {
 
   const FormOpen = (user) => {
     if (user) {
-      updateSessionData("accountData", "ChatOpenId", user.wright_form_id);
+      updateSessionData("accountData", "ChatOpenId", user.write_form_id);
       updateSessionData("accountData", "ChatOpenUserName", user.user_name);
       updateSessionData("accountData", "ChatOpenCompanyName", user.company_name || "");
       updateSessionData("accountData", "ChatOpenIcon", user.icon || "");
       updateSessionData("accountData", "ChatOpenFollowStatus", user.follow_status || "");
 
-      const surveyData = transformFormFields(user.wright_form, user.user_name);
+      const surveyData = transformFormFields(user.write_form, user.user_name);
       const survey = new Model(surveyData);
 
-      console.log("survey",user.wright_form);
+      console.log("survey",user.write_form);
 
       // Survey モデルを状態に保存
       setSurveyModel(survey);
@@ -226,15 +226,15 @@ const PostCard = forwardRef(({ post },) => {
             <List component="div" disablePadding
               sx={{
                 pl: 4,
-                background: user_name.some(u => u.wright_form_id === accountData.ChatOpenId) ? '#cce5ff' : 'blue',
+                background: user_name.some(u => u.write_form_id === accountData.ChatOpenId) ? '#cce5ff' : 'blue',
                 '&:hover': {
-                  background: user_name.some(u => u.wright_form_id === accountData.ChatOpenId) ? '#cce5ff' : '#eee',
+                  background: user_name.some(u => u.write_form_id === accountData.ChatOpenId) ? '#cce5ff' : '#eee',
                 },
               }}
             >
               {user_name.map((user, index) => (
                 <Typography
-                  key={user.wright_form_id || index} // ユーザーIDまたはインデックスをキーにする
+                  key={user.write_form_id || index} // ユーザーIDまたはインデックスをキーにする
                   sx={{ fontWeight: 'bold', fontSize: '1.1rem', textAlign: "center" }}
                   onClick={() => FormOpen(user)}
                 >
@@ -264,7 +264,7 @@ PostCard.propTypes = {
     article_title: PropTypes.string,
     user_name: PropTypes.arrayOf( // 配列の定義に変更
       PropTypes.shape({
-        wright_form_id: PropTypes.number,
+        write_form_id: PropTypes.number,
         user_name: PropTypes.string,
         company_name: PropTypes.string,
         icon: PropTypes.string,
@@ -273,12 +273,12 @@ PostCard.propTypes = {
     ).isRequired,
   }).isRequired,
   user: PropTypes.shape({
-    wright_form_id: PropTypes.string,
+    write_form_id: PropTypes.string,
     user_name: PropTypes.string,
     company_name: PropTypes.string,
     icon: PropTypes.string,
     follow_status: PropTypes.bool,
-    wright_form: PropTypes.arrayOf(PropTypes.shape({
+    write_form: PropTypes.arrayOf(PropTypes.shape({
       type: PropTypes.string,
       name: PropTypes.string,
       title: PropTypes.string,

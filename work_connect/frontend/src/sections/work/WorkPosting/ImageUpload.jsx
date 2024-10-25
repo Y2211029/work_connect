@@ -167,14 +167,14 @@ SortableItem.propTypes = {
 // 画像アップロード機能を提供するコンポーネント
 const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
   const [activeId, setActiveId] = useState(null); // ドラッグ中のアイテムIDを管理
-  const fileInputRef = useRef(null); // ファイルインプットの参照を保持
+  const fileInputRef = useRef<HTMLInputElement>(null); // ファイルインプットの参照を保持
   // AllItemsContextから状態を取得
   const { workImage, setWorkImage } = useContext(WorkImageContext);
 
   // 10/21追加
   const [items, setItems] = useState([]); // 画像アイテムの状態管理
-  console.log(items);
-  
+  console.log("items", items);
+
   // 画像リストを初期化する関数
   const resetItems = () => {
     setWorkImage([]); // アイテムをリセット
@@ -208,7 +208,6 @@ const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
     //   return updatedItems;
     // });
 
-
     // 新しいアイテムを追加し、状態を更新
     /*
     10/21 未修整
@@ -217,11 +216,11 @@ const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
     setWorkImageにはFile型のみを入れる!!
     */
     setItems((prevItems) => {
+      // 配列型
       const updatedItems = [...prevItems, ...newItems];
       onImagesUploaded(updatedItems); // 親コンポーネントに通知
       return updatedItems;
     });
-
   };
 
   // アイテム削除の処理
@@ -229,13 +228,16 @@ const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
     event.preventDefault(); // デフォルトの動作を防止
     event.stopPropagation(); // イベントのバブリングを防止
 
+    console.log("id",id);
+
     // DataTransferオブジェクトを利用
     const dt = new DataTransfer();
     dt.setData("text/plain", id); // 削除するアイテムのIDを設定
 
     // アイテムを削除するロジック
     setWorkImage((workImage) => {
-      const updatedItems = workImage.filter((item) => item.id !== id);
+      const updateId =id.split('.');
+      const updatedItems = workImage.filter((workImage) => workImage.name !== updateId);
       onImagesUploaded(updatedItems);
       return updatedItems;
     });
@@ -334,7 +336,8 @@ const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
   };
 
   const activeItem =
-    workImage && workImage.find((item) => item.id === activeId); // ドラッグ中のアイテム
+    // workImage && workImage.find((item) => item.id === activeId); // ドラッグ中のアイテム
+    items.find((item) => item.id === activeId); // ドラッグ中のアイテム
 
   const overlayStyle = {
     width: "100%",
@@ -371,22 +374,24 @@ const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
         modifiers={[restrictToWindowEdges]} // ドラッグが画面内に制限されるようにする
       >
         <SortableContext
-          items={workImage && workImage.map((item) => item.id)} // 安全に配列を扱う
+          // items={workImage && workImage.map((item) => item.id)} // 安全に配列を扱う
+          items={items.map((item) => item.id)} // 安全に配列を扱う
           strategy={rectSortingStrategy}
         >
           <div style={{ gap: "10px" }}>
-            {workImage &&
-              workImage.map((item) => (
-                <SortableItem
-                  key={item.id}
-                  id={item.id}
-                  image={item.image}
-                  description={item.description}
-                  onDelete={handleDelete}
-                  onDescriptionChange={handleDescriptionChange}
-                  activeId={activeId}
-                />
-              ))}
+            {/* {workImage &&
+              workImage.map((item) => ( */}
+            {items.map((item) => (
+              <SortableItem
+                key={item.id}
+                id={item.id}
+                image={item.image}
+                description={item.description}
+                onDelete={handleDelete}
+                onDescriptionChange={handleDescriptionChange}
+                activeId={activeId}
+              />
+            ))}
           </div>
         </SortableContext>
         <DragOverlay>

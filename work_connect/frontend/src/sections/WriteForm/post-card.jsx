@@ -22,7 +22,7 @@ const PostCard = forwardRef(({ post }, ref) => {
     account_id: accountData.id,
   };
 
-  const wrightformsaveurl = `http://localhost:8000/write_form_save`;
+  const writeformsaveurl = `http://localhost:8000/write_form_save`;
 
   useEffect(() => {
     console.log("company_id", company_id);
@@ -109,7 +109,7 @@ const PostCard = forwardRef(({ post }, ref) => {
       console.log("ニュースID", news_id);
 
       // Axiosを使用してデータを保存する
-      axios.post(wrightformsaveurl, {
+      axios.post(writeformsaveurl, {
         FormData: formDefinitionWithResponses,
         NewsId: news_id,
         RecipientCompanyId: company_id,

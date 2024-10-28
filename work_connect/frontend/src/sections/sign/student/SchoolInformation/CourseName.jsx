@@ -47,7 +47,7 @@ const CourceName = () => {
         value={selectedCourceName}
         onChange={handleChange}
         options={options}
-        placeholder="Select..."
+        placeholder="▼"
       />
     </div>
   );

@@ -86,7 +86,7 @@ const Qualification = ({ QualificationData }) => {
         value={selectedQualification}
         onChange={handleChange}
         options={options}
-        placeholder="Select..."
+        placeholder="▼"
         isMulti
       />
     </>

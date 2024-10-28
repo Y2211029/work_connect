@@ -77,7 +77,7 @@ return (
             value={selectedDepartment}
             onChange={handleChange}
             options={options}
-            placeholder="Select..."
+            placeholder="▼"
             isClearable
         />
     </div>

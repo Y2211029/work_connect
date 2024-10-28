@@ -72,7 +72,7 @@ use App\Http\Controllers\search\SearchWorkController;
 use App\Http\Controllers\search\SearchVideoController;
 use App\Http\Controllers\search\SearchStudentController;
 use App\Http\Controllers\search\SearchCompanyController;
-use App\Http\Controllers\search\SearchInternshipJobOffer;
+use App\Http\Controllers\search\SearchInternshipJobOfferController;
 use App\Http\Controllers\profile\GetMypageController;
 use App\Http\Controllers\profile\PostMypageController;
 use App\Http\Controllers\profile\GetMypageKindController;
@@ -112,7 +112,7 @@ Route::get('/search_student', [SearchStudentController::class, 'SearchStudentCon
 // 企業検索
 Route::get('/search_company', [SearchCompanyController::class, 'SearchCompanyController']);
 // 求人・インターンシップ検索
-Route::get('/search_internship_job_offer', [SearchInternshipJobOffer::class, 'SearchInternshipJobOffer']);
+Route::get('/search_internship_job_offer', [SearchInternshipJobOfferController::class, 'SearchInternshipJobOfferController']);
 
 /* タグ関係 */
 // タグ作成

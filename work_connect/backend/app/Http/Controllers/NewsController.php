@@ -228,8 +228,8 @@ class NewsController extends Controller
     // 全ニュース取得
     public function all_news_get(Request $request, $id, $category)
     {
-        Log::info("all_news_get通ってます");
         try {
+            Log::info("all_news_get通ってます");
             $page = (int) $request->query('page', 1);
             $perPage = 20;
             $offset = ($page - 1) * $perPage;
@@ -281,7 +281,8 @@ class NewsController extends Controller
                     $post->follow_status = 'フォローする';
                 }
             }
-
+            Log::info("all_news_get:posts");
+            Log::info($posts);
             return response()->json($posts);
         } catch (\Exception $e) {
             Log::error('all_news_get エラー: ' . $e->getMessage());

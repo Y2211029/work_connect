@@ -206,9 +206,9 @@ export default function NotificationsPopover() {
           const noticeId = haveNoticeIdElement.dataset.notice_id;
           var clickTitle = "";
           NOTIFICATIONS.filter((value) => value.id == noticeId).map((value) => {
-            clickTitle = value.title;
+            clickTitle = value.category;
+            console.log("clickTitle1", value);
           });
-
           // カテゴリーごとに分けて、リンク先を変更する。・
           if (clickTitle === "フォロー") {
 
@@ -231,6 +231,24 @@ export default function NotificationsPopover() {
             });
 
             navigate(`/VideoDetail/${movieId}`);
+            setOpen(null);
+
+          } else if (clickTitle === "インターンシップ"
+            || clickTitle === "説明会"
+            || clickTitle === "求人"
+            || clickTitle === "ブログ"
+          ) {
+            console.log("clickTitle", clickTitle)
+            // 通知の中でもdata-notice_idが含まれる要素を代入
+            const haveNoticeIdElement = e.target.closest("[data-notice_id]");
+            // そしてクリックしたnotice_idが代入
+            const noticeId = haveNoticeIdElement.dataset.notice_id;
+            var newsId = "";
+            NOTIFICATIONS.filter((value) => value.id == noticeId).map((value) => {
+              newsId = value.detail;
+            });
+
+            navigate(`/news_detail/${newsId}`);
             setOpen(null);
 
           }
@@ -369,7 +387,7 @@ export default function NotificationsPopover() {
     var noticeData = [];
     NoticeArray.map((value) => {
       const id = value.id;
-      const title = value.category;
+      let title = value.category;
 
       var description = value.detail;
       if (value.category == "フォロー") {
@@ -392,14 +410,16 @@ export default function NotificationsPopover() {
             description = value.company_name + "にフォローされました";
           }
         }
-      } else if (value.category == "作品") {
+      } else if (value.category == "作品" || value.category == "動画") {
         description = value.student_name +
           value.student_surname +
-          "さんが作品を投稿しました";
-      } else if (value.category == "動画") {
-        description = value.student_name +
-          value.student_surname +
-          "さんが動画を投稿しました";
+          `さんが${value.category}を投稿しました`;
+      } else if (value.category == "インターンシップ"
+        || value.category == "説明会"
+        || value.category == "求人"
+        || value.category == "ブログ") {
+        description = value.message;
+        title = value.company_name + "の" + value.category;
       }
       const avatar = `http://localhost:8000/storage/images/userIcon/${value.icon}`; // ここにアイコンのURLを入れる
       const type = "friend_interactive";
@@ -422,7 +442,8 @@ export default function NotificationsPopover() {
 
       const userName = value.user_name;
       const detail = value.detail;
-      console.log("detail", detail)
+      const category = value.category;
+      console.log("category", category)
 
       const oneNoticeData = {
         id: id,
@@ -435,6 +456,7 @@ export default function NotificationsPopover() {
         selectCheckBox: selectCheckBox,
         userName: userName,
         detail: detail,
+        category: category,
       };
       noticeData.push(oneNoticeData);
     });

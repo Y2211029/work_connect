@@ -89,7 +89,7 @@ export default function DashboardLayout({ children }) {
               notification: data,
               websocketFollowStatus: data.followData,
             }));
-          } else if(data.type === "videoPosting") {
+          } else if (data.type === "videoPosting" || data.type === "newsPosting") {
             console.log("index.js : data:", data);
             setWebSocketState((prev) => ({
               ...prev,

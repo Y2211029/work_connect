@@ -11,7 +11,7 @@ const StyledH3 = styled.h3`
 
 const Logo = () => (
   <StyledH3>
-    <Link to="/">
+    <Link to="/" style={{ textDecoration: "none" }}>
       <span style={{ color: "#4285f4" }}>W</span>ork&<span style={{ color: "#4285f4" }}>C</span>
       onnect
     </Link>

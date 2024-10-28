@@ -66,24 +66,24 @@ export default function Searchbar() {
   useEffect(() => {
     const handleMouseOver = (event) => {
       if (areaRef.current && areaRef.current.contains(event.target)) {
-        document.body.classList.add('disable-scroll');
+        document.body.classList.add("disable-scroll");
       } else {
-        document.body.classList.remove('disable-scroll');
+        document.body.classList.remove("disable-scroll");
       }
     };
 
-    document.addEventListener('mouseover', handleMouseOver);
+    document.addEventListener("mouseover", handleMouseOver);
 
     return () => {
-      document.removeEventListener('mouseover', handleMouseOver);
-      document.body.classList.remove('disable-scroll'); // クリーンアップ時にスクロールを有効化
+      document.removeEventListener("mouseover", handleMouseOver);
+      document.body.classList.remove("disable-scroll"); // クリーンアップ時にスクロールを有効化
     };
   }, []);
   useEffect(() => {
     if (isScrollDisabled) {
-      document.body.classList.add('disable-scroll');
+      document.body.classList.add("disable-scroll");
     } else {
-      document.body.classList.remove('disable-scroll');
+      document.body.classList.remove("disable-scroll");
     }
   }, [isScrollDisabled]);
 
@@ -488,13 +488,37 @@ export default function Searchbar() {
 
       // ソフトウェアのタグ一覧を取得
       getTag("company_software", "software");
-    } else if (PathName == "/Internship_JobOffer") {
+    } else if (PathName === "/Internship_JobOffer/joboffers" ||
+      PathName === "/Internship_JobOffer/internships" ||
+      PathName === "/Internship_JobOffer/sessions" ||
+      PathName === "/Internship_JobOffer/blogs") {
       // 求人一覧の場合
+      // フォロー状況のタグ一覧を取得
+      getFollowStatusTag();
+
       // 企業名一覧を取得
       getCompanyNameTag();
 
+      // 職種のタグ一覧を取得
+      getTag("company_selected_occupation", "selected_occupation");
+
       // 勤務地のタグ一覧を取得
       getTag("company_prefecture", "prefecture");
+
+      // 業界キーワードのタグ一覧を取得
+      getTag("company_industry", "industry");
+
+      // 開発環境のタグ一覧を取得
+      getTag("company_development_environment", "development_environment");
+
+      // プログラミング言語のタグ一覧を取得
+      getTag("company_programming_language", "programming_language");
+
+      // 歓迎資格のタグ一覧を取得
+      getTag("company_acquisition_qualification", "acquisition_qualification");
+
+      // ソフトウェアのタグ一覧を取得
+      getTag("company_software", "software");
     }
   }, [PathName]);
 
@@ -865,7 +889,7 @@ export default function Searchbar() {
             development_environment: development_environment,
             programming_language: programming_language,
             acquisition_qualification: acquisition_qualification,
-            software  : software,
+            software: software,
           },
         });
         console.log("response.data", response.data);
@@ -873,20 +897,64 @@ export default function Searchbar() {
         // company-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
-      } else if (PathName == "/Internship_JobOffer") {
+      } else if (PathName === "/Internship_JobOffer/joboffers" ||
+        PathName === "/Internship_JobOffer/internships" ||
+        PathName === "/Internship_JobOffer/sessions" ||
+        PathName === "/Internship_JobOffer/blogs") {
         // 企業一覧の場合
         const url = `http://localhost:8000/search_internship_job_offer?page=${Page}`;
 
+        let follow_status = [];
         let company_name = [];
+        let selected_occupation = [];
+        let prefecture = [];
+        let industry = [];
+        let development_environment = [];
+        let programming_language = [];
+        let acquisition_qualification = [];
+        let software = [];
 
+        searchSource.follow_status.map((value) => {
+          follow_status.push(value.value);
+        });
         searchSource.company_name.map((value) => {
           company_name.push(value.value);
+        });
+        searchSource.selected_occupation.map((value) => {
+          selected_occupation.push(value.value);
+        });
+        searchSource.prefecture.map((value) => {
+          prefecture.push(value.value);
+        });
+        searchSource.industry.map((value) => {
+          industry.push(value.value);
+        });
+        searchSource.development_environment.map((value) => {
+          development_environment.push(value.value);
+        });
+        searchSource.programming_language.map((value) => {
+          programming_language.push(value.value);
+        });
+        searchSource.acquisition_qualification.map((value) => {
+          acquisition_qualification.push(value.value);
+        });
+        searchSource.software.map((value) => {
+          software.push(value.value);
         });
 
         const response = await axios.get(url, {
           params: {
+            myId: myId,
             searchText: searchSource.searchText,
+            follow_status: follow_status,
             company_name: company_name,
+            selected_occupation: selected_occupation,
+            prefecture: prefecture,
+            industry: industry,
+            development_environment: development_environment,
+            programming_language: programming_language,
+            acquisition_qualification: acquisition_qualification,
+            software: software,
           },
         });
         console.log("response.data", response.data);
@@ -1166,12 +1234,23 @@ export default function Searchbar() {
         {!open &&
           PathName !=
             "/Profile/" + location.pathname.split("/")[2] + "/mypage" && (
-            <IconButton onClick={handleOpen} style={{ display: Display.HomePage }}>
+            <IconButton
+              onClick={handleOpen}
+              style={{ display: Display.HomePage }}
+            >
               <Iconify icon="eva:search-fill" />
             </IconButton>
           )}
 
-        <Slide direction="down" in={open} mountOnEnter unmountOnExit ref={areaRef} className="no-scroll-area" onMouseEnter={document.body.classList.add('disable-scroll')}>
+        <Slide
+          direction="down"
+          in={open}
+          mountOnEnter
+          unmountOnExit
+          ref={areaRef}
+          className="no-scroll-area"
+          onMouseEnter={document.body.classList.add("disable-scroll")}
+        >
           <StyledSearchbar>
             <div style={{ display: "" }}>
               <div style={{ display: "flex" }}>
@@ -2086,8 +2165,37 @@ export default function Searchbar() {
                       </div>
                     </div>
                   </>
-                ) : PathName === "/Internship_JobOffer" ? (
+                ) : PathName === "/Internship_JobOffer/joboffers" ||
+                  PathName === "/Internship_JobOffer/internships" ||
+                  PathName === "/Internship_JobOffer/sessions" ||
+                  PathName === "/Internship_JobOffer/blogs" ? (
                   <>
+                    {myId[0] === "S" ? (
+                      <>
+                        <div
+                          style={{
+                            display: "",
+                            marginTop: "20px",
+                            marginBottom: "10px",
+                          }}
+                        >
+                          <div style={{ fontWeight: "Bold", color: "#666" }}>
+                            フォロー状況
+                          </div>
+                          <div style={{ color: "#444" }}>
+                            <Select
+                              options={options.follow_status}
+                              value={searchSource.follow_status}
+                              isClearable
+                              isMulti
+                              onChange={handleChangeFollowStatus}
+                            />
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      ""
+                    )}
                     <div
                       style={{
                         display: "",
@@ -2108,6 +2216,147 @@ export default function Searchbar() {
                         />
                       </div>
                     </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        職種
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <Select
+                          options={options.selected_occupation}
+                          value={searchSource.selected_occupation}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeSelectedOccupation}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        勤務地
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <Select
+                          options={options.prefecture}
+                          value={searchSource.prefecture}
+                          isClearable
+                          isMulti
+                          onChange={handleChangePrefecture}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        業界キーワード
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <Select
+                          options={options.industry}
+                          value={searchSource.industry}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeIndustry}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        開発環境
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <Select
+                          options={options.development_environment}
+                          value={searchSource.development_environment}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeDevelopmentEnvironment}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        プログラミング言語
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <Select
+                          options={options.programming_language}
+                          value={searchSource.programming_language}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeProgrammingLanguage}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        歓迎資格
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <Select
+                          options={options.acquisition_qualification}
+                          value={searchSource.acquisition_qualification}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeAcquisitionQualification}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "",
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div style={{ fontWeight: "Bold", color: "#666" }}>
+                        ソフトウェア
+                      </div>
+                      <div style={{ color: "#444" }}>
+                        <Select
+                          options={options.software}
+                          value={searchSource.software}
+                          isClearable
+                          isMulti
+                          onChange={handleChangeSoftware}
+                        />
+                      </div>
+                    </div>
+
                   </>
                 ) : (
                   ""

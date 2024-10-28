@@ -87,7 +87,7 @@ const PrefectureDropdown = ({PrefectureData}) => {
           value={selectedPrefecture}
           onChange={handleChange}
           options={options}
-          placeholder="Select..."
+          placeholder="▼"
           isMulti
         />
     </div>

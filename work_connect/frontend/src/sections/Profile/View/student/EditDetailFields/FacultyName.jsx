@@ -73,7 +73,7 @@ const FacultyNameDropdown = ({ FacultyNameData }) => {
         value={selectedFaculty}
         onChange={handleChange}
         options={options}
-        placeholder="Select..."
+        placeholder="▼"
         isClearable
       />
     </div>

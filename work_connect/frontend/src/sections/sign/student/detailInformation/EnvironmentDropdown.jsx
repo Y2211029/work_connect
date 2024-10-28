@@ -64,7 +64,7 @@ const Environment = () => {
         value={selectedDevEnvironment}
         onChange={handleChange}
         options={options}
-        placeholder="Select..."
+        placeholder="▼"
         isMulti
       />
     </div>

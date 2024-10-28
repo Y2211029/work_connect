@@ -47,7 +47,7 @@ const MajorName = () => {
         value={selectedMajorName}
         onChange={handleChange}
         options={options}
-        placeholder="Select..."
+        placeholder="▼"
       />
     </div>
   );

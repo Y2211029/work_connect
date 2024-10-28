@@ -1258,7 +1258,7 @@ export default function Searchbar() {
                   autoFocus
                   fullWidth
                   disableUnderline
-                  placeholder="Search…"
+                  placeholder="検索"
                   startAdornment={
                     <InputAdornment position="start">
                       <Iconify
@@ -1272,7 +1272,7 @@ export default function Searchbar() {
                   onChange={handleChangeText}
                 />
                 <Button variant="contained" onClick={handleSearch}>
-                  Search
+                  検索
                 </Button>
               </div>
               <div
@@ -1299,6 +1299,7 @@ export default function Searchbar() {
                           </div>
                           <div style={{ color: "#444" }}>
                             <Select
+                            placeholder="▼"
                               options={options.follow_status}
                               value={searchSource.follow_status}
                               isClearable
@@ -1323,6 +1324,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.school_name}
                           value={searchSource.school_name}
                           isClearable
@@ -1343,6 +1345,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.department_name}
                           value={searchSource.department_name}
                           isClearable
@@ -1363,6 +1366,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.faculty_name}
                           value={searchSource.faculty_name}
                           isClearable
@@ -1383,6 +1387,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.major_name}
                           value={searchSource.major_name}
                           isClearable
@@ -1403,6 +1408,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.course_name}
                           value={searchSource.course_name}
                           isClearable
@@ -1423,6 +1429,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.work_genre}
                           value={searchSource.work_genre}
                           isClearable
@@ -1443,6 +1450,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.programming_language}
                           value={searchSource.programming_language}
                           isClearable
@@ -1463,6 +1471,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.development_environment}
                           value={searchSource.development_environment}
                           isClearable
@@ -1488,6 +1497,7 @@ export default function Searchbar() {
                           </div>
                           <div style={{ color: "#444" }}>
                             <Select
+                            placeholder="▼"
                               options={options.follow_status}
                               value={searchSource.follow_status}
                               isClearable
@@ -1512,6 +1522,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.school_name}
                           value={searchSource.school_name}
                           isClearable
@@ -1532,6 +1543,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.department_name}
                           value={searchSource.department_name}
                           isClearable
@@ -1552,6 +1564,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.faculty_name}
                           value={searchSource.faculty_name}
                           isClearable
@@ -1572,6 +1585,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.major_name}
                           value={searchSource.major_name}
                           isClearable
@@ -1592,6 +1606,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.course_name}
                           value={searchSource.course_name}
                           isClearable
@@ -1612,6 +1627,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.video_genre}
                           value={searchSource.video_genre}
                           isClearable
@@ -1637,6 +1653,7 @@ export default function Searchbar() {
                           </div>
                           <div style={{ color: "#444" }}>
                             <Select
+                            placeholder="▼"
                               options={options.follow_status}
                               value={searchSource.follow_status}
                               isClearable
@@ -1661,6 +1678,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.graduation_year}
                           value={searchSource.graduation_year}
                           isClearable
@@ -1681,6 +1699,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.school_name}
                           value={searchSource.school_name}
                           isClearable
@@ -1701,6 +1720,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.department_name}
                           value={searchSource.department_name}
                           isClearable
@@ -1721,6 +1741,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.faculty_name}
                           value={searchSource.faculty_name}
                           isClearable
@@ -1741,6 +1762,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.major_name}
                           value={searchSource.major_name}
                           isClearable
@@ -1761,6 +1783,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.course_name}
                           value={searchSource.course_name}
                           isClearable
@@ -1781,6 +1804,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.desired_occupation}
                           value={searchSource.desired_occupation}
                           isClearable
@@ -1801,6 +1825,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.desired_work_region}
                           value={searchSource.desired_work_region}
                           isClearable
@@ -1821,6 +1846,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.student_programming_language}
                           value={searchSource.student_programming_language}
                           isClearable
@@ -1841,6 +1867,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.student_development_environment}
                           value={searchSource.student_development_environment}
                           isClearable
@@ -1861,6 +1888,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.software}
                           value={searchSource.software}
                           isClearable
@@ -1881,6 +1909,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.acquisition_qualification}
                           value={searchSource.acquisition_qualification}
                           isClearable
@@ -1901,6 +1930,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.hobby}
                           value={searchSource.hobby}
                           isClearable
@@ -1924,6 +1954,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.work_genre}
                           value={searchSource.work_genre}
                           isClearable
@@ -1944,6 +1975,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.programming_language}
                           value={searchSource.programming_language}
                           isClearable
@@ -1964,6 +1996,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.development_environment}
                           value={searchSource.development_environment}
                           isClearable
@@ -1987,6 +2020,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.work_genre}
                           value={searchSource.work_genre}
                           isClearable
@@ -2012,6 +2046,7 @@ export default function Searchbar() {
                           </div>
                           <div style={{ color: "#444" }}>
                             <Select
+                            placeholder="▼"
                               options={options.follow_status}
                               value={searchSource.follow_status}
                               isClearable
@@ -2036,6 +2071,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.selected_occupation}
                           value={searchSource.selected_occupation}
                           isClearable
@@ -2056,6 +2092,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.prefecture}
                           value={searchSource.prefecture}
                           isClearable
@@ -2076,6 +2113,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.industry}
                           value={searchSource.industry}
                           isClearable
@@ -2096,6 +2134,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.development_environment}
                           value={searchSource.development_environment}
                           isClearable
@@ -2116,6 +2155,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.programming_language}
                           value={searchSource.programming_language}
                           isClearable
@@ -2136,6 +2176,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.acquisition_qualification}
                           value={searchSource.acquisition_qualification}
                           isClearable
@@ -2156,6 +2197,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.software}
                           value={searchSource.software}
                           isClearable
@@ -2208,6 +2250,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
+                        placeholder="▼"
                           options={options.company_name}
                           value={searchSource.company_name}
                           isClearable

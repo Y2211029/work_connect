@@ -46,7 +46,7 @@ const DepartmentNameDropdown = () => {
         value={selectedDepartment}
         onChange={handleChange}
         options={options}
-        placeholder="Select..."
+        placeholder="▼"
       />
     </div>
   );

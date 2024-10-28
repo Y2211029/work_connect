@@ -87,7 +87,7 @@ const DesiredOccupation = ({ DesiredOccupationData }) => {
       value={selectedOccupation}
       onChange={handleChange}
       options={options}
-      placeholder="Select..."
+      placeholder="▼"
       isMulti
     />
   );

@@ -897,10 +897,8 @@ export default function Searchbar() {
         // company-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
-      } else if (PathName === "/Internship_JobOffer/joboffers" ||
-        PathName === "/Internship_JobOffer/internships" ||
-        PathName === "/Internship_JobOffer/sessions" ||
-        PathName === "/Internship_JobOffer/blogs") {
+      }
+      else if (PathName === "/Internship_JobOffer/joboffers") {
         // 企業一覧の場合
         const url = `http://localhost:8000/search_internship_job_offer?page=${Page}`;
 
@@ -955,9 +953,203 @@ export default function Searchbar() {
             programming_language: programming_language,
             acquisition_qualification: acquisition_qualification,
             software: software,
+            genre: "joboffers"
           },
         });
         console.log("response.data", response.data);
+        console.log("response.data:joboffers");
+
+        // company-view.jsxにデータを渡す
+        const responseData = response.data;
+        responseItems(responseData);
+      } else if (PathName === "/Internship_JobOffer/internships") {
+        // 企業一覧の場合
+        const url = `http://localhost:8000/search_internship_job_offer?page=${Page}`;
+
+        let follow_status = [];
+        let company_name = [];
+        let selected_occupation = [];
+        let prefecture = [];
+        let industry = [];
+        let development_environment = [];
+        let programming_language = [];
+        let acquisition_qualification = [];
+        let software = [];
+
+        searchSource.follow_status.map((value) => {
+          follow_status.push(value.value);
+        });
+        searchSource.company_name.map((value) => {
+          company_name.push(value.value);
+        });
+        searchSource.selected_occupation.map((value) => {
+          selected_occupation.push(value.value);
+        });
+        searchSource.prefecture.map((value) => {
+          prefecture.push(value.value);
+        });
+        searchSource.industry.map((value) => {
+          industry.push(value.value);
+        });
+        searchSource.development_environment.map((value) => {
+          development_environment.push(value.value);
+        });
+        searchSource.programming_language.map((value) => {
+          programming_language.push(value.value);
+        });
+        searchSource.acquisition_qualification.map((value) => {
+          acquisition_qualification.push(value.value);
+        });
+        searchSource.software.map((value) => {
+          software.push(value.value);
+        });
+
+        const response = await axios.get(url, {
+          params: {
+            myId: myId,
+            searchText: searchSource.searchText,
+            follow_status: follow_status,
+            company_name: company_name,
+            selected_occupation: selected_occupation,
+            prefecture: prefecture,
+            industry: industry,
+            development_environment: development_environment,
+            programming_language: programming_language,
+            acquisition_qualification: acquisition_qualification,
+            software: software,
+            genre: "internships",
+          },
+        });
+        console.log("response.data", response.data);
+        console.log("response.data:internships");
+
+        // company-view.jsxにデータを渡す
+        const responseData = response.data;
+        responseItems(responseData);
+      } else if (PathName === "/Internship_JobOffer/sessions") {
+        // 企業一覧の場合
+        const url = `http://localhost:8000/search_internship_job_offer?page=${Page}`;
+
+        let follow_status = [];
+        let company_name = [];
+        let selected_occupation = [];
+        let prefecture = [];
+        let industry = [];
+        let development_environment = [];
+        let programming_language = [];
+        let acquisition_qualification = [];
+        let software = [];
+
+        searchSource.follow_status.map((value) => {
+          follow_status.push(value.value);
+        });
+        searchSource.company_name.map((value) => {
+          company_name.push(value.value);
+        });
+        searchSource.selected_occupation.map((value) => {
+          selected_occupation.push(value.value);
+        });
+        searchSource.prefecture.map((value) => {
+          prefecture.push(value.value);
+        });
+        searchSource.industry.map((value) => {
+          industry.push(value.value);
+        });
+        searchSource.development_environment.map((value) => {
+          development_environment.push(value.value);
+        });
+        searchSource.programming_language.map((value) => {
+          programming_language.push(value.value);
+        });
+        searchSource.acquisition_qualification.map((value) => {
+          acquisition_qualification.push(value.value);
+        });
+        searchSource.software.map((value) => {
+          software.push(value.value);
+        });
+
+        const response = await axios.get(url, {
+          params: {
+            myId: myId,
+            searchText: searchSource.searchText,
+            follow_status: follow_status,
+            company_name: company_name,
+            selected_occupation: selected_occupation,
+            prefecture: prefecture,
+            industry: industry,
+            development_environment: development_environment,
+            programming_language: programming_language,
+            acquisition_qualification: acquisition_qualification,
+            software: software,
+            genre: "sessions",
+          },
+        });
+        console.log("response.data", response.data);
+        console.log("response.sessions");
+
+        // company-view.jsxにデータを渡す
+        const responseData = response.data;
+        responseItems(responseData);
+      } else if (PathName === "/Internship_JobOffer/blogs") {
+        // 企業一覧の場合
+        const url = `http://localhost:8000/search_internship_job_offer?page=${Page}`;
+
+        let follow_status = [];
+        let company_name = [];
+        let selected_occupation = [];
+        let prefecture = [];
+        let industry = [];
+        let development_environment = [];
+        let programming_language = [];
+        let acquisition_qualification = [];
+        let software = [];
+
+        searchSource.follow_status.map((value) => {
+          follow_status.push(value.value);
+        });
+        searchSource.company_name.map((value) => {
+          company_name.push(value.value);
+        });
+        searchSource.selected_occupation.map((value) => {
+          selected_occupation.push(value.value);
+        });
+        searchSource.prefecture.map((value) => {
+          prefecture.push(value.value);
+        });
+        searchSource.industry.map((value) => {
+          industry.push(value.value);
+        });
+        searchSource.development_environment.map((value) => {
+          development_environment.push(value.value);
+        });
+        searchSource.programming_language.map((value) => {
+          programming_language.push(value.value);
+        });
+        searchSource.acquisition_qualification.map((value) => {
+          acquisition_qualification.push(value.value);
+        });
+        searchSource.software.map((value) => {
+          software.push(value.value);
+        });
+
+        const response = await axios.get(url, {
+          params: {
+            myId: myId,
+            searchText: searchSource.searchText,
+            follow_status: follow_status,
+            company_name: company_name,
+            selected_occupation: selected_occupation,
+            prefecture: prefecture,
+            industry: industry,
+            development_environment: development_environment,
+            programming_language: programming_language,
+            acquisition_qualification: acquisition_qualification,
+            software: software,
+            genre: "blogs",
+          },
+        });
+        console.log("response.data", response.data);
+        console.log("response.blogs");
 
         // company-view.jsxにデータを渡す
         const responseData = response.data;
@@ -1076,6 +1268,8 @@ export default function Searchbar() {
     if (IsSearch.Check && Page) {
       searchSourceList();
     }
+
+    console.log("PathName", PathName)
   }, [IsSearch.Check, Page, IsSearch.searchToggle, sortOption]);
 
   // 検索欄に入力したとき
@@ -1233,7 +1427,7 @@ export default function Searchbar() {
       <div>
         {!open &&
           PathName !=
-            "/Profile/" + location.pathname.split("/")[2] + "/mypage" && (
+          "/Profile/" + location.pathname.split("/")[2] + "/mypage" && (
             <IconButton
               onClick={handleOpen}
               style={{ display: Display.HomePage }}
@@ -1299,7 +1493,7 @@ export default function Searchbar() {
                           </div>
                           <div style={{ color: "#444" }}>
                             <Select
-                            placeholder="▼"
+                              placeholder="▼"
                               options={options.follow_status}
                               value={searchSource.follow_status}
                               isClearable
@@ -1324,7 +1518,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.school_name}
                           value={searchSource.school_name}
                           isClearable
@@ -1345,7 +1539,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.department_name}
                           value={searchSource.department_name}
                           isClearable
@@ -1366,7 +1560,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.faculty_name}
                           value={searchSource.faculty_name}
                           isClearable
@@ -1387,7 +1581,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.major_name}
                           value={searchSource.major_name}
                           isClearable
@@ -1408,7 +1602,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.course_name}
                           value={searchSource.course_name}
                           isClearable
@@ -1429,7 +1623,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.work_genre}
                           value={searchSource.work_genre}
                           isClearable
@@ -1450,7 +1644,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.programming_language}
                           value={searchSource.programming_language}
                           isClearable
@@ -1471,7 +1665,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.development_environment}
                           value={searchSource.development_environment}
                           isClearable
@@ -1497,7 +1691,7 @@ export default function Searchbar() {
                           </div>
                           <div style={{ color: "#444" }}>
                             <Select
-                            placeholder="▼"
+                              placeholder="▼"
                               options={options.follow_status}
                               value={searchSource.follow_status}
                               isClearable
@@ -1522,7 +1716,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.school_name}
                           value={searchSource.school_name}
                           isClearable
@@ -1543,7 +1737,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.department_name}
                           value={searchSource.department_name}
                           isClearable
@@ -1564,7 +1758,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.faculty_name}
                           value={searchSource.faculty_name}
                           isClearable
@@ -1585,7 +1779,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.major_name}
                           value={searchSource.major_name}
                           isClearable
@@ -1606,7 +1800,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.course_name}
                           value={searchSource.course_name}
                           isClearable
@@ -1627,7 +1821,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.video_genre}
                           value={searchSource.video_genre}
                           isClearable
@@ -1653,7 +1847,7 @@ export default function Searchbar() {
                           </div>
                           <div style={{ color: "#444" }}>
                             <Select
-                            placeholder="▼"
+                              placeholder="▼"
                               options={options.follow_status}
                               value={searchSource.follow_status}
                               isClearable
@@ -1678,7 +1872,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.graduation_year}
                           value={searchSource.graduation_year}
                           isClearable
@@ -1699,7 +1893,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.school_name}
                           value={searchSource.school_name}
                           isClearable
@@ -1720,7 +1914,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.department_name}
                           value={searchSource.department_name}
                           isClearable
@@ -1741,7 +1935,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.faculty_name}
                           value={searchSource.faculty_name}
                           isClearable
@@ -1762,7 +1956,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.major_name}
                           value={searchSource.major_name}
                           isClearable
@@ -1783,7 +1977,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.course_name}
                           value={searchSource.course_name}
                           isClearable
@@ -1804,7 +1998,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.desired_occupation}
                           value={searchSource.desired_occupation}
                           isClearable
@@ -1825,7 +2019,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.desired_work_region}
                           value={searchSource.desired_work_region}
                           isClearable
@@ -1846,7 +2040,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.student_programming_language}
                           value={searchSource.student_programming_language}
                           isClearable
@@ -1867,7 +2061,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.student_development_environment}
                           value={searchSource.student_development_environment}
                           isClearable
@@ -1888,7 +2082,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.software}
                           value={searchSource.software}
                           isClearable
@@ -1909,7 +2103,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.acquisition_qualification}
                           value={searchSource.acquisition_qualification}
                           isClearable
@@ -1930,7 +2124,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.hobby}
                           value={searchSource.hobby}
                           isClearable
@@ -1954,7 +2148,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.work_genre}
                           value={searchSource.work_genre}
                           isClearable
@@ -1975,7 +2169,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.programming_language}
                           value={searchSource.programming_language}
                           isClearable
@@ -1996,7 +2190,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.development_environment}
                           value={searchSource.development_environment}
                           isClearable
@@ -2020,7 +2214,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.work_genre}
                           value={searchSource.work_genre}
                           isClearable
@@ -2046,7 +2240,7 @@ export default function Searchbar() {
                           </div>
                           <div style={{ color: "#444" }}>
                             <Select
-                            placeholder="▼"
+                              placeholder="▼"
                               options={options.follow_status}
                               value={searchSource.follow_status}
                               isClearable
@@ -2071,7 +2265,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.selected_occupation}
                           value={searchSource.selected_occupation}
                           isClearable
@@ -2092,7 +2286,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.prefecture}
                           value={searchSource.prefecture}
                           isClearable
@@ -2113,7 +2307,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.industry}
                           value={searchSource.industry}
                           isClearable
@@ -2134,7 +2328,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.development_environment}
                           value={searchSource.development_environment}
                           isClearable
@@ -2155,7 +2349,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.programming_language}
                           value={searchSource.programming_language}
                           isClearable
@@ -2176,7 +2370,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.acquisition_qualification}
                           value={searchSource.acquisition_qualification}
                           isClearable
@@ -2197,7 +2391,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.software}
                           value={searchSource.software}
                           isClearable
@@ -2250,7 +2444,7 @@ export default function Searchbar() {
                       </div>
                       <div style={{ color: "#444" }}>
                         <Select
-                        placeholder="▼"
+                          placeholder="▼"
                           options={options.company_name}
                           value={searchSource.company_name}
                           isClearable

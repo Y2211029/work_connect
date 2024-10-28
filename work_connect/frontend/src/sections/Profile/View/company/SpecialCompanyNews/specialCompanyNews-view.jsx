@@ -104,6 +104,12 @@ export default function NavTabs() {
   }, []);
 
   const handleTabClick = (event, newValue) => {
+    console.log("handleTabClick");
+    setAllItems((prevItems) => ({
+      ...prevItems,
+      Page: 1,
+    }));
+
     if (
       event.type !== 'click' ||
       (event.type === 'click' && samePageLinkNavigation(event))

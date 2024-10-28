@@ -44,7 +44,8 @@ LinkTab.propTypes = {
 
 export default function NavTabs() {
   const { getSessionData } = useSessionStorage();
-  const { setAllItems } = useContext(AllItemsContext);
+  const { /*AllItems,*/ setAllItems } = useContext(AllItemsContext);
+  // const { IsSearch, Page, sortOption } = AllItems;
 
   const getInitialNewsTabState = () => {
     const accountData = getSessionData("accountData");
@@ -53,6 +54,8 @@ export default function NavTabs() {
   const [value, setValue] = useState(getInitialNewsTabState);
 
   const handleTabClick = (event, newValue) => {
+    console.log("handleTabClick");
+
     if (
       event.type !== 'click' ||
       (event.type === 'click' && samePageLinkNavigation(event))
@@ -79,6 +82,7 @@ export default function NavTabs() {
 
       // ページ遷移または状態の更新処理
       pageCheck(category);
+      
     }
   };
 
@@ -88,16 +92,16 @@ export default function NavTabs() {
     window.history.pushState({}, '', `${urlStr}?page=${pageStr}`);
   }
 
-  useEffect(() => {
-    setAllItems((prevItems) => ({
-      ...prevItems,
-      ResetItem: true,
-      DataList: [],
-      IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
-      Page: 1,
-      sortOption: "orderNewPostsDate",
-    }));
-  }, [setAllItems]);
+  // useEffect(() => {
+  //   setAllItems((prevItems) => ({
+  //     ...prevItems,
+  //     ResetItem: true,
+  //     DataList: [],
+  //     IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
+  //     Page: 1,
+  //     sortOption: "orderNewPostsDate",
+  //   }));
+  // }, [setAllItems]);
 
   //ブラウザの戻るボタンを押してもタブやURLに合ったニュースを表示させる
   useEffect(() => {

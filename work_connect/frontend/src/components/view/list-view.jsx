@@ -687,7 +687,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   /*----- 検索されていないかつ作品データがあるとき -----*/
   useEffect(() => {
     if (!ResetItem && !IsSearch.Check && data) {
-      console.log("datadataWorkOfList", WorkOfList);
+      console.log("検索されていないかつ作品データがあるとき", WorkOfList);
       console.log("datadata", data);
       funcSetWorksItem(idKey, tags, WorkOfList, setWorkOfList, data, setIsLoadColorLing, setIsLoadItemColorLing, error, generatePosts);
     }
@@ -697,8 +697,9 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   /*----- 検索されたかつ、検索結果が帰ってきたとき -----*/
   useEffect(() => {
     if (IsSearch.Check && DataList) {
-      // console.log("datadataWorkOfList", WorkOfList);
+      console.log("検索されたかつ、検索結果が帰ってきたとき", WorkOfList);
       console.log("datadataDataList", DataList);
+      console.log("datadataDataList:AllItems", AllItems);
       funcSetWorksItem(idKey, tags, WorkOfList, setWorkOfList, DataList, setIsLoadColorLing, setIsLoadItemColorLing, error, generatePosts);
     }
   }, [DataList, IsSearch.Check, IsSearch.searchResultEmpty]);

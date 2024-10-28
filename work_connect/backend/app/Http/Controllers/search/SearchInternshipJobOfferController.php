@@ -45,6 +45,8 @@ class SearchInternshipJobOfferController extends Controller
             $acquisition_qualification_array = $request->input('acquisition_qualification', []);
             // 絞り込まれたソフトウェアを配列で取得
             $software_array = $request->input('software', []);
+            // ジャンル取得
+            $genre = $request->input('genre', "");
 
             \Log::info('SearchCompanyController:$company_name_array:');
             \Log::info($company_name_array);
@@ -57,7 +59,10 @@ class SearchInternshipJobOfferController extends Controller
             );
 
             $query->join('w_companies', 'w_news.company_id', '=', 'w_companies.id');
-
+            
+            if (isset($genre)) {
+                    $query->where('w_news.genre', $genre);
+            }
             // 企業名で絞り込み
             if (isset($company_name_array)) {
                 foreach ($company_name_array as $company_name_array) {

@@ -23,7 +23,7 @@ class PostChatController extends Controller
             // 現在の日時を取得
             $sendDateTime = Carbon::now('Asia/Tokyo');
 
-            w_chat::create([
+            $responseData = w_chat::create([
                 'send_user_id' => $MyUserId,
                 'get_user_id' => $PairUserId,
                 'message' => $Message,
@@ -32,7 +32,7 @@ class PostChatController extends Controller
             ]);
 
             // Reactに返す
-            return response()->json("succuses");
+            return response()->json($responseData);
 
 
         } catch (\Exception $e) {

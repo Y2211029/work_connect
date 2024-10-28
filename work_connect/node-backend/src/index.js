@@ -93,7 +93,7 @@ app.post("/follow", async (req, res) => {
         );
       }
     }
-    // res.sendStatus(200); 
+    // res.sendStatus(200);
   } catch (error) {
     console.error("Error sending follow notification:", error);
   }
@@ -145,8 +145,49 @@ app.post("/video_posting", async (req, res) => {
         );
       }
     }
-    // res.sendStatus(200); 
+    // res.sendStatus(200);
   } catch (error) {
+    console.error("Error sending follow notification:", error);
+  }
+});
+
+// チャットの取得
+app.post("/post_chat", async (req, res) => {
+  const { MyUserId, PairUserId, Message } = req.body;
+
+  // laravelにフォロー情報を送信。
+  try {
+    const response = await axios.post(
+      "http://localhost:8000/post_chat"
+      , {
+      MyUserId: MyUserId, // ログイン中のID
+      PairUserId: PairUserId, // チャット相手のID
+      Message: Message // メッセージ
+    });
+
+    res.json(response.data);
+
+    if (clients[response.data.get_user_id]) {
+      clients[response.data.get_user_id].send(
+        JSON.stringify({
+          kind: "chat",
+          type: "post",
+          chatData: response.data,
+        })
+      );
+    }
+    if (clients[response.data.send_user_id]) {
+      clients[response.data.send_user_id].send(
+        JSON.stringify({
+          kind: "chat",
+          type: "post",
+          chatData: response.data,
+        })
+      );
+    }
+  }
+
+   catch (error) {
     console.error("Error sending follow notification:", error);
   }
 });

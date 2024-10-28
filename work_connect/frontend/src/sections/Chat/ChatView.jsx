@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import PropTypes from 'prop-types';
 import axios from "axios";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
@@ -8,6 +8,13 @@ import { Link } from "react-router-dom";
 import { TextareaAutosize as BaseTextareaAutosize } from '@mui/base/TextareaAutosize';
 import { styled } from '@mui/material/styles';
 import { ColorRing } from "react-loader-spinner";
+
+
+/* メモ：WebScokectを使う際、
+// work_connect/node-backend/src/index.jsと
+// work_connect/frontend/src/layouts/dashboard/index.jsxと
+// ChatView.jsx使う*/
+import { WebScokectContext } from "src/layouts/dashboard/index";
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -101,9 +108,6 @@ const FollowGroup = ({
   chatViewId,
   chatOpen,
   saveScrollPosition }) => {
-
-  //   /// セッションストレージ取得
-  // const { getSessionData , updateSessionData } = useSessionStorage();
 
   return (
     <>
@@ -303,8 +307,43 @@ const ChatEditModal = ({
   );
 };
 
+// ローディングのコンポーネント
+const ColorRingStyle = () => {
+  return(
+    <Box
+      sx={{
+        marginTop: '20%',
+        display: 'flex', // Flexboxを使用
+        justifyContent: 'center', // 水平方向中央
+        alignItems: 'center', // 垂直方向中央
+      }}
+    >
+      <ColorRing
+        style={{
+          visible: true,
+          margin: "0px",
+          height: "10",
+          width: "10",
+          ariaLabel: "color-ring-loading",
+          wrapperClass: "custom-color-ring-wrapper",
+          colors:
+          ["#e15b64",
+            "#f47e60",
+            "#f8b26a",
+            "#abbd81",
+            "#849b87"]
+        }}
+      />
+    </Box>
+  );
+
+}
+
 // メインのコンポーネント
 const ChatView = () => {
+
+   // websocket通信のデータ保存先
+   const chatContext = useContext(WebScokectContext);
 
   /// セッションストレージ取得
   const { getSessionData , updateSessionData } = useSessionStorage();
@@ -375,7 +414,7 @@ const ChatView = () => {
   const ListBoxscroll = useRef(null);
 
   // テキストの文章を保持する変数
-  const [TextData, setTextData] = useState(null);
+  const [TextData, setTextData] = useState("");
 
   // テキストの文章を保持する変数(モーダル)
   const [chatEditData, setChatEditData] = useState(null);
@@ -414,14 +453,15 @@ const ChatView = () => {
   // Laravelとの通信用URL
   const get_channel_list = "http://localhost:8000/get_channel_list";
   const get_chat = "http://localhost:8000/get_chat";
-  const post_chat = "http://localhost:8000/post_chat";
+  //const post_chat = "http://localhost:8000/post_chat";
   const delete_chat = "http://localhost:8000/delete_chat";
   const already_read_chat = "http://localhost:8000/already_read_chat";
   const update_chat = "http://localhost:8000/update_chat";
 
-  /// ResponseChannelListDataが変化したとき
-  /// フォローリストを作成
+  /// 画面読み込み後、1度だけ実行
   useEffect(() => {
+
+    // フォローリストの取得
     async function GetData() {
       try {
         // Laravel側からデータを取得
@@ -445,6 +485,11 @@ const ChatView = () => {
         console.log("err:", err);
         alert("フォロワーがいません");
       }
+    }
+
+    // DBからデータを取得
+    if (MyUserId) {
+      GetData();
     }
 
     // フォロー状態の処理を関数化
@@ -475,51 +520,40 @@ const ChatView = () => {
       setChatViewFollowStatus(sessionData.ChatOpenFollowStatus);
     }
 
-    // DBからデータを取得
-    if (MyUserId) {
-      GetData();
-    }
-
     // ResponseChannelListDataが存在している場合のみ処理
     if (ResponseChannelListData && ResponseChannelListData.length > 0) {
       const matchedItem = ResponseChannelListData.find(item => item.user_name === ParamsuserName);
 
       if (matchedItem) {
+        // 関数呼び出し
         updateChatViewData(matchedItem);
       } else {
         // 見つからない場合、404ページにリダイレクト
         location.href = "/404";
       }
     }
-  }, [ResponseChannelListData]);
 
-  /// 一番最初に実行(「ここから未読」の位置を記憶しておくGetStartUnreadを初期化しておく)
-  useEffect(() => {
+    // セッションデータの初期化
     updateSessionData("accountData", "GetStartUnread", 0);
     updateSessionData("accountData", "Commit", false);
+    // 関数呼び出し
     restoreScrollPosition();
+    scrollToBottom();
+
   }, []);
 
-  /// 1回のみ実行(1秒単位でデータを取得)
+
+  // chatContext.WebSocketState.Chat,chatViewIdを取得したとき
   useEffect(() => {
+
     // セッションストレージ取得
     setAccountData(getSessionData("accountData"));
     GetChat(chatViewId);
-    // チャットのスクロールを下にする
-    scrollToBottom();
-    const interval = setInterval(() => {
-     // セッションストレージ取得
-    setAccountData(getSessionData("accountData"));
-    console.log("passing222__"+chatViewId);
-    GetChat(chatViewId);
+
     // 既読をつける
     AlreadyReadChat(chatViewId);
 
-    }, 2000);
-
-    // コンポーネントがアンマウントされたらintervalをクリア
-    return () => clearInterval(interval);
-  }, [chatViewId]);
+  }, [chatContext.WebSocketState.Chat,chatViewId]);
 
   // chatEditDataが変更されたとき
   useEffect(() => {
@@ -546,7 +580,6 @@ const ChatView = () => {
   // ページをリロードする
   window.location.reload();
   };
-
 
   // テキストが変更されたとき
   const textChange = (e) => {
@@ -604,17 +637,21 @@ const ChatView = () => {
     async function PostData() {
       try {
         console.log("TextData:"+TextData);
-        // Laravelにデータを送信
-        const response = await axios.post(post_chat, {
-          MyUserId: MyUserId, // ログイン中のID
-          PairUserId: getSessionData("accountData").ChatOpenId, // チャット相手のID
-          Message: TextData // メッセージ
+        const PairUserId = getSessionData("accountData").ChatOpenId;
+
+        // バックエンドにフォローリクエストを送信
+        await fetch("http://localhost:3000/post_chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ MyUserId: MyUserId, PairUserId: PairUserId, Message: TextData }),
         });
-        if (response.data) {
+        // if (response.data) {
           console.log("送信成功しました");
           setTextData("");
           updateSessionData("accountData", "GetStartUnread", 0);
-        }
+        //}
       } catch (err) {
         console.log("err:", err);
       }
@@ -1191,31 +1228,7 @@ const ChatView = () => {
     ):(chatViewId !== null) ? (
       // ローディング
       <div>
-        <Box
-          sx={{
-            marginTop: '20%',
-            display: 'flex', // Flexboxを使用
-            justifyContent: 'center', // 水平方向中央
-            alignItems: 'center', // 垂直方向中央
-          }}
-        >
-          <ColorRing
-              style={{
-                visible: true,
-                margin: "0px",
-                height: "10",
-                width: "10",
-                ariaLabel: "color-ring-loading",
-                wrapperClass: "custom-color-ring-wrapper",
-                colors:
-                ["#e15b64",
-                  "#f47e60",
-                  "#f8b26a",
-                  "#abbd81",
-                  "#849b87"]
-              }}
-            />
-        </Box>
+        <ColorRingStyle />
       </div>
     ):(null)}
 
@@ -1283,23 +1296,25 @@ const ChatView = () => {
 
 // PropTypesの定義
 FollowGroup.propTypes = {
-  title: PropTypes.string.isRequired,
-  followStatusCount: PropTypes.number.isRequired,
-  followStatus: PropTypes.arrayOf(PropTypes.object).isRequired,
-  groupingOpen: PropTypes.bool.isRequired,
-  handleClick: PropTypes.func.isRequired,
-  chatViewId: PropTypes.object.isRequired,
-  chatOpen: PropTypes.func.isRequired,
-  saveScrollPosition: PropTypes.func.isRequired,
+  title: PropTypes.string,
+  followStatusCount: PropTypes.number,
+  followStatus: PropTypes.arrayOf(PropTypes.object),
+  groupingOpen: PropTypes.bool,
+  handleClick: PropTypes.func,
+  chatViewId: PropTypes.string,
+  chatOpen: PropTypes.func,
+  saveScrollPosition: PropTypes.func,
 };
 UnreadStart.propTypes = {
 };
 ChatEditModal.propTypes = {
-  modalOpen: PropTypes.bool.isRequired,
-  handleModalClose: PropTypes.func.isRequired,
-  chatEditData: PropTypes.string.isRequired,
-  chatEditChange: PropTypes.func.isRequired,
-  chatEditUpDate: PropTypes.func.isRequired,
+  modalOpen: PropTypes.bool,
+  handleModalClose: PropTypes.func,
+  chatEditData: PropTypes.string,
+  chatEditChange: PropTypes.func,
+  chatEditUpDate: PropTypes.func,
+};
+ColorRingStyle.propTypes = {
 };
 
 export default ChatView;

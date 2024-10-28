@@ -106,6 +106,15 @@ export default function DashboardLayout({ children }) {
             }));
           }
         }
+        if (data.kind === "chat") {
+          if (data.type === "post") {
+            console.log("index.js : data.noticeData :", data);
+            setWebSocketState((prev) => ({
+              ...prev,
+              Chat: data,
+            }));
+          }
+        }
 
       };
       newWs.onclose = () => {

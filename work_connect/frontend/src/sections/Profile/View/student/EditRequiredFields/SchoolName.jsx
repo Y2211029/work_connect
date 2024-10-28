@@ -97,7 +97,7 @@ const SchoolNameDropdown = ({ SchoolNameData }) => {
         value={selectedSchool}
         onChange={handleChange}
         options={options}
-        placeholder="Select..."
+        placeholder="▼"
         required
       />
     </div>

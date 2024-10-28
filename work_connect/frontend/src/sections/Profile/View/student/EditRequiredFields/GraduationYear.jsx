@@ -55,7 +55,7 @@ const GraduationYearDropdown = ({GraduationData}) => {
         options={options}
         value={Graduation}
         onChange={handleChange}
-        placeholder="Select..."
+        placeholder="▼"
         required
       />
       

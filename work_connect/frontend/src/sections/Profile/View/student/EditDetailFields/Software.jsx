@@ -85,7 +85,7 @@ const Software = ({ SoftwareData }) => {
         value={selectedSoftware}
         onChange={handleChange}
         options={options}
-        placeholder="Select..."
+        placeholder="▼"
         isMulti
       />
     </>

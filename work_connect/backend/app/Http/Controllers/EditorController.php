@@ -330,6 +330,7 @@ class EditorController extends Controller
             $queryNotice->orderBy('w_notices.created_at', 'asc');
 
             $noticeData = $queryNotice->get();
+            $noticeData[0]["message"] = $message;
 
             return response()->json(['message' => 'successfully', 'follower' => $followAllData, 'noticeData' => $noticeData], 200);
         } else {

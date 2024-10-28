@@ -88,7 +88,7 @@ const Hobby = ({ HobbyData }) => {
         value={selectedHobby}
         onChange={handleChange}
         options={options}
-        placeholder="Select..."
+        placeholder="▼"
         isMulti
       />
     </div>

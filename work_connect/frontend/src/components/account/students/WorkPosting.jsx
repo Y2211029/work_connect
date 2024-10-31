@@ -80,7 +80,7 @@ const WorkPosting = () => {
           console.log("file.name",file.name);
           console.log("file.name",file);
           dt.items.add(file);
-          console.log(dt);
+          console.log(dt.files);
         }
       }
 

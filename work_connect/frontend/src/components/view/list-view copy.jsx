@@ -99,7 +99,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName}) {
   useEffect(() => {
     console.log(PathName);
     console.log(ParamUserName);
-    
+
     // URLごとにpost-sort、post-card.jsxを各フォルダから取得
     const loadComponents = async () => {
       if (PathName === "/" || PathName === `/Profile/${SessionAccountData.user_name}` || PathName === `/Profile/${ParamUserName}`) {
@@ -122,9 +122,9 @@ export default function ItemObjectAndPostCard({ type, ParamUserName}) {
         const { default: CompanyListPostCard } = await import("src/sections/CompanyList/post-card");
         setPostCard(() => CompanyListPostCard);
         console.log("CompanyListPostCard");
-      } else if (PathName === `/Internship_JobOffer/joboffers` || 
-        PathName === `/Internship_JobOffer/internships` || 
-        PathName === `/Internship_JobOffer/blogs` || 
+      } else if (PathName === `/Internship_JobOffer/joboffers` ||
+        PathName === `/Internship_JobOffer/internships` ||
+        PathName === `/Internship_JobOffer/blogs` ||
         PathName === `/Profile/${ParamUserName}/News`) {
         const { default: Internship_JobOfferPostCard } = await import("src/sections/InternshipJobOffer/post-card");
         setPostCard(() => Internship_JobOfferPostCard);
@@ -321,7 +321,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName}) {
       },
     },
   };
-  
+
   return (
     <ListView
       SessionAccountData={SessionAccountData}

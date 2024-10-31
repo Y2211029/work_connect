@@ -1,11 +1,11 @@
-import { useContext, useEffect, useState } from "react";
+import { /*useContext,*/ useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
-import { AllItemsContext } from "src/layouts/dashboard/index";
+// import { AllItemsContext } from "src/layouts/dashboard/index";
 import ListView from "src/components/view/list-view";
 
 
@@ -44,7 +44,7 @@ LinkTab.propTypes = {
 
 export default function NavTabs() {
   const { getSessionData } = useSessionStorage();
-  const { /*AllItems,*/ setAllItems } = useContext(AllItemsContext);
+  // const { /*AllItems,*/ setAllItems } = useContext(AllItemsContext);
   // const { IsSearch, Page, sortOption } = AllItems;
 
   const getInitialNewsTabState = () => {
@@ -82,7 +82,7 @@ export default function NavTabs() {
 
       // ページ遷移または状態の更新処理
       pageCheck(category);
-      
+
     }
   };
 

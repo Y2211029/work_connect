@@ -48,6 +48,8 @@ export default function DashboardLayout({ children }) {
   }, [location.pathname, searchParams]); // location.pathname や searchParams が変わるたびに実行
 
   const [AllItems, setAllItems] = useState({
+    // 一覧ローディング
+    isLoading: true,
     DataList: [],
     IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
     Page: 1,

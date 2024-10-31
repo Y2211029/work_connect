@@ -338,15 +338,19 @@ export default function Searchbar() {
     } else {
       setPathName(location.pathname);
     }
+    console.log("setPathName(location.pathname)", location.pathname);
   }, [location]);
   useEffect(() => {
     let url = new URL(window.location.href);
     let urlPageParams = url.searchParams.get("page");
     if (urlPageParams != null) {
       setPathName(location.pathname + "/" + urlPageParams);
+      let a = location.pathname + "/" + urlPageParams;
+      console.log("location.pathname + + urlPageParams", a);
     } else {
       setPathName(location.pathname);
     }
+    console.log("setPathName(urlPageParams):search", urlPageParams);
   }, [searchParams]);
 
   useEffect(() => {
@@ -1021,6 +1025,7 @@ export default function Searchbar() {
           },
         });
         console.log("response.data", response.data);
+        console.log("response.data:PathName", PathName);
         console.log("response.data:internships");
 
         // company-view.jsxにデータを渡す
@@ -1085,6 +1090,7 @@ export default function Searchbar() {
           },
         });
         console.log("response.data", response.data);
+        console.log("response.data:PathName", PathName);
         console.log("response.sessions");
 
         // company-view.jsxにデータを渡す
@@ -1229,11 +1235,12 @@ export default function Searchbar() {
 
   // 検索ボタンを押したとき
   const handleSearch = () => {
-    // 文字列やタグを選択している場合は!falseになるのでtrue
-    // 「並び替え順」「一覧データ」初期化
+    // 文字列やタグを選択している場合
     if (!isAllEmpty(searchSource)) {
+      // 「並び替え順」「一覧データ」初期化
       setAllItems((prevItems) => ({
         ...prevItems,
+        isLoading: true,
         DataList: [],
         IsSearch: {
           ...prevItems.IsSearch,
@@ -1249,10 +1256,11 @@ export default function Searchbar() {
     }
 
     // 文字列やタグを選択していない場合
-    // 「検索文字列・タグ」「並び替え順」「一覧データ」初期化
     if (isAllEmpty(searchSource)) {
+      // 「検索文字列・タグ」「並び替え順」「一覧データ」初期化
       setAllItems((prevItems) => ({
         ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
+        isLoading: true,
         ResetItem: true,
         DataList: [], //検索してない状態にするために初期化 //searchbar.jsxのsearchSourceも初期化
         IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
@@ -1266,11 +1274,33 @@ export default function Searchbar() {
   useEffect(() => {
     // 検索タグが入力されているかつ、pageが変更されたて値があれば検索する
     if (IsSearch.Check && Page) {
-      searchSourceList();
+      let url = new URL(window.location.href);
+      let urlPageParams = url.searchParams.get("page");
+      console.log("searchSourceList:urlPageParams", "/Internship_JobOffer/" + urlPageParams);
+      console.log("searchSourceList:PathName", PathName);
+      if ("/Internship_JobOffer/" + urlPageParams == PathName) {
+        console.log("searchSourceList:Page", Page)
+        console.log("IsSearch.Check, Page, IsSearch.searchToggle, sortOption", PathName);
+        searchSourceList();
+      } else if ("/Internship_JobOffer" != location.pathname) {
+        searchSourceList();
+      }
     }
 
-    console.log("PathName", PathName)
-  }, [IsSearch.Check, Page, IsSearch.searchToggle, sortOption]);
+  }, [IsSearch.Check, Page, IsSearch.searchToggle, sortOption, PathName]);
+
+  useEffect(() => {
+    console.log("Effect!IsSearch.Check! : ", PathName);
+  }, [IsSearch.Check]);
+  useEffect(() => {
+    console.log("Effect!Page! : ", PathName);
+  }, [Page]);
+  useEffect(() => {
+    console.log("Effect!IsSearch.searchToggle! : ", PathName);
+  }, [IsSearch.searchToggle]);
+  useEffect(() => {
+    console.log("Effect!sortOption! : ", PathName);
+  }, [sortOption]);
 
   // 検索欄に入力したとき
   const handleChangeText = (e) => {

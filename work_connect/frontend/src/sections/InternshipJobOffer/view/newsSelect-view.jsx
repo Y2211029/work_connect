@@ -44,7 +44,7 @@ LinkTab.propTypes = {
 
 export default function NavTabs() {
   const { getSessionData } = useSessionStorage();
-  const { /*AllItems,*/ setAllItems } = useContext(AllItemsContext);
+  const { setAllItems } = useContext(AllItemsContext);
   // const { IsSearch, Page, sortOption } = AllItems;
 
   const getInitialNewsTabState = () => {
@@ -53,6 +53,7 @@ export default function NavTabs() {
   };
   const [value, setValue] = useState(getInitialNewsTabState);
 
+  // タブがクリックされたら
   const handleTabClick = (event, newValue) => {
     console.log("handleTabClick");
 
@@ -82,7 +83,18 @@ export default function NavTabs() {
 
       // ページ遷移または状態の更新処理
       pageCheck(category);
-      
+      setAllItems((prevItems) => ({
+        ...prevItems,
+        DataList: [],
+        IsSearch: {
+          ...prevItems.IsSearch,
+          searchToggle: prevItems.IsSearch.searchToggle === 0 ? 1 : 0,
+          Check: true, // 検索タグが選択されていなければfalse
+          searchResultEmpty: false,
+        },
+        Page: 1,
+        sortOption: "orderNewPostsDate",
+      }));
     }
   };
 

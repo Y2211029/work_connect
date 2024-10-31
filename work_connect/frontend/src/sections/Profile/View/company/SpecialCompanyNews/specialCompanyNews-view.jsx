@@ -140,7 +140,7 @@ export default function NavTabs() {
     }
   };
 
-  function pageCheck(pageStr) {
+function pageCheck(pageStr) {
     const url = new URL(window.location.href);
     const urlStr = url.pathname.split('?')[0]; // クエリパラメータを取り除く
     window.history.pushState({}, '', `${urlStr}?page=${pageStr}`);

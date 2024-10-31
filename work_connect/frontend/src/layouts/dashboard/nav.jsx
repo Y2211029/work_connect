@@ -118,6 +118,10 @@ function NavItem({ item }) {
 
   // サイドバークリック 一覧アイテム・並び替え・検索タグ 初期化
   const handleReset = () => {
+    setAllItems((prevItems) => ({
+      ...prevItems,
+      isLoading: true,
+    }));
     if (sortOption !== "orderNewPostsDate" || Page > 1 || IsSearch.Check == true) {
       setAllItems((prevItems) => ({
         ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用

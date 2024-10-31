@@ -58,15 +58,8 @@ const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, s
       }
       );
     });
-
-    // if(SearchFlag == true) {
-    //   setWorkList((prev) => [...prev, ...generatePosts(filteredNewWorks)])
-    // }else {
-    //   setWorkList("検索結果は0件です。");
-    // }
-
-    setWorkList((prev) => [...prev, ...generatePosts(filteredNewWorks)])
-    setLoading(false);
+    setWorkList((prev) => [...prev, ...generatePosts(filteredNewWorks)]);
+    // setLoading(false);
     setItemLoading(false);
   }
 
@@ -170,12 +163,12 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
             break;
           }
 
-          case path === `/CreateForm/${NewsDetailId}`: {
-            const { default: CreateFormPostCard } = await import("src/sections/CreateForm/post-card");
-            setPostCard(() => CreateFormPostCard);
-            console.log("CreateFormPostCard");
-            break;
-          }
+        case path === `/CreateForm/${NewsDetailId}`: {
+          const { default: CreateFormPostCard } = await import("src/sections/CreateForm/post-card");
+          setPostCard(() => CreateFormPostCard);
+          console.log("CreateFormPostCard");
+          break;
+        }
 
         case options.DecodeURL === `/Profile/${ParamUserName}` &&
           options.page === "checkform" &&
@@ -213,6 +206,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       console.log("デコードURL", options.DecodeURL);
       console.log("カテゴリ名", options.category);
       console.log("ページ名", options.page);
+      console.log("PathNamePathName", PathName);
     };
 
 
@@ -578,13 +572,12 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   const { loginStatusCheckFunction } = LoginStatusCheck();
   // 作品アイテム格納
   const [WorkOfList, setWorkOfList] = useState([]);
-  // 画面全体ローディング
-  const [isLoadColorLing, setIsLoadColorLing] = useState(true);
   // 一覧アイテム最後尾ローディング
   const [isLoadItemColorLing, setIsLoadItemColorLing] = useState(false);
   // AllItemsContextから状態を取得
   const { AllItems, setAllItems } = useContext(AllItemsContext);
-  const { DataList, IsSearch, Page, sortOption, ResetItem } = AllItems;
+  const { isLoading, DataList, IsSearch, Page, sortOption, ResetItem } = AllItems;
+  const [isLoadItem, setIsLoadItem] = useState(false);
   // スクロールされたらtrueを返す。
   const [isIntersecting, ref] = useIntersection(setting);
 
@@ -593,6 +586,15 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   useEffect(() => {
     loginStatusCheckFunction();
   }, []);
+  useEffect(() => {
+    if (isLoading) {
+      setIsLoadItem(true);
+    } else {
+      setIsLoadItem(false);
+    }
+  }, [isLoading]);
+
+  console.log("あいうえお")
 
   // 並べ替え
   const handleSortChange = (event) => {
@@ -601,11 +603,10 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     // URLパラメータにセットしてLaravel側でデータを1取得するための準備
     setAllItems((prevItems) => ({
       ...prevItems,
+      isLoading: true,
       Page: 1,
       sortOption: newValue,
     }));
-    // ローディング表示
-    setIsLoadColorLing(true);
     // 無駄なアイテム追加を防ぐために一度綺麗にする
     setWorkOfList([]);
   };
@@ -616,15 +617,25 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   console.log(url);
   console.log(DecodeURL);
   // URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合
-  if (url && (PathName === "/" || PathName === "/VideoList" || PathName === "/StudentList" || PathName === "/CompanyList"
-    || PathName === "/Internship_JobOffer" || PathName === `/WriteForm/${NewsDetailId}` || PathName === `/CreateForm/${NewsDetailId}`
-    || PathName === "/Internship_JobOffer/joboffers" || PathName === "/Internship_JobOffer/internships"
+  if (url && (PathName === "/"
+    || PathName === "/VideoList"
+    || PathName === "/StudentList"
+    || PathName === "/CompanyList"
+    || PathName === "/Internship_JobOffer"
+    || PathName === `/WriteForm/${NewsDetailId}`
+    || PathName === `/CreateForm/${NewsDetailId}`
+    || PathName === "/Internship_JobOffer/joboffers"
+    || PathName === "/Internship_JobOffer/internships"
     || PathName === "/Internship_JobOffer/blogs"
-    || DecodeURL === `/Profile/${ParamUserName}` &&
-    page === "news" || page === "checkform" &&
-    (category === "joboffers" || category === "internships" || category === "blogs" || category === "application_form_list")
-    || DecodeURL === `/Profile/${ParamUserName}` &&
-    page === "companyinformation"
+    || DecodeURL === `/Profile/${ParamUserName}`
+    && page === "news"
+    || page === "checkform"
+    && (category === "joboffers" ||
+      category === "internships" ||
+      category === "blogs" ||
+      category === "application_form_list")
+    || DecodeURL === `/Profile/${ParamUserName}`
+    && page === "companyinformation"
   )) {
     // console.log(" URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合");
     lastUrl = `${url}?page=${Page}&sort=${sortOption}`;
@@ -689,20 +700,68 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     if (!ResetItem && !IsSearch.Check && data) {
       console.log("検索されていないかつ作品データがあるとき", WorkOfList);
       console.log("datadata", data);
-      funcSetWorksItem(idKey, tags, WorkOfList, setWorkOfList, data, setIsLoadColorLing, setIsLoadItemColorLing, error, generatePosts);
+
+      funcSetWorksItem(
+        idKey,
+        tags,
+        WorkOfList,
+        setWorkOfList,
+        data,
+        setIsLoadItem,
+        setIsLoadItemColorLing,
+        error,
+        generatePosts
+      );
+
+      // データが更新されてからisLoadingをfalseに設定
+      if (data.length !== 0) {
+        console.log("data:isLoading", isLoading);
+        setIsLoadItem(false);
+        console.log("data:setIsLoadItem:false");
+      }
+      setAllItems((prev) => ({
+        ...prev,
+        isLoading: data.length === 0 ? true : false // データが空のときはtrueにしてローディングを維持
+      }));
     }
   }, [data, error, ResetItem, IsSearch.Check, IsSearch.searchResultEmpty]);
 
-
-  /*----- 検索されたかつ、検索結果が帰ってきたとき -----*/
+  // 検索された場合
   useEffect(() => {
     if (IsSearch.Check && DataList) {
       console.log("検索されたかつ、検索結果が帰ってきたとき", WorkOfList);
       console.log("datadataDataList", DataList);
       console.log("datadataDataList:AllItems", AllItems);
-      funcSetWorksItem(idKey, tags, WorkOfList, setWorkOfList, DataList, setIsLoadColorLing, setIsLoadItemColorLing, error, generatePosts);
+
+      funcSetWorksItem(
+        idKey,
+        tags,
+        WorkOfList,
+        setWorkOfList,
+        DataList,
+        setIsLoadItem,
+        setIsLoadItemColorLing,
+        error,
+        generatePosts
+      );
+
+      // データ取得後にisLoadingをfalseにする
+      if (DataList.length !== 0) {
+        setIsLoadItem(false);
+        console.log("DataList:setIsLoadItem:false");
+      }
+      setAllItems((prev) => ({
+        ...prev,
+        isLoading: DataList.length === 0 ? true : false // 検索結果が空ならtrueにしてローディングを維持
+      }));
     }
   }, [DataList, IsSearch.Check, IsSearch.searchResultEmpty]);
+
+
+  useEffect(() => {
+    console.log("isLoading", isLoading);
+
+  }, [isLoading]);
 
   // workItems = IsSearch.searchResultEmpty
   //   ? "検索結果は0件です" // フラグに基づいて表示
@@ -715,6 +774,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   useEffect(() => {
     console.log("WorkOfList", WorkOfList);
   }, [WorkOfList]);
+
   const renderWorkItems = WorkOfList && PostCard ?
     WorkOfList.map((post, index) => (
       <PostCard className="mediaCard" ref={index === WorkOfList.length - 1 ? ref : null}
@@ -724,7 +784,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
 
   return (
     <>
-      {isLoadColorLing && (
+      {isLoadItem && (
         <ColorRing
           visible={true}
           height="100"

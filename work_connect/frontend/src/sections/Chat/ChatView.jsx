@@ -455,49 +455,13 @@ const ChatView = () => {
   const get_chat = "http://localhost:8000/get_chat";
   //const post_chat = "http://localhost:8000/post_chat";
   const delete_chat = "http://localhost:8000/delete_chat";
-  const already_read_chat = "http://localhost:8000/already_read_chat";
+  //const already_read_chat = "http://localhost:8000/already_read_chat";
   const update_chat = "http://localhost:8000/update_chat";
 
   /// 画面読み込み後、1度だけ実行
   useEffect(() => {
 
-    // フォローリストの取得
-    async function GetData() {
-      try {
-        // Laravel側からデータを取得
-        const response = await axios.get(get_channel_list, {
-          params: {
-            MyUserId: MyUserId, // ログイン中のID
-          },
-        });
-
-        if (response) {
-          console.log(JSON.stringify(response, null, 2));
-          const data = response.data;
-          setResponseChannelListData(data);
-
-          // フォロー状態の処理をまとめる
-          handleFollowStatus(data, '相互フォローしています', setFollowStatus_1, setFollowStatusCount_1);
-          handleFollowStatus(data, 'フォローしています', setFollowStatus_2, setFollowStatusCount_2);
-          handleFollowStatus(data, 'フォローされています', setFollowStatus_3, setFollowStatusCount_3);
-        }
-      } catch (err) {
-        console.log("err:", err);
-        alert("フォロワーがいません");
-      }
-    }
-
-    // DBからデータを取得
-    if (MyUserId) {
-      GetData();
-    }
-
-    // フォロー状態の処理を関数化
-    function handleFollowStatus(data, status, setFollowStatus, setFollowStatusCount) {
-      const filteredItems = data.filter(item => item.follow_status === status);
-      setFollowStatus(filteredItems);
-      setFollowStatusCount(filteredItems.length);
-    }
+    GetChannelList();
 
     // セッションデータと状態更新をまとめる関数
     function updateChatViewData(item) {
@@ -548,7 +512,10 @@ const ChatView = () => {
 
     // セッションストレージ取得
     setAccountData(getSessionData("accountData"));
+    // フォローリスト、チャット取得
+    GetChannelList();
     GetChat(chatViewId);
+    alert("GET CHAT");
 
     // 既読をつける
     AlreadyReadChat(chatViewId);
@@ -596,6 +563,44 @@ const ChatView = () => {
     PostChat();
     // チャットのスクロールを下にする
     scrollToBottom();
+  };
+
+  /// フォローリストの取得
+  const GetChannelList = () => {
+    async function GetData() {
+      try {
+        // Laravel側からデータを取得
+        const response = await axios.get(get_channel_list, {
+          params: {
+            MyUserId: MyUserId, // ログイン中のID
+          },
+        });
+
+        if (response) {
+          console.log(JSON.stringify(response, null, 2));
+          const data = response.data;
+          setResponseChannelListData(data);
+
+          // フォロー状態の処理をまとめる
+          handleFollowStatus(data, '相互フォローしています', setFollowStatus_1, setFollowStatusCount_1);
+          handleFollowStatus(data, 'フォローしています', setFollowStatus_2, setFollowStatusCount_2);
+          handleFollowStatus(data, 'フォローされています', setFollowStatus_3, setFollowStatusCount_3);
+        }
+      } catch (err) {
+        console.log("err:", err);
+        alert("フォロワーがいません");
+      }
+    }
+    // DBからデータを取得
+    if (MyUserId) {
+      GetData();
+    }
+    // フォロー状態の処理を関数化
+    function handleFollowStatus(data, status, setFollowStatus, setFollowStatusCount) {
+      const filteredItems = data.filter(item => item.follow_status === status);
+      setFollowStatus(filteredItems);
+      setFollowStatusCount(filteredItems.length);
+    }
   };
 
   /// 最新のチャットを取得する処理
@@ -696,13 +701,20 @@ const ChatView = () => {
       try {
         console.log("TextData:");
 
-        const response = await axios.post(already_read_chat, {
-          MyUserId: MyUserId, //ログイン中のID
-          PairUserId: id, // 相手のID
+        // const response = await axios.post(already_read_chat, {
+        //   MyUserId: MyUserId, //ログイン中のID
+        //   PairUserId: id, // 相手のID
+        // });
+
+         // バックエンドにフォローリクエストを送信
+         await fetch("http://localhost:3000/already_read_chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ MyUserId: MyUserId, PairUserId: id }),
         });
-        if (response.data) {
-          console.log("チャットの既読に成功しました");
-        }
+
       } catch (err) {
         console.log("err:", err);
       }
@@ -1063,7 +1075,7 @@ const ChatView = () => {
           variant="caption"
           component="div"
           sx={{
-            margin: '0 10px',
+            //margin: '0 10px',
             position: 'sticky',
             top: '0',
             backgroundColor: '#F9FAFB',
@@ -1170,13 +1182,29 @@ const ChatView = () => {
                 }}
               >
                 <Typography variant="body1">
-                  {/* 改行に対応 */}
-                  {element.message.split('\n').map((msg, idx) => (
+                  {/* 改行、aタグに対応 */}
+                  {element.message.split('\n').map((msg, idx) => {
+
+                  const linkRegex = /(https?:\/\/[^\s]+)/g;
+                  const msgText = msg.split(linkRegex);
+
+                  return (
                     <React.Fragment key={idx}>
-                      {msg}
-                      {idx < element.message.split('\n').length - 1 && <br />} {/* 最後の要素以外で改行 */}
+                      {msgText.map((part, index) =>
+                        linkRegex.test(part) ? (
+                          // aタグを含む場合
+                          <a key={index} href={part} target="_blank" rel="noopener noreferrer">
+                            {part}
+                          </a>
+                        ) : (
+                          // aタグを含まない場合
+                          part
+                        )
+                      )}
+                      {idx < element.message.split('\n').length - 1 && <br />}
                     </React.Fragment>
-                  ))}
+                  );
+                })}
                 </Typography>
               </Paper>
 

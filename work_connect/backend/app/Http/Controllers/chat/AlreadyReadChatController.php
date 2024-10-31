@@ -23,14 +23,16 @@ class AlreadyReadChatController extends Controller
             w_chatsテーブルのsend_user_idと$MyUserIdが一致するレコードをすべてとりだし、
             未読から既読にする。*/
 
-            w_chat::where('get_user_id', $MyUserId)
+            $responseData = w_chat::where('get_user_id', $MyUserId)
             ->where('send_user_id', $PairUserId)
             ->where('check_read', '未読') // "未読"のレコードに絞り込む
             ->update(['check_read' => '既読']); // "既読"に更新
 
+            
+
 
             // Reactに返す
-            return response()->json("succuses");
+            return response()->json($responseData);
 
 
         } catch (\Exception $e) {

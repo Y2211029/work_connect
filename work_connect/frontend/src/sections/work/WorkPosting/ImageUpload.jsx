@@ -138,7 +138,7 @@ const SortableItem = ({
 
   // 並べ替え可能なアイテムの表示とテキストエリアの設定
   return (
-    <div ref={setNodeRef} style={style} {...attributes}>
+    <div ref={setNodeRef} style={style} {...attributes} draggable={true}>
       <div style={containerStyle}>
         <img src={image} alt="" style={imgStyle} {...listeners} />
         <button type="button" style={buttonStyle} onClick={handleDelete}>
@@ -286,41 +286,47 @@ const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
   };
 
   // ドラッグ開始のハンドラ
-  const handleDragStart = (event, id) => {
-    event.dataTransfer.setData("text/plain", id); // ドラッグしたアイテムのIDを保存
-    setActiveId(id); // ドラッグ中のアイテムIDを保存
+  const handleDragStart = (event) => {
+    setActiveId(event.active.id); // ドラッグ中のアイテムIDを保存
   };
 
   // ドラッグ終了のハンドラ
-  const handleDragEnd = (event, targetId) => {
-    event.preventDefault();
-    const draggedId = event.dataTransfer.getData("text/plain"); // ドラッグされたアイテムのIDを取得
+  const handleDragEnd = (event) => {
     const { active, over } = event;
-    setActiveId(null); // ドラッグ中のIDをリセット
+    setActiveId(null);
 
-    // ドラッグ先のアイテムが異なる場合にのみ順序を変更
-    // 10/25追加
-    if (draggedId !== targetId) {
-      setWorkImage((prevWorkImage) => {
-        const oldIndex = prevWorkImage.findIndex(
-          (item) => item.id === draggedId
-        );
-        const newIndex = prevWorkImage.findIndex(
-          (item) => item.id === targetId
-        );
-        const updatedItems = arrayMove(prevWorkImage, oldIndex, newIndex); // アイテムを並べ替え
-        onImagesUploaded(updatedItems); // 親コンポーネントに更新を通知
-        return updatedItems;
-      });
-    }
-    // ドラッグ先のアイテムが異なる場合にのみ順序を変更
-    // 10/21追加
-    if (active.id !== over.id) {
+    if (over && active.id !== over.id) {
       setItems((items) => {
+        console.log("Current workImage:", items); // workImageが配列か確認
+        if (!Array.isArray(items)) {
+          console.error("Error: workImage is not an array.");
+          return items; // 配列でない場合はそのまま返す
+        }
+
         const oldIndex = items.findIndex((item) => item.id === active.id);
         const newIndex = items.findIndex((item) => item.id === over.id);
-        const updatedItems = arrayMove(workImage, oldIndex, newIndex); // アイテムを並べ替え
-        onImagesUploaded(updatedItems); // 親コンポーネントに更新を通知
+        const updatedItems = arrayMove(items, oldIndex, newIndex);
+
+        // DataTransferオブジェクトを作成
+        const dataTransfer = new DataTransfer();
+
+        updatedItems.forEach((item) => {
+          // itemがFileオブジェクトでない場合、Fileとして生成（例）
+          const file =
+            item instanceof File
+              ? item
+              : new File([item.content], item.name, { type: item.type });
+
+          dataTransfer.items.add(file);
+        });
+
+        // FileList型として取得
+        const fileList = dataTransfer.files;
+
+        callSetImage(fileList); // アップロードしたファイルを処理
+        onImagesUploaded(updatedItems);
+        setItems(updatedItems);
+
         return updatedItems;
       });
     }
@@ -358,7 +364,6 @@ const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
   };
 
   const activeItem =
-    // workImage && workImage.find((item) => item.id === activeId); // ドラッグ中のアイテム
     items.find((item) => item.id === activeId); // ドラッグ中のアイテム
 
   const overlayStyle = {
@@ -396,13 +401,10 @@ const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
         modifiers={[restrictToWindowEdges]} // ドラッグが画面内に制限されるようにする
       >
         <SortableContext
-          // items={workImage && workImage.map((item) => item.id)} // 安全に配列を扱う
           items={items.map((item) => item.id)} // 安全に配列を扱う
           strategy={rectSortingStrategy}
         >
           <div style={{ gap: "10px" }}>
-            {/* {workImage &&
-              workImage.map((item) => ( */}
             {items.map((item) => (
               <SortableItem
                 key={item.id}

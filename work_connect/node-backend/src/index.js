@@ -192,6 +192,46 @@ app.post("/post_chat", async (req, res) => {
   }
 });
 
+// チャットの既読
+app.post("/already_read_chat", async (req, res) => {
+  const { MyUserId, PairUserId } = req.body;
+
+  // laravelに既読を送信。
+  try {
+    const response = await axios.post(
+      "http://localhost:8000/already_read_chat"
+      , {
+      MyUserId: MyUserId, // ログイン中のID
+      PairUserId: PairUserId, // チャット相手のID
+    });
+
+    res.json(response.data);
+
+    if (clients[response.data.get_user_id]) {
+      clients[response.data.get_user_id].send(
+        JSON.stringify({
+          kind: "chat",
+          type: "post",
+          chatData: response.data,
+        })
+      );
+    }
+    if (clients[response.data.send_user_id]) {
+      clients[response.data.send_user_id].send(
+        JSON.stringify({
+          kind: "chat",
+          type: "post",
+          chatData: response.data,
+        })
+      );
+    }
+  }
+
+   catch (error) {
+    console.error("Error sending follow notification:", error);
+  }
+});
+
 // ニュース投稿
 app.post("/news_upload", async (req, res) => {
   console.log("req.body.body.workData", req.body.body);

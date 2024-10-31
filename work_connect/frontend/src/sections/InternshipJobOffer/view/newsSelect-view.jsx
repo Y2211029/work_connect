@@ -1,11 +1,11 @@
-import { useContext, useEffect, useState } from "react";
+import { /*useContext,*/ useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
-import { AllItemsContext } from "src/layouts/dashboard/index";
+// import { AllItemsContext } from "src/layouts/dashboard/index";
 import ListView from "src/components/view/list-view";
 
 
@@ -83,18 +83,7 @@ export default function NavTabs() {
 
       // ページ遷移または状態の更新処理
       pageCheck(category);
-      setAllItems((prevItems) => ({
-        ...prevItems,
-        DataList: [],
-        IsSearch: {
-          ...prevItems.IsSearch,
-          searchToggle: prevItems.IsSearch.searchToggle === 0 ? 1 : 0,
-          Check: true, // 検索タグが選択されていなければfalse
-          searchResultEmpty: false,
-        },
-        Page: 1,
-        sortOption: "orderNewPostsDate",
-      }));
+      
     }
   };
 

@@ -106,7 +106,7 @@ export function NavTabs({ initialTabValue = 0 }) {
   function pageCheck(pageStr) {
     const url = new URL(window.location.href);
     const urlStr = url.pathname.split('?')[0]; // クエリパラメータを取り除く
-    window.history.pushState({}, '', `${urlStr}?page=checkform&category=${pageStr}`);
+    window.history.pushState({}, '', `${urlStr}?category=${pageStr}`);
   }
 
   return (

@@ -3,6 +3,7 @@ import "./Editor.css";
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
 
+
 // プラグインのインポート
 import EditorJS from "@editorjs/editorjs";
 import Title from "title-editorjs";
@@ -42,23 +43,15 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import MUIButton from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import DrawIcon from '@mui/icons-material/Draw';
-import SaveIcon from '@mui/icons-material/Save';
-import CampaignIcon from '@mui/icons-material/Campaign';
-import DeleteIcon from '@mui/icons-material/Delete';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import ErrorIcon from '@mui/icons-material/Error';
-import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
 import NewsMenuTable from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 // import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import moment from 'moment';
 import { Helmet } from 'react-helmet-async';
-import TooltipTitle from '@mui/material/Tooltip';
-import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 
 //データ保存
 import axios from "axios";
@@ -68,7 +61,7 @@ import { useNavigate } from 'react-router-dom';
 
 //過去に投稿したニュースを取得
 import specialCompanyNewsItem from "src/_mock/specialCompanyNewsItem";
-import Grid from "@mui/material/Unstable_Grid2";
+import NewsMenu from "./clickedmenu/NewsMenu"
 
 
 const Editor = () => {
@@ -84,13 +77,11 @@ const Editor = () => {
   const [news_id, setNewsId] = useState(0); // ニュースの情報が格納されているDBのidを格納する
   const [draft_list, setDraftList] = useState([]); // ニュースの下書きリストを保持するステート
   const [selected_draft, setSelectedDraft] = useState(null); // 選択された下書きを保持するステート
-  const textareaRef = useRef(null);
   const [newsmenushow, setNewsMenuShow] = useState(false);
   const [clickedMenu, setClickedMenu] = useState(null);
   const [charCount, setCharCount] = useState(0);
-  const [usedPlugins, setUsedPlugins] = useState(null);
   const [usedImages, setUsedImages] = useState(null);
-
+  const [newsContent, setNewsContent] = useState("");
   const news_save_url = "http://127.0.0.1:8000/news_save";
   const thumbnail_image_save_url = "http://127.0.0.1:8000/thumbnail_image_save";
   const news_upload_url = "http://localhost:8000/news_upload";
@@ -107,6 +98,8 @@ const Editor = () => {
       backgroundColor: "#a9a9a9",
     },
   };
+
+
   // style CSS ここまで
 
 
@@ -121,7 +114,7 @@ const Editor = () => {
       }
 
       //採用担当者からの一言メッセージを変数に入れる
-      const newsContent = textareaRef.current.value;
+
 
       const outputData = await editorInstance.current.save();
 
@@ -150,7 +143,7 @@ const Editor = () => {
       console.log(response.data.id);
       setNewsId(response.data.id);
       console.log("成功");
-      navigate('/Internship_JobOffer');
+      navigate(`/Internship_JobOffer?page=${genre}`);
     } catch (error) {
       console.log("Error:", error);
     }
@@ -159,6 +152,18 @@ const Editor = () => {
   const titlechange = (event) => {
     setTextValue(event.target.value); // テキストエリアの値をstateに反映
   };
+
+  const handleChange = (e) => {
+    const newValue = e.target.value;
+    setNewsContent(newValue);
+    console.log("newValue", newValue);
+  }
+
+  const notification_messagehandleChange = (e) =>{
+    const newValue = e.target.value;
+    setNewsContent(newValue);
+    console.log("newValue",newValue);
+}
 
 
 
@@ -181,6 +186,7 @@ const Editor = () => {
         value: outputData,    // ニュース記事
         title: textValue,     // タイトル
         news_id: news_id,     // ID
+        message: newsContent, //通知に添えるメッセージ
         company_id: sessionId // 企業ID
       }, {
         headers: {
@@ -203,10 +209,9 @@ const Editor = () => {
 
 
 
-  const closeModal = () => {
-    setNewsMenuShow(false);
-    document.body.style.overflow = 'auto';
-  };
+
+
+
 
 
   const handleImageUpload = async (file) => {
@@ -272,7 +277,7 @@ const Editor = () => {
     }
   };
 
-  const rewrite_news = (id) => {
+  const rewrite_news = async(id) => {
     //ニュースメニューを閉じる
     closeModal("NewsMenu");
     // ドラフトリストから選択したIDのアイテムを取得
@@ -290,28 +295,33 @@ const Editor = () => {
     setTextValue(select_draft_list.article_title); // タイトル上書き
     if (!select_draft_list.header_img || select_draft_list.header_img.trim() === '') {
       // header_img が null、undefined、または空文字列の場合
+      setImageUrl("");
       setDisplayInput(true);
       console.log("画像NULL");
+      console.log("画像パス",select_draft_list.header_img);
     } else {
       // header_img が空でない場合
-      setImageUrl(`http://127.0.0.1:8000/${select_draft_list.header_img}`); // ヘッダー画像上書き
+      setImageUrl(select_draft_list.header_img); // ヘッダー画像上書き
       setDisplayInput(false);
       console.log("画像NULLじゃない");
+      console.log("画像パス",select_draft_list.header_img);
     }
 
     // エディタの内容を更新
     if (editorInstance.current && typeof editorInstance.current.render === "function") {
       try {
+        console.log("カレント", editorInstance.current);
         // select_draft_list.summaryがエディタが理解できる形式であることを確認
         const content = select_draft_list.summary ? JSON.parse(select_draft_list.summary) : {};
         editorInstance.current.render(content); // エディタにデータをセット
+        console.log("コンテンツ", content);
+        await countChars(); //countChars関数を用いて、最初から記事の内容を書いている場合、その文字数を反映させる
       } catch (error) {
         console.error("Error parsing or rendering content:", error);
       }
     } else {
       console.log("Editor instance or render function not available");
     }
-
     // news_idをセット
     setNewsId(select_draft_list.id);
   };
@@ -388,29 +398,10 @@ const Editor = () => {
           </TableRow>
           <TableRow>
             <TableCell>
-              {usedPlugins && usedPlugins.length > 0 ? (
-                <CheckBoxIcon color="primary" aria-label="設定完了しています" />
-              ) : (
-                <ErrorIcon color="error" aria-label="設定完了していません" />
-              )}
-            </TableCell>
-            <TableCell>
-              {usedPlugins && usedPlugins.length > 0 ? (
-                <>
-                  <p>使用プラグイン</p>
-                  <ShowUsedPlugins usedPlugins={usedPlugins} />
-                </>
-              ) : (
-                <p>プラグインを使用していません</p>
-              )}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>
               {usedImages && usedImages.length > 0 ? (
                 <CheckBoxIcon color="primary" aria-label="設定完了しています" />
               ) : (
-                <ErrorIcon color="error" aria-label="設定完了していません" />
+                <QuestionMarkIcon color="error" aria-label="設定完了していません" />
               )}
             </TableCell>
             <TableCell>
@@ -429,44 +420,6 @@ const Editor = () => {
     );
   };
 
-
-  const ShowUsedPlugins = ({ usedPlugins }) => {
-    if (!Array.isArray(usedPlugins)) {
-      console.error('usedPlugins is not an array:', usedPlugins);
-      return <p>プラグインのデータにエラーがあります</p>;
-    }
-
-    return (
-      <>
-
-        {usedPlugins.length > 0 ? (
-          usedPlugins.map((plugin, index) => (
-            <MUIButton
-              key={index}
-              className="custom-button"
-              variant="outlined"
-              sx={{
-                borderColor: '#637381',
-                color: '#637381',
-                '&:hover': { borderColor: '#637381' },
-                cursor: 'pointer',
-                margin: '4px' // ボタンの間隔を調整
-              }}
-            >
-              {plugin}
-            </MUIButton>
-          ))
-        ) : (
-          <p>プラグインがありません</p> // プラグインがない場合のメッセージ
-        )}
-      </>
-    );
-  };
-
-  // propTypes を定義して、props の型を検証する
-  ShowUsedPlugins.propTypes = {
-    usedPlugins: PropTypes.arrayOf(PropTypes.string).isRequired
-  };
 
   const ShowUsedImages = ({ usedImages }) => {
     if (!Array.isArray(usedImages)) {
@@ -513,13 +466,13 @@ const Editor = () => {
 
   //テキストの文字数(テーブルやリスト・コードなど)使用したプラグインの名前を格納
   const countChars = async () => {
+    console.log("countChars関数のニュース内容",editorInstance.current);
     if (editorInstance.current) {
       const outputData = await editorInstance.current.save();
       let text = '';
       let image = '';
       console.log("外部データ", outputData);
       console.log("ブロック", outputData.blocks);
-      let usedPlugins = new Set(); // 使用したプラグインを格納
       let usedImages = new Set(); // 使用した画像を格納
 
       outputData.blocks.forEach(block => {
@@ -528,35 +481,14 @@ const Editor = () => {
         }
 
         switch (block.type) {
-          case 'paragraph':
-            usedPlugins.add('パラグラフ');
-            break;
-          case 'header':
-            usedPlugins.add('ヘッダー');
-            break;
-          case 'list':
-            usedPlugins.add('リスト');
-            break;
-          case 'quote':
-            usedPlugins.add('引用');
-            break;
-          case 'title':
-            usedPlugins.add('タイトル');
-            break;
-          case 'toggle':
-            usedPlugins.add('トグル');
-            break;
           case 'alert':
             text += block.data.message || '';
-            usedPlugins.add('警告');
             break;
           case 'raw':
             text += block.data.html || '';
-            usedPlugins.add('HTML');
             break;
           case 'code':
             text += block.data.code || '';
-            usedPlugins.add('コード');
             break;
           case 'table':
             // テーブルブロックの各セルの文字をカウント
@@ -565,47 +497,23 @@ const Editor = () => {
                 text += cell || '';
               });
             });
-            usedPlugins.add('テーブル');
             break;
           case 'nestedchecklist':
             block.data.items.forEach(item => {
               text += item.content || '';
             });
-            usedPlugins.add('リスト');
             break;
           case 'checklist':
             block.data.items.forEach(item => {
               text += item.text || '';
             });
-            usedPlugins.add('チェックリスト');
-            break;
-          case 'button':
-            usedPlugins.add('ボタン');
-            break;
-          case 'delimiter':
-            usedPlugins.add('区切り線');
-            break;
-          case 'audioPlayer':
-            usedPlugins.add('オーディオプレイヤー');
             break;
           //画像
           case 'image':
             image = block.data.file.url;
             console.log("画像URL", image);
             usedImages.add(image);
-            usedPlugins.add('画像');
             break;
-          case 'carousel':
-            usedPlugins.add('カルーセル');
-            break;
-          case 'slide':
-            usedPlugins.add('スライド');
-            break;
-          case 'imageGallery':
-            usedPlugins.add('イメージギャラリー');
-            break;
-          default:
-            console.warn(`未対応のブロックタイプ: ${block.type}`);
         }
       });
 
@@ -624,11 +532,6 @@ const Editor = () => {
       console.log("文字", text);
       console.log("リプレイス後の文字", plainText);
       setCharCount(plainText.length); // 文字数を設定
-
-      // 使用されたプラグインを配列に変換
-      const usedPluginsArray = Array.from(usedPlugins);
-      console.log("使用されたプラグイン", usedPluginsArray);
-      setUsedPlugins(usedPluginsArray);
 
       // 使用された画像を配列に変換
       const usedImagesArray = Array.from(usedImages);
@@ -679,6 +582,7 @@ const Editor = () => {
 
 
     if (editorHolder.current) {
+      console.log("editorHolder.current入りました");
       editorInstance.current = new EditorJS({
         holder: editorHolder.current,
         onChange: countChars,
@@ -1124,29 +1028,26 @@ const Editor = () => {
     }
   };
 
+
   const NewsMenuShow = () => {
     setNewsMenuShow(true);
+    console.log("開く");
     document.body.style.overflow = 'hidden';
   }
+
+  const closeModal = () => {
+    setNewsMenuShow(false);
+    console.log("閉じる");
+    document.body.style.overflow = 'auto';
+  };
+
 
   const handleClickEnter = (menuName) => {
     setClickedMenu(null);
     setClickedMenu(menuName);
   };
 
-  const FormattedDate = (time) => {
-    return moment(time).format('YYYY/MM/DD HH:mm:ss');
-  };
 
-  const header_img_show = (draft) => {
-    if (draft.header_img === null) {
-      return (
-        <ImageNotSupportedIcon fontSize="large"/>
-      );
-    } else {
-      return <img src={draft.header_img} alt="Draft Image" />;
-    }
-  };
 
   const getNewsTitle = () => {
     let NewsTitle;
@@ -1169,15 +1070,6 @@ const Editor = () => {
     );
   };
 
-  const menuItems = [
-    { key: "draftList", icon: <DrawIcon />, text: "下書きリスト" },
-    { key: "saveNews", icon: <SaveIcon />, text: "ニュースを保存する" },
-    { key: "releaseNews", icon: <CampaignIcon />, text: "ニュースを公開する" },
-  ];
-
-  const additionalMenuItem = (genre === "Internship" || genre === "JobOffer" || genre === "Session") ? (
-    { key: "createForm", icon: <DisplaySettingsIcon />, text: "応募フォームを作成する" }
-  ) : null;
 
 
   return (
@@ -1189,12 +1081,14 @@ const Editor = () => {
       {getNewsTitle()}
 
       {/* アップロードされた画像の表示 */}
-      {imageUrl && (
+      {imageUrl &&
+      (
         <div className="uploaded-image" id="uploaded-image">
           <img src={`${imageUrl}`} alt="Uploaded" style={{ width: '100%', height: '300px' }} />
           <CancelIcon onClick={thumbnail_img_delete} />
         </div>
       )}
+
 
       {/* 画像を選ぶ */}
       <form>
@@ -1208,140 +1102,36 @@ const Editor = () => {
         />
       </form>
 
+
       <Stack direction="row" alignItems="center" spacing={1}>
         <MUIButton onClick={NewsMenuShow} variant="contained" sx={buttonStyle}>
           ニュースメニュー
         </MUIButton>
       </Stack>
 
-      {newsmenushow && (
-        <div id="news_menu_modal" className="news_menu_modal">
-          <div className="news_menu_modal_content">
-            <p><button className="CancelButton" onClick={() => closeModal()}>×</button></p>
-
-            <div className="menu-content">
-              <div className="menu-container">
-                {menuItems.map(({ key, icon, text }) => (
-                  <div
-                    key={key}
-                    className="menu-item"
-                    onClick={() => handleClickEnter(key)}
-                    style={{ backgroundColor: clickedMenu === key ? "rgba(201, 201, 204, .48)" : "transparent" }}
-                  >
-                    <div className="icon-text-container">
-                      {icon}
-                      <p>{text}</p>
-                    </div>
-                  </div>
-                ))}
-                {additionalMenuItem && (
-                  <div
-                    className="menu-item"
-                    onClick={() => handleClickEnter(additionalMenuItem.key)}
-                    style={{ backgroundColor: clickedMenu === additionalMenuItem.key ? "rgba(201, 201, 204, .48)" : "transparent" }}
-                  >
-                    <div className="icon-text-container">
-                      {additionalMenuItem.icon}
-                      <p>{additionalMenuItem.text}</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="hover-content">
-                {clickedMenu === "draftList" && (
-                  <>
-                    {draft_list.length > 0 ? (
-                      draft_list.map(draft => (
-                        <NewsMenuTable className="draftlisttable" key={draft.id}>
-                          <TableHead>
-                            <TableRow>
-                              <TableCell style={{ backgroundColor: "#fff", border: "none" }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                  {/* 画像を左側に配置 */}
-                                  <div className="news_img">
-                                    {header_img_show(draft)}
-                                  </div>
-                                  {/* テキストと削除ボタンを右側に配置 */}
-                                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                                    <div style={{ marginBottom: '8px' }}>
-                                      最終更新日: {FormattedDate(draft.updated_at)}
-                                    </div>
-                                    <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
-                                      <DeleteIcon />
-                                      <p style={{ margin: 0, marginLeft: '4px' }} onClick={() => rewrite_news_delete(draft.id)}>削除</p>
-                                    </div>
-                                  </div>
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                              <TableRow>
-                                <TableCell style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                  <TooltipTitle title={draft.article_title}>
-                                    <p
-                                      className="draftlist"
-                                      onClick={() => rewrite_news(draft.id)}
-                                      style={{
-                                        cursor: 'pointer',
-                                        wordBreak: 'break-all',
-                                        whiteSpace: 'nowrap',
-                                        overflow: 'hidden',
-                                        textOverflow: 'ellipsis',
-                                        maxWidth: '200px', // 必要に応じて適切な最大幅を設定してください
-                                      }}
-                                    >
-                                      {draft.article_title}
-                                    </p>
-                                  </TooltipTitle>
-                                </TableCell>
-                              </TableRow>
-                          </TableBody>
-                        </NewsMenuTable>
-                      ))
-                    ) : (
-                      <p>下書き中の記事はありません</p>
-                    )}
-                  </>
-                )}
-                {clickedMenu === "saveNews" && (
-                  <div className="news_button">
-                    <p>現在の編集状況</p>
-                    <p>タイトル</p>
-                    {EditorStatusCheck(textValue)}
-                    <p>サムネイル</p>
-                    {EditorStatusCheck(imageUrl)}
-                    <p>コンテンツ</p>
-                    {EditorContentsStatusCheck()}
-                    <button id="save" className="save" onClick={news_save}>下書きを保存する</button>
-                  </div>
-                )}
-
-                {clickedMenu === "releaseNews" && (
-                  <>
-                    <p>メッセージや記事内容をご記入ください!</p>
-                    <textarea
-                      id="news_textarea"
-                      className="news_textarea"
-                      ref={textareaRef}
-                    />
-                    <p><button onClick={news_upload}>投稿</button></p>
-                  </>
-                )}
-                {clickedMenu === "createForm" && (
-                  <Grid container spacing={1}>
-                    <p>インターンシップや求人のニュースを作成するオプションとして、<br></br>
-                      応募フォームを作成することができます。
-                    </p>
-                    <button id="createFormJump" className="save" onClick={() => create_form_jump(news_id)}>応募フォームを作成する</button>
-                  </Grid>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* 関数の場合は大文字、変数の場合は最初小文字 */}
+      <NewsMenu
+        isOpen={newsmenushow}   //モーダルを開く関数
+        CloseModal={closeModal} // モーダルを閉じる関数
+        NewsMenuEnter={handleClickEnter} //ニュースのタブを判断する回数
+        clickedMenu={clickedMenu}   //クリックされたニュースメニュー
+        genre={genre}  //説明会・ブログなどのジャンル
+        draftlist={draft_list} //下書きリストの配列
+        CreateFormJump = {create_form_jump} //ニュースを保存後に応募フォーム作成画面に遷移する
+        newsid = {news_id} //ニュースのID
+        RewriteNewsDelete = {rewrite_news_delete} //下書きニュースを削除する関数
+        RewriteNewsEnter = {rewrite_news}
+        EditorStatusCheck = {EditorStatusCheck}
+        EditorContentsStatusCheck = {EditorContentsStatusCheck}
+        NewsSave = {news_save}
+        handleChange = {handleChange}
+        imageUrl = {imageUrl}
+        title = {textValue}
+        NewsUpLoad = {news_upload}
+        NotificationMessageHandleChange = {notification_messagehandleChange}
+        message = {newsContent}
+        charCount = {charCount}
+      />
 
       <ImageSearchIcon
         className="cover_img_upload"

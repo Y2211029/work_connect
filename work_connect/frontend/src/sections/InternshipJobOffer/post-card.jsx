@@ -59,7 +59,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   // フォームのレンダリング（企業の投稿の場合）
   const renderForm = company_id === accountData.id && count > 0 ? (
     <Link
-      to={`/Profile/${company_name}?page=checkform&category=application_form_list`}
+      to={`/Profile/${company_name}/Checkform?category=application_form_list`}
     >
       <Typography opacity="0.48">
         {count}件のフォーム回答
@@ -92,10 +92,10 @@ const PostCard = forwardRef(({ post }, ref) => {
         },
       }}
     >
-    {genre === 'internships' ? 'インターンシップ' :
-    genre === 'blogs' ? 'ブログ' :
-    genre === 'joboffers' ? '求人' :
-    genre === 'sessions' ? '説明会' :
+    {genre === 'Internship' ? 'インターンシップ' :
+    genre === 'Blog' ? 'ブログ' :
+    genre === 'JobOffer' ? '求人' :
+    genre === 'Session' ? '説明会' :
     genre}    </Button>
 
     {renderForm}

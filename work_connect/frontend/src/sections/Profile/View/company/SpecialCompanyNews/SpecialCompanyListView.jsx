@@ -8,7 +8,7 @@ const SpecialCompanyNewsListView = () => {
     const { user_name, Genre } = useParams();
     let value = 0;
 
-    if (Genre === "JobOffers") {
+    if (Genre === "JobOffer") {
         value = 1;
         return (
             <>
@@ -16,7 +16,7 @@ const SpecialCompanyNewsListView = () => {
                 <ListView type="specialjoboffers" ParamUserName={user_name} />
             </>
         );
-    } else if (Genre === "Internships") {
+    } else if (Genre === "Internship") {
         value = 1;
         return (
             <>
@@ -24,7 +24,7 @@ const SpecialCompanyNewsListView = () => {
                 <ListView type="specialinternships" ParamUserName={user_name} />
             </>
         );
-    } else if (Genre === "Blogs") {
+    } else if (Genre === "Blog") {
         value = 1;
         return (
             <>

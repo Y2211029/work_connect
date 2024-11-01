@@ -74,17 +74,17 @@ export default function NavTabs() {
       let newValue;
 
       switch (category) {
-        case 'internships':
+        case 'Internship':
           newValue = 1;
           break;
-        case 'sessions':
+        case 'Session':
           newValue = 2;
           break;
-        case 'blogs':
+        case 'Blog':
           newValue = 3;
           break;
 
-        case 'joboffers':
+        case 'JobOffer':
         default:
           newValue = 0;
           break;
@@ -114,19 +114,19 @@ export default function NavTabs() {
       let category;
       switch (newValue) {
         case 0:
-          category = 'joboffers';
+          category = 'JobOffer';
           break;
         case 1:
-          category = 'internships';
+          category = 'Internship';
           break;
         case 3:
-          category = 'blogs';
+          category = 'Blog';
           break;
         case 2:
-          category = 'sessions';
+          category = 'Session';
           break;
         default:
-          category = 'joboffers';
+          category = 'JobOffer';
       }
 
       // ページ遷移または状態の更新処理

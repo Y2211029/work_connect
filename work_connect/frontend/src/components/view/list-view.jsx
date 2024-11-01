@@ -155,7 +155,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
         case path === `/Internship_JobOffer` ||
           (options.DecodeURL === `/Profile/${ParamUserName}` &&
             options.page === "news" &&
-            ["joboffers", "internships", "blogs"].includes(options.category)): {
+            ["JobOffer", "Internship", "Blog"].includes(options.category)): {
             const { default: Internship_JobOfferPostCard } = await import("src/sections/InternshipJobOffer/post-card");
             setPostCard(() => Internship_JobOfferPostCard);
             console.log("Internship_JobOfferPostCard");
@@ -177,8 +177,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
             break;
           }
 
-        case options.DecodeURL === `/Profile/${ParamUserName}` &&
-          options.page === "checkform" &&
+        case options.DecodeURL === `/Profile/${ParamUserName}/Checkform` &&
           options.category === "application_form_list": {
             const { default: CheckFormPostCard } = await import("src/sections/Profile/View/company/CheckForm/post-card");
             setPostCard(() => CheckFormPostCard);
@@ -186,8 +185,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
             break;
           }
 
-        case options.DecodeURL === `/Profile/${ParamUserName}` &&
-          options.page === "checkform" &&
+        case options.DecodeURL === `/Profile/${ParamUserName}/Checkform` &&
           options.category === "statistical_data": {
             const { default: StatisticalDataPostCard } = await import("src/sections/Profile/View/company/CheckForm/Statistical_Data/post-card");
             setPostCard(() => StatisticalDataPostCard);
@@ -317,7 +315,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
     },
     joboffers: {
       ItemName: "求人一覧",
-      url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/joboffers`,
+      url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/JobOffer`,
       idKey: "id",
       tags: ["company_name"],
       generatePosts: (WorkOfList) =>
@@ -336,7 +334,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
     },
     internships: {
       ItemName: "インターンシップ一覧",
-      url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/internships`,
+      url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/Internship`,
       idKey: "id",
       tags: ["company_name"],
       generatePosts: (WorkOfList) =>
@@ -355,7 +353,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
     },
     sessions: {
       ItemName: "説明会一覧",
-      url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/sessions`,
+      url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/Seesion`,
       idKey: "id",
       tags: ["company_name"],
       generatePosts: (WorkOfList) =>
@@ -374,7 +372,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
     },
     blogs: {
       ItemName: "ブログ一覧",
-      url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/blogs`,
+      url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/Blog`,
       idKey: "id",
       tags: ["company_name"],
       generatePosts: (WorkOfList) =>
@@ -421,7 +419,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
     },
     specialjoboffers: {
       ItemName: `${ParamUserName}さんの求人一覧`,
-      url: `http://localhost:8000/Internship_JobOffer/special_company_news/${ParamUserName}/${SessionAccountData.id}/joboffers`,
+      url: `http://localhost:8000/Internship_JobOffer/special_company_news/${ParamUserName}/${SessionAccountData.id}/JobOffer`,
       idKey: "id",
       tags: ["company_name"],
       generatePosts: (WorkOfList) => {
@@ -442,7 +440,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
     },
     specialinternships: {
       ItemName: `${ParamUserName}さんのインターンシップ一覧`,
-      url: `http://localhost:8000/Internship_JobOffer/special_company_news/${ParamUserName}/${SessionAccountData.id}/internships`,
+      url: `http://localhost:8000/Internship_JobOffer/special_company_news/${ParamUserName}/${SessionAccountData.id}/Internship`,
       idKey: "id",
       tags: ["company_name"],
       generatePosts: (WorkOfList) => {
@@ -462,7 +460,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
     },
     specialsessions: {
       ItemName: `${ParamUserName}さんの説明会一覧`,
-      url: `http://localhost:8000/Internship_JobOffer/special_company_news/${ParamUserName}/${SessionAccountData.id}/sessions`,
+      url: `http://localhost:8000/Internship_JobOffer/special_company_news/${ParamUserName}/${SessionAccountData.id}/Session`,
       idKey: "id",
       tags: ["company_name"],
       generatePosts: (WorkOfList) => {
@@ -482,7 +480,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
     },
     specialblogs: {
       ItemName: `${ParamUserName}さんのブログ一覧`,
-      url: `http://localhost:8000/Internship_JobOffer/special_company_news/${ParamUserName}/${SessionAccountData.id}/blogs`,
+      url: `http://localhost:8000/Internship_JobOffer/special_company_news/${ParamUserName}/${SessionAccountData.id}/Blog`,
       idKey: "id",
       tags: ["company_name"],
       generatePosts: (WorkOfList) => {
@@ -618,13 +616,15 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   // URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合
   if (url && (PathName === "/" || PathName === "/VideoList" || PathName === "/StudentList" || PathName === "/CompanyList"
     || PathName === "/Internship_JobOffer" || PathName === `/WriteForm/${NewsDetailId}` || PathName === `/CreateForm/${NewsDetailId}`
-    || PathName === "/Internship_JobOffer/joboffers" || PathName === "/Internship_JobOffer/internships"
-    || PathName === "/Internship_JobOffer/blogs"
+    || PathName === "/Internship_JobOffer/JobOffer" || PathName === "/Internship_JobOffer/Internship"
+    || PathName === "/Internship_JobOffer/Blog"
     || DecodeURL === `/Profile/${ParamUserName}` &&
-    page === "news" || page === "checkform" &&
-    (category === "joboffers" || category === "internships" || category === "blogs" || category === "application_form_list")
+    page === "news" &&
+    (category === "JobOffer" || category === "Internship" || category === "Blog")
     || DecodeURL === `/Profile/${ParamUserName}` &&
     page === "companyinformation"
+    || DecodeURL === `/Profile/${ParamUserName}/Checkform` &&
+    (category === "application_form_list" || category === "statistical_data" )
   )) {
     // console.log(" URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合");
     lastUrl = `${url}?page=${Page}&sort=${sortOption}`;

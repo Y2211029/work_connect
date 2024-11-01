@@ -102,6 +102,7 @@ const PostCard = forwardRef(({ post },) => {
   const EditopenModal = (Questions_Genre, questionData) => {
     setSelectMenu(Questions_Genre);
     setQuestionData(questionData);
+    setButtonOpen(false);
     setModalOpen(true);
   };
 
@@ -500,15 +501,18 @@ const PostCard = forwardRef(({ post },) => {
 
   return (
     <>
-      <Stack direction="row" alignItems="flex-start" spacing={2} style={{ marginLeft: "50%", width: "800px" }}>
-        <div style={{ overflow: 'auto', flexGrow: 1, width: "200px", height: "60%" }}> {/* フォーム部分 */}
-        <Typography>{article_title}</Typography>
+      <Stack direction="row" alignItems="flex-start" spacing={2} style={{ marginLeft: "50%", width: "1000px" }}>
+        <div style={{ overflow: 'auto', flexGrow: 1, width: "100%", height: "60%" }}> {/* フォーム部分 */}
           {!questions || questions.length === 0 ? (
             <p>フォームがありません</p>
           ) : (
-            <div style={{ marginTop: "5%", width: "500px", maxHeight: '60vh', overflowY: 'auto' }}>
+            <>
+            <Typography style={{marginLeft:"0%"}}>{article_title}</Typography>
+            <div className="SurveyModal">
               <Survey model={survey} />
             </div>
+
+            </>
           )}
           <Button
             variant="outlined"
@@ -526,10 +530,7 @@ const PostCard = forwardRef(({ post },) => {
         </div>
 
         {modalopen && (
-          <div className="FormOptionModal">
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-              <Typography variant="h4"></Typography>
-
               {SelectMenuArray.map((menu, index) => {
                 const Component = menu.component; // 各メニューに対応するコンポーネントを取得
                 return (
@@ -544,11 +545,10 @@ const PostCard = forwardRef(({ post },) => {
                 );
               })}
             </Stack>
-          </div>
         )}
 
         {buttonOpen && (
-          <div style={{ width: "200px", display: 'flex', justifyContent: 'flex-start' }}>
+          <div>
             <Stack spacing={2}>
               {FormSelectArray.map((form, index) => (
                 <Button
@@ -556,7 +556,7 @@ const PostCard = forwardRef(({ post },) => {
                   startIcon={form.icon}
                   onClick={() => addQuestion(form.click)}
                   variant="outlined"
-                  style={{ textAlign: 'left' }}  // アイコンとテキストを左寄せ
+                  style={{ textAlign: 'left',width:"210px",marginLeft:"50%",}}  // アイコンとテキストを左寄せ
                 >
                   {form.lavel}
                 </Button>

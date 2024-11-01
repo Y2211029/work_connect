@@ -26,12 +26,15 @@ const PostCard = forwardRef(({ post }) => {
   const AllCompanyInformationsPullURL = "http://localhost:8000/all_company_informations_pull";
 
   const [MyUserId, setMyUserId] = useState(0);
+  const [MyUserName, setMyUserName] = useState("");
   const [showEdit, setShowEdit] = useState(false);
   const [editedContents, setEditedContents] = useState([]);
+  const [TrueTitleContents, setTitleContents] = useState(title_contents); 
 
   useEffect(() => {
     const accountData = JSON.parse(sessionStorage.getItem("accountData"));
     setMyUserId(accountData?.id || 0);
+    setMyUserName(accountData.user_name);
   }, []);
 
 
@@ -41,9 +44,12 @@ const PostCard = forwardRef(({ post }) => {
       try {
         const response = await axios.post(CompanyInformationsSaveURL, {
           CompanyInformation: editedContents,
+          CompanyName: MyUserName
         });
+        //成功したらtitle_contentsを更新する
         if (response) {
           console.log("saveが成功です");
+          setTitleContents(response.data.title_contents);
         }
       } catch (err) {
         console.error("Error saving company information:", err.response ? err.response.data : err.message);
@@ -58,21 +64,24 @@ const PostCard = forwardRef(({ post }) => {
     }
   }, [editedContents]);
 
-  // 編集時に公開・非公開含めたすべての企業情報を取得する
-  async function AllCompanyInformationsPull() {
-    try {
-      // Laravel側から企業一覧データを取得
-      const response = await axios.post(AllCompanyInformationsPullURL, {
-        InformationId: title_contents[0].company_id
-      });
-      setEditedContents(response.data.title_contents);
-      console.log(response.data.title_contents);
-      console.log("pullが成功です");
-    } catch (err) {
-      console.log("err:", err);
+  useEffect(() => {
+    // 編集時に公開・非公開含めたすべての企業情報を取得する
+    async function AllCompanyInformationsPull() {
+      try {
+        // Laravel側から企業一覧データを取得
+        const response = await axios.post(AllCompanyInformationsPullURL, {
+          InformationId: title_contents[0].company_id
+        });
+        setEditedContents(response.data.title_contents);
+        console.log(response.data.title_contents);
+        console.log("pullが成功です");
+      } catch (err) {
+        console.log("err:", err);
+      }
     }
-  }
-
+    AllCompanyInformationsPull();
+  }, []);
+  
 
   useEffect(() => {
     if (showEdit) {
@@ -86,7 +95,7 @@ const PostCard = forwardRef(({ post }) => {
     };
   }, [showEdit]);
 
-  if (!title_contents || title_contents.length === 0) {
+  if (!TrueTitleContents || TrueTitleContents.length === 0) {
     return <div>No post available</div>;
   }
 
@@ -102,7 +111,6 @@ const PostCard = forwardRef(({ post }) => {
 
   const handleEditClick = (postId) => {
     console.log("編集ボタンがクリックされました", postId);
-    AllCompanyInformationsPull();
     if (editedContents) {
       setShowEdit(true);
     }
@@ -124,12 +132,18 @@ const PostCard = forwardRef(({ post }) => {
   //   });
   // };
 
+  const handleBlur = (index, field, value) => {
+    setTimeout(() => {
+      handleTextChange(index, field, value);
+    }, 200);  // 200ms遅延
+  };
+
   const handleTextChange = (index, field, value) => {
     setEditedContents(prevContents => {
       const newContents = [...prevContents];
       newContents[index] = {
         ...newContents[index],
-        [field]: value, // ここを修正
+        [field]: value,
       };
       return newContents;
     });
@@ -198,7 +212,7 @@ const PostCard = forwardRef(({ post }) => {
       title: '',      // 新しい行の初期タイトル
       contents: '',   // 新しい行の初期内容
       public_status: 0, // 新しい行の公開状態（初期は非公開）
-      company_id: title_contents[0].company_id, // 既存の企業IDを設定
+      company_id: TrueTitleContents[0].company_id, // 既存の企業IDを設定
       row_number: editedContents.length + 1 // 新しい行のrow_numberを設定
     };
 
@@ -241,13 +255,13 @@ const PostCard = forwardRef(({ post }) => {
                             <input
                               type="text"
                               value={item.title}
-                              onChange={(e) => handleTextChange(index, "title", e.target.value)}
-                            />
+                              onBlur={(e) => handleBlur(index, "title", e.target.value)}
+                              />
                           </TableCell>
                           <TableCell>
                             <textarea
                               value={item.contents}
-                              onChange={(e) => handleTextChange(index, "contents", e.target.value)}
+                              onBlur={(e) => handleBlur(index, "contents", e.target.value)}
                             />
                           </TableCell>
                           <TableCell>
@@ -291,7 +305,7 @@ const PostCard = forwardRef(({ post }) => {
 
   return (
     <div>
-      {renderEditButton(title_contents[0].company_id)} {/* 編集ボタンをここに表示 */}
+      {renderEditButton(TrueTitleContents[0].company_id)} {/* 編集ボタンをここに表示 */}
       {showEdit && renderEdit}
       <TableContainer component={Paper} className="tableContainer">
         <Table className="Table">
@@ -302,7 +316,7 @@ const PostCard = forwardRef(({ post }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {title_contents.map((item) => (
+            {TrueTitleContents.map((item) => (
               <TableRow key={item.id}>
                 <TableCell>{item.title}</TableCell>
                 <TableCell>{item.contents}</TableCell>

@@ -5,6 +5,7 @@
 .TextSetting{
     position: relative;
     top:10px;
+    background-color: aqua;
 }
 
 input[type="number"] {

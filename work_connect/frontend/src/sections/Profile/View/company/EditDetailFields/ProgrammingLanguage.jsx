@@ -88,7 +88,7 @@ const ProgrammingLanguage = ({ProgrammingLanguageData}) => {
         value={selectedProgrammingLanguage}
         onChange={handleChange}
         options={options}
-        placeholder="Select..."
+        placeholder="▼"
         isMulti
       />
     </div>

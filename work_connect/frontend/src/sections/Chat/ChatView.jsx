@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import PropTypes from 'prop-types';
 import axios from "axios";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
@@ -8,6 +8,13 @@ import { Link } from "react-router-dom";
 import { TextareaAutosize as BaseTextareaAutosize } from '@mui/base/TextareaAutosize';
 import { styled } from '@mui/material/styles';
 import { ColorRing } from "react-loader-spinner";
+
+
+/* メモ：WebScokectを使う際、
+// work_connect/node-backend/src/index.jsと
+// work_connect/frontend/src/layouts/dashboard/index.jsxと
+// ChatView.jsx使う*/
+import { WebScokectContext } from "src/layouts/dashboard/index";
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -19,6 +26,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Tooltip from '@mui/material/Tooltip';
 import Modal from '@mui/material/Modal';
+import CircleIcon from '@mui/icons-material/Circle';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
@@ -91,7 +99,16 @@ const Textarea = styled(BaseTextareaAutosize)(
 );
 
 // フォローリストのコンポーネント
-const FollowGroup = ({ title, followStatusCount, followStatus, groupingOpen, handleClick, chatViewId, chatOpen }) => {
+const FollowGroup = ({
+  title,
+  followStatusCount,
+  followStatus,
+  groupingOpen,
+  handleClick,
+  chatViewId,
+  chatOpen,
+  saveScrollPosition }) => {
+
   return (
     <>
       {/* 見出し部分 */}
@@ -105,7 +122,7 @@ const FollowGroup = ({ title, followStatusCount, followStatus, groupingOpen, han
         <ListItemText
           primary={
             <Typography sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>
-              {title} ({followStatusCount})
+              {title} {followStatusCount ? `(${followStatusCount})` : null}
             </Typography>
           }
         />
@@ -126,7 +143,10 @@ const FollowGroup = ({ title, followStatusCount, followStatus, groupingOpen, han
                   background: element.id === chatViewId ? '#cce5ff' : '#eee',
                 },
               }}
-              onClick={() => chatOpen(element)}>
+              onClick={() => {
+                saveScrollPosition(); // スクロール位置を保存
+                chatOpen(element);
+              }}>
               {/* アイコン */}
               <ListItemIcon>
                 <img
@@ -139,27 +159,29 @@ const FollowGroup = ({ title, followStatusCount, followStatus, groupingOpen, han
               </ListItemIcon>
               {/* ユーザー名 */}
               <ListItemText primary={element.company_name ? element.company_name : element.user_name} />
+
+              {/* 未読の件数を表示 */}
               <Box>
                 {element.unread !== 0 ? (
                   <Box
                     sx={{
-                      backgroundColor: '#ff6060',   // バッジの背景色
-                      color: 'white',           // テキスト色
-                      borderRadius: '50%',      // 丸いデザインにする
-                      width: '22px',            // 幅を小さくする
-                      height: '22px',           // 高さを小さくする
-                      display: 'flex',          // 中央揃えのためにflexを使う
-                      justifyContent: 'center', // 中央揃え
-                      alignItems: 'center',     // 中央揃え
-                      fontSize: '13px',         // フォントサイズを小さくする
+                      backgroundColor: '#ff6060',
+                      color: 'white',
+                      borderRadius: '50%',
+                      width: '22px',
+                      height: '22px',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      fontSize: '13px',
                     }}
                   >
-                    {element.unread} {/* ①のような表示 */}
+                    {element.unread}
                   </Box>
                 ) : (
                   ""
                 )}
-            </Box>
+              </Box>
             </ListItemButton>
           ))}
         </List>
@@ -207,70 +229,121 @@ const UnreadStart = () => {
 };
 
 // モーダルのコンポーネント
-const ChatEditModal = ({modalOpen,handleModalClose}) => {
-return(
-  <Modal
+const ChatEditModal = ({
+  modalOpen,
+  handleModalClose,
+  chatEditData,
+  chatEditChange,
+  chatEditUpDate }) => {
+  return(
+    <Modal
         open={modalOpen}
         onClose={handleModalClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-      >
-        <Box sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: 600,
-          bgcolor: 'background.paper',
-          border: '2px solid #DAE2ED',
-          borderRadius: '10px',
-          boxShadow: 24,
-          p: 4,}}>
+    >
+      <Box sx={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 600,
+        bgcolor: 'background.paper',
+        border: '2px solid #DAE2ED',
+        borderRadius: '10px',
+        boxShadow: 24,
+        p: 4,}}>
 
-          <Typography
-            id="modal-modal-title"
-            variant="h6"
-            sx={{
-              mb: 0.5,
-            }}>
-            チャットの編集
-          </Typography>
+        <Typography
+          id="modal-modal-title"
+          variant="h6"
+          sx={{
+            mb: 0.5,
+          }}>
+          チャットの編集
+        </Typography>
 
-          <Textarea
-            multiline
-            minRows={1} // 最小行数を設定
-            maxRows={4} // 最大行数を設定
-            sx={{
-              height: '100%', // 親要素の高さの50%に設定
-              width: '100%', // 必要に応じて幅を調整
-              fontSize: '1rem',
-            }}
-            InputProps={{
-              sx: {
-                height: '100%' // TextFieldの内部要素も親の高さに合わせる
-              }
-            }}
-            // value={TextData}
-            // onChange={textChange}
-          />
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              mt: 0.5,
-            }}
+        <Textarea
+          multiline
+          minRows={1} // 最小行数を設定
+          maxRows={4} // 最大行数を設定
+          sx={{
+            height: '100%', // 親要素の高さの50%に設定
+            width: '100%', // 必要に応じて幅を調整
+            fontSize: '1rem',
+          }}
+          InputProps={{
+            sx: {
+              height: '100%' // TextFieldの内部要素も親の高さに合わせる
+            }
+          }}
+          value={chatEditData}
+          onChange={chatEditChange}
+        />
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            mt: 0.5,
+          }}
+        >
+          <Button
+          variant="text"
+          sx={{ marginRight: '10px' }}
+          onClick={handleModalClose}
           >
-            <Button variant="contained" size="medium">
-              更新
-            </Button>
-          </Box>
+            キャンセル
+          </Button>
+          <Button
+          variant="contained"
+          size="medium"
+          onClick={chatEditUpDate}
+          >
+            更新
+          </Button>
         </Box>
-      </Modal>
-);
+      </Box>
+    </Modal>
+  );
 };
+
+// ローディングのコンポーネント
+const ColorRingStyle = () => {
+  return(
+    <Box
+      sx={{
+        marginTop: '20%',
+        display: 'flex', // Flexboxを使用
+        justifyContent: 'center', // 水平方向中央
+        alignItems: 'center', // 垂直方向中央
+      }}
+    >
+      <ColorRing
+        style={{
+          visible: true,
+          margin: "0px",
+          height: "10",
+          width: "10",
+          ariaLabel: "color-ring-loading",
+          wrapperClass: "custom-color-ring-wrapper",
+          colors:
+          ["#e15b64",
+            "#f47e60",
+            "#f8b26a",
+            "#abbd81",
+            "#849b87"]
+        }}
+      />
+    </Box>
+  );
+
+}
 
 // メインのコンポーネント
 const ChatView = () => {
+
+   // websocket通信のデータ保存先
+   const chatContext = useContext(WebScokectContext);
 
   /// セッションストレージ取得
   const { getSessionData , updateSessionData } = useSessionStorage();
@@ -323,6 +396,7 @@ const ChatView = () => {
 
   // ポップメニューの変数設定
   const [popMenuId, setPopMenuId] = useState(null);
+  const [popMenuMessage, setPopMenuMessage] = useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const anchorElOpen = Boolean(anchorEl);
 
@@ -331,12 +405,19 @@ const ChatView = () => {
   const handleModalOpen = () => setModalOpen(true);
   const handleModalClose = () => setModalOpen(false);
 
-  // デフォルトでチャットを一番下にスクロールする
+  // チャットのスクロールの高さを保持する
   const chatBoxscroll = useRef(null);
-  // スクロールの高さが変わったときに、元のスクロールの高さを保持しておく
+  // チャットのスクロールの高さが変わったときに、元のスクロールの高さを保持しておく
   const [prevScrollHeight, setPrevScrollHeight] = useState(0);
+
+  // フォローリストのスクロールの高さを保持する
+  const ListBoxscroll = useRef(null);
+
   // テキストの文章を保持する変数
-  const [TextData, setTextData] = useState(null);
+  const [TextData, setTextData] = useState("");
+
+  // テキストの文章を保持する変数(モーダル)
+  const [chatEditData, setChatEditData] = useState(null);
 
   // 外部からのリンクでチャットを開けるよう、パラメータを取得する。
   const location = useLocation();
@@ -346,7 +427,8 @@ const ChatView = () => {
   // useStateだと無限ループが発生するためletで初期値設定
   // 「ここから未読」の位置を保持する変数
   let unreadMessageFlag = false;
-  let unreadid = accountData.GetStartUnread ? accountData.GetStartUnread : 0;
+  // accountData.GetStartUnreadがなければ0を代入
+  let unreadid = accountData.GetStartUnread || 0;
 
   // useStateだと無限ループが発生するためletで初期値設定
   // メッセージの送信日時を記憶しておく
@@ -371,130 +453,103 @@ const ChatView = () => {
   // Laravelとの通信用URL
   const get_channel_list = "http://localhost:8000/get_channel_list";
   const get_chat = "http://localhost:8000/get_chat";
-  const post_chat = "http://localhost:8000/post_chat";
-  const delete_chat = "http://localhost:8000/delete_chat";
-  const already_read_chat = "http://localhost:8000/already_read_chat";
 
-  // ResponseChannelListDataが変化したとき
-  // フォローリストを作成
+  /// 画面読み込み後、1度だけ実行
   useEffect(() => {
-    async function GetData() {
-      try {
-        // Laravel側からデータを取得
-        const response = await axios.get(get_channel_list, {
-          params: {
-            MyUserId: MyUserId, //ログイン中のID
-          },
-        });
-        if (response) {
-          console.log(JSON.stringify(response, null, 2));
-          setResponseChannelListData(response.data);
-          // follow_statusが「相互フォローしています」の相手はfollow_item_1に入れる
-          const follow_item_1 = response.data.filter(item => item.follow_status === '相互フォローしています');
-          setFollowStatus_1(follow_item_1);
-          setFollowStatusCount_1(follow_item_1.length);
-          // follow_statusが「相互フォローしています」の相手はfollow_item_2に入れる
-          const follow_item_2 = response.data.filter(item => item.follow_status === 'フォローしています');
-          setFollowStatus_2(follow_item_2);
-          setFollowStatusCount_2(follow_item_2.length);
-          // follow_statusが「相互フォローしています」の相手はfollow_item_3に入れる
-          const follow_item_3 = response.data.filter(item => item.follow_status === 'フォローされています');
-          setFollowStatus_3(follow_item_3);
-          setFollowStatusCount_3(follow_item_3.length);
 
-        }
-      } catch (err) {
-        console.log("err:", err);
-        alert("フォロワーがいません");
+    GetChannelList();
+
+    // セッションデータと状態更新をまとめる関数
+    function updateChatViewData(item) {
+      const sessionData = {
+        ChatOpenId: item.id || "",
+        ChatOpenUserName: item.user_name || "",
+        ChatOpenCompanyName: item.company_name || "",
+        ChatOpenIcon: item.icon || "",
+        ChatOpenFollowStatus: item.follow_status || ""
+      };
+
+      Object.keys(sessionData).forEach(key => {
+        updateSessionData("accountData", key, sessionData[key]);
+      });
+
+      setChatViewId(sessionData.ChatOpenId);
+      setChatViewUserName(sessionData.ChatOpenUserName);
+      setChatViewCompanyName(sessionData.ChatOpenCompanyName);
+      setChatViewIcon(sessionData.ChatOpenIcon);
+      setChatViewFollowStatus(sessionData.ChatOpenFollowStatus);
+    }
+
+    // ResponseChannelListDataが存在している場合のみ処理
+    if (ResponseChannelListData && ResponseChannelListData.length > 0) {
+      const matchedItem = ResponseChannelListData.find(item => item.user_name === ParamsuserName);
+
+      if (matchedItem) {
+        // 関数呼び出し
+        updateChatViewData(matchedItem);
+      } else {
+        // 見つからない場合、404ページにリダイレクト
+        location.href = "/404";
       }
     }
-    // DBからデータを取得
-    if (MyUserId) {
-      GetData();
-    }
-    // ResponseChannelListDataが存在しているか確認
-    if (ResponseChannelListData && ResponseChannelListData.length > 0) {
 
-      ResponseChannelListData.forEach((item) => {
-        if (item.user_name === ParamsuserName) {
-            // element.idが存在するときのみ実行
-            if (item.id) {
-              updateSessionData("accountData", "ChatOpenId", item.id);
-              setChatViewId(item.id);
-            }
-            if (item.user_name) {
-              updateSessionData("accountData", "ChatOpenUserName", item.user_name);
-              setChatViewUserName(item.user_name);
-            }
-            if (item.company_name) {
-              updateSessionData("accountData", "ChatOpenCompanyName", item.company_name);
-              setChatViewCompanyName(item.company_name);
-            }
-            if (item.icon) {
-              updateSessionData("accountData", "ChatOpenIcon", item.icon);
-              setChatViewIcon(item.icon);
-            } else {
-              updateSessionData("accountData", "ChatOpenIcon", "");
-            }
-            if (item.follow_status) {
-              updateSessionData("accountData", "ChatOpenFollowStatus", item.follow_status);
-              setChatViewFollowStatus(item.follow_status);
-            }
-        } else {
-          // 見つからない場合、404ページにリダイレクト
-          location.href = "/404";
-        }
-      });
-    }
-  }, [ResponseChannelListData]);
+    // セッションデータの初期化
+    updateSessionData("accountData", "GetStartUnread", 0);
+    updateSessionData("accountData", "Commit", false);
+    // 関数呼び出し
+    restoreScrollPosition();
+    scrollToBottom();
+
+  }, []);
+
+
+  // chatContext.WebSocketState.Chat,chatViewIdを取得したとき
+  useEffect(() => {
+
+    // セッションストレージ取得
+    setAccountData(getSessionData("accountData"));
+    // フォローリスト、チャット取得
+    GetChannelList();
+    GetChat(chatViewId);
+    //alert("GET CHAT");
+    AlreadyReadChat(chatViewId);
+
+  }, [chatContext.WebSocketState.Chat,chatViewId]);
+
+  // chatContext.WebSocketState.Chat2を取得したとき
+  // リアルタイムで既読や削除を反映させる
+
+  useEffect(() => {
+    // トーク画面の再読み込み
+    GetChat(chatViewId);
+  }, [chatContext.WebSocketState.Chat2]);
+
+
+  // chatEditDataが変更されたとき
+  useEffect(() => {
+    updateSessionData("accountData", "ChatEditData", chatEditData);
+  }, [chatEditData]);
 
   /// ListItemButtonが押された時の処理
   const ChatOpen = (element) => {
 
-    // element.idが存在するときのみ実行
-    element.id && updateSessionData("accountData", "ChatOpenId", element.id);
-    // element.user_nameが存在するときのみ実行
-    element.user_name && updateSessionData("accountData", "ChatOpenUserName", element.user_name);
-    // element.company_nameが存在するときのみ実行
-    element.company_name && updateSessionData("accountData", "ChatOpenCompanyName", element.company_name);
-    // element.iconが存在するときのみ実行
-    element.icon ? updateSessionData("accountData", "ChatOpenIcon", element.icon) : updateSessionData("accountData", "ChatOpenIcon", "");
-    // element.follow_statusが存在するときのみ実行
-    element.follow_status && updateSessionData("accountData", "ChatOpenFollowStatus", element.follow_status);
+  // element.idが存在するときのみ実行
+  element.id && updateSessionData("accountData", "ChatOpenId", element.id);
+  // element.user_nameが存在するときのみ実行
+  element.user_name && updateSessionData("accountData", "ChatOpenUserName", element.user_name);
+  // element.company_nameが存在するときのみ実行
+  element.company_name && updateSessionData("accountData", "ChatOpenCompanyName", element.company_name);
+  // element.iconが存在するときのみ実行
+  element.icon ? updateSessionData("accountData", "ChatOpenIcon", element.icon) : updateSessionData("accountData", "ChatOpenIcon", "");
+  // element.follow_statusが存在するときのみ実行
+  element.follow_status && updateSessionData("accountData", "ChatOpenFollowStatus", element.follow_status);
 
-    // 現在のURLのクエリパラメータを削除する
-    window.history.replaceState(null, null, window.location.pathname);
+  // 現在のURLのクエリパラメータを削除する
+  window.history.replaceState(null, null, window.location.pathname);
 
-    // ページをリロードする
-    window.location.reload();
-   };
-
-  /// 一番最初に実行(「ここから未読」の位置を記憶しておくGetStartUnreadを初期化しておく)
-  useEffect(() => {
-    updateSessionData("accountData", "GetStartUnread", 0);
-    updateSessionData("accountData", "DeleteStart", false);
-  }, []);
-
-  /// 1回のみ実行(1秒単位でデータを取得)
-  useEffect(() => {
-    // セッションストレージ取得
-    setAccountData(getSessionData("accountData"));
-    GetChat(chatViewId);
-    // チャットのスクロールを下にする
-    scrollToBottom();
-    const interval = setInterval(() => {
-     // セッションストレージ取得
-    setAccountData(getSessionData("accountData"));
-    console.log("passing222__"+chatViewId);
-    GetChat(chatViewId);
-    // 既読をつける
-    AlreadyReadChat(chatViewId);
-
-    }, 2000);
-
-    // コンポーネントがアンマウントされたらintervalをクリア
-    return () => clearInterval(interval);
-  }, [chatViewId]);
+  // ページをリロードする
+  window.location.reload();
+  };
 
   // テキストが変更されたとき
   const textChange = (e) => {
@@ -511,6 +566,44 @@ const ChatView = () => {
     PostChat();
     // チャットのスクロールを下にする
     scrollToBottom();
+  };
+
+  /// フォローリストの取得
+  const GetChannelList = () => {
+    async function GetData() {
+      try {
+        // Laravel側からデータを取得
+        const response = await axios.get(get_channel_list, {
+          params: {
+            MyUserId: MyUserId, // ログイン中のID
+          },
+        });
+
+        if (response) {
+          //console.log(JSON.stringify(response, null, 2));
+          const data = response.data;
+          setResponseChannelListData(data);
+
+          // フォロー状態の処理をまとめる
+          handleFollowStatus(data, '相互フォローしています', setFollowStatus_1, setFollowStatusCount_1);
+          handleFollowStatus(data, 'フォローしています', setFollowStatus_2, setFollowStatusCount_2);
+          handleFollowStatus(data, 'フォローされています', setFollowStatus_3, setFollowStatusCount_3);
+        }
+      } catch (err) {
+        console.log("err:", err);
+        alert("フォロワーがいません");
+      }
+    }
+    // DBからデータを取得
+    if (MyUserId) {
+      GetData();
+    }
+    // フォロー状態の処理を関数化
+    function handleFollowStatus(data, status, setFollowStatus, setFollowStatusCount) {
+      const filteredItems = data.filter(item => item.follow_status === status);
+      setFollowStatus(filteredItems);
+      setFollowStatusCount(filteredItems.length);
+    }
   };
 
   /// 最新のチャットを取得する処理
@@ -551,18 +644,18 @@ const ChatView = () => {
   const PostChat = () => {
     async function PostData() {
       try {
-        console.log("TextData:"+TextData);
-        // Laravelにデータを送信
-        const response = await axios.post(post_chat, {
-          MyUserId: MyUserId, // ログイン中のID
-          PairUserId: getSessionData("accountData").ChatOpenId, // チャット相手のID
-          Message: TextData // メッセージ
+        const PairUserId = getSessionData("accountData").ChatOpenId;
+        // バックエンドにリクエストを送信
+        await fetch("http://localhost:3000/post_chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ MyUserId: MyUserId, PairUserId: PairUserId, Message: TextData }),
         });
-        if (response.data) {
-          console.log("送信成功しました");
-          setTextData("");
-          updateSessionData("accountData", "GetStartUnread", 0);
-        }
+        console.log("送信成功しました");
+        setTextData("");
+        updateSessionData("accountData", "GetStartUnread", 0);
       } catch (err) {
         console.log("err:", err);
       }
@@ -579,16 +672,21 @@ const ChatView = () => {
   const DeleteChat = (id) => {
     async function PostData() {
       try {
-        console.log("TextData:");
-        const response = await axios.post(delete_chat, {
-          Id: id, // ログイン中のID
+
+        // バックエンドにリクエストを送信
+        const response = await fetch("http://localhost:3000/delete_chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ Id: id }),
         });
         if (response.data) {
           console.log("チャットの削除に成功しました");
           // 削除状態終了
           // 3秒遅延させて実行
           setTimeout(() => {
-            updateSessionData("accountData", "DeleteStart", false);
+            updateSessionData("accountData", "Commit", false);
           }, 3000);
         }
       } catch (err) {
@@ -605,15 +703,15 @@ const ChatView = () => {
   const AlreadyReadChat = (id) => {
     async function PostData() {
       try {
-        console.log("TextData:");
-
-        const response = await axios.post(already_read_chat, {
-          MyUserId: MyUserId, //ログイン中のID
-          PairUserId: id, // 相手のID
+         // バックエンドにフォローリクエストを送信
+         await fetch("http://localhost:3000/already_read_chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ MyUserId: MyUserId, PairUserId: id }),
         });
-        if (response.data) {
-          console.log("チャットの既読に成功しました");
-        }
+
       } catch (err) {
         console.log("err:", err);
       }
@@ -624,6 +722,38 @@ const ChatView = () => {
     }
   };
 
+  /// チャットを更新する処理
+  const UpDateChat = () => {
+    async function PostData() {
+      try {
+        // バックエンドにリクエストを送信
+        const response = await fetch("http://localhost:3000/update_chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            Id: getSessionData("accountData").ChatEditId,
+            Data: getSessionData("accountData").ChatEditData
+          }),
+        });
+        if (response.data) {
+          console.log("チャットの既読に成功しました");
+          // 更新状態終了
+          // 3秒遅延させて実行
+          setTimeout(() => {
+            updateSessionData("accountData", "Commit", false);
+          }, 3000);
+        }
+      } catch (err) {
+        console.log("err:", err);
+      }
+    }
+    // DBからデータを取得
+
+    PostData();
+
+  };
 
   // 送信時間から日にちを取り出す関数
   const GetDay = (time) => {
@@ -700,10 +830,9 @@ const ChatView = () => {
 
       // scrollHeightが変わったときのみスクロール
       // リアルタイムで情報を取得するためgetSessionData("accountData")から取得する
-      if (currentScrollHeight !== prevScrollHeight && getSessionData("accountData").DeleteStart === false) {
+      if (currentScrollHeight !== prevScrollHeight && getSessionData("accountData").Commit === false) {
         chatBox.scrollTop = chatBox.scrollHeight;
         setPrevScrollHeight(currentScrollHeight); // 更新
-        //alert(accountData.DeleteStart);
       }
     });
     // observerの監視対象を設定
@@ -715,24 +844,70 @@ const ChatView = () => {
     };
   };
 
+   // フォローリストのスクロール位置をセッションストレージに保存する関数
+   const saveScrollPosition = () => {
+    updateSessionData("accountData", "ListBoxscroll", ListBoxscroll.current.scrollTop);
+  };
+
+  // セッションストレージを使い、フォローリストのスクロールの高さを調整
+  const restoreScrollPosition = () => {
+    const ListBoxscrollPosition = getSessionData("accountData").ListBoxscroll;
+    if (ListBoxscrollPosition) {
+      setTimeout(() => {
+        ListBoxscroll.current.scrollTop = parseInt(ListBoxscrollPosition, 10);
+      }, 1000); // 0ミリ秒遅延させてスクロール位置を設定
+    }
+  };
+
+  // onChange={chatEditChange}で実行
+  const chatEditChange = (e) => {
+    const newValue = e.target.value;
+    // newValueをセット
+    setChatEditData(newValue);
+  };
+
   ///////////////////// ポップメニューに関する処理 /////////////////////
   // 開く
   const popMenu = (e) => {
+    // 変数の上書き
     setAnchorEl(e.currentTarget);
-    // PopMenuIdを上書きする
     setPopMenuId(e.currentTarget.id);
-    console.log("e.idは"+e.currentTarget.id);
+    setPopMenuMessage(e.currentTarget.dataset.message);
+    setChatEditData(e.currentTarget.dataset.message);
   };
   // 閉じる
   const popMenuClose = () => {
     setAnchorEl(null);
   };
-  // チャットの編集
-  const popMenuEdit = (id) => {
-    console.log(id);
+
+  // チャットの編集(モーダルを開く)
+  const popMenuEdit = (id,message) => {
+    console.log(id+":"+message);
+
+    // 開いたチャットのidを保存しておく
+    updateSessionData("accountData", "ChatEditId", id);
+    // モーダルを開く
     handleModalOpen();
     // ポップメニューを閉じる
     popMenuClose();
+  };
+  // チャットの編集(更新ボタンを押したとき)
+  const chatEditUpDate = () => {
+    if (confirm("チャットを更新してよろしいですか？")) {
+      // OK（はい）が押された場合の処理
+      // 更新状態スタート
+      updateSessionData("accountData", "Commit", true);
+
+      // 関数呼び出し
+      UpDateChat();
+      // アラート
+      alert("チャットを更新しました。");
+      // モーダルを閉じる
+      handleModalClose();
+
+    } else {
+      // キャンセル（いいえ）が押された場合の処理
+    }
   };
   // チャットの削除
   const popMenuDelete = (id) => {
@@ -740,7 +915,7 @@ const ChatView = () => {
       // OK（はい）が押された場合の処理
 
       // 削除状態スタート
-      updateSessionData("accountData", "DeleteStart", true);
+      updateSessionData("accountData", "Commit", true);
 
       // 関数呼び出し
       DeleteChat(id);
@@ -750,8 +925,6 @@ const ChatView = () => {
       // ポップメニューを閉じる
       popMenuClose();
 
-      // リロード
-      //window.location.reload();
     } else {
       // キャンセル（いいえ）が押された場合の処理
     }
@@ -763,6 +936,7 @@ const ChatView = () => {
       display: 'flex'
       }}>
     <List
+      ref={ListBoxscroll}
       sx={(theme) => ({
         width: 360,
         height: '80%',
@@ -794,6 +968,7 @@ const ChatView = () => {
         handleClick={groupinghandleClick_1}
         chatViewId={chatViewId}
         chatOpen={ChatOpen}
+        saveScrollPosition={saveScrollPosition}
       />
 
       <FollowGroup
@@ -804,6 +979,7 @@ const ChatView = () => {
         handleClick={groupinghandleClick_2}
         chatViewId={chatViewId}
         chatOpen={ChatOpen}
+        saveScrollPosition={saveScrollPosition}
       />
 
       <FollowGroup
@@ -814,6 +990,7 @@ const ChatView = () => {
         handleClick={groupinghandleClick_3}
         chatViewId={chatViewId}
         chatOpen={ChatOpen}
+        saveScrollPosition={saveScrollPosition}
       />
 
 
@@ -832,7 +1009,9 @@ const ChatView = () => {
       <ChatEditModal
         modalOpen={modalOpen}
         handleModalClose={handleModalClose}
-
+        chatEditData={chatEditData}
+        chatEditChange={chatEditChange}
+        chatEditUpDate={chatEditUpDate}
       />
 
       {/****** チャット相手のアイコン、名前を表示させる ******/}
@@ -900,12 +1079,12 @@ const ChatView = () => {
           variant="caption"
           component="div"
           sx={{
-            margin: '0 10px',
+            //margin: '0 10px',
             position: 'sticky',
             top: '0',
             backgroundColor: '#F9FAFB',
             zIndex: 1,
-            fontSize: '15px'
+            fontSize: '16px'
           }}
         >
           {GetDay(element.send_datetime)}
@@ -923,14 +1102,23 @@ const ChatView = () => {
           <>
             {/* 時間 */}
             <Typography
-              display="flex"
-              justifyContent={element.send_user_id === MyUserId ? 'flex-end' : 'flex-start'}
-              variant="caption"
-              component="div"
-              sx={{
-                margin:'5px 15px 0 65px'
-                }}>
+            display="flex"
+            justifyContent={element.send_user_id === MyUserId ? 'flex-end' : 'flex-start'}
+            alignItems="center"  // アイコンとテキストを中央揃え
+            variant="caption"
+            component="div"
+            sx={{
+              margin: '5px 15px 0 55px',
+            }}
+            >
               {GetTime(element.send_datetime)}
+              {(element.send_user_id === MyUserId && element.edit_flag === 1)?(
+                <>
+                  <CircleIcon sx={{ fontSize: '0.4rem', marginLeft: '5px' }} />
+                  <span style={{ marginLeft: '5px' }}>編集済み</span> {/* 文字列を追加 */}
+                </>
+              ):(
+                null)}
             </Typography>
 
             <Box
@@ -941,33 +1129,44 @@ const ChatView = () => {
                 }}
               mb={2}
             >
-            {/* アイコン (相手のメッセージのみ) */}
-            {(element.send_user_id !== MyUserId)?(
-            <img src={avatarSrc}
-            style={{
-              width: '40px',
-              height: '40px',
-              margin: '0 10px',
-              borderRadius: '50%' }}
-            />
-            ):(null)}
-            {/* 既読マーク (自分のメッセージのみ) */}
-            {(element.send_user_id === MyUserId && element.check_read === '既読')?(
-              <Box
-              display="flex"
-              justifyContent="flex-end"
-              alignItems="flex-end"
-              sx={{
-                margin:'0 5px 10px 0'
-              }}><Tooltip title={"既読"}>
-                <CheckIcon sx={{ color: green[500] ,fontSize: 20 }}/>
-                </Tooltip>
-              </Box>
-            ):(
-             null)}
+              {/* アイコン (相手のメッセージのみ) */}
+              {(element.send_user_id !== MyUserId)?(
+              <Tooltip title={
+                (chatViewCompanyName ?
+                  chatViewCompanyName :
+                 chatViewUserName) + "さんのマイページ"}>
+                <Link
+                  to={`/Profile/${chatViewUserName}`}
+                >
+                  <img src={avatarSrc}
+
+                  style={{
+                    width: '40px',
+                    height: '40px',
+                    margin: '0 5px',
+                    borderRadius: '50%' }}
+                  />
+                </Link>
+              </Tooltip>
+              ):(null)}
+              {/* 既読マーク (自分のメッセージのみ) */}
+              {(element.send_user_id === MyUserId && element.check_read === '既読')?(
+                <Box
+                display="flex"
+                justifyContent="flex-end"
+                alignItems="flex-end"
+                sx={{
+                  margin:'0 5px 10px 0'
+                }}><Tooltip title={"既読"}>
+                  <CheckIcon sx={{ color: green[500] ,fontSize: 20 }}/>
+                  </Tooltip>
+                </Box>
+              ):(
+              null)}
 
               <Paper
                 id={element.id}
+                data-message={element.message}
                 aria-controls={anchorElOpen ? 'demo-positioned-menu' : undefined}
                 aria-haspopup="true"
                 aria-expanded={anchorElOpen ? 'true' : undefined}
@@ -987,13 +1186,29 @@ const ChatView = () => {
                 }}
               >
                 <Typography variant="body1">
-                  {/* 改行に対応 */}
-                  {element.message.split('\n').map((msg, idx) => (
+                  {/* 改行、aタグに対応 */}
+                  {element.message.split('\n').map((msg, idx) => {
+
+                  const linkRegex = /(https?:\/\/[^\s]+)/g;
+                  const msgText = msg.split(linkRegex);
+
+                  return (
                     <React.Fragment key={idx}>
-                      {msg}
-                      {idx < element.message.split('\n').length - 1 && <br />} {/* 最後の要素以外で改行 */}
+                      {msgText.map((part, index) =>
+                        linkRegex.test(part) ? (
+                          // aタグを含む場合
+                          <a key={index} href={part} target="_blank" rel="noopener noreferrer">
+                            {part}
+                          </a>
+                        ) : (
+                          // aタグを含まない場合
+                          part
+                        )
+                      )}
+                      {idx < element.message.split('\n').length - 1 && <br />}
                     </React.Fragment>
-                  ))}
+                  );
+                })}
                 </Typography>
               </Paper>
 
@@ -1016,7 +1231,7 @@ const ChatView = () => {
                   horizontal: 'right',
                 }}
               >
-                <MenuItem onClick={() => popMenuEdit(popMenuId)} ><EditIcon />&nbsp;編集</MenuItem>
+                <MenuItem onClick={() => popMenuEdit(popMenuId,popMenuMessage)} ><EditIcon />&nbsp;編集</MenuItem>
                 <MenuItem onClick={() => popMenuDelete(popMenuId)} sx={{color:'red'}}><DeleteIcon color="error"/>&nbsp;削除</MenuItem>
               </Menu>
             ):(null)}
@@ -1045,31 +1260,7 @@ const ChatView = () => {
     ):(chatViewId !== null) ? (
       // ローディング
       <div>
-        <Box
-          sx={{
-            marginTop: '20%',
-            display: 'flex', // Flexboxを使用
-            justifyContent: 'center', // 水平方向中央
-            alignItems: 'center', // 垂直方向中央
-          }}
-        >
-          <ColorRing
-              style={{
-                visible: true,
-                margin: "0px",
-                height: "10",
-                width: "10",
-                ariaLabel: "color-ring-loading",
-                wrapperClass: "custom-color-ring-wrapper",
-                colors:
-                ["#e15b64",
-                  "#f47e60",
-                  "#f8b26a",
-                  "#abbd81",
-                  "#849b87"]
-              }}
-            />
-        </Box>
+        <ColorRingStyle />
       </div>
     ):(null)}
 
@@ -1137,19 +1328,25 @@ const ChatView = () => {
 
 // PropTypesの定義
 FollowGroup.propTypes = {
-  title: PropTypes.string.isRequired,
-  followStatusCount: PropTypes.number.isRequired,
-  followStatus: PropTypes.arrayOf(PropTypes.object).isRequired,
-  groupingOpen: PropTypes.bool.isRequired,
-  handleClick: PropTypes.func.isRequired,
-  chatViewId: PropTypes.object.isRequired,
-  chatOpen: PropTypes.func.isRequired,
+  title: PropTypes.string,
+  followStatusCount: PropTypes.number,
+  followStatus: PropTypes.arrayOf(PropTypes.object),
+  groupingOpen: PropTypes.bool,
+  handleClick: PropTypes.func,
+  chatViewId: PropTypes.string,
+  chatOpen: PropTypes.func,
+  saveScrollPosition: PropTypes.func,
 };
 UnreadStart.propTypes = {
 };
 ChatEditModal.propTypes = {
-  modalOpen: PropTypes.func.isRequired,
-  handleModalClose: PropTypes.func.isRequired,
+  modalOpen: PropTypes.bool,
+  handleModalClose: PropTypes.func,
+  chatEditData: PropTypes.string,
+  chatEditChange: PropTypes.func,
+  chatEditUpDate: PropTypes.func,
+};
+ColorRingStyle.propTypes = {
 };
 
 export default ChatView;

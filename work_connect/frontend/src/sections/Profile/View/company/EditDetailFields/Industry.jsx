@@ -86,7 +86,7 @@ useEffect(() => {
         value={selectedIndustry}
         onChange={handleChange}
         options={options}
-        placeholder="Select..."
+        placeholder="▼"
         isMulti
       />
     </>

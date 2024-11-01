@@ -17,11 +17,13 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import { ColorRing } from "react-loader-spinner";
+import { PulseLoader } from 'react-spinners';
 
 import ProfileMypageEdit from './MypageEdit';
 import { follow } from "src/_mock/follow";
 import { WebScokectContext } from "src/layouts/dashboard/index";
+
+
 // Itemのスタイルを定義
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -76,15 +78,15 @@ const ProfileMypage = () => {
   //フォローステータスが変更されるまでの間ボタンを押せなくする
   const [ButtonDisable, setButtonDisable] = useState(false);
 
-  const coloRing = {
-    visible: true,  // コロンで区切る
-    margin: "0px",
-    height: "10",
-    width: "10",
-    ariaLabel: "color-ring-loading",
-    wrapperClass: "custom-color-ring-wrapper", // コメントを外に
-    colors: ["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]
-  };
+  // const coloRing = {
+  //   visible: true,  // コロンで区切る
+  //   margin: "0px",
+  //   height: "10",
+  //   width: "10",
+  //   ariaLabel: "color-ring-loading",
+  //   wrapperClass: "custom-color-ring-wrapper", // コメントを外に
+  //   colors: ["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]
+  // };
 
   // websocket通信のデータ保存先
   const notificationContext = useContext(WebScokectContext);
@@ -265,12 +267,13 @@ const ProfileMypage = () => {
   const profile_id = ResponseData.id;
 
 
+  console.log("profile_id",profile_id);
   const handleFollowClick = async () => {
     try {
       //data.account_id = 自分のid
+      console.log(profile_id);
       //id = 今見ているプロフィールの人のid
       console.log(MyUserId[0]);
-      console.log(profile_id);
       setButtonDisable(true);
       const updatedFollowStatus = await follow(MyUserId[0], profile_id);
 
@@ -299,7 +302,7 @@ const ProfileMypage = () => {
       });
 
       if (response.data !== followStatus) {
-        console.log("setFollowStatusresponse.data",response.data);
+        console.log("setFollowStatusresponse.data", response.data);
         setFollowStatus(response.data);
       }
       console.log("updatedFollowStatus", updatedFollowStatus);
@@ -333,45 +336,32 @@ const ProfileMypage = () => {
         {/* 編集ボタン */}
 
         {/* ResponseData.id(プロフィールのID) と MyUserId(ログイン中のID)が一致したら編集ボタンを表示 */}
-        {ResponseData.id === MyUserId[0] ? (
-
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', }} >
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
+         
+          {ResponseData.id === MyUserId[0] ? (
             <Tooltip title="編集する">
               <IconButton
                 onClick={handleEditClick}
                 sx={{
                   marginLeft: 'auto', // 右揃え
                   '&:hover': { backgroundColor: '#f0f0f0', title: 'a' },
+                  width: "30px",
+                  height: "30px"
                 }}
               >
                 <ModeEditIcon sx={{ fontSize: 55 }} />
               </IconButton>
             </Tooltip>
-            {/* {showEdit ? <ProfileMypageEdit /> : <ProfileMypage />} */}
-          </Box>
-        ) : (ResponseData.id && MyUserId[0]) && (ResponseData.id.charAt(0) !== MyUserId[0].charAt(0)) ? (
-
-          // ResponseData.id(プロフィールのID)の1文字目 と MyUserId(ログイン中のID)の1文字目が一致しない場合はフォローの状況を表示
-          // 学生側はS、企業側はCで始まる。
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Tooltip>
-              {/* <IconButton
-             sx={{
-               marginLeft: 'auto', // 右揃え
-               '&:hover': { backgroundColor: '#f0f0f0' },
-             }}
-             onClick={handleFollowClick()} // クリックイベントのハンドラーを設定
-           >
-             <ModeEditIcon sx={{ fontSize: 40 }} />
-           </IconButton> */}
+          ) : (ResponseData.id && MyUserId[0]) && (ResponseData.id.charAt(0) !== MyUserId[0].charAt(0)) ? (
+            // ResponseData.id(プロフィールのID)の1文字目 と MyUserId(ログイン中のID)の1文字目が一致しない場合はフォローの状況を表示
+            // 学生側はS、企業側はCで始まる。
+            <Tooltip title="フォロー状況">
               {renderFollow()}
-
             </Tooltip>
-
-          </Box>
-        ) : (
-          null
-        )}
+          ) : (
+              <div style={{ visibility: 'hidden' }} />
+          )}
+        </Box>
 
         <Card sx={{
           textAlign: 'center',
@@ -397,40 +387,31 @@ const ProfileMypage = () => {
             }}
             image={ResponseData.icon ?
               `http://localhost:8000/storage/images/userIcon/${ResponseData.icon}` :
-              ""}
-            alt="Loading..."
+              `http://localhost:8000/storage/images/userIcon/sample.jpg`}
           />
 
         </Card>
 
         <Box>
           <Typography variant="h6">名前</Typography>
-          <Item>{ResponseData.student_surname ? ResponseData.student_surname : <ColorRing
-            style={coloRing}
-          />} {ResponseData.student_name}</Item>
+          <Item>{ResponseData.student_surname ? ResponseData.student_surname : <PulseLoader />} {ResponseData.student_name}</Item>
         </Box>
         <Box>
           <Typography variant="h6">名前(カタカナ)</Typography>
-          <Item>{ResponseData.student_kanasurname ? ResponseData.student_kanasurname : <ColorRing
-            style={coloRing}
-          />} {ResponseData.student_kananame}</Item>
+          <Item>{ResponseData.student_kanasurname ? ResponseData.student_kanasurname : <PulseLoader />} {ResponseData.student_kananame}</Item>
         </Box>
         <Box>
           <Typography variant="h6">自己紹介</Typography>
-          <Item sx={{ fontSize: '20px' }}>{ResponseData.intro ? ResponseData.intro : <ColorRing style={coloRing} />}</Item>
+          <Item sx={{ fontSize: '20px' }}>{ResponseData.intro ? ResponseData.intro : <PulseLoader />}</Item>
         </Box>
         <Box>
           <Typography variant="h6">卒業年度</Typography>
-          <Item>{ResponseData.graduation_year ? ResponseData.graduation_year + "年" : <ColorRing
-            style={coloRing}
-          />}</Item>
+          <Item>{ResponseData.graduation_year ? ResponseData.graduation_year + "年" : <PulseLoader />}</Item>
         </Box>
 
         <Box>
           <Typography variant="h6">学校名(大学名)</Typography>
-          <Item>{ResponseData.school_name ? ResponseData.school_name : <ColorRing
-            style={coloRing}
-          />}</Item>
+          <Item>{ResponseData.school_name ? ResponseData.school_name : <PulseLoader />}</Item>
         </Box>
         {/* 詳細項目がない場合「さらに表示」を表示しない */}
         {(ResponseData.department_name ||

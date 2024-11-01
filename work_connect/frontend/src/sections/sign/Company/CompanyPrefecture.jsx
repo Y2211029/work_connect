@@ -76,7 +76,7 @@ const PrefectureSelect = () => {
           onChange={handleChange}
           options={Prefectures}
           required
-          placeholder="Select..."
+          placeholder="▼"
           isMulti
         />
       </>

@@ -58,16 +58,10 @@ const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, s
       }
       );
     });
-
-    // if(SearchFlag == true) {
-    //   setWorkList((prev) => [...prev, ...generatePosts(filteredNewWorks)])
-    // }else {
-    //   setWorkList("検索結果は0件です。");
-    // }
-
-    setWorkList((prev) => [...prev, ...generatePosts(filteredNewWorks)])
-    setLoading(false);
+    setWorkList((prev) => [...prev, ...generatePosts(filteredNewWorks)]);
+    // setLoading(false);
     setItemLoading(false);
+
   }
 
   if (error) {
@@ -104,15 +98,12 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
     console.log("DecodeURL", decodeURIComponent(currentPath));
   }, [window.location.pathname]);
 
-
-
   useEffect(() => {
     setNewsDetailId(NewsDetailId);
   }, [NewsDetailId]);
 
   console.log("page", page);
   console.log("category", category);
-
 
   useEffect(() => {
     // 各パスに対するコンポーネントを動的にロード
@@ -155,7 +146,11 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
         case path === `/Internship_JobOffer` ||
           (options.DecodeURL === `/Profile/${ParamUserName}` &&
             options.page === "news" &&
+<<<<<<< HEAD
             ["JobOffer", "Internship", "Blog"].includes(options.category)): {
+=======
+            ["joboffers", "internships", "blogs", "sessions"].includes(options.category)): {
+>>>>>>> 082c1d9b639a515e4d514e29d8b38836e646665f
             const { default: Internship_JobOfferPostCard } = await import("src/sections/InternshipJobOffer/post-card");
             setPostCard(() => Internship_JobOfferPostCard);
             console.log("Internship_JobOfferPostCard");
@@ -170,12 +165,12 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
             break;
           }
 
-          case path === `/CreateForm/${NewsDetailId}`: {
-            const { default: CreateFormPostCard } = await import("src/sections/CreateForm/post-card");
-            setPostCard(() => CreateFormPostCard);
-            console.log("CreateFormPostCard");
-            break;
-          }
+        case path === `/CreateForm/${NewsDetailId}`: {
+          const { default: CreateFormPostCard } = await import("src/sections/CreateForm/post-card");
+          setPostCard(() => CreateFormPostCard);
+          console.log("CreateFormPostCard");
+          break;
+        }
 
         case options.DecodeURL === `/Profile/${ParamUserName}/Checkform` &&
           options.category === "application_form_list": {
@@ -211,6 +206,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       console.log("デコードURL", options.DecodeURL);
       console.log("カテゴリ名", options.category);
       console.log("ページ名", options.page);
+      console.log("PathNamePathName", PathName);
     };
 
 
@@ -576,21 +572,34 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   const { loginStatusCheckFunction } = LoginStatusCheck();
   // 作品アイテム格納
   const [WorkOfList, setWorkOfList] = useState([]);
-  // 画面全体ローディング
-  const [isLoadColorLing, setIsLoadColorLing] = useState(true);
   // 一覧アイテム最後尾ローディング
   const [isLoadItemColorLing, setIsLoadItemColorLing] = useState(false);
   // AllItemsContextから状態を取得
   const { AllItems, setAllItems } = useContext(AllItemsContext);
-  const { DataList, IsSearch, Page, sortOption, ResetItem } = AllItems;
+  const { IsLoading, DataList, IsSearch, Page, sortOption, ResetItem } = AllItems;
+  const [isLoadItem, setIsLoadItem] = useState(false);
   // スクロールされたらtrueを返す。
   const [isIntersecting, ref] = useIntersection(setting);
 
   const { ItemName, url, idKey, tags, generatePosts } = urlMapping || {};
+  // 初回ロード完了のフラグ
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
 
+  useEffect(() => {
+
+  }, [IsLoading]);
   useEffect(() => {
     loginStatusCheckFunction();
   }, []);
+
+  useEffect(() => {
+    if (IsLoading) {
+      setIsLoadItem(true);
+    } else {
+      setHasLoadedOnce(true);
+      setIsLoadItem(false);
+    }
+  }, [IsLoading]);
 
   // 並べ替え
   const handleSortChange = (event) => {
@@ -599,11 +608,10 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     // URLパラメータにセットしてLaravel側でデータを1取得するための準備
     setAllItems((prevItems) => ({
       ...prevItems,
+      IsLoading: true,
       Page: 1,
       sortOption: newValue,
     }));
-    // ローディング表示
-    setIsLoadColorLing(true);
     // 無駄なアイテム追加を防ぐために一度綺麗にする
     setWorkOfList([]);
   };
@@ -614,6 +622,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   console.log(url);
   console.log(DecodeURL);
   // URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合
+<<<<<<< HEAD
   if (url && (PathName === "/" || PathName === "/VideoList" || PathName === "/StudentList" || PathName === "/CompanyList"
     || PathName === "/Internship_JobOffer" || PathName === `/WriteForm/${NewsDetailId}` || PathName === `/CreateForm/${NewsDetailId}`
     || PathName === "/Internship_JobOffer/JobOffer" || PathName === "/Internship_JobOffer/Internship"
@@ -625,6 +634,27 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     page === "companyinformation"
     || DecodeURL === `/Profile/${ParamUserName}/Checkform` &&
     (category === "application_form_list" || category === "statistical_data" )
+=======
+  if (url && (PathName === "/"
+    || PathName === "/VideoList"
+    || PathName === "/StudentList"
+    || PathName === "/CompanyList"
+    || PathName === "/Internship_JobOffer"
+    || PathName === `/WriteForm/${NewsDetailId}`
+    || PathName === `/CreateForm/${NewsDetailId}`
+    || PathName === "/Internship_JobOffer/joboffers"
+    || PathName === "/Internship_JobOffer/internships"
+    || PathName === "/Internship_JobOffer/blogs"
+    || DecodeURL === `/Profile/${ParamUserName}`
+    && page === "news"
+    || page === "checkform"
+    && (category === "joboffers" ||
+      category === "internships" ||
+      category === "blogs" ||
+      category === "application_form_list")
+    || DecodeURL === `/Profile/${ParamUserName}`
+    && page === "companyinformation"
+>>>>>>> 082c1d9b639a515e4d514e29d8b38836e646665f
   )) {
     // console.log(" URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合");
     lastUrl = `${url}?page=${Page}&sort=${sortOption}`;
@@ -637,7 +667,18 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     lastUrl = `${url}?page=${Page}&sort=${sortOption}&userName=${ParamUserName}`;
   }
 
-  const { data, error } = useSWR(lastUrl, fetcher);
+  const { data, error, isLoading } = useSWR(lastUrl, fetcher);
+
+  let LaravelResponse = isLoading;
+  useEffect(() => {
+    console.log("useSWR:isLoading:", LaravelResponse)
+    if (LaravelResponse == false) {
+      setAllItems((prevItems) => ({
+        ...prevItems,
+        IsLoading: false, // 一時的にローディングを解除
+      }));
+    }
+  }, [LaravelResponse]);
 
   // 検索時にsetWorkOfListをリセット
   useEffect(() => {
@@ -686,44 +727,105 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
 
   /*----- 検索されていないかつ作品データがあるとき -----*/
   useEffect(() => {
+    console.log("PagePagePage", Page);
     if (!ResetItem && !IsSearch.Check && data) {
-      console.log("datadataWorkOfList", WorkOfList);
+      console.log("検索されていないかつ作品データがあるとき", WorkOfList);
       console.log("datadata", data);
-      funcSetWorksItem(idKey, tags, WorkOfList, setWorkOfList, data, setIsLoadColorLing, setIsLoadItemColorLing, error, generatePosts);
+
+      funcSetWorksItem(
+        idKey,
+        tags,
+        WorkOfList,
+        setWorkOfList,
+        data,
+        setIsLoadItem,
+        setIsLoadItemColorLing,
+        error,
+        generatePosts
+      );
+
+      // データが更新されてからisLoadingをfalseに設定
+      console.log("data:", data);
+      if (data.length !== 0) {
+        setIsLoadItem(false);
+        console.log("data:setIsLoadItem:false");
+      }
+      if (data.length !== 0 || Page !== 1) {
+        setAllItems((prev) => ({
+          ...prev,
+          IsLoading: false// データが空のときはtrueにしてローディングを維持
+        }));
+      }
     }
+
   }, [data, error, ResetItem, IsSearch.Check, IsSearch.searchResultEmpty]);
 
-
-  /*----- 検索されたかつ、検索結果が帰ってきたとき -----*/
+  // 検索された場合
   useEffect(() => {
     if (IsSearch.Check && DataList) {
-      // console.log("datadataWorkOfList", WorkOfList);
+      console.log("検索されたかつ、検索結果が帰ってきたとき", WorkOfList);
       console.log("datadataDataList", DataList);
-      funcSetWorksItem(idKey, tags, WorkOfList, setWorkOfList, DataList, setIsLoadColorLing, setIsLoadItemColorLing, error, generatePosts);
+      console.log("datadataDataList:AllItems", AllItems);
+
+      funcSetWorksItem(
+        idKey,
+        tags,
+        WorkOfList,
+        setWorkOfList,
+        DataList,
+        setIsLoadItem,
+        setIsLoadItemColorLing,
+        error,
+        generatePosts
+      );
+
+      // データ取得後にisLoadingをfalseにする
+      if (DataList.length !== 0) {
+        setIsLoadItem(false);
+        console.log("DataList:setIsLoadItem:false");
+      }
+      if (DataList.length !== 0 || Page !== 1) {
+        setAllItems((prev) => ({
+          ...prev,
+          IsLoading: false// データが空のときはtrueにしてローディングを維持
+        }));
+      }
     }
   }, [DataList, IsSearch.Check, IsSearch.searchResultEmpty]);
 
-  // workItems = IsSearch.searchResultEmpty
-  //   ? "検索結果は0件です" // フラグに基づいて表示
-  //   : typeof generatePosts === "function"
-  //     ? generatePosts(WorkOfList)
-  //     : null;
 
-  // 作品アイテムをHTML要素に当てはめて表示する準備
+  useEffect(() => {
+    console.log("IsLoadingIsLoading  ", IsLoading);
+  }, [IsLoading]);
 
   useEffect(() => {
     console.log("WorkOfList", WorkOfList);
   }, [WorkOfList]);
-  const renderWorkItems = WorkOfList && PostCard ?
-    WorkOfList.map((post, index) => (
-      <PostCard className="mediaCard" ref={index === WorkOfList.length - 1 ? ref : null}
-        key={`${post}-${index}`} post={post} index={index} />
-    ))
-    : null;
 
+  // const renderWorkItems = WorkOfList.length !== 0 && PostCard ?
+  //   WorkOfList.map((post, index) => (
+  //     <PostCard className="mediaCard" ref={index === WorkOfList.length - 1 ? ref : null}
+  //       key={`${post}-${index}`} post={post} index={index} />
+  //   ))
+  //   : WorkOfList.length === 0 && IsLoading === false && LaravelResponse === false ? "0件です" : null;
+  // WorkOfList の表示ロジック
+  const renderWorkItems =
+    WorkOfList.length !== 0 && PostCard ? (
+      WorkOfList.map((post, index) => (
+        <PostCard
+          className="mediaCard"
+          ref={index === WorkOfList.length - 1 ? ref : null}
+          key={`${post}-${index}`}
+          post={post}
+          index={index}
+        />
+      ))
+    ) : WorkOfList.length === 0 && !IsLoading && !LaravelResponse && hasLoadedOnce ? (
+      "0件です"
+    ) : null;
   return (
     <>
-      {isLoadColorLing && (
+      {isLoadItem && (
         <ColorRing
           visible={true}
           height="100"

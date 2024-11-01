@@ -104,6 +104,12 @@ export default function NavTabs() {
   }, []);
 
   const handleTabClick = (event, newValue) => {
+    console.log("handleTabClick");
+    setAllItems((prevItems) => ({
+      ...prevItems,
+      Page: 1,
+    }));
+
     if (
       event.type !== 'click' ||
       (event.type === 'click' && samePageLinkNavigation(event))
@@ -134,7 +140,7 @@ export default function NavTabs() {
     }
   };
 
-  function pageCheck(pageStr) {
+function pageCheck(pageStr) {
     const url = new URL(window.location.href);
     const urlStr = url.pathname.split('?')[0]; // クエリパラメータを取り除く
     window.history.pushState({}, '', `${urlStr}?page=${pageStr}`);

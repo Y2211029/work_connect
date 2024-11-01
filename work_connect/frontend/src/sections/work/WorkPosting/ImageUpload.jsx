@@ -138,7 +138,7 @@ const SortableItem = ({
 
   // 並べ替え可能なアイテムの表示とテキストエリアの設定
   return (
-    <div ref={setNodeRef} style={style} {...attributes}>
+    <div ref={setNodeRef} style={style} {...attributes} draggable={true}>
       <div style={containerStyle}>
         <img src={image} alt="" style={imgStyle} {...listeners} />
         <button type="button" style={buttonStyle} onClick={handleDelete}>
@@ -173,8 +173,8 @@ const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
 
   // 10/21追加
   const [items, setItems] = useState([]); // 画像アイテムの状態管理
-  console.log(items);
-  
+  console.log("items", items);
+
   // 画像リストを初期化する関数
   const resetItems = () => {
     setWorkImage([]); // アイテムをリセット
@@ -208,7 +208,6 @@ const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
     //   return updatedItems;
     // });
 
-
     // 新しいアイテムを追加し、状態を更新
     /*
     10/21 未修整
@@ -217,11 +216,11 @@ const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
     setWorkImageにはFile型のみを入れる!!
     */
     setItems((prevItems) => {
+      // 配列型
       const updatedItems = [...prevItems, ...newItems];
       onImagesUploaded(updatedItems); // 親コンポーネントに通知
       return updatedItems;
     });
-
   };
 
   // アイテム削除の処理
@@ -229,15 +228,30 @@ const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
     event.preventDefault(); // デフォルトの動作を防止
     event.stopPropagation(); // イベントのバブリングを防止
 
-    // DataTransferオブジェクトを利用
-    const dt = new DataTransfer();
-    dt.setData("text/plain", id); // 削除するアイテムのIDを設定
+    console.log("id", id);
 
     // アイテムを削除するロジック
     setWorkImage((workImage) => {
-      const updatedItems = workImage.filter((item) => item.id !== id);
-      onImagesUploaded(updatedItems);
-      return updatedItems;
+      const updateId = id.split(".");
+      console.log("updateId", updateId[0]);
+
+      // const updatedItems = workImage.filter(
+      //   (workImage) => workImage.name !== updateId
+      // );
+      const dt = new DataTransfer();
+      const workImageArray = Array.from(workImage);
+      console.log("workImageArray", workImageArray[0].name.split(".")[0]);
+      // 10/25追加
+      workImageArray.forEach((file) => {
+        if (file.name.split(".")[0] !== updateId) {
+          dt.items.add(file);
+        }
+      });
+      fileInputRef.current.files = dt.files; // input内のFileListを更新
+      console.log("fileInputRef.current.files", fileInputRef.current.files);
+
+      onImagesUploaded(dt.files);
+      return dt.files;
     });
 
     // 10/21追加
@@ -279,24 +293,40 @@ const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
   // ドラッグ終了のハンドラ
   const handleDragEnd = (event) => {
     const { active, over } = event;
-    setActiveId(null); // ドラッグ中のIDをリセット
+    setActiveId(null);
 
-    // ドラッグ先のアイテムが異なる場合にのみ順序を変更
-    if (active.id !== over.id) {
-      setWorkImage((workImage) => {
-        const oldIndex = workImage.findIndex((item) => item.id === active.id);
-        const newIndex = workImage.findIndex((item) => item.id === over.id);
-        const updatedItems = arrayMove(workImage, oldIndex, newIndex); // アイテムを並べ替え
-        onImagesUploaded(updatedItems); // 親コンポーネントに更新を通知
-        return updatedItems;
-      });
-
-      // 10/21追加
+    if (over && active.id !== over.id) {
       setItems((items) => {
+        console.log("Current workImage:", items); // workImageが配列か確認
+        if (!Array.isArray(items)) {
+          console.error("Error: workImage is not an array.");
+          return items; // 配列でない場合はそのまま返す
+        }
+
         const oldIndex = items.findIndex((item) => item.id === active.id);
         const newIndex = items.findIndex((item) => item.id === over.id);
-        const updatedItems = arrayMove(workImage, oldIndex, newIndex); // アイテムを並べ替え
-        onImagesUploaded(updatedItems); // 親コンポーネントに更新を通知
+        const updatedItems = arrayMove(items, oldIndex, newIndex);
+
+        // DataTransferオブジェクトを作成
+        const dataTransfer = new DataTransfer();
+
+        updatedItems.forEach((item) => {
+          // itemがFileオブジェクトでない場合、Fileとして生成（例）
+          const file =
+            item instanceof File
+              ? item
+              : new File([item.content], item.name, { type: item.type });
+
+          dataTransfer.items.add(file);
+        });
+
+        // FileList型として取得
+        const fileList = dataTransfer.files;
+
+        callSetImage(fileList); // アップロードしたファイルを処理
+        onImagesUploaded(updatedItems);
+        setItems(updatedItems);
+
         return updatedItems;
       });
     }
@@ -334,7 +364,7 @@ const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
   };
 
   const activeItem =
-    workImage && workImage.find((item) => item.id === activeId); // ドラッグ中のアイテム
+    items.find((item) => item.id === activeId); // ドラッグ中のアイテム
 
   const overlayStyle = {
     width: "100%",
@@ -371,22 +401,21 @@ const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
         modifiers={[restrictToWindowEdges]} // ドラッグが画面内に制限されるようにする
       >
         <SortableContext
-          items={workImage && workImage.map((item) => item.id)} // 安全に配列を扱う
+          items={items.map((item) => item.id)} // 安全に配列を扱う
           strategy={rectSortingStrategy}
         >
           <div style={{ gap: "10px" }}>
-            {workImage &&
-              workImage.map((item) => (
-                <SortableItem
-                  key={item.id}
-                  id={item.id}
-                  image={item.image}
-                  description={item.description}
-                  onDelete={handleDelete}
-                  onDescriptionChange={handleDescriptionChange}
-                  activeId={activeId}
-                />
-              ))}
+            {items.map((item) => (
+              <SortableItem
+                key={item.id}
+                id={item.id}
+                image={item.image}
+                description={item.description}
+                onDelete={handleDelete}
+                onDescriptionChange={handleDescriptionChange}
+                activeId={activeId}
+              />
+            ))}
           </div>
         </SortableContext>
         <DragOverlay>

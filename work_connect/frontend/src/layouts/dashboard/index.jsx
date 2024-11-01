@@ -34,7 +34,7 @@ export default function DashboardLayout({ children }) {
   if (accountData == undefined) {
     accountData = {
       id: "029",
-    }
+    };
   }
 
   useEffect(() => {
@@ -48,6 +48,8 @@ export default function DashboardLayout({ children }) {
   }, [location.pathname, searchParams]); // location.pathname や searchParams が変わるたびに実行
 
   const [AllItems, setAllItems] = useState({
+    // 一覧ローディング
+    IsLoading : true,
     DataList: [],
     IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
     Page: 1,
@@ -58,6 +60,7 @@ export default function DashboardLayout({ children }) {
   const [WebSocketState, setWebSocketState] = useState({
     notification: {},
     Chat: "",
+    Chat2: "",
     workComment: "",
     websocketFollowStatus: "",
   });
@@ -72,12 +75,12 @@ export default function DashboardLayout({ children }) {
     setWorkImage,
   };
 
-
-
   // WebSocket接続
   useEffect(() => {
     if (accountData !== undefined) {
-      const newWs = new WebSocket(`ws://localhost:3000?userId=${accountData.id}`);
+      const newWs = new WebSocket(
+        `ws://localhost:3000?userId=${accountData.id}`
+      );
       newWs.onmessage = (event) => {
         const data = JSON.parse(event.data);
         console.log("index.js : data:", data);
@@ -89,7 +92,7 @@ export default function DashboardLayout({ children }) {
               notification: data,
               websocketFollowStatus: data.followData,
             }));
-          } else if(data.type === "videoPosting") {
+          } else if (data.type === "videoPosting" || data.type === "newsPosting") {
             console.log("index.js : data:", data);
             setWebSocketState((prev) => ({
               ...prev,
@@ -106,7 +109,22 @@ export default function DashboardLayout({ children }) {
             }));
           }
         }
-    
+        if (data.kind === "chat") {
+          if (data.type === "post") {
+            console.log("index.js : data.noticeData :", data);
+            setWebSocketState((prev) => ({
+              ...prev,
+              Chat: data,
+            }));
+          } else if(data.type === "already_read" || data.type === "delete" || data.type === "update"){
+            console.log("index.js : data.noticeData :", data);
+            setWebSocketState((prev) => ({
+              ...prev,
+              Chat2: data,
+            }));
+          }
+        }
+
       };
       newWs.onclose = () => {
         console.log("WebSocket connection closed");
@@ -123,27 +141,25 @@ export default function DashboardLayout({ children }) {
     setWebSocketState,
   };
 
-
   return (
     <>
       <MyContext.Provider value={pageStyles}>
         <AllItemsContext.Provider value={value1}>
           <WorkImageContext.Provider value={value3}>
-          <WebScokectContext.Provider value={value2}>
-            <Header onOpenNav={() => setOpenNav(true)} />
-            <Box
-              sx={{
-                minHeight: 1,
-                display: "flex",
-                flexDirection: { xs: "column", lg: "row" },
-              }}
-            >
-              <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} />
-              <Main>{children}</Main>
-            </Box>
+            <WebScokectContext.Provider value={value2}>
+              <Header onOpenNav={() => setOpenNav(true)} />
+              <Box
+                sx={{
+                  minHeight: 1,
+                  display: "flex",
+                  flexDirection: { xs: "column", lg: "row" },
+                }}
+              >
+                <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} />
+                <Main>{children}</Main>
+              </Box>
             </WebScokectContext.Provider>
           </WorkImageContext.Provider>
-
         </AllItemsContext.Provider>
       </MyContext.Provider>
     </>

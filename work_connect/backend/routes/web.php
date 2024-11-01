@@ -45,6 +45,7 @@ use App\Http\Controllers\chat\PostChatController;
 use App\Http\Controllers\chat\EditChatController;
 use App\Http\Controllers\chat\DeleteChatController;
 use App\Http\Controllers\chat\AlreadyReadChatController;
+use App\Http\Controllers\chat\UpdateChatController;
 use App\Http\Controllers\tag\InsertTagController;
 use App\Http\Controllers\tag\GetGenreTagController;
 use App\Http\Controllers\tag\GetLanguageTagController;
@@ -71,7 +72,7 @@ use App\Http\Controllers\search\SearchWorkController;
 use App\Http\Controllers\search\SearchVideoController;
 use App\Http\Controllers\search\SearchStudentController;
 use App\Http\Controllers\search\SearchCompanyController;
-use App\Http\Controllers\search\SearchInternshipJobOffer;
+use App\Http\Controllers\search\SearchInternshipJobOfferController;
 use App\Http\Controllers\profile\GetMypageController;
 use App\Http\Controllers\profile\PostMypageController;
 use App\Http\Controllers\profile\GetMypageKindController;
@@ -111,7 +112,7 @@ Route::get('/search_student', [SearchStudentController::class, 'SearchStudentCon
 // 企業検索
 Route::get('/search_company', [SearchCompanyController::class, 'SearchCompanyController']);
 // 求人・インターンシップ検索
-Route::get('/search_internship_job_offer', [SearchInternshipJobOffer::class, 'SearchInternshipJobOffer']);
+Route::get('/search_internship_job_offer', [SearchInternshipJobOfferController::class, 'SearchInternshipJobOfferController']);
 
 /* タグ関係 */
 // タグ作成
@@ -230,6 +231,9 @@ Route::post('/edit_chat', [EditChatController::class, 'EditChatController']);
 Route::post('/delete_chat', [DeleteChatController::class, 'DeleteChatController']);
 // チャット既読
 Route::post('/already_read_chat', [AlreadyReadChatController::class, 'AlreadyReadChatController']);
+// チャット更新
+Route::post('/update_chat', [UpdateChatController::class, 'UpdateChatController']);
+
 
 // 通知取得
 Route::get('/get_notice', [GetNoticeController::class, 'GetNoticeController']);

@@ -28,9 +28,10 @@ class AlreadyReadChatController extends Controller
             ->where('check_read', '未読') // "未読"のレコードに絞り込む
             ->update(['check_read' => '既読']); // "既読"に更新
 
+            $responseData = ['send_user_id' => $PairUserId];
 
             // Reactに返す
-            return response()->json("succuses");
+            return response()->json($responseData);
 
 
         } catch (\Exception $e) {

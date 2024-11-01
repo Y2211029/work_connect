@@ -1,8 +1,8 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import PropTypes from "prop-types";
-import { TextareaAutosize as BaseTextareaAutosize } from '@mui/base/TextareaAutosize';
-import { styled } from '@mui/system';
+import { TextareaAutosize as BaseTextareaAutosize } from "@mui/base/TextareaAutosize";
+import { styled } from "@mui/system";
 import {
   DndContext, // DnDのコンテキストを提供
   DragOverlay, // ドラッグ中のオーバーレイ表示
@@ -19,6 +19,7 @@ import {
 } from "@dnd-kit/sortable";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers"; // ドラッグを画面端までに制限
 import { CSS } from "@dnd-kit/utilities";
+import { WorkImageContext } from "src/layouts/dashboard";
 
 // カラーパレットの定義（ブルーとグレーの色を設定）
 const blue = {
@@ -75,7 +76,14 @@ const Textarea = styled(BaseTextareaAutosize)(
 );
 
 // 並べ替え可能なアイテムのコンポーネント
-const SortableItem = ({ id, image, description, onDelete, onDescriptionChange, activeId }) => {
+const SortableItem = ({
+  id,
+  image,
+  description,
+  onDelete,
+  onDescriptionChange,
+  activeId,
+}) => {
   // useSortable フックを使ってドラッグ＆ドロップ操作を管理
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id });
@@ -123,8 +131,8 @@ const SortableItem = ({ id, image, description, onDelete, onDescriptionChange, a
   };
 
   // 画像削除のハンドラ
-  const handleDelete = (event) => {
-    event.preventDefault();
+  const handleDelete = (e) => {
+    e.preventDefault();
     onDelete(id);
   };
 
@@ -158,23 +166,34 @@ SortableItem.propTypes = {
 
 // 画像アップロード機能を提供するコンポーネント
 const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
-  const [items, setItems] = useState([]); // 画像アイテムの状態管理
   const [activeId, setActiveId] = useState(null); // ドラッグ中のアイテムIDを管理
-  const fileInputRef = useRef(null); // ファイルインプットの参照を保持
+  const fileInputRef = useRef<HTMLInputElement>(null); // ファイルインプットの参照を保持
+  // AllItemsContextから状態を取得
+  const { workImage, setWorkImage } = useContext(WorkImageContext);
+
+  // 10/21追加
+  const [items, setItems] = useState([]); // 画像アイテムの状態管理
+  console.log("items", items);
 
   // 画像リストを初期化する関数
   const resetItems = () => {
-    setItems([]); // アイテムをリセット
-    localStorage.removeItem("items"); // ローカルストレージもリセット
+    setWorkImage([]); // アイテムをリセット
+    setItems([]); // 10/21追加
+    localStorage.removeItem("workImage"); // ローカルストレージもリセット
   };
 
   useEffect(() => {
     resetItems(); // 初回レンダリング時にリセット
   }, []);
 
+  useEffect(() => {
+    console.log("workImage", workImage);
+  }, [workImage]);
+
   // 画像アップロードの処理
   const handleImageUpload = (event) => {
     callSetImage(event.target.files); // アップロードしたファイルを処理
+    setWorkImage(event.target.files); // File型のデータを追加
     const files = Array.from(event.target.files); // アップロードされたファイルを配列に変換
     const newItems = files.map((file, index) => ({
       id: `${file.name}-${index}-${Date.now()}`, // 一意のIDを生成
@@ -183,8 +202,21 @@ const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
       description: "", // 初期状態は空の説明
     }));
 
+    // setWorkImage((prevItems) => {
+    //   const updatedItems = [...prevItems, ...newItems];
+    //   onImagesUploaded(updatedItems); // 親コンポーネントに通知
+    //   return updatedItems;
+    // });
+
     // 新しいアイテムを追加し、状態を更新
+    /*
+    10/21 未修整
+    !!!!!!!!!!!要修正!!!!!!!!!!!
+    setWorkImageだとよくないので別のものに変える。
+    setWorkImageにはFile型のみを入れる!!
+    */
     setItems((prevItems) => {
+      // 配列型
       const updatedItems = [...prevItems, ...newItems];
       onImagesUploaded(updatedItems); // 親コンポーネントに通知
       return updatedItems;
@@ -193,6 +225,24 @@ const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
 
   // アイテム削除の処理
   const handleDelete = (id) => {
+    event.preventDefault(); // デフォルトの動作を防止
+    event.stopPropagation(); // イベントのバブリングを防止
+
+    console.log("id",id);
+
+    // DataTransferオブジェクトを利用
+    const dt = new DataTransfer();
+    dt.setData("text/plain", id); // 削除するアイテムのIDを設定
+
+    // アイテムを削除するロジック
+    setWorkImage((workImage) => {
+      const updateId =id.split('.');
+      const updatedItems = workImage.filter((workImage) => workImage.name !== updateId);
+      onImagesUploaded(updatedItems);
+      return updatedItems;
+    });
+
+    // 10/21追加
     setItems((items) => {
       const updatedItems = items.filter((item) => item.id !== id); // 削除対象をフィルタリング
       onImagesUploaded(updatedItems); // 親コンポーネントに更新を通知
@@ -202,10 +252,22 @@ const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
 
   // 説明の変更を処理する関数
   const handleDescriptionChange = (id, value) => {
+    // setWorkImage((workImage) => {
+    //   const updatedItems =
+    //     workImage &&
+    //     workImage.map((item) =>
+    //       item.id === id ? { ...item, description: value } : item
+    //     );
+    //   onImagesUploaded(updatedItems); // 親コンポーネントに更新を通知
+    //   return updatedItems;
+    // });
+    // 10/21追加
     setItems((items) => {
-      const updatedItems = items.map((item) =>
-        item.id === id ? { ...item, description: value } : item
-      );
+      const updatedItems =
+        items &&
+        items.map((item) =>
+          item.id === id ? { ...item, description: value } : item
+        );
       onImagesUploaded(updatedItems); // 親コンポーネントに更新を通知
       return updatedItems;
     });
@@ -223,10 +285,19 @@ const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
 
     // ドラッグ先のアイテムが異なる場合にのみ順序を変更
     if (active.id !== over.id) {
+      setWorkImage((workImage) => {
+        const oldIndex = workImage.findIndex((item) => item.id === active.id);
+        const newIndex = workImage.findIndex((item) => item.id === over.id);
+        const updatedItems = arrayMove(workImage, oldIndex, newIndex); // アイテムを並べ替え
+        onImagesUploaded(updatedItems); // 親コンポーネントに更新を通知
+        return updatedItems;
+      });
+
+      // 10/21追加
       setItems((items) => {
         const oldIndex = items.findIndex((item) => item.id === active.id);
         const newIndex = items.findIndex((item) => item.id === over.id);
-        const updatedItems = arrayMove(items, oldIndex, newIndex); // アイテムを並べ替え
+        const updatedItems = arrayMove(workImage, oldIndex, newIndex); // アイテムを並べ替え
         onImagesUploaded(updatedItems); // 親コンポーネントに更新を通知
         return updatedItems;
       });
@@ -264,7 +335,9 @@ const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
     minWidth: "300px",
   };
 
-  const activeItem = items.find((item) => item.id === activeId); // ドラッグ中のアイテム
+  const activeItem =
+    // workImage && workImage.find((item) => item.id === activeId); // ドラッグ中のアイテム
+    items.find((item) => item.id === activeId); // ドラッグ中のアイテム
 
   const overlayStyle = {
     width: "100%",
@@ -288,6 +361,7 @@ const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
       <input
         type="file"
         multiple
+        id="inputElement"
         onChange={handleImageUpload} // 画像アップロードのイベントハンドラ
         ref={fileInputRef} // ファイルインプットの参照
         style={inputStyle} // 見えないようにスタイルを設定
@@ -300,19 +374,22 @@ const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
         modifiers={[restrictToWindowEdges]} // ドラッグが画面内に制限されるようにする
       >
         <SortableContext
-          items={items.map((item) => item.id)} // 並べ替え対象のアイテムIDを渡す
-          strategy={rectSortingStrategy} // 並べ替えの戦略を設定
+          // items={workImage && workImage.map((item) => item.id)} // 安全に配列を扱う
+          items={items.map((item) => item.id)} // 安全に配列を扱う
+          strategy={rectSortingStrategy}
         >
           <div style={{ gap: "10px" }}>
+            {/* {workImage &&
+              workImage.map((item) => ( */}
             {items.map((item) => (
               <SortableItem
                 key={item.id}
                 id={item.id}
-                image={item.image} // 画像URLを渡す
-                description={item.description} // 説明テキストを渡す
-                onDelete={handleDelete} // 削除イベントを渡す
-                onDescriptionChange={handleDescriptionChange} // 説明の変更イベントを渡す
-                activeId={activeId} // ドラッグ中のアイテムIDを渡す
+                image={item.image}
+                description={item.description}
+                onDelete={handleDelete}
+                onDescriptionChange={handleDescriptionChange}
+                activeId={activeId}
               />
             ))}
           </div>

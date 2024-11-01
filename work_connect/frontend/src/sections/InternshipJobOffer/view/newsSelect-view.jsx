@@ -5,8 +5,9 @@ import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
-import { AllItemsContext } from "src/layouts/dashboard/index";
+// import { AllItemsContext } from "src/layouts/dashboard/index";
 import ListView from "src/components/view/list-view";
+import { AllItemsContext } from "src/layouts/dashboard/index";
 
 
 function samePageLinkNavigation(event) {
@@ -44,7 +45,11 @@ LinkTab.propTypes = {
 
 export default function NavTabs() {
   const { getSessionData } = useSessionStorage();
-  const { setAllItems } = useContext(AllItemsContext);
+  const { AllItems, setAllItems } = useContext(AllItemsContext);
+  const { /*DataList,*/ IsSearch, Page, sortOption } = AllItems;
+
+  // const { setAllItems } = useContext(AllItemsContext);
+  // const { IsSearch, Page, sortOption } = AllItems;
 
   const getInitialNewsTabState = () => {
     const accountData = getSessionData("accountData");
@@ -52,7 +57,25 @@ export default function NavTabs() {
   };
   const [value, setValue] = useState(getInitialNewsTabState);
 
+  // タブがクリックされたら
   const handleTabClick = (event, newValue) => {
+    console.log("handleTabClick");
+    setAllItems((prevItems) => ({
+      ...prevItems,
+      IsLoading : true, // 一時的にローディングを解除
+    }));
+    if (sortOption !== "orderNewPostsDate" || Page > 1 || IsSearch.Check == true) {
+      console.log("あいうえお")
+      setAllItems((prevItems) => ({
+        ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
+        ResetItem: true,
+        DataList: [], //検索してない状態にするために初期化 //searchbar.jsxのsearchSourceも初期化
+        IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
+        Page: 1, //スクロールする前の状態にするために初期化
+        sortOption: "orderNewPostsDate", //並び替える前の状態にするために初期化
+      }));
+      // 必要に応じて、スクロール位置や他の状態もリセット
+    }
     if (
       event.type !== 'click' ||
       (event.type === 'click' && samePageLinkNavigation(event))
@@ -79,6 +102,7 @@ export default function NavTabs() {
 
       // ページ遷移または状態の更新処理
       pageCheck(category);
+
     }
   };
 
@@ -88,16 +112,16 @@ export default function NavTabs() {
     window.history.pushState({}, '', `${urlStr}?page=${pageStr}`);
   }
 
-  useEffect(() => {
-    setAllItems((prevItems) => ({
-      ...prevItems,
-      ResetItem: true,
-      DataList: [],
-      IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
-      Page: 1,
-      sortOption: "orderNewPostsDate",
-    }));
-  }, [setAllItems]);
+  // useEffect(() => {
+  //   setAllItems((prevItems) => ({
+  //     ...prevItems,
+  //     ResetItem: true,
+  //     DataList: [],
+  //     IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
+  //     Page: 1,
+  //     sortOption: "orderNewPostsDate",
+  //   }));
+  // }, [setAllItems]);
 
   //ブラウザの戻るボタンを押してもタブやURLに合ったニュースを表示させる
   useEffect(() => {

@@ -93,7 +93,7 @@ app.post("/follow", async (req, res) => {
         );
       }
     }
-    // res.sendStatus(200); 
+    // res.sendStatus(200);
   } catch (error) {
     console.error("Error sending follow notification:", error);
   }
@@ -145,7 +145,215 @@ app.post("/video_posting", async (req, res) => {
         );
       }
     }
-    // res.sendStatus(200); 
+    // res.sendStatus(200);
+  } catch (error) {
+    console.error("Error sending follow notification:", error);
+  }
+});
+
+// チャットの取得
+app.post("/post_chat", async (req, res) => {
+  const { MyUserId, PairUserId, Message } = req.body;
+
+  // laravelにフォロー情報を送信。
+  try {
+    const response = await axios.post(
+      "http://localhost:8000/post_chat"
+      , {
+      MyUserId: MyUserId, // ログイン中のID
+      PairUserId: PairUserId, // チャット相手のID
+      Message: Message // メッセージ
+    });
+
+    res.json(response.data);
+
+    if (clients[response.data.get_user_id]) {
+      clients[response.data.get_user_id].send(
+        JSON.stringify({
+          kind: "chat",
+          type: "post",
+          chatData: response.data,
+        })
+      );
+    }
+    if (clients[response.data.send_user_id]) {
+      clients[response.data.send_user_id].send(
+        JSON.stringify({
+          kind: "chat",
+          type: "post",
+          chatData: response.data,
+        })
+      );
+    }
+  }
+
+   catch (error) {
+    console.error("Error sending follow notification:", error);
+  }
+});
+
+// チャットの既読
+app.post("/already_read_chat", async (req, res) => {
+  console.log("Request received at /already_read_chat"); // リクエストが届いているか確認
+  const { MyUserId, PairUserId } = req.body;
+
+  // laravelに既読を送信。
+  try {
+    const response = await axios.post(
+      "http://localhost:8000/already_read_chat"
+      , {
+      MyUserId: MyUserId, // ログイン中のID
+      PairUserId: PairUserId, // チャット相手のID
+    });
+
+    res.json(response.data);
+
+    if (clients[response.data.send_user_id]) {
+      clients[response.data.send_user_id].send(
+        JSON.stringify({
+          kind: "chat",
+          type: "already_read",
+          chatData: response.data,
+        })
+      );
+    }
+  }
+
+   catch (error) {
+    console.error("Error sending follow notification:", error);
+  }
+});
+
+// チャットの削除
+app.post("/delete_chat", async (req, res) => {
+  console.log("Request received at /already_read_chat"); // リクエストが届いているか確認
+  const { Id } = req.body;
+
+  // laravelにリクエストを送信。
+  try {
+    const response = await axios.post(
+      "http://localhost:8000/delete_chat"
+      , {
+        Id: Id, // チャットのID
+    });
+
+    res.json(response.data);
+
+    if (clients[response.data.send_user_id]) {
+      clients[response.data.send_user_id].send(
+        JSON.stringify({
+          kind: "chat",
+          type: "delete",
+          chatData: response.data,
+        })
+      );
+    }
+    if (clients[response.data.get_user_id]) {
+      clients[response.data.get_user_id].send(
+        JSON.stringify({
+          kind: "chat",
+          type: "delete",
+          chatData: response.data,
+        })
+      );
+    }
+  }
+
+   catch (error) {
+    console.error("Error sending follow notification:", error);
+  }
+});
+
+// チャットの更新
+app.post("/update_chat", async (req, res) => {
+  console.log("Request received at /already_read_chat"); // リクエストが届いているか確認
+  const { Id, Data } = req.body;
+
+  // laravelにリクエストを送信。
+  try {
+    const response = await axios.post(
+      "http://localhost:8000/update_chat"
+      , {
+        Id: Id, // チャットのID
+        Data: Data // 更新するチャットの内容
+    });
+
+    res.json(response.data);
+
+    if (clients[response.data.send_user_id]) {
+      clients[response.data.send_user_id].send(
+        JSON.stringify({
+          kind: "chat",
+          type: "update",
+          chatData: response.data,
+        })
+      );
+    }
+    if (clients[response.data.get_user_id]) {
+      clients[response.data.get_user_id].send(
+        JSON.stringify({
+          kind: "chat",
+          type: "update",
+          chatData: response.data,
+        })
+      );
+    }
+  }
+
+   catch (error) {
+    console.error("Error sending follow notification:", error);
+  }
+});
+
+// ニュース投稿
+app.post("/news_upload", async (req, res) => {
+  console.log("req.body.body.workData", req.body.body);
+
+  // laravelにフォロー情報を送信。
+  try {
+    const response = await axios.post(
+      "http://localhost:8000/news_upload",
+      req.body.body,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    // console.log(formData);
+    // console.log(response.data.message);
+
+
+
+    if (response.data.message == "successfully") {
+      res.json(response.data);
+      console.log("response.data.notice_data[0]", response.data.noticeData[0]);
+      response.data.follower.map((value) => {
+        if (clients[value]) {
+          clients[value].send(
+            JSON.stringify({
+              kind: "notification",
+              type: "newsPosting",
+              message: "",
+              noticeData: response.data.noticeData[0],
+            })
+          );
+        }
+      })
+    } else {
+      res.json("何らかの原因でエラーが起きました");
+      if (clients[followedId]) {
+        clients[followedId].send(
+          JSON.stringify({
+            type: "follow",
+            message: "",
+            follow_status: response.data.follow_status,
+          })
+        );
+      }
+    }
+    // res.sendStatus(200);
   } catch (error) {
     console.error("Error sending follow notification:", error);
   }

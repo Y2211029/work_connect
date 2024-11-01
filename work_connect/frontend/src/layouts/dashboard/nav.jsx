@@ -54,7 +54,7 @@ export default function Nav({ openNav, onCloseNav }) {
 
       {/* ロゴ:Work&Connect */}
       <Logo sx={{ mt: 3, ml: 4 }} />
-      
+
       {renderMenu}
       <Box sx={{ flexGrow: 1 }} />
     </Scrollbar>
@@ -118,12 +118,14 @@ function NavItem({ item }) {
 
   // サイドバークリック 一覧アイテム・並び替え・検索タグ 初期化
   const handleReset = () => {
-    
-    setAllItems((prevItems) => ({
-      ...prevItems,
-      isLoading: true,
-    }));
-    if (sortOption !== "orderNewPostsDate" || Page > 1 || IsSearch.Check == true) {
+    console.log("item.path", item.path)
+
+    if (item.path !== pathname || sortOption !== "orderNewPostsDate" || Page > 1 || IsSearch.Check == true) {
+      setAllItems((prevItems) => ({
+        ...prevItems,
+        IsLoading : true, // 一時的にローディングを解除
+      }));
+      console.log("あいうえお")
       setAllItems((prevItems) => ({
         ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
         ResetItem: true,

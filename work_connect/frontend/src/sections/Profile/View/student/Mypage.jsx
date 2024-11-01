@@ -267,12 +267,13 @@ const ProfileMypage = () => {
   const profile_id = ResponseData.id;
 
 
+  console.log("profile_id",profile_id);
   const handleFollowClick = async () => {
     try {
       //data.account_id = 自分のid
+      console.log(profile_id);
       //id = 今見ているプロフィールの人のid
       console.log(MyUserId[0]);
-      console.log(profile_id);
       setButtonDisable(true);
       const updatedFollowStatus = await follow(MyUserId[0], profile_id);
 
@@ -335,7 +336,8 @@ const ProfileMypage = () => {
         {/* 編集ボタン */}
 
         {/* ResponseData.id(プロフィールのID) と MyUserId(ログイン中のID)が一致したら編集ボタンを表示 */}
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', visibility: ResponseData.id === MyUserId[0] ? 'visible' : 'hidden' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
+         
           {ResponseData.id === MyUserId[0] ? (
             <Tooltip title="編集する">
               <IconButton
@@ -357,10 +359,9 @@ const ProfileMypage = () => {
               {renderFollow()}
             </Tooltip>
           ) : (
-            <div style={{ visibility: 'hidden' }} />  // スペース確保用の空のdiv
+              <div style={{ visibility: 'hidden' }} />
           )}
         </Box>
-
 
         <Card sx={{
           textAlign: 'center',

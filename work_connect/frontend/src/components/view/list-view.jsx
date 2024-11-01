@@ -61,6 +61,7 @@ const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, s
     setWorkList((prev) => [...prev, ...generatePosts(filteredNewWorks)]);
     // setLoading(false);
     setItemLoading(false);
+
   }
 
   if (error) {
@@ -96,6 +97,8 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
     console.log("パス名", currentPath);
     console.log("DecodeURL", decodeURIComponent(currentPath));
   }, [window.location.pathname]);
+
+
 
 
 
@@ -576,7 +579,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   const [isLoadItemColorLing, setIsLoadItemColorLing] = useState(false);
   // AllItemsContextから状態を取得
   const { AllItems, setAllItems } = useContext(AllItemsContext);
-  const { isLoading, DataList, IsSearch, Page, sortOption, ResetItem } = AllItems;
+  const { IsLoading, DataList, IsSearch, Page, sortOption, ResetItem } = AllItems;
   const [isLoadItem, setIsLoadItem] = useState(false);
   // スクロールされたらtrueを返す。
   const [isIntersecting, ref] = useIntersection(setting);
@@ -586,15 +589,14 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   useEffect(() => {
     loginStatusCheckFunction();
   }, []);
+
   useEffect(() => {
-    if (isLoading) {
+    if (IsLoading) {
       setIsLoadItem(true);
     } else {
       setIsLoadItem(false);
     }
-  }, [isLoading]);
-
-  console.log("あいうえお")
+  }, [IsLoading]);
 
   // 並べ替え
   const handleSortChange = (event) => {
@@ -603,7 +605,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     // URLパラメータにセットしてLaravel側でデータを1取得するための準備
     setAllItems((prevItems) => ({
       ...prevItems,
-      isLoading: true,
+      IsLoading: true,
       Page: 1,
       sortOption: newValue,
     }));
@@ -648,7 +650,18 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     lastUrl = `${url}?page=${Page}&sort=${sortOption}&userName=${ParamUserName}`;
   }
 
-  const { data, error } = useSWR(lastUrl, fetcher);
+  const { data, error, isLoading } = useSWR(lastUrl, fetcher);
+
+  let LaravelResponse = isLoading;
+  useEffect(() => {
+    console.log("useSWR:isLoading:", LaravelResponse)
+    if (LaravelResponse == false) {
+      setAllItems((prevItems) => ({
+        ...prevItems,
+        IsLoading: false, // 一時的にローディングを解除
+      }));
+    }
+  }, [LaravelResponse]);
 
   // 検索時にsetWorkOfListをリセット
   useEffect(() => {
@@ -697,6 +710,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
 
   /*----- 検索されていないかつ作品データがあるとき -----*/
   useEffect(() => {
+    console.log("PagePagePage", Page);
     if (!ResetItem && !IsSearch.Check && data) {
       console.log("検索されていないかつ作品データがあるとき", WorkOfList);
       console.log("datadata", data);
@@ -714,16 +728,17 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
       );
 
       // データが更新されてからisLoadingをfalseに設定
+      console.log("data:", data);
       if (data.length !== 0) {
-        console.log("data:isLoading", isLoading);
         setIsLoadItem(false);
         console.log("data:setIsLoadItem:false");
       }
       setAllItems((prev) => ({
         ...prev,
-        isLoading: data.length === 0 ? true : false // データが空のときはtrueにしてローディングを維持
+        IsLoading: data.length !== 0 || Page !== 1 && (false) // データが空のときはtrueにしてローディングを維持
       }));
     }
+
   }, [data, error, ResetItem, IsSearch.Check, IsSearch.searchResultEmpty]);
 
   // 検索された場合
@@ -752,16 +767,16 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
       }
       setAllItems((prev) => ({
         ...prev,
-        isLoading: DataList.length === 0 ? true : false // 検索結果が空ならtrueにしてローディングを維持
+        IsLoading: DataList.length !== 0 || Page !== 1 && (false) // データが空のときはtrueにしてローディングを維持
       }));
     }
   }, [DataList, IsSearch.Check, IsSearch.searchResultEmpty]);
 
 
   useEffect(() => {
-    console.log("isLoading", isLoading);
+    console.log("IsLoadingIsLoading  ", IsLoading);
 
-  }, [isLoading]);
+  }, [IsLoading]);
 
   // workItems = IsSearch.searchResultEmpty
   //   ? "検索結果は0件です" // フラグに基づいて表示
@@ -780,7 +795,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
       <PostCard className="mediaCard" ref={index === WorkOfList.length - 1 ? ref : null}
         key={`${post}-${index}`} post={post} index={index} />
     ))
-    : null;
+    : WorkOfList.length === 0 && LaravelResponse === false ? "0件です。" : null;
 
   return (
     <>

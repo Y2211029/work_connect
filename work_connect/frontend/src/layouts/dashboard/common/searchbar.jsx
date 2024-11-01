@@ -556,6 +556,7 @@ export default function Searchbar() {
     if (data.length === 0) {
       setAllItems((prevItems) => ({
         ...prevItems,
+        IsLoading: false,
         DataList: [],
       }));
     }
@@ -1240,7 +1241,7 @@ export default function Searchbar() {
       // 「並び替え順」「一覧データ」初期化
       setAllItems((prevItems) => ({
         ...prevItems,
-        isLoading: true,
+        IsLoading: true,
         DataList: [],
         IsSearch: {
           ...prevItems.IsSearch,
@@ -1260,7 +1261,7 @@ export default function Searchbar() {
       // 「検索文字列・タグ」「並び替え順」「一覧データ」初期化
       setAllItems((prevItems) => ({
         ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
-        isLoading: true,
+        IsLoading: true,
         ResetItem: true,
         DataList: [], //検索してない状態にするために初期化 //searchbar.jsxのsearchSourceも初期化
         IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },

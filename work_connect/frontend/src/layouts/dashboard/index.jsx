@@ -49,7 +49,7 @@ export default function DashboardLayout({ children }) {
 
   const [AllItems, setAllItems] = useState({
     // 一覧ローディング
-    isLoading: true,
+    IsLoading : true,
     DataList: [],
     IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
     Page: 1,

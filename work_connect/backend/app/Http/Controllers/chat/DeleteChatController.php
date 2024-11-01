@@ -22,8 +22,13 @@ class DeleteChatController extends Controller
                 // check_read列を'削除'に変更
                 $ChatId->check_read = '削除';
                 $ChatId->save();
+
+                $responseData = [
+                    'send_user_id' => $ChatId->send_user_id,
+                    'get_user_id' => $ChatId->get_user_id,
+                ];
                 // Reactに返す
-                return response()->json("succuses");
+                return response()->json($responseData);
             }
 
         } catch (\Exception $e) {

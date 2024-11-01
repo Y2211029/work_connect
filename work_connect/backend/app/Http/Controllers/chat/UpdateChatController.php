@@ -18,6 +18,8 @@ class UpdateChatController extends Controller
             $Id = $request->input('Id');
             $Data = $request->input('Data');
 
+            $ChatId = w_chat::find($Id);
+
             // 内容を更新、編集済みにする
             w_chat::where('id', $Id)
                 ->update([
@@ -27,8 +29,12 @@ class UpdateChatController extends Controller
             );
 
 
+            $responseData = [
+                'send_user_id' => $ChatId->send_user_id,
+                'get_user_id' => $ChatId->get_user_id,
+            ];
             // Reactに返す
-            return response()->json("succuses");
+            return response()->json($responseData);
 
 
         } catch (\Exception $e) {

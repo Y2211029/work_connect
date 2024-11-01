@@ -118,6 +118,7 @@ function NavItem({ item }) {
 
   // サイドバークリック 一覧アイテム・並び替え・検索タグ 初期化
   const handleReset = () => {
+    
     setAllItems((prevItems) => ({
       ...prevItems,
       isLoading: true,

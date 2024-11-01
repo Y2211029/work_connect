@@ -44,7 +44,7 @@ LinkTab.propTypes = {
 
 export default function NavTabs() {
   const { getSessionData } = useSessionStorage();
-  const { setAllItems } = useContext(AllItemsContext);
+  // const { setAllItems } = useContext(AllItemsContext);
   // const { IsSearch, Page, sortOption } = AllItems;
 
   const getInitialNewsTabState = () => {

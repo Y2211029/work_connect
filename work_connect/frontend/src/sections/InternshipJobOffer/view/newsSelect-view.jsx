@@ -60,11 +60,11 @@ export default function NavTabs() {
   // タブがクリックされたら
   const handleTabClick = (event, newValue) => {
     console.log("handleTabClick");
+    setAllItems((prevItems) => ({
+      ...prevItems,
+      IsLoading : true, // 一時的にローディングを解除
+    }));
     if (sortOption !== "orderNewPostsDate" || Page > 1 || IsSearch.Check == true) {
-      setAllItems((prevItems) => ({
-        ...prevItems,
-        IsLoading : true, // 一時的にローディングを解除
-      }));
       console.log("あいうえお")
       setAllItems((prevItems) => ({
         ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用

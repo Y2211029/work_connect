@@ -98,17 +98,12 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
     console.log("DecodeURL", decodeURIComponent(currentPath));
   }, [window.location.pathname]);
 
-
-
-
-
   useEffect(() => {
     setNewsDetailId(NewsDetailId);
   }, [NewsDetailId]);
 
   console.log("page", page);
   console.log("category", category);
-
 
   useEffect(() => {
     // 各パスに対するコンポーネントを動的にロード
@@ -585,7 +580,12 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   const [isIntersecting, ref] = useIntersection(setting);
 
   const { ItemName, url, idKey, tags, generatePosts } = urlMapping || {};
+  // 初回ロード完了のフラグ
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
 
+  useEffect(() => {
+
+  }, [IsLoading]);
   useEffect(() => {
     loginStatusCheckFunction();
   }, []);
@@ -594,6 +594,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     if (IsLoading) {
       setIsLoadItem(true);
     } else {
+      setHasLoadedOnce(true);
       setIsLoadItem(false);
     }
   }, [IsLoading]);
@@ -733,10 +734,12 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
         setIsLoadItem(false);
         console.log("data:setIsLoadItem:false");
       }
-      setAllItems((prev) => ({
-        ...prev,
-        IsLoading: data.length !== 0 || Page !== 1 && (false) // データが空のときはtrueにしてローディングを維持
-      }));
+      if (data.length !== 0 || Page !== 1) {
+        setAllItems((prev) => ({
+          ...prev,
+          IsLoading: false// データが空のときはtrueにしてローディングを維持
+        }));
+      }
     }
 
   }, [data, error, ResetItem, IsSearch.Check, IsSearch.searchResultEmpty]);
@@ -765,38 +768,45 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
         setIsLoadItem(false);
         console.log("DataList:setIsLoadItem:false");
       }
-      setAllItems((prev) => ({
-        ...prev,
-        IsLoading: DataList.length !== 0 || Page !== 1 && (false) // データが空のときはtrueにしてローディングを維持
-      }));
+      if (DataList.length !== 0 || Page !== 1) {
+        setAllItems((prev) => ({
+          ...prev,
+          IsLoading: false// データが空のときはtrueにしてローディングを維持
+        }));
+      }
     }
   }, [DataList, IsSearch.Check, IsSearch.searchResultEmpty]);
 
 
   useEffect(() => {
     console.log("IsLoadingIsLoading  ", IsLoading);
-
   }, [IsLoading]);
-
-  // workItems = IsSearch.searchResultEmpty
-  //   ? "検索結果は0件です" // フラグに基づいて表示
-  //   : typeof generatePosts === "function"
-  //     ? generatePosts(WorkOfList)
-  //     : null;
-
-  // 作品アイテムをHTML要素に当てはめて表示する準備
 
   useEffect(() => {
     console.log("WorkOfList", WorkOfList);
   }, [WorkOfList]);
 
-  const renderWorkItems = WorkOfList && PostCard ?
-    WorkOfList.map((post, index) => (
-      <PostCard className="mediaCard" ref={index === WorkOfList.length - 1 ? ref : null}
-        key={`${post}-${index}`} post={post} index={index} />
-    ))
-    : WorkOfList.length === 0 && LaravelResponse === false ? "0件です。" : null;
-
+  // const renderWorkItems = WorkOfList.length !== 0 && PostCard ?
+  //   WorkOfList.map((post, index) => (
+  //     <PostCard className="mediaCard" ref={index === WorkOfList.length - 1 ? ref : null}
+  //       key={`${post}-${index}`} post={post} index={index} />
+  //   ))
+  //   : WorkOfList.length === 0 && IsLoading === false && LaravelResponse === false ? "0件です" : null;
+  // WorkOfList の表示ロジック
+  const renderWorkItems =
+    WorkOfList.length !== 0 && PostCard ? (
+      WorkOfList.map((post, index) => (
+        <PostCard
+          className="mediaCard"
+          ref={index === WorkOfList.length - 1 ? ref : null}
+          key={`${post}-${index}`}
+          post={post}
+          index={index}
+        />
+      ))
+    ) : WorkOfList.length === 0 && !IsLoading && !LaravelResponse && hasLoadedOnce ? (
+      "0件です"
+    ) : null;
   return (
     <>
       {isLoadItem && (

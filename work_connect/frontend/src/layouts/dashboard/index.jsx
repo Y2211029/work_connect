@@ -60,6 +60,7 @@ export default function DashboardLayout({ children }) {
   const [WebSocketState, setWebSocketState] = useState({
     notification: {},
     Chat: "",
+    Chat2: "",
     workComment: "",
     websocketFollowStatus: "",
   });
@@ -114,6 +115,12 @@ export default function DashboardLayout({ children }) {
             setWebSocketState((prev) => ({
               ...prev,
               Chat: data,
+            }));
+          } else if(data.type === "already_read" || data.type === "delete" || data.type === "update"){
+            console.log("index.js : data.noticeData :", data);
+            setWebSocketState((prev) => ({
+              ...prev,
+              Chat2: data,
             }));
           }
         }

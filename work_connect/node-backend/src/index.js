@@ -194,6 +194,7 @@ app.post("/post_chat", async (req, res) => {
 
 // チャットの既読
 app.post("/already_read_chat", async (req, res) => {
+  console.log("Request received at /already_read_chat"); // リクエストが届いているか確認
   const { MyUserId, PairUserId } = req.body;
 
   // laravelに既読を送信。
@@ -207,20 +208,92 @@ app.post("/already_read_chat", async (req, res) => {
 
     res.json(response.data);
 
-    if (clients[response.data.get_user_id]) {
-      clients[response.data.get_user_id].send(
-        JSON.stringify({
-          kind: "chat",
-          type: "post",
-          chatData: response.data,
-        })
-      );
-    }
     if (clients[response.data.send_user_id]) {
       clients[response.data.send_user_id].send(
         JSON.stringify({
           kind: "chat",
-          type: "post",
+          type: "already_read",
+          chatData: response.data,
+        })
+      );
+    }
+  }
+
+   catch (error) {
+    console.error("Error sending follow notification:", error);
+  }
+});
+
+// チャットの削除
+app.post("/delete_chat", async (req, res) => {
+  console.log("Request received at /already_read_chat"); // リクエストが届いているか確認
+  const { Id } = req.body;
+
+  // laravelにリクエストを送信。
+  try {
+    const response = await axios.post(
+      "http://localhost:8000/delete_chat"
+      , {
+        Id: Id, // チャットのID
+    });
+
+    res.json(response.data);
+
+    if (clients[response.data.send_user_id]) {
+      clients[response.data.send_user_id].send(
+        JSON.stringify({
+          kind: "chat",
+          type: "delete",
+          chatData: response.data,
+        })
+      );
+    }
+    if (clients[response.data.get_user_id]) {
+      clients[response.data.get_user_id].send(
+        JSON.stringify({
+          kind: "chat",
+          type: "delete",
+          chatData: response.data,
+        })
+      );
+    }
+  }
+
+   catch (error) {
+    console.error("Error sending follow notification:", error);
+  }
+});
+
+// チャットの更新
+app.post("/update_chat", async (req, res) => {
+  console.log("Request received at /already_read_chat"); // リクエストが届いているか確認
+  const { Id, Data } = req.body;
+
+  // laravelにリクエストを送信。
+  try {
+    const response = await axios.post(
+      "http://localhost:8000/update_chat"
+      , {
+        Id: Id, // チャットのID
+        Data: Data // 更新するチャットの内容
+    });
+
+    res.json(response.data);
+
+    if (clients[response.data.send_user_id]) {
+      clients[response.data.send_user_id].send(
+        JSON.stringify({
+          kind: "chat",
+          type: "update",
+          chatData: response.data,
+        })
+      );
+    }
+    if (clients[response.data.get_user_id]) {
+      clients[response.data.get_user_id].send(
+        JSON.stringify({
+          kind: "chat",
+          type: "update",
           chatData: response.data,
         })
       );

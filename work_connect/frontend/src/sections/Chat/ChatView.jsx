@@ -453,10 +453,6 @@ const ChatView = () => {
   // Laravelとの通信用URL
   const get_channel_list = "http://localhost:8000/get_channel_list";
   const get_chat = "http://localhost:8000/get_chat";
-  //const post_chat = "http://localhost:8000/post_chat";
-  const delete_chat = "http://localhost:8000/delete_chat";
-  //const already_read_chat = "http://localhost:8000/already_read_chat";
-  const update_chat = "http://localhost:8000/update_chat";
 
   /// 画面読み込み後、1度だけ実行
   useEffect(() => {
@@ -515,12 +511,19 @@ const ChatView = () => {
     // フォローリスト、チャット取得
     GetChannelList();
     GetChat(chatViewId);
-    alert("GET CHAT");
-
-    // 既読をつける
+    //alert("GET CHAT");
     AlreadyReadChat(chatViewId);
 
   }, [chatContext.WebSocketState.Chat,chatViewId]);
+
+  // chatContext.WebSocketState.Chat2を取得したとき
+  // リアルタイムで既読や削除を反映させる
+
+  useEffect(() => {
+    // トーク画面の再読み込み
+    GetChat(chatViewId);
+  }, [chatContext.WebSocketState.Chat2]);
+
 
   // chatEditDataが変更されたとき
   useEffect(() => {
@@ -577,7 +580,7 @@ const ChatView = () => {
         });
 
         if (response) {
-          console.log(JSON.stringify(response, null, 2));
+          //console.log(JSON.stringify(response, null, 2));
           const data = response.data;
           setResponseChannelListData(data);
 
@@ -641,10 +644,8 @@ const ChatView = () => {
   const PostChat = () => {
     async function PostData() {
       try {
-        console.log("TextData:"+TextData);
         const PairUserId = getSessionData("accountData").ChatOpenId;
-
-        // バックエンドにフォローリクエストを送信
+        // バックエンドにリクエストを送信
         await fetch("http://localhost:3000/post_chat", {
           method: "POST",
           headers: {
@@ -652,11 +653,9 @@ const ChatView = () => {
           },
           body: JSON.stringify({ MyUserId: MyUserId, PairUserId: PairUserId, Message: TextData }),
         });
-        // if (response.data) {
-          console.log("送信成功しました");
-          setTextData("");
-          updateSessionData("accountData", "GetStartUnread", 0);
-        //}
+        console.log("送信成功しました");
+        setTextData("");
+        updateSessionData("accountData", "GetStartUnread", 0);
       } catch (err) {
         console.log("err:", err);
       }
@@ -673,9 +672,14 @@ const ChatView = () => {
   const DeleteChat = (id) => {
     async function PostData() {
       try {
-        console.log("TextData:");
-        const response = await axios.post(delete_chat, {
-          Id: id, // ログイン中のID
+
+        // バックエンドにリクエストを送信
+        const response = await fetch("http://localhost:3000/delete_chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ Id: id }),
         });
         if (response.data) {
           console.log("チャットの削除に成功しました");
@@ -699,13 +703,6 @@ const ChatView = () => {
   const AlreadyReadChat = (id) => {
     async function PostData() {
       try {
-        console.log("TextData:");
-
-        // const response = await axios.post(already_read_chat, {
-        //   MyUserId: MyUserId, //ログイン中のID
-        //   PairUserId: id, // 相手のID
-        // });
-
          // バックエンドにフォローリクエストを送信
          await fetch("http://localhost:3000/already_read_chat", {
           method: "POST",
@@ -729,9 +726,16 @@ const ChatView = () => {
   const UpDateChat = () => {
     async function PostData() {
       try {
-        const response = await axios.post(update_chat, {
-          Id: getSessionData("accountData").ChatEditId, // チャットのid
-          Data: getSessionData("accountData").ChatEditData, // チャットの内容
+        // バックエンドにリクエストを送信
+        const response = await fetch("http://localhost:3000/update_chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            Id: getSessionData("accountData").ChatEditId,
+            Data: getSessionData("accountData").ChatEditData
+          }),
         });
         if (response.data) {
           console.log("チャットの既読に成功しました");

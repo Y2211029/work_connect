@@ -30,7 +30,7 @@ class PostChatController extends Controller
                 'check_read' => "未読",
                 'send_datetime' => $sendDateTime,
             ]);
-
+            Log::info('responseDataは＊＊＊＊＊:', ['send_user_id' => $responseData]);
             // Reactに返す
             return response()->json($responseData);
 

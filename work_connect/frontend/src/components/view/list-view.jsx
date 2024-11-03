@@ -146,11 +146,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
         case path === `/Internship_JobOffer` ||
           (options.DecodeURL === `/Profile/${ParamUserName}` &&
             options.page === "news" &&
-<<<<<<< HEAD
             ["JobOffer", "Internship", "Blog"].includes(options.category)): {
-=======
-            ["joboffers", "internships", "blogs", "sessions"].includes(options.category)): {
->>>>>>> 082c1d9b639a515e4d514e29d8b38836e646665f
             const { default: Internship_JobOfferPostCard } = await import("src/sections/InternshipJobOffer/post-card");
             setPostCard(() => Internship_JobOfferPostCard);
             console.log("Internship_JobOfferPostCard");
@@ -622,7 +618,6 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   console.log(url);
   console.log(DecodeURL);
   // URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合
-<<<<<<< HEAD
   if (url && (PathName === "/" || PathName === "/VideoList" || PathName === "/StudentList" || PathName === "/CompanyList"
     || PathName === "/Internship_JobOffer" || PathName === `/WriteForm/${NewsDetailId}` || PathName === `/CreateForm/${NewsDetailId}`
     || PathName === "/Internship_JobOffer/JobOffer" || PathName === "/Internship_JobOffer/Internship"
@@ -634,27 +629,6 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     page === "companyinformation"
     || DecodeURL === `/Profile/${ParamUserName}/Checkform` &&
     (category === "application_form_list" || category === "statistical_data" )
-=======
-  if (url && (PathName === "/"
-    || PathName === "/VideoList"
-    || PathName === "/StudentList"
-    || PathName === "/CompanyList"
-    || PathName === "/Internship_JobOffer"
-    || PathName === `/WriteForm/${NewsDetailId}`
-    || PathName === `/CreateForm/${NewsDetailId}`
-    || PathName === "/Internship_JobOffer/joboffers"
-    || PathName === "/Internship_JobOffer/internships"
-    || PathName === "/Internship_JobOffer/blogs"
-    || DecodeURL === `/Profile/${ParamUserName}`
-    && page === "news"
-    || page === "checkform"
-    && (category === "joboffers" ||
-      category === "internships" ||
-      category === "blogs" ||
-      category === "application_form_list")
-    || DecodeURL === `/Profile/${ParamUserName}`
-    && page === "companyinformation"
->>>>>>> 082c1d9b639a515e4d514e29d8b38836e646665f
   )) {
     // console.log(" URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合");
     lastUrl = `${url}?page=${Page}&sort=${sortOption}`;

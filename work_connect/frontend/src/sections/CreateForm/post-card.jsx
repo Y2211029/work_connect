@@ -5,6 +5,10 @@ import { Survey } from 'survey-react-ui';
 import "./CreateForm.css";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
+//ルーティング
+import { useNavigate } from 'react-router-dom';
+
+
 // フォームメニュー
 import Text from "./SelectOptionMenu/Text";
 import DateForm from "./SelectOptionMenu/Date";
@@ -38,6 +42,7 @@ import NotesIcon from '@mui/icons-material/Notes';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import StarIcon from '@mui/icons-material/Star';
 import BurstModeIcon from '@mui/icons-material/BurstMode';
+import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 
 // データ保存
 import axios from "axios";
@@ -64,6 +69,8 @@ const PostCard = forwardRef(({ post },) => {
     id: accountData.id,
   };
   const [create_news_id] = useState(news_id);
+  const navigate = useNavigate();
+
 
   // 質問を追加する関数 //dropdown
   const addQuestion = (Questions_Genre) => {
@@ -430,6 +437,15 @@ const PostCard = forwardRef(({ post },) => {
     setButtonOpen(true);
   };
 
+  //ニュースの下書きに戻る
+  const handleBack = () => {
+    const editorSessionData = JSON.parse(sessionStorage.getItem("editorSessionData"));
+    const genre = editorSessionData.genre; // null チェックを追加
+    console.log("ジャンル", genre);
+    navigate(`/Editor/${genre}`);
+  };
+
+
   const FormSelectArray = [
     { lavel: 'テキスト', icon: <TranslateIcon />, click: 'text' },
     { lavel: '日時', icon: <WatchLaterIcon />, click: 'date' },
@@ -497,7 +513,7 @@ const PostCard = forwardRef(({ post },) => {
 
   ];
 
-    console.log("surveyの中身",survey);
+  console.log("surveyの中身", survey);
 
   return (
     <>
@@ -507,10 +523,18 @@ const PostCard = forwardRef(({ post },) => {
             <p>フォームがありません</p>
           ) : (
             <>
-            <Typography style={{marginLeft:"0%"}}>{article_title}</Typography>
-            <div className="SurveyModal">
-              <Survey model={survey} />
-            </div>
+              <div className="back_news_draft" onClick={handleBack}>
+                <Stack direction={'row'}>
+                  <ArrowCircleLeftIcon />
+                  <Typography>ニュースの下書きに戻る</Typography>
+                </Stack>
+              </div>
+
+
+              <Typography style={{ marginLeft: "0%" }}>{article_title}</Typography>
+              <div className="SurveyModal">
+                <Survey model={survey} />
+              </div>
 
             </>
           )}
@@ -530,21 +554,21 @@ const PostCard = forwardRef(({ post },) => {
         </div>
 
         {modalopen && (
-            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-              {SelectMenuArray.map((menu, index) => {
-                const Component = menu.component; // 各メニューに対応するコンポーネントを取得
-                return (
-                  selectmenu === menu.menu && (
-                    <Component
-                      key={index}
-                      onSave={handleSaveSettings}
-                      onCancel={CreateFormCancel}
-                      questionData={questionData ? questionData : null} // 編集時のみquestionDataを渡す
-                    />
-                  )
-                );
-              })}
-            </Stack>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+            {SelectMenuArray.map((menu, index) => {
+              const Component = menu.component; // 各メニューに対応するコンポーネントを取得
+              return (
+                selectmenu === menu.menu && (
+                  <Component
+                    key={index}
+                    onSave={handleSaveSettings}
+                    onCancel={CreateFormCancel}
+                    questionData={questionData ? questionData : null} // 編集時のみquestionDataを渡す
+                  />
+                )
+              );
+            })}
+          </Stack>
         )}
 
         {buttonOpen && (
@@ -556,7 +580,7 @@ const PostCard = forwardRef(({ post },) => {
                   startIcon={form.icon}
                   onClick={() => addQuestion(form.click)}
                   variant="outlined"
-                  style={{ textAlign: 'left',width:"210px",marginLeft:"50%",}}  // アイコンとテキストを左寄せ
+                  style={{ textAlign: 'left', width: "210px", marginLeft: "50%", }}  // アイコンとテキストを左寄せ
                 >
                   {form.lavel}
                 </Button>

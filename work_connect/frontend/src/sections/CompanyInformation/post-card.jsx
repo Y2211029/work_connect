@@ -10,15 +10,11 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import Switch from '@mui/material/Switch';
 import './CompanyInformation.css';
 import axios from "axios";
-import DeleteIcon from '@mui/icons-material/Delete';
-import SwapVertIcon from '@mui/icons-material/SwapVert';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { DndContext, closestCenter } from '@dnd-kit/core';
-import { SortableContext, arrayMove, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
-import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
+import EditCompanyInformation from './EditCompanyInformation';
+import { arrayMove } from '@dnd-kit/sortable';
+
 
 const PostCard = forwardRef(({ post }) => {
   const { title_contents } = post;
@@ -29,7 +25,7 @@ const PostCard = forwardRef(({ post }) => {
   const [MyUserName, setMyUserName] = useState("");
   const [showEdit, setShowEdit] = useState(false);
   const [editedContents, setEditedContents] = useState([]);
-  const [TrueTitleContents, setTitleContents] = useState(title_contents); 
+  const [TrueTitleContents, setTitleContents] = useState(title_contents);
 
   useEffect(() => {
     const accountData = JSON.parse(sessionStorage.getItem("accountData"));
@@ -81,7 +77,7 @@ const PostCard = forwardRef(({ post }) => {
     }
     AllCompanyInformationsPull();
   }, []);
-  
+
 
   useEffect(() => {
     if (showEdit) {
@@ -113,6 +109,8 @@ const PostCard = forwardRef(({ post }) => {
     console.log("編集ボタンがクリックされました", postId);
     if (editedContents) {
       setShowEdit(true);
+      console.log(editedContents);
+      console.log("通ってます");
     }
   };
 
@@ -124,19 +122,6 @@ const PostCard = forwardRef(({ post }) => {
     });
   };
 
-  // const handleTextChange = (index, field, value) => {
-  //   setEditedContents(prevContents => {
-  //     const newContents = [...prevContents];
-  //     newContents[index][field] = value;
-  //     return newContents;
-  //   });
-  // };
-
-  const handleBlur = (index, field, value) => {
-    setTimeout(() => {
-      handleTextChange(index, field, value);
-    }, 200);  // 200ms遅延
-  };
 
   const handleTextChange = (index, field, value) => {
     setEditedContents(prevContents => {
@@ -156,31 +141,6 @@ const PostCard = forwardRef(({ post }) => {
     }
   };
 
-  const SortableRow = ({ id, children }) => {
-    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
-  
-    const style = {
-      transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : 'none',
-      transition,
-      cursor: isDragging ? 'grabbing' : 'grab',
-    };
-  
-    return (
-      <TableRow ref={setNodeRef} style={style} {...attributes}>
-        {children}
-        <TableCell>
-          <Tooltip title={"ドラッグすることで並び替えができます"}>
-            <SwapVertIcon {...listeners} style={{ cursor: 'grab' }} />
-          </Tooltip>
-        </TableCell>
-      </TableRow>
-    );
-  };
-  
-  SortableRow.propTypes = {
-    id: PropTypes.number.isRequired,
-    children: PropTypes.func.isRequired,
-  };
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
@@ -229,84 +189,25 @@ const PostCard = forwardRef(({ post }) => {
     setShowEdit(false)
   }
 
-  const renderEdit = (
-    <div>
-      <div className="modal_overlay">
-        <div className="modal_window">
-          <TableContainer component={Paper} className="Modal_tableContainer">
-            <Table className="Modal_Table">
-              <TableHead>
-                <TableRow>
-                  <TableCell style={{ fontWeight: 'bold', width: '20%' }}>タイトル</TableCell>
-                  <TableCell style={{ fontWeight: 'bold', width: '30%' }}>内容</TableCell>
-                  <TableCell style={{ fontWeight: 'bold', width: '5%' }}>公開状態</TableCell>
-                  <TableCell style={{ fontWeight: 'bold', width: '5%' }}>削除</TableCell>
-                  <TableCell style={{ fontWeight: 'bold', width: '5%' }}>追加</TableCell>
-                  <TableCell style={{ fontWeight: 'bold', width: '5%' }}>並び変え</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <DndContext modifiers={[restrictToVerticalAxis]} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                  <SortableContext items={editedContents.map(item => item.id)} strategy={verticalListSortingStrategy}>
-                    {editedContents.map((item, index) => (
-                      <SortableRow key={item.id} id={item.id}>
-                        <>
-                          <TableCell>
-                            <input
-                              type="text"
-                              value={item.title}
-                              onBlur={(e) => handleBlur(index, "title", e.target.value)}
-                              />
-                          </TableCell>
-                          <TableCell>
-                            <textarea
-                              value={item.contents}
-                              onBlur={(e) => handleBlur(index, "contents", e.target.value)}
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <Tooltip title={item.public_status === 1 ? "公開状態を切り替える 現在:公開中" : "公開状態を切り替える 現在:非公開中"}>
-                              <Switch
-                                checked={item.public_status === 1}
-                                onChange={() => handlePublicStatusChange(index)}
-                                inputProps={{ 'aria-label': 'controlled' }}
-                              />
-                            </Tooltip>
-                          </TableCell>
-                          <TableCell>
-                            <Tooltip title={"削除します"}>
-                              <IconButton onClick={() => handleDelete(index)}>
-                                <DeleteIcon />
-                              </IconButton>
-                            </Tooltip>
-                          </TableCell>
-                          <TableCell>
-                            <Tooltip title={"次の行にフォームを追加します"}>
-                              <IconButton onClick={() => handleAddRow(index)}>
-                                <AddCircleOutlineIcon />
-                              </IconButton>
-                            </Tooltip>
-                          </TableCell>
-                        </>
-                      </SortableRow>
-                    ))}
-                  </SortableContext>
-                </DndContext>
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <p><button onClick={() =>modalclose()}>閉じる</button></p>
-        </div>
-      </div>
-    </div>
-  );
 
 
 
   return (
     <div>
       {renderEditButton(TrueTitleContents[0].company_id)} {/* 編集ボタンをここに表示 */}
-      {showEdit && renderEdit}
+
+      {/* 関数の場合は大文字、変数の場合は最初小文字 企業情報を編集する*/}
+      <EditCompanyInformation
+        IsOpen={showEdit}   //モーダルを開く関数
+        CloseModal={modalclose} //モーダルを閉じる関数
+        editedContents={editedContents} //全ての企業情報
+        HandlePublicStatusChange={handlePublicStatusChange}
+        HandleAddRow={handleAddRow}
+        HandleDragEnd={handleDragEnd}
+        HandleDelete={handleDelete}
+        HandleTextChange = {handleTextChange}
+      />
+
       <TableContainer component={Paper} className="tableContainer">
         <Table className="Table">
           <TableHead>
@@ -325,6 +226,8 @@ const PostCard = forwardRef(({ post }) => {
           </TableBody>
         </Table>
       </TableContainer>
+
+
     </div>
   );
 });

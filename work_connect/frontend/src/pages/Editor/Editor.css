@@ -15,11 +15,13 @@
 
 .editor-wrapper {
   position: relative;
-  margin-left:5%;
+  margin-left: 5%;
   top: 10px;
   padding: 4px;
-  margin-bottom:0;
+  margin-bottom: 0;
 }
+
+
 
   .ce-popover__items {
     width: 100%;
@@ -219,7 +221,7 @@ input[type="radio"]:checked + .label {
 .draftlist{
   color:black;
   height:100%;
-  
+
 }
 
 .draftlistScroll {
@@ -252,8 +254,6 @@ td{
   height:30%;
 }
 
-/* overflow-y: scroll;
-overflow-x: hidden; */
 
 /* タブレット向けのスタイル */
 @media (max-width: 768px) {
@@ -322,10 +322,15 @@ overflow-x: hidden; */
     overflow-x: hidden;
   }
 
- 
+
   .editor_status_check_text {
     display: flex;
     align-items: center; /* アイコンとテキストを縦方向で中央揃えにする */
+  }
+
+  .add_draft_news{
+    cursor:pointer;
+    background-color: #F3704B;
   }
 
 

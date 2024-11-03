@@ -22,10 +22,10 @@ import TableRow from '@mui/material/TableRow';
 import TooltipTitle from '@mui/material/Tooltip';
 import AutoModeIcon from '@mui/icons-material/AutoMode';
 import EditNotificationsIcon from '@mui/icons-material/EditNotifications';
+import Typography from "@mui/material/Typography";
 
 //時間
 import moment from 'moment';
-
 
 const modalStyle = {
   overlay: {
@@ -47,7 +47,7 @@ const modalStyle = {
 
 
 const NewsMenu = ({
-  isOpen,
+  IsOpen,
   CloseModal,
   NewsMenuEnter,
   CreateFormJump,
@@ -68,22 +68,16 @@ const NewsMenu = ({
   message,
   charCount }) => {
 
-  const menuItems = [
-    { key: "draftList", icon: <DrawIcon />, text: "下書きリスト" },
-    { key: "saveNews", icon: <SaveIcon />, text: "ニュースを保存する" },
-    { key: "editingstatus", icon: <AutoModeIcon />, text: "現在の編集状況" },
-    { key: "notificationMessage", icon: <EditNotificationsIcon />, text: "通知に添えるメッセージ" },
+    const menuItems = [
+      { key: "draftList", icon: <DrawIcon />, text: "下書きリスト" },
+      { key: "saveNews", icon: <SaveIcon />, text: "ニュースを保存する" },
+      { key: "editingstatus", icon: <AutoModeIcon />, text: "現在の編集状況" },
+      { key: "notificationMessage", icon: <EditNotificationsIcon />, text: "通知に添えるメッセージ" },
+      // 条件を満たした場合のみ追加
+      ...(genre !== "blogs" ? [{ key: "createForm", icon: <DisplaySettingsIcon />, text: "応募フォームを作成する" }] : []),
+      ...(title && imageUrl && message && charCount ? [{ key: "releaseNews", icon: <CampaignIcon />, text: "ニュースを公開する" }] : []),
+    ];
 
-  ];
-
-  const additionalMenuItem = (genre !== "Blog") ? (
-    { key: "createForm", icon: <DisplaySettingsIcon />, text: "応募フォームを作成する" }
-  ) : null;
-
-  //タイトル・サムネイル・通知に添えるメッセージ・文字数がある場合「ニュースを公開する」という新規のタブを表示させる
-  const newsuploadMenuItem = (title && imageUrl && message && charCount)? (
-    { key: "releaseNews", icon: <CampaignIcon />, text: "ニュースを公開する" }
-  ) : null;
 
   //関数
   const FormattedDate = (time) => {
@@ -91,23 +85,25 @@ const NewsMenu = ({
   };
 
   const header_img_show = (draft) => {
-    console.log("サムネイル画像",draft.header_img);
+    console.log("サムネイル画像", draft.header_img);
     if (draft.header_img === null) {
       return (
         <ImageNotSupportedIcon fontSize="large" />
       );
     } else {
-      return <img src={`${draft.header_img}`} alt="Draft Image" />;    
+      return <img src={`${draft.header_img}`} alt="Draft Image" />;
     }
   };
 
-
-
+  const AddDraftNews = () => {
+    console.log("クリックしました");
+    window.location.reload(false);
+  }
 
 
   return (
     <Modal
-      isOpen={isOpen}
+      isOpen={IsOpen}
       onRequestClose={CloseModal} // モーダルを閉じるコールバック
       shouldCloseOnOverlayClick={true} // オーバーレイクリックでモーダルを閉じる
       contentLabel="Example Modal"
@@ -128,36 +124,18 @@ const NewsMenu = ({
               </div>
             </div>
           ))}
-          {additionalMenuItem && (
-            <div
-              className="menu-item"
-              onClick={() => NewsMenuEnter(additionalMenuItem.key)}
-              style={{ backgroundColor: clickedMenu === additionalMenuItem.key ? "rgba(201, 201, 204, .48)" : "transparent" }}
-            >
-              <div className="icon-text-container">
-                {additionalMenuItem.icon}
-                <p>{additionalMenuItem.text}</p>
-              </div>
-            </div>
-          )}
-
-          {newsuploadMenuItem && (
-            <div
-              className="menu-item"
-              onClick={() => NewsMenuEnter(newsuploadMenuItem.key)}
-              style={{ backgroundColor: clickedMenu === newsuploadMenuItem.key ? "rgba(201, 201, 204, .48)" : "transparent" }}
-            >
-              <div className="icon-text-container">
-                {newsuploadMenuItem.icon}
-                <p>{newsuploadMenuItem.text}</p>
-              </div>
-            </div>
-          )}
         </div>
 
         <div className="hover-content">
           {clickedMenu === "draftList" && (
             <div className="draftlistScroll">
+              <div className="add_draft_news">
+                <Typography >
+                  <div onClick={AddDraftNews}>
+                    新たな下書き
+                  </div>
+                </Typography>
+              </div>
               {draftlist.length > 0 ? (
                 draftlist.map(draft => (
                   <NewsMenuTable className="draftlisttable" key={draft.id}>
@@ -227,22 +205,22 @@ const NewsMenu = ({
             </div>
           )}
 
-                {clickedMenu === "saveNews" && (
-                  <div className="news_button">
-                    <button id="save" className="save" onClick={NewsSave}>下書きを保存する</button>
-                  </div>
-                )}
+          {clickedMenu === "saveNews" && (
+            <div className="news_button">
+              <button id="save" className="save" onClick={NewsSave}>下書きを保存する</button>
+            </div>
+          )}
 
           {clickedMenu === "notificationMessage" && (
             <ReleaseNews
               MessageData={message}
               handleChange={HandleChange}
-              NotificationMessageHandleChange = {NotificationMessageHandleChange}
+              NotificationMessageHandleChange={NotificationMessageHandleChange}
             />
           )}
 
           {clickedMenu === "releaseNews" && (
-                <p><button onClick={NewsUpLoad}>投稿</button></p>
+            <p><button onClick={NewsUpLoad}>投稿</button></p>
           )}
 
           {clickedMenu === "createForm" && (
@@ -264,7 +242,7 @@ const NewsMenu = ({
 };
 
 NewsMenu.propTypes = {
-  isOpen: PropTypes.bool.isRequired,      //モーダルを閉じる関数
+  IsOpen: PropTypes.bool.isRequired,      //モーダルを閉じる
   CloseModal: PropTypes.func.isRequired,  //モーダル閉じる関数
   NewsMenuEnter: PropTypes.func.isRequired, //ニュースメニューのタブを変更する関数
   CreateFormJump: PropTypes.func.isRequired, //ニュース保存後に応募フォーム作成画面に遷移する
@@ -279,11 +257,11 @@ NewsMenu.propTypes = {
   NotificationMessageHandleChange: PropTypes.func.isRequired,
   genre: PropTypes.string.isRequired,      //ニュースのジャンル
   clickedMenu: PropTypes.string.isRequired, //今見ているニュースのタブ
-  draftlist: PropTypes.string.isRequired, //下書きリスト
+  draftlist: PropTypes.array.isRequired, //下書きリスト
   newsid: PropTypes.number.isRequired, //ニュースID
   title: PropTypes.string.isRequired,
   imageUrl: PropTypes.string.isRequired, //サムネイル画像
-  charCount:PropTypes.number.isRequired //文字数カウント
+  charCount: PropTypes.number.isRequired //文字数カウント
 };
 
 export default NewsMenu;

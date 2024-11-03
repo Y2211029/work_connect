@@ -26,6 +26,7 @@ class EditorController extends Controller
         $news_id = $request->input('news_id');
         $Company_id = $request->input('company_id');
         $message = $request->input('message');
+        $genre = $request->input('genre');
 
 
         if ($title === NULL) {
@@ -38,6 +39,7 @@ class EditorController extends Controller
                 'company_id' => $Company_id,
                 'summary' => $value,
                 'article_title' => $title,
+                'genre' => $genre,
                 'message' => $message,
                 'created_at' => $now,
                 'public_status' => "0"
@@ -51,6 +53,7 @@ class EditorController extends Controller
             }
             $w_news->summary = $value;
             $w_news->article_title = $title;
+            $w_news->genre = $genre;
             $w_news->message = $message;
             $w_news->updated_at = $now;
             $w_news->save();
@@ -112,7 +115,7 @@ class EditorController extends Controller
                 // 新規作成
                 $w_news = w_news::create([
                     'company_id' => $Company_Id,
-                    'header_img' => $publicPath, 
+                    'header_img' => $publicPath,
                     'created_at' => $now,
                     'public_status' => "0"
                 ]);

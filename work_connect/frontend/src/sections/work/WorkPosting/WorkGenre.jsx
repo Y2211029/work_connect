@@ -59,7 +59,7 @@ const WorkGenre = (props) => {
   };
 
   return(
-    <CreatableSelect options={options} isClearable isMulti onChange={handleChange}/>
+    <CreatableSelect options={options} placeholder="▼" isClearable isMulti onChange={handleChange}/>
   );
 };
 

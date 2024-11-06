@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import PropTypes from 'prop-types';
 import Autocomplete from '@mui/material/Autocomplete';
 import Checkbox from '@mui/material/Checkbox';
+import "../CreateForm.css";
 
 
 export default function Data({ onSave,onCancel,questionData }) {

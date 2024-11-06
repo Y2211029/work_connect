@@ -1,4 +1,4 @@
-import { useEffect, forwardRef, useState } from "react";
+import { forwardRef, useState } from "react";
 import PropTypes from "prop-types";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import Typography from "@mui/material/Typography";
@@ -6,183 +6,208 @@ import ListSubheader from '@mui/material/ListSubheader';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import Collapse from '@mui/material/Collapse';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box'; // Boxをインポート
 
-//Survey.js
-import { Model } from 'survey-core';
-import { Survey } from 'survey-react-ui';
-import 'survey-core/defaultV2.min.css';
 import './writeform.css';
 
-
-
-// ----------------------------------------------------------------------
-
+// Chart.js
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  BarController,
+  BarElement,
+} from "chart.js";
+import { Bar } from 'react-chartjs-2'; // 棒グラフ
 
 const PostCard = forwardRef(({ post },) => {
   const { article_title, user_name } = post;
 
-  const { getSessionData, updateSessionData } = useSessionStorage();
+  const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData") || {};
-  const data = {
-    account_id: accountData.id,
-  };
+  const MyUserId = accountData.id;
+  console.log(MyUserId);
 
   const [open, setOpen] = useState(false);
-  const [surveyModel, setSurveyModel] = useState(null);
-
-
-  // ログイン中のid
-  const MyUserId = data.account_id;
-  console.log(MyUserId);
+  const [writeformshow, setWriteFormShow] = useState(false);
 
   const handleClick = () => {
     setOpen(!open);
+    setWriteFormShow(true);
   };
 
-  console.log("post-cardきました!");
+  // 事前にデータを加工してグループ化
+  const groupedResponses = user_name.reduce((acc, user) => {
+    user.write_form.forEach((form) => {
+      if (!acc[form.title]) {
+        acc[form.title] = {
+          responses: [], // 回答を格納する配列
+          type: form.type, // 各質問のタイプ
+          contents: form.contents || '', // contentsを追加。存在しない場合は空文字にする
+        };
+      }
+      acc[form.title].responses.push(form.response);
+    });
+    return acc;
+  }, {});
 
-  useEffect(() => {
-    const css =
-      `.sv-action__content .sd-btn--action.sd-navigation__complete-btn {
-        display: none;
-      }`;
-    const styleSheet = document.createElement("style");
-    styleSheet.type = "text/css";
-    styleSheet.innerText = css;
-    document.head.appendChild(styleSheet);
-  }, []);
 
-  const FormOpen = (user) => {
-    if (user) {
-      updateSessionData("accountData", "ChatOpenId", user.write_form_id);
-      updateSessionData("accountData", "ChatOpenUserName", user.user_name);
-      updateSessionData("accountData", "ChatOpenCompanyName", user.company_name || "");
-      updateSessionData("accountData", "ChatOpenIcon", user.icon || "");
-      updateSessionData("accountData", "ChatOpenFollowStatus", user.follow_status || "");
+  ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+    BarController,
+    BarElement,
+  );
 
-      const surveyData = transformFormFields(user.write_form,user.user_name);
-      const survey = new Model(surveyData);
+  const Graph = ({ title, responses }) => {
+    console.log("タイトル", title);
+    console.log("レスポンス", responses);
 
-      // Survey モデルを状態に保存
-      setSurveyModel(survey);
-    }
-  };
+    // 出現回数を集計する
+    const responseCounts = responses.reduce((acc, response) => {
+      acc[response] = (acc[response] || 0) + 1; // 各回答の出現回数をカウント
+      return acc;
+    }, {});
 
-  const transformFormFields = (fields,user_name) => {
-    if (!Array.isArray(fields) || fields.length === 0) {
-      console.error("フォームフィールドがありません。fields:", fields);
-      return {
-        title: user_name,
-        pages: [],
-      };
-    }
+    // ラベルとデータを設定
+    const labels = Object.keys(responseCounts); // 回答の種類
+    const dataValues = Object.values(responseCounts); // 各回答の件数
 
-    return {
-      title: user_name,
-      pages: [
+    const options = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        title: {
+          display: true,
+          text: title,
+        },
+      },
+    };
+
+    const data = {
+      labels: labels, // 集計した回答の種類をラベルに
+      datasets: [
         {
-          name: "page1",
-          elements: fields.map(field => ({
-            type: field.type || "text", // typeがない場合のデフォルトを追加
-            name: field.name || "default_name", // nameがない場合のデフォルトを追加
-            title: field.title || "無題の質問", // titleがない場合のデフォルトを追加
-            ...(field.inputType && { inputType: field.inputType }),
-            ...(field.validators && { validators: field.validators }),
-            ...(field.response && { defaultValue: field.response }),
-            readOnly: true, // 全てのフィールドをreadOnlyに設定
-          })),
+          label: '回答数',
+          data: dataValues, // 各回答の件数をデータに
+          borderColor: "rgba(255, 99, 132, 1)",
+          backgroundColor: "rgba(255, 99, 132, 0.5)",
         },
       ],
     };
+
+    return (
+      <Box sx={{ width: '100%', height: '200px' }}>
+        <Bar options={options} data={data} style={{ height: '100%', width: '100%' }} />
+      </Box>
+    );
   };
 
-
+  Graph.propTypes = {
+    title: PropTypes.string.isRequired, // titleは文字列で必須
+    responses: PropTypes.arrayOf(PropTypes.string).isRequired, // responsesは文字列の配列で必須
+  };
 
   return (
     <>
-
-    <List
-      sx={(theme) => ({
-        width: '100%',
-        height: '100%',
-        maxWidth: 360,
-        marginLeft: '0',
-        bgcolor: 'background.paper',
-        overflow: 'auto',
-        border: '#DAE2ED 2px solid',
-        borderRadius: '10px',
-        [theme.breakpoints.down('1200')]: {
-          marginLeft: '2%',
-        },
-      })}
-      component="nav"
-      aria-labelledby="nested-list-subheader"
-      subheader={
-        <ListSubheader component="div" id="nested-list-subheader">
-          ニュース一覧
-        </ListSubheader>
-      }
-    >
-
-      <ListItemButton
-        onClick={handleClick}
-      >
-        <ListItemText
-          primary={
-            <Typography sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>
-              {article_title}
-            </Typography>
+      <div style={{ width: '100%', marginRight: '16px' }}>
+        <List
+          sx={(theme) => ({
+            width: '100%',
+            height: '100%',
+            bgcolor: 'background.paper',
+            overflow: 'auto',
+            border: '#DAE2ED 2px solid',
+            borderRadius: '10px',
+            [theme.breakpoints.down('1200')]: {
+              marginLeft: '2%',
+            },
+          })}
+          component="nav"
+          aria-labelledby="nested-list-subheader"
+          subheader={
+            <ListSubheader component="div" id="nested-list-subheader">
+              ニュース一覧
+            </ListSubheader>
           }
-        />
-        {open ? <ExpandLess /> : <ExpandMore />}
-      </ListItemButton>
-
-      {/* 送信者の名前一覧 */}
-      <Collapse in={open} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding
-                  sx={{
-                    pl: 4,
-                    background: user_name.some(u => u.write_form_id === accountData.ChatOpenId) ? '#cce5ff' : 'blue',
-                    '&:hover': {
-                      background: user_name.some(u => u.write_form_id === accountData.ChatOpenId) ? '#cce5ff' : '#eee',
-                    },
-                  }}
         >
-          {user_name.map((user, index) => (
-            <Typography
-              key={user.write_form_id || index} // ユーザーIDまたはインデックスをキーにする
-              sx={{ fontWeight: 'bold', fontSize: '1.1rem', textAlign: "center" }}
-              onClick={() => FormOpen(user)}
-            >
-              {user.user_name}さん {/* ユーザー名を表示 */}
-            </Typography>
-          ))}
+          <ListItemButton onClick={handleClick}>
+            <ListItemText
+              primary={
+              <>
+                <Typography>
+                {user_name.length}
+                </Typography>
+                <Typography sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>
+                  {article_title}
+                </Typography>
+              </>
+              }
+            />
+          </ListItemButton>
         </List>
-      </Collapse>
-    </List>
+      </div>
 
-    {surveyModel &&
-    <Box>
-
-    <Survey model={surveyModel} />
-    </Box>
-    }
-
+      {/* writeformshow が true の場合の表示 */}
+      {writeformshow && (
+        <div style={{ flexGrow: 1 }}>
+          <div className="write-form">
+            <Stack direction="column" spacing={2}>
+              <div className="writeform-container">
+                <Typography className="writeform-title">
+                  回答者: {user_name.length}名
+                </Typography>
+                {user_name.map((user, index) => (
+                  <Typography key={user.write_form_id || index} className="writeform-answereddata">
+                    {user.user_name}さん
+                  </Typography>
+                ))}
+              </div>
+              {/* // グループ化されたデータを使って表示 */}
+              {Object.entries(groupedResponses).map(([title, { responses, type, contents }], index) => (
+                <div key={index} className="writeform-container">
+                  <Typography className="writeform-title">
+                    {title} ({type}):
+                  </Typography>
+                  <Typography className="writeform-contents">
+                    {contents}
+                  </Typography>
+                  <Typography className="writeform-length">
+                    {responses.length}件の回答
+                  </Typography>
+                  {responses.map((response, idx) => (
+                    <Typography key={idx} className="writeform-answereddata">
+                      {response}
+                    </Typography>
+                  ))}
+                  <Graph title={title} responses={responses} />
+                </div>
+              ))}
+            </Stack>
+          </div>
+        </div>
+      )}
     </>
   );
 });
 
-// displayName を設定
 PostCard.displayName = 'PostCard';
 
 PostCard.propTypes = {
   post: PropTypes.shape({
     article_title: PropTypes.string,
-    user_name: PropTypes.arrayOf( // 配列の定義に変更
+    user_name: PropTypes.arrayOf(
       PropTypes.shape({
         write_form_id: PropTypes.number,
         user_name: PropTypes.string,
@@ -192,22 +217,9 @@ PostCard.propTypes = {
       })
     ).isRequired,
   }).isRequired,
-  user: PropTypes.shape({
-    write_form_id: PropTypes.string,
-    user_name: PropTypes.string,
-    company_name: PropTypes.string,
-    icon: PropTypes.string,
-    follow_status: PropTypes.bool,
-    write_form: PropTypes.arrayOf(PropTypes.shape({
-      type: PropTypes.string,
-      name: PropTypes.string,
-      title: PropTypes.string,
-      inputType: PropTypes.string,
-      validators: PropTypes.array,
-      response: PropTypes.string,
-    })),
-  }).isRequired,
+  responses: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
+
 
 
 export default PostCard;

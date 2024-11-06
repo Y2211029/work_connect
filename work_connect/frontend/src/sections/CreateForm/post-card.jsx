@@ -5,6 +5,10 @@ import { Survey } from 'survey-react-ui';
 import "./CreateForm.css";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
+//ルーティング
+import { useNavigate } from 'react-router-dom';
+
+
 // フォームメニュー
 import Text from "./SelectOptionMenu/Text";
 import DateForm from "./SelectOptionMenu/Date";
@@ -38,6 +42,7 @@ import NotesIcon from '@mui/icons-material/Notes';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import StarIcon from '@mui/icons-material/Star';
 import BurstModeIcon from '@mui/icons-material/BurstMode';
+import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 
 // データ保存
 import axios from "axios";
@@ -64,6 +69,8 @@ const PostCard = forwardRef(({ post },) => {
     id: accountData.id,
   };
   const [create_news_id] = useState(news_id);
+  const navigate = useNavigate();
+
 
   // 質問を追加する関数 //dropdown
   const addQuestion = (Questions_Genre) => {
@@ -102,6 +109,7 @@ const PostCard = forwardRef(({ post },) => {
   const EditopenModal = (Questions_Genre, questionData) => {
     setSelectMenu(Questions_Genre);
     setQuestionData(questionData);
+    setButtonOpen(false);
     setModalOpen(true);
   };
 
@@ -429,6 +437,15 @@ const PostCard = forwardRef(({ post },) => {
     setButtonOpen(true);
   };
 
+  //ニュースの下書きに戻る
+  const handleBack = () => {
+    const editorSessionData = JSON.parse(sessionStorage.getItem("editorSessionData"));
+    const genre = editorSessionData.genre; // null チェックを追加
+    console.log("ジャンル", genre);
+    navigate(`/Editor/${genre}`);
+  };
+
+
   const FormSelectArray = [
     { lavel: 'テキスト', icon: <TranslateIcon />, click: 'text' },
     { lavel: '日時', icon: <WatchLaterIcon />, click: 'date' },
@@ -496,19 +513,30 @@ const PostCard = forwardRef(({ post },) => {
 
   ];
 
-    console.log("surveyの中身",survey);
+  console.log("surveyの中身", survey);
 
   return (
     <>
-      <Stack direction="row" alignItems="flex-start" spacing={2} style={{ marginLeft: "50%", width: "800px" }}>
-        <div style={{ overflow: 'auto', flexGrow: 1, width: "200px", height: "60%" }}> {/* フォーム部分 */}
-        <Typography>{article_title}</Typography>
+      <Stack direction="row" alignItems="flex-start" spacing={2} style={{ marginLeft: "50%", width: "1000px" }}>
+        <div style={{ overflow: 'auto', flexGrow: 1, width: "100%", height: "60%" }}> {/* フォーム部分 */}
           {!questions || questions.length === 0 ? (
             <p>フォームがありません</p>
           ) : (
-            <div style={{ marginTop: "5%", width: "500px", maxHeight: '60vh', overflowY: 'auto' }}>
-              <Survey model={survey} />
-            </div>
+            <>
+              <div className="back_news_draft" onClick={handleBack}>
+                <Stack direction={'row'}>
+                  <ArrowCircleLeftIcon />
+                  <Typography>ニュースの下書きに戻る</Typography>
+                </Stack>
+              </div>
+
+
+              <Typography style={{ marginLeft: "0%" }}>{article_title}</Typography>
+              <div className="SurveyModal">
+                <Survey model={survey} />
+              </div>
+
+            </>
           )}
           <Button
             variant="outlined"
@@ -526,29 +554,25 @@ const PostCard = forwardRef(({ post },) => {
         </div>
 
         {modalopen && (
-          <div className="FormOptionModal">
-            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-              <Typography variant="h4"></Typography>
-
-              {SelectMenuArray.map((menu, index) => {
-                const Component = menu.component; // 各メニューに対応するコンポーネントを取得
-                return (
-                  selectmenu === menu.menu && (
-                    <Component
-                      key={index}
-                      onSave={handleSaveSettings}
-                      onCancel={CreateFormCancel}
-                      questionData={questionData ? questionData : null} // 編集時のみquestionDataを渡す
-                    />
-                  )
-                );
-              })}
-            </Stack>
-          </div>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+            {SelectMenuArray.map((menu, index) => {
+              const Component = menu.component; // 各メニューに対応するコンポーネントを取得
+              return (
+                selectmenu === menu.menu && (
+                  <Component
+                    key={index}
+                    onSave={handleSaveSettings}
+                    onCancel={CreateFormCancel}
+                    questionData={questionData ? questionData : null} // 編集時のみquestionDataを渡す
+                  />
+                )
+              );
+            })}
+          </Stack>
         )}
 
         {buttonOpen && (
-          <div style={{ width: "200px", display: 'flex', justifyContent: 'flex-start' }}>
+          <div>
             <Stack spacing={2}>
               {FormSelectArray.map((form, index) => (
                 <Button
@@ -556,7 +580,7 @@ const PostCard = forwardRef(({ post },) => {
                   startIcon={form.icon}
                   onClick={() => addQuestion(form.click)}
                   variant="outlined"
-                  style={{ textAlign: 'left' }}  // アイコンとテキストを左寄せ
+                  style={{ textAlign: 'left', width: "210px", marginLeft: "50%", }}  // アイコンとテキストを左寄せ
                 >
                   {form.lavel}
                 </Button>

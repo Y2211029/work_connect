@@ -5,6 +5,7 @@
 .TextSetting{
     position: relative;
     top:10px;
+    background-color: aqua;
 }
 
 input[type="number"] {
@@ -21,5 +22,9 @@ input[type="number"] {
   .sd-root-modern {
     margin: 0 auto; /* 自動で左右のマージンを設定し、中央揃えにします */
   }
+
+  
+
+
 
 

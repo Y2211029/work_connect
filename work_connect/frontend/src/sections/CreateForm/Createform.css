@@ -2,9 +2,25 @@
     width:20%;
 }
 
-.TextSetting{
-    position: relative;
-    top:10px;
+.TextSetting {
+  position: relative;
+  top: 100px;
+  left: 80%;
+  width:500px;
+  height: auto; /* 自動にしてコンテンツに応じて高さを調整 */
+  max-height: 90vh; /* 最大高さを設定 */
+  overflow-y: auto; /* 縦スクロールを可能に */
+  border-color: aquamarine;
+  border-width: 2px;
+  border:solid;
+}
+
+.SurveyModal {
+  margin-top: 5%;
+  width: 500px;
+  max-height: 90vh; /* 最大高さを設定 */
+  overflow-x: auto;
+  overflow-y: hidden; /* 縦のオーバーフローは非表示 */
 }
 
 input[type="number"] {
@@ -17,9 +33,25 @@ input[type="number"] {
   }
 
 
-
   .sd-root-modern {
     margin: 0 auto; /* 自動で左右のマージンを設定し、中央揃えにします */
   }
 
+
+.MuiStack-root .css-1sazv7p-MuiStack-root{
+ display: 'flex';
+ width: "200px";
+ height:"400px";
+ justify-content: 'flex-start';
+ margin-top: "300px";
+}
+
+.back_news_draft {
+  cursor: pointer;
+  border: solid 2px; /* 必要に応じてピクセル単位で指定 */
+  border-radius: 8px; /* ボタンに少し丸みを追加 */
+  padding: 8px 12px; /* 内側に余白を追加 */
+  display: inline-flex; /* アイコンとテキストが中央揃いになるよう調整 */
+  align-items: center;
+}
 

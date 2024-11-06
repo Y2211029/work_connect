@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { TextareaAutosize as BaseTextareaAutosize } from '@mui/base/TextareaAutosize';
-import PropTypes from 'prop-types'; // prop-types をインポート
+import PropTypes from 'prop-types'; 
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 import { styled , useTheme } from '@mui/material/styles';

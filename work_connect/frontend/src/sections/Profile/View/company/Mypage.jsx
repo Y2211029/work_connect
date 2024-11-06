@@ -2,24 +2,25 @@
 import { useEffect, useState, useRef, useContext } from "react";
 import axios from "axios";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
-import { useParams } from 'react-router-dom';
-import Iframe from 'react-iframe'; //紹介動画やマップを埋め込む
+import { useParams } from "react-router-dom";
+import Iframe from "react-iframe"; //紹介動画やマップを埋め込む
 
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import { styled, useTheme } from '@mui/material/styles';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardMedia from '@mui/material/CardMedia';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import ModeEditIcon from '@mui/icons-material/ModeEdit';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import { styled, useTheme } from "@mui/material/styles";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardMedia from "@mui/material/CardMedia";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import { PulseLoader } from "react-spinners";
 
-import ProfileMypageEdit from './MypageEdit';
+import ProfileMypageEdit from "./MypageEdit";
 import { follow } from "src/_mock/follow";
 import { WebScokectContext } from "src/layouts/dashboard/index";
 
@@ -27,27 +28,28 @@ import { WebScokectContext } from "src/layouts/dashboard/index";
 
 // Itemのスタイルを定義
 const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
   padding: theme.spacing(1),
-  textAlign: 'left',
+  textAlign: "left",
   color: theme.palette.text.secondary,
-  fontSize: '25px',
+  fontSize: "25px",
 }));
 
 // Showmoreのスタイルを定義
 const Showmore = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   padding: theme.spacing(1),
-  textAlign: 'center',
-  fontSize: '20px',
+  textAlign: "center",
+  fontSize: "20px",
 }));
 
 const ProfileMypage = () => {
-
   // 「さらに表示」ボタンの初期設定
   const [showMoreText, setShowMoreText] = useState(
-    <><KeyboardArrowDownIcon /> さらに表示</>
+    <>
+      <KeyboardArrowDownIcon /> さらに表示
+    </>
   );
 
   // useTheme,useRef初期化
@@ -82,11 +84,8 @@ const ProfileMypage = () => {
     return accountData.id ? accountData.id : 0;
   };
 
-
   // websocket通信のデータ保存先
   const notificationContext = useContext(WebScokectContext);
-
-
 
   //ログイン中のid
   const MyUserId = useState(getUserId);
@@ -96,7 +95,6 @@ const ProfileMypage = () => {
     // データを取得する関数
     async function GetData() {
       try {
-
         const response = await axios.get(url, {
           params: {
             ProfileUserName: user_name, // プロフィールとして表示されている人のユーザーネーム
@@ -108,7 +106,6 @@ const ProfileMypage = () => {
           setFollowStatus(response.data[0].follow_status);
           // console.log("ResponseData:", response.data[0]);
           console.log("follow_status:", response.data[0].follow_status);
-
         }
       } catch (err) {
         console.log("err:", err);
@@ -124,8 +121,8 @@ const ProfileMypage = () => {
   // 初回レンダリング時の一度だけ実行させる
   useEffect(() => {
     // 詳細項目の非表示
-    detail.current.forEach(ref => {
-      if (ref) ref.style.display = 'none';
+    detail.current.forEach((ref) => {
+      if (ref) ref.style.display = "none";
     });
   }, []);
 
@@ -134,17 +131,15 @@ const ProfileMypage = () => {
     let followStatusDetail;
     if (notificationContext.WebSocketState.notification.noticeData) {
       followStatusDetail = notificationContext.WebSocketState.notification.noticeData;
-      console.log("followStatusDetail.detail", followStatusDetail.detail)
+      console.log("followStatusDetail.detail", followStatusDetail.detail);
 
       if (followStatusDetail.detail == "相互フォロー") {
         setFollowStatus("相互フォローしています");
       } else if (followStatus == "フォローする") {
         setFollowStatus("フォローされています");
       }
-
     }
   }, [notificationContext.WebSocketState.notification.noticeData]);
-
 
   useEffect(() => {
     // let followStatusDetail;
@@ -165,8 +160,7 @@ const ProfileMypage = () => {
   }, [notificationContext.WebSocketState.websocketFollowStatus.follow_status]);
 
   useEffect(() => {
-    console.log("notificationContext", notificationContext)
-
+    console.log("notificationContext", notificationContext);
   }, [notificationContext]);
   const handleMapUrl = (URL) => {
     let extractedUrl = null;
@@ -188,7 +182,7 @@ const ProfileMypage = () => {
 
     // 共有リンク (https://youtu.be/)
     if (URL.includes("youtu.be")) {
-      const videoId = URL.split('/').pop().split('?')[0];
+      const videoId = URL.split("/").pop().split("?")[0];
       extractedUrl = `https://www.youtube.com/embed/${videoId}`;
     }
     // 埋め込み用リンクを入力した場合 (<iframe ...>)
@@ -201,22 +195,20 @@ const ProfileMypage = () => {
     }
     // 通常のYouTubeリンク (https://www.youtube.com/watch?v=)
     else if (URL.includes("watch?v=")) {
-      const videoId = URL.split('v=')[1].split('&')[0];
+      const videoId = URL.split("v=")[1].split("&")[0];
       extractedUrl = `https://www.youtube.com/embed/${videoId}`;
     }
 
     return extractedUrl;
   };
 
-
   // 編集ボタンを押したときの処理
   const handleEditClick = () => {
     // 編集画面をオープン
     childRef.current?.openEdit();
     // プロフィール画面を閉じる
-    Profile.current.style.display = 'none';
+    Profile.current.style.display = "none";
     //setMypageEditState(1);
-
   };
 
   // 「さらに表示」が押された時の処理
@@ -224,37 +216,45 @@ const ProfileMypage = () => {
     if (close) {
       // 「さらに表示」のとき、詳細項目を表示して、ボタンを「閉じる」に変更
       setClose(false);
-      detail.current.forEach(ref => {
+      detail.current.forEach((ref) => {
         if (ref) {
-          ref.style.display = '';
+          ref.style.display = "";
         }
       });
-      setShowMoreText(<><KeyboardArrowUpIcon /> 閉じる</>);
+      setShowMoreText(
+        <>
+          <KeyboardArrowUpIcon /> 閉じる
+        </>
+      );
     } else {
       // 「閉じる」のとき、詳細項目を非表示にして、ボタンを「さらに表示」に変更
       setClose(true);
-      detail.current.forEach(ref => {
+      detail.current.forEach((ref) => {
         if (ref) {
-          ref.style.display = 'none';
+          ref.style.display = "none";
         }
       });
-      setShowMoreText(<><KeyboardArrowDownIcon /> さらに表示</>);
+      setShowMoreText(
+        <>
+          <KeyboardArrowDownIcon /> さらに表示
+        </>
+      );
     }
   };
 
   // データからタグを抽出する処理
   const ExtractTags = (data, key) => {
-    return data?.[key]
-      ? data[key].split(',').map(region => region.trim())
-      : [];
+    return data?.[key] ? data[key].split(",").map((region) => region.trim()) : [];
   };
 
   // タグを表示する処理
   const ShowTags = (tags) => {
     return tags.map((region, index) => (
-      <Button key={index}
+      <Button
+        key={index}
         variant="outlined"
-        sx={{ borderColor: '#637381', color: '#637381', '&:hover': { borderColor: '#637381' }, cursor: 'pointer' }}>
+        sx={{ borderColor: "#637381", color: "#637381", "&:hover": { borderColor: "#637381" }, cursor: "pointer" }}
+      >
         {region}
       </Button>
     ));
@@ -265,22 +265,21 @@ const ProfileMypage = () => {
       <Button
         className="custom-button"
         variant="outlined"
-        sx={{ borderColor: '#637381', color: '#637381', '&:hover': { borderColor: '#637381' }, cursor: 'pointer', }}
+        sx={{ borderColor: "#637381", color: "#637381", "&:hover": { borderColor: "#637381" }, cursor: "pointer" }}
       >
         {tags}
       </Button>
     );
   };
 
-
   // ExtractTagsメソッドで抽出したタグを<Item>内で表示する
-  const prefecture_tag = ExtractTags(ResponseData, 'prefecture');
-  const selected_occupation_tag = ExtractTags(ResponseData, 'selected_occupation');
-  const industry_tag = ExtractTags(ResponseData, 'industry');
-  const programming_language_tag = ExtractTags(ResponseData, 'programming_language');
-  const development_environment_tag = ExtractTags(ResponseData, 'development_environment');
-  const software_tag = ExtractTags(ResponseData, 'software');
-  const qualification_tag = ExtractTags(ResponseData, 'acquisition_qualification');
+  const prefecture_tag = ExtractTags(ResponseData, "prefecture");
+  const selected_occupation_tag = ExtractTags(ResponseData, "selected_occupation");
+  const industry_tag = ExtractTags(ResponseData, "industry");
+  const programming_language_tag = ExtractTags(ResponseData, "programming_language");
+  const development_environment_tag = ExtractTags(ResponseData, "development_environment");
+  const software_tag = ExtractTags(ResponseData, "software");
+  const qualification_tag = ExtractTags(ResponseData, "acquisition_qualification");
 
   const profile_id = ResponseData.id;
   const hp_url_button = `${ResponseData.company_name}さんのホームページはこちら`;
@@ -295,7 +294,6 @@ const ProfileMypage = () => {
       setButtonDisable(true);
       const updatedFollowStatus = await follow(MyUserId[0], profile_id);
       setButtonDisable(false);
-
 
       if (updatedFollowStatus == "成功") {
         if (followStatus == "フォローする") {
@@ -319,18 +317,13 @@ const ProfileMypage = () => {
       }
       console.log("updatedFollowStatus", updatedFollowStatus);
     } catch (error) {
-      console.error('フォロー処理中にエラーが発生しました！', error);
+      console.error("フォロー処理中にエラーが発生しました！", error);
     }
-
   };
-
 
   const renderFollow = () => {
     if (followStatus && followStatus === "フォローできません") {
-      return (
-        <Typography opacity="0.48">
-        </Typography>
-      );
+      return <Typography opacity="0.48"></Typography>;
     } else if (followStatus) {
       return (
         <Button disabled={ButtonDisable} onClick={handleFollowClick} variant="outlined">
@@ -341,8 +334,7 @@ const ProfileMypage = () => {
   };
 
   return (
-
-    <Box sx={{ marginLeft: '18%', width: '64%', marginTop: '30px', }}>
+    <Box sx={{ marginLeft: "18%", width: "64%", marginTop: "30px" }}>
       {/* 編集のコンポーネントをここで呼び出し */}
       <ProfileMypageEdit ref={childRef} />
       <Stack spacing={3} ref={Profile}>
@@ -350,13 +342,13 @@ const ProfileMypage = () => {
 
         {/* ResponseData.id(プロフィールのID) と MyUserId(ログイン中のID)が一致したら編集ボタンを表示 */}
         {ResponseData.id === MyUserId[0] ? (
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', }} >
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
             <Tooltip title="編集する">
               <IconButton
                 onClick={handleEditClick}
                 sx={{
-                  marginLeft: 'auto', // 右揃え
-                  '&:hover': { backgroundColor: '#f0f0f0', title: 'a' },
+                  marginLeft: "auto", // 右揃え
+                  "&:hover": { backgroundColor: "#f0f0f0", title: "a" },
                 }}
               >
                 <ModeEditIcon sx={{ fontSize: 55 }} />
@@ -364,75 +356,65 @@ const ProfileMypage = () => {
             </Tooltip>
             {/* {showEdit ? <ProfileMypageEdit /> : <ProfileMypage />} */}
           </Box>
-        ) : (ResponseData.id && MyUserId[0]) && (ResponseData.id.charAt(0) !== MyUserId[0].charAt(0)) ? (
-
+        ) : ResponseData.id && MyUserId[0] && ResponseData.id.charAt(0) !== MyUserId[0].charAt(0) ? (
           // ResponseData.id(プロフィールのID)の1文字目 と MyUserId(ログイン中のID)の1文字目が一致しない場合はフォローの状況を表示
           // 学生側はS、企業側はCで始まる。
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', }} >
-            <Tooltip >
-              {/* <IconButton
-                sx={{
-                  marginLeft: 'auto', // 右揃え
-                  '&:hover': { backgroundColor: '#f0f0f0', title: 'a' },
-                }}
-              >
-                フォローする
-                <ModeEditIcon sx={{ fontSize: 40 }} />
-              </IconButton> */}
-
-              {renderFollow()}
-            </Tooltip>
-            {/* {showEdit ? <ProfileMypageEdit /> : <ProfileMypage />} */}
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <Tooltip>{renderFollow()}</Tooltip>
           </Box>
         ) : (
-          null
+          <div>
+            <div
+              style={{
+                marginLeft: "auto", // 右揃え
+                "&:hover": { backgroundColor: "#f0f0f0", title: "a" },
+                width: "30px",
+                height: "30px",
+              }}
+            >
+              <div style={{ fontSize: 55 }}></div>
+            </div>
+          </div>
         )}
 
-
-        <Card sx={{
-          textAlign: 'center',
-          display: 'flex',
-          justifyContent: 'center',
-          backgroundColor: theme.palette.background.default,
-          boxShadow: 'none'
-        }}>
+        <Card
+          sx={{
+            textAlign: "center",
+            display: "flex",
+            justifyContent: "center",
+            backgroundColor: theme.palette.background.default,
+            boxShadow: "none",
+          }}
+        >
           <CardMedia
             component="img"
             sx={{
               height: 350,
               width: 350,
-              objectFit: 'cover', // 画像をカード内でカバーするように設定
-              borderRadius: '50%', // 画像を丸くする
+              objectFit: "cover", // 画像をカード内でカバーするように設定
+              borderRadius: "50%", // 画像を丸くする
             }}
-            image={
-              ResponseData.icon ?
-                `http://localhost:8000/storage/images/userIcon/${ResponseData.icon}`
-                : ""}
+            image={ResponseData.icon ? `http://localhost:8000/storage/images/userIcon/${ResponseData.icon}` : ""}
             alt="Loading..."
           />
-
         </Card>
 
         <Box>
           <Typography variant="h6">企業名</Typography>
-          <Item>{ResponseData.company_name ? ResponseData.company_name : "Loading..."}</Item>
+          <Item>{ResponseData.company_name ? ResponseData.company_name : <PulseLoader color="#DAE2ED" />}</Item>
         </Box>
         <Box>
           <Typography variant="h6">企業名(カタカナ)</Typography>
-          <Item>{ResponseData.company_namecana ? ResponseData.company_namecana : "Loading..."} </Item>
+          <Item>{ResponseData.company_namecana ? ResponseData.company_namecana : <PulseLoader color="#DAE2ED" />} </Item>
         </Box>
-        {/* <Box>
-          <Typography variant="h6">企業採用担当者</Typography>
-          <Item>{ResponseData.user_name ? ResponseData.user_name : "Loading..."} </Item>
-        </Box> */}
         <Box>
           <Typography variant="h6">企業概要</Typography>
-          <Item>{ResponseData.intro ? ResponseData.intro : "Loading..."} </Item>
+          <Item>{ResponseData.intro ? ResponseData.intro : <PulseLoader color="#DAE2ED" />} </Item>
         </Box>
 
         <Box>
           <Typography variant="h6">本社所在地</Typography>
-          <Item>{ResponseData.address ? ResponseData.address : "Loading..."} </Item>
+          <Item>{ResponseData.address ? ResponseData.address : <PulseLoader color="#DAE2ED" />} </Item>
         </Box>
         <Box>
           <Typography variant="h6">本社所在地マップ</Typography>
@@ -450,7 +432,6 @@ const ProfileMypage = () => {
           </Item>
         </Box>
 
-
         {/* 詳細項目がない場合「さらに表示」を表示しない */}
         {(ResponseData.prefecture ||
           ResponseData.selected_occupation ||
@@ -462,74 +443,82 @@ const ProfileMypage = () => {
           ResponseData.hp_url ||
           ResponseData.video_url ||
           ResponseData.companyInformation) && (
-            <Box>
-              <Showmore>
-                <Button variant="outlined" ref={showmore} onClick={ShowmoreClick}
-                  sx={{ borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
-                  {showMoreText}
-                </Button>
-              </Showmore>
-            </Box>
-          )}
+          <Box>
+            <Showmore>
+              <Button
+                variant="outlined"
+                ref={showmore}
+                onClick={ShowmoreClick}
+                sx={{ borderColor: "#5956FF", color: "#5956FF", "&:hover": { borderColor: "#5956FF" }, cursor: "pointer" }}
+              >
+                {showMoreText}
+              </Button>
+            </Showmore>
+          </Box>
+        )}
         {/* ResponseData.prefectureがあるときのみ表示 */}
         {ResponseData.prefecture && !close && (
-          <Box ref={el => (detail.current[0] = el)} id="detail">
+          <Box ref={(el) => (detail.current[0] = el)} id="detail">
             <Typography variant="h6">勤務地</Typography>
             <Item>{ShowTags(prefecture_tag)}</Item>
           </Box>
         )}
         {/* ResponseData.selected_occupationがあるときのみ表示 */}
         {ResponseData.selected_occupation && !close && (
-          <Box ref={el => (detail.current[1] = el)} id="detail">
+          <Box ref={(el) => (detail.current[1] = el)} id="detail">
             <Typography variant="h6">社員の職種・募集職種</Typography>
             <Item>{ShowTags(selected_occupation_tag)}</Item>
           </Box>
         )}
         {/* ResponseData.industryがあるときのみ表示 */}
         {ResponseData.industry && !close && (
-          <Box ref={el => (detail.current[2] = el)} id="detail">
+          <Box ref={(el) => (detail.current[2] = el)} id="detail">
             <Typography variant="h6">業界キーワード</Typography>
             <Item>{ShowTags(industry_tag)}</Item>
           </Box>
         )}
         {/* ResponseData.development_environmentがあるときのみ表示 */}
         {ResponseData.development_environment && !close && (
-          <Box ref={el => (detail.current[3] = el)} id="detail">
+          <Box ref={(el) => (detail.current[3] = el)} id="detail">
             <Typography variant="h6">開発環境</Typography>
             <Item>{ShowTags(development_environment_tag)}</Item>
           </Box>
         )}
         {/* ResponseData.programming_languageがあるときのみ表示 */}
         {ResponseData.programming_language && !close && (
-          <Box ref={el => (detail.current[4] = el)} id="detail">
+          <Box ref={(el) => (detail.current[4] = el)} id="detail">
             <Typography variant="h6">プログラミング言語</Typography>
             <Item>{ShowTags(programming_language_tag)}</Item>
           </Box>
         )}
         {/* ResponseData.acquisition_qualificationがあるときのみ表示 */}
         {ResponseData.acquisition_qualification && !close && (
-          <Box ref={el => (detail.current[5] = el)} id="detail">
+          <Box ref={(el) => (detail.current[5] = el)} id="detail">
             <Typography variant="h6">社員が取得している資格・取得支援資格・歓迎資格・必須資格</Typography>
             <Item>{ShowTags(qualification_tag)}</Item>
           </Box>
         )}
         {/* ResponseData.softwareがあるときのみ表示 */}
         {ResponseData.software && !close && (
-          <Box ref={el => (detail.current[6] = el)} id="detail">
+          <Box ref={(el) => (detail.current[6] = el)} id="detail">
             <Typography variant="h6">ソフトウェア</Typography>
             <Item>{ShowTags(software_tag)}</Item>
           </Box>
         )}
         {/* ResponseData.hp_urlがあるときのみ表示 */}
         {ResponseData.hp_url && !close && (
-          <Box ref={el => (detail.current[7] = el)} id="detail">
+          <Box ref={(el) => (detail.current[7] = el)} id="detail">
             <Typography variant="h6">ホームページURL</Typography>
-            <Item><a href={ResponseData.hp_url} target="_blank">{ShowTagsCompanyInformation(hp_url_button)}</a></Item>
+            <Item>
+              <a href={ResponseData.hp_url} target="_blank">
+                {ShowTagsCompanyInformation(hp_url_button)}
+              </a>
+            </Item>
           </Box>
         )}
         {/* ResponseData.video_urlがあるときのみ表示 */}
         {ResponseData.video_url && !close && (
-          <Box ref={el => (detail.current[8] = el)} id="detail">
+          <Box ref={(el) => (detail.current[8] = el)} id="detail">
             <Typography variant="h6">紹介動画</Typography>
             <Item>
               {ResponseData.video_url ? (
@@ -573,13 +562,8 @@ const ProfileMypage = () => {
         {/* </span> */}
       </Stack>
     </Box>
-
-
-
   );
-
 };
 
 export default ProfileMypage;
-ProfileMypage.displayName = 'Parent';
-
+ProfileMypage.displayName = "Parent";

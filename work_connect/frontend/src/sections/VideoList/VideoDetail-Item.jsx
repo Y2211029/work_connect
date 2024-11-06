@@ -97,7 +97,7 @@ const VideoDetailItem = () => {
   // 動画投稿者アイコン
   const renderIcon = VideoDetail.icon && VideoDetail.icon.length > 0 && (
     <>
-      <Link to="/">
+      <Link to={`/Profile/${VideoDetail.user_name}?page=mypage`}>
         <img src={`/assets/images/avatars/avatar_${VideoDetail.icon}.jpg`} alt="" />
       </Link>
     </>
@@ -106,7 +106,7 @@ const VideoDetailItem = () => {
   // 動画作成者ユーザーネーム
   const renderUserName = VideoDetail.user_name && VideoDetail.user_name.length > 0 && (
     <>
-      <span>{VideoDetail.user_name}</span>
+      <Link to={`/Profile/${VideoDetail.user_name}?page=mypage`}>{VideoDetail.user_name}</Link>
     </>
   );
 

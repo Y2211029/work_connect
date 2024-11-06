@@ -346,10 +346,9 @@ const WorkDetailItem = () => {
     workCommentDeletefunc();
   };
 
-
   useEffect(() => {
     console.log("workDetail.icon", workDetail.icon);
-  }, [workDetail.icon])
+  }, [workDetail.icon]);
 
   // 作品タイトル
   const renderTitle = workDetail.work_name && <h1 className="WorkDetail-title">{workDetail.work_name}</h1>;
@@ -357,7 +356,11 @@ const WorkDetailItem = () => {
   // 作品投稿者アイコン
   const renderIcon = workDetail.icon && (
     <img
-      src={workDetail.icon ? `http://localhost:8000/storage/images/userIcon/${workDetail.icon}` : `http://localhost:8000/storage/images/userIcon/subNinja.jpg`}
+      src={
+        workDetail.icon
+          ? `http://localhost:8000/storage/images/userIcon/${workDetail.icon}`
+          : `http://localhost:8000/storage/images/userIcon/subNinja.jpg`
+      }
       alt=""
       style={{ width: AVATAR.A_WIDTH, height: AVATAR.A_HEIGHT, borderRadius: AVATAR.A_RADIUS }}
     />
@@ -380,11 +383,7 @@ const WorkDetailItem = () => {
         <SplideTrack>
           {WorkSlide.map((slide, index) => (
             <SplideSlide key={slide.work_id + slide.id} onClick={() => openModal(index)}>
-              <img
-                src={slide.image}
-                alt={slide.image}
-                style={{ aspectRatio: "16 / 9", width: "100%", height: "100%" }}
-              />
+              <img src={slide.image} alt={slide.image} style={{ aspectRatio: "16 / 9", width: "100%", height: "100%" }} />
             </SplideSlide>
           ))}
         </SplideTrack>
@@ -395,7 +394,7 @@ const WorkDetailItem = () => {
   // モーダルスライド
   const renderModalSlider = modalIsOpen && WorkSlideCheck && (
     <>
-      <div >
+      <div>
         <Button onClick={closeModal} className="close-button">
           <span className="close-button_text">閉じる</span>
         </Button>
@@ -405,13 +404,7 @@ const WorkDetailItem = () => {
       </div>
 
       <div style={{ zIndex: theme.zIndex.modal, display: "flex", height: "-webkit-fill-available" }}>
-        <Stack
-          direction="column"
-          justifyContent="left"
-          alignItems="center"
-          spacing={0}
-          style={{ width: SLIDER.MODAL_WIDTH }}
-        >
+        <Stack direction="column" justifyContent="left" alignItems="center" spacing={0} style={{ width: SLIDER.MODAL_WIDTH }}>
           {modalIsOpen && WorkSlideCheck && (
             <>
               <Splide
@@ -436,7 +429,7 @@ const WorkDetailItem = () => {
                 aria-labelledby="thumbnail-slider-example"
                 onMoved={(splide, newIndex) => setCurrentSlideIndex(newIndex)}
                 hasTrack={false}
-              // sx={{ justifyContent: "center", alignItems: "center", display: "flex" }}
+                // sx={{ justifyContent: "center", alignItems: "center", display: "flex" }}
               >
                 <SplideTrack>
                   {WorkSlide.map((slide) => (
@@ -452,10 +445,7 @@ const WorkDetailItem = () => {
 
         {/* overScroll 追加 */}
         {modalIsOpen && (
-          <div
-            className="annotation-container"
-            style={{ width: SLIDER.ANOTATION, wordBreak: "break-word", marginLeft: "10px" }}
-          >
+          <div className="annotation-container" style={{ width: SLIDER.ANOTATION, wordBreak: "break-word", marginLeft: "10px" }}>
             <div style={{ width: "inherit" }}>{WorkSlide[currentSlideIndex].annotation}</div>
           </div>
         )}
@@ -469,20 +459,12 @@ const WorkDetailItem = () => {
         <div className="gallery_images" id="gallery_images">
           <div className="gallery-container">
             {WorkSlide.map((slide, index) => (
-              <div key={`${slide}-${index}`} className="GalleryPostCard" style={{ width: '100%' }}>
-                <img
-                  className="gallery_img"
-                  key={slide.work_id + slide.id}
-                  src={slide.image}
-                  alt={slide.image}
-                  onClick={() => openModal(index)}
-                />
+              <div key={`${slide}-${index}`} className="GalleryPostCard" style={{ width: "100%" }}>
+                <img className="gallery_img" key={slide.work_id + slide.id} src={slide.image} alt={slide.image} onClick={() => openModal(index)} />
               </div>
             ))}
           </div>
         </div>
-
-
       </div>
     </>
   );
@@ -490,7 +472,9 @@ const WorkDetailItem = () => {
   // 作品紹介文
   const renderIntro = workDetail.work_intro && (
     <>
-      <Typography variant="h4" className="WorkDetail_typo">●作品の紹介</Typography>
+      <Typography variant="h4" className="WorkDetail_typo">
+        ●作品の紹介
+      </Typography>
       <div className="WorkDetail_info-intro">{workDetail.work_intro}</div>
     </>
   );
@@ -498,7 +482,9 @@ const WorkDetailItem = () => {
   // 作品ジャンル
   const renderGenre = WorkGenre && (
     <>
-      <Typography variant="h4" className="WorkDetail_typo">●ジャンル</Typography>
+      <Typography variant="h4" className="WorkDetail_typo">
+        ●ジャンル
+      </Typography>
       <div className="WorkDetail_info">{WorkGenre}</div>
     </>
   );
@@ -506,7 +492,9 @@ const WorkDetailItem = () => {
   // 作品の開発言語
   const renderProgrammingLang = WorkProgrammingLanguage && (
     <>
-      <Typography variant="h4" className="WorkDetail_typo">●開発言語</Typography>
+      <Typography variant="h4" className="WorkDetail_typo">
+        ●開発言語
+      </Typography>
       <div className="WorkDetail_info">{WorkProgrammingLanguage}</div>
     </>
   );
@@ -514,7 +502,9 @@ const WorkDetailItem = () => {
   // 作品の開発環境
   const renderDevelopmentEnv = WorkDevelopmentEnvironment && (
     <>
-      <Typography variant="h4" className="WorkDetail_typo">●開発環境</Typography>
+      <Typography variant="h4" className="WorkDetail_typo">
+        ●開発環境
+      </Typography>
       <div className="WorkDetail_info">{WorkDevelopmentEnvironment}</div>
     </>
   );
@@ -533,30 +523,18 @@ const WorkDetailItem = () => {
       {workComment && Object.keys(Comment).length > 0 && <h3>コメント一覧</h3>}
       {workComment.map((item, index) =>
         (item.commenter_id === AccountData.id && item.commenter_user_name === AccountData.user_name) ||
-          (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
+        (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
           <div key={index}>
             <hr />
             {/* {console.log("comment", Comment)} */}
             <button onClick={() => handleClick(item.id)}>編集</button>
-            <button
-              onClick={() => handleCancel(item.id)}
-              className={`comment_${item.id}`}
-              style={{ display: Comment[item.id]?.display }}
-            >
+            <button onClick={() => handleCancel(item.id)} className={`comment_${item.id}`} style={{ display: Comment[item.id]?.display }}>
               キャンセル
             </button>
-            <button
-              onClick={() => handleSave(item.id)}
-              className={`comment_${item.id}`}
-              style={{ display: Comment[item.id]?.display }}
-            >
+            <button onClick={() => handleSave(item.id)} className={`comment_${item.id}`} style={{ display: Comment[item.id]?.display }}>
               保存
             </button>
-            <button
-              onClick={() => handleDelete(item.id)}
-              className={`comment_${item.id}`}
-              style={{ display: Comment[item.id]?.display }}
-            >
+            <button onClick={() => handleDelete(item.id)} className={`comment_${item.id}`} style={{ display: Comment[item.id]?.display }}>
               削除
             </button>
             <p>{item.commenter_user_name || item.commenter_company_name}</p>
@@ -588,16 +566,21 @@ const WorkDetailItem = () => {
     </>
   );
   const renderCommentButton = (
-    <div className="top_comment_area" style={{
-      display: CommentPost.display,
-    }} >
+    <div
+      className="top_comment_area"
+      style={{
+        display: CommentPost.display,
+      }}
+    >
       <div className="comment_area_parts">
-        <textarea className="comment_text_area" value={CommentPost.text}
+        <textarea
+          className="comment_text_area"
+          value={CommentPost.text}
           onChange={(e) => handlePostChange(e.target.value)}
           style={{
             height: "100px",
-          }}>
-        </textarea>
+          }}
+        ></textarea>
         <div className="comment_operation">
           <div className="comment_button">
             <button onClick={() => handlePostCancel()}>キャンセル</button>
@@ -623,7 +606,7 @@ const WorkDetailItem = () => {
     <>
       <Container>
         <div>
-          <Link to="/">
+          <Link to={`/Profile/${workDetail.user_name}?page=mypage`}>
             <Stack direction="row" justifyContent="left" alignItems="center" spacing={3}>
               {renderIcon}
               {renderUserName}
@@ -647,7 +630,6 @@ const WorkDetailItem = () => {
         >
           {renderModalSlider}
         </Modal>
-
 
         <Modal
           isOpen={galleryIsOpen}
@@ -684,11 +666,9 @@ const WorkDetailItem = () => {
           {renderCommentButton}
           {renderComment}
         </Box>
-      </Container >
+      </Container>
     </>
   );
 };
 
 export default WorkDetailItem;
-
-

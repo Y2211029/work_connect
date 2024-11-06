@@ -43,38 +43,12 @@
     height:100%;
   }
 
-  /* .writeform-container{
-    background-color: #fff;
-    border: 1px solid rgb(218, 220, 224);
-    border-radius: 8px;
-    margin-bottom: 12px;
-    padding: 24px;
-    padding: 20px 0 24px;
-    height:100%;
-  }
-
-  .writeform-respondent{
-    font-size: 14px;
-    font-weight: 400;
-    letter-spacing: .2px;
-    line-height: 20px;
-    color: rgb(32, 33, 36);
-    background-color: rgb(248, 249, 250);
-    border-radius: 4px;
-    padding: 10px;
-    white-space: pre-line;
-    cursor: pointer;
-    text-align: left;
-    vertical-align: inherit;
-    border-color: inherit;
-    overflow:auto;
-  } */
-
   .write-form{
     display: block;
     border-radius: 8px;
     padding: 10px 10px 24px;
-    width:500px;
+    width:100%;
+    margin-left:20%;
     height: auto;
     overflow: auto;
   }
@@ -101,7 +75,7 @@
   }
 
   .writeform-answereddata:hover{
-    background-color: 	#A1A3A6; /* グレー */
+    background-color: rgba(201, 201, 204, .48);
   }
 
   .writeform-title{
@@ -113,4 +87,18 @@
   .writeform-length{
     font-size: 14px;
     padding: 5px 15px 5px;
+  }
+
+  .circle_number {
+    width: 20px;
+    height: 20px;
+    padding-top: 0px;
+    background-color:#DA523A; /*  */
+    border-radius: 50%;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  .news-list{
+    border-bottom:1px solid #DAE2ED;
   }

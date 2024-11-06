@@ -164,10 +164,11 @@ export default function Data({ onSave,onCancel,questionData }) {
                 )}
 
 
-                <Button variant="contained" color="primary" onClick={handleSave}>
+                <Button variant="contained" color="primary" onClick={handleSave}  className="FormButton">
                     保存
                 </Button>
-                <Button variant="contained" color="primary" onClick={handleCancel}>
+
+                <Button variant="contained" color="primary" onClick={handleCancel} className="FormButton">
                     キャンセル
                 </Button>
             </Stack>

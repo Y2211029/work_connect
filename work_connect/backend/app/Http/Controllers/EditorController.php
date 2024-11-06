@@ -278,8 +278,6 @@ class EditorController extends Controller
             $w_news->updated_at = $now;
             $w_news->save();
 
-
-
             // 投稿した人をフォローしている人のIDをすべて挙げる
             $followData = [];
             $followAllData = [];

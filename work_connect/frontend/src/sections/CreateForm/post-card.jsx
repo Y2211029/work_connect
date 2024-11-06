@@ -4,6 +4,7 @@ import { Model } from 'survey-core';
 import { Survey } from 'survey-react-ui';
 import "./CreateForm.css";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import Modal from "react-modal";
 
 //ルーティング
 import { useNavigate } from 'react-router-dom';
@@ -35,14 +36,13 @@ import WatchLaterIcon from '@mui/icons-material/WatchLater';
 import MoneyIcon from '@mui/icons-material/Money';
 import RadioIcon from '@mui/icons-material/Radio';
 import ArrowDropDownCircleIcon from '@mui/icons-material/ArrowDropDownCircle';
-import BrushIcon from '@mui/icons-material/Brush';
+// import BrushIcon from '@mui/icons-material/Brush';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import FlakyIcon from '@mui/icons-material/Flaky';
 import NotesIcon from '@mui/icons-material/Notes';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import StarIcon from '@mui/icons-material/Star';
 import BurstModeIcon from '@mui/icons-material/BurstMode';
-import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 
 // データ保存
 import axios from "axios";
@@ -70,6 +70,26 @@ const PostCard = forwardRef(({ post },) => {
   };
   const [create_news_id] = useState(news_id);
   const navigate = useNavigate();
+
+  const modalStyle = {
+    overlay: {
+      backgroundColor: 'rgba(0, 0, 0, 0.7)', // オーバーレイの背景色
+      zIndex: 1200, // オーバーレイの z-index
+      width:'110%',
+      height:'100%',
+    },
+    content: {
+      position: 'absolute',
+      top: '45%',
+      left: '45%',
+      height:'100%',
+      transform: 'translate(-50%, -50%)',
+      border: 'none',
+      padding: '1.5rem',
+      overflow: 'hidden',
+      zIndex: 1200, // コンテンツの z-index
+    },
+  };
 
 
   // 質問を追加する関数 //dropdown
@@ -221,13 +241,8 @@ const PostCard = forwardRef(({ post },) => {
       colorPalette: settings.colorPalette,
     });
 
-    Survey.surveyLocalization.locales["jp"] = {
-      selectAllText: "すべて選択",
-      noneText: "なし",
-      otherText: "その他"
-    };
-
-
+    console.log("handleSaveSettings通ってます");
+    console.log("modalopen",modalopen);
 
     setModalOpen(false);
     setButtonOpen(true);
@@ -458,7 +473,7 @@ const PostCard = forwardRef(({ post },) => {
     { lavel: '評価', icon: <AssessmentIcon />, click: 'rating' },
     { lavel: 'ランキング', icon: <StarIcon />, click: 'ranking' },
     { lavel: '画像ピッカー', icon: <BurstModeIcon />, click: 'imagepicker' },
-    { lavel: 'デザイン変更', icon: <BrushIcon />, click: 'FormDesign' },
+    // { lavel: 'デザイン変更', icon: <BrushIcon />, click: 'FormDesign' },
   ];
 
   const SelectMenuArray = [
@@ -468,47 +483,35 @@ const PostCard = forwardRef(({ post },) => {
     { menu: "email", component: Text },
     { menu: "password", component: Text },
     { menu: "url", component: Text },
-
     //日時
     { menu: "date", component: DateForm },
     { menu: "time", component: DateForm },
     { menu: "datetime-local", component: DateForm },
     { menu: "month", component: DateForm },
     { menu: "week", component: DateForm },
-
     //数値
     { menu: "number", component: Number },
     { menu: "range", component: Number },
     { menu: "tel", component: Number },
-
     //ラジオボタン
     { menu: "radio", component: Radio },
     { menu: "radiogroup", component: Radio },
-
-
     //ドロップダウン
     { menu: "dropdown", component: DropDown },
     { menu: "tagbox", component: DropDown },
-
     //チェックボックス
     { menu: "checkbox", component: CheckBox },
-
     //クローズドクエスチョン
     { menu: "boolean", component: Boolean },
-
     //ロングテキストボックス
     { menu: "comment", component: Comment },
-
     //(10段階)評価
     { menu: "rating", component: Rating },
-
     //ランキング
     { menu: "ranking", component: Ranking },
-
     //画像ピッカー
     { menu: "imagepicker", component: ImagePicker },
-
-
+    //デザインを変更する
     { menu: "FormDesign", component: FormDesign },
 
   ];
@@ -517,21 +520,23 @@ const PostCard = forwardRef(({ post },) => {
 
   return (
     <>
-      <Stack direction="row" alignItems="flex-start" spacing={2} style={{ marginLeft: "50%", width: "1000px" }}>
-        <div style={{ overflow: 'auto', flexGrow: 1, width: "100%", height: "60%" }}> {/* フォーム部分 */}
+      <Stack direction="row" spacing={2} style={{ width: "1000px" }}>
+
+
+        <div className="FormDemo"> {/* フォーム部分 */}
+
+        <Typography>{article_title}</Typography>
+
+
           {!questions || questions.length === 0 ? (
             <p>フォームがありません</p>
           ) : (
             <>
               <div className="back_news_draft" onClick={handleBack}>
-                <Stack direction={'row'}>
-                  <ArrowCircleLeftIcon />
-                  <Typography>ニュースの下書きに戻る</Typography>
-                </Stack>
+                <Typography>← ニュースの下書きに戻る</Typography>
               </div>
 
 
-              <Typography style={{ marginLeft: "0%" }}>{article_title}</Typography>
               <div className="SurveyModal">
                 <Survey model={survey} />
               </div>
@@ -553,7 +558,13 @@ const PostCard = forwardRef(({ post },) => {
           </Button>
         </div>
 
-        {modalopen && (
+        <Modal
+              isOpen={modalopen}
+              onRequestClose={CreateFormCancel} // モーダルを閉じるコールバック
+              shouldCloseOnOverlayClick={true} // オーバーレイクリックでモーダルを閉じる
+              contentLabel="Example Modal"
+              style={modalStyle}
+            >
           <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
             {SelectMenuArray.map((menu, index) => {
               const Component = menu.component; // 各メニューに対応するコンポーネントを取得
@@ -569,24 +580,22 @@ const PostCard = forwardRef(({ post },) => {
               );
             })}
           </Stack>
-        )}
+        </Modal>
 
-        {buttonOpen && (
-          <div>
-            <Stack spacing={2}>
-              {FormSelectArray.map((form, index) => (
-                <Button
-                  key={index}
-                  startIcon={form.icon}
-                  onClick={() => addQuestion(form.click)}
-                  variant="outlined"
-                  style={{ textAlign: 'left', width: "210px", marginLeft: "50%", }}  // アイコンとテキストを左寄せ
-                >
-                  {form.lavel}
-                </Button>
-              ))}
-            </Stack>
-          </div>
+       {buttonOpen && (
+          <Stack spacing={2} className="SelectMenu">
+            {FormSelectArray.map((form, index) => (
+              <Button
+                key={index}
+                startIcon={form.icon}
+                onClick={() => addQuestion(form.click)}
+                variant="outlined"
+                style={{ textAlign: 'center', width: "250px", marginLeft: "40%", }}  // アイコンとテキストを左寄せ
+              >
+                {form.lavel}
+              </Button>
+            ))}
+          </Stack>
         )}
       </Stack>
     </>

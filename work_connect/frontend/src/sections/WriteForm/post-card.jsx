@@ -68,6 +68,7 @@ const PostCard = forwardRef(({ post }, ref) => {
             ...(field.inputType && { inputType: field.inputType }), // inputType を確認
             ...(field.validators && { validators: field.validators }), // validators を確認
             ...(field.response && { defaultValue: field.response }),  // response を defaultValue に設定
+            ...(field.choices && { choices: field.choices }), // choices を追加
           })),
         }
       ]

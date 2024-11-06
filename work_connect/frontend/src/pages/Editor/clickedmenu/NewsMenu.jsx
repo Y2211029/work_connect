@@ -1,4 +1,4 @@
-// import { useState } from "react";
+import { useEffect } from "react";
 import Modal from "react-modal";
 import PropTypes from "prop-types";
 import "../Editor.css";
@@ -19,7 +19,7 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import TooltipTitle from '@mui/material/Tooltip';
+import Tooltip from '@mui/material/Tooltip';
 import AutoModeIcon from '@mui/icons-material/AutoMode';
 import EditNotificationsIcon from '@mui/icons-material/EditNotifications';
 import Typography from "@mui/material/Typography";
@@ -30,7 +30,9 @@ import moment from 'moment';
 const modalStyle = {
   overlay: {
     backgroundColor: 'rgba(0, 0, 0, 0.7)', // オーバーレイの背景色
-    zIndex: 2, // オーバーレイの z-index
+    zIndex: 1200, // オーバーレイの z-index
+    width:'100%',
+    height:'100%',
   },
   content: {
     position: 'absolute',
@@ -41,7 +43,7 @@ const modalStyle = {
     borderRadius: '0',
     padding: '1.5rem',
     overflow: 'hidden',
-    zIndex: 1, // コンテンツの z-index
+    zIndex: 1200, // コンテンツの z-index
   },
 };
 
@@ -78,7 +80,6 @@ const NewsMenu = ({
       ...(title && imageUrl && message && charCount ? [{ key: "releaseNews", icon: <CampaignIcon />, text: "ニュースを公開する" }] : []),
     ];
 
-
   //関数
   const FormattedDate = (time) => {
     return moment(time).format('YYYY/MM/DD HH:mm:ss');
@@ -96,9 +97,17 @@ const NewsMenu = ({
   };
 
   const AddDraftNews = () => {
-    console.log("クリックしました");
+    if(window.confirm("編集したニュースを保存しますか?")){
+      NewsSave()
+      console.log("保存しました");
+    }
+    console.log("保存しませんでした");
     window.location.reload(false);
   }
+
+  useEffect(() => {
+    Modal.setAppElement('#root');
+  }, []);
 
 
   return (
@@ -164,7 +173,7 @@ const NewsMenu = ({
                     <TableBody>
                       <TableRow>
                         <TableCell style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <TooltipTitle title={draft.article_title}>
+                          <Tooltip title={draft.article_title}>
                             <p
                               className="draftlist"
                               onClick={() => RewriteNewsEnter(draft.id)}
@@ -179,7 +188,7 @@ const NewsMenu = ({
                             >
                               {draft.article_title}
                             </p>
-                          </TooltipTitle>
+                          </Tooltip>
                         </TableCell>
                       </TableRow>
                     </TableBody>

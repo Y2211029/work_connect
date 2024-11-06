@@ -79,7 +79,7 @@ class FormController extends Controller
                             'name' => 'Question1',
                             'title' => 'デモ質問',
                             'type' => 'text',
-                            'placeholder' => 'この質問はテキストをあああ入力できます'
+                            'placeholder' => 'この質問はテキストを入力できます'
                         ]
                     ],
                     'news_id' => $newsdetail_id,

@@ -148,7 +148,7 @@ const Editor = () => {
       );
 
       console.log(response.data.id);
-      setNewsId(response.data.id);
+      console.log(response.data);
       console.log("成功");
       navigate(`/Internship_JobOffer?page=${genre}`);
     } catch (error) {
@@ -1164,7 +1164,7 @@ useEffect(() => {
 
 
   return (
-    <div className="editor">
+    <div>
       <Helmet>
         <title>ニュースの投稿 | Work&Connect</title>
       </Helmet>
@@ -1240,7 +1240,7 @@ useEffect(() => {
       />
 
       <div className="editor-wrapper">
-        <div ref={editorHolder} id="editor" className="editor" />
+        <div ref={editorHolder} id="editor"/>
       </div>
     </div>
   );

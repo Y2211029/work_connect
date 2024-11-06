@@ -345,7 +345,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
     },
     sessions: {
       ItemName: "説明会一覧",
-      url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/Seesion`,
+      url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/Session`,
       idKey: "id",
       tags: ["company_name"],
       generatePosts: (WorkOfList) =>
@@ -496,10 +496,13 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       idKey: "id",
       tags: ["company_name"],
       generatePosts: (WorkOfList) => {
-        return WorkOfList.map((company) => ({
-          article_title: company.article_title,
-          user_name: company.users,
-        }));
+        if(Array.isArray(WorkOfList)){
+          const application_form = WorkOfList.map((company) => ({
+            article_title: company.article_title,
+            user_name: company.users,
+          }));
+          return  [{ application_form }];
+        }
       },
     },
     specialstatisticaldata: {

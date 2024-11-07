@@ -177,6 +177,32 @@ export default function Searchbar() {
     industry: [],
   });
 
+  const [saveOptions, setSaveOptions] = useState({
+    searchText: "",
+    follow_status: [],
+    work_genre: [],
+    programming_language: [],
+    development_environment: [],
+    school_name: [],
+    department_name: [],
+    faculty_name: [],
+    major_name: [],
+    course_name: [],
+    student_programming_language: [],
+    student_development_environment: [],
+    software: [],
+    acquisition_qualification: [],
+    hobby: [],
+    other: [],
+    graduation_year: [],
+    desired_occupation: [],
+    desired_work_region: [],
+    selected_occupation: [],
+    prefecture: [],
+    company_name: [],
+    industry: [],
+  });
+
   const { GetTagListFunction } = GetTagList();
 
   const getTag = (urlIn, option) => {
@@ -199,7 +225,14 @@ export default function Searchbar() {
 
   const getGraduationYearTag = async () => {
     let optionArray = [];
-    let result = ["2025年卒業", "2026年卒業", "2027年卒業", "2028年卒業", "2029年卒業", "2030年卒業"];
+    let result = [
+      "2025年卒業",
+      "2026年卒業",
+      "2027年卒業",
+      "2028年卒業",
+      "2029年卒業",
+      "2030年卒業",
+    ];
 
     // console.log("result: ", result);
     result.map((value) => {
@@ -279,7 +312,11 @@ export default function Searchbar() {
 
   const fetchCompanyNameData = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/get_company_name_list`, {});
+      console.log("fetchCompanyNameData: OK");
+      const response = await axios.get(
+        `http://localhost:8000/get_company_name_list`,
+        {}
+      );
 
       console.log("fetchCompanyNameData response: ");
       console.log(response.data);
@@ -303,10 +340,11 @@ export default function Searchbar() {
   };
 
   const getCompanyNameTag = async () => {
+    console.log("getCompanyNameTag: OK");
     let optionArray = [];
     let result = await fetchCompanyNameData();
 
-    // console.log("result: ", result);
+    console.log("result: ", result);
     result.map((value) => {
       optionArray.push({
         value: value.company_name,
@@ -477,6 +515,7 @@ export default function Searchbar() {
       // 動画ジャンルのタグ一覧を取得
       getTag("video_genre", "video_genre");
     } else if (PathName == "/CompanyList") {
+      console.log("Internship_JobOfferCompanyList: OK");
       // 企業一覧の場合
       // フォロー状況のタグ一覧を取得
       getFollowStatusTag();
@@ -502,11 +541,12 @@ export default function Searchbar() {
       // ソフトウェアのタグ一覧を取得
       getTag("company_software", "software");
     } else if (
-      PathName === "/Internship_JobOffer/joboffers" ||
-      PathName === "/Internship_JobOffer/internships" ||
-      PathName === "/Internship_JobOffer/sessions" ||
-      PathName === "/Internship_JobOffer/blogs"
+      PathName == "/Internship_JobOffer/JobOffer" ||
+      PathName == "/Internship_JobOffer/Internship" ||
+      PathName == "/Internship_JobOffer/Session" ||
+      PathName == "/Internship_JobOffer/Blog"
     ) {
+      console.log("Internship_JobOffergetCompanyNameTag: OK");
       // 求人一覧の場合
       // フォロー状況のタグ一覧を取得
       getFollowStatusTag();
@@ -535,6 +575,7 @@ export default function Searchbar() {
       // ソフトウェアのタグ一覧を取得
       getTag("company_software", "software");
     }
+    console.log("PathNamePathName: ", PathName);
   }, [PathName]);
 
   // useEffect(() => {
@@ -545,12 +586,13 @@ export default function Searchbar() {
 
   // マイページ、Topページ、
   let RefineSearch =
-    location.pathname != "/Profile/" + location.pathname.split("/")[2] + "/mypage" &&
-      location.pathname != "/Top" &&
-      location.pathname != "/Settings" &&
-      location.pathname != "/Chat" &&
-      location.pathname != "/WorkPosting" &&
-      location.pathname != "/VideoPosting"
+    location.pathname !=
+      "/Profile/" + location.pathname.split("/")[2] + "/mypage" &&
+    location.pathname != "/Top" &&
+    location.pathname != "/Settings" &&
+    location.pathname != "/Chat" &&
+    location.pathname != "/WorkPosting" &&
+    location.pathname != "/VideoPosting"
       ? true
       : false;
   console.log("let RefineSearch =", RefineSearch);
@@ -927,7 +969,7 @@ export default function Searchbar() {
         // company-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
-      } else if (PathName === "/Internship_JobOffer/joboffers") {
+      } else if (PathName === "/Internship_JobOffer/JobOffer") {
         // 企業一覧の場合
         const url = `http://localhost:8000/search_internship_job_offer?page=${Page}`;
 
@@ -991,7 +1033,7 @@ export default function Searchbar() {
         // company-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
-      } else if (PathName === "/Internship_JobOffer/internships") {
+      } else if (PathName === "/Internship_JobOffer/Internship") {
         // 企業一覧の場合
         const url = `http://localhost:8000/search_internship_job_offer?page=${Page}`;
 
@@ -1056,7 +1098,7 @@ export default function Searchbar() {
         // company-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
-      } else if (PathName === "/Internship_JobOffer/sessions") {
+      } else if (PathName === "/Internship_JobOffer/Session") {
         // 企業一覧の場合
         const url = `http://localhost:8000/search_internship_job_offer?page=${Page}`;
 
@@ -1121,7 +1163,7 @@ export default function Searchbar() {
         // company-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
-      } else if (PathName === "/Internship_JobOffer/blogs") {
+      } else if (PathName === "/Internship_JobOffer/Blog") {
         // 企業一覧の場合
         const url = `http://localhost:8000/search_internship_job_offer?page=${Page}`;
 
@@ -1246,6 +1288,34 @@ export default function Searchbar() {
         prefecture: [],
         company_name: [],
       }));
+
+      setSaveOptions((prevState) => ({
+        ...prevState,
+        searchText: "",
+        follow_status: [],
+        work_genre: [],
+        programming_language: [],
+        development_environment: [],
+        video_genre: [],
+        school_name: [],
+        department_name: [],
+        faculty_name: [],
+        major_name: [],
+        course_name: [],
+        student_programming_language: [],
+        student_development_environment: [],
+        software: [],
+        acquisition_qualification: [],
+        hobby: [],
+        other: [],
+        graduation_year: [],
+        desired_occupation: [],
+        desired_work_region: [],
+        selected_occupation: [],
+        prefecture: [],
+        company_name: [],
+        industry: [],
+      }));
     }
   }, [ResetItem]);
 
@@ -1254,8 +1324,80 @@ export default function Searchbar() {
     setOpen(false);
   };
 
+  // 全ての絞り込みタグを非選択状態にする
+  const handleTagReset = () => {
+    setsearchSource((prevState) => ({
+      ...prevState,
+      searchText: "",
+      follow_status: [],
+      work_genre: [],
+      programming_language: [],
+      development_environment: [],
+      video_genre: [],
+      school_name: [],
+      department_name: [],
+      faculty_name: [],
+      major_name: [],
+      course_name: [],
+      student_programming_language: [],
+      student_development_environment: [],
+      software: [],
+      acquisition_qualification: [],
+      hobby: [],
+      other: [],
+      graduation_year: [],
+      desired_occupation: [],
+      desired_work_region: [],
+      selected_occupation: [],
+      prefecture: [],
+      company_name: [],
+      industry: [],
+    }));
+    setSaveOptions((prevState) => ({
+      ...prevState,
+      searchText: "",
+      follow_status: [],
+      work_genre: [],
+      programming_language: [],
+      development_environment: [],
+      video_genre: [],
+      school_name: [],
+      department_name: [],
+      faculty_name: [],
+      major_name: [],
+      course_name: [],
+      student_programming_language: [],
+      student_development_environment: [],
+      software: [],
+      acquisition_qualification: [],
+      hobby: [],
+      other: [],
+      graduation_year: [],
+      desired_occupation: [],
+      desired_work_region: [],
+      selected_occupation: [],
+      prefecture: [],
+      company_name: [],
+      industry: [],
+    }));
+  };
+
+  // タグの選択状態を元に戻す
+  const handleCancel = () => {
+    setsearchSource((prevState) => ({
+      ...prevState,
+      ...saveOptions
+    }));
+  };
+
+  useEffect(() => {
+    console.log("searchSource: ", searchSource);
+
+  }, saveOptions);
+
   // 空だったらtrue
-  const isAllEmpty = (obj) => Object.values(obj).every((value) => value.length === 0);
+  const isAllEmpty = (obj) =>
+    Object.values(obj).every((value) => value.length === 0);
 
   // 検索ボタンを押したとき
   const handleSearch = () => {
@@ -1292,6 +1434,12 @@ export default function Searchbar() {
         sortOption: "orderNewPostsDate", //並び替える前の状態にするために初期化
       }));
     }
+
+    // タグ選択のキャンセルしたとき用の保存オブジェクトに絞り込み情報をセット
+    setSaveOptions((prevState) => ({
+      ...prevState,
+      ...searchSource
+    }));
   };
 
   // ページが変更された時に次のデータを取得する
@@ -1300,11 +1448,17 @@ export default function Searchbar() {
     if (IsSearch.Check && Page) {
       let url = new URL(window.location.href);
       let urlPageParams = url.searchParams.get("page");
-      console.log("searchSourceList:urlPageParams", "/Internship_JobOffer/" + urlPageParams);
+      console.log(
+        "searchSourceList:urlPageParams",
+        "/Internship_JobOffer/" + urlPageParams
+      );
       console.log("searchSourceList:PathName", PathName);
       if ("/Internship_JobOffer/" + urlPageParams == PathName) {
         console.log("searchSourceList:Page", Page);
-        console.log("IsSearch.Check, Page, IsSearch.searchToggle, sortOption", PathName);
+        console.log(
+          "IsSearch.Check, Page, IsSearch.searchToggle, sortOption",
+          PathName
+        );
         searchSourceList();
       } else if ("/Internship_JobOffer" != location.pathname) {
         searchSourceList();
@@ -1487,7 +1641,10 @@ export default function Searchbar() {
               value={searchSource.searchText}
               onChange={handleChangeText}
               onKeyDown={(e) => {
-                if (e.key === "Enter" && searchSource.searchText.trim() !== "") {
+                if (
+                  e.key === "Enter" &&
+                  searchSource.searchText.trim() !== ""
+                ) {
                   handleSearch();
                 } else if (e.key === "Enter") {
                   e.preventDefault(); //入力が空の場合はEnterキーを無効化
@@ -1497,11 +1654,18 @@ export default function Searchbar() {
               startAdornment={
                 // INPUT要素に何か入力されていたら
                 searchSource.searchText.trim() !== "" ? (
-                  <InputAdornment onClick={handleSearch} position="start" sx={{ mr: 1, fontWeight: "fontWeightBold" }}>
+                  <InputAdornment
+                    onClick={handleSearch}
+                    position="start"
+                    sx={{ mr: 1, fontWeight: "fontWeightBold" }}
+                  >
                     <IconSearch stroke={1.5} size="16px" />
                   </InputAdornment>
                 ) : (
-                  <InputAdornment position="start" sx={{ mr: 1, fontWeight: "fontWeightBold" }}>
+                  <InputAdornment
+                    position="start"
+                    sx={{ mr: 1, fontWeight: "fontWeightBold" }}
+                  >
                     <IconSearch stroke={1.5} size="16px" />
                   </InputAdornment>
                 )
@@ -1515,11 +1679,20 @@ export default function Searchbar() {
                 </InputAdornment>
               }
               aria-describedby="search-helper-text"
-              inputProps={{ "aria-label": "weight", sx: { bgcolor: "transparent", pl: 0.5 }, padding: 0 }}
+              inputProps={{
+                "aria-label": "weight",
+                sx: { bgcolor: "transparent", pl: 0.5 },
+                padding: 0,
+              }}
               sx={{ width: { md: 200, lg: 434 }, ml: 2, px: 2 }}
             />
           </Box>
-          <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
             <Box sx={style}>
               <Stack
                 direction="column"
@@ -1531,7 +1704,9 @@ export default function Searchbar() {
                 }}
               >
                 <Typography variant="h5">絞り込み検索</Typography>
-                <Divider sx={{ borderStyle: "dashed", m: 0, display: "block" }} />
+                <Divider
+                  sx={{ borderStyle: "dashed", m: 0, display: "block" }}
+                />
                 {/* ---------------------------------------------------------- */}
                 <Stack sx={{ overflowY: "scroll" }}>
                   {/* <StyledSearchbar> */}
@@ -1560,7 +1735,11 @@ export default function Searchbar() {
                                   marginBottom: "10px",
                                 }}
                               >
-                                <div style={{ fontWeight: "Bold", color: "#666" }}>フォロー状況</div>
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  フォロー状況
+                                </div>
                                 <div style={{ color: "#444" }}>
                                   <Select
                                     placeholder="▼"
@@ -1584,7 +1763,16 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666", display: "flex", flexGrow: "2", gap: "5px", alignItems: "center" }}>
+                            <div
+                              style={{
+                                fontWeight: "Bold",
+                                color: "#666",
+                                display: "flex",
+                                flexGrow: "2",
+                                gap: "5px",
+                                alignItems: "center",
+                              }}
+                            >
                               {/* <LuSchool /> */}
                               <span style={{ flexGrow: 1 }}>学校名</span>
                             </div>
@@ -1608,7 +1796,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>学科名</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              学科名
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -1629,7 +1819,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>学部名</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              学部名
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -1650,7 +1842,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>専攻名</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              専攻名
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -1671,7 +1865,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>コース名</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              コース名
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -1692,7 +1888,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              ジャンル
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -1713,7 +1911,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              プログラミング言語
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -1734,7 +1934,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              開発環境
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -1760,7 +1962,11 @@ export default function Searchbar() {
                                   marginBottom: "10px",
                                 }}
                               >
-                                <div style={{ fontWeight: "Bold", color: "#666" }}>フォロー状況</div>
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  フォロー状況
+                                </div>
                                 <div style={{ color: "#444" }}>
                                   <Select
                                     placeholder="▼"
@@ -1785,7 +1991,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>学校名</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              学校名
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -1806,7 +2014,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>学科名</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              学科名
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -1827,7 +2037,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>学部名</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              学部名
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -1848,7 +2060,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>専攻名</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              専攻名
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -1869,7 +2083,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>コース名</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              コース名
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -1890,7 +2106,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              ジャンル
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -1916,7 +2134,11 @@ export default function Searchbar() {
                                   marginBottom: "10px",
                                 }}
                               >
-                                <div style={{ fontWeight: "Bold", color: "#666" }}>フォロー状況</div>
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  フォロー状況
+                                </div>
                                 <div style={{ color: "#444" }}>
                                   <Select
                                     placeholder="▼"
@@ -1941,7 +2163,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>卒業年</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              卒業年
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -1962,7 +2186,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>学校名</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              学校名
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -1983,7 +2209,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>学科名</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              学科名
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -2004,7 +2232,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>学部名</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              学部名
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -2025,7 +2255,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>専攻名</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              専攻名
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -2046,7 +2278,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>コース名</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              コース名
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -2067,7 +2301,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>希望職種</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              希望職種
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -2088,7 +2324,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>希望勤務地</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              希望勤務地
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -2109,15 +2347,21 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              プログラミング言語
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
                                 options={options.student_programming_language}
-                                value={searchSource.student_programming_language}
+                                value={
+                                  searchSource.student_programming_language
+                                }
                                 isClearable
                                 isMulti
-                                onChange={handleChangeStudentProgrammingLanguage}
+                                onChange={
+                                  handleChangeStudentProgrammingLanguage
+                                }
                               />
                             </div>
                           </div>
@@ -2130,15 +2374,23 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              開発環境
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
-                                options={options.student_development_environment}
-                                value={searchSource.student_development_environment}
+                                options={
+                                  options.student_development_environment
+                                }
+                                value={
+                                  searchSource.student_development_environment
+                                }
                                 isClearable
                                 isMulti
-                                onChange={handleChangeStudentDevelopmentEnvironment}
+                                onChange={
+                                  handleChangeStudentDevelopmentEnvironment
+                                }
                               />
                             </div>
                           </div>
@@ -2151,7 +2403,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>ソフトウェア</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              ソフトウェア
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -2172,7 +2426,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>取得資格</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              取得資格
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -2193,7 +2449,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>趣味</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              趣味
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -2217,7 +2475,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              ジャンル
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -2238,7 +2498,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              プログラミング言語
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -2259,7 +2521,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              開発環境
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -2283,7 +2547,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              ジャンル
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -2309,7 +2575,11 @@ export default function Searchbar() {
                                   marginBottom: "10px",
                                 }}
                               >
-                                <div style={{ fontWeight: "Bold", color: "#666" }}>フォロー状況</div>
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  フォロー状況
+                                </div>
                                 <div style={{ color: "#444" }}>
                                   <Select
                                     placeholder="▼"
@@ -2334,7 +2604,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>職種</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              職種
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -2355,7 +2627,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>勤務地</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              勤務地
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -2376,7 +2650,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>業界キーワード</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              業界キーワード
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -2397,7 +2673,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              開発環境
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -2418,7 +2696,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              プログラミング言語
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -2439,7 +2719,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>歓迎資格</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              歓迎資格
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -2460,7 +2742,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>ソフトウェア</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              ソフトウェア
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -2474,10 +2758,10 @@ export default function Searchbar() {
                           </div>
                         </Grid>
                       </>
-                    ) : PathName === "/Internship_JobOffer/joboffers" ||
-                      PathName === "/Internship_JobOffer/internships" ||
-                      PathName === "/Internship_JobOffer/sessions" ||
-                      PathName === "/Internship_JobOffer/blogs" ? (
+                    ) : PathName === "/Internship_JobOffer/JobOffer" ||
+                      PathName === "/Internship_JobOffer/Internship" ||
+                      PathName === "/Internship_JobOffer/Session" ||
+                      PathName === "/Internship_JobOffer/Blog" ? (
                       <>
                         {myId[0] === "S" ? (
                           <>
@@ -2489,7 +2773,11 @@ export default function Searchbar() {
                                   marginBottom: "10px",
                                 }}
                               >
-                                <div style={{ fontWeight: "Bold", color: "#666" }}>フォロー状況</div>
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  フォロー状況
+                                </div>
                                 <div style={{ color: "#444" }}>
                                   <Select
                                     options={options.follow_status}
@@ -2513,7 +2801,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>企業名</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              企業名
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 placeholder="▼"
@@ -2534,7 +2824,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>職種</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              職種
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 options={options.selected_occupation}
@@ -2554,7 +2846,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>勤務地</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              勤務地
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 options={options.prefecture}
@@ -2574,9 +2868,17 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>業界キーワード</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              業界キーワード
+                            </div>
                             <div style={{ color: "#444" }}>
-                              <Select options={options.industry} value={searchSource.industry} isClearable isMulti onChange={handleChangeIndustry} />
+                              <Select
+                                options={options.industry}
+                                value={searchSource.industry}
+                                isClearable
+                                isMulti
+                                onChange={handleChangeIndustry}
+                              />
                             </div>
                           </div>
                         </Grid>
@@ -2588,7 +2890,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              開発環境
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 options={options.development_environment}
@@ -2608,7 +2912,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              プログラミング言語
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 options={options.programming_language}
@@ -2628,7 +2934,9 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>歓迎資格</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              歓迎資格
+                            </div>
                             <div style={{ color: "#444" }}>
                               <Select
                                 options={options.acquisition_qualification}
@@ -2648,9 +2956,17 @@ export default function Searchbar() {
                               marginBottom: "10px",
                             }}
                           >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>ソフトウェア</div>
+                            <div style={{ fontWeight: "Bold", color: "#666" }}>
+                              ソフトウェア
+                            </div>
                             <div style={{ color: "#444" }}>
-                              <Select options={options.software} value={searchSource.software} isClearable isMulti onChange={handleChangeSoftware} />
+                              <Select
+                                options={options.software}
+                                value={searchSource.software}
+                                isClearable
+                                isMulti
+                                onChange={handleChangeSoftware}
+                              />
                             </div>
                           </div>
                         </Grid>
@@ -2664,22 +2980,36 @@ export default function Searchbar() {
                 </Stack>
 
                 {/* ---------------------------------------------------------- */}
-                <Divider sx={{ borderStyle: "dashed", m: 0, display: "block" }} />
-                <Stack direction="row" spacing={2} sx={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}>
-                  <Stack direction="row" spacing={2} sx={{ justifyContent: "flex-start", alignItems: "center" }}>
+                <Divider
+                  sx={{ borderStyle: "dashed", m: 0, display: "block" }}
+                />
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  sx={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                    sx={{ justifyContent: "flex-start", alignItems: "center" }}
+                  >
                     <Button variant="outlined" onClick={handleClose}>
                       閉じる
                     </Button>
                   </Stack>
-                    <Button variant="outlined" onClick={handleClose}>
-                     タグをリセット
-                    </Button>
-                  <Stack direction="row" spacing={2} sx={{ justifyContent: "flex-end", alignItems: "center" }}>
-                    <Button variant="outlined" onClick={handleClose}>
-                     キャンセル
+                  <Button variant="outlined" onClick={handleTagReset}>
+                    タグをリセット
+                  </Button>
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                    sx={{ justifyContent: "flex-end", alignItems: "center" }}
+                  >
+                    <Button variant="outlined" onClick={handleCancel}>
+                      キャンセル
                     </Button>
                     <Button variant="contained" onClick={handleSearch}>
                       検索

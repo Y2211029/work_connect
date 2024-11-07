@@ -958,3 +958,8 @@ textarea {
   color: lightgrey;
   cursor: pointer;
 }
+
+/* 検索バーの虫眼鏡マークをホバーしたときにカーソルをpointerにする */
+.mushimeganeSearch:hover {
+  cursor: pointer;
+}

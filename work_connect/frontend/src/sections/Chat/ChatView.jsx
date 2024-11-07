@@ -154,7 +154,7 @@ const FollowGroup = ({
                     `http://localhost:8000/storage/images/userIcon/${element.icon}` :
                     'assets/images/avatars/avatar_4.jpg'}
                   alt={element.user_name}
-                  style={{ width: '40px', height: '40px', borderRadius: '50%', border: '3px solid #bbb' }}
+                  style={{ width: '40px', height: '40px', borderRadius: '50%', border: '2px solid #999' }}
                 />
               </ListItemIcon>
               {/* ユーザー名 */}
@@ -342,8 +342,8 @@ const ColorRingStyle = () => {
 // メインのコンポーネント
 const ChatView = () => {
 
-   // websocket通信のデータ保存先
-   const chatContext = useContext(WebScokectContext);
+  // websocket通信のデータ保存先
+  const chatContext = useContext(WebScokectContext);
 
   /// セッションストレージ取得
   const { getSessionData , updateSessionData } = useSessionStorage();
@@ -457,7 +457,7 @@ const ChatView = () => {
   /// 画面読み込み後、1度だけ実行
   useEffect(() => {
 
-    GetChannelList();
+    //GetChannelList();
 
     // セッションデータと状態更新をまとめる関数
     function updateChatViewData(item) {
@@ -1037,7 +1037,8 @@ const ChatView = () => {
                 width: '40px',
                 height: '40px',
                 margin: '0 5px',
-                borderRadius: '50%' }}
+                borderRadius: '50%',
+                border: '2px solid #999' }}
               />
               {chatViewCompanyName ?
                chatViewCompanyName :
@@ -1144,7 +1145,8 @@ const ChatView = () => {
                     width: '40px',
                     height: '40px',
                     margin: '0 5px',
-                    borderRadius: '50%' }}
+                    borderRadius: '50%',
+                    border: '2px solid #999' }}
                   />
                 </Link>
               </Tooltip>
@@ -1263,8 +1265,6 @@ const ChatView = () => {
         <ColorRingStyle />
       </div>
     ):(null)}
-
-
 
       </Box>
 

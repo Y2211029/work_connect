@@ -1049,7 +1049,7 @@ export default function Searchbar() {
             programming_language: programming_language,
             acquisition_qualification: acquisition_qualification,
             software: software,
-            genre: "joboffers",
+            genre: "Joboffer",
           },
         });
         console.log("response.data", response.data);
@@ -1113,7 +1113,7 @@ export default function Searchbar() {
             programming_language: programming_language,
             acquisition_qualification: acquisition_qualification,
             software: software,
-            genre: "internships",
+            genre: "Internship",
           },
         });
         console.log("response.data", response.data);
@@ -1178,7 +1178,7 @@ export default function Searchbar() {
             programming_language: programming_language,
             acquisition_qualification: acquisition_qualification,
             software: software,
-            genre: "sessions",
+            genre: "Session",
           },
         });
         console.log("response.data", response.data);
@@ -1243,7 +1243,7 @@ export default function Searchbar() {
             programming_language: programming_language,
             acquisition_qualification: acquisition_qualification,
             software: software,
-            genre: "blogs",
+            genre: "Blog",
           },
         });
         console.log("response.data", response.data);
@@ -1426,6 +1426,8 @@ export default function Searchbar() {
 
   // 検索ボタンを押したとき
   const handleSearch = () => {
+    // 検索バーを閉じる
+    setOpen(false);
     // 文字列やタグを選択している場合
     if (!isAllEmpty(searchSource)) {
       // 「並び替え順」「一覧データ」初期化
@@ -1442,8 +1444,6 @@ export default function Searchbar() {
         Page: 1,
         sortOption: "orderNewPostsDate",
       }));
-      // 検索バーを閉じる
-      setOpen(false);
     }
 
     // 文字列やタグを選択していない場合
@@ -1680,6 +1680,7 @@ export default function Searchbar() {
                 // INPUT要素に何か入力されていたら
                 searchSource.searchText.trim() !== "" ? (
                   <InputAdornment
+                    className="mushimeganeSearch"
                     onClick={handleSearch}
                     position="start"
                     sx={{ mr: 1, fontWeight: "fontWeightBold" }}

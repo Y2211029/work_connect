@@ -36,6 +36,7 @@
     "@mui/icons-material": "^5.15.18",
     "@mui/lab": "^5.0.0-alpha.170",
     "@mui/material": "^5.16.7",
+    "@mui/styles": "^6.1.6",
     "@mui/system": "^5.0.0",
     "@rxpm/editor-js-code": "^0.0.1",
     "@sendbird/uikit-react": "^3.15.3",

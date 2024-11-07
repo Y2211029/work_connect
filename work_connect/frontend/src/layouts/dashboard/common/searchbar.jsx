@@ -2,11 +2,12 @@ import { useLocation, useSearchParams } from "react-router-dom";
 import { useContext, useEffect, useState, useRef } from "react";
 import Select from "react-select";
 import axios from "axios";
-// import { LuSchool } from "react-icons/lu";
 
 import Divider from "@mui/material/Divider";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import { makeStyles } from '@mui/styles';
+import { createTheme } from '@mui/material/styles';
 import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -14,16 +15,9 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
 
-// import Slide from "@mui/material/Slide";
-// import ClickAwayListener from "@mui/material/ClickAwayListener";
-// import Typography from "@mui/material/Typography";
-// import { styled } from "@mui/material/styles";
-// import Stack from "@mui/material/Stack";
-
 import { IconAdjustmentsHorizontal, IconSearch } from "@tabler/icons-react";
 
 import HeaderAvatar from "src/components/header/HeaderAvatar.jsx";
-// import { bgBlur } from "src/theme/css";
 import GetTagList from "src/components/tag/GetTagList";
 import { AllItemsContext } from "src/layouts/dashboard/index";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
@@ -75,10 +69,41 @@ const style = {
 
 // ----------------------------------------------------------------------
 
+const useStyles = makeStyles(() => {
+  const theme = createTheme({
+    breakpoints: {
+      values: {
+        sm: 600,
+        md: 960,
+        lg: 1280,
+        xl: 1920,
+      },
+    },
+  });
+  return {
+    textField: {
+      width: '100%',
+      '& .MuiInputBase-root': {
+        fontSize: '1rem',
+        [theme.breakpoints.up('sm')]: {
+          fontSize: '1.2rem',
+        },
+        [theme.breakpoints.up('md')]: {
+          fontSize: '1.4rem',
+        },
+        [theme.breakpoints.up('lg')]: {
+          fontSize: '1.6rem',
+        },
+      },
+    },
+  };
+});
+
+// Searchbar親コンポーネント
 export default function Searchbar() {
   const location = useLocation();
   const searchParams = useSearchParams();
-
+  const classes = useStyles();
   /* 検索欄の上にカーソルが乗っているときは背景がスライドしないようにする */
   const areaRef = useRef(null);
   const [isScrollDisabled, setIsScrollDisabled] = useState(false); // スクロールの状態を管理
@@ -363,7 +388,7 @@ export default function Searchbar() {
   }, [searchParams]);
 
   useEffect(() => {
-    console.log("PathName: ", PathName);
+    console.log("PathNamePathNamePathNamePathName: ", PathName);
     // console.log(PathName);
     // タグ一覧取得
 
@@ -507,6 +532,7 @@ export default function Searchbar() {
       PathName === "/Internship_JobOffer/sessions" ||
       PathName === "/Internship_JobOffer/blogs"
     ) {
+
       // 求人一覧の場合
       // フォロー状況のタグ一覧を取得
       getFollowStatusTag();
@@ -1533,13 +1559,16 @@ export default function Searchbar() {
                 <Typography variant="h5">絞り込み検索</Typography>
                 <Divider sx={{ borderStyle: "dashed", m: 0, display: "block" }} />
                 {/* ---------------------------------------------------------- */}
-                <Stack sx={{ overflowY: "scroll" }}>
+                <Stack sx={{
+                  overflowY: "scroll",
+                  height: "100%",
+                }}>
                   {/* <StyledSearchbar> */}
                   <Grid
                     container
                     spacing={{ xs: 2, md: 3 }}
-                    columns={{ xs: 4, sm: 8, md: 12 }}
-                    style={{ width: "inherit", padding: "5px 8px 5px 5px" }}
+                    columns={{ xs: 2, sm: 8, md: 12 }}
+                    style={{ width: "inherit", height: "inherit", padding: "5px 8px 5px 5px" }}
                   >
                     {/* <div
                       style={{
@@ -2665,21 +2694,27 @@ export default function Searchbar() {
 
                 {/* ---------------------------------------------------------- */}
                 <Divider sx={{ borderStyle: "dashed", m: 0, display: "block" }} />
-                <Stack direction="row" spacing={2} sx={{
-                  justifyContent: "center",
+                <Stack direction="row" sx={{
+                  justifyContent: "space-between",
                   alignItems: "center",
                 }}>
-                  <Stack direction="row" spacing={2} sx={{ justifyContent: "flex-start", alignItems: "center" }}>
-                    <Button variant="outlined" onClick={handleClose}>
+                  <Stack
+                    spacing={2}
+                    direction="row"
+                    sx={{ alignItems: "center", }}>
+                    <Button className={classes.textField} variant="outlined" onClick={handleClose}>
                       閉じる
                     </Button>
-                  </Stack>
-                    <Button variant="outlined" onClick={handleClose}>
-                     タグをリセット
+                    <Button className={classes.textField} variant="outlined" onClick={handleClose}>
+                      タグをリセット
                     </Button>
-                  <Stack direction="row" spacing={2} sx={{ justifyContent: "flex-end", alignItems: "center" }}>
+                  </Stack>
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                    sx={{ alignItems: "center" }}>
                     <Button variant="outlined" onClick={handleClose}>
-                     キャンセル
+                      キャンセル
                     </Button>
                     <Button variant="contained" onClick={handleSearch}>
                       検索

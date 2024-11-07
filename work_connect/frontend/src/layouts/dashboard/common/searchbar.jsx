@@ -64,7 +64,7 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: "50%",
-  height: "50%",
+  height: "80%",
   // overflowY: "auto",
   bgcolor: "background.paper",
   // border: "2px solid #000",
@@ -546,11 +546,11 @@ export default function Searchbar() {
   // マイページ、Topページ、
   let RefineSearch =
     location.pathname != "/Profile/" + location.pathname.split("/")[2] + "/mypage" &&
-    location.pathname != "/Top" &&
-    location.pathname != "/Settings" &&
-    location.pathname != "/Chat" &&
-    location.pathname != "/WorkPosting" &&
-    location.pathname != "/VideoPosting"
+      location.pathname != "/Top" &&
+      location.pathname != "/Settings" &&
+      location.pathname != "/Chat" &&
+      location.pathname != "/WorkPosting" &&
+      location.pathname != "/VideoPosting"
       ? true
       : false;
   console.log("let RefineSearch =", RefineSearch);
@@ -2665,13 +2665,26 @@ export default function Searchbar() {
 
                 {/* ---------------------------------------------------------- */}
                 <Divider sx={{ borderStyle: "dashed", m: 0, display: "block" }} />
-                <Stack direction="row" spacing={2} sx={{ justifyContent: "flex-end", alignItems: "center" }}>
-                  <Button variant="outlined" onClick={handleClose}>
-                    閉じる
-                  </Button>
-                  <Button variant="contained" onClick={handleSearch}>
-                    検索
-                  </Button>
+                <Stack direction="row" spacing={2} sx={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}>
+                  <Stack direction="row" spacing={2} sx={{ justifyContent: "flex-start", alignItems: "center" }}>
+                    <Button variant="outlined" onClick={handleClose}>
+                      閉じる
+                    </Button>
+                  </Stack>
+                    <Button variant="outlined" onClick={handleClose}>
+                     タグをリセット
+                    </Button>
+                  <Stack direction="row" spacing={2} sx={{ justifyContent: "flex-end", alignItems: "center" }}>
+                    <Button variant="outlined" onClick={handleClose}>
+                     キャンセル
+                    </Button>
+                    <Button variant="contained" onClick={handleSearch}>
+                      検索
+                    </Button>
+                  </Stack>
                 </Stack>
               </Stack>
             </Box>

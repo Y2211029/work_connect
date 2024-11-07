@@ -1659,7 +1659,8 @@ export default function Searchbar() {
     <div>
       {RefineSearch && (
         <>
-          <Box sx={{ display: { xs: "none", md: "block" } }}>
+       
+          <Box>
             <OutlinedInput
               id="input-search-header"
               autoComplete="off"

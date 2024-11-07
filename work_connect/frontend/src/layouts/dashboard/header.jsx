@@ -23,37 +23,15 @@ import AccountPopover from "./common/account-popover";
 import Searchbar from "./common/searchbar";
 import ChatPng from "./common/chatPng";
 import NotificationsPopover from "./common/notifications-popover";
-
 import { useNavigate } from "react-router-dom";
-
 // ゲストモード時、作品投稿・動画投稿・通知
 import { MyContext } from "src/layouts/dashboard/index";
-
 //学生か企業かで、ヘッダー内容を切り替え、Linkを用いてジャンプする
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
-{
-  /* TopPageList-view.jsxに移動しました。藤田2024/09/30 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓*/
-}
-// import $ from "jquery";
-// import StudentLoginModal from "src/components/account/students/StudentLoginModal";
-// import CompanyLoginModal from "src/components/account/company/CompanyLoginModal";
-// import StudentPreSignModal from "../../components/account/students/StudentPreSignModal";
-// import CompanyPreSignModal from "../../components/account/company/CompanyPreSignModal";
-{
-  /* TopPageList-view.jsxに移動しました。藤田2024/09/30 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑*/
-}
 // ----------------------------------------------------------------------
 
 export default function Header({ onOpenNav }) {
-  {
-    /* TopPageList-view.jsxに移動しました。藤田2024/09/30 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓*/
-  }
-  // const [ModalChange, setModalChange] = useState("");
-  // const [PreModalChange, setPreModalChange] = useState("");
-  {
-    /* TopPageList-view.jsxに移動しました。藤田2024/09/30 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑*/
-  }
   const Display = useContext(MyContext);
   const [open, setOpen] = useState(null);
 
@@ -95,36 +73,6 @@ export default function Header({ onOpenNav }) {
     navigate("VideoPosting");
   };
 
-  //   {/* TopPageList-view.jsxに移動しました。藤田2024/09/30 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓*/ }
-  // const callSetModalChange = (newValue) => {
-  //   setModalChange(newValue);
-  // };
-  // const callSetPreModalChange = (newValue) => {
-  //   setPreModalChange(newValue);
-  // };
-  {
-    /* TopPageList-view.jsxに移動しました。藤田2024/09/30 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑*/
-  }
-
-  {
-    /* TopPageList-view.jsxに移動しました。藤田2024/09/30 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓*/
-  }
-  // const handleChange = (e) => {
-  //   if (e.target.id === "LoginButton") {
-  //     setModalChange("学生");
-  //     setPreModalChange("");
-  //   } else {
-  //     setModalChange("");
-  //     setPreModalChange("学生");
-  //   }
-  // };
-  {
-    /* TopPageList-view.jsxに移動しました。藤田2024/09/30 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑*/
-  }
-  // const handleNewsJump = () => {
-  //   navigate('/Editor');
-  // }
-
   const handleOpen = (event) => {
     setOpen(event.currentTarget); // ボタンがクリックされた要素を保存
   };
@@ -136,22 +84,22 @@ export default function Header({ onOpenNav }) {
   const NEWS_MENU_OPTIONS = [
     {
       label: "インターンシップの記事を投稿する",
-      path: `/Editor/internships`,
+      path: `/Editor/Internship`,
       icon: "eva:person-fill",
     },
     {
       label: "説明会の記事を投稿する",
-      path: `/Editor/sessions`,
+      path: `/Editor/Session`,
       icon: "eva:person-fill",
     },
     {
       label: "求人の記事を投稿する",
-      path: "/Editor/joboffers",
+      path: "/Editor/JobOffer",
       icon: "eva:settings-2-fill",
     },
     {
       label: "ブログの記事を投稿する",
-      path: "/Editor/blogs",
+      path: "/Editor/Blog",
       icon: "eva:settings-2-fill",
     },
   ];
@@ -165,46 +113,7 @@ export default function Header({ onOpenNav }) {
   const handleScrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
-  {
-    /* TopPageList-view.jsxに移動しました。藤田2024/09/30 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓*/
-  }
-
-  // ログインのform内以外をクリックしたときにモーダルを閉じる処理
-  // $("*").click(function (e) {
-  // クリックした要素の<html>までのすべての親要素の中に"formInModal"クラスがついている要素を取得
-  // var targetParants = $(e.target).parents(".formInModal");
-
-  // 取得した要素の個数が0個の場合
-  // ***if (targetParants.length == 0 || $(e.target).text() == "閉じる")***
-  // console.log($(e.target).text());
-  // if (targetParants.length == 0 || $(e.target).text() == "閉じる") {
-  // クリックした要素に"formInModal"クラスがついていない場合
-  // if (
-  //   $(e.target).attr("class") != "formInModal" &&
-  //   $(e.target).attr("id") != "LoginButton" &&
-  //   $(e.target).attr("id") != "loginCompanyModalLink" &&
-  //   $(e.target).attr("id") != "loginStudentModalLink"
-  // ) {
-  // ログインモーダルを閉じる
-  // setModalChange("");
-  // }
-
-  //     if (
-  //       $(e.target).attr("class") != "formInModal" &&
-  //       $(e.target).attr("id") != "PreSignButton" &&
-  //       $(e.target).attr("id") != "PreSignCompanyModalLink" &&
-  //       $(e.target).attr("id") != "PreSignStudentModalLink"
-  //     ) {
-  //       // 新規登録モーダルを閉じる
-  //       setPreModalChange("");
-  //     }
-  //   }
-  // });
-  {
-    /* TopPageList-view.jsxに移動しました。藤田2024/09/30 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑*/
-  }
-
+  
   const renderContent = (
     <>
       {!lgUp && (

@@ -252,13 +252,13 @@ class EditorController extends Controller
 
         $notice_genre = "";
 
-        if ($genre == "internships") {
+        if ($genre == "Internship") {
             $notice_genre = "インターンシップ";
-        } else if ($genre == "sessions") {
+        } else if ($genre == "Session") {
             $notice_genre = "説明会";
-        } else if ($genre == "joboffers") {
+        } else if ($genre == "JobOffer") {
             $notice_genre = "求人";
-        } else if ($genre == "blogs") {
+        } else if ($genre == "Blog") {
             $notice_genre = "ブログ";
         }
 

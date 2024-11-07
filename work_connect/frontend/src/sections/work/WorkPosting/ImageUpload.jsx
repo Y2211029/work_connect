@@ -165,7 +165,7 @@ SortableItem.propTypes = {
 };
 
 // 画像アップロード機能を提供するコンポーネント
-const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
+const ImageUpload = ({ handleValueChange, onImagesUploaded, callSetImage }) => {
   const [activeId, setActiveId] = useState(null); // ドラッグ中のアイテムIDを管理
   const fileInputRef = useRef(null); // ファイルインプットの参照を保持
   // AllItemsContextから状態を取得
@@ -174,6 +174,16 @@ const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
   // 10/21追加
   const [items, setItems] = useState([]); // 画像アイテムの状態管理
   console.log("items", items);
+
+  useEffect(() => {
+    if (items) {
+      handleInputChange();
+    }
+  }, [items]);
+
+  const handleInputChange = () => {
+    handleValueChange(items);
+  };
 
   // 画像リストを初期化する関数
   const resetItems = () => {
@@ -363,8 +373,7 @@ const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
     minWidth: "300px",
   };
 
-  const activeItem =
-    items.find((item) => item.id === activeId); // ドラッグ中のアイテム
+  const activeItem = items.find((item) => item.id === activeId); // ドラッグ中のアイテム
 
   const overlayStyle = {
     width: "100%",
@@ -437,6 +446,8 @@ const ImageUpload = ({ onImagesUploaded, callSetImage }) => {
 ImageUpload.propTypes = {
   onImagesUploaded: PropTypes.func.isRequired,
   callSetImage: PropTypes.func.isRequired,
+  handleValueChange: PropTypes.func.isRequired,
+  props: PropTypes.func.isRequired,
 };
 
 export default ImageUpload;

@@ -106,7 +106,7 @@ export function NavTabs({ initialTabValue = 0 }) {
   function pageCheck(pageStr) {
     const url = new URL(window.location.href);
     const urlStr = url.pathname.split('?')[0]; // クエリパラメータを取り除く
-    window.history.pushState({}, '', `${urlStr}?page=checkform&category=${pageStr}`);
+    window.history.pushState({}, '', `${urlStr}?category=${pageStr}`);
   }
 
   return (
@@ -117,7 +117,7 @@ export function NavTabs({ initialTabValue = 0 }) {
         role="navigation"
       >
         <Tab label="フォームを見る" onClick={(e) => handleTabClick(e, 0)} />
-        <Tab label="統計データを見る" onClick={(e) => handleTabClick(e, 1)} />
+        <Tab label="個別" onClick={(e) => handleTabClick(e, 1)} />
       </Tabs>
       {value === 0 && <ApplicationFormList />} {/* value が 0 の場合フォーム一覧 */}
       {value === 1 && <Statisticaldata />}   {/* value が 1 の場合統計データ */}

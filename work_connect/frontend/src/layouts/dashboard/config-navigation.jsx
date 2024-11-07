@@ -35,12 +35,7 @@ const navConfig = [
   },
   {
     title: 'ニュース一覧',
-    path: '/Internship_JobOffer?page=joboffers',
-    icon: <NewspaperOutlinedIcon />,
-  },
-  {
-    title: '通知テスト',
-    path: '/TestPage',
+    path: '/Internship_JobOffer?page=JobOffer',
     icon: <NewspaperOutlinedIcon />,
   },
 ];

@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import PropTypes from 'prop-types';
 import Autocomplete from '@mui/material/Autocomplete';
 import Checkbox from '@mui/material/Checkbox';
+import "../CreateForm.css";
 
 
 export default function Data({ onSave,onCancel,questionData }) {
@@ -163,10 +164,11 @@ export default function Data({ onSave,onCancel,questionData }) {
                 )}
 
 
-                <Button variant="contained" color="primary" onClick={handleSave}>
+                <Button variant="contained" color="primary" onClick={handleSave}  className="FormButton">
                     保存
                 </Button>
-                <Button variant="contained" color="primary" onClick={handleCancel}>
+
+                <Button variant="contained" color="primary" onClick={handleCancel} className="FormButton">
                     キャンセル
                 </Button>
             </Stack>

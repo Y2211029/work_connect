@@ -162,11 +162,11 @@ const InternshipJobOfferPage = () => {
     }, []);
 
     let Genre;
-    if (NewsDetail && NewsDetail.genre === "internships") {
+    if (NewsDetail && NewsDetail.genre === "Internship") {
         Genre = "インターンシップ";
-    } else if (NewsDetail && NewsDetail.genre === "blogs") {
+    } else if (NewsDetail && NewsDetail.genre === "Blog") {
         Genre = "ブログ";
-    } else if(NewsDetail && NewsDetail.genre === "sessions"){
+    } else if(NewsDetail && NewsDetail.genre === "Session"){
         Genre = "説明会";
     }else {
         Genre = "求人";
@@ -183,7 +183,7 @@ const InternshipJobOfferPage = () => {
                 <div className="NewsDetailContainer">
                     {/* ある程度下へスクロールしたら出てくるメニュー */}
                     {showNav && (
-                        <div className="popup_menu visible">
+                        <div className="popup_menu">
                             <Stack direction="row" spacing={2}>
                                 <p>{NewsDetail.article_title}</p>
 

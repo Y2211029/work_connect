@@ -1,13 +1,3 @@
-.article-title {
-    color: blueviolet; /* common.blackではなく、blackを直接指定 */
-    font-weight: bold;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 300px;
-    cursor: pointer; /* タイトルにカーソルを合わせた時にポインタを表示 */
-    margin-left: 50%;
-  }
 
   .answerer-profile {
     flex-direction: column;
@@ -51,4 +41,64 @@
 
   .css-1egy869-MuiList-root{
     height:100%;
+  }
+
+  .write-form{
+    display: block;
+    border-radius: 8px;
+    padding: 10px 10px 24px;
+    width:100%;
+    margin-left:20%;
+    height: auto;
+    overflow: auto;
+  }
+
+  .writeform-container{
+    border: 1px solid rgb(218, 220, 224);
+    margin-bottom: 12px;
+  }
+
+
+  .writeform-answereddata {
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: .2px;
+    line-height: 20px;
+    color: rgb(32, 33, 36);
+    border-radius: 4px;
+    padding: 10px;
+    white-space: pre-line;
+    cursor: pointer;
+    border-color: inherit;
+    margin-bottom: 8px;
+    width: 100%;
+  }
+
+  .writeform-answereddata:hover{
+    background-color: rgba(201, 201, 204, .48);
+  }
+
+  .writeform-title{
+    border: 1px solid rgb(218, 220, 224);
+    border-collapse: collapse;
+    padding: 5px 15px 5px;
+  }
+
+  .writeform-length{
+    font-size: 14px;
+    padding: 5px 15px 5px;
+  }
+
+  .circle_number {
+    width: 20px;
+    height: 20px;
+    padding-top: 0px;
+    background-color:#DA523A; /*  */
+    border-radius: 50%;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  .news-list{
+    border-bottom:1px solid #DAE2ED;
   }

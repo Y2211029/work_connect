@@ -8,10 +8,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
-import TooltipTitle from '@mui/material/Tooltip';
-
 import './writeform.css';
-
 
 // Chart.js
 import {
@@ -36,15 +33,13 @@ const PostCard = forwardRef(({ post }) => {
   const MyUserId = accountData.id;
   console.log(MyUserId);
 
+  const [open, setOpen] = useState(false);
   const [writeformshow, setWriteFormShow] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(null);
 
   const handleClick = (index) => {
-    // 同じインデックスが選ばれた場合、何もせず
-    if (selectedIndex === index) return;
-
-    // 新しいインデックスを選択した場合、データを表示
-    setWriteFormShow(true);
+    setOpen(!open);
+    setWriteFormShow((prev) => !prev);
     setSelectedIndex(index);
   };
 
@@ -133,7 +128,7 @@ const PostCard = forwardRef(({ post }) => {
           component="nav"
           aria-labelledby="nested-list-subheader"
           subheader={
-            <ListSubheader component="div" id="nested-list-subheader" className="news-list">
+            <ListSubheader component="div" id="nested-list-subheader">
               ニュース一覧
             </ListSubheader>
           }
@@ -146,20 +141,9 @@ const PostCard = forwardRef(({ post }) => {
                     <Typography className="circle_number">
                       {posts.user_name.length}
                     </Typography>
-                    <TooltipTitle title={posts.article_title}>
-                    <Typography
-                      textOverflow="ellipsis"
-                      sx={{
-                        fontSize: '0.8rem',
-                        overflow: 'hidden',
-                        whiteSpace: 'nowrap',
-                        textOverflow: 'ellipsis', // 省略記号を表示
-                      }}
-                    >
+                    <Typography sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>
                       {posts.article_title}
                     </Typography>
-                    </TooltipTitle>
-
                   </>
                 }
               />
@@ -167,9 +151,6 @@ const PostCard = forwardRef(({ post }) => {
           ))}
         </List>
       </div>
-
-      {/* 945 436.73
-       928 634 */}
 
       {writeformshow && selectedIndex !== null && (
         <div style={{ flexGrow: 1 }}>
@@ -202,10 +183,7 @@ const PostCard = forwardRef(({ post }) => {
                         {response}
                       </Typography>
                     ))}
-
-                    {type == 'checkbox' &&
-                      <Graph title={title} responses={responses} />
-                    }
+                    <Graph title={title} responses={responses} />
                   </div>
                 ))}
             </Stack>

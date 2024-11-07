@@ -9,17 +9,23 @@
   left:15%;
   padding-top:50px;
   padding-bottom:50px;
-  overflow:hidden;
+  overflow-x:hidden;
+  overflow-y:hidden;
   background-color: #F9FAFB;
 }
 
 .editor-wrapper {
   position: relative;
-  margin-left:5%;
+  margin-left: 5%;
   top: 10px;
   padding: 4px;
-  margin-bottom:0;
+  margin-bottom: 0;
+  height:100%;
+  overflow-y:auto;
+  overflow-x: hidden;
 }
+
+
 
   .ce-popover__items {
     width: 100%;
@@ -167,12 +173,12 @@ input[type="radio"]:checked + .label {
 
 .menu-content {
   display: flex;
-  width: 70%;
-  margin-top: 10px;
+  width: 100%;
+  margin-top: 20px;
 }
 
 .menu-container {
-  width: 50%;
+  width: 90%;
   flex-direction: column;
 }
 
@@ -180,22 +186,28 @@ input[type="radio"]:checked + .label {
   padding: 10px;
   cursor: pointer;
   align-items: center;
+  width: 70%;
 }
 
 .hover-content {
-  flex-grow: 2;
-  margin-left: 20%;
-  display: flex;
+  flex-grow: 1;
   align-items: center;
   justify-content: flex-start;
   white-space: nowrap;
   flex-direction: column;
-  width: 90%; /* 幅を増加 */
-  margin-right:10px;
-  height: 450px;
-  overflow-y: scroll;
-  overflow-x: hidden;
+  width: 100%; /* 幅を増加 */
+  max-height: 800px;
+  background-color: white;
 }
+
+.editingstatusscroll{
+  margin-left: 20px;
+  width: 100%;
+  overflow-y: auto; /* スクロールバーを必要に応じて表示 */
+  overflow-x: hidden;
+  height: 80%; /* 高さを具体的に指定 */
+}
+
 
 .news_genre_select {
   position: relative;
@@ -205,15 +217,23 @@ input[type="radio"]:checked + .label {
 .CancelButton {
   background: none;
   border: none;
-  font-size: 24px;
+  font-size: 14px;
   cursor: pointer;
-  padding: 0;
+  padding:0;
 }
 
 .draftlist{
   color:black;
-  height:60%;
+  height:100%;
+
 }
+
+.draftlistScroll {
+  overflow-y: auto; /* 必要に応じてスクロールバーを表示 */
+  overflow-x: hidden;
+  height: 100%;
+}
+
 
 .draftlisttable {
   width: 90%; /* テーブルの幅を親要素に合わせる */
@@ -221,6 +241,7 @@ input[type="radio"]:checked + .label {
   border-width: 1px;
   margin-bottom: 20px;
   border-collapse: separate; /* テーブルの境界線を一貫して表示 */
+
 }
 
 .draftlisttable thead{
@@ -236,6 +257,7 @@ td{
   width:30%;
   height:30%;
 }
+
 
 /* タブレット向けのスタイル */
 @media (max-width: 768px) {
@@ -287,23 +309,29 @@ td{
     padding-left: 5px;
   }
 
-  .CancelButton {
-    width: 60px;
-  }
-
   .news_button {
     position: relative;
-    display: flex; /* 追加: 子要素をフレックスボックスで配置 */
-    flex-direction: column; /* 追加: 子要素を縦方向に並べる */
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     margin-left: 20px;
     gap: 10px;
-    width: 100%; /* 必要に応じて幅を調整 */
+    width: 100%;
+    height: 100%; /* 高さを具体的に指定 */
+    overflow-y: scroll; /* スクロールバーを必要に応じて表示 */
+    overflow-x: hidden;
   }
+
 
   .editor_status_check_text {
     display: flex;
     align-items: center; /* アイコンとテキストを縦方向で中央揃えにする */
+  }
+
+  .add_draft_news{
+    cursor:pointer;
+    background-color: #F3704B;
+    padding-bottom:100px;
   }
 
 

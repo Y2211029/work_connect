@@ -60,11 +60,11 @@ export default function NavTabs() {
   // タブがクリックされたら
   const handleTabClick = (event, newValue) => {
     console.log("handleTabClick");
+    setAllItems((prevItems) => ({
+      ...prevItems,
+      IsLoading : true, // 一時的にローディングを解除
+    }));
     if (sortOption !== "orderNewPostsDate" || Page > 1 || IsSearch.Check == true) {
-      setAllItems((prevItems) => ({
-        ...prevItems,
-        IsLoading : true, // 一時的にローディングを解除
-      }));
       console.log("あいうえお")
       setAllItems((prevItems) => ({
         ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
@@ -85,19 +85,19 @@ export default function NavTabs() {
       let category;
       switch (newValue) {
         case 0:
-          category = 'joboffers';
+          category = 'JobOffer';
           break;
         case 1:
-          category = 'internships';
+          category = 'Internship';
           break;
         case 2:
-          category = 'sessions';
+          category = 'Session';
           break;
         case 3:
-          category = 'blogs';
+          category = 'Blog';
           break;
         default:
-          category = 'joboffers';
+          category = 'JobOffer';
       }
 
       // ページ遷移または状態の更新処理
@@ -131,19 +131,19 @@ export default function NavTabs() {
       let number = 0;
 
       switch (page) {
-        case 'joboffers':
+        case 'JobOffer':
           setValue(0);
           number = 0;
           break;
-        case 'internships':
+        case 'Internship':
           setValue(1);
           number = 1;
           break;
-        case 'blogs':
+        case 'Blog':
           setValue(2);
           number = 2;
           break;
-        case 'sessions':
+        case 'Session':
           setValue(3);
           number = 3;
           break;

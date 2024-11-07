@@ -50,7 +50,7 @@ export default function Comment({ onSave, onCancel,questionData }) {
 
     return (
         <div className="TextSetting">
-            <Stack spacing={2}>
+            <Stack spacing={2} className="FormMenuScroll">
                 <Typography variant="h6">テキストボックスメニューフォーム設定</Typography>
 
                 <TextField
@@ -110,11 +110,11 @@ export default function Comment({ onSave, onCancel,questionData }) {
                 <Typography>テキストエリアのサイズ変更を禁止する</Typography>
 
 
-                <Button variant="contained" color="primary" onClick={handleSave}>
+                <Button variant="contained" color="primary" onClick={handleSave}  className="FormButton">
                     保存
                 </Button>
 
-                <Button variant="contained" color="primary" onClick={handleCancel}>
+                <Button variant="contained" color="primary" onClick={handleCancel} className="FormButton">
                     キャンセル
                 </Button>
             </Stack>

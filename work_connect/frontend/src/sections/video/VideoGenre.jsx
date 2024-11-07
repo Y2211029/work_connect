@@ -1,19 +1,19 @@
-import { useEffect, useState } from 'react';
-import CreatableSelect from 'react-select/creatable';
-import InsertTag from 'src/components/tag/InsertTag';
-import axios from 'axios';
+import { useEffect, useState } from "react";
+import CreatableSelect from "react-select/creatable";
+import InsertTag from "src/components/tag/InsertTag";
+import axios from "axios";
 import PropTypes from "prop-types";
 
 const VideoGenre = (props) => {
-  const {InsertTagFunction} = InsertTag();
-  const url = 'http://localhost:8000/get_video_genre_tag'
+  const { InsertTagFunction } = InsertTag();
+  const url = "http://localhost:8000/get_video_genre_tag";
   const [options, setOptions] = useState([]);
-  useEffect(()=>{
+  useEffect(() => {
     async function VideoGenreFunction() {
       try {
         // Laravel側から企業一覧データを取得
         const response = await axios.get(url, {
-          params: {All:"tags"},
+          params: { All: "tags" },
         });
 
         // response.dataは配列の中にオブジェクトがある形になっています
@@ -26,7 +26,7 @@ const VideoGenre = (props) => {
         const VideoGenreArray = [];
         console.log(responseData);
         responseData.map((value) => {
-          VideoGenreArray.push({value:value.name,label:value.name});
+          VideoGenreArray.push({ value: value.name, label: value.name });
         });
         setOptions(VideoGenreArray);
         console.log(VideoGenreArray);
@@ -36,14 +36,13 @@ const VideoGenre = (props) => {
       }
     }
     VideoGenreFunction();
-    axios.get(url)
-  },[])
+    axios.get(url);
+  }, []);
 
   const handleChange = (selectedOption, actionMeta) => {
     console.log(actionMeta);
     console.log(selectedOption);
-    if (actionMeta && actionMeta.action === 'create-option') {
-
+    if (actionMeta && actionMeta.action === "create-option") {
       const inputValue = actionMeta;
       console.log(inputValue);
       const newOption = { value: inputValue.option.value, label: inputValue.option.label };
@@ -53,14 +52,12 @@ const VideoGenre = (props) => {
     }
     let valueArray = [];
     selectedOption.map((value) => {
-      valueArray.push(value.value)
-    })
+      valueArray.push(value.value);
+    });
     props.callSetVideoData("VideoGenre", valueArray.join(","));
   };
 
-  return(
-    <CreatableSelect options={options} isClearable isMulti onChange={handleChange}/>
-  );
+  return <CreatableSelect options={options} placeholder="▼" isClearable isMulti onChange={handleChange} />;
 };
 
 VideoGenre.propTypes = {

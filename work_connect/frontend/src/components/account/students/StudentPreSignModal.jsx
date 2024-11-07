@@ -17,7 +17,6 @@ const modalStyle = {
     border: "none",
     borderRadius: "0",
     padding: "1.5rem",
-    overflow: "none",
   },
 };
 

@@ -69,7 +69,7 @@ export default function Rating({ onSave, onCancel, questionData }) {
 
     return (
         <div className="TextSetting">
-            <Stack spacing={2}>
+            <Stack spacing={2} className="FormMenuScroll">
                 <Typography variant="h6">評価スケールメニューフォーム設定</Typography>
 
                 <TextField
@@ -127,10 +127,11 @@ export default function Rating({ onSave, onCancel, questionData }) {
                     </div>
                 )}
 
-                <Button variant="contained" color="primary" onClick={handleSave}>
+                <Button variant="contained" color="primary" onClick={handleSave}  className="FormButton">
                     保存
                 </Button>
-                <Button variant="contained" color="primary" onClick={handleCancel}>
+
+                <Button variant="contained" color="primary" onClick={handleCancel} className="FormButton">
                     キャンセル
                 </Button>
             </Stack>

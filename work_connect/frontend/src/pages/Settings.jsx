@@ -1,18 +1,20 @@
-import {useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 // import axios from 'axios';
 
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
-import { useSortable, /*SortableContext, arrayMove, verticalListSortingStrategy*/ } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import { useSortable /*SortableContext, arrayMove, verticalListSortingStrategy*/ } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 import Container from "@mui/material/Container";
-import Box from '@mui/material/Box';
-import DragHandleIcon from '@mui/icons-material/DragHandle';
+import Box from "@mui/material/Box";
+import DragHandleIcon from "@mui/icons-material/DragHandle";
 // import DeleteIcon from '@mui/icons-material/Delete';
 // import { DndContext, closestCenter } from '@dnd-kit/core';
-import './setting.css';
+import "./setting.css";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 
 // ----------------------------------------------------------------------------------------------
 const Settings = () => {
@@ -65,7 +67,6 @@ const Settings = () => {
   //   }
   // }, [companyInformation]); // Add companyInformation as a dependency
 
-
   // const handleDragEnd = (event) => {
   //   const { active, over } = event;
 
@@ -87,7 +88,7 @@ const Settings = () => {
     const style = {
       transform: CSS.Transform.toString(transform),
       transition,
-      cursor: isDragging ? 'grabbing' : 'grab',
+      cursor: isDragging ? "grabbing" : "grab",
     };
 
     return (
@@ -96,11 +97,11 @@ const Settings = () => {
           <Box
             ref={setActivatorNodeRef}
             sx={{
-              width: '20px',
-              justifyContent: 'center',
-              display: 'flex',
-              verticalAlign: 'middle',
-              cursor: isDragging ? 'grabbing' : 'grab',
+              width: "20px",
+              justifyContent: "center",
+              display: "flex",
+              verticalAlign: "middle",
+              cursor: isDragging ? "grabbing" : "grab",
             }}
           >
             <DragHandleIcon />
@@ -112,10 +113,7 @@ const Settings = () => {
   };
 
   SortableRow.propTypes = {
-    id: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-    ]).isRequired,
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     children: PropTypes.arrayOf(PropTypes.element).isRequired,
   };
 
@@ -237,17 +235,17 @@ const Settings = () => {
 
   // };
 
-
-
   return (
-    <Container maxWidth="xl" >
+    <Container maxWidth="xl">
+      <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+        <Typography variant="h4">設定</Typography>
+      </Stack>
       <div className="setting">
-        <div>
+        <div >
           <Link to={`/Settings/ChangeEmail`}>メールアドレス変更</Link>
         </div>
 
-        <div>
-        </div>
+        <div></div>
 
         {/* <p>色を設定する</p>
         <ColorPicker /> */}
@@ -257,7 +255,6 @@ const Settings = () => {
       <p onClick={addNewRow} style={{ cursor: 'pointer', color: 'blue' }}>
         企業情報を追加する
       </p> */}
-
 
         {/*
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
@@ -316,7 +313,6 @@ const Settings = () => {
       </DndContext> */}
       </div>
     </Container>
-
   );
 };
 

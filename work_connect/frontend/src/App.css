@@ -1,3 +1,7 @@
+body {
+  font-size: 1rem,
+}
+
 .App {
   width: 100%;
   height: 100vh;
@@ -38,6 +42,8 @@ nav ul li a {
 nav ul li a:hover {
   color: rgb(45, 214, 158);
 }
+
+
 
 /* トップページここから */
 .top_page_app_name {
@@ -626,6 +632,8 @@ textarea {
   margin: 20px;
 }
 
+
+
 .column-container {
   column-gap: 20px;
   column-count: 5;
@@ -901,7 +909,52 @@ textarea {
 }
 
 /* 通知選択ボタン */
-.noticeSelectButton:hover{
-  cursor:pointer;
-  background-color: #ffcccc;
+.noticeSelectButton {
+  background-color: transparent;
+  /* 通常時の背景色を透明に設定 */
+  border: none;
+  border-radius: 10px;
+  /* ボーダーを消す */
+  padding: 5px;
+  /* ボタンのクリック領域を確保 */
+  cursor: pointer;
+  /* ホバー時にポインター表示 */
+  transition: background-color 0.3s;
+  /* 背景色の変化を滑らかにする */
+}
+
+.noticeSelectButton:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  /* ホバー時に薄暗い背景色を追加 */
+}
+
+.deleteSingleNoticeButton {
+  background-color: transparent;
+  /* 通常時の背景色を透明に設定 */
+  border: none;
+  border-radius: 100%;
+  /* ボーダーを消す */
+  padding: 2px;
+  /* ボタンのクリック領域を確保 */
+  cursor: pointer;
+  /* ホバー時にポインター表示 */
+  transition: background-color 0.3s;
+  /* 背景色の変化を滑らかにする */
+}
+
+.deleteSingleNoticeButton:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  /* ホバー時に薄暗い背景色を追加 */
+
+}
+
+
+.deleteSingleNoticeIcon {
+  transition: color 0.8s ease;
+  /* 背景色の変化を滑らかにする */
+}
+
+.deleteSingleNoticeIcon:hover {
+  color: lightgrey;
+  cursor: pointer;
 }

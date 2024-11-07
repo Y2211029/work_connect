@@ -84,7 +84,7 @@ export default function Radio({ onSave, onCancel, questionData }) {
 
     return (
         <div className="TextSetting">
-            <Stack spacing={2}>
+            <Stack spacing={2} className="FormMenuScroll">
                 <Typography variant="h6">ラジオボタンフォーム設定</Typography>
 
                 <TextField
@@ -161,15 +161,15 @@ export default function Radio({ onSave, onCancel, questionData }) {
                         fullWidth
                     />
                 ))}
-                <Button variant="outlined" onClick={addChoiceField}>
+               <Button variant="outlined" onClick={addChoiceField} className="FormButton">
                     選択肢を追加
                 </Button>
 
-                <Button variant="contained" color="primary" onClick={handleSave}>
+                <Button variant="contained" color="primary" onClick={handleSave}  className="FormButton">
                     保存
                 </Button>
 
-                <Button variant="contained" color="primary" onClick={handleCancel}>
+                <Button variant="contained" color="primary" onClick={handleCancel} className="FormButton">
                     キャンセル
                 </Button>
             </Stack>

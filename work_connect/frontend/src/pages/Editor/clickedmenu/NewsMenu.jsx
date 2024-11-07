@@ -22,7 +22,7 @@ import TableRow from '@mui/material/TableRow';
 import Tooltip from '@mui/material/Tooltip';
 import AutoModeIcon from '@mui/icons-material/AutoMode';
 import EditNotificationsIcon from '@mui/icons-material/EditNotifications';
-import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 
 //時間
 import moment from 'moment';
@@ -31,8 +31,8 @@ const modalStyle = {
   overlay: {
     backgroundColor: 'rgba(0, 0, 0, 0.7)', // オーバーレイの背景色
     zIndex: 1200, // オーバーレイの z-index
-    width:'100%',
-    height:'100%',
+    width: '100%',
+    height: '100%',
   },
   content: {
     position: 'absolute',
@@ -43,7 +43,8 @@ const modalStyle = {
     borderRadius: '0',
     padding: '1.5rem',
     overflow: 'hidden',
-    zIndex: 1200, // コンテンツの z-index
+    zIndex: 1300, // コンテンツの z-index
+    backgroundColor: 'white'  
   },
 };
 
@@ -70,15 +71,15 @@ const NewsMenu = ({
   message,
   charCount }) => {
 
-    const menuItems = [
-      { key: "draftList", icon: <DrawIcon />, text: "下書きリスト" },
-      { key: "saveNews", icon: <SaveIcon />, text: "ニュースを保存する" },
-      { key: "editingstatus", icon: <AutoModeIcon />, text: "現在の編集状況" },
-      { key: "notificationMessage", icon: <EditNotificationsIcon />, text: "通知に添えるメッセージ" },
-      // 条件を満たした場合のみ追加
-      ...(genre !== "blogs" ? [{ key: "createForm", icon: <DisplaySettingsIcon />, text: "応募フォームを作成する" }] : []),
-      ...(title && imageUrl && message && charCount ? [{ key: "releaseNews", icon: <CampaignIcon />, text: "ニュースを公開する" }] : []),
-    ];
+  const menuItems = [
+    { key: "draftList", icon: <DrawIcon />, text: "下書きリスト" },
+    { key: "saveNews", icon: <SaveIcon />, text: "ニュースを保存する" },
+    { key: "editingstatus", icon: <AutoModeIcon />, text: "現在の編集状況" },
+    { key: "notificationMessage", icon: <EditNotificationsIcon />, text: "通知に添えるメッセージ" },
+    // 条件を満たした場合のみ追加
+    ...(genre !== "blogs" ? [{ key: "createForm", icon: <DisplaySettingsIcon />, text: "応募フォームを作成する" }] : []),
+    ...(title && imageUrl && message && charCount ? [{ key: "releaseNews", icon: <CampaignIcon />, text: "ニュースを公開する" }] : []),
+  ];
 
   //関数
   const FormattedDate = (time) => {
@@ -97,7 +98,7 @@ const NewsMenu = ({
   };
 
   const AddDraftNews = () => {
-    if(window.confirm("編集したニュースを保存しますか?")){
+    if (window.confirm("編集したニュースを保存しますか?")) {
       NewsSave()
       console.log("保存しました");
     }
@@ -133,17 +134,21 @@ const NewsMenu = ({
               </div>
             </div>
           ))}
+
+          <Button variant="outlined" onClick={CloseModal}>
+            閉じる
+          </Button>
+
         </div>
+
 
         <div className="hover-content">
           {clickedMenu === "draftList" && (
             <div className="draftlistScroll">
               <div className="add_draft_news">
-                <Typography >
-                  <div onClick={AddDraftNews}>
-                    新たな下書き
-                  </div>
-                </Typography>
+                <Button variant="outlined" onClick={AddDraftNews} className="add_draft_news">
+                  新たな下書き
+                </Button>
               </div>
               {draftlist.length > 0 ? (
                 draftlist.map(draft => (
@@ -243,7 +248,6 @@ const NewsMenu = ({
           )}
         </div>
         <p>
-          <button className="CancelButton" onClick={CloseModal}>×</button>
         </p>
       </div>
     </Modal>

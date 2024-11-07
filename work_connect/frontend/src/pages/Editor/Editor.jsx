@@ -1144,13 +1144,13 @@ useEffect(() => {
     let NewsTitle;
     console.log(genre);
 
-    if (genre === "blogs") {
+    if (genre === "Blog") {
       NewsTitle = "ブログニュースの編集";
-    } else if (genre === "internships") {
+    } else if (genre === "Internship") {
       NewsTitle = "インターンニュースの編集";
-    } else if (genre === "joboffers") {
+    } else if (genre === "JobOffer") {
       NewsTitle = "求人ニュースの編集";
-    } else if (genre === "sessions") {
+    } else if (genre === "Session") {
       NewsTitle = "説明会ニュースの編集";
     }
 

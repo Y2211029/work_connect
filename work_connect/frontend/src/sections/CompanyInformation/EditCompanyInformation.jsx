@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 //MUIアイコン
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from "@mui/material/IconButton";
-
+import Button from "@mui/material/Button";
 import DeleteIcon from '@mui/icons-material/Delete';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -18,7 +18,7 @@ import Switch from '@mui/material/Switch';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
-import { SortableContext, verticalListSortingStrategy,useSortable } from '@dnd-kit/sortable';
+import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import Paper from '@mui/material/Paper';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 
@@ -29,6 +29,8 @@ const modalStyle = {
     overlay: {
         backgroundColor: 'rgba(0, 0, 0, 0.7)', // オーバーレイの背景色
         zIndex: 2, // オーバーレイの z-index
+        width: '110%',
+        height: '100%',
     },
     content: {
         position: 'absolute',
@@ -83,6 +85,8 @@ const EditCompanyInformation = ({
 }) => {
 
 
+
+
     return (
         <Modal
             isOpen={IsOpen}
@@ -93,9 +97,11 @@ const EditCompanyInformation = ({
         >
             <div>
                 <div className="modal_overlay">
-                <div className="modal_window">
+                    <div className="modal_window">
                         <TableContainer component={Paper} className="Modal_tableContainer">
-                        <button className="CancelButton" onClick={CloseModal}>×</button>
+                        <Button variant="outlined" onClick={CloseModal}>
+                            閉じる
+                        </Button>
                             <Table className="Modal_Table">
                                 <TableHead>
                                     <TableRow>
@@ -118,13 +124,13 @@ const EditCompanyInformation = ({
                                                                 type="text"
                                                                 value={item.title}
                                                                 onChange={(e) => HandleTextChange(index, "title", e.target.value)}
-                                                                />
+                                                            />
                                                         </TableCell>
                                                         <TableCell>
                                                             <textarea
                                                                 value={item.contents}
                                                                 onChange={(e) => HandleTextChange(index, "contents", e.target.value)}
-                                                                />
+                                                            />
                                                         </TableCell>
                                                         <TableCell>
                                                             <Tooltip title={item.public_status === 1 ? "公開状態を切り替える 現在:公開中" : "公開状態を切り替える 現在:非公開中"}>
@@ -168,20 +174,20 @@ EditCompanyInformation.propTypes = {
     IsOpen: PropTypes.bool.isRequired,
     CloseModal: PropTypes.func.isRequired,
     editedContents: PropTypes.arrayOf(
-      PropTypes.shape({
-        title: PropTypes.string.isRequired,
-        contents: PropTypes.string.isRequired,
-        company_name: PropTypes.string.isRequired,
-        id: PropTypes.number.isRequired,
-        company_id: PropTypes.string.isRequired,
-        // 他の必要なプロパティがあれば追加
-      })
+        PropTypes.shape({
+            title: PropTypes.string.isRequired,
+            contents: PropTypes.string.isRequired,
+            company_name: PropTypes.string.isRequired,
+            id: PropTypes.number.isRequired,
+            company_id: PropTypes.string.isRequired,
+            // 他の必要なプロパティがあれば追加
+        })
     ).isRequired,
     HandlePublicStatusChange: PropTypes.func.isRequired,
     HandleAddRow: PropTypes.func.isRequired,
     HandleDragEnd: PropTypes.func.isRequired,
     HandleDelete: PropTypes.func.isRequired,
     HandleTextChange: PropTypes.func.isRequired
-  };
+};
 
 export default EditCompanyInformation;

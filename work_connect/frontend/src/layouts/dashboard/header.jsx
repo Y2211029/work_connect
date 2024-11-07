@@ -84,22 +84,22 @@ export default function Header({ onOpenNav }) {
   const NEWS_MENU_OPTIONS = [
     {
       label: "インターンシップの記事を投稿する",
-      path: `/Editor/internships`,
+      path: `/Editor/Internship`,
       icon: "eva:person-fill",
     },
     {
       label: "説明会の記事を投稿する",
-      path: `/Editor/sessions`,
+      path: `/Editor/Session`,
       icon: "eva:person-fill",
     },
     {
       label: "求人の記事を投稿する",
-      path: "/Editor/joboffers",
+      path: "/Editor/JobOffer",
       icon: "eva:settings-2-fill",
     },
     {
       label: "ブログの記事を投稿する",
-      path: "/Editor/blogs",
+      path: "/Editor/Blog",
       icon: "eva:settings-2-fill",
     },
   ];

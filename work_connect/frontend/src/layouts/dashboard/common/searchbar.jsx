@@ -3020,7 +3020,7 @@ export default function Searchbar() {
                     <Button className={classes.textField} variant="outlined" onClick={handleClose}>
                       閉じる
                     </Button>
-                    <Button className={classes.textField} variant="outlined" onClick={handleClose}>
+                    <Button className={classes.textField} variant="outlined" onClick={handleTagReset}>
                       タグをリセット
                     </Button>
                   </Stack>
@@ -3028,7 +3028,7 @@ export default function Searchbar() {
                     direction="row"
                     spacing={2}
                     sx={{ alignItems: "center" }}>
-                    <Button variant="outlined" onClick={handleClose}>
+                    <Button variant="outlined" onClick={handleCancel}>
                       キャンセル
                     </Button>
                     <Button variant="contained" onClick={handleSearch}>

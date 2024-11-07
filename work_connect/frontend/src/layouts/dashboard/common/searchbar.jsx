@@ -81,19 +81,17 @@ const useStyles = makeStyles(() => {
     },
   });
   return {
-    textField: {
-      width: '100%',
-      '& .MuiInputBase-root': {
-        fontSize: '1rem',
-        [theme.breakpoints.up('sm')]: {
-          fontSize: '1.2rem',
-        },
-        [theme.breakpoints.up('md')]: {
-          fontSize: '1.4rem',
-        },
-        [theme.breakpoints.up('lg')]: {
-          fontSize: '1.6rem',
-        },
+    width: '100%',
+    '& .MuiInputBase-root': {
+      fontSize: '1rem',
+      [theme.breakpoints.up('sm')]: {
+        fontSize: '1.2rem',
+      },
+      [theme.breakpoints.up('md')]: {
+        fontSize: '1.4rem',
+      },
+      [theme.breakpoints.up('lg')]: {
+        fontSize: '1.6rem',
       },
     },
   };
@@ -613,11 +611,11 @@ export default function Searchbar() {
   let RefineSearch =
     location.pathname !=
       "/Profile/" + location.pathname.split("/")[2] + "/mypage" &&
-    location.pathname != "/Top" &&
-    location.pathname != "/Settings" &&
-    location.pathname != "/Chat" &&
-    location.pathname != "/WorkPosting" &&
-    location.pathname != "/VideoPosting"
+      location.pathname != "/Top" &&
+      location.pathname != "/Settings" &&
+      location.pathname != "/Chat" &&
+      location.pathname != "/WorkPosting" &&
+      location.pathname != "/VideoPosting"
       ? true
       : false;
   console.log("let RefineSearch =", RefineSearch);
@@ -1378,33 +1376,6 @@ export default function Searchbar() {
       company_name: [],
       industry: [],
     }));
-    setSaveOptions((prevState) => ({
-      ...prevState,
-      searchText: "",
-      follow_status: [],
-      work_genre: [],
-      programming_language: [],
-      development_environment: [],
-      video_genre: [],
-      school_name: [],
-      department_name: [],
-      faculty_name: [],
-      major_name: [],
-      course_name: [],
-      student_programming_language: [],
-      student_development_environment: [],
-      software: [],
-      acquisition_qualification: [],
-      hobby: [],
-      other: [],
-      graduation_year: [],
-      desired_occupation: [],
-      desired_work_region: [],
-      selected_occupation: [],
-      prefecture: [],
-      company_name: [],
-      industry: [],
-    }));
   };
 
   // タグの選択状態を元に戻す
@@ -1659,7 +1630,7 @@ export default function Searchbar() {
     <div>
       {RefineSearch && (
         <>
-       
+
           <Box>
             <OutlinedInput
               id="input-search-header"
@@ -3022,18 +2993,19 @@ export default function Searchbar() {
                     <Button className={classes.textField} variant="outlined" onClick={handleClose}>
                       閉じる
                     </Button>
-                    <Button className={classes.textField} variant="outlined" onClick={handleTagReset}>
-                      タグをリセット
-                    </Button>
+
                   </Stack>
                   <Stack
                     direction="row"
                     spacing={2}
                     sx={{ alignItems: "center" }}>
-                    <Button variant="outlined" onClick={handleCancel}>
+                    <Button className={classes.textField} variant="outlined" onClick={handleTagReset}>
+                      タグをリセット
+                    </Button>
+                    <Button className={classes.textField} variant="outlined" onClick={handleCancel}>
                       キャンセル
                     </Button>
-                    <Button variant="contained" onClick={handleSearch}>
+                    <Button className={classes.textField} variant="contained" onClick={handleSearch}>
                       検索
                     </Button>
                   </Stack>

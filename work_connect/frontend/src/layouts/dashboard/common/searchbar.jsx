@@ -16,7 +16,7 @@ import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
 
 import { IconAdjustmentsHorizontal, IconSearch } from "@tabler/icons-react";
-
+import { MyContext } from "src/layouts/dashboard/index";
 import HeaderAvatar from "src/components/header/HeaderAvatar.jsx";
 import GetTagList from "src/components/tag/GetTagList";
 import { AllItemsContext } from "src/layouts/dashboard/index";
@@ -139,7 +139,7 @@ export default function Searchbar() {
 
   const [PathName, setPathName] = useState("");
   // Topページであれば検索ボタンを非表示にする。
-  // const Display = useContext(MyContext);
+  const Display = useContext(MyContext);
   // AllItemsContextから状態を取得
   const { AllItems, setAllItems } = useContext(AllItemsContext);
   const { Page, IsSearch, ResetItem, sortOption } = AllItems;
@@ -1670,7 +1670,8 @@ export default function Searchbar() {
               }
               endAdornment={
                 // 絞り込みアイコン
-                <InputAdornment position="end">
+
+                <InputAdornment position="end"  style={{ display: Display.thisCompanyNews }}>
                   <HeaderAvatar onClick={handleOpen}>
                     <IconAdjustmentsHorizontal stroke={1.5} size="20px" />
                   </HeaderAvatar>

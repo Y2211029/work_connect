@@ -54,7 +54,7 @@ const ChatPng = () => {
       }
     }
     // DBからデータを取得
-    if(getSessionData("accountData").id){
+    if(getSessionData("accountData")){
       GetData();
     }
   };

@@ -930,11 +930,45 @@ const ChatView = () => {
     }
   };
 
+  const [width, setWidth] = useState(window.innerWidth * 0.8); // 初期値としてウィンドウ幅の70%を設定
+
+  useEffect(() => {
+    // ウィンドウの幅が変わるたびに実行する関数を定義
+    const handleResize = () => {
+      setWidth(window.innerWidth * 0.6); // 70%を計算して設定
+    };
+
+    // リサイズイベントのリスナーを追加
+    window.addEventListener('resize', handleResize);
+
+    // クリーンアップ関数でリスナーを削除
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [width]); // 空の依存配列でマウント時のみ実行
+
+  const [showChannelList, setShowChannelList] = useState(true);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setShowChannelList(window.innerWidth > 600); // 600px以下で非表示に設定
+    };
+
+    handleResize(); // 初期値を設定
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+
   return (
     <>
     <div style={{
       display: 'flex'
       }}>
+        {showChannelList && (
     <List
       ref={ListBoxscroll}
       sx={(theme) => ({
@@ -995,9 +1029,11 @@ const ChatView = () => {
 
 
     </List>
+    )}
 
     <div style={{
-      width: 1200,
+      width: showChannelList ? '70%' : '100%',  // ピクセルとして幅を設定
+      maxWidth: '1200px',
       height: 'auto',
       maxHeight: 730,
       marginLeft: '2%',

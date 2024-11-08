@@ -76,7 +76,6 @@ const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, s
 // --------------------------------ItemObjectAndPostCard--------------------------------
 export default function ItemObjectAndPostCard({ type, ParamUserName }) {
   const [SessionAccountData, setSessionAccountData] = useState(sessionAccountData);
-  const [PathName, setPathName] = useState(window.location.pathname);
   const [DecodeURL, setDecode] = useState(decodeURIComponent(window.location.pathname)); // decodeURIComponentを追加
   const [PostCard, setPostCard] = useState(null);
   const [PostSort, setPostSort] = useState(null);
@@ -84,6 +83,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
   const searchParams = new URLSearchParams(window.location.search); // クエリパラメータを取得
   const page = searchParams.get("page");
   const category = searchParams.get("category");
+  const [PathName, setPathName] = useState(window.location.pathname);
   const [NewsDetailId, setNewsDetailId] = useState(newsdetail_id || NewsId);
 
   useEffect(() => {
@@ -92,10 +92,16 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
 
   useEffect(() => {
     const currentPath = window.location.pathname;
-    setPathName(currentPath);
     setDecode(decodeURIComponent(currentPath));
     console.log("パス名", currentPath);
     console.log("DecodeURL", decodeURIComponent(currentPath));
+  }, [window.location.pathname]);
+
+  useEffect(() => {
+    if (window.location.search !== undefined && window.location.search !== "/") {
+      const profileLocation = window.location.pathname + window.location.search;
+      setPathName(profileLocation);
+    }
   }, [window.location.pathname]);
 
   useEffect(() => {
@@ -110,8 +116,8 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
     const loadComponentForPath = async (path, options = {}) => {
       switch (true) {
         case path === "/" ||
-          path === `/Profile/${SessionAccountData.user_name}` ||
-          path === `/Profile/${ParamUserName}`: {
+          path === `/Profile/${SessionAccountData.user_name}?page=work` ||
+          path === `/Profile/${ParamUserName}?page=work`: {
             const { default: WorkListPostCard } = await import("src/sections/WorkList/post-card");
             const { default: WorkListPostSort } = await import("src/sections/WorkList/post-sort");
             setPostCard(() => WorkListPostCard);
@@ -120,14 +126,16 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
             break;
           }
 
-        case path === "/VideoList": {
-          const { default: VideoListPostCard } = await import("src/sections/VideoList/post-card");
-          const { default: VideoListPostSort } = await import("src/sections/VideoList/post-sort");
-          setPostCard(() => VideoListPostCard);
-          setPostSort(() => VideoListPostSort);
-          console.log("VideoListPostCard");
-          break;
-        }
+        case path === "/VideoList" ||
+          path === `/Profile/${SessionAccountData.user_name}?page=movie` ||
+          path === `/Profile/${ParamUserName}?page=movie`: {
+            const { default: VideoListPostCard } = await import("src/sections/VideoList/post-card");
+            const { default: VideoListPostSort } = await import("src/sections/VideoList/post-sort");
+            setPostCard(() => VideoListPostCard);
+            setPostSort(() => VideoListPostSort);
+            console.log("VideoListPostCard");
+            break;
+          }
 
         case path === "/StudentList": {
           const { default: StudentListPostCard } = await import("src/sections/StudentList/post-card");
@@ -146,7 +154,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
         case path === `/Internship_JobOffer` ||
           (options.DecodeURL === `/Profile/${ParamUserName}` &&
             options.page === "news" &&
-            ["JobOffer", "Internship", "Blog","Session"].includes(options.category)): {
+            ["JobOffer", "Internship", "Blog", "Session"].includes(options.category)): {
             const { default: Internship_JobOfferPostCard } = await import("src/sections/InternshipJobOffer/post-card");
             setPostCard(() => Internship_JobOfferPostCard);
             console.log("Internship_JobOfferPostCard");
@@ -202,7 +210,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       console.log("デコードURL", options.DecodeURL);
       console.log("カテゴリ名", options.category);
       console.log("ページ名", options.page);
-      console.log("PathNamePathName", PathName);
+      console.log("PathNamePathNamePathNamePathName", PathName);
     };
 
 
@@ -496,12 +504,12 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       idKey: "id",
       tags: ["company_name"],
       generatePosts: (WorkOfList) => {
-        if(Array.isArray(WorkOfList)){
+        if (Array.isArray(WorkOfList)) {
           const application_form = WorkOfList.map((company) => ({
             article_title: company.article_title,
             user_name: company.users,
           }));
-          return  [{ application_form }];
+          return [{ application_form }];
         }
       },
     },
@@ -631,7 +639,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     || DecodeURL === `/Profile/${ParamUserName}` &&
     page === "companyinformation"
     || DecodeURL === `/Profile/${ParamUserName}/Checkform` &&
-    (category === "application_form_list" || category === "statistical_data" )
+    (category === "application_form_list" || category === "statistical_data")
   )) {
     // console.log(" URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合");
     lastUrl = `${url}?page=${Page}&sort=${sortOption}`;

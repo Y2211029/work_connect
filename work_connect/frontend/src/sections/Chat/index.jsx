@@ -6,7 +6,7 @@ import ChatView from './ChatView';
 const ChatApp = () => {
 
     return (
-    <div style={{ display: 'flex', width:'100%', height:'100%' }}>
+    <div style={{ display: 'flex', width:'100%', height:'80dvh' }}>
       <ChatView />
     </div>
   )

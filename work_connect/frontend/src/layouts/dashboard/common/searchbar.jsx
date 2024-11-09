@@ -16,7 +16,7 @@ import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
 
 import { IconAdjustmentsHorizontal, IconSearch } from "@tabler/icons-react";
-
+import { MyContext } from "src/layouts/dashboard/index";
 import HeaderAvatar from "src/components/header/HeaderAvatar.jsx";
 import GetTagList from "src/components/tag/GetTagList";
 import { AllItemsContext } from "src/layouts/dashboard/index";
@@ -81,19 +81,17 @@ const useStyles = makeStyles(() => {
     },
   });
   return {
-    textField: {
-      width: '100%',
-      '& .MuiInputBase-root': {
-        fontSize: '1rem',
-        [theme.breakpoints.up('sm')]: {
-          fontSize: '1.2rem',
-        },
-        [theme.breakpoints.up('md')]: {
-          fontSize: '1.4rem',
-        },
-        [theme.breakpoints.up('lg')]: {
-          fontSize: '1.6rem',
-        },
+    width: '100%',
+    '& .MuiInputBase-root': {
+      fontSize: '1rem',
+      [theme.breakpoints.up('sm')]: {
+        fontSize: '1.2rem',
+      },
+      [theme.breakpoints.up('md')]: {
+        fontSize: '1.4rem',
+      },
+      [theme.breakpoints.up('lg')]: {
+        fontSize: '1.6rem',
       },
     },
   };
@@ -141,7 +139,7 @@ export default function Searchbar() {
 
   const [PathName, setPathName] = useState("");
   // Topページであれば検索ボタンを非表示にする。
-  // const Display = useContext(MyContext);
+  const Display = useContext(MyContext);
   // AllItemsContextから状態を取得
   const { AllItems, setAllItems } = useContext(AllItemsContext);
   const { Page, IsSearch, ResetItem, sortOption } = AllItems;
@@ -613,11 +611,11 @@ export default function Searchbar() {
   let RefineSearch =
     location.pathname !=
       "/Profile/" + location.pathname.split("/")[2] + "/mypage" &&
-    location.pathname != "/Top" &&
-    location.pathname != "/Settings" &&
-    location.pathname != "/Chat" &&
-    location.pathname != "/WorkPosting" &&
-    location.pathname != "/VideoPosting"
+      location.pathname != "/Top" &&
+      location.pathname != "/Settings" &&
+      location.pathname != "/Chat" &&
+      location.pathname != "/WorkPosting" &&
+      location.pathname != "/VideoPosting"
       ? true
       : false;
   console.log("let RefineSearch =", RefineSearch);
@@ -1049,7 +1047,7 @@ export default function Searchbar() {
             programming_language: programming_language,
             acquisition_qualification: acquisition_qualification,
             software: software,
-            genre: "joboffers",
+            genre: "Joboffer",
           },
         });
         console.log("response.data", response.data);
@@ -1113,7 +1111,7 @@ export default function Searchbar() {
             programming_language: programming_language,
             acquisition_qualification: acquisition_qualification,
             software: software,
-            genre: "internships",
+            genre: "Internship",
           },
         });
         console.log("response.data", response.data);
@@ -1178,7 +1176,7 @@ export default function Searchbar() {
             programming_language: programming_language,
             acquisition_qualification: acquisition_qualification,
             software: software,
-            genre: "sessions",
+            genre: "Session",
           },
         });
         console.log("response.data", response.data);
@@ -1243,7 +1241,7 @@ export default function Searchbar() {
             programming_language: programming_language,
             acquisition_qualification: acquisition_qualification,
             software: software,
-            genre: "blogs",
+            genre: "Blog",
           },
         });
         console.log("response.data", response.data);
@@ -1378,33 +1376,6 @@ export default function Searchbar() {
       company_name: [],
       industry: [],
     }));
-    setSaveOptions((prevState) => ({
-      ...prevState,
-      searchText: "",
-      follow_status: [],
-      work_genre: [],
-      programming_language: [],
-      development_environment: [],
-      video_genre: [],
-      school_name: [],
-      department_name: [],
-      faculty_name: [],
-      major_name: [],
-      course_name: [],
-      student_programming_language: [],
-      student_development_environment: [],
-      software: [],
-      acquisition_qualification: [],
-      hobby: [],
-      other: [],
-      graduation_year: [],
-      desired_occupation: [],
-      desired_work_region: [],
-      selected_occupation: [],
-      prefecture: [],
-      company_name: [],
-      industry: [],
-    }));
   };
 
   // タグの選択状態を元に戻す
@@ -1426,6 +1397,8 @@ export default function Searchbar() {
 
   // 検索ボタンを押したとき
   const handleSearch = () => {
+    // 検索バーを閉じる
+    setOpen(false);
     // 文字列やタグを選択している場合
     if (!isAllEmpty(searchSource)) {
       // 「並び替え順」「一覧データ」初期化
@@ -1442,8 +1415,6 @@ export default function Searchbar() {
         Page: 1,
         sortOption: "orderNewPostsDate",
       }));
-      // 検索バーを閉じる
-      setOpen(false);
     }
 
     // 文字列やタグを選択していない場合
@@ -1659,7 +1630,8 @@ export default function Searchbar() {
     <div>
       {RefineSearch && (
         <>
-          <Box sx={{ display: { xs: "none", md: "block" } }}>
+
+          <Box>
             <OutlinedInput
               id="input-search-header"
               autoComplete="off"
@@ -1680,6 +1652,7 @@ export default function Searchbar() {
                 // INPUT要素に何か入力されていたら
                 searchSource.searchText.trim() !== "" ? (
                   <InputAdornment
+                    className="mushimeganeSearch"
                     onClick={handleSearch}
                     position="start"
                     sx={{ mr: 1, fontWeight: "fontWeightBold" }}
@@ -1697,7 +1670,8 @@ export default function Searchbar() {
               }
               endAdornment={
                 // 絞り込みアイコン
-                <InputAdornment position="end">
+
+                <InputAdornment position="end"  style={{ display: Display.thisCompanyNews }}>
                   <HeaderAvatar onClick={handleOpen}>
                     <IconAdjustmentsHorizontal stroke={1.5} size="20px" />
                   </HeaderAvatar>
@@ -3020,18 +2994,19 @@ export default function Searchbar() {
                     <Button className={classes.textField} variant="outlined" onClick={handleClose}>
                       閉じる
                     </Button>
-                    <Button className={classes.textField} variant="outlined" onClick={handleTagReset}>
-                      タグをリセット
-                    </Button>
+
                   </Stack>
                   <Stack
                     direction="row"
                     spacing={2}
                     sx={{ alignItems: "center" }}>
-                    <Button variant="outlined" onClick={handleCancel}>
+                    <Button className={classes.textField} variant="outlined" onClick={handleTagReset}>
+                      タグをリセット
+                    </Button>
+                    <Button className={classes.textField} variant="outlined" onClick={handleCancel}>
                       キャンセル
                     </Button>
-                    <Button variant="contained" onClick={handleSearch}>
+                    <Button className={classes.textField} variant="contained" onClick={handleSearch}>
                       検索
                     </Button>
                   </Stack>

@@ -39,11 +39,12 @@ export default function DashboardLayout({ children }) {
 
   useEffect(() => {
     const page = searchParams.get("page");
-    console.log("header-Mypage-page", page);
+    console.log("header-Mypage-page", location.search);
     // ページパラメータが"mypage"の場合、MyPageを"none"に設定
     setPageStyles({
       HomePage: location.pathname === "/Top" ? "none" : "",
       MyPage: page === "mypage" ? "none" : "block",
+      thisCompanyNews: page === "news" ? "none" : "block",
     });
   }, [location.pathname, searchParams]); // location.pathname や searchParams が変わるたびに実行
 

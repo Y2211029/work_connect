@@ -16,7 +16,6 @@ import { useNavigate } from "react-router-dom";
 const WorkPosting = () => {
   let navigation = useNavigate();
 
-
   const [workData, setWorkData] = useState({
     YoutubeURL: "",
     WorkTitle: "",
@@ -34,7 +33,15 @@ const WorkPosting = () => {
   const [videoId, setVideoId] = useState("");
   const [hasError, setHasError] = useState(false);
   const [Image, setImage] = useState();
+  const [Description, setDescription] = useState();
 
+  const handleValueChange = (newValue) => {
+    setDescription(newValue);
+  };
+
+  useEffect(() => {
+    console.log("Description: ", Description);
+  }, [Description]);
   const callSetImage = (e) => {
     // const image = Array.from(e);
     setImage(e);
@@ -49,7 +56,7 @@ const WorkPosting = () => {
     }
     const imagesArray = Array.from(e);
     setImageFiles(imagesArray);
-    console.log("imageArray: ",imagesArray);
+    console.log("imageArray: ", imagesArray);
     handleImageChange(e);
   };
 
@@ -72,33 +79,40 @@ const WorkPosting = () => {
 
     // 既存のimageFilesをDataTransferに追加
     imageFiles.forEach((file) => {
-      for (let i = 0; i < e.length; i++){
-        console.log("length",i);
-        console.log("name",e[i].name);
+      for (let i = 0; i < e.length; i++) {
+        console.log("length", i);
+        console.log("name", e[i].name);
         // console.log("file.name",file.name);
         if (file.name == e[i].name) {
-          console.log("file.name",file.name);
-          console.log("file.name",file);
+          console.log("file.name", file.name);
+          console.log("file.name", file);
           dt.items.add(file);
-          console.log(dt.files);
+          console.log("Image:",dt.files);
         }
       }
-
     });
-
-    if(e.length == 0){
-      dt.clearData();
-      console.log("dt", dt.files);
-    }
     // 新しいFileListを状態に設定
     setImage(dt.files);
     console.log("Image: ", Image);
-  };
 
+    if (e.length == 0) {
+      dt.clearData();
+      console.log("dt", dt.files);
+    }
+
+  };
 
   useEffect(() => {
     console.log("imageFiles updated: ", imageFiles);
     console.log(Array.isArray(imageFiles)); // trueなら配列です
+    let dt = new DataTransfer();
+    // 既存のimageFilesをDataTransferに追加
+    imageFiles.forEach((file) => {
+      // dt.setData("image/png", file);
+      dt.items.add(file);
+      console.log("imageFiles: ", dt.files[0].type);
+    });
+    setImage(dt.files);
   }, [imageFiles]);
 
   const handleChange = (event) => {
@@ -170,7 +184,7 @@ const WorkPosting = () => {
       // imageFilesが配列として扱える場合
       for (let i = 0; i < imageFiles.length; i++) {
         formData.append("images[]", Image[i]);
-        formData.append("annotation[]", imageFiles[i].description);
+        formData.append("annotation[]", Description[i].description);
       }
 
       for (const key in workData) {
@@ -261,6 +275,7 @@ const WorkPosting = () => {
                   <ImageUpload
                     onImagesUploaded={handleImageChange}
                     callSetImage={callSetImage}
+                    handleValueChange={handleValueChange}
                   />
                 </div>
               </div>

@@ -1,3 +1,4 @@
+
 <?php
 
 use App\Http\Controllers\movie\PostMovieCommentDeleteController;
@@ -46,6 +47,7 @@ use App\Http\Controllers\chat\EditChatController;
 use App\Http\Controllers\chat\DeleteChatController;
 use App\Http\Controllers\chat\AlreadyReadChatController;
 use App\Http\Controllers\chat\UpdateChatController;
+use App\Http\Controllers\chat\AllUnreadChatController;
 use App\Http\Controllers\tag\InsertTagController;
 use App\Http\Controllers\tag\GetGenreTagController;
 use App\Http\Controllers\tag\GetLanguageTagController;
@@ -233,6 +235,8 @@ Route::post('/delete_chat', [DeleteChatController::class, 'DeleteChatController'
 Route::post('/already_read_chat', [AlreadyReadChatController::class, 'AlreadyReadChatController']);
 // チャット更新
 Route::post('/update_chat', [UpdateChatController::class, 'UpdateChatController']);
+// チャット未読数取得
+Route::get('/all_unread_chat', [AllUnreadChatController::class, 'AllUnreadChatController']);
 
 
 // 通知取得

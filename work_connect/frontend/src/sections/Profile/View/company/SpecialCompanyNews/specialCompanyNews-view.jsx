@@ -40,7 +40,8 @@ LinkTab.propTypes = {
 };
 
 export default function NavTabs() {
-  const { setAllItems } = useContext(AllItemsContext);
+  const { AllItems, setAllItems } = useContext(AllItemsContext);
+  const { /*DataList,*/ IsSearch, Page, sortOption } = AllItems;
   const { user_name } = useParams();
   const { getSessionData, updateSessionData } = useSessionStorage();
   const [value, setValue] = useState(0);
@@ -107,9 +108,21 @@ export default function NavTabs() {
     console.log("handleTabClick");
     setAllItems((prevItems) => ({
       ...prevItems,
-      Page: 1,
+      IsLoading : true, // 一時的にローディングを解除
     }));
 
+    if (sortOption !== "orderNewPostsDate" || Page > 1 || IsSearch.Check == true) {
+      console.log("あいうえお")
+      setAllItems((prevItems) => ({
+        ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
+        ResetItem: true,
+        DataList: [], //検索してない状態にするために初期化 //searchbar.jsxのsearchSourceも初期化
+        IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
+        Page: 1, //スクロールする前の状態にするために初期化
+        sortOption: "orderNewPostsDate", //並び替える前の状態にするために初期化
+      }));
+      // 必要に応じて、スクロール位置や他の状態もリセット
+    }
     if (
       event.type !== 'click' ||
       (event.type === 'click' && samePageLinkNavigation(event))

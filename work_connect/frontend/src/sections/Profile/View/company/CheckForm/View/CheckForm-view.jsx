@@ -8,7 +8,6 @@ import ApplicationFormList from '../ApplicationFormList/ApplicationFormList';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import { AllItemsContext } from "src/layouts/dashboard/index";
 
-
 // 同一ページ内リンク用のナビゲーション制御
 function samePageLinkNavigation(event) {
   if (
@@ -51,7 +50,6 @@ const CheckForm = ({ value }) => {
     </div>
   );
 };
-
 export default CheckForm;
 
 // NavTabs コンポーネント
@@ -69,6 +67,7 @@ export function NavTabs({ initialTabValue = 0 }) {
     const accountData = getSessionData("accountData");
     return accountData.CheckFormTabState || 0; // 初期値を設定
   }
+
 
   useEffect(() => {
     setValue(0);
@@ -118,6 +117,7 @@ export function NavTabs({ initialTabValue = 0 }) {
       >
         <Tab label="フォームを見る" onClick={(e) => handleTabClick(e, 0)} />
         <Tab label="個別" onClick={(e) => handleTabClick(e, 1)} />
+        
       </Tabs>
       {value === 0 && <ApplicationFormList />} {/* value が 0 の場合フォーム一覧 */}
       {value === 1 && <Statisticaldata />}   {/* value が 1 の場合統計データ */}

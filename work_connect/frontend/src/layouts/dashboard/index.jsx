@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+// import { useSearchParams } from "react-router-dom";
 import PropTypes from "prop-types";
 export const MyContext = createContext();
 export const AllItemsContext = createContext();
@@ -24,10 +24,12 @@ export default function DashboardLayout({ children }) {
   let accountData = getSessionData("accountData");
 
   const [openNav, setOpenNav] = useState(false);
-  const [searchParams] = useSearchParams();
+  // const [searchParams] = useSearchParams();
+
   const [pageStyles, setPageStyles] = useState({
     HomePage: location.pathname === "/Top" ? "none" : "",
     MyPage: "block",
+    thisCompanyNews: "block",
   });
   const [workImage, setWorkImage] = useState([]);
 
@@ -38,19 +40,40 @@ export default function DashboardLayout({ children }) {
   }
 
   useEffect(() => {
-    const page = searchParams.get("page");
-    console.log("header-Mypage-page", location.search);
+    const page = location.search;
+    const url = location.pathname;
+    const basePath = url.split("/")[1];
+    const param = page.split("?page=")[1];
+    console.log("header-Mypage-page", param);
+    console.log("header-Mypage-location.pathname", location.pathname);
+    console.log("header-Mypage-basePath", basePath);
     // ページパラメータが"mypage"の場合、MyPageを"none"に設定
-    setPageStyles({
+
+    if (location && location.pathname && basePath == "Profile" && page == "news" || page == "mypage") {
+      setPageStyles((prev) => ({
+        ...prev,
+        thisCompanyNews: "none",
+      }));
+      console.log("thisCompanyNews: none")
+    } else {
+      setPageStyles((prev) => ({
+        ...prev,
+        thisCompanyNews: "block",
+      }));
+    }
+    setPageStyles((prev) => ({
+      ...prev,
       HomePage: location.pathname === "/Top" ? "none" : "",
       MyPage: page === "mypage" ? "none" : "block",
-      thisCompanyNews: page === "news" ? "none" : "block",
-    });
-  }, [location.pathname, searchParams]); // location.pathname や searchParams が変わるたびに実行
+    }));
+  }, [location.pathname, location.search]); // location.pathname や searchParams が変わるたびに実行
 
+  useEffect(() => {
+    console.log("pageStyles", pageStyles);
+  }, [pageStyles]);
   const [AllItems, setAllItems] = useState({
     // 一覧ローディング
-    IsLoading : true,
+    IsLoading: true,
     DataList: [],
     IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
     Page: 1,
@@ -79,9 +102,7 @@ export default function DashboardLayout({ children }) {
   // WebSocket接続
   useEffect(() => {
     if (accountData !== undefined) {
-      const newWs = new WebSocket(
-        `ws://localhost:3000?userId=${accountData.id}`
-      );
+      const newWs = new WebSocket(`ws://localhost:3000?userId=${accountData.id}`);
       newWs.onmessage = (event) => {
         const data = JSON.parse(event.data);
         console.log("index.js : data:", data);
@@ -117,7 +138,7 @@ export default function DashboardLayout({ children }) {
               ...prev,
               Chat: data,
             }));
-          } else if(data.type === "already_read" || data.type === "delete" || data.type === "update"){
+          } else if (data.type === "already_read" || data.type === "delete" || data.type === "update") {
             console.log("index.js : data.noticeData :", data);
             setWebSocketState((prev) => ({
               ...prev,
@@ -125,7 +146,6 @@ export default function DashboardLayout({ children }) {
             }));
           }
         }
-
       };
       newWs.onclose = () => {
         console.log("WebSocket connection closed");

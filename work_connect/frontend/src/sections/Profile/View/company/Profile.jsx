@@ -1,4 +1,4 @@
-import { useState, useEffect,useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
@@ -46,7 +46,7 @@ LinkTab.propTypes = {
   selected: PropTypes.bool,
 };
 
-//応募フォームタブをを表示させるか否かの判断
+//応募フォームタブを表示させるか否かの判断
 const Profile = ({ value, companyname: initialCompanyname }) => {
   const [companyname, setCompanyname] = useState(initialCompanyname);
 
@@ -55,7 +55,7 @@ const Profile = ({ value, companyname: initialCompanyname }) => {
       const url = new URL(window.location.href);
       const urlCompanyname = decodeURIComponent(url.pathname.split('/')[2]); // 2番目の「/」の隣に企業名を取得
       setCompanyname(urlCompanyname);
-      console.log("urlCompanyname",urlCompanyname);
+      console.log("urlCompanyname", urlCompanyname);
     }
   }, [initialCompanyname]);
 
@@ -70,13 +70,12 @@ const Profile = ({ value, companyname: initialCompanyname }) => {
 export default Profile;
 
 // NavTabs コンポーネント
-export function NavTabs({ initialTabValue,companyname }) {
+export function NavTabs({ initialTabValue, companyname }) {
   const { getSessionData, updateSessionData } = useSessionStorage();
   const [ProfileTabState, setProfileTabState] = useState(getInitialProfileTabState);
-  const [ProfileUserName, setProfileUserName] = useState(getInitialProfileUserName);
   const { setAllItems } = useContext(AllItemsContext);
   const [value, setValue] = useState(initialTabValue);
-  const [checkformboolean,setCheckFormBoolean] = useState(false);
+  const [checkformboolean, setCheckFormBoolean] = useState(false);
   console.log(companyname);
   console.log(checkformboolean);
 
@@ -89,10 +88,6 @@ export function NavTabs({ initialTabValue,companyname }) {
     return accountData.ProfileTabState || 0; // 初期値を設定
   }
 
-  function getInitialProfileUserName() {
-    const accountData = getSessionData("accountData");
-    return accountData.user_name; // 初期値を設定
-  }
 
   useEffect(() => {
     function getInitialCheckFormBoolean() {
@@ -112,7 +107,6 @@ export function NavTabs({ initialTabValue,companyname }) {
     } else {
       setValue(0);
     }
-    setProfileUserName(getInitialProfileUserName)
   }, [value]);
 
   const handleTabClick = (event, newValue) => {
@@ -133,14 +127,14 @@ export function NavTabs({ initialTabValue,companyname }) {
       // ニュースが押されたとき
       setProfileTabState(1);
       pageCheck('?page=news&category=JobOffer');
-    }else if (newValue === 2) {
+    } else if (newValue === 2) {
       // 企業情報が押されたとき
       setProfileTabState(2);
       pageCheck('?page=companyinformation');
-    }else if (newValue === 3) {
+    } else if (newValue === 3) {
       // 応募フォームが押されたとき
       setProfileTabState(3);
-      pageCheck('/Checkform?category=application_form_list');
+      pageCheck('?page=checkform');
     }
     setAllItems((prevItems) => ({
       ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
@@ -154,17 +148,9 @@ export function NavTabs({ initialTabValue,companyname }) {
 
   function pageCheck(pageStr) {
     const url = new URL(window.location.href);
-
-    // URLのパスが'/Checkform'を含むかチェック
-    if (url.pathname.includes('/Checkform')) {
-      // '/Profile/{companyname}'にリダイレクト
-      window.history.pushState({}, '', `/Profile/${ProfileUserName}${pageStr}`);
-    } else {
-      const urlStr = url.pathname.split('?')[0]; // クエリパラメータを取り除く
-      window.history.pushState({}, '', `${urlStr}${pageStr}`);
-    }
+    const urlStr = url.pathname.split('?')[0]; // クエリパラメータを取り除く
+    window.history.pushState({}, '', `${urlStr}${pageStr}`);
   }
-
   return (
     <Box sx={{ width: '100%' }}>
       <Tabs
@@ -182,8 +168,8 @@ export function NavTabs({ initialTabValue,companyname }) {
       </Tabs>
       {value === 0 && <ProfileMypage />} {/* value が 0 の場合マイページ */}
       {value === 1 && <ProfileNews />}   {/* value が 1 の場合ニュース */}
-      {value === 2 && <ProfileCompanyInformation />}   {/* value が 2 の場合応募フォーム一覧 */}
-      {value === 3 && <ProfileCheckForm />}   {/* value が 2 の場合応募フォーム一覧 */}
+      {value === 2 && <ProfileCompanyInformation />}   {/* value が 2 の場合企業情報 */}
+      {value === 3 && <ProfileCheckForm />}   {/* value が 3 の場合応募フォーム一覧 */}
     </Box>
   );
 }

@@ -78,7 +78,6 @@ const Editor = () => {
   const [draft_list, setDraftList] = useState([]); // ニュースの下書きリストを保持するステート
   const [selected_draft, setSelectedDraft] = useState(null); // 選択された下書きを保持するステート
   const [newsmenushow, setNewsMenuShow] = useState(false);
-  const [clickedMenu, setClickedMenu] = useState(null);
   const [charCount, setCharCount] = useState(0);
   const [usedImages, setUsedImages] = useState(null);
   const [newsContent, setNewsContent] = useState("");
@@ -1133,13 +1132,6 @@ useEffect(() => {
   };
 
 
-  const handleClickEnter = (menuName) => {
-    setClickedMenu(null);
-    setClickedMenu(menuName);
-  };
-
-
-
   const getNewsTitle = () => {
     let NewsTitle;
     console.log(genre);
@@ -1200,12 +1192,10 @@ useEffect(() => {
         </MUIButton>
       </Stack>
 
-      {/* 関数の場合は大文字、変数の場合は最初小文字 */}
+      {/* /* 関数の場合は大文字、変数の場合は最初小文字 */}
       <NewsMenu
         IsOpen={newsmenushow}   //モーダルを開く関数
         CloseModal={closeModal} // モーダルを閉じる関数
-        NewsMenuEnter={handleClickEnter} //ニュースのタブを判断する回数
-        clickedMenu={clickedMenu}   //クリックされたニュースメニュー
         genre={genre}  //説明会・ブログなどのジャンル
         draftlist={draft_list} //下書きリストの配列
         CreateFormJump = {create_form_jump} //ニュースを保存後に応募フォーム作成画面に遷移する
@@ -1223,6 +1213,7 @@ useEffect(() => {
         message = {newsContent}
         charCount = {charCount}
       />
+
 
       <ImageSearchIcon
         className="cover_img_upload"

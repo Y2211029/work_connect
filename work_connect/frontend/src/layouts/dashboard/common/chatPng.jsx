@@ -46,7 +46,6 @@ const ChatPng = () => {
           },
         });
         if (response) {
-          console.log("レスポンスのカウントは！！！！"+response.data);
           setCount(response.data);
         }
       } catch (err) {

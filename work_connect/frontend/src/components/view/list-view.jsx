@@ -176,8 +176,8 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           break;
         }
 
-        case options.DecodeURL === `/Profile/${ParamUserName}/Checkform` &&
-          options.category === "application_form_list": {
+        case options.DecodeURL === `/Profile/${ParamUserName}` &&
+          options.page === "checkform": {
             const { default: CheckFormPostCard } = await import("src/sections/Profile/View/company/CheckForm/post-card");
             setPostCard(() => CheckFormPostCard);
             console.log("CheckFormPostCard");
@@ -519,10 +519,13 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       idKey: "id",
       tags: ["company_name"],
       generatePosts: (WorkOfList) => {
-        return WorkOfList.map((company) => ({
-          article_title: company.article_title,
-          user_name: company.users,
-        }));
+        if(Array.isArray(WorkOfList)){
+          const application_form = WorkOfList.map((company) => ({
+            article_title: company.article_title,
+            user_name: company.users,
+          }));
+          return  [{ application_form }];
+        }
       },
     },
     companyinformations: {
@@ -631,8 +634,9 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   // URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合
   if (url && (PathName === "/" || PathName === "/VideoList" || PathName === "/StudentList" || PathName === "/CompanyList"
     || PathName === "/Internship_JobOffer" || PathName === `/WriteForm/${NewsDetailId}` || PathName === `/CreateForm/${NewsDetailId}`
-    || PathName === "/Internship_JobOffer/JobOffer" || PathName === "/Internship_JobOffer/Internship"
-    || PathName === "/Internship_JobOffer/Blog"
+    || PathName === "/Internship_JobOffer?page=JobOffer" || PathName === "/Internship_JobOffer?page=Internship"
+    || PathName === "/Internship_JobOffer?page=Session"
+    || PathName === "/Internship_JobOffer?page=Blog"
     || DecodeURL === `/Profile/${ParamUserName}` &&
     page === "news" &&
     (category === "JobOffer" || category === "Internship" || category === "Blog")
@@ -650,6 +654,9 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   } else if (ParamUserName && ParamUserName !== SessionAccountData.user_name) {
     // console.log("ユーザーネームとセッションネームが違う場合");
     lastUrl = `${url}?page=${Page}&sort=${sortOption}&userName=${ParamUserName}`;
+  } else {
+    console.log("lastUrllastUrl", url);
+    console.log("lastUrllastUrl:PathName", PathName);
   }
 
   const { data, error, isLoading } = useSWR(lastUrl, fetcher);
@@ -658,32 +665,16 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
 
   let LaravelResponse = isLoading;
   useEffect(() => {
-    console.log("useSWR:LaravelResponse:", LaravelResponse);
-    console.log("useSWR:LaravelResponse:data:", data);
 
+    console.log("useSWR:lastUrl:", lastUrl)
+    console.log("useSWR:isLoading:", LaravelResponse)
     if (LaravelResponse == false) {
       setAllItems((prevItems) => ({
         ...prevItems,
         IsLoading: false, // 一時的にローディングを解除
       }));
     }
-  }, [LaravelResponse]);
-
-  // useEffect(() => {
-  //   console.log("SWRLoadFlg:", SWRLoadFlg);
-  //   console.log("SWRLoadFlg:LaravelResponse:", LaravelResponse);
-  //   console.log("SWRLoadFlg:LaravelResponse:data:", data);
-
-  //   if (LaravelResponse == false && SWRLoadFlg == true) {
-  //     // setAllItems((prevItems) => ({
-  //     //   ...prevItems,
-  //     //   IsLoading: false, // 一時的にローディングを解除
-  //     // }));
-  //     setSWRLoadFlg(false);
-  //   }
-  // }, [SWRLoadFlg]);
-
-
+  }, [LaravelResponse, lastUrl]);
 
   // 検索時にsetWorkOfListをリセット
   useEffect(() => {
@@ -707,7 +698,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
 
 
   useEffect(() => {
-    console.log("WorkOfList", WorkOfList)
+    console.log("WorkOfListResetItem", WorkOfList)
     if (ResetItem === true) {
       // ここでアイテム消える
       setWorkOfList([]);
@@ -716,6 +707,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
         ResetItem: false, // リセットが完了したら false に戻す
       }));
     }
+
   }, [ResetItem, setWorkOfList, setAllItems]);
 
 
@@ -732,10 +724,11 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
 
   /*----- 検索されていないかつ作品データがあるとき -----*/
   useEffect(() => {
-    console.log("PagePagePage", Page);
+    console.log("検索されていないかつ作品データがあるとき:page", Page);
+    console.log("検索されていないかつ作品データがあるとき:data", data);
     if (!ResetItem && !IsSearch.Check && data) {
-      console.log("検索されていないかつ作品データがあるとき", WorkOfList);
-      console.log("datadata", data);
+      console.log("検索されていないかつ作品データがあるとき:WorkOfList", WorkOfList);
+      console.log("検索されていないかつ作品データがあるとき:data", data);
 
       funcSetWorksItem(
         idKey,

@@ -171,11 +171,6 @@ input[type="radio"]:checked + .label {
 
 
 
-.menu-content {
-  display: flex;
-  width: 100%;
-  margin-top: 20px;
-}
 
 .menu-container {
   width: 90%;
@@ -189,23 +184,19 @@ input[type="radio"]:checked + .label {
   width: 70%;
 }
 
-.hover-content {
-  flex-grow: 1;
-  align-items: center;
-  justify-content: flex-start;
-  white-space: nowrap;
-  flex-direction: column;
-  width: 100%; /* 幅を増加 */
-  max-height: 800px;
-  background-color: white;
+.NewsMenu-Accordion{
+  height:100%;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
+
 
 .editingstatusscroll{
   margin-left: 20px;
   width: 100%;
   overflow-y: auto; /* スクロールバーを必要に応じて表示 */
   overflow-x: hidden;
-  height: 80%; /* 高さを具体的に指定 */
+  height: 50%; /* 高さを具体的に指定 */
 }
 
 
@@ -220,6 +211,12 @@ input[type="radio"]:checked + .label {
   font-size: 14px;
   cursor: pointer;
   padding:0;
+}
+
+.AccordionList{
+  width:70%;
+  left:3%;
+  top:10%;
 }
 
 .draftlist{
@@ -258,6 +255,11 @@ td{
   height:30%;
 }
 
+.add_draft_news{
+  cursor:pointer;
+  padding-bottom: 10px;
+}
+
 
 /* タブレット向けのスタイル */
 @media (max-width: 768px) {
@@ -267,10 +269,6 @@ td{
     border: 5px solid black;
   }
 
-  .menu-content {
-    flex-direction: column;
-    width: 100%;
-  }
 
   .menu-container {
     width: 100%;
@@ -330,8 +328,7 @@ td{
 
   .add_draft_news{
     cursor:pointer;
-    background-color: #F3704B;
-    padding-bottom:100px;
+    padding-bottom: 10px;
   }
 
 

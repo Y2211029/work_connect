@@ -13,6 +13,13 @@ import CompanyLoginModal from "src/components/account/company/CompanyLoginModal"
 // 新規登録
 import StudentPreSignModal from "src/components/account/students/StudentPreSignModal";
 import CompanyPreSignModal from "src/components/account/company/CompanyPreSignModal";
+// import styled from "styled-components";
+// const StyledH3 = styled.h3`
+//   margin-top: 24px;
+//   margin-bottom: 24px;
+//   margin-left: 20px;
+//   margin-right: 20px;
+// `;
 
 
 export default function TopPageListView() {
@@ -77,41 +84,40 @@ export default function TopPageListView() {
     <>
       {/* <Typography>サイトにアクセスすると一番初めに表示されるページです。</Typography> */}
       {/* <h1>作品投稿・動画投稿・本登録（テスト表示）・本登録ボタン・通知、検索。ハンバーガーボタンを非表示にします。</h1> */}
-      <div className="top_page_app_name">Work&Connect</div>
-      <div className="top_page_wrapper">
-        <div className="top_page_content">
-          <div className="top_page_content_first">
-            <div>
-              <p className="top_page_message">作品を投稿して企業から手を差し伸べてもらおう!!!</p>
-            </div>
-            <div>
-              <p>企業とつながるWEBアプリ</p>
-              <div className="top_page_controller">
-                <button id="LoginButton" className="top_page_button login" onClick={handleChange} style={{ display: Display.HomePage === "" ? "none" : "block" }}>
-                  ログイン
-                </button>
-                <button id="PreSignButton" className="top_page_button sign" onClick={handleChange} style={{ display: Display.HomePage === "" ? "none" : "block" }}>
-                  新規登録
-                </button>
+        {/* <StyledH3>
+        <div className="top_page_app_name">Work&Connect</div>
+        </StyledH3> */}
+        <div className="top_page_wrapper">
+          <div className="top_page_content">
+            <div className="top_page_content_first">
+              <div>
+                <p className="top_page_message">あなたの<span className="top_page_messege_span">アピール</span>が</p>
+                <p className="top_page_message"><span className="top_page_messege_span_second">未来を創る</span></p>
               </div>
-              {ModalChange === "学生" ? (
-                <StudentLoginModal callSetModalChange={callSetModalChange} />
-              ) : ModalChange === "企業" ? (
-                <CompanyLoginModal callSetModalChange={callSetModalChange} />
-              ) : null}
+              <div>
+                <div className="top_page_controller">
+                  <button id="LoginButton" className="top_page_button login" onClick={handleChange} style={{ display: Display.HomePage === "" ? "none" : "block" }}>
+                    始めよう
+                  </button>
+                </div>
+                {ModalChange === "学生" ? (
+                  <StudentLoginModal callSetModalChange={callSetModalChange} />
+                ) : ModalChange === "企業" ? (
+                  <CompanyLoginModal callSetModalChange={callSetModalChange} />
+                ) : null}
 
-              {PreModalChange === "学生" ? (
-                <StudentPreSignModal callSetPreModalChange={callSetPreModalChange} />
-              ) : PreModalChange === "企業" ? (
-                <CompanyPreSignModal callSetPreModalChange={callSetPreModalChange} />
-              ) : null}
+                {PreModalChange === "学生" ? (
+                  <StudentPreSignModal callSetPreModalChange={callSetPreModalChange} />
+                ) : PreModalChange === "企業" ? (
+                  <CompanyPreSignModal callSetPreModalChange={callSetPreModalChange} />
+                ) : null}
+              </div>
             </div>
-          </div>
-          <div>
-            <img className="top_page_app_image" src="/assets/images/covers/phoneAppImage.png" alt="" />
+            <div>
+              <img className="top_page_app_image" src="/assets/images/covers/phoneAppImage.png" alt="" />
+            </div>
           </div>
         </div>
-      </div>
-    </>
-  );
+      </>
+      );
 }

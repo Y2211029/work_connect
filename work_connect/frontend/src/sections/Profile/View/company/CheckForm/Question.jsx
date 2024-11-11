@@ -11,7 +11,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 const Question = ({ application_form, selectedIndex }) => {
     const [groupedResponses, setGroupedResponses] = useState({});
     const [selectedTitle, setSelectedTitle] = useState("");
-    const [responses, setResponses] = useState({ responses: [], username: "", id: "" });
+    const [responses, setResponses] = useState({ responses: [], usernames: [], id: "" });
     const [maxId, setMaxId] = useState(0);
     const [idNumber, setIdNumber] = useState("");
 
@@ -23,12 +23,12 @@ const Question = ({ application_form, selectedIndex }) => {
                         acc[response.title] = {
                             responses: [],
                             type: response.type,
-                            contents: response.contents,
-                            username: user.user_name,
+                            usernames: [],
                             id: response.id,
                         };
                     }
                     acc[response.title].responses.push(response.response);
+                    acc[response.title].usernames.push(user.user_name);
                 });
                 return acc;
             }, {});
@@ -42,7 +42,7 @@ const Question = ({ application_form, selectedIndex }) => {
                 const initialId = Number(grouped[firstTitle].id) || 1;
                 setResponses({
                     responses: grouped[firstTitle].responses,
-                    username: grouped[firstTitle].username,
+                    usernames: grouped[firstTitle].usernames,
                     id: grouped[firstTitle].id,
                 });
                 setIdNumber(initialId);
@@ -56,7 +56,7 @@ const Question = ({ application_form, selectedIndex }) => {
         const newId = groupedResponses[title]?.id ? Number(groupedResponses[title].id) : "";
         setResponses({
             responses: groupedResponses[title]?.responses || [],
-            username: groupedResponses[title]?.username || "",
+            usernames: groupedResponses[title]?.usernames || [],
             id: groupedResponses[title]?.id || "",
         });
         setIdNumber(newId);  // ドロップダウンで選択した時も TextField の idNumber を更新
@@ -87,7 +87,7 @@ const Question = ({ application_form, selectedIndex }) => {
                 setSelectedTitle(matchedTitle);
                 setResponses({
                     responses: groupedResponses[matchedTitle].responses || [],
-                    username: groupedResponses[matchedTitle].username || "",
+                    usernames: groupedResponses[matchedTitle].usernames || [],
                     id: groupedResponses[matchedTitle].id || "",
                 });
             }
@@ -115,8 +115,10 @@ const Question = ({ application_form, selectedIndex }) => {
         });
     };
 
-    console.log("質問の内容",groupedResponses);
+    console.log("質問の内容", groupedResponses);
     console.log("質問の件数", maxId);
+    console.log("レスポンスの内容", responses);
+    console.log("アプリケーションフォーム", application_form);
 
     return (
         <div className="question">
@@ -130,7 +132,7 @@ const Question = ({ application_form, selectedIndex }) => {
 
             <Stack direction="row" spacing={1} alignItems="center">
 
-                <ArrowBackIosNewIcon onClick={handleCountDown}/>
+                <ArrowBackIosNewIcon onClick={handleCountDown} />
 
                 <TextField
                     id="standard-number"
@@ -149,29 +151,25 @@ const Question = ({ application_form, selectedIndex }) => {
                     }}
                 /> / {maxId}個の質問
 
-                <ArrowForwardIosIcon onClick={handleCountUp}/>
+                <ArrowForwardIosIcon onClick={handleCountUp} />
 
-
-                {/* <Button variant="outlined" onClick={handleCountUp}>
-                    アップ
-                </Button>
-                <Button variant="outlined" onClick={handleCountDown}>
-                    ダウン
-                </Button> */}
             </Stack>
 
             {selectedTitle && (
                 <div>
                     <h3>{selectedTitle}</h3>
-                    <p>ユーザー名: {responses.username}</p>
-                    <p>回答:</p>
-                    <ul>
-                        {responses.responses.map((response, idx) => (
-                            <li key={idx}><p>{response}</p></li>
-                        ))}
-                    </ul>
+                    {responses.usernames.map((username, idx) => (
+                        <div key={idx}>
+                            <p>ユーザー名: {username}</p>
+                            <p>回答:</p>
+                            <ul>
+                                <li>{responses.responses[idx]}</li>
+                            </ul>
+                        </div>
+                    ))}
                 </div>
             )}
+
         </div>
     );
 };

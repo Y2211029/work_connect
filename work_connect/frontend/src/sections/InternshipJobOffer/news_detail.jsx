@@ -260,7 +260,6 @@ const InternshipJobOfferPage = () => {
                         </div>
                     )}
 
-
                     <Button
                         variant="contained"
                         sx={{

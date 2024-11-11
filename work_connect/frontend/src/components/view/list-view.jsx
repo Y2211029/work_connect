@@ -639,16 +639,11 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     || PathName === "/Internship_JobOffer?page=Blog"
     || DecodeURL === `/Profile/${ParamUserName}` &&
     page === "news" &&
-    (category === "JobOffer" || category === "Internship" || category === "Blog")
+    (category === "JobOffer" || category === "Internship" || category === "Blog" || category === "Session")
     || DecodeURL === `/Profile/${ParamUserName}` &&
     page === "companyinformation"
-<<<<<<< HEAD
     || DecodeURL === `/Profile/${ParamUserName}` &&
     page === "checkform"
-=======
-    || DecodeURL === `/Profile/${ParamUserName}/Checkform` &&
-    (category === "application_form_list" || category === "statistical_data")
->>>>>>> 335353431792de3e68ae3e83b4dfd405bce87833
   )) {
     // console.log(" URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合");
     lastUrl = `${url}?page=${Page}&sort=${sortOption}`;

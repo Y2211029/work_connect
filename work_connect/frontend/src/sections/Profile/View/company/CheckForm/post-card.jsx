@@ -133,7 +133,14 @@ const PostCard = forwardRef(({ post }) => {
           }
         >
           {application_form.map((posts, index) => (
-            <ListItemButton onClick={() => handleClick(index)} key={index} id={index}>
+            <ListItemButton onClick={() => handleClick(index)} key={index} id={index}
+            sx={{
+              backgroundColor: selectedIndex === index ? 'gray' : 'transparent', // クリックされた場合は背景色をグレーに
+              '&:hover': {
+                backgroundColor: selectedIndex === index ? 'darkgray' : 'lightgray', // ホバー時の背景色
+              }
+            }}
+            >
               <ListItemText
                 primary={
                   <>
@@ -186,7 +193,11 @@ const PostCard = forwardRef(({ post }) => {
                 selectedIndex={selectedIndex}
                 GroupedResponses={groupedResponses}
               />}
-              {value === 2 && <Individual />}
+              {value === 2 && <Individual 
+                application_form={application_form}
+                selectedIndex={selectedIndex}
+                GroupedResponses={groupedResponses}
+              />}
             </Box>
 
           </div >

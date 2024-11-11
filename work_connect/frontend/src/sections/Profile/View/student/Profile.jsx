@@ -128,6 +128,7 @@ export default function NavTabs() {
     // 作品・動画一覧を正常に再表示するために必要な処理
     setAllItems((prevItems) => ({
       ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
+      IsLoading: true,
       ResetItem: true,
       DataList: [], //検索してない状態にするために初期化 //searchbar.jsxのsearchSourceも初期化
       IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },

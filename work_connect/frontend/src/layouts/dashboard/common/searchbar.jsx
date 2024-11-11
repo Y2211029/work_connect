@@ -261,7 +261,7 @@ export default function Searchbar() {
     result.map((value) => {
       optionArray.push({ value: value, label: value });
     });
-    console.log("optionArray", optionArray);
+    // console.log("optionArray", optionArray);
     setOptions((prevOptions) => ({
       ...prevOptions,
       graduation_year: optionArray,
@@ -293,8 +293,8 @@ export default function Searchbar() {
 
           // console.log(`API response for code ${code} and page ${page}:`, response.data); // レスポンスデータを詳細にログ出力
 
-          console.log("allSchools response: ");
-          console.log(response.data.schools.data);
+          // console.log("allSchools response: ");
+          // console.log(response.data.schools.data);
 
           // allSchools = response.data.schools.data;
 
@@ -326,7 +326,7 @@ export default function Searchbar() {
     result.map((value) => {
       optionArray.push({ value: value.school_name, label: value.school_name });
     });
-    console.log("optionArray", optionArray);
+    // console.log("optionArray", optionArray);
     setOptions((prevOptions) => ({
       ...prevOptions,
       school_name: optionArray,
@@ -335,14 +335,14 @@ export default function Searchbar() {
 
   const fetchCompanyNameData = async () => {
     try {
-      console.log("fetchCompanyNameData: OK");
+      // console.log("fetchCompanyNameData: OK");
       const response = await axios.get(
         `http://localhost:8000/get_company_name_list`,
         {}
       );
 
-      console.log("fetchCompanyNameData response: ");
-      console.log(response.data);
+      // console.log("fetchCompanyNameData response: ");
+      // console.log(response.data);
 
       // allSchools = response.data.schools.data;
       // if (Array.isArray(response.data.schools.data)) {
@@ -363,18 +363,18 @@ export default function Searchbar() {
   };
 
   const getCompanyNameTag = async () => {
-    console.log("getCompanyNameTag: OK");
+    // console.log("getCompanyNameTag: OK");
     let optionArray = [];
     let result = await fetchCompanyNameData();
 
-    console.log("result: ", result);
+    // console.log("result: ", result);
     result.map((value) => {
       optionArray.push({
         value: value.company_name,
         label: value.company_name,
       });
     });
-    console.log("optionArray", optionArray);
+    // console.log("optionArray", optionArray);
     setOptions((prevOptions) => ({
       ...prevOptions,
       company_name: optionArray,
@@ -389,16 +389,16 @@ export default function Searchbar() {
     result.map((value) => {
       optionArray.push({ value: value, label: value });
     });
-    console.log("optionArray", optionArray);
+    // console.log("optionArray", optionArray);
     setOptions((prevOptions) => ({
       ...prevOptions,
       follow_status: optionArray,
     }));
   };
 
-  useEffect(() => {
-    console.log("options", options);
-  }, [options]);
+  // useEffect(() => {
+  //   console.log("options", options);
+  // }, [options]);
 
   useEffect(() => {
     let url = new URL(window.location.href);
@@ -408,23 +408,23 @@ export default function Searchbar() {
     } else {
       setPathName(location.pathname);
     }
-    console.log("setPathName(location.pathname)", location.pathname);
+    // console.log("setPathName(location.pathname)", location.pathname);
   }, [location]);
   useEffect(() => {
     let url = new URL(window.location.href);
     let urlPageParams = url.searchParams.get("page");
     if (urlPageParams != null) {
       setPathName(location.pathname + "/" + urlPageParams);
-      let a = location.pathname + "/" + urlPageParams;
-      console.log("location.pathname + + urlPageParams", a);
+      // let a = location.pathname + "/" + urlPageParams;
+      // console.log("location.pathname + + urlPageParams", a);
     } else {
       setPathName(location.pathname);
     }
-    console.log("setPathName(urlPageParams):search", urlPageParams);
+    // console.log("setPathName(urlPageParams):search", urlPageParams);
   }, [searchParams]);
 
   useEffect(() => {
-    console.log("PathNamePathNamePathNamePathName: ", PathName);
+    // console.log("PathNamePathNamePathNamePathName: ", PathName);
     // console.log(PathName);
     // タグ一覧取得
 
@@ -538,7 +538,7 @@ export default function Searchbar() {
       // 動画ジャンルのタグ一覧を取得
       getTag("video_genre", "video_genre");
     } else if (PathName == "/CompanyList") {
-      console.log("Internship_JobOfferCompanyList: OK");
+      // console.log("Internship_JobOfferCompanyList: OK");
       // 企業一覧の場合
       // フォロー状況のタグ一覧を取得
       getFollowStatusTag();
@@ -598,14 +598,14 @@ export default function Searchbar() {
       // ソフトウェアのタグ一覧を取得
       getTag("company_software", "software");
     }
-    console.log("PathNamePathName: ", PathName);
+    // console.log("PathNamePathName: ", PathName);
   }, [PathName]);
 
   // useEffect(() => {
   //   console.log("options: ", options);
   // }, [options]);
 
-  console.log("RefineSearch", location.pathname);
+  // console.log("RefineSearch", location.pathname);
 
   // マイページ、Topページ、
   let RefineSearch =
@@ -618,7 +618,7 @@ export default function Searchbar() {
       location.pathname != "/VideoPosting"
       ? true
       : false;
-  console.log("let RefineSearch =", RefineSearch);
+  // console.log("let RefineSearch =", RefineSearch);
 
   const handleOpen = () => {
     setIsScrollDisabled(true);
@@ -680,7 +680,7 @@ export default function Searchbar() {
         let programming_language = [];
         let development_environment = [];
 
-        console.log("検証:searchSource", searchSource);
+        // console.log("検証:searchSource", searchSource);
         searchSource.follow_status.map((value) => {
           follow_status.push(value.value);
         });
@@ -779,7 +779,7 @@ export default function Searchbar() {
             video_genre: video_genre,
           },
         });
-        console.log("response.data", response.data);
+        // console.log("response.data", response.data);
 
         // videoList-view.jsxにデータを渡す
         const responseData = response.data;
@@ -866,7 +866,7 @@ export default function Searchbar() {
             hobby: hobby,
           },
         });
-        console.log("response.data", response.data);
+        // console.log("response.data", response.data);
 
         // StudentList-view.jsxにデータを渡す
         const responseData = response.data;
@@ -879,7 +879,7 @@ export default function Searchbar() {
         let programming_language = [];
         let development_environment = [];
 
-        console.log("検証:searchSource", searchSource);
+        // console.log("検証:searchSource", searchSource);
         searchSource.work_genre.map((value) => {
           work_genre.push(value.value);
         });
@@ -904,7 +904,7 @@ export default function Searchbar() {
             development_environment: development_environment,
           },
         });
-        console.log("response.data", response.data);
+        // console.log("response.data", response.data);
 
         // company-view.jsxにデータを渡す
         const responseData = response.data;
@@ -915,7 +915,7 @@ export default function Searchbar() {
 
         let video_genre = [];
 
-        console.log("検証:searchSource", searchSource);
+        // console.log("検証:searchSource", searchSource);
         searchSource.video_genre.map((value) => {
           video_genre.push(value.value);
         });
@@ -930,7 +930,7 @@ export default function Searchbar() {
             video_genre: video_genre,
           },
         });
-        console.log("response.data", response.data);
+        // console.log("response.data", response.data);
 
         // company-view.jsxにデータを渡す
         const responseData = response.data;
@@ -987,7 +987,7 @@ export default function Searchbar() {
             software: software,
           },
         });
-        console.log("response.data", response.data);
+        // console.log("response.data", response.data);
 
         // company-view.jsxにデータを渡す
         const responseData = response.data;
@@ -1050,8 +1050,6 @@ export default function Searchbar() {
             genre: "Joboffer",
           },
         });
-        console.log("response.data", response.data);
-        console.log("response.data:joboffers");
 
         // company-view.jsxにデータを渡す
         const responseData = response.data;
@@ -1114,9 +1112,9 @@ export default function Searchbar() {
             genre: "Internship",
           },
         });
-        console.log("response.data", response.data);
-        console.log("response.data:PathName", PathName);
-        console.log("response.data:internships");
+        // console.log("response.data", response.data);
+        // console.log("response.data:PathName", PathName);
+        // console.log("response.data:internships");
 
         // company-view.jsxにデータを渡す
         const responseData = response.data;
@@ -1179,9 +1177,9 @@ export default function Searchbar() {
             genre: "Session",
           },
         });
-        console.log("response.data", response.data);
-        console.log("response.data:PathName", PathName);
-        console.log("response.sessions");
+        // console.log("response.data", response.data);
+        // console.log("response.data:PathName", PathName);
+        // console.log("response.sessions");
 
         // company-view.jsxにデータを渡す
         const responseData = response.data;
@@ -1244,8 +1242,8 @@ export default function Searchbar() {
             genre: "Blog",
           },
         });
-        console.log("response.data", response.data);
-        console.log("response.blogs");
+        // console.log("response.data", response.data);
+        // console.log("response.blogs");
 
         // company-view.jsxにデータを渡す
         const responseData = response.data;
@@ -1271,7 +1269,7 @@ export default function Searchbar() {
             prefecture: prefecture,
           },
         });
-        console.log("response.data", response.data);
+        // console.log("response.data", response.data);
 
         // company-view.jsxにデータを渡す
         const responseData = response.data;
@@ -1386,10 +1384,10 @@ export default function Searchbar() {
     }));
   };
 
-  useEffect(() => {
-    console.log("searchSource: ", searchSource);
+  // useEffect(() => {
+  //   console.log("searchSource: ", searchSource);
 
-  }, saveOptions);
+  // }, saveOptions);
 
   // 空だったらtrue
   const isAllEmpty = (obj) =>
@@ -1462,18 +1460,18 @@ export default function Searchbar() {
     }
   }, [IsSearch.Check, Page, IsSearch.searchToggle, sortOption, PathName]);
 
-  useEffect(() => {
-    console.log("Effect!IsSearch.Check! : ", PathName);
-  }, [IsSearch.Check]);
-  useEffect(() => {
-    console.log("Effect!Page! : ", PathName);
-  }, [Page]);
-  useEffect(() => {
-    console.log("Effect!IsSearch.searchToggle! : ", PathName);
-  }, [IsSearch.searchToggle]);
-  useEffect(() => {
-    console.log("Effect!sortOption! : ", PathName);
-  }, [sortOption]);
+  // useEffect(() => {
+  //   console.log("Effect!IsSearch.Check! : ", PathName);
+  // }, [IsSearch.Check]);
+  // useEffect(() => {
+  //   console.log("Effect!Page! : ", PathName);
+  // }, [Page]);
+  // useEffect(() => {
+  //   console.log("Effect!IsSearch.searchToggle! : ", PathName);
+  // }, [IsSearch.searchToggle]);
+  // useEffect(() => {
+  //   console.log("Effect!sortOption! : ", PathName);
+  // }, [sortOption]);
 
   // 検索欄に入力したとき
   const handleChangeText = (e) => {
@@ -1485,13 +1483,13 @@ export default function Searchbar() {
   };
 
   const tagAction = (optionName, selectedOption) => {
-    console.log("selectedOption: ");
-    console.log(selectedOption);
+    // console.log("selectedOption: ");
+    // console.log(selectedOption);
     if (selectedOption != null) {
       let selectedOptionArray = [];
       if (!Array.isArray(selectedOption)) {
         selectedOptionArray[0] = selectedOption;
-        console.log(selectedOptionArray);
+        // console.log(selectedOptionArray);
       } else {
         selectedOptionArray = selectedOption;
       }
@@ -1617,13 +1615,13 @@ export default function Searchbar() {
     tagAction("follow_status", selectedOption);
   };
 
-  useEffect(() => {
-    console.log("searchSource: ", searchSource);
-  }, [searchSource]);
+  // useEffect(() => {
+  //   console.log("searchSource: ", searchSource);
+  // }, [searchSource]);
 
-  useEffect(() => {
-    console.log("options: ", options);
-  }, [options]);
+  // useEffect(() => {
+  //   console.log("options: ", options);
+  // }, [options]);
 
   return (
     // <ClickAwayListener>

@@ -29,21 +29,33 @@ import { MyContext } from "src/layouts/dashboard/index";
 //学生か企業かで、ヘッダー内容を切り替え、Linkを用いてジャンプする
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
+import $ from "jquery";
+// ログイン
+import StudentLoginModal from "src/components/account/students/StudentLoginModal";
+import CompanyLoginModal from "src/components/account/company/CompanyLoginModal";
+
+// 新規登録
+import StudentPreSignModal from "src/components/account/students/StudentPreSignModal";
+import CompanyPreSignModal from "src/components/account/company/CompanyPreSignModal";
+
 // ----------------------------------------------------------------------
 
 export default function Header({ onOpenNav }) {
   const Display = useContext(MyContext);
-  const [open, setOpen] = useState(null);
-
   const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData") || {};
+  const theme = useTheme();
+  const lgUp = useResponsive("up", "lg");
+
   const data = {
     id: accountData.id || "",
   };
+  const [open, setOpen] = useState(null);
   const [login_state, setLoginState] = useState(false);
 
-  const theme = useTheme();
-  const lgUp = useResponsive("up", "lg");
+  const [ModalChange, setModalChange] = useState("");
+  const [PreModalChange, setPreModalChange] = useState("");
+
   let navigate = useNavigate();
 
   // style CSS ここから
@@ -72,6 +84,24 @@ export default function Header({ onOpenNav }) {
     // setShowModal(true);
     navigate("VideoPosting");
   };
+
+  const callSetModalChange = (newValue) => {
+    setModalChange(newValue);
+  };
+  const callSetPreModalChange = (newValue) => {
+    setPreModalChange(newValue);
+  };
+
+  const handleChange = (e) => {
+    if (e.target.id === "LoginButton") {
+      setModalChange("学生");
+      setPreModalChange("");
+    } else {
+      setModalChange("");
+      setPreModalChange("学生");
+    }
+  };
+
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget); // ボタンがクリックされた要素を保存
@@ -113,7 +143,37 @@ export default function Header({ onOpenNav }) {
   const handleScrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-  
+
+  // ログインのform内以外をクリックしたときにモーダルを閉じる処理
+  $("*").click(function (e) {
+    // クリックした要素の<html>までのすべての親要素の中に"formInModal"クラスがついている要素を取得
+    var targetParants = $(e.target).parents(".formInModal");
+
+    // 取得した要素の個数が0個の場合
+    if (targetParants.length == 0 || $(e.target).text() == "閉じる")
+      console.log($(e.target).text());
+    if (targetParants.length == 0 || $(e.target).text() == "閉じる") {
+      if (
+        $(e.target).attr("class") != "formInModal" &&
+        $(e.target).attr("id") != "LoginButton" &&
+        $(e.target).attr("id") != "loginCompanyModalLink" &&
+        $(e.target).attr("id") != "loginStudentModalLink"
+      ) {
+        setModalChange("");
+      }
+
+      if (
+        $(e.target).attr("class") != "formInModal" &&
+        $(e.target).attr("id") != "PreSignButton" &&
+        $(e.target).attr("id") != "PreSignCompanyModalLink" &&
+        $(e.target).attr("id") != "PreSignStudentModalLink"
+      ) {
+        // 新規登録モーダルを閉じる
+        setPreModalChange("");
+      }
+    }
+  });
+
   const renderContent = (
     <>
       {!lgUp && (
@@ -122,10 +182,24 @@ export default function Header({ onOpenNav }) {
           <Iconify icon="eva:menu-2-fill" />
         </IconButton>
       )}
-
+      <div
+        style={{
+          display: Display.HomePage === "none" ? "flex" : "none",
+          alignItems: "center"
+        }}>
+        <img src={`/assets/Work&ConnectIcon.png`} style={{
+          width: "100%",
+          height: "100%",
+          minWidth: "20px",
+          minHeight: "20px",
+          maxWidth: "50px",
+          maxHeight: "50px"
+        }}></img>
+        <span style={{ color: "black", fontWeight: "bold" }}>Work&Connect</span>
+      </div>
       {/* 検索バー */}
       <Searchbar style={{ display: Display.MyPage }} />
-    
+
       <Box sx={{ flexGrow: 1 }} />
       {/* ログイン、新規登録、本登録、チャット、通知、アカウントプロフィール */}
       <Stack direction="row" alignItems="center" spacing={1}>
@@ -170,6 +244,27 @@ export default function Header({ onOpenNav }) {
             </Stack>
           </>
         ) : null}
+
+        <Button id="LoginButton" onClick={handleChange}  variant="contained" style={{ display: Display.HomePage === "" ? "none" : "block" }}>
+          ログイン
+        </Button>
+
+        <Button id="PreSignButton" onClick={handleChange} style={{ display: Display.HomePage === "" ? "none" : "block" }}>
+          新規登録
+        </Button>
+
+        {ModalChange === "学生" ? (
+          <StudentLoginModal callSetModalChange={callSetModalChange} />
+        ) : ModalChange === "企業" ? (
+          <CompanyLoginModal callSetModalChange={callSetModalChange} />
+        ) : null}
+
+        {PreModalChange === "学生" ? (
+          <StudentPreSignModal callSetPreModalChange={callSetPreModalChange} />
+        ) : PreModalChange === "企業" ? (
+          <CompanyPreSignModal callSetPreModalChange={callSetPreModalChange} />
+        ) : null}
+
         <Tooltip title="チャット">
           <IconButton
             sx={{
@@ -219,15 +314,15 @@ export default function Header({ onOpenNav }) {
           }),
           ...(lgUp &&
             !Display.HomePage && {
-              width: `calc(100% - ${NAV.WIDTH + 1}px)`,
-              height: HEADER.H_DESKTOP,
-            }),
+            width: `calc(100% - ${NAV.WIDTH + 1}px)`,
+            height: HEADER.H_DESKTOP,
+          }),
         }}
       >
         <Toolbar
           sx={{
+            px: Display.HomePage === "none" ? { lg: 30 } : { lg: 5 },
             height: 1,
-            px: { lg: 5 },
           }}
         >
           {renderContent}

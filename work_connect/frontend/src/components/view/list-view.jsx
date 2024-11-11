@@ -313,7 +313,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           followStatus: company.follow_status,
         })),
     },
-    joboffers: {
+    Joboffer: {
       ItemName: "求人一覧",
       url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/JobOffer`,
       idKey: "id",
@@ -332,7 +332,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           count: company.form_data_count
         })),
     },
-    internships: {
+    Internship: {
       ItemName: "インターンシップ一覧",
       url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/Internship`,
       idKey: "id",
@@ -351,7 +351,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           count: company.form_data_count
         })),
     },
-    sessions: {
+    Session: {
       ItemName: "説明会一覧",
       url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/Session`,
       idKey: "id",
@@ -370,7 +370,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           count: company.form_data_count
         })),
     },
-    blogs: {
+    Blog: {
       ItemName: "ブログ一覧",
       url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/Blog`,
       idKey: "id",
@@ -642,8 +642,13 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     (category === "JobOffer" || category === "Internship" || category === "Blog" || category === "Session")
     || DecodeURL === `/Profile/${ParamUserName}` &&
     page === "companyinformation"
+<<<<<<< HEAD
     || DecodeURL === `/Profile/${ParamUserName}` &&
     page === "checkform"
+=======
+    || DecodeURL === `/Profile/${ParamUserName}/Checkform` &&
+    (category === "application_form_list" || category === "statistical_data")
+>>>>>>> 3a37ec732b1a157da2d33580057a4fe334c1a59f
   )) {
     // console.log(" URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合");
     lastUrl = `${url}?page=${Page}&sort=${sortOption}`;
@@ -660,6 +665,8 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   }
 
   const { data, error, isLoading } = useSWR(lastUrl, fetcher);
+
+  // const [SWRLoadFlg, setSWRLoadFlg] = useState(false);
 
   let LaravelResponse = isLoading;
   useEffect(() => {
@@ -747,6 +754,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
         console.log("data:setIsLoadItem:false");
       }
       if (data.length !== 0 || Page !== 1) {
+        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         setAllItems((prev) => ({
           ...prev,
           IsLoading: false// データが空のときはtrueにしてローディングを維持

@@ -48,6 +48,7 @@ export default function Nav({ openNav, onCloseNav }) {
           height: 1,
           display: "flex",
           flexDirection: "column",
+          backgroundColor: "#F9FAFB",
         },
       }}
     >

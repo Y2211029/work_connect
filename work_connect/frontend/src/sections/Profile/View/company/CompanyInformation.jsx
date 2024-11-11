@@ -1,5 +1,4 @@
 import { Helmet } from "react-helmet-async";
-
 import ListView from "src/components/view/list-view";
 import { useParams } from "react-router-dom";
 

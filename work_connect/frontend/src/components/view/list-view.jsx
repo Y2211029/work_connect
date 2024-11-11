@@ -176,8 +176,8 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           break;
         }
 
-        case options.DecodeURL === `/Profile/${ParamUserName}/Checkform` &&
-          options.category === "application_form_list": {
+        case options.DecodeURL === `/Profile/${ParamUserName}` &&
+          options.page === "checkform": {
             const { default: CheckFormPostCard } = await import("src/sections/Profile/View/company/CheckForm/post-card");
             setPostCard(() => CheckFormPostCard);
             console.log("CheckFormPostCard");
@@ -519,10 +519,13 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       idKey: "id",
       tags: ["company_name"],
       generatePosts: (WorkOfList) => {
-        return WorkOfList.map((company) => ({
-          article_title: company.article_title,
-          user_name: company.users,
-        }));
+        if(Array.isArray(WorkOfList)){
+          const application_form = WorkOfList.map((company) => ({
+            article_title: company.article_title,
+            user_name: company.users,
+          }));
+          return  [{ application_form }];
+        }
       },
     },
     companyinformations: {
@@ -639,8 +642,13 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     (category === "JobOffer" || category === "Internship" || category === "Blog")
     || DecodeURL === `/Profile/${ParamUserName}` &&
     page === "companyinformation"
+<<<<<<< HEAD
+    || DecodeURL === `/Profile/${ParamUserName}` &&
+    page === "checkform"
+=======
     || DecodeURL === `/Profile/${ParamUserName}/Checkform` &&
     (category === "application_form_list" || category === "statistical_data")
+>>>>>>> 335353431792de3e68ae3e83b4dfd405bce87833
   )) {
     // console.log(" URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合");
     lastUrl = `${url}?page=${Page}&sort=${sortOption}`;

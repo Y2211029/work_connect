@@ -195,7 +195,7 @@ export default function Header({ onOpenNav }) {
           maxWidth: "50px",
           maxHeight: "50px"
         }}></img>
-        <span style={{ color: "black" , fontWeight: "bold"}}>Work&Connect</span>
+        <span style={{ color: "black", fontWeight: "bold" }}>Work&Connect</span>
       </div>
       {/* 検索バー */}
       <Searchbar style={{ display: Display.MyPage }} />
@@ -245,7 +245,7 @@ export default function Header({ onOpenNav }) {
           </>
         ) : null}
 
-        <Button id="LoginButton" onClick={handleChange} style={{ display: Display.HomePage === "" ? "none" : "block" }}>
+        <Button id="LoginButton" onClick={handleChange}  variant="contained" style={{ display: Display.HomePage === "" ? "none" : "block" }}>
           ログイン
         </Button>
 

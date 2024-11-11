@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import PropTypes from "prop-types";
 export const MyContext = createContext();
 export const AllItemsContext = createContext();
@@ -39,14 +39,18 @@ export default function DashboardLayout({ children }) {
   }
   console.log("header-Mypage-searchParams", searchParams);
 
+  const pageLocation = useLocation();
+
+  const page = searchParams.get("page");
   useEffect(() => {
-    const page = searchParams.get("page");
+    // const page = searchParams.get("page");
     const url = location.pathname;
     const basePath = url.split("/")[1];
     // const param = page.split("?page=")[1];
     // console.log("header-Mypage-page", param);
     console.log("header-Mypage-location.pathname", location.pathname);
     console.log("header-Mypage-basePath", basePath);
+    console.log("header-Mypage-page", page);
     // ページパラメータが"mypage"の場合、MyPageを"none"に設定
 
     if (location && location.pathname && basePath == "Profile" && page == "news" || page == "mypage") {
@@ -66,7 +70,7 @@ export default function DashboardLayout({ children }) {
       HomePage: location.pathname === "/Top" ? "none" : "",
       MyPage: page === "mypage" ? "none" : "block",
     }));
-  }, [location.pathname, searchParams]); // location.pathname や searchParams が変わるたびに実行
+  }, [location.pathname, page, pageLocation]); // location.pathname や searchParams が変わるたびに実行
 
 
   const [AllItems, setAllItems] = useState({

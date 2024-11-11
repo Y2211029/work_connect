@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import PropTypes from 'prop-types';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
@@ -67,15 +67,11 @@ export default function NavTabs() {
     updateSessionData("accountData", "ProfileTabState", ProfileTabState);
   }, [ProfileTabState]);
 
+  const navigate = useNavigate();
+
   /* 作品か動画かを判断する用のパラメータ追加処理 */
   function pageCheck(pageStr) {
-    let url = new URL(window.location.href);
-    let urlStr = location.pathname;
-    if (url.searchParams.get('page') != null) {
-      let urlStrArray = urlStr.split('?');
-      urlStr = urlStrArray[0];
-    }
-    window.history.pushState('', '', urlStr + `?page=${pageStr}`);
+    navigate(`/Profile/${user_name}?page=${pageStr}`);
   }
 
   useEffect(() => {

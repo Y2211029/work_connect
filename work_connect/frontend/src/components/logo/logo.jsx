@@ -1,15 +1,14 @@
-// ;
 import { Link } from "react-router-dom";
-import styled from "styled-components";
 import { useContext } from "react";
 import { AllItemsContext } from "src/layouts/dashboard/index";
-import "src/logoAnimation.css";
+import styled from "styled-components";
 const StyledH3 = styled.h3`
-margin-top: 24px;
-margin-bottom: 24px;
-margin-left: 20px;
-margin-right: 20px;
+  margin-top: 24px;
+  margin-bottom: 24px;
+  margin-left: 20px;
+  margin-right: 20px;
 `;
+
 
 function Logo() {
   const { AllItems, setAllItems } = useContext(AllItemsContext);
@@ -38,27 +37,22 @@ function Logo() {
   return (
     <StyledH3>
       <Link to="/" style={{ textDecoration: "none" }} onClick={handleReset}>
-        <h1>
-          <span>W</span>
-          <span>o</span>
-          <span>r</span>
-          <span>k</span>
-          <span>&</span>
-          <span>C</span>
-          <span>n</span>
-          <span>n</span>
-          <span>e</span>
-          <span>c</span>
-          <span>t</span>
-        </h1>
+        <div style={{
+          display: "flex",
+          alignItems: "center"
+        }}>
+          <img src={`/assets/Work&ConnectIcon.png`} style={{
+            width: "100%",
+            height: "100%",
+            minWidth: "20px",
+            minHeight: "20px",
+            maxWidth: "50px",
+            maxHeight: "50px"
+          }}></img>
+          <span style={{ color: "black" }}>Work&Connect</span>
+        </div>
       </Link>
-    </StyledH3 >
-    // <StyledH3>
-    //   <Link to="/" style={{ textDecoration: "none" }} onClick={handleReset}>
-    //     <span style={{ color: "#4285f4" }}>W</span>ork&<span style={{ color: "#4285f4" }}>C</span>
-    //     onnect
-    //   </Link>
-    // </StyledH3>
+    </StyledH3>
   )
 }
 

@@ -1,11 +1,15 @@
 import { Helmet } from "react-helmet-async";
-import SpecialCheckFormView from "./CheckForm/View/CheckForm-view"
-// import SpecialCheckFormListView from "./CheckForm/View/CheckFormListView"
-// import Profile from "./Profile";
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import ListView from "src/components/view/list-view";
 
 // ----------------------------------------------------------------------
 
 export default function SpecialFormsPage() {
+
+  const { getSessionData } = useSessionStorage();
+  const accountData = getSessionData("accountData") || {};
+  const UserName = accountData.user_name; // 直接取得する
+  console.log("UserName",UserName);
 
   return (
     <>
@@ -13,9 +17,7 @@ export default function SpecialFormsPage() {
         <title>応募フォーム一覧 | Minimal UI</title>
       </Helmet>
 
-      {/* <Profile value={3} />
-      <SpecialCheckFormListView /> */}
-      <SpecialCheckFormView />
+      <ListView type="specialforms" ParamUserName={UserName} />
     </>
   );
 }

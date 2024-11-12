@@ -176,8 +176,8 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           break;
         }
 
-        case options.DecodeURL === `/Profile/${ParamUserName}/Checkform` &&
-          options.category === "application_form_list": {
+        case options.DecodeURL === `/Profile/${ParamUserName}` &&
+          options.page === "checkform": {
             const { default: CheckFormPostCard } = await import("src/sections/Profile/View/company/CheckForm/post-card");
             setPostCard(() => CheckFormPostCard);
             console.log("CheckFormPostCard");
@@ -313,7 +313,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           followStatus: company.follow_status,
         })),
     },
-    joboffers: {
+    Joboffer: {
       ItemName: "求人一覧",
       url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/JobOffer`,
       idKey: "id",
@@ -332,7 +332,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           count: company.form_data_count
         })),
     },
-    internships: {
+    Internship: {
       ItemName: "インターンシップ一覧",
       url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/Internship`,
       idKey: "id",
@@ -351,7 +351,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           count: company.form_data_count
         })),
     },
-    sessions: {
+    Session: {
       ItemName: "説明会一覧",
       url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/Session`,
       idKey: "id",
@@ -370,7 +370,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           count: company.form_data_count
         })),
     },
-    blogs: {
+    Blog: {
       ItemName: "ブログ一覧",
       url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/Blog`,
       idKey: "id",
@@ -519,10 +519,13 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       idKey: "id",
       tags: ["company_name"],
       generatePosts: (WorkOfList) => {
-        return WorkOfList.map((company) => ({
-          article_title: company.article_title,
-          user_name: company.users,
-        }));
+        if(Array.isArray(WorkOfList)){
+          const application_form = WorkOfList.map((company) => ({
+            article_title: company.article_title,
+            user_name: company.users,
+          }));
+          return  [{ application_form }];
+        }
       },
     },
     companyinformations: {
@@ -636,11 +639,16 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     || PathName === "/Internship_JobOffer?page=Blog"
     || DecodeURL === `/Profile/${ParamUserName}` &&
     page === "news" &&
-    (category === "JobOffer" || category === "Internship" || category === "Blog")
+    (category === "JobOffer" || category === "Internship" || category === "Blog" || category === "Session")
     || DecodeURL === `/Profile/${ParamUserName}` &&
     page === "companyinformation"
+<<<<<<< HEAD
+    || DecodeURL === `/Profile/${ParamUserName}` &&
+    page === "checkform"
+=======
     || DecodeURL === `/Profile/${ParamUserName}/Checkform` &&
     (category === "application_form_list" || category === "statistical_data")
+>>>>>>> 3a37ec732b1a157da2d33580057a4fe334c1a59f
   )) {
     // console.log(" URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合");
     lastUrl = `${url}?page=${Page}&sort=${sortOption}`;
@@ -657,6 +665,8 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   }
 
   const { data, error, isLoading } = useSWR(lastUrl, fetcher);
+
+  // const [SWRLoadFlg, setSWRLoadFlg] = useState(false);
 
   let LaravelResponse = isLoading;
   useEffect(() => {
@@ -744,6 +754,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
         console.log("data:setIsLoadItem:false");
       }
       if (data.length !== 0 || Page !== 1) {
+        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         setAllItems((prev) => ({
           ...prev,
           IsLoading: false// データが空のときはtrueにしてローディングを維持

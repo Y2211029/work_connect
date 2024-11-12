@@ -73,7 +73,7 @@ const SignUp = () => {
       >
         <div className="signUpFormContainer">
           <form onSubmit={handleSubmit}>
-            <h3>Work & Connect 本登録</h3>
+            <h3>Work&Connect 本登録</h3>
             <hr />
             <div className="signUpUiForm">
               <div className="signUpFormField">

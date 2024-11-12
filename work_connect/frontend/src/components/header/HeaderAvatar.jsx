@@ -19,6 +19,9 @@ const HeaderAvatar = forwardRef(({ children, ...others }, ref) => {
           bgcolor: "#a9a9a9",
           color: "white",
         },
+
+        width: 35,
+        height: 35,
       }}
       {...others}
     >

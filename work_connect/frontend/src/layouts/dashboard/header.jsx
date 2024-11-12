@@ -14,7 +14,6 @@ import Divider from "@mui/material/Divider";
 import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 
-
 import { useResponsive } from "src/hooks/use-responsive";
 import { bgBlur } from "src/theme/css";
 import { NAV, HEADER } from "./config-layout";
@@ -102,7 +101,6 @@ export default function Header({ onOpenNav }) {
     }
   };
 
-
   const handleOpen = (event) => {
     setOpen(event.currentTarget); // ボタンがクリックされた要素を保存
   };
@@ -150,8 +148,7 @@ export default function Header({ onOpenNav }) {
     var targetParants = $(e.target).parents(".formInModal");
 
     // 取得した要素の個数が0個の場合
-    if (targetParants.length == 0 || $(e.target).text() == "閉じる")
-      console.log($(e.target).text());
+    if (targetParants.length == 0 || $(e.target).text() == "閉じる") console.log($(e.target).text());
     if (targetParants.length == 0 || $(e.target).text() == "閉じる") {
       if (
         $(e.target).attr("class") != "formInModal" &&
@@ -185,16 +182,20 @@ export default function Header({ onOpenNav }) {
       <div
         style={{
           display: Display.HomePage === "none" ? "flex" : "none",
-          alignItems: "center"
-        }}>
-        <img src={`/assets/Work&ConnectIcon.png`} style={{
-          width: "100%",
-          height: "100%",
-          minWidth: "20px",
-          minHeight: "20px",
-          maxWidth: "50px",
-          maxHeight: "50px"
-        }}></img>
+          alignItems: "center",
+        }}
+      >
+        <img
+          src={`/assets/Work&ConnectIcon.png`}
+          style={{
+            width: "100%",
+            height: "100%",
+            minWidth: "20px",
+            minHeight: "20px",
+            maxWidth: "50px",
+            maxHeight: "50px",
+          }}
+        ></img>
         <span style={{ color: "black", fontWeight: "bold" }}>Work&Connect</span>
       </div>
       {/* 検索バー */}
@@ -245,11 +246,11 @@ export default function Header({ onOpenNav }) {
           </>
         ) : null}
 
-        <Button id="LoginButton" onClick={handleChange}  variant="contained" style={{ display: Display.HomePage === "" ? "none" : "block" }}>
+        <Button id="LoginButton" onClick={handleChange} variant="contained" style={{ display: Display.HomePage === "" ? "none" : "block" }}>
           ログイン
         </Button>
 
-        <Button id="PreSignButton" onClick={handleChange} style={{ display: Display.HomePage === "" ? "none" : "block" }}>
+        <Button id="PreSignButton" onClick={handleChange} variant="outlined" style={{ display: Display.HomePage === "" ? "none" : "block" }}>
           新規登録
         </Button>
 
@@ -271,6 +272,7 @@ export default function Header({ onOpenNav }) {
               marginLeft: "auto", // 右揃え
               width: "30px",
               height: "30px",
+              display: Display.HomePage ? "none" : "flex",
             }}
           >
             <ChatPng />
@@ -279,13 +281,14 @@ export default function Header({ onOpenNav }) {
 
         <NotificationsPopover />
 
-        <Tooltip title="アカウント">
+        <Tooltip title="アカウント" sx={{ display: Display.HomePage ? "none" : "flex" }}>
           <IconButton
             sx={{
               marginLeft: "auto", // 右揃え
               "&:hover": { backgroundColor: "#f0f0f0", title: "a" },
               width: "30px",
               height: "30px",
+              display: Display.HomePage ? "none" : "felx",
             }}
           >
             <AccountPopover />
@@ -314,9 +317,9 @@ export default function Header({ onOpenNav }) {
           }),
           ...(lgUp &&
             !Display.HomePage && {
-            width: `calc(100% - ${NAV.WIDTH + 1}px)`,
-            height: HEADER.H_DESKTOP,
-          }),
+              width: `calc(100% - ${NAV.WIDTH + 1}px)`,
+              height: HEADER.H_DESKTOP,
+            }),
         }}
       >
         <Toolbar

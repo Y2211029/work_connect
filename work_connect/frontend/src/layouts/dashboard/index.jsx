@@ -9,6 +9,7 @@ export const WorkImageContext = createContext();
 // export const SortOption = createContext();
 export const WebScokectContext = createContext();
 
+
 import Box from "@mui/material/Box";
 
 import Nav from "./nav";
@@ -24,12 +25,12 @@ export default function DashboardLayout({ children }) {
   let accountData = getSessionData("accountData");
 
   const [openNav, setOpenNav] = useState(false);
-  // const [searchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const [pageStyles, setPageStyles] = useState({
     HomePage: location.pathname === "/Top" ? "none" : "",
     MyPage: "block",
-    thisCompanyNews: "block",
+    thisCompanyNews: "flex",
   });
   const [workImage, setWorkImage] = useState([]);
 
@@ -44,7 +45,7 @@ export default function DashboardLayout({ children }) {
 
   const page = searchParams.get("page");
   useEffect(() => {
-    // const page = searchParams.get("page");
+    const page = searchParams.get("page");
     const url = location.pathname;
     const basePath = url.split("/")[1];
     // const param = page.split("?page=")[1];
@@ -54,16 +55,16 @@ export default function DashboardLayout({ children }) {
     console.log("header-Mypage-page", page);
     // ページパラメータが"mypage"の場合、MyPageを"none"に設定
 
-    if (location && location.pathname && basePath == "Profile" && page == "news" || page == "mypage") {
+    if ((location && location.pathname && basePath == "Profile" && page == "news") || page == "mypage") {
       setPageStyles((prev) => ({
         ...prev,
         thisCompanyNews: "none",
       }));
-      console.log("thisCompanyNews: none")
+      console.log("thisCompanyNews: none");
     } else {
       setPageStyles((prev) => ({
         ...prev,
-        thisCompanyNews: "block",
+        thisCompanyNews: "flex",
       }));
     }
     setPageStyles((prev) => ({
@@ -72,7 +73,6 @@ export default function DashboardLayout({ children }) {
       MyPage: page === "mypage" ? "none" : "block",
     }));
   }, [location.pathname, page, pageLocation]); // location.pathname や searchParams が変わるたびに実行
-
 
   useEffect(() => {
     console.log("pageStyles", pageStyles);

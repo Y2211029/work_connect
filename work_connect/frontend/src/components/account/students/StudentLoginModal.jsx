@@ -17,17 +17,8 @@ import IconButton from "@mui/material/IconButton";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Button from "@mui/material/Button";
-// ログインのモーダル CSS設定
-const modalStyle = {
-  content: {
-    position: "none",
-    backgroundColor: "rgb(0 0 0 / 70%)",
-    border: "none",
-    borderRadius: "0",
-    padding: "1.5rem",
-    overflow: "none",
-  },
-};
+
+import ModalStyle from "../ModalStyle";
 
 const StudentLoginModal = (props) => {
   const { updateSessionData } = useSessionStorage();
@@ -216,10 +207,10 @@ const StudentLoginModal = (props) => {
   return (
     <div>
       {/* 条件付きレンダリングを使用 */}
-      <Modal isOpen={showModal} contentLabel="Example Modal" style={modalStyle}>
+      <Modal isOpen={showModal} contentLabel="Example Modal" style={ModalStyle}>
         <div className="Modal">
           <form onSubmit={handleSubmit} className="formInModal">
-            <h3>Work & Connect ログイン</h3>
+            <h3>Work&Connect ログイン</h3>
             <hr />
             <div className="loginUiForm">
               <TextField
@@ -243,6 +234,11 @@ const StudentLoginModal = (props) => {
                 type={showPassword ? "text" : "password"}
                 value={formValues.password}
                 variant="outlined"
+                sx={{
+                  "&:hover": {
+                    borderColor: "#1877F2",
+                  },
+                }}
                 // パスワード表示/非表示の切り替え
                 InputProps={{
                   endAdornment: (
@@ -271,7 +267,7 @@ const StudentLoginModal = (props) => {
               <button onClick={handleCloseModal} className="submitButton">
                 閉じる
               </button>
-              <div href="" onClick={handleOpenCompanyModal} id="loginCompanyModalLink">
+              <div href="" onClick={handleOpenCompanyModal} id="loginCompanyModalLink" className="Login_Sign_select_C_or_S">
                 企業の方はこちら
               </div>
             </div>

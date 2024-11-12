@@ -1,7 +1,10 @@
-
 import { useState, useContext } from "react";
 import { useSessionStorage } from "../../../hooks/use-sessionStorage";
+import { DeviceFrameset } from "react-device-frameset";
+import "react-device-frameset/styles/marvel-devices.min.css";
 import $ from "jquery";
+
+import Button from "@mui/material/Button";
 
 // ゲストモード時、作品投稿・動画投稿・通知
 import { MyContext } from "src/layouts/dashboard/index";
@@ -13,14 +16,6 @@ import CompanyLoginModal from "src/components/account/company/CompanyLoginModal"
 // 新規登録
 import StudentPreSignModal from "src/components/account/students/StudentPreSignModal";
 import CompanyPreSignModal from "src/components/account/company/CompanyPreSignModal";
-// import styled from "styled-components";
-// const StyledH3 = styled.h3`
-//   margin-top: 24px;
-//   margin-bottom: 24px;
-//   margin-left: 20px;
-//   margin-right: 20px;
-// `;
-
 
 export default function TopPageListView() {
   const [ModalChange, setModalChange] = useState("");
@@ -37,7 +32,6 @@ export default function TopPageListView() {
     setPreModalChange(newValue);
   };
 
-
   const handleChange = (e) => {
     if (e.target.id === "LoginButton") {
       setModalChange("学生");
@@ -47,7 +41,6 @@ export default function TopPageListView() {
       setPreModalChange("学生");
     }
   };
-
 
   // ログインのform内以外をクリックしたときにモーダルを閉じる処理
   $("*").click(function (e) {
@@ -82,42 +75,49 @@ export default function TopPageListView() {
   });
   return (
     <>
-      {/* <Typography>サイトにアクセスすると一番初めに表示されるページです。</Typography> */}
-      {/* <h1>作品投稿・動画投稿・本登録（テスト表示）・本登録ボタン・通知、検索。ハンバーガーボタンを非表示にします。</h1> */}
-        {/* <StyledH3>
-        <div className="top_page_app_name">Work&Connect</div>
-        </StyledH3> */}
-        <div className="top_page_wrapper">
-          <div className="top_page_content">
-            <div className="top_page_content_first">
-              <div>
-                <p className="top_page_message">あなたの<span className="top_page_messege_span">アピール</span>が</p>
-                <p className="top_page_message"><span className="top_page_messege_span_second">未来を創る</span></p>
-              </div>
-              <div>
-                <div className="top_page_controller">
-                  <button id="LoginButton" className="top_page_button login" onClick={handleChange} style={{ display: Display.HomePage === "" ? "none" : "block" }}>
-                    始めよう
-                  </button>
-                </div>
-                {ModalChange === "学生" ? (
-                  <StudentLoginModal callSetModalChange={callSetModalChange} />
-                ) : ModalChange === "企業" ? (
-                  <CompanyLoginModal callSetModalChange={callSetModalChange} />
-                ) : null}
-
-                {PreModalChange === "学生" ? (
-                  <StudentPreSignModal callSetPreModalChange={callSetPreModalChange} />
-                ) : PreModalChange === "企業" ? (
-                  <CompanyPreSignModal callSetPreModalChange={callSetPreModalChange} />
-                ) : null}
-              </div>
+      <div className="top_page_wrapper">
+        <div className="top_page_content">
+          <div className="top_page_content_first">
+            <div>
+              <p className="top_page_message">
+                あなたの<span className="top_page_messege_span">アピール</span>が
+              </p>
+              <p className="top_page_message">
+                <span className="top_page_messege_span_second">未来を創る</span>
+              </p>
             </div>
             <div>
-              <img className="top_page_app_image" src="/assets/images/covers/phoneAppImage.png" alt="" />
+              <div className="top_page_controller">
+                <Button
+                  id="LoginButton"
+                  variant="contained"
+                  className="top_page_button login"
+                  onClick={handleChange}
+                  style={{ display: Display.HomePage === "" ? "none" : "block" }}
+                >
+                  始めよう
+                </Button>
+              </div>
+              {ModalChange === "学生" ? (
+                <StudentLoginModal callSetModalChange={callSetModalChange} />
+              ) : ModalChange === "企業" ? (
+                <CompanyLoginModal callSetModalChange={callSetModalChange} />
+              ) : null}
+
+              {PreModalChange === "学生" ? (
+                <StudentPreSignModal callSetPreModalChange={callSetPreModalChange} />
+              ) : PreModalChange === "企業" ? (
+                <CompanyPreSignModal callSetPreModalChange={callSetPreModalChange} />
+              ) : null}
             </div>
           </div>
+          <div style={{ height: "100%" }}>
+            <DeviceFrameset device="iPhone X" /*landscape*/>
+              <img className="top_page_app_image"  src="/assets/images/covers/phoneAppImage.png" alt="" />
+            </DeviceFrameset>
+          </div>
         </div>
-      </>
-      );
+      </div>
+    </>
+  );
 }

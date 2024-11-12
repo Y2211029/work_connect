@@ -9,16 +9,7 @@ import $ from "jquery";
 
 import "src/App.css";
 
-// ログインのモーダル CSS設定
-const modalStyle = {
-  content: {
-    position: "none",
-    backgroundColor: "rgb(0 0 0 / 70%)",
-    border: "none",
-    borderRadius: "0",
-    padding: "1.5rem",
-  },
-};
+import ModalStyle from "../ModalStyle";
 
 const StudentPreSignModal = (props) => {
   const [showModal, setShowModal] = useState(true);
@@ -135,9 +126,7 @@ const StudentPreSignModal = (props) => {
           }
         } else {
           console.log("login失敗");
-          alert(
-            "ログインに失敗しました。\nユーザー名、メールアドレス、パスワードをご確認ください。"
-          );
+          alert("ログインに失敗しました。\nユーザー名、メールアドレス、パスワードをご確認ください。");
         }
       })
       .fail(function (textStatus, errorThrown) {
@@ -150,8 +139,7 @@ const StudentPreSignModal = (props) => {
 
   const validate = (values, boolean) => {
     const errors = {};
-    const regex =
-      /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/;
+    const regex = /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/;
     // メールアドレスがまだ存在しないときはboolean == "true"
     if (boolean == true && !values.mail) {
       errors.mail = "メールアドレスを入力してください";
@@ -169,10 +157,17 @@ const StudentPreSignModal = (props) => {
     <div>
       {/* 条件付きレンダリングを使用 */}
 
-      <Modal isOpen={showModal} contentLabel="Example Modal" style={modalStyle}>
+      <Modal isOpen={showModal} contentLabel="Example Modal" style={ModalStyle}>
         <div className="preSignUpFormContainer">
           <form onSubmit={handleSubmit} className="formInModal">
-            <h3>Work & Connect 仮登録</h3>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <span style={{ color: "black" }}>Work&Connect</span>
+            </div>
             <hr />
             <div className="preSignUpUiForm">
               <TextField
@@ -186,25 +181,12 @@ const StudentPreSignModal = (props) => {
                 variant="outlined"
               />
               <p className="errorMsg">{formErrors.mail}</p>
-              <button
-                type="submit"
-                className="submitButton"
-                disabled={isSubmitting.setIsSubmitting}
-              >
-                {isSubmitting.setIsSubmitting == true
-                  ? "送信中..."
-                  : isSubmitting.retransmissionFlag == true
-                    ? "再送信"
-                    : "仮登録"}
+              <button type="submit" className="submitButton" disabled={isSubmitting.setIsSubmitting}>
+                {isSubmitting.setIsSubmitting == true ? "送信中..." : isSubmitting.retransmissionFlag == true ? "再送信" : "仮登録"}
               </button>
-              {Object.keys(formErrors).length === 0 &&
-                isSubmit &&
-                handleCloseModal}
+              {Object.keys(formErrors).length === 0 && isSubmit && handleCloseModal}
               <button onClick={handleCloseModal}>閉じる</button>
-              <div
-                onClick={handleOpenCompanyPreModal}
-                id="PreSignCompanyModalLink"
-              >
+              <div onClick={handleOpenCompanyPreModal} id="PreSignCompanyModalLink">
                 企業の方はこちら
               </div>
             </div>

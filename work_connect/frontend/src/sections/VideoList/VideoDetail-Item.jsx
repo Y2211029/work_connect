@@ -4,6 +4,10 @@ import Iframe from "react-iframe";
 import axios from "axios";
 
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import Divider from "@mui/material/Divider";
+import Typography from "@mui/material/Typography";
 
 import { UseCreateTagbutton } from "src/hooks/use-createTagbutton";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
@@ -16,7 +20,7 @@ const VideoDetailItem = () => {
   // -----動画データ-----
   const [VideoDetail, setVideoDetail] = useState([]);
   const [CommentPost, setCommentPost] = useState({
-    display: "none",
+    // display: "none",
     text: "",
   });
   const [videoComment, setVideoComment] = useState([]);
@@ -110,14 +114,14 @@ const VideoDetailItem = () => {
     </>
   );
 
-  // コメント欄表示
-  const handleTextOpen = () => {
-    setCommentPost({ ...CommentPost, display: "block" });
-  };
+  // // コメント欄表示
+  // const handleTextOpen = () => {
+  //   setCommentPost({ ...CommentPost, display: "block" });
+  // };
 
   // コメント投稿キャンセル
   const handlePostCancel = () => {
-    setCommentPost({ ...CommentPost, display: "none", text: "" });
+    setCommentPost({ ...CommentPost, text: "" });
   };
 
   // コメント投稿内容
@@ -247,15 +251,12 @@ const VideoDetailItem = () => {
   // 動画紹介文
   const renderIntro = VideoDetail.intro && VideoDetail.intro.length > 0 && (
     <>
-      <p>紹介文</p>
-      <textarea
-        style={{
-          width: "100%",
-          height: "300px",
-        }}
-        value={VideoDetail.intro}
-        readOnly // 読み取り専用にする場合
-      />
+      <Typography variant="h5" className="WorkDetail_typo">
+        ●動画の紹介
+      </Typography>
+      <div className="WorkDetail_info-intro" style={{ fontSize: "16px" }}>
+        {VideoDetail.intro}
+      </div>
     </>
   );
 
@@ -267,6 +268,37 @@ const VideoDetailItem = () => {
     </>
   );
 
+  const renderCommentButton = (
+    <div
+      className="top_comment_area"
+      style={{
+        display: CommentPost.display,
+      }}
+    >
+      <div className="comment_area_parts">
+        <textarea
+          className="comment_text_area"
+          value={CommentPost.text}
+          onChange={(e) => handlePostChange(e.target.value)}
+          style={{
+            height: "100px",
+          }}
+        ></textarea>
+        <div className="comment_operation">
+          <div className="comment_button">
+            <Button variant="outlined" onClick={() => handlePostCancel()}>
+              キャンセル
+            </Button>
+            <Button variant="contained" onClick={() => handlePost()}>
+              コメント
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // コメント
   const renderComment = videoComment && Object.keys(Comment).length > 0 && (
     <>
       {videoComment && Object.keys(Comment).length > 0 && <h3>コメント一覧</h3>}
@@ -274,24 +306,54 @@ const VideoDetailItem = () => {
         (item.commenter_id === AccountData.id && item.commenter_user_name === AccountData.user_name) ||
         (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
           <div key={index}>
-            <hr />
             {/* {console.log("comment", Comment)} */}
-            <button onClick={() => handleClick(item.id)}>編集</button>
-            <button onClick={() => handleCancel(item.id)} className={`comment_${item.id}`} style={{ display: Comment[item.id]?.display }}>
-              キャンセル
-            </button>
-            <button onClick={() => handleSave(item.id)} className={`comment_${item.id}`} style={{ display: Comment[item.id]?.display }}>
-              保存
-            </button>
-            <button onClick={() => handleDelete(item.id)} className={`comment_${item.id}`} style={{ display: Comment[item.id]?.display }}>
-              削除
-            </button>
-            <p>{item.commenter_user_name || item.commenter_company_name}</p>
+            <Divider sx={{ borderStyle: "dashed", margin: "5px 0px 20px 0px", width: "90%" }} />
+            <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={3} sx={{ width: "80%", paddingBottom: "5px" }}>
+              <Stack direction="row" justifyContent="left" alignItems="center" spacing={1}>
+                <div>{item.commenter_user_name || item.commenter_company_name}</div>
+              </Stack>
+              <Stack direction="row" justifyContent="right" alignItems="center" spacing={1}>
+                <Stack direction="row" justifyContent="left" alignItems="center" spacing={1}>
+                  <Button variant="outlined" onClick={() => handleClick(item.id)}>
+                    編集
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    onClick={() => handleCancel(item.id)}
+                    className={`comment_${item.id}`}
+                    style={{ display: Comment[item.id]?.display }}
+                  >
+                    キャンセル
+                  </Button>
+                </Stack>
+                <Stack direction="row" justifyContent="left" alignItems="center" spacing={1}>
+                  <Button
+                    variant="contained"
+                    onClick={() => handleSave(item.id)}
+                    className={`comment_${item.id}`}
+                    style={{ display: Comment[item.id]?.display }}
+                  >
+                    保存
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    sx={{ color: "error.main" }}
+                    onClick={() => handleDelete(item.id)}
+                    className={`comment_${item.id}`}
+                    style={{ display: Comment[item.id]?.display }}
+                  >
+                    削除
+                  </Button>
+                </Stack>
+              </Stack>
+            </Stack>
+
             <textarea
               style={{
-                width: "50%",
+                width: "80%",
                 height: "100px",
               }}
+              className="comment_text_area items"
               value={Comment[item.id].text}
               readOnly={Comment[item.id].readOnly} // 読み取り専用にする場合
               onChange={(e) => handleChenge(e.target.value, item.id)}
@@ -303,9 +365,10 @@ const VideoDetailItem = () => {
             <p>{item.commenter_user_name || item.commenter_company_name}</p>
             <textarea
               style={{
-                width: "50%",
+                width: "80%",
                 height: "100px",
               }}
+              className="comment_text_area items"
               value={item.content}
               readOnly // 読み取り専用にする場合
             />
@@ -331,27 +394,7 @@ const VideoDetailItem = () => {
         {renderYoutubeFrame}
         {renderGenre}
         {renderIntro}
-        <div>
-          <button onClick={handleTextOpen}>コメントする</button>
-          <br />
-          <div
-            style={{
-              display: CommentPost.display,
-            }}
-          >
-            <textarea
-              style={{
-                width: "50%",
-                height: "100px",
-              }}
-              value={CommentPost.text}
-              onChange={(e) => handlePostChange(e.target.value)}
-            />
-            <br />
-            <button onClick={() => handlePostCancel()}>キャンセル</button>
-            <button onClick={() => handlePost()}>投稿</button>
-          </div>
-        </div>
+        {renderCommentButton}
         {renderComment}
       </Box>
       {/* 各項目の表示、ここまで */}

@@ -44,7 +44,7 @@ const modalStyle = {
     overflow: 'hidden',
     zIndex: 1300, // コンテンツの z-index
     backgroundColor: 'white',
-    height: '40%',
+    height: '60%',
     width: '70%',
   },
 };
@@ -239,7 +239,7 @@ const NewsMenu = ({
           <Accordion
             key={key}
             expanded={expanded === key}
-            onChange={AccordionhandleChange(key)} // 修正ポイント
+            onChange={AccordionhandleChange(key)} 
             className="Accordion"
           >
             <AccordionSummary

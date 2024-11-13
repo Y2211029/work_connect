@@ -18,8 +18,6 @@
     margin-bottom: 20px; /* テーブル下に余白を追加 */
 }
 
-
-
 /* モーダル編集画面 */
 .modal_overlay {
     position: fixed;
@@ -50,7 +48,7 @@
     max-height: 300px; /* 最大の高さを指定（任意） */
     resize: vertical; /* 垂直方向のリサイズを許可 */
     box-sizing: border-box; /* パディングとボーダーを含めたサイズ計算 */
-    overflow: hidden; /* 内容が溢れた場合は隠す */
+    overflow: auto; /* 内容が溢れた場合は隠す */
     font-size: 16px; /* フォントサイズを設定 */
 }
 
@@ -60,6 +58,11 @@
     font-size: 16px; /* フォントサイズを設定 */
     width: 100%; /* 幅を100%にして親要素にフィットさせる */
     box-sizing: border-box; /* ボックスのサイズを調整 */
+}
+
+.DragSort{
+    width:120%;
+    background-color: crimson;
 }
 
 .editButtonContainer {
@@ -75,10 +78,68 @@
     /* 列幅を自動調整 */
 }
 
+.Modal_tableContainer {
+    height: 400px; /* TableContainer全体の高さを設定 */
+    overflow-y: auto; /* 縦方向にスクロール可能にする */
+}
+
+.FixedTableHead {
+    position: sticky;
+    top: 0;
+    background-color: white; /* ヘッダーの背景色 */
+    z-index: 1;
+}
+
+.EditCompanyInformationTableBody {
+    max-height: 300px; /* TableBodyの最大高さ */
+    overflow-y: auto; /* 縦方向のスクロールを有効にする */
+}
+
+.EditCompanyInformation-Accordion{
+    height:100%;
+    width:60%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    align-items: center;
+    text-align: left;
+    margin-left:20%;
+    padding-bottom:5px;
+}
+
+.EditTitle{
+    margin-bottom:10px;
+}
+
+.CloseButton{
+    margin-top:1%;
+    margin-left:1%;
+}
+
 .CancelButton {
     background: none;
     border: none;
     font-size: 1004px;
     cursor: pointer;
     padding:0;
-  }
+}
+
+
+/* ドラッグアイコンとアコーディオン全体を囲むコンテナ */
+.DragSortContainer {
+    display: flex;
+    align-items: center;
+}
+
+/* ドラッグアイコン専用のスタイル */
+.DragIcon {
+    width: 40px; /* 必要に応じて調整 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* AccordionWrapper のスタイルはアコーディオン本体に影響しないように指定 */
+.AccordionWrapper {
+    width: 100%; /* アコーディオン全体の幅を100%に */
+    background-color: crimson; /* 必要に応じて他の背景色に変更 */
+}

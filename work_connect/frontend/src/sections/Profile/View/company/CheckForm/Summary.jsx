@@ -80,52 +80,68 @@ const Summary = ({
   application_form,
   selectedIndex,
   GroupedResponses,
+  HandleTabClick,
+  setViewStudentName
 }) => {
   console.log(GroupedResponses);
-  return (
-    <>
-      <div className="summary-form">
 
-        <Stack direction="column" spacing={2}>
-          <div className="writeform-container">
-            <Typography className="writeform-title">
-              回答者: {application_form[selectedIndex].user_name.length}名
+  const IndividualJump = (e, number,studentName) => {
+    console.log("IndividualJump通りました");
+    console.log(studentName);
+    setViewStudentName(studentName)
+    HandleTabClick(e, number);
+  };
+
+
+
+return (
+  <>
+    <div className="summary-form">
+
+      <Stack direction="column" spacing={2}>
+        <div className="writeform-container">
+          <Typography className="writeform-title">
+            回答者: {application_form[selectedIndex].user_name.length}名
+          </Typography>
+          {application_form[selectedIndex].user_name.map((user, index) => (
+            <Typography
+              key={user.write_form_id || index}
+              className="writeform-answereddata"
+              onClick={(e) => IndividualJump(e, 2,user.user_name)}
+            >
+              <TooltipTitle title={`クリックすると${user.user_name}の回答が見られます`}>
+                <span>{user.user_name}さん</span>
+              </TooltipTitle>
             </Typography>
-            {application_form[selectedIndex].user_name.map((user, index) => (
-              <Typography key={user.write_form_id || index} className="writeform-answereddata">
-                <TooltipTitle title={`クリックすると${user.user_name}さんの回答が見られます`}>
-                  {user.user_name}さん
-                </TooltipTitle>
+          ))}
+        </div>
+        {GroupedResponses &&
+          Object.entries(GroupedResponses).map(([title, { responses, type, contents }], index) => (
+            <div key={index} className="writeform-container">
+              <Typography className="writeform-title">
+                {title} ({type}):
               </Typography>
-            ))}
-          </div>
-          {GroupedResponses &&
-            Object.entries(GroupedResponses).map(([title, { responses, type, contents }], index) => (
-              <div key={index} className="writeform-container">
-                <Typography className="writeform-title">
-                  {title} ({type}):
+              <Typography className="writeform-contents">
+                {contents}
+              </Typography>
+              <Typography className="writeform-length">
+                {responses.length}件の回答
+              </Typography>
+              {responses.map((response, idx) => (
+                <Typography key={idx} className="writeform-answereddata">
+                  {response}
                 </Typography>
-                <Typography className="writeform-contents">
-                  {contents}
-                </Typography>
-                <Typography className="writeform-length">
-                  {responses.length}件の回答
-                </Typography>
-                {responses.map((response, idx) => (
-                  <Typography key={idx} className="writeform-answereddata">
-                    {response}
-                  </Typography>
-                ))}
-                {type === 'checkbox' && <Graph title={title} responses={responses} />}
-              </div>
-            ))}
-        </Stack>
+              ))}
+              {type === 'checkbox' && <Graph title={title} responses={responses} />}
+            </div>
+          ))}
+      </Stack>
 
-      </div>
+    </div>
 
-    </>
+  </>
 
-  )
+)
 }
 
 Summary.propTypes = {
@@ -153,7 +169,8 @@ Summary.propTypes = {
 
   selectedIndex: PropTypes.number,
   GroupedResponses: PropTypes.func.isRequired,
-
+  HandleTabClick: PropTypes.func.isRequired,
+  setViewStudentName: PropTypes.func.isRequired
 }
 
 export default Summary;

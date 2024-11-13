@@ -13,10 +13,10 @@ import { Model } from 'survey-core';
 import { Survey } from 'survey-react-ui';
 import 'survey-core/defaultV2.min.css';
 
-// Individual.jsx
 const Individual = ({
     application_form,
     selectedIndex,
+    viewingStudentName
 }) => {
     const [surveyModel, setSurveyModel] = useState(null);
     const [groupedResponses, setGroupedResponses] = useState({});
@@ -24,7 +24,7 @@ const Individual = ({
     const [selectedUserName, setSelectedUserName] = useState("");
     const [responses, setResponses] = useState({ usernames: "", id: "", writeforms: [] });
     const [idNumber, setIdNumber] = useState("");
-    const [loading, setLoading] = useState(true); // ローディング状態を追加
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         let userIdCounter = 1;
@@ -50,8 +50,11 @@ const Individual = ({
             const MaxId = Math.max(...Object.values(grouped).map(user => user.id));
             setMaxId(MaxId);
 
-            const firstUsername = Object.keys(grouped)[0];
+            //もしもSummary→Individualの流れであれば
+            //呼び出していた名前をsetSelectedUserNameに入れる
+            const firstUsername = viewingStudentName || Object.keys(grouped)[0];
             if (firstUsername) {
+                console.log("firstUsername",firstUsername);
                 setSelectedUserName(firstUsername);
                 const initialId = grouped[firstUsername].id || 1;
                 setIdNumber(initialId);
@@ -243,6 +246,7 @@ Individual.propTypes = {
         })
     ).isRequired,
     selectedIndex: PropTypes.number.isRequired,
+    viewingStudentName: PropTypes.string,
 };
 
 export default Individual;

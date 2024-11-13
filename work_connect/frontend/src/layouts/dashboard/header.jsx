@@ -342,6 +342,7 @@ export default function Header({ onOpenNav }) {
             color: "black",
             borderRadius: "50%",
             boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+            display: Display.HomePage? "none" : "block",
           }}
         />
       </AppBar>

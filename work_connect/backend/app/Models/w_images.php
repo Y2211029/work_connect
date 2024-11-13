@@ -20,6 +20,8 @@ class w_images extends Model
         'annotation',
         'work_id',
         'thumbnail_judgement',
+        'created_at',
+        'updated_at',
     ];
 
     // タイムスタンプのカラムが存在しない場合は、$timestampsをfalseに設定

@@ -16,19 +16,21 @@ import Divider from "@mui/material/Divider";
 const PostCard = forwardRef(({ post }, ref) => {
   const { work_id, genre, thumbnail, icon, title, intro, author, userName, createdAt } = post;
 
-  const renderThumbnail = (
-    <Box
-      component="img"
-      src={thumbnail}
-      sx={{
-        aspectRatio: 16 / 9,
-        borderRadius: "5px",
-        width: "100%",
-        objectFit: "cover",
-        marginBottom: "10px",
-      }}
-    />
-  );
+  const renderThumbnail =
+    (console.log("thumbnail", thumbnail),
+    (
+      <Box
+        component="img"
+        src={thumbnail}
+        sx={{
+          aspectRatio: 16 / 9,
+          borderRadius: "5px",
+          width: "100%",
+          objectFit: "cover",
+          marginBottom: "10px",
+        }}
+      />
+    ));
 
   // アイコン
   const renderAvatar = (
@@ -57,7 +59,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   );
 
   // ジャンル
-  const renderGenre = genre !== null ? <div>{genre}</div> : null;
+  const renderGenre = genre !== null ? <div style={{ margin: "10px 0px 10px 0px" }}>{genre}</div> : null;
 
   /* 投稿日 */
   const renderDate = (
@@ -162,14 +164,11 @@ const PostCard = forwardRef(({ post }, ref) => {
         <div className="postCard" style={{ width: "100%" }}>
           {renderShape}
           {renderThumbnail}
-          {renderGenre}
-          <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 5px 0px" }} />
           {renderTitle}
-          {/* <div style={{ borderBottom: "1px solid #bbb", margin: "5px 0px 10px 0px" }}></div> */}
-          <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 5px 0px" }} />
+          <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 0px 0px" }} />
+          {renderGenre}
+          <Divider sx={{ borderStyle: "dashed", display: "block", margin: "0px 0px 5px 0px" }} />
           {renderIntro}
-          {/* <div style={{ borderBottom: "1px solid #bbb", margin: "10px 0px 5px 0px" }}></div> */}
-          {/* <div style={{ borderBottom: "1px solid #bbb", margin: "10px 0px 5px 0px" }}></div> */}
           <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 5px 0px" }} />
           {renderInfo}
         </div>

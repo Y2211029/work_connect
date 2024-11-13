@@ -655,33 +655,36 @@ const WorkDetailItem = () => {
     </>
   );
   const renderCommentButton = (
-    <div
-      className="top_comment_area"
-      style={{
-        display: CommentPost.display,
-      }}
-    >
-      <div className="comment_area_parts">
-        <textarea
-          className="comment_text_area"
-          value={CommentPost.text}
-          onChange={(e) => handlePostChange(e.target.value)}
-          style={{
-            height: "100px",
-          }}
-        ></textarea>
-        <div className="comment_operation">
-          <div className="comment_button">
-            <Button variant="outlined" onClick={() => handlePostCancel()}>
-              キャンセル
-            </Button>
-            <Button variant="contained" onClick={() => handlePost()}>
-              コメント
-            </Button>
+    <>
+      <div
+        className="top_comment_area"
+        style={{
+          display: CommentPost.display,
+          marginTop: "100px",
+        }}
+      >
+        <div className="comment_area_parts">
+          <textarea
+            className="comment_text_area"
+            value={CommentPost.text}
+            onChange={(e) => handlePostChange(e.target.value)}
+            style={{
+              height: "100px",
+            }}
+          ></textarea>
+          <div className="comment_operation">
+            <div className="comment_button">
+              <Button variant="outlined" onClick={() => handlePostCancel()}>
+                キャンセル
+              </Button>
+              <Button variant="contained" onClick={() => handlePost()}>
+                コメント
+              </Button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 
   useEffect(() => {

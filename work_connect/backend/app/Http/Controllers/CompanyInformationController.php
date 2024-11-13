@@ -68,7 +68,7 @@ class CompanyInformationController extends Controller
 
     private function getCompanyInformationData($CompanyName)
     {
-        $company = w_company::where('company_name', $CompanyName)->first();
+        $company = w_company::where('user_name', $CompanyName)->first();
 
         if (!$company) {
             Log::info("会社が見つかりませんでした: {$CompanyName}");
@@ -109,11 +109,12 @@ class CompanyInformationController extends Controller
     public function all_company_informations_pull(Request $request)
     {
 
-        // リクエストからCompanyInformationを取得
-        $CompanyId = $request->input("InformationId");
+        // リクエストから名前を取得し、w_compinesテーブルからidを取得
+        $InformationUserName = $request->input("InformationUserName");
 
-        Log::info("企業ID", ['company_id' => $CompanyId]);
-        Log::info("all_company_informations_pull通りました");
+        $company = w_company::where('user_name', $InformationUserName)->first();
+
+        $CompanyId = $company->id;
 
         // 企業情報が存在するかチェック
         $company_information = w_company_information::where('company_id', $CompanyId)
@@ -141,18 +142,60 @@ class CompanyInformationController extends Controller
                     'row_number' => $item->row_number // 直接アクセス
                 ];
             });
-
         } else {
-            $title_contents_array = []; // 企業情報がない場合は空配列
+            // 企業情報がない場合は未保存のままの配列をデフォルトとして入れる
+            $title_contents_array = $this->CompanyInformationDefaultInsert($company);
             Log::info("企業情報が見つかりませんでした");
         }
 
-
-
         return response()->json([
             'title_contents' => $title_contents_array,
+            'id' => $CompanyId
         ]);
     }
 
+    //企業情報が0件の場合に、テンプレートの情報を保存する
+    public function CompanyInformationDefaultInsert($company)
+    {
+        $DefaultInsertArray = [
+            ['title' => '企業名', 'contents' => $company->company_name],
+            ['title' => '企業概要', 'contents' => $company->intro],
+            ['title' => '本社所在地', 'contents' => $company->address]
+        ];
 
+        foreach ($DefaultInsertArray as $index => $data) {
+            w_company_information::create([
+                'title' => $data['title'],
+                'contents' => $data['contents'],
+                'company_id' => $company->id,
+                'public_status' => 0,
+                'row_number' => $index + 1,
+            ]);
+        }
+
+        // 追加した企業情報を取得
+        $company_information = w_company_information::where('company_id', $company->id)
+            ->join('w_companies', 'w_companies_information.company_id', '=', 'w_companies.id')
+            ->select(
+                'w_companies_information.*',
+                'w_companies.*',
+                'w_companies_information.id as company_information_id',
+                'w_companies.company_name as company_name'
+            )
+            ->orderBy('w_companies_information.row_number', 'asc')
+            ->get();
+
+        // title と contents を配列にまとめる
+        return $company_information->map(function ($item) {
+            return [
+                'title' => $item->title,
+                'contents' => $item->contents,
+                'company_name' => $item->company_name,  // 直接アクセス
+                'id' => $item->company_information_id,  // 直接アクセス
+                'company_id' => $item->company_id,       // 直接アクセス
+                'public_status' => $item->public_status, // 直接アクセス
+                'row_number' => $item->row_number // 直接アクセス
+            ];
+        });
+    }
 }

@@ -30,6 +30,7 @@ const PostCard = forwardRef(({ post }) => {
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(0);
+  const [viewingStudentName, setViewStudentName] = useState("");
   // const { setAllItems } = useContext(AllItemsContext);
 
 
@@ -187,16 +188,20 @@ const PostCard = forwardRef(({ post }) => {
                 application_form={application_form}
                 selectedIndex={selectedIndex}
                 GroupedResponses={groupedResponses}
+                HandleTabClick = {handleTabClick}
+                setViewStudentName={setViewStudentName}
                 />}
               {value === 1 && <Question
                 application_form={application_form}
                 selectedIndex={selectedIndex}
                 GroupedResponses={groupedResponses}
               />}
-              {value === 2 && <Individual 
+              {value === 2 && <Individual
                 application_form={application_form}
                 selectedIndex={selectedIndex}
                 GroupedResponses={groupedResponses}
+                viewingStudentName ={viewingStudentName}
+                // 名前
               />}
             </Box>
 

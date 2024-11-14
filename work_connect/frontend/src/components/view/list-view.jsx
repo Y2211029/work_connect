@@ -18,7 +18,6 @@ import { UseCreateTagbutton } from "src/hooks/use-createTagbutton";
 
 import { useParams } from "react-router-dom";
 
-const fetcher = (lastUrl) => fetch(lastUrl).then((res) => res.json());
 const setting = {
   rootMargin: "40px",
 };
@@ -647,21 +646,26 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     console.log("lastUrllastUrl:PathName", PathName);
   }
 
+  const fetcher = (lastUrl) => fetch(lastUrl).then((res) => {
+    return res.json().then((data) => {
+      console.log("fetcher:res:data:  ", data);
+      if (data.length == 0) {
+        setAllItems((prevItems) => ({
+          ...prevItems,
+          IsLoading: false,
+          DataList: [],
+        }));
+      }
+      return data;
+    });
+  });
+
   const { data, error, isLoading } = useSWR(lastUrl, fetcher);
 
   // const [SWRLoadFlg, setSWRLoadFlg] = useState(false);
 
   let LaravelResponse = isLoading;
-  useEffect(() => {
-    console.log("useSWR:lastUrl:", lastUrl);
-    console.log("useSWR:isLoading:", LaravelResponse);
-    if (LaravelResponse == false) {
-      setAllItems((prevItems) => ({
-        ...prevItems,
-        IsLoading: false, // 一時的にローディングを解除
-      }));
-    }
-  }, [LaravelResponse, lastUrl]);
+
 
   // 検索時にsetWorkOfListをリセット
   useEffect(() => {
@@ -723,7 +727,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
         console.log("data:setIsLoadItem:false");
       }
       if (data.length !== 0 || Page !== 1) {
-        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        console.log("ローディング削除:2");
         setAllItems((prev) => ({
           ...prev,
           IsLoading: false, // データが空のときはtrueにしてローディングを維持
@@ -747,6 +751,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
         console.log("DataList:setIsLoadItem:false");
       }
       if (DataList.length !== 0 || Page !== 1) {
+        console.log("ローディング削除:3");
         setAllItems((prev) => ({
           ...prev,
           IsLoading: false, // データが空のときはtrueにしてローディングを維持
@@ -762,6 +767,20 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   useEffect(() => {
     console.log("WorkOfList", WorkOfList);
   }, [WorkOfList]);
+
+  useEffect(() => {
+    console.log("useSWR:lastUrl:", lastUrl);
+    console.log("useSWR:LaravelResponse:", LaravelResponse);
+    console.log("useSWR:page:", Page);
+    console.log("useSWR:WorkOfList:", WorkOfList);
+    if ((LaravelResponse == false && Page != 1)) {
+      console.log("ローディング削除:1");
+      setAllItems((prevItems) => ({
+        ...prevItems,
+        IsLoading: false, // 一時的にローディングを解除
+      }));
+    }
+  }, [LaravelResponse, lastUrl]);
 
   // const renderWorkItems = WorkOfList.length !== 0 && PostCard ?
   //   WorkOfList.map((post, index) => (

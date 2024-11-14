@@ -11,6 +11,9 @@ import Tooltip from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 
+// デフォルトのアイコンをインポート
+import DefaultIcon from "src/sections/Profile/View/DefaultIcon";
+
 
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
@@ -41,7 +44,7 @@ const ImageCard = ({IconData}) => {
          setSelectedImage(IconData);
       } else {
         // デフォルト(アイコン設定なし)
-        setSelectedImage("cover_19.jpg");
+        //setSelectedImage("cover_19.jpg");
       }
     }
   }, [IconData]);
@@ -56,7 +59,8 @@ const ImageCard = ({IconData}) => {
 
   // アイコンの初期化
   const handleImageReset = async () => {
-    setSelectedImage("cover_19.jpg");
+    setSelectedImage(null);
+    updateSessionData("accountData", "CompanyIcon", null);
   }
 
   // アイコンの変更操作
@@ -106,7 +110,8 @@ const ImageCard = ({IconData}) => {
         boxShadow: 'none',
         position: 'relative'
       }}>
-        <CardMedia
+        {selectedImage ? (
+          <CardMedia
           component="img"
           sx={{
             height: 'calc(100vw * 0.58)',
@@ -125,6 +130,21 @@ const ImageCard = ({IconData}) => {
             ""}
           alt="Loading..."
         />
+        ):(
+          <DefaultIcon sx={{
+            height: "calc(100vw * 0.58)",
+            width: "calc(100vw * 0.58)",
+            padding: '20px',
+            objectFit: "cover",
+            borderRadius: "50%",
+            maxHeight: 350,
+            maxWidth: 350,
+            "@media (min-width: 600px)": {
+              height: 350,
+              width: 350,
+            },
+          }}/>
+        )}
         <input
           accept=".jpg,.jpeg,.png"
           style={{ display: 'none' }}

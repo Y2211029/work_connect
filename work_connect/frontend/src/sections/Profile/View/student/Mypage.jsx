@@ -18,8 +18,11 @@ import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import { PulseLoader } from "react-spinners";
+import { ColorRing } from "react-loader-spinner";
 
 import ProfileMypageEdit from "./MypageEdit";
+// デフォルトのアイコンをインポート
+import DefaultIcon from "src/sections/Profile/View/DefaultIcon";
 import { follow } from "src/_mock/follow";
 import { WebScokectContext } from "src/layouts/dashboard/index";
 
@@ -41,6 +44,38 @@ const Showmore = styled(Paper)(({ theme }) => ({
   textAlign: "center",
   fontSize: "20px",
 }));
+
+// ローディングのコンポーネント
+const ColorRingStyle = () => {
+  return(
+    <Box
+      sx={{
+        marginTop: '20%',
+        display: 'flex', // Flexboxを使用
+        justifyContent: 'center', // 水平方向中央
+        alignItems: 'center', // 垂直方向中央
+      }}
+    >
+      <ColorRing
+        style={{
+          visible: true,
+          margin: "0px",
+          height: "10",
+          width: "10",
+          ariaLabel: "color-ring-loading",
+          wrapperClass: "custom-color-ring-wrapper",
+          colors:
+          ["#e15b64",
+            "#f47e60",
+            "#f8b26a",
+            "#abbd81",
+            "#849b87"]
+        }}
+      />
+    </Box>
+  );
+
+}
 
 const ProfileMypage = () => {
   // 「さらに表示」ボタンの初期設定
@@ -66,6 +101,7 @@ const ProfileMypage = () => {
 
   // DBからのレスポンスが入る変数
   const [ResponseData, setResponseData] = useState([]);
+  const [responseIcon, setResponseIcon] = useState([]);
 
   // セッションストレージ取得
   const { getSessionData } = useSessionStorage();
@@ -209,6 +245,15 @@ const ProfileMypage = () => {
   useEffect(() => {
     console.log("notificationContext", notificationContext);
   }, [notificationContext]);
+
+  // アイコンの設定
+  useEffect(() => {
+    if(ResponseData.icon){
+      setResponseIcon(ResponseData.icon);
+    } else {
+      setResponseIcon("null");
+    }
+  }, [ResponseData.icon]);
 
   // 編集ボタンを押したときの処理
   const handleEditClick = () => {
@@ -384,7 +429,8 @@ const ProfileMypage = () => {
             position: "relative",
           }}
         >
-          <CardMedia
+          {responseIcon && responseIcon !== "null" ? (
+            <CardMedia
             component="img"
             sx={{
               height: "calc(100vw * 0.58)",
@@ -399,11 +445,28 @@ const ProfileMypage = () => {
               },
             }}
             image={
-              ResponseData.icon
-                ? `http://localhost:8000/storage/images/userIcon/${ResponseData.icon}`
-                : `http://localhost:8000/storage/images/userIcon/sample.jpg`
+                `http://localhost:8000/storage/images/userIcon/${responseIcon}`
             }
           />
+          ) : responseIcon === "null" ? (
+            <DefaultIcon sx={{
+              height: "calc(100vw * 0.58)",
+              width: "calc(100vw * 0.58)",
+              padding: '20px',
+              objectFit: "cover",
+              borderRadius: "50%",
+              maxHeight: 350,
+              maxWidth: 350,
+              "@media (min-width: 600px)": {
+                height: 350,
+                width: 350,
+              },
+            }}/>
+          ) : (
+            <ColorRingStyle />
+
+          )}
+
         </Card>
 
         <Box>
@@ -542,3 +605,5 @@ const ProfileMypage = () => {
 
 export default ProfileMypage;
 ProfileMypage.displayName = "Parent";
+ColorRingStyle.propTypes = {
+};

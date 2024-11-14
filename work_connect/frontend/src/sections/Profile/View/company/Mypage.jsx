@@ -21,6 +21,8 @@ import Tooltip from "@mui/material/Tooltip";
 import { PulseLoader } from "react-spinners";
 
 import ProfileMypageEdit from "./MypageEdit";
+// デフォルトのアイコンをインポート
+import DefaultIcon from "src/sections/Profile/View/DefaultIcon";
 import { follow } from "src/_mock/follow";
 import { WebScokectContext } from "src/layouts/dashboard/index";
 
@@ -30,6 +32,7 @@ import { WebScokectContext } from "src/layouts/dashboard/index";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
+  border: "#DAE2ED 2px solid",
   padding: theme.spacing(1),
   textAlign: "left",
   color: theme.palette.text.secondary,
@@ -386,17 +389,40 @@ const ProfileMypage = () => {
             boxShadow: "none",
           }}
         >
-          <CardMedia
+          {ResponseData.icon ? (
+            <CardMedia
             component="img"
             sx={{
-              height: 350,
-              width: 350,
-              objectFit: "cover", // 画像をカード内でカバーするように設定
-              borderRadius: "50%", // 画像を丸くする
+              height: "calc(100vw * 0.58)",
+              width: "calc(100vw * 0.58)",
+              objectFit: "cover",
+              borderRadius: "50%",
+              maxHeight: 350,
+              maxWidth: 350,
+              "@media (min-width: 600px)": {
+                height: 350,
+                width: 350,
+              },
             }}
-            image={ResponseData.icon ? `http://localhost:8000/storage/images/userIcon/${ResponseData.icon}` : ""}
-            alt="Loading..."
+            image={
+                `http://localhost:8000/storage/images/userIcon/${ResponseData.icon}`
+            }
           />
+          ):(
+            <DefaultIcon sx={{
+              height: "calc(100vw * 0.58)",
+              width: "calc(100vw * 0.58)",
+              padding: '20px',
+              objectFit: "cover",
+              borderRadius: "50%",
+              maxHeight: 350,
+              maxWidth: 350,
+              "@media (min-width: 600px)": {
+                height: 350,
+                width: 350,
+              },
+            }}/>
+          )}
         </Card>
 
         <Box>

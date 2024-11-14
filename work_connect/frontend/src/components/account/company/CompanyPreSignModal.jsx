@@ -8,18 +8,7 @@ import axios from "axios";
 import $ from "jquery";
 
 import "src/App.css";
-// ログインのモーダル CSS設定
-const modalStyle = {
-  content: {
-    position: "none",
-    backgroundColor: "rgb(0 0 0 / 70%)",
-    border: "none",
-    borderRadius: "0",
-    padding: "1.5rem",
-    overflow: "none",
-  },
-};
-
+import ModalStyle from "../ModalStyle";
 const CompanyPreSignModal = (props) => {
   const [showModal, setShowModal] = useState(true);
   const [formValues, setFormValues] = useState({
@@ -189,10 +178,10 @@ const CompanyPreSignModal = (props) => {
 
       {/* 条件付きレンダリングを使用 */}
       {/* <button onClick={handleOpenModal}>新規登録</button> */}
-      <Modal isOpen={showModal} contentLabel="Example Modal" style={modalStyle}>
+      <Modal isOpen={showModal} contentLabel="Example Modal" style={ModalStyle}>
         <div className="preSignUpFormContainer">
           <form onSubmit={handleSubmit} className="formInModal">
-            <h3>Work & Connect 仮登録</h3>
+            <h3>Work&Connect 仮登録</h3>
             <hr />
             <div className="preSignUpUiForm">
               <TextField
@@ -201,7 +190,7 @@ const CompanyPreSignModal = (props) => {
                 margin="normal"
                 name="mail"
                 onChange={handleChange}
-                type= "text"
+                type="text"
                 value={formValues.mail}
                 variant="outlined"
               />
@@ -211,7 +200,7 @@ const CompanyPreSignModal = (props) => {
               </button>
               {Object.keys(formErrors).length === 0 && isSubmit && handleCloseModal}
               <button onClick={handleCloseModal}>閉じる</button>
-              <div onClick={handleOpenStudentPreModal} id="PreSignStudentModalLink">
+              <div onClick={handleOpenStudentPreModal} id="PreSignStudentModalLink" className="Login_Sign_select_C_or_S">
                 学生の方はこちら
               </div>
             </div>

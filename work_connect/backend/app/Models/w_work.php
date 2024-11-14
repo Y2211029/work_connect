@@ -34,6 +34,7 @@ class w_work extends Model
         'comment_id',
         'post_datetime',
         'sort_number',
+        
     ];
 
     // タイムスタンプのカラムが存在しない場合は、$timestampsをfalseに設定

@@ -1,7 +1,10 @@
-
 import { useState, useContext } from "react";
 import { useSessionStorage } from "../../../hooks/use-sessionStorage";
+import { DeviceFrameset } from "react-device-frameset";
+import "react-device-frameset/styles/marvel-devices.min.css";
 import $ from "jquery";
+
+import Button from "@mui/material/Button";
 
 // ゲストモード時、作品投稿・動画投稿・通知
 import { MyContext } from "src/layouts/dashboard/index";
@@ -13,7 +16,6 @@ import CompanyLoginModal from "src/components/account/company/CompanyLoginModal"
 // 新規登録
 import StudentPreSignModal from "src/components/account/students/StudentPreSignModal";
 import CompanyPreSignModal from "src/components/account/company/CompanyPreSignModal";
-
 
 export default function TopPageListView() {
   const [ModalChange, setModalChange] = useState("");
@@ -30,7 +32,6 @@ export default function TopPageListView() {
     setPreModalChange(newValue);
   };
 
-
   const handleChange = (e) => {
     if (e.target.id === "LoginButton") {
       setModalChange("学生");
@@ -40,7 +41,6 @@ export default function TopPageListView() {
       setPreModalChange("学生");
     }
   };
-
 
   // ログインのform内以外をクリックしたときにモーダルを閉じる処理
   $("*").click(function (e) {
@@ -75,24 +75,28 @@ export default function TopPageListView() {
   });
   return (
     <>
-      {/* <Typography>サイトにアクセスすると一番初めに表示されるページです。</Typography> */}
-      {/* <h1>作品投稿・動画投稿・本登録（テスト表示）・本登録ボタン・通知、検索。ハンバーガーボタンを非表示にします。</h1> */}
-      <div className="top_page_app_name">Work&Connect</div>
       <div className="top_page_wrapper">
         <div className="top_page_content">
           <div className="top_page_content_first">
             <div>
-              <p className="top_page_message">作品を投稿して企業から手を差し伸べてもらおう!!!</p>
+              <p className="top_page_message">
+                あなたの<span className="top_page_messege_span">アピール</span>が
+              </p>
+              <p className="top_page_message">
+                <span className="top_page_messege_span_second">未来を創る</span>
+              </p>
             </div>
             <div>
-              <p>企業とつながるWEBアプリ</p>
               <div className="top_page_controller">
-                <button id="LoginButton" className="top_page_button login" onClick={handleChange} style={{ display: Display.HomePage === "" ? "none" : "block" }}>
-                  ログイン
-                </button>
-                <button id="PreSignButton" className="top_page_button sign" onClick={handleChange} style={{ display: Display.HomePage === "" ? "none" : "block" }}>
-                  新規登録
-                </button>
+                <Button
+                  id="LoginButton"
+                  variant="contained"
+                  className="top_page_button login"
+                  onClick={handleChange}
+                  style={{ display: Display.HomePage === "" ? "none" : "block" }}
+                >
+                  始めよう
+                </Button>
               </div>
               {ModalChange === "学生" ? (
                 <StudentLoginModal callSetModalChange={callSetModalChange} />
@@ -107,8 +111,10 @@ export default function TopPageListView() {
               ) : null}
             </div>
           </div>
-          <div>
-            <img className="top_page_app_image" src="/assets/images/covers/phoneAppImage.png" alt="" />
+          <div style={{ height: "100%" }}>
+            <DeviceFrameset device="iPhone X" /*landscape*/>
+              <img className="top_page_app_image"  src="/assets/images/covers/phoneAppImage.png" alt="" />
+            </DeviceFrameset>
           </div>
         </div>
       </div>

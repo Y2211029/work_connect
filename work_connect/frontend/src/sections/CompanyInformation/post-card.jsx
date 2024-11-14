@@ -14,24 +14,39 @@ import './CompanyInformation.css';
 import axios from "axios";
 import EditCompanyInformation from './EditCompanyInformation';
 import { arrayMove } from '@dnd-kit/sortable';
+import { useLocation } from 'react-router-dom';
 
 
-const PostCard = forwardRef(({ post }) => {
+const PostCard = forwardRef(({ post },) => {
   const { title_contents } = post;
   const CompanyInformationsSaveURL = "http://localhost:8000/company_informations_save";
   const AllCompanyInformationsPullURL = "http://localhost:8000/all_company_informations_pull";
-
   const [MyUserId, setMyUserId] = useState(0);
   const [MyUserName, setMyUserName] = useState("");
   const [showEdit, setShowEdit] = useState(false);
   const [editedContents, setEditedContents] = useState([]);
   const [TrueTitleContents, setTitleContents] = useState(title_contents);
+  const [CompanyId,setCompanyId] = useState(null);
+  const location = useLocation();
+  const path = location.pathname;
+  const URLUserName = path.split('/')[2];
+  const canEdit = (CompanyId === MyUserId) || (URLUserName === MyUserName);
 
   useEffect(() => {
     const accountData = JSON.parse(sessionStorage.getItem("accountData"));
     setMyUserId(accountData?.id || 0);
     setMyUserName(accountData.user_name);
+    console.log("MyUserName:", accountData.user_name);
   }, []);
+
+  useEffect(() => {
+    if (TrueTitleContents && TrueTitleContents.length > 0) {
+      const companyId = TrueTitleContents[0].company_id;
+      setCompanyId(companyId);
+      console.log("companyIdが設定されました:", companyId);
+    }
+    console.log("title_contents", title_contents);
+  }, [TrueTitleContents]);
 
 
   useEffect(() => {
@@ -66,10 +81,12 @@ const PostCard = forwardRef(({ post }) => {
       try {
         // Laravel側から企業一覧データを取得
         const response = await axios.post(AllCompanyInformationsPullURL, {
-          InformationId: title_contents[0].company_id
+          InformationUserName: URLUserName
         });
         setEditedContents(response.data.title_contents);
+        setCompanyId(response.data.id);
         console.log(response.data.title_contents);
+
         console.log("pullが成功です");
       } catch (err) {
         console.log("err:", err);
@@ -91,19 +108,10 @@ const PostCard = forwardRef(({ post }) => {
     };
   }, [showEdit]);
 
-  if (!TrueTitleContents || TrueTitleContents.length === 0) {
-    return <div>No post available</div>;
-  }
 
-  const renderEditButton = (companyId) => (
-    companyId === MyUserId && (
-      <Tooltip title="編集する">
-        <IconButton onClick={() => handleEditClick(companyId)}>
-          <ModeEditIcon />
-        </IconButton>
-      </Tooltip>
-    )
-  );
+
+
+
 
   const handleEditClick = (postId) => {
     console.log("編集ボタンがクリックされました", postId);
@@ -169,10 +177,10 @@ const PostCard = forwardRef(({ post }) => {
   const handleAddRow = (index) => {
     const newRow = {
       id: editedContents.length + 1, // ユニークなIDを生成
-      title: '',      // 新しい行の初期タイトル
-      contents: '',   // 新しい行の初期内容
+      title: '新しいタイトル',      // 新しい行の初期タイトル
+      contents: '新しい内容',   // 新しい行の初期内容
       public_status: 0, // 新しい行の公開状態（初期は非公開）
-      company_id: TrueTitleContents[0].company_id, // 既存の企業IDを設定
+      company_id: CompanyId, // 既存の企業IDを設定
       row_number: editedContents.length + 1 // 新しい行のrow_numberを設定
     };
 
@@ -194,9 +202,8 @@ const PostCard = forwardRef(({ post }) => {
 
   return (
     <div>
-      {renderEditButton(TrueTitleContents[0].company_id)} {/* 編集ボタンをここに表示 */}
 
-      {/* 関数の場合は大文字、変数の場合は最初小文字 企業情報を編集する*/}
+      {/* 関数の場合は大文字、変数の場合は最初小文字 企業情報を編集する */}
       <EditCompanyInformation
         IsOpen={showEdit}   //モーダルを開く関数
         CloseModal={modalclose} //モーダルを閉じる関数
@@ -205,30 +212,48 @@ const PostCard = forwardRef(({ post }) => {
         HandleAddRow={handleAddRow}
         HandleDragEnd={handleDragEnd}
         HandleDelete={handleDelete}
-        HandleTextChange = {handleTextChange}
+        HandleTextChange={handleTextChange}
       />
 
-      <TableContainer component={Paper} className="tableContainer">
-        <Table className="Table">
-          <TableHead>
-            <TableRow>
-              <TableCell style={{ fontWeight: 'bold', width: '40%' }}>タイトル</TableCell>
-              <TableCell style={{ fontWeight: 'bold', width: '150%' }}>内容</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {TrueTitleContents.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell>{item.title}</TableCell>
-                <TableCell>{item.contents}</TableCell>
+      {TrueTitleContents && TrueTitleContents.length > 0 && (
+        <TableContainer component={Paper} className="tableContainer">
+          <Table className="Table">
+            <TableHead>
+              <TableRow>
+                <TableCell style={{ fontWeight: 'bold', width: '40%' }}>タイトル</TableCell>
+                <TableCell style={{ fontWeight: 'bold', width: '150%' }}>内容</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {TrueTitleContents.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell>{item.title}</TableCell>
+                  <TableCell>{item.contents}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+
+      {!canEdit ? (
+        <div>
+          企業情報はありません
+        </div>
+      ) : (
+        <div>
+        <Tooltip title="編集する">
+          <IconButton onClick={() => handleEditClick(CompanyId)}>
+            <ModeEditIcon />
+          </IconButton>
+        </Tooltip>
+          まだ公開されている情報がありません
+        </div>
+      )}
 
 
     </div>
+
   );
 });
 

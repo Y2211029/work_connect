@@ -43,11 +43,18 @@ nav ul li a:hover {
   color: rgb(45, 214, 158);
 }
 
+.logo_Work_Connect {
+  color: #3C98EF;
+  text-align: center;
+}
 
+.Login_Sign_select_C_or_S {
+  cursor: pointer;
+}
 
 /* トップページここから */
 .top_page_app_name {
-  position: fixed;
+  /* position: fixed; */
   text-align: center;
   color: rgb(40, 140, 255);
   top: 0px;
@@ -55,7 +62,7 @@ nav ul li a:hover {
 }
 
 .top_page_wrapper {
-  background: #D9D9D9;
+  /* background: #D9D9D9; */
   border-radius: 20px;
   width: 83.5%;
   margin: 0 auto;
@@ -81,9 +88,18 @@ nav ul li a:hover {
   font-weight: bold;
 }
 
+.top_page_messege_span {
+  color: #328BFF;
+  font-size: 2.3rem;
+}
+
+.top_page_messege_span_second {
+  font-size: 2.3rem;
+}
+
 .top_page_app_image {
   background: red;
-  width: calc(100% - 30%);
+  width: 100%;
   border-radius: 35px;
 }
 
@@ -632,6 +648,17 @@ textarea {
   margin: 20px;
 }
 
+/* 作品アイテムホバー */
+.item-stack {
+  transition: 0.2s;
+
+}
+
+.item-stack:hover {
+  border: 2px solid #989899;
+  transform: scale(1.05); /* 1より小さい数値で縮小 */
+}
+
 
 
 .column-container {
@@ -693,11 +720,11 @@ textarea {
 .postCard {
   /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
   margin: 10px 0px;
-  border-radius: 20px;
+  border-radius: 1cqmin;
 
   width: "100%";
   background: white;
-  padding: 20px;
+  padding: 5px;
 }
 
 .GalleryPostCard {
@@ -803,16 +830,16 @@ textarea {
 }
 
 /* 左矢印のスタイル */
-.splide__arrow--prev {
+/* .splide__arrow--prev {
   left: -60px;
-  /* 位置調整 */
-}
+  位置調整
+} */
 
 /* 右矢印のスタイル */
-.splide__arrow--next {
+/* .splide__arrow--next {
   right: -60px;
-  /* 位置調整 */
-}
+  位置調整
+} */
 
 
 /* 作品の紹介・ジャンル・開発言語・開発環境などの項目 */
@@ -845,13 +872,23 @@ textarea {
 .comment_text_area {
   height: 100px;
   background: #FFFFFF;
-  border: none;
+  border: 1px solid #dfdfdf;
+  border-radius: 10px;
+  padding: 5px;
   /* box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.06); */
+}
+
+.comment_text_area .items {
+  background: #F9FAFB;
+  width: fit-content;
+  height: auto;
+  border: none;
 }
 
 .comment_operation {
   width: 100%;
-  background: #ebebeb;
+  padding-top: 5px;
+  /* background: #ebebeb; */
   /* Rectangle 7 */
 }
 
@@ -862,16 +899,17 @@ textarea {
 
 .comment_button button {
   border: none;
-  background: #66B2FD;
-  color: #fff;
+  /* background: #66B2FD; */
+  /* color: #fff; */
   border: 1px solid #dfdfdf;
+  margin: 5px;
 }
 
 .comment_button button:hover {
   border: none;
-  background: #b4d8fc;
+  /* background: #b4d8fc; */
   border: 1px solid #dfdfdf;
-  color: #fff;
+  /* color: #fff; */
   transition: 0.5s;
 }
 

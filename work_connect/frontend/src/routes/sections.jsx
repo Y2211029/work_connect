@@ -58,7 +58,7 @@ export const Page404 = lazy(() => import("src/pages/page-not-found"));
 export const ProfilePage = lazy(() => import("src/pages/Profile"));
 export const ProfileNewsPage = lazy(() => import("src/sections/Profile/View/company/News"));
 export const SpecialCompanyNewsPage = lazy(() => import("src/sections/Profile/View/company/SpecialCompanyNews/specialCompanyNews-view"));
-export const CheckFormPage = lazy(() => import("src/sections/Profile/View/company/CheckForm/View/CheckFormListView"));
+// export const CheckFormPage = lazy(() => import("src/sections/Profile/View/company/CheckForm"));
 // チャット
 export const Chat = lazy(() => import("src/pages/Chat"));
 
@@ -124,7 +124,7 @@ export default function Router() {
         { path: "Profile/:user_name/News", element: <ProfileNewsPage /> },
         { path: "Profile/:user_name", element: <SpecialCompanyNewsPage /> },
         //企業が応募フォームを見る画面
-        { path: "Profile/:user_name/Checkform", element: <CheckFormPage /> },
+        // { path: "Profile/:user_name/Checkform", element: <CheckFormPage /> },
 
         // チャット
         { path: "Chat", element: <Chat /> },

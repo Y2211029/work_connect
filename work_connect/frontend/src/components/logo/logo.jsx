@@ -1,15 +1,14 @@
-// ;
 import { Link } from "react-router-dom";
-import styled from "styled-components";
 import { useContext } from "react";
 import { AllItemsContext } from "src/layouts/dashboard/index";
-
+import styled from "styled-components";
 const StyledH3 = styled.h3`
-margin-top: 24px;
-margin-bottom: 24px;
-margin-left: 20px;
-margin-right: 20px;
+  margin-top: 24px;
+  margin-bottom: 24px;
+  margin-left: 20px;
+  margin-right: 20px;
 `;
+
 
 function Logo() {
   const { AllItems, setAllItems } = useContext(AllItemsContext);
@@ -20,7 +19,7 @@ function Logo() {
     if (sortOption !== "orderNewPostsDate" || Page > 1 || IsSearch.Check == true) {
       setAllItems((prevItems) => ({
         ...prevItems,
-        IsLoading : true, // 一時的にローディングを解除
+        IsLoading: true, // 一時的にローディングを解除
       }));
       console.log("あいうえお")
       setAllItems((prevItems) => ({
@@ -38,8 +37,20 @@ function Logo() {
   return (
     <StyledH3>
       <Link to="/" style={{ textDecoration: "none" }} onClick={handleReset}>
-        <span style={{ color: "#4285f4" }}>W</span>ork&<span style={{ color: "#4285f4" }}>C</span>
-        onnect
+        <div style={{
+          display: "flex",
+          alignItems: "center"
+        }}>
+          <img src={`/assets/Work&ConnectIcon.png`} style={{
+            width: "100%",
+            height: "100%",
+            minWidth: "20px",
+            minHeight: "20px",
+            maxWidth: "50px",
+            maxHeight: "50px"
+          }}></img>
+          <span style={{ color: "black" }}>Work&Connect</span>
+        </div>
       </Link>
     </StyledH3>
   )

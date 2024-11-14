@@ -2,13 +2,15 @@ import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
+
+import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 
 import SvgColor from "src/components/svg-color";
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
-
+import Divider from "@mui/material/Divider";
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef(({ post }, ref) => {
@@ -27,7 +29,18 @@ const PostCard = forwardRef(({ post }, ref) => {
   // youtube iframe
   const renderMovie = (
     // <YouTube videoId={movie} opts={opts} />
-    <img style={{ borderRadius: "10px" }} src={`https://img.youtube.com/vi/${movie}/mqdefault.jpg`} alt="サンプル動画" width="100%" height="auto" />
+    // <img style={{ borderRadius: "10px" }} src={`https://img.youtube.com/vi/${movie}/mqdefault.jpg`} alt="サンプル動画" width="100%" height="auto" />
+    <Box
+          component="img"
+          src={`https://img.youtube.com/vi/${movie}/mqdefault.jpg`}
+          sx={{
+            aspectRatio: 16 / 9,
+            borderRadius: "5px",
+            width: "100%",
+            objectFit: "cover",
+            marginBottom: "10px",
+          }}
+        />
   );
 
   // アイコン
@@ -39,20 +52,8 @@ const PostCard = forwardRef(({ post }, ref) => {
   );
 
   // タイトル
-  const renderTitle = (
-    <Link
-      to={`/VideoDetail/${movie_id}`}
-      color="inherit"
-      variant="subtitle2"
-      underline="none" // デフォルトで下線を消す
-      className="link item-Link"
-      style={{
-        height: 30,
-        typography: "h5",
-      }}
-    >
-      {title}
-    </Link>
+  const renderTitle = title && (
+    title
   );
 
   // ジャンル
@@ -202,20 +203,30 @@ const PostCard = forwardRef(({ post }, ref) => {
   );
 
   return (
+
     <div ref={ref} >
-      <Stack>
-        <div className="postCard">
-          {renderShape}
-          {renderMovie}
-          {renderTitle}
-          <div style={{ borderBottom: "1px solid #bbb", margin: "5px 0px 10px 0px" }}></div>
-          {renderIntro}
-          {/* <div style={{ borderBottom: "1px solid #bbb", margin: "10px 0px 5px 0px" }}></div> */}
-          {renderGenre}
-          <div style={{ borderBottom: "1px solid #bbb", margin: "10px 0px 5px 0px" }}></div>
-          {renderInfo}
-        </div>
-      </Stack >
+      <Link
+        to={`/VideoDetail/${movie_id}`}
+        variant="subtitle2"
+        underline="none"
+        className="link item-Link"
+      >
+        <Stack sx={{ display: "inline-block" }}>
+          <div className="postCard item-stack" style={{ width: "100%" }}>
+            {renderShape}
+            {renderMovie}
+            {renderTitle}
+            {/* <div style={{ borderBottom: "1px solid #bbb", margin: "5px 0px 10px 0px" }}></div> */}
+            <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 0px 0px" }} />
+            {renderIntro}
+            {/* <div style={{ borderBottom: "1px solid #bbb", margin: "10px 0px 5px 0px" }}></div> */}
+            {renderGenre}
+            <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 0px 0px" }} />
+            {/* <div style={{ borderBottom: "1px solid #bbb", margin: "10px 0px 5px 0px" }}></div> */}
+            {renderInfo}
+          </div>
+        </Stack >
+      </Link>
     </div >
   );
 });

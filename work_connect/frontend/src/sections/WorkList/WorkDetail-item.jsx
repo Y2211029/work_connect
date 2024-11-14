@@ -9,6 +9,9 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
 import Container from "@mui/material/Container";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import Divider from "@mui/material/Divider";
 
 import { SLIDER, AVATAR } from "src/layouts/dashboard/config-layout";
 import { UseCreateTagbutton } from "src/hooks/use-createTagbutton";
@@ -380,12 +383,22 @@ const WorkDetailItem = () => {
       style={{ width: "100%", height: "100%", margin: "0 auto", marginBottom: "80px" }}
     >
       <div style={{ position: "relative" }}>
-        <SplideTrack>
+        {/* <SplideTrack>
           {WorkSlide.map((slide, index) => (
             <SplideSlide key={slide.work_id + slide.id} onClick={() => openModal(index)}>
               <img src={slide.image} alt={slide.image} style={{ aspectRatio: "16 / 9", width: "100%", height: "100%" }} />
             </SplideSlide>
           ))}
+        </SplideTrack> */}
+        <SplideTrack>
+          {/* {WorkSlide.map((slide, index) => ( */}
+          <SplideSlide key={"LVGZeHPo5iyKSWOayRufpt1ovYbHNF4L9SLERRrL"} onClick={() => openModal(0)}>
+            <img
+              src={`/assets/workImages/thumbnail/LVGZeHPo5iyKSWOayRufpt1ovYbHNF4L9SLERRrL.png`}
+              style={{ aspectRatio: "16 / 9", width: "100%", height: "100%" }}
+            />
+          </SplideSlide>
+          {/* ))} */}
         </SplideTrack>
       </div>
     </Splide>
@@ -394,7 +407,7 @@ const WorkDetailItem = () => {
   // モーダルスライド
   const renderModalSlider = modalIsOpen && WorkSlideCheck && (
     <>
-      <div>
+      <div style={{ borderBottom: "1px dashed #e0e0e0" }}>
         <Button onClick={closeModal} className="close-button">
           <span className="close-button_text">閉じる</span>
         </Button>
@@ -403,8 +416,8 @@ const WorkDetailItem = () => {
         </Button>
       </div>
 
-      <div style={{ zIndex: theme.zIndex.modal, display: "flex", height: "-webkit-fill-available" }}>
-        <Stack direction="column" justifyContent="left" alignItems="center" spacing={0} style={{ width: SLIDER.MODAL_WIDTH }}>
+      <div style={{ zIndex: theme.zIndex.modal, display: "flex", height: "calc(100% - 20px)" }}>
+        <Stack direction="column" justifyContent="space-around" alignItems="center" spacing={0} style={{ width: SLIDER.MODAL_WIDTH }}>
           {modalIsOpen && WorkSlideCheck && (
             <>
               <Splide
@@ -417,27 +430,55 @@ const WorkDetailItem = () => {
                 <SplideTrack>
                   {WorkSlide.map((slide) => (
                     <SplideSlide key={slide.work_id + slide.id}>
-                      <img src={slide.image} alt={slide.image} />
+                      <img src={`/assets/workImages/thumbnail/LVGZeHPo5iyKSWOayRufpt1ovYbHNF4L9SLERRrL.png`} alt={slide.image} />
                     </SplideSlide>
                   ))}
+                  {/* {WorkSlide.map((slide) => (
+                    <SplideSlide key={slide.work_id + slide.id}>
+                      <img src={slide.image} alt={slide.image} />
+                    </SplideSlide>
+                  ))} */}
                 </SplideTrack>
               </Splide>
 
+              {/* モーダルメインスライドの下にある小さなスライド */}
               <Splide
                 ref={thumbnailSplideRef}
                 options={thumbsOptions}
                 aria-labelledby="thumbnail-slider-example"
                 onMoved={(splide, newIndex) => setCurrentSlideIndex(newIndex)}
                 hasTrack={false}
+                arrows={false}
+                sx={{
+                  ".splide__arrow": {
+                    display: "none !important",
+                  },
+                }}
+                aria-label="..."
                 // sx={{ justifyContent: "center", alignItems: "center", display: "flex" }}
               >
                 <SplideTrack>
-                  {WorkSlide.map((slide) => (
+                  {/* {WorkSlide.map((slide) => (
                     <SplideSlide key={slide.work_id + slide.id}>
                       <img src={slide.image} alt={slide.image} />
                     </SplideSlide>
+                  ))} */}
+                  {WorkSlide.map((slide) => (
+                    <SplideSlide key={slide.work_id + slide.id}>
+                      <img src={`/assets/workImages/thumbnail/LVGZeHPo5iyKSWOayRufpt1ovYbHNF4L9SLERRrL.png`} alt={slide.image} />
+                    </SplideSlide>
                   ))}
                 </SplideTrack>
+                <div className="splide__arrows">
+                  <button className="splide__arrow splide__arrow--prev" style={{ left: "-60px" }}>
+                    {/* 左矢印アイコン */}
+                    <ArrowBackIosNewIcon style={{ transform: "scaleX(1)" }} />
+                  </button>
+                  <button className="splide__arrow splide__arrow--next" style={{ right: "-60px" }}>
+                    {/* 右矢印アイコン */}
+                    <ArrowForwardIosIcon />
+                  </button>
+                </div>
               </Splide>
             </>
           )}
@@ -445,8 +486,18 @@ const WorkDetailItem = () => {
 
         {/* overScroll 追加 */}
         {modalIsOpen && (
-          <div className="annotation-container" style={{ width: SLIDER.ANOTATION, wordBreak: "break-word", marginLeft: "10px" }}>
-            <div style={{ width: "inherit" }}>{WorkSlide[currentSlideIndex].annotation}</div>
+          <div
+            className="annotation-container"
+            style={{
+              width: SLIDER.ANOTATION,
+              wordBreak: "break-word",
+              borderLeft: "1px dashed #e0e0e0",
+              padding: "10px",
+              marginLeft: "10px",
+              overflow: "scroll",
+            }}
+          >
+            <div style={{ width: "100%" }}>{WorkSlide[currentSlideIndex].annotation}</div>
           </div>
         )}
       </div>
@@ -472,17 +523,19 @@ const WorkDetailItem = () => {
   // 作品紹介文
   const renderIntro = workDetail.work_intro && (
     <>
-      <Typography variant="h4" className="WorkDetail_typo">
+      <Typography variant="h5" className="WorkDetail_typo">
         ●作品の紹介
       </Typography>
-      <div className="WorkDetail_info-intro">{workDetail.work_intro}</div>
+      <div className="WorkDetail_info-intro" style={{ fontSize: "16px" }}>
+        {workDetail.work_intro}
+      </div>
     </>
   );
 
   // 作品ジャンル
   const renderGenre = WorkGenre && (
     <>
-      <Typography variant="h4" className="WorkDetail_typo">
+      <Typography variant="h5" className="WorkDetail_typo">
         ●ジャンル
       </Typography>
       <div className="WorkDetail_info">{WorkGenre}</div>
@@ -492,7 +545,7 @@ const WorkDetailItem = () => {
   // 作品の開発言語
   const renderProgrammingLang = WorkProgrammingLanguage && (
     <>
-      <Typography variant="h4" className="WorkDetail_typo">
+      <Typography variant="h5" className="WorkDetail_typo">
         ●開発言語
       </Typography>
       <div className="WorkDetail_info">{WorkProgrammingLanguage}</div>
@@ -502,7 +555,7 @@ const WorkDetailItem = () => {
   // 作品の開発環境
   const renderDevelopmentEnv = WorkDevelopmentEnvironment && (
     <>
-      <Typography variant="h4" className="WorkDetail_typo">
+      <Typography variant="h5" className="WorkDetail_typo">
         ●開発環境
       </Typography>
       <div className="WorkDetail_info">{WorkDevelopmentEnvironment}</div>
@@ -511,13 +564,18 @@ const WorkDetailItem = () => {
 
   const renderWorkURL = workDetail.work_url && (
     <>
-      <div style={{ height: "100px", textAlign: "center" }}>
+      <Typography variant="h5" className="WorkDetail_typo">
+        ●作品リンク
+      </Typography>
+      <div className="WorkDetail_info">
         <Link target="_blank" to={workDetail.work_url}>
-          作品リンクはこちら
+          こちら
         </Link>
       </div>
     </>
   );
+
+  // コメント
   const renderComment = workComment && Object.keys(Comment).length > 0 && (
     <>
       {workComment && Object.keys(Comment).length > 0 && <h3>コメント一覧</h3>}
@@ -525,24 +583,54 @@ const WorkDetailItem = () => {
         (item.commenter_id === AccountData.id && item.commenter_user_name === AccountData.user_name) ||
         (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
           <div key={index}>
-            <hr />
             {/* {console.log("comment", Comment)} */}
-            <button onClick={() => handleClick(item.id)}>編集</button>
-            <button onClick={() => handleCancel(item.id)} className={`comment_${item.id}`} style={{ display: Comment[item.id]?.display }}>
-              キャンセル
-            </button>
-            <button onClick={() => handleSave(item.id)} className={`comment_${item.id}`} style={{ display: Comment[item.id]?.display }}>
-              保存
-            </button>
-            <button onClick={() => handleDelete(item.id)} className={`comment_${item.id}`} style={{ display: Comment[item.id]?.display }}>
-              削除
-            </button>
-            <p>{item.commenter_user_name || item.commenter_company_name}</p>
+            <Divider sx={{ borderStyle: "dashed", margin: "5px 0px 20px 0px", width: "90%" }} />
+            <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={3} sx={{ width: "80%", paddingBottom: "5px" }}>
+              <Stack direction="row" justifyContent="left" alignItems="center" spacing={1}>
+                <div>{item.commenter_user_name || item.commenter_company_name}</div>
+              </Stack>
+              <Stack direction="row" justifyContent="right" alignItems="center" spacing={1}>
+                <Stack direction="row" justifyContent="left" alignItems="center" spacing={1}>
+                  <Button variant="outlined" onClick={() => handleClick(item.id)}>
+                    編集
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    onClick={() => handleCancel(item.id)}
+                    className={`comment_${item.id}`}
+                    style={{ display: Comment[item.id]?.display }}
+                  >
+                    キャンセル
+                  </Button>
+                </Stack>
+                <Stack direction="row" justifyContent="left" alignItems="center" spacing={1}>
+                  <Button
+                    variant="contained"
+                    onClick={() => handleSave(item.id)}
+                    className={`comment_${item.id}`}
+                    style={{ display: Comment[item.id]?.display }}
+                  >
+                    保存
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    sx={{ color: "error.main" }}
+                    onClick={() => handleDelete(item.id)}
+                    className={`comment_${item.id}`}
+                    style={{ display: Comment[item.id]?.display }}
+                  >
+                    削除
+                  </Button>
+                </Stack>
+              </Stack>
+            </Stack>
+
             <textarea
               style={{
-                width: "50%",
+                width: "80%",
                 height: "100px",
               }}
+              className="comment_text_area items"
               value={Comment[item.id].text}
               readOnly={Comment[item.id].readOnly} // 読み取り専用にする場合
               onChange={(e) => handleChenge(e.target.value, item.id)}
@@ -554,9 +642,10 @@ const WorkDetailItem = () => {
             <p>{item.commenter_user_name || item.commenter_company_name}</p>
             <textarea
               style={{
-                width: "50%",
+                width: "80%",
                 height: "100px",
               }}
+              className="comment_text_area items"
               value={item.content}
               readOnly // 読み取り専用にする場合
             />
@@ -566,29 +655,36 @@ const WorkDetailItem = () => {
     </>
   );
   const renderCommentButton = (
-    <div
-      className="top_comment_area"
-      style={{
-        display: CommentPost.display,
-      }}
-    >
-      <div className="comment_area_parts">
-        <textarea
-          className="comment_text_area"
-          value={CommentPost.text}
-          onChange={(e) => handlePostChange(e.target.value)}
-          style={{
-            height: "100px",
-          }}
-        ></textarea>
-        <div className="comment_operation">
-          <div className="comment_button">
-            <button onClick={() => handlePostCancel()}>キャンセル</button>
-            <button onClick={() => handlePost()}>コメント</button>
+    <>
+      <div
+        className="top_comment_area"
+        style={{
+          display: CommentPost.display,
+          marginTop: "100px",
+        }}
+      >
+        <div className="comment_area_parts">
+          <textarea
+            className="comment_text_area"
+            value={CommentPost.text}
+            onChange={(e) => handlePostChange(e.target.value)}
+            style={{
+              height: "100px",
+            }}
+          ></textarea>
+          <div className="comment_operation">
+            <div className="comment_button">
+              <Button variant="outlined" onClick={() => handlePostCancel()}>
+                キャンセル
+              </Button>
+              <Button variant="contained" onClick={() => handlePost()}>
+                コメント
+              </Button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 
   useEffect(() => {
@@ -625,6 +721,8 @@ const WorkDetailItem = () => {
           style={{
             content: {
               zIndex: theme.zIndex.modal,
+              overflow: "",
+              padding: "20px 10px 20px 20px",
             },
           }}
         >

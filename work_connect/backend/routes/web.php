@@ -1,3 +1,4 @@
+
 <?php
 
 use App\Http\Controllers\movie\PostMovieCommentDeleteController;
@@ -124,7 +125,7 @@ Route::get('/get_work_genre_tag', [GetGenreTagController::class, 'GetGenreTagCon
 Route::get('/get_work_language_tag', [GetLanguageTagController::class, 'GetLanguageTagController']);
 // 作品の開発環境タグ取得
 Route::get('/get_work_environment_tag', [GetEnvironmentTagController::class, 'GetEnvironmentTagController']);
-// 動画ジャンルタグ取得
+// 動画投稿
 Route::post('/video_posting', [VideoPostingController::class, 'VideoPostingController']);
 // 動画ジャンルタグ取得
 Route::get('/get_video_genre_tag', [GetVideoGenreTagController::class, 'GetVideoGenreTagController']);

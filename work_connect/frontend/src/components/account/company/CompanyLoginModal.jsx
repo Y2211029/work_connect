@@ -17,17 +17,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Button from "@mui/material/Button";
 
-// ログインのモーダル CSS設定
-const modalStyle = {
-  content: {
-    position: "none",
-    backgroundColor: "rgb(0 0 0 / 70%)",
-    border: "none",
-    borderRadius: "0",
-    padding: "1.5rem",
-    overflow: "none",
-  },
-};
+import ModalStyle from "../ModalStyle";
 
 const CompanyLoginModal = (props) => {
   const { updateSessionData } = useSessionStorage();
@@ -197,10 +187,10 @@ const CompanyLoginModal = (props) => {
   return (
     <div>
       {/* 条件付きレンダリングを使用 */}
-      <Modal isOpen={showModal} contentLabel="Example Modal" style={modalStyle}>
+      <Modal isOpen={showModal} contentLabel="Example Modal" style={ModalStyle}>
         <div className="Modal">
           <form onSubmit={handleSubmit} className="formInModal">
-            <h3>Work & Connect ログイン</h3>
+            <h3>Work&Connect ログイン</h3>
             <hr />
             <div className="loginUiForm">
               <TextField
@@ -257,7 +247,7 @@ const CompanyLoginModal = (props) => {
               <button onClick={handleCloseModal} id="CompanyshutButton" className="submitButton">
                 閉じる
               </button>
-              <div onClick={handleOpenStudentModal} id="loginStudentModalLink">
+              <div onClick={handleOpenStudentModal} id="loginStudentModalLink" className="Login_Sign_select_C_or_S">
                 学生の方はこちら
               </div>
             </div>

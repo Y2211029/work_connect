@@ -1,4 +1,4 @@
-// import { useState } from "react";
+import { useState } from "react";
 import Modal from "react-modal";
 import PropTypes from "prop-types";
 
@@ -10,9 +10,7 @@ import Button from "@mui/material/Button";
 import DeleteIcon from '@mui/icons-material/Delete';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
 import TableContainer from '@mui/material/TableContainer';
 import Switch from '@mui/material/Switch';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -21,6 +19,14 @@ import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import Paper from '@mui/material/Paper';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Typography from "@mui/material/Typography";
+
+import "./CompanyInformation.css"
+
 
 
 
@@ -40,8 +46,9 @@ const modalStyle = {
         border: 'none',
         borderRadius: '0',
         padding: '1.5rem',
-        overflow: 'hidden',
         zIndex: 2, // コンテンツの z-index
+        overflow: 'hidden',
+        width:'50%'
     },
 };
 
@@ -55,15 +62,24 @@ const SortableRow = ({ id, children }) => {
     };
 
     return (
-        <TableRow ref={setNodeRef} style={style} {...attributes}>
-            {children}
-            <TableCell>
+        <div ref={setNodeRef} style={style} className="DragSortContainer" {...attributes}>
+            {/* ドラッグ用のアイコンを個別のコンテナに */}
+            <div className="DragIcon" {...listeners}>
                 <Tooltip title={"ドラッグすることで並び替えができます"}>
-                    <SwapVertIcon {...listeners} style={{ cursor: 'grab' }} />
+                    <SwapVertIcon style={{ cursor: 'grab' }} />
                 </Tooltip>
-            </TableCell>
-        </TableRow>
+            </div>
+            {/* 子要素（Accordion）が別スタイルとして表示されるようにする */}
+            <div className="AccordionWrapper">
+                {children}
+            </div>
+        </div>
     );
+};
+
+SortableRow.propTypes = {
+    id: PropTypes.number.isRequired,
+    children: PropTypes.node.isRequired,
 };
 
 SortableRow.propTypes = {
@@ -84,7 +100,11 @@ const EditCompanyInformation = ({
     HandleTextChange
 }) => {
 
+    const [expanded, setExpanded] = useState(false);
 
+    const AccordionhandleChange = (panel) => (event, isExpanded) => {
+        setExpanded(isExpanded ? panel : false);
+    };
 
 
     return (
@@ -99,62 +119,66 @@ const EditCompanyInformation = ({
                 <div className="modal_overlay">
                     <div className="modal_window">
                         <TableContainer component={Paper} className="Modal_tableContainer">
-                        <Button variant="outlined" onClick={CloseModal}>
-                            閉じる
-                        </Button>
+
                             <Table className="Modal_Table">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell style={{ fontWeight: 'bold', width: '20%' }}>タイトル</TableCell>
-                                        <TableCell style={{ fontWeight: 'bold', width: '30%' }}>内容</TableCell>
-                                        <TableCell style={{ fontWeight: 'bold', width: '5%' }}>公開状態</TableCell>
-                                        <TableCell style={{ fontWeight: 'bold', width: '5%' }}>削除</TableCell>
-                                        <TableCell style={{ fontWeight: 'bold', width: '5%' }}>追加</TableCell>
-                                        <TableCell style={{ fontWeight: 'bold', width: '5%' }}>並び変え</TableCell>
-                                    </TableRow>
+                                <TableHead className="FixedTableHead">
+
+                                    <Button variant="outlined" onClick={CloseModal} className="CloseButton">
+                                        閉じる
+                                    </Button>
+
                                 </TableHead>
-                                <TableBody>
+                                <TableBody className="EditCompanyInformationTableBody">
                                     <DndContext modifiers={[restrictToVerticalAxis]} collisionDetection={closestCenter} onDragEnd={HandleDragEnd}>
                                         <SortableContext items={editedContents.map(item => item.id)} strategy={verticalListSortingStrategy}>
                                             {editedContents.map((item, index) => (
                                                 <SortableRow key={item.id} id={item.id}>
                                                     <>
-                                                        <TableCell>
+                                                        <Accordion
+                                                            key={item.id}
+                                                            expanded={expanded === item.id}
+                                                            onChange={AccordionhandleChange(item.id)}
+                                                            className="EditCompanyInformation-Accordion"
+                                                        >
+                                                            <AccordionSummary
+                                                                expandIcon={<ExpandMoreIcon />}
+                                                                aria-controls={`${item.id}-content`}
+                                                                id={`${item.id}-header`}
+                                                            >
+                                                                <Typography sx={{ width: '70%', flexShrink: 0 }}>{item.title}:{item.contents}</Typography>
+                                                            </AccordionSummary>
+                                                            <AccordionDetails>
                                                             <input
                                                                 type="text"
                                                                 value={item.title}
                                                                 onChange={(e) => HandleTextChange(index, "title", e.target.value)}
+                                                                className="EditTitle"
                                                             />
-                                                        </TableCell>
-                                                        <TableCell>
                                                             <textarea
                                                                 value={item.contents}
                                                                 onChange={(e) => HandleTextChange(index, "contents", e.target.value)}
+                                                                className="EditContents"
                                                             />
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <Tooltip title={item.public_status === 1 ? "公開状態を切り替える 現在:公開中" : "公開状態を切り替える 現在:非公開中"}>
+                                                            <Tooltip title={item.public_status === 1 ? "公開状態を切り替えます 現在:公開中" : "公開状態を切り替える 現在:非公開中"}>
                                                                 <Switch
                                                                     checked={item.public_status === 1}
                                                                     onChange={() => HandlePublicStatusChange(index)}
                                                                     inputProps={{ 'aria-label': 'controlled' }}
                                                                 />
                                                             </Tooltip>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <Tooltip title={"削除します"}>
+                                                            <Tooltip title={"開いているフォームを削除します"}>
                                                                 <IconButton onClick={() => HandleDelete(index)}>
                                                                     <DeleteIcon />
                                                                 </IconButton>
                                                             </Tooltip>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <Tooltip title={"次の行にフォームを追加します"}>
+                                                            <Tooltip title={"次の行に新たにフォームを追加します"}>
                                                                 <IconButton onClick={() => HandleAddRow(index)}>
                                                                     <AddCircleOutlineIcon />
                                                                 </IconButton>
                                                             </Tooltip>
-                                                        </TableCell>
+
+                                                            </AccordionDetails>
+                                                        </Accordion>
                                                     </>
                                                 </SortableRow>
                                             ))}
@@ -180,7 +204,6 @@ EditCompanyInformation.propTypes = {
             company_name: PropTypes.string.isRequired,
             id: PropTypes.number.isRequired,
             company_id: PropTypes.string.isRequired,
-            // 他の必要なプロパティがあれば追加
         })
     ).isRequired,
     HandlePublicStatusChange: PropTypes.func.isRequired,

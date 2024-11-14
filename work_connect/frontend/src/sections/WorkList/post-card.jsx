@@ -1,4 +1,4 @@
-import { forwardRef, /*useEffect, /*useState*/ } from "react";
+import { forwardRef /*useEffect, /*useState*/ } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -9,28 +9,28 @@ import Typography from "@mui/material/Typography";
 
 import SvgColor from "src/components/svg-color";
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
+import Divider from "@mui/material/Divider";
 
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef(({ post }, ref) => {
-  const { work_id, genre, thumbnail, icon, /* cover, */ title, intro,  /*view, comment,*/ author, userName, createdAt } = post;
+  const { work_id, genre, thumbnail, icon, title, intro, author, userName, createdAt } = post;
 
-
-
-  const renderThumbnail = (
-    <Box
-      component="img"
-      src={thumbnail}
-      sx={{
-        aspectRatio: 16 / 9,
-        borderRadius: "10px",
-        width: "100%",
-        // height: 200,
-        objectFit: "cover",
-        marginBottom: "10px",
-      }}
-    />
-  );
+  const renderThumbnail =
+    (console.log("thumbnail", thumbnail),
+      (
+        <Box
+          component="img"
+          src={thumbnail}
+          sx={{
+            aspectRatio: 16 / 9,
+            borderRadius: "5px",
+            width: "100%",
+            objectFit: "cover",
+            marginBottom: "10px",
+          }}
+        />
+      ));
 
   // アイコン
   const renderAvatar = (
@@ -38,11 +38,7 @@ const PostCard = forwardRef(({ post }, ref) => {
       alt={author.name}
       src={icon ? `http://localhost:8000/storage/images/userIcon/${icon}` : author.avatarUrl}
       sx={{
-        // position: "absolute",
-        // bottom: (theme) => theme.spacing(0),
         zIndex: 9,
-        // top: 45,
-        // left: 20,
         width: 30,
         height: 30,
       }}
@@ -50,26 +46,12 @@ const PostCard = forwardRef(({ post }, ref) => {
   );
 
   // タイトル
-  const renderTitle = (
-    <Link
-      to={`/WorkDetail/${work_id}`}
-      // color="inherit"
-      variant="subtitle2"
-      underline="none"
-      className="link item-Link"
-    >
-      {title}
-    </Link>
+  const renderTitle = title && (
+    title
   );
 
   // ジャンル
-  const renderGenre =
-    genre !== null ? (
-      <div>
-        {genre}
-      </div>
-    ) : null;
-
+  const renderGenre = genre !== null ? <div style={{ margin: "10px 0px 10px 0px" }}>{genre}</div> : null;
 
   /* 投稿日 */
   const renderDate = (
@@ -80,10 +62,9 @@ const PostCard = forwardRef(({ post }, ref) => {
         mb: 2,
         opacity: 0.48,
         color: "common.black",
-        fontSize: "12px"
+        fontSize: "12px",
       }}
     >
-      {/* {fDate(createdAt, "yyyy MM dd")} */}
       {postDateTimeDisplay(createdAt)}
     </Typography>
   );
@@ -113,7 +94,6 @@ const PostCard = forwardRef(({ post }, ref) => {
       spacing={1}
       sx={{
         mt: 3,
-        // color: "text.disabled",
         color: "common.black",
         paddingTop: "10px",
         width: "100%",
@@ -128,7 +108,6 @@ const PostCard = forwardRef(({ post }, ref) => {
         spacing={1}
         sx={{
           mt: 3,
-          // color: "text.disabled",
           color: "common.black",
         }}
       >
@@ -172,21 +151,29 @@ const PostCard = forwardRef(({ post }, ref) => {
   );
 
   return (
-    <div ref={ref} >
-      <Stack sx={{ display: "inline-block" }}>
-        <div className="postCard" style={{ width: '100%' }}>
-          {renderShape}
-          {renderThumbnail}
-          {renderTitle}
-          <div style={{ borderBottom: "1px solid #bbb", margin: "5px 0px 10px 0px" }}></div>
-          {renderIntro}
-          {/* <div style={{ borderBottom: "1px solid #bbb", margin: "10px 0px 5px 0px" }}></div> */}
-          {renderGenre}
-          <div style={{ borderBottom: "1px solid #bbb", margin: "10px 0px 5px 0px" }}></div>
-          {renderInfo}
-        </div>
-      </Stack >
-    </div >
+    <div ref={ref}>
+      <Link
+        to={`/WorkDetail/${work_id}`}
+        // color="inherit"
+        variant="subtitle2"
+        underline="none"
+        className="link item-Link"
+      >
+        <Stack sx={{ display: "inline-block" }} >
+          <div className="postCard item-stack" style={{ width: "100%" }} >
+            {renderShape}
+            {renderThumbnail}
+            {renderTitle}
+            <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 0px 0px" }} />
+            {renderGenre}
+            <Divider sx={{ borderStyle: "dashed", display: "block", margin: "0px 0px 5px 0px" }} />
+            {renderIntro}
+            <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 5px 0px" }} />
+            {renderInfo}
+          </div>
+        </Stack>
+      </Link>
+    </div>
   );
 });
 

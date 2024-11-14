@@ -6,27 +6,17 @@ import ListSubheader from '@mui/material/ListSubheader';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import TooltipTitle from '@mui/material/Tooltip';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+// import { AllItemsContext } from "src/layouts/dashboard/index";
+import Summary from "./Summary"
+import Question from "./Question"
+import Individual from "./Individual"
 
-import './writeform.css';
+import './checkform.css';
 
-
-// Chart.js
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  BarController,
-  BarElement,
-} from "chart.js";
-import { Bar } from 'react-chartjs-2';
 
 const PostCard = forwardRef(({ post }) => {
   const { application_form } = post;
@@ -36,17 +26,56 @@ const PostCard = forwardRef(({ post }) => {
   const MyUserId = accountData.id;
   console.log(MyUserId);
 
-  const [writeformshow, setWriteFormShow] = useState(false);
+  const [writeformshow, setWriteFormShow] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(0);
+  const [viewingStudentName, setViewStudentName] = useState("");
+  // const { setAllItems } = useContext(AllItemsContext);
+
 
   const handleClick = (index) => {
-    // 同じインデックスが選ばれた場合、何もせず
+    setOpen(!open);
+    // 同じインデックスが選ばれた場合、何もしない
     if (selectedIndex === index) return;
-
     // 新しいインデックスを選択した場合、データを表示
     setWriteFormShow(true);
     setSelectedIndex(index);
   };
+
+  const handleTabClick = (event, newValue) => {
+
+    // event.type can be equal to focus with selectionFollowsFocus.
+    if (
+      event.type !== 'click' ||
+      (event.type === 'click' && samePageLinkNavigation(event))
+    ) {
+      setValue(newValue);
+    }
+    // setAllItems((prevItems) => ({
+    //   ...prevItems,
+    //   ResetItem: true,
+    //   DataList: [],
+    //   IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
+    //   Page: 1,
+    //   sortOption: "orderNewPostsDate",
+    // }));
+  };
+
+  // 同一ページ内リンク用のナビゲーション制御
+  function samePageLinkNavigation(event) {
+    if (
+      event.defaultPrevented ||
+      event.button !== 0 || // 左クリックのみ許可
+      event.metaKey ||
+      event.ctrlKey ||
+      event.altKey ||
+      event.shiftKey
+    ) {
+      return false;
+    }
+    return true;
+  }
 
   const groupedResponses = application_form[selectedIndex]?.user_name.reduce((acc, user) => {
     user.write_form.forEach((response) => {
@@ -58,66 +87,32 @@ const PostCard = forwardRef(({ post }) => {
     return acc;
   }, {});
 
-  // グラフ表示用のコンポーネント
-  ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-    BarController,
-    BarElement
-  );
-
-  const Graph = ({ title, responses }) => {
-    const responseCounts = responses.reduce((acc, response) => {
-      acc[response] = (acc[response] || 0) + 1;
-      return acc;
-    }, {});
-
-    const labels = Object.keys(responseCounts);
-    const dataValues = Object.values(responseCounts);
-
-    const options = {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        title: {
-          display: true,
-          text: title,
-        },
-      },
-    };
-
-    const data = {
-      labels,
-      datasets: [
-        {
-          label: '回答数',
-          data: dataValues,
-          borderColor: "rgba(255, 99, 132, 1)",
-          backgroundColor: "rgba(255, 99, 132, 0.5)",
-        },
-      ],
-    };
-
+  // カスタムリンクタブ
+  function LinkTab(props) {
     return (
-      <Box sx={{ width: '100%', height: '200px' }}>
-        <Bar options={options} data={data} style={{ height: '100%', width: '100%' }} />
-      </Box>
+      <Tab
+        component="a"
+        onClick={(event) => {
+          if (samePageLinkNavigation(event)) {
+            event.preventDefault(); // ナビゲーションを防止
+          }
+        }}
+        aria-current={props.selected ? 'page' : undefined}
+        {...props}
+      />
     );
+  }
+
+  LinkTab.propTypes = {
+    selected: PropTypes.bool,
   };
 
-  Graph.propTypes = {
-    title: PropTypes.string.isRequired,
-    responses: PropTypes.arrayOf(PropTypes.string).isRequired,
-  };
+
+
 
   return (
     <>
-      <div style={{ width: '100%', marginRight: '16px' }}>
+      <div style={{ width: '90%', margin: 'auto',}}>
         <List
           sx={(theme) => ({
             width: '100%',
@@ -139,7 +134,14 @@ const PostCard = forwardRef(({ post }) => {
           }
         >
           {application_form.map((posts, index) => (
-            <ListItemButton onClick={() => handleClick(index)} key={index} id={index}>
+            <ListItemButton onClick={() => handleClick(index)} key={index} id={index}
+            sx={{
+              backgroundColor: selectedIndex === index ? 'gray' : 'transparent', // クリックされた場合は背景色をグレーに
+              '&:hover': {
+                backgroundColor: selectedIndex === index ? 'darkgray' : 'lightgray', // ホバー時の背景色
+              }
+            }}
+            >
               <ListItemText
                 primary={
                   <>
@@ -147,17 +149,17 @@ const PostCard = forwardRef(({ post }) => {
                       {posts.user_name.length}
                     </Typography>
                     <TooltipTitle title={posts.article_title}>
-                    <Typography
-                      textOverflow="ellipsis"
-                      sx={{
-                        fontSize: '0.8rem',
-                        overflow: 'hidden',
-                        whiteSpace: 'nowrap',
-                        textOverflow: 'ellipsis', // 省略記号を表示
-                      }}
-                    >
-                      {posts.article_title}
-                    </Typography>
+                      <Typography
+                        textOverflow="ellipsis"
+                        sx={{
+                          fontSize: '0.8rem',
+                          overflow: 'hidden',
+                          whiteSpace: 'nowrap',
+                          textOverflow: 'ellipsis', // 省略記号を表示
+                        }}
+                      >
+                        {posts.article_title}
+                      </Typography>
                     </TooltipTitle>
 
                   </>
@@ -168,53 +170,50 @@ const PostCard = forwardRef(({ post }) => {
         </List>
       </div>
 
-      {/* 945 436.73
-       928 634 */}
-
       {writeformshow && selectedIndex !== null && (
         <div style={{ flexGrow: 1 }}>
           <div className="write-form">
-            <Stack direction="column" spacing={2}>
-              <div className="writeform-container">
-                <Typography className="writeform-title">
-                  回答者: {application_form[selectedIndex].user_name.length}名
-                </Typography>
-                {application_form[selectedIndex].user_name.map((user, index) => (
-                  <Typography key={user.write_form_id || index} className="writeform-answereddata">
-                    {user.user_name}さん
-                  </Typography>
-                ))}
-              </div>
-              {groupedResponses &&
-                Object.entries(groupedResponses).map(([title, { responses, type, contents }], index) => (
-                  <div key={index} className="writeform-container">
-                    <Typography className="writeform-title">
-                      {title} ({type}):
-                    </Typography>
-                    <Typography className="writeform-contents">
-                      {contents}
-                    </Typography>
-                    <Typography className="writeform-length">
-                      {responses.length}件の回答
-                    </Typography>
-                    {responses.map((response, idx) => (
-                      <Typography key={idx} className="writeform-answereddata">
-                        {response}
-                      </Typography>
-                    ))}
 
-                    {type == 'checkbox' &&
-                      <Graph title={title} responses={responses} />
-                    }
-                  </div>
-                ))}
-            </Stack>
-          </div>
-        </div>
+            <Box sx={{ width: '100%', paddingBottom: '10%' }}>
+              <Tabs
+                value={value}
+                aria-label="nav tabs example"
+                role="navigation"
+              >
+                <Tab label="要約" onClick={(e) => handleTabClick(e, 0)} />
+                <Tab label="回答別" onClick={(e) => handleTabClick(e, 1)} />
+                <Tab label="個別" onClick={(e) => handleTabClick(e, 2)} />
+              </Tabs>
+              {value === 0 && <Summary
+                application_form={application_form}
+                selectedIndex={selectedIndex}
+                GroupedResponses={groupedResponses}
+                HandleTabClick = {handleTabClick}
+                setViewStudentName={setViewStudentName}
+                />}
+              {value === 1 && <Question
+                application_form={application_form}
+                selectedIndex={selectedIndex}
+                GroupedResponses={groupedResponses}
+              />}
+              {value === 2 && <Individual
+                application_form={application_form}
+                selectedIndex={selectedIndex}
+                GroupedResponses={groupedResponses}
+                viewingStudentName ={viewingStudentName}
+                // 名前
+              />}
+            </Box>
+
+          </div >
+        </div >
       )}
+
+
     </>
   );
 });
+
 
 PostCard.displayName = 'PostCard';
 

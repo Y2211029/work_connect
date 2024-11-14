@@ -178,10 +178,10 @@ export default function NavTabs() {
         <Tab label="ブログ" onClick={(e) => handleTabClick(e, 3)} />
 
       </Tabs>
-      {value === 0 && <ListView type="joboffers" />}
-      {value === 1 && <ListView type="internships" />}
-      {value === 2 && <ListView type="sessions" />}
-      {value === 3 && <ListView type="blogs" />}
+      {value === 0 && <ListView type="Joboffer" />}
+      {value === 1 && <ListView type="Internship" />}
+      {value === 2 && <ListView type="Session" />}
+      {value === 3 && <ListView type="Blog" />}
     </Box>
   );
 }

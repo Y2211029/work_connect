@@ -18,19 +18,19 @@ const PostCard = forwardRef(({ post }, ref) => {
 
   const renderThumbnail =
     (console.log("thumbnail", thumbnail),
-    (
-      <Box
-        component="img"
-        src={thumbnail}
-        sx={{
-          aspectRatio: 16 / 9,
-          borderRadius: "5px",
-          width: "100%",
-          objectFit: "cover",
-          marginBottom: "10px",
-        }}
-      />
-    ));
+      (
+        <Box
+          component="img"
+          src={thumbnail}
+          sx={{
+            aspectRatio: 16 / 9,
+            borderRadius: "5px",
+            width: "100%",
+            objectFit: "cover",
+            marginBottom: "10px",
+          }}
+        />
+      ));
 
   // アイコン
   const renderAvatar = (
@@ -46,16 +46,8 @@ const PostCard = forwardRef(({ post }, ref) => {
   );
 
   // タイトル
-  const renderTitle = (
-    <Link
-      to={`/WorkDetail/${work_id}`}
-      // color="inherit"
-      variant="subtitle2"
-      underline="none"
-      className="link item-Link"
-    >
-      {title}
-    </Link>
+  const renderTitle = title && (
+    title
   );
 
   // ジャンル
@@ -160,19 +152,27 @@ const PostCard = forwardRef(({ post }, ref) => {
 
   return (
     <div ref={ref}>
-      <Stack sx={{ display: "inline-block" }}>
-        <div className="postCard" style={{ width: "100%" }}>
-          {renderShape}
-          {renderThumbnail}
-          {renderTitle}
-          <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 0px 0px" }} />
-          {renderGenre}
-          <Divider sx={{ borderStyle: "dashed", display: "block", margin: "0px 0px 5px 0px" }} />
-          {renderIntro}
-          <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 5px 0px" }} />
-          {renderInfo}
-        </div>
-      </Stack>
+      <Link
+        to={`/WorkDetail/${work_id}`}
+        // color="inherit"
+        variant="subtitle2"
+        underline="none"
+        className="link item-Link"
+      >
+        <Stack sx={{ display: "inline-block" }} >
+          <div className="postCard item-stack" style={{ width: "100%" }} >
+            {renderShape}
+            {renderThumbnail}
+            {renderTitle}
+            <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 0px 0px" }} />
+            {renderGenre}
+            <Divider sx={{ borderStyle: "dashed", display: "block", margin: "0px 0px 5px 0px" }} />
+            {renderIntro}
+            <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 5px 0px" }} />
+            {renderInfo}
+          </div>
+        </Stack>
+      </Link>
     </div>
   );
 });

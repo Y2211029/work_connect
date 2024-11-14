@@ -648,6 +648,17 @@ textarea {
   margin: 20px;
 }
 
+/* 作品アイテムホバー */
+.item-stack {
+  transition: 0.2s;
+
+}
+
+.item-stack:hover {
+  border: 2px solid #989899;
+  transform: scale(1.05); /* 1より小さい数値で縮小 */
+}
+
 
 
 .column-container {
@@ -709,7 +720,7 @@ textarea {
 .postCard {
   /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
   margin: 10px 0px;
-  border-radius: 20px;
+  border-radius: 1cqmin;
 
   width: "100%";
   background: white;
@@ -866,6 +877,7 @@ textarea {
   padding: 5px;
   /* box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.06); */
 }
+
 .comment_text_area .items {
   background: #F9FAFB;
   width: fit-content;

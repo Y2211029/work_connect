@@ -248,7 +248,14 @@ export default function Searchbar() {
 
   const getGraduationYearTag = async () => {
     let optionArray = [];
-    let result = ["2025年卒業", "2026年卒業", "2027年卒業", "2028年卒業", "2029年卒業", "2030年卒業"];
+    let result = [
+      "2025年卒業",
+      "2026年卒業",
+      "2027年卒業",
+      "2028年卒業",
+      "2029年卒業",
+      "2030年卒業",
+    ];
 
     // console.log("result: ", result);
     result.map((value) => {
@@ -329,7 +336,10 @@ export default function Searchbar() {
   const fetchCompanyNameData = async () => {
     try {
       // console.log("fetchCompanyNameData: OK");
-      const response = await axios.get(`http://localhost:8000/get_company_name_list`, {});
+      const response = await axios.get(
+        `http://localhost:8000/get_company_name_list`,
+        {}
+      );
 
       // console.log("fetchCompanyNameData response: ");
       // console.log(response.data);
@@ -396,7 +406,7 @@ export default function Searchbar() {
     let urlCategoryParams = url.searchParams.get("category");
     if (urlPageParams != null) {
       setPathName(location.pathname + "/" + urlPageParams);
-    } else if(urlPageParams == "news") {
+    } else if (urlPageParams == "news") {
       setPathName(location.pathname + "/" + urlCategoryParams);
     } else {
       setPathName(location.pathname);
@@ -407,10 +417,10 @@ export default function Searchbar() {
     let url = new URL(window.location.href);
     let urlPageParams = url.searchParams.get("page");
     let urlCategoryParams = url.searchParams.get("category");
-    if(urlPageParams == "news") {
+    if (urlPageParams == "news") {
       // console.log("ababab2");
       setPathName(location.pathname + "/" + urlCategoryParams);
-    }else if (urlPageParams != null) {
+    } else if (urlPageParams != null) {
       // console.log("ababab1");
       setPathName(location.pathname + "/" + urlPageParams);
       // let a = location.pathname + "/" + urlPageParams;
@@ -608,7 +618,8 @@ export default function Searchbar() {
 
   // マイページ、Topページ、
   let RefineSearch =
-    location.pathname != "/Profile/" + location.pathname.split("/")[2] + "/mypage" &&
+    location.pathname !=
+      "/Profile/" + location.pathname.split("/")[2] + "/mypage" &&
     location.pathname != "/Top" &&
     location.pathname != "/Settings" &&
     location.pathname != "/Chat" &&
@@ -869,7 +880,10 @@ export default function Searchbar() {
         // StudentList-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
-      } else if (PathName.startsWith("/Profile/") && PathName.endsWith("/work")) {
+      } else if (
+        PathName.startsWith("/Profile/") &&
+        PathName.endsWith("/work")
+      ) {
         // 学生プロフィール内の作品一覧の場合
         const url = `http://localhost:8000/search_work?page=${Page}&sort=${sortOption}`;
 
@@ -907,7 +921,10 @@ export default function Searchbar() {
         // company-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
-      } else if (PathName.startsWith("/Profile/") && PathName.endsWith("/movie")) {
+      } else if (
+        PathName.startsWith("/Profile/") &&
+        PathName.endsWith("/movie")
+      ) {
         // 学生プロフィール内の作品一覧の場合
         const url = `http://localhost:8000/search_video?page=${Page}&sort=${sortOption}`;
 
@@ -990,7 +1007,10 @@ export default function Searchbar() {
         // company-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
-      } else if (PathName.startsWith("/Profile/") && PathName.endsWith("/JobOffer")) {
+      } else if (
+        PathName.startsWith("/Profile/") &&
+        PathName.endsWith("/JobOffer")
+      ) {
         // 企業プロフィール内での求人の場合
         const url = `http://localhost:8000/search_internship_job_offer?page=${Page}`;
 
@@ -1055,7 +1075,10 @@ export default function Searchbar() {
         // company-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
-      } else if (PathName.startsWith("/Profile/") && PathName.endsWith("/Internship")) {
+      } else if (
+        PathName.startsWith("/Profile/") &&
+        PathName.endsWith("/Internship")
+      ) {
         // 企業プロフィール内での求人の場合
         const url = `http://localhost:8000/search_internship_job_offer?page=${Page}`;
 
@@ -1120,7 +1143,10 @@ export default function Searchbar() {
         // company-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
-      } else if (PathName.startsWith("/Profile/") && PathName.endsWith("/Session")) {
+      } else if (
+        PathName.startsWith("/Profile/") &&
+        PathName.endsWith("/Session")
+      ) {
         // 企業プロフィール内での求人の場合
         const url = `http://localhost:8000/search_internship_job_offer?page=${Page}`;
 
@@ -1185,7 +1211,10 @@ export default function Searchbar() {
         // company-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
-      } else if (PathName.startsWith("/Profile/") && PathName.endsWith("/Blog")) {
+      } else if (
+        PathName.startsWith("/Profile/") &&
+        PathName.endsWith("/Blog")
+      ) {
         // 企業プロフィール内での求人の場合
         const url = `http://localhost:8000/search_internship_job_offer?page=${Page}`;
 
@@ -1648,7 +1677,8 @@ export default function Searchbar() {
   // }, saveOptions);
 
   // 空だったらtrue
-  const isAllEmpty = (obj) => Object.values(obj).every((value) => value.length === 0);
+  const isAllEmpty = (obj) =>
+    Object.values(obj).every((value) => value.length === 0);
 
   // 検索ボタンを押したとき
   const handleSearch = () => {
@@ -1700,12 +1730,21 @@ export default function Searchbar() {
       let url = new URL(window.location.href);
       let urlPageParams = url.searchParams.get("page");
       let urlCategoryParams = url.searchParams.get("category");
-      console.log("searchSourceList:urlPageParams", "/Internship_JobOffer/" + urlPageParams);
-      console.log("searchSourceList:urlCategoryParams", "/Profile/" + urlCategoryParams);
+      console.log(
+        "searchSourceList:urlPageParams",
+        "/Internship_JobOffer/" + urlPageParams
+      );
+      console.log(
+        "searchSourceList:urlCategoryParams",
+        "/Profile/" + urlCategoryParams
+      );
       console.log("searchSourceList:PathName", PathName);
       if ("/Internship_JobOffer/" + urlPageParams == PathName) {
         console.log("searchSourceList:Page", Page);
-        console.log("IsSearch.Check, Page, IsSearch.searchToggle, sortOption", PathName);
+        console.log(
+          "IsSearch.Check, Page, IsSearch.searchToggle, sortOption",
+          PathName
+        );
         searchSourceList();
       } else if ("/Internship_JobOffer" != location.pathname) {
         searchSourceList();
@@ -1881,302 +1920,189 @@ export default function Searchbar() {
     <div>
       {RefineSearch && (
         <>
-          <Box>
-            <OutlinedInput
-              id="input-search-header"
-              autoComplete="off"
-              value={searchSource.searchText}
-              onChange={handleChangeText}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && searchSource.searchText.trim() !== "") {
-                  handleSearch();
-                } else if (e.key === "Enter") {
-                  e.preventDefault(); //入力が空の場合はEnterキーを無効化
-                }
-              }}
-              placeholder="検索"
-              startAdornment={
-                // INPUT要素に何か入力されていたら
-                searchSource.searchText.trim() !== "" ? (
-                  <InputAdornment className="mushimeganeSearch" onClick={handleSearch} position="start" sx={{ mr: 1, fontWeight: "fontWeightBold" }}>
-                    <IconSearch stroke={1.5} size="16px" />
-                  </InputAdornment>
-                ) : (
-                  <InputAdornment position="start" sx={{ mr: 1, fontWeight: "fontWeightBold" }}>
-                    <IconSearch stroke={1.5} size="16px" />
-                  </InputAdornment>
-                )
-              }
-              endAdornment={
-                // 絞り込みアイコン
-
-                <InputAdornment position="end" style={{ display: Display.thisCompanyNews }}>
-                  <HeaderAvatar onClick={handleOpen} >
-                    <IconAdjustmentsHorizontal stroke={1.5} size="18px" />
-                  </HeaderAvatar>
-                </InputAdornment>
-              }
-              aria-describedby="search-helper-text"
-              inputProps={{
-                "aria-label": "weight",
-                sx: { bgcolor: "transparent", pl: 0.5 },
-                padding: 0,
-              }}
-              sx={{
-                width: { md: 200, lg: 434 },
-                height: 50,
-                ml: 2,
-                px: 2,
-              }}
-            />
-          </Box>
-          <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
-            <Box sx={style}>
-              <Stack
-                direction="column"
-                spacing={2}
-                sx={{
-                  height: "100%",
-                  justifyContent: "space-between",
-                  alignItems: "stretch",
-                }}
-              >
-                <Typography variant="h5">絞り込み検索</Typography>
-                <Divider sx={{ borderStyle: "dashed", m: 0, display: "block" }} />
-                {/* ---------------------------------------------------------- */}
-                <Stack
-                  sx={{
-                    overflowY: "scroll",
-                    height: "100%",
+          {(PathName.startsWith("/Profile/") &&
+          PathName.endsWith("/mypage")) ||
+          (PathName.startsWith("/WorkDetail/") &&
+          PathName.endsWith("")) ||
+          (PathName.startsWith("/VideoDetail/") &&
+          PathName.endsWith("")) ? null : (
+            <>
+              <Box>
+                <OutlinedInput
+                  id="input-search-header"
+                  autoComplete="off"
+                  value={searchSource.searchText}
+                  onChange={handleChangeText}
+                  onKeyDown={(e) => {
+                    if (
+                      e.key === "Enter" &&
+                      searchSource.searchText.trim() !== ""
+                    ) {
+                      handleSearch();
+                    } else if (e.key === "Enter") {
+                      e.preventDefault(); //入力が空の場合はEnterキーを無効化
+                    }
                   }}
-                >
-                  {/* <StyledSearchbar> */}
-                  <Grid
-                    container
-                    spacing={{ xs: 2, md: 3 }}
-                    columns={{ xs: 2, sm: 8, md: 12 }}
-                    style={{ width: "inherit", height: "inherit", padding: "5px 8px 5px 5px" }}
+                  placeholder="検索"
+                  startAdornment={
+                    // INPUT要素に何か入力されていたら
+                    searchSource.searchText.trim() !== "" ? (
+                      <InputAdornment
+                        className="mushimeganeSearch"
+                        onClick={handleSearch}
+                        position="start"
+                        sx={{ mr: 1, fontWeight: "fontWeightBold" }}
+                      >
+                        <IconSearch stroke={1.5} size="16px" />
+                      </InputAdornment>
+                    ) : (
+                      <InputAdornment
+                        position="start"
+                        sx={{ mr: 1, fontWeight: "fontWeightBold" }}
+                      >
+                        <IconSearch stroke={1.5} size="16px" />
+                      </InputAdornment>
+                    )
+                  }
+                  endAdornment={
+                    // 絞り込みアイコン
+
+                    <InputAdornment
+                      position="end"
+                      style={{ display: Display.thisCompanyNews }}
+                    >
+                      <HeaderAvatar onClick={handleOpen}>
+                        <IconAdjustmentsHorizontal stroke={1.5} size="18px" />
+                      </HeaderAvatar>
+                    </InputAdornment>
+                  }
+                  aria-describedby="search-helper-text"
+                  inputProps={{
+                    "aria-label": "weight",
+                    sx: { bgcolor: "transparent", pl: 0.5 },
+                    padding: 0,
+                  }}
+                  sx={{
+                    width: { md: 200, lg: 434 },
+                    height: 50,
+                    ml: 2,
+                    px: 2,
+                  }}
+                />
+              </Box>
+              <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+              >
+                <Box sx={style}>
+                  <Stack
+                    direction="column"
+                    spacing={2}
+                    sx={{
+                      height: "100%",
+                      justifyContent: "space-between",
+                      alignItems: "stretch",
+                    }}
                   >
-                    {/* <div
+                    <Typography variant="h5">絞り込み検索</Typography>
+                    <Divider
+                      sx={{ borderStyle: "dashed", m: 0, display: "block" }}
+                    />
+                    {/* ---------------------------------------------------------- */}
+                    <Stack
+                      sx={{
+                        overflowY: "scroll",
+                        height: "100%",
+                      }}
+                    >
+                      {/* <StyledSearchbar> */}
+                      <Grid
+                        container
+                        spacing={{ xs: 2, md: 3 }}
+                        columns={{ xs: 2, sm: 8, md: 12 }}
+                        style={{
+                          width: "inherit",
+                          height: "inherit",
+                          padding: "5px 8px 5px 5px",
+                        }}
+                      >
+                        {/* <div
                       style={{
                         minHeight: "40vh",
                         maxHeight: "60vh",
                         width: "100%",
                       }}
                     > */}
-                    {PathName === "/" ? (
-                      <>
-                        {myId[0] === "C" ? (
+                        {PathName === "/" ? (
                           <>
+                            {myId[0] === "C" ? (
+                              <>
+                                <Grid item xs={2} sm={4} md={4}>
+                                  <div
+                                    style={{
+                                      display: "",
+                                      marginTop: "20px",
+                                      marginBottom: "10px",
+                                    }}
+                                  >
+                                    <div
+                                      style={{
+                                        fontWeight: "Bold",
+                                        color: "#666",
+                                      }}
+                                    >
+                                      フォロー状況
+                                    </div>
+                                    <div style={{ color: "#444" }}>
+                                      <Select
+                                        placeholder="▼"
+                                        options={options.follow_status}
+                                        value={searchSource.follow_status}
+                                        isClearable
+                                        isMulti
+                                        onChange={handleChangeFollowStatus}
+                                      />
+                                    </div>
+                                  </div>
+                                </Grid>
+                              </>
+                            ) : (
+                              ""
+                            )}
                             <Grid item xs={2} sm={4} md={4}>
                               <div
                                 style={{
-                                  display: "",
                                   marginTop: "20px",
                                   marginBottom: "10px",
                                 }}
                               >
-                                <div style={{ fontWeight: "Bold", color: "#666" }}>フォロー状況</div>
+                                <div
+                                  style={{
+                                    fontWeight: "Bold",
+                                    color: "#666",
+                                    display: "flex",
+                                    flexGrow: "2",
+                                    gap: "5px",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  {/* <LuSchool /> */}
+                                  <span style={{ flexGrow: 1 }}>学校名</span>
+                                </div>
                                 <div style={{ color: "#444" }}>
                                   <Select
                                     placeholder="▼"
-                                    options={options.follow_status}
-                                    value={searchSource.follow_status}
+                                    options={options.school_name}
+                                    value={searchSource.school_name}
                                     isClearable
-                                    isMulti
-                                    onChange={handleChangeFollowStatus}
+                                    // isMulti
+                                    onChange={handleChangeSchoolName}
                                   />
                                 </div>
                               </div>
                             </Grid>
-                          </>
-                        ) : (
-                          ""
-                        )}
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div
-                              style={{
-                                fontWeight: "Bold",
-                                color: "#666",
-                                display: "flex",
-                                flexGrow: "2",
-                                gap: "5px",
-                                alignItems: "center",
-                              }}
-                            >
-                              {/* <LuSchool /> */}
-                              <span style={{ flexGrow: 1 }}>学校名</span>
-                            </div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.school_name}
-                                value={searchSource.school_name}
-                                isClearable
-                                // isMulti
-                                onChange={handleChangeSchoolName}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>学科名</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.department_name}
-                                value={searchSource.department_name}
-                                isClearable
-                                // isMulti
-                                onChange={handleChangeDepartmentName}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>学部名</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.faculty_name}
-                                value={searchSource.faculty_name}
-                                isClearable
-                                // isMulti
-                                onChange={handleChangeFacultyName}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>専攻名</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.major_name}
-                                value={searchSource.major_name}
-                                isClearable
-                                // isMulti
-                                onChange={handleChangeMajorName}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>コース名</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.course_name}
-                                value={searchSource.course_name}
-                                isClearable
-                                // isMulti
-                                onChange={handleChangeCourseName}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.work_genre}
-                                value={searchSource.work_genre}
-                                isClearable
-                                isMulti
-                                onChange={handleChangeWorkGenre}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.programming_language}
-                                value={searchSource.programming_language}
-                                isClearable
-                                isMulti
-                                onChange={handleChangeProgrammingLanguage}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.development_environment}
-                                value={searchSource.development_environment}
-                                isClearable
-                                isMulti
-                                onChange={handleChangeDevelopmentEnvironment}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                      </>
-                    ) : PathName === "/VideoList" ? (
-                      <>
-                        {myId[0] === "C" ? (
-                          <>
                             <Grid item xs={2} sm={4} md={4}>
                               <div
                                 style={{
@@ -2185,154 +2111,23 @@ export default function Searchbar() {
                                   marginBottom: "10px",
                                 }}
                               >
-                                <div style={{ fontWeight: "Bold", color: "#666" }}>フォロー状況</div>
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  学科名
+                                </div>
                                 <div style={{ color: "#444" }}>
                                   <Select
                                     placeholder="▼"
-                                    options={options.follow_status}
-                                    value={searchSource.follow_status}
+                                    options={options.department_name}
+                                    value={searchSource.department_name}
                                     isClearable
-                                    isMulti
-                                    onChange={handleChangeFollowStatus}
+                                    // isMulti
+                                    onChange={handleChangeDepartmentName}
                                   />
                                 </div>
                               </div>
                             </Grid>
-                          </>
-                        ) : (
-                          ""
-                        )}
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>学校名</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.school_name}
-                                value={searchSource.school_name}
-                                isClearable
-                                // isMulti
-                                onChange={handleChangeSchoolName}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>学科名</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.department_name}
-                                value={searchSource.department_name}
-                                isClearable
-                                // isMulti
-                                onChange={handleChangeDepartmentName}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>学部名</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.faculty_name}
-                                value={searchSource.faculty_name}
-                                isClearable
-                                // isMulti
-                                onChange={handleChangeFacultyName}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>専攻名</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.major_name}
-                                value={searchSource.major_name}
-                                isClearable
-                                // isMulti
-                                onChange={handleChangeMajorName}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>コース名</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.course_name}
-                                value={searchSource.course_name}
-                                isClearable
-                                // isMulti
-                                onChange={handleChangeCourseName}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.video_genre}
-                                value={searchSource.video_genre}
-                                isClearable
-                                isMulti
-                                onChange={handleChangeVideoGenre}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                      </>
-                    ) : PathName === "/StudentList" ? (
-                      <>
-                        {myId[0] === "C" ? (
-                          <>
                             <Grid item xs={2} sm={4} md={4}>
                               <div
                                 style={{
@@ -2341,391 +2136,23 @@ export default function Searchbar() {
                                   marginBottom: "10px",
                                 }}
                               >
-                                <div style={{ fontWeight: "Bold", color: "#666" }}>フォロー状況</div>
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  学部名
+                                </div>
                                 <div style={{ color: "#444" }}>
                                   <Select
                                     placeholder="▼"
-                                    options={options.follow_status}
-                                    value={searchSource.follow_status}
+                                    options={options.faculty_name}
+                                    value={searchSource.faculty_name}
                                     isClearable
-                                    isMulti
-                                    onChange={handleChangeFollowStatus}
+                                    // isMulti
+                                    onChange={handleChangeFacultyName}
                                   />
                                 </div>
                               </div>
                             </Grid>
-                          </>
-                        ) : (
-                          ""
-                        )}
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>卒業年</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.graduation_year}
-                                value={searchSource.graduation_year}
-                                isClearable
-                                // isMulti
-                                onChange={handleChangeGraduationYear}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>学校名</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.school_name}
-                                value={searchSource.school_name}
-                                isClearable
-                                // isMulti
-                                onChange={handleChangeSchoolName}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>学科名</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.department_name}
-                                value={searchSource.department_name}
-                                isClearable
-                                // isMulti
-                                onChange={handleChangeDepartmentName}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>学部名</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.faculty_name}
-                                value={searchSource.faculty_name}
-                                isClearable
-                                // isMulti
-                                onChange={handleChangeFacultyName}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>専攻名</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.major_name}
-                                value={searchSource.major_name}
-                                isClearable
-                                // isMulti
-                                onChange={handleChangeMajorName}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>コース名</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.course_name}
-                                value={searchSource.course_name}
-                                isClearable
-                                // isMulti
-                                onChange={handleChangeCourseName}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>希望職種</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.desired_occupation}
-                                value={searchSource.desired_occupation}
-                                isClearable
-                                isMulti
-                                onChange={handleChangeDesiredOccupation}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>希望勤務地</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.desired_work_region}
-                                value={searchSource.desired_work_region}
-                                isClearable
-                                isMulti
-                                onChange={handleChangeDesiredWorkRegion}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.student_programming_language}
-                                value={searchSource.student_programming_language}
-                                isClearable
-                                isMulti
-                                onChange={handleChangeStudentProgrammingLanguage}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.student_development_environment}
-                                value={searchSource.student_development_environment}
-                                isClearable
-                                isMulti
-                                onChange={handleChangeStudentDevelopmentEnvironment}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>ソフトウェア</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.software}
-                                value={searchSource.software}
-                                isClearable
-                                isMulti
-                                onChange={handleChangeSoftware}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>取得資格</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.acquisition_qualification}
-                                value={searchSource.acquisition_qualification}
-                                isClearable
-                                isMulti
-                                onChange={handleChangeAcquisitionQualification}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>趣味</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.hobby}
-                                value={searchSource.hobby}
-                                isClearable
-                                isMulti
-                                onChange={handleChangeHobby}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                      </>
-                    ) : PathName === "/Profile/yoshioka/work" ? (
-                      <>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.work_genre}
-                                value={searchSource.work_genre}
-                                isClearable
-                                isMulti
-                                onChange={handleChangeWorkGenre}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.programming_language}
-                                value={searchSource.programming_language}
-                                isClearable
-                                isMulti
-                                onChange={handleChangeProgrammingLanguage}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.development_environment}
-                                value={searchSource.development_environment}
-                                isClearable
-                                isMulti
-                                onChange={handleChangeDevelopmentEnvironment}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                      </>
-                    ) : PathName === "/Profile/yoshioka/movie" ? (
-                      <>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.work_genre}
-                                value={searchSource.work_genre}
-                                isClearable
-                                isMulti
-                                onChange={handleChangeWorkGenre}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                      </>
-                    ) : PathName === "/CompanyList" ? (
-                      <>
-                        {myId[0] === "S" ? (
-                          <>
                             <Grid item xs={2} sm={4} md={4}>
                               <div
                                 style={{
@@ -2734,177 +2161,692 @@ export default function Searchbar() {
                                   marginBottom: "10px",
                                 }}
                               >
-                                <div style={{ fontWeight: "Bold", color: "#666" }}>フォロー状況</div>
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  専攻名
+                                </div>
                                 <div style={{ color: "#444" }}>
                                   <Select
                                     placeholder="▼"
-                                    options={options.follow_status}
-                                    value={searchSource.follow_status}
+                                    options={options.major_name}
+                                    value={searchSource.major_name}
+                                    isClearable
+                                    // isMulti
+                                    onChange={handleChangeMajorName}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  コース名
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.course_name}
+                                    value={searchSource.course_name}
+                                    isClearable
+                                    // isMulti
+                                    onChange={handleChangeCourseName}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  ジャンル
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.work_genre}
+                                    value={searchSource.work_genre}
                                     isClearable
                                     isMulti
-                                    onChange={handleChangeFollowStatus}
+                                    onChange={handleChangeWorkGenre}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  プログラミング言語
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.programming_language}
+                                    value={searchSource.programming_language}
+                                    isClearable
+                                    isMulti
+                                    onChange={handleChangeProgrammingLanguage}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  開発環境
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.development_environment}
+                                    value={searchSource.development_environment}
+                                    isClearable
+                                    isMulti
+                                    onChange={
+                                      handleChangeDevelopmentEnvironment
+                                    }
                                   />
                                 </div>
                               </div>
                             </Grid>
                           </>
-                        ) : (
-                          ""
-                        )}
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>職種</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.selected_occupation}
-                                value={searchSource.selected_occupation}
-                                isClearable
-                                isMulti
-                                onChange={handleChangeSelectedOccupation}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>勤務地</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.prefecture}
-                                value={searchSource.prefecture}
-                                isClearable
-                                isMulti
-                                onChange={handleChangePrefecture}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>業界キーワード</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.industry}
-                                value={searchSource.industry}
-                                isClearable
-                                isMulti
-                                onChange={handleChangeIndustry}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.development_environment}
-                                value={searchSource.development_environment}
-                                isClearable
-                                isMulti
-                                onChange={handleChangeDevelopmentEnvironment}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.programming_language}
-                                value={searchSource.programming_language}
-                                isClearable
-                                isMulti
-                                onChange={handleChangeProgrammingLanguage}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>歓迎資格</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.acquisition_qualification}
-                                value={searchSource.acquisition_qualification}
-                                isClearable
-                                isMulti
-                                onChange={handleChangeAcquisitionQualification}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>ソフトウェア</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.software}
-                                value={searchSource.software}
-                                isClearable
-                                isMulti
-                                onChange={handleChangeSoftware}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                      </>
-                    ) : PathName === "/Internship_JobOffer/JobOffer" ||
-                      PathName === "/Internship_JobOffer/Internship" ||
-                      PathName === "/Internship_JobOffer/Session" ||
-                      PathName === "/Internship_JobOffer/Blog" ? (
-                      <>
-                        {myId[0] === "S" ? (
+                        ) : PathName === "/VideoList" ? (
+                          <>
+                            {myId[0] === "C" ? (
+                              <>
+                                <Grid item xs={2} sm={4} md={4}>
+                                  <div
+                                    style={{
+                                      display: "",
+                                      marginTop: "20px",
+                                      marginBottom: "10px",
+                                    }}
+                                  >
+                                    <div
+                                      style={{
+                                        fontWeight: "Bold",
+                                        color: "#666",
+                                      }}
+                                    >
+                                      フォロー状況
+                                    </div>
+                                    <div style={{ color: "#444" }}>
+                                      <Select
+                                        placeholder="▼"
+                                        options={options.follow_status}
+                                        value={searchSource.follow_status}
+                                        isClearable
+                                        isMulti
+                                        onChange={handleChangeFollowStatus}
+                                      />
+                                    </div>
+                                  </div>
+                                </Grid>
+                              </>
+                            ) : (
+                              ""
+                            )}
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  学校名
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.school_name}
+                                    value={searchSource.school_name}
+                                    isClearable
+                                    // isMulti
+                                    onChange={handleChangeSchoolName}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  学科名
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.department_name}
+                                    value={searchSource.department_name}
+                                    isClearable
+                                    // isMulti
+                                    onChange={handleChangeDepartmentName}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  学部名
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.faculty_name}
+                                    value={searchSource.faculty_name}
+                                    isClearable
+                                    // isMulti
+                                    onChange={handleChangeFacultyName}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  専攻名
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.major_name}
+                                    value={searchSource.major_name}
+                                    isClearable
+                                    // isMulti
+                                    onChange={handleChangeMajorName}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  コース名
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.course_name}
+                                    value={searchSource.course_name}
+                                    isClearable
+                                    // isMulti
+                                    onChange={handleChangeCourseName}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  ジャンル
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.video_genre}
+                                    value={searchSource.video_genre}
+                                    isClearable
+                                    isMulti
+                                    onChange={handleChangeVideoGenre}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                          </>
+                        ) : PathName === "/StudentList" ? (
+                          <>
+                            {myId[0] === "C" ? (
+                              <>
+                                <Grid item xs={2} sm={4} md={4}>
+                                  <div
+                                    style={{
+                                      display: "",
+                                      marginTop: "20px",
+                                      marginBottom: "10px",
+                                    }}
+                                  >
+                                    <div
+                                      style={{
+                                        fontWeight: "Bold",
+                                        color: "#666",
+                                      }}
+                                    >
+                                      フォロー状況
+                                    </div>
+                                    <div style={{ color: "#444" }}>
+                                      <Select
+                                        placeholder="▼"
+                                        options={options.follow_status}
+                                        value={searchSource.follow_status}
+                                        isClearable
+                                        isMulti
+                                        onChange={handleChangeFollowStatus}
+                                      />
+                                    </div>
+                                  </div>
+                                </Grid>
+                              </>
+                            ) : (
+                              ""
+                            )}
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  卒業年
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.graduation_year}
+                                    value={searchSource.graduation_year}
+                                    isClearable
+                                    // isMulti
+                                    onChange={handleChangeGraduationYear}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  学校名
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.school_name}
+                                    value={searchSource.school_name}
+                                    isClearable
+                                    // isMulti
+                                    onChange={handleChangeSchoolName}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  学科名
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.department_name}
+                                    value={searchSource.department_name}
+                                    isClearable
+                                    // isMulti
+                                    onChange={handleChangeDepartmentName}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  学部名
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.faculty_name}
+                                    value={searchSource.faculty_name}
+                                    isClearable
+                                    // isMulti
+                                    onChange={handleChangeFacultyName}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  専攻名
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.major_name}
+                                    value={searchSource.major_name}
+                                    isClearable
+                                    // isMulti
+                                    onChange={handleChangeMajorName}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  コース名
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.course_name}
+                                    value={searchSource.course_name}
+                                    isClearable
+                                    // isMulti
+                                    onChange={handleChangeCourseName}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  希望職種
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.desired_occupation}
+                                    value={searchSource.desired_occupation}
+                                    isClearable
+                                    isMulti
+                                    onChange={handleChangeDesiredOccupation}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  希望勤務地
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.desired_work_region}
+                                    value={searchSource.desired_work_region}
+                                    isClearable
+                                    isMulti
+                                    onChange={handleChangeDesiredWorkRegion}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  プログラミング言語
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={
+                                      options.student_programming_language
+                                    }
+                                    value={
+                                      searchSource.student_programming_language
+                                    }
+                                    isClearable
+                                    isMulti
+                                    onChange={
+                                      handleChangeStudentProgrammingLanguage
+                                    }
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  開発環境
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={
+                                      options.student_development_environment
+                                    }
+                                    value={
+                                      searchSource.student_development_environment
+                                    }
+                                    isClearable
+                                    isMulti
+                                    onChange={
+                                      handleChangeStudentDevelopmentEnvironment
+                                    }
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  ソフトウェア
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.software}
+                                    value={searchSource.software}
+                                    isClearable
+                                    isMulti
+                                    onChange={handleChangeSoftware}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  取得資格
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.acquisition_qualification}
+                                    value={
+                                      searchSource.acquisition_qualification
+                                    }
+                                    isClearable
+                                    isMulti
+                                    onChange={
+                                      handleChangeAcquisitionQualification
+                                    }
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  趣味
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.hobby}
+                                    value={searchSource.hobby}
+                                    isClearable
+                                    isMulti
+                                    onChange={handleChangeHobby}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                          </>
+                        ) : PathName === "/Profile/yoshioka/work" ? (
                           <>
                             <Grid item xs={2} sm={4} md={4}>
                               <div
@@ -2914,14 +2856,555 @@ export default function Searchbar() {
                                   marginBottom: "10px",
                                 }}
                               >
-                                <div style={{ fontWeight: "Bold", color: "#666" }}>フォロー状況</div>
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  ジャンル
+                                </div>
                                 <div style={{ color: "#444" }}>
                                   <Select
-                                    options={options.follow_status}
-                                    value={searchSource.follow_status}
+                                    placeholder="▼"
+                                    options={options.work_genre}
+                                    value={searchSource.work_genre}
                                     isClearable
                                     isMulti
-                                    onChange={handleChangeFollowStatus}
+                                    onChange={handleChangeWorkGenre}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  プログラミング言語
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.programming_language}
+                                    value={searchSource.programming_language}
+                                    isClearable
+                                    isMulti
+                                    onChange={handleChangeProgrammingLanguage}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  開発環境
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.development_environment}
+                                    value={searchSource.development_environment}
+                                    isClearable
+                                    isMulti
+                                    onChange={
+                                      handleChangeDevelopmentEnvironment
+                                    }
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                          </>
+                        ) : PathName === "/Profile/yoshioka/movie" ? (
+                          <>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  ジャンル
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.work_genre}
+                                    value={searchSource.work_genre}
+                                    isClearable
+                                    isMulti
+                                    onChange={handleChangeWorkGenre}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                          </>
+                        ) : PathName === "/CompanyList" ? (
+                          <>
+                            {myId[0] === "S" ? (
+                              <>
+                                <Grid item xs={2} sm={4} md={4}>
+                                  <div
+                                    style={{
+                                      display: "",
+                                      marginTop: "20px",
+                                      marginBottom: "10px",
+                                    }}
+                                  >
+                                    <div
+                                      style={{
+                                        fontWeight: "Bold",
+                                        color: "#666",
+                                      }}
+                                    >
+                                      フォロー状況
+                                    </div>
+                                    <div style={{ color: "#444" }}>
+                                      <Select
+                                        placeholder="▼"
+                                        options={options.follow_status}
+                                        value={searchSource.follow_status}
+                                        isClearable
+                                        isMulti
+                                        onChange={handleChangeFollowStatus}
+                                      />
+                                    </div>
+                                  </div>
+                                </Grid>
+                              </>
+                            ) : (
+                              ""
+                            )}
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  職種
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.selected_occupation}
+                                    value={searchSource.selected_occupation}
+                                    isClearable
+                                    isMulti
+                                    onChange={handleChangeSelectedOccupation}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  勤務地
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.prefecture}
+                                    value={searchSource.prefecture}
+                                    isClearable
+                                    isMulti
+                                    onChange={handleChangePrefecture}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  業界キーワード
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.industry}
+                                    value={searchSource.industry}
+                                    isClearable
+                                    isMulti
+                                    onChange={handleChangeIndustry}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  開発環境
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.development_environment}
+                                    value={searchSource.development_environment}
+                                    isClearable
+                                    isMulti
+                                    onChange={
+                                      handleChangeDevelopmentEnvironment
+                                    }
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  プログラミング言語
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.programming_language}
+                                    value={searchSource.programming_language}
+                                    isClearable
+                                    isMulti
+                                    onChange={handleChangeProgrammingLanguage}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  歓迎資格
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.acquisition_qualification}
+                                    value={
+                                      searchSource.acquisition_qualification
+                                    }
+                                    isClearable
+                                    isMulti
+                                    onChange={
+                                      handleChangeAcquisitionQualification
+                                    }
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  ソフトウェア
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.software}
+                                    value={searchSource.software}
+                                    isClearable
+                                    isMulti
+                                    onChange={handleChangeSoftware}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                          </>
+                        ) : PathName === "/Internship_JobOffer/JobOffer" ||
+                          PathName === "/Internship_JobOffer/Internship" ||
+                          PathName === "/Internship_JobOffer/Session" ||
+                          PathName === "/Internship_JobOffer/Blog" ? (
+                          <>
+                            {myId[0] === "S" ? (
+                              <>
+                                <Grid item xs={2} sm={4} md={4}>
+                                  <div
+                                    style={{
+                                      display: "",
+                                      marginTop: "20px",
+                                      marginBottom: "10px",
+                                    }}
+                                  >
+                                    <div
+                                      style={{
+                                        fontWeight: "Bold",
+                                        color: "#666",
+                                      }}
+                                    >
+                                      フォロー状況
+                                    </div>
+                                    <div style={{ color: "#444" }}>
+                                      <Select
+                                        options={options.follow_status}
+                                        value={searchSource.follow_status}
+                                        isClearable
+                                        isMulti
+                                        onChange={handleChangeFollowStatus}
+                                      />
+                                    </div>
+                                  </div>
+                                </Grid>
+                              </>
+                            ) : (
+                              ""
+                            )}
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  企業名
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    placeholder="▼"
+                                    options={options.company_name}
+                                    value={searchSource.company_name}
+                                    isClearable
+                                    // isMulti
+                                    onChange={handleChangeCompanyName}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  職種
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    options={options.selected_occupation}
+                                    value={searchSource.selected_occupation}
+                                    isClearable
+                                    isMulti
+                                    onChange={handleChangeSelectedOccupation}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  勤務地
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    options={options.prefecture}
+                                    value={searchSource.prefecture}
+                                    isClearable
+                                    isMulti
+                                    onChange={handleChangePrefecture}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  業界キーワード
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    options={options.industry}
+                                    value={searchSource.industry}
+                                    isClearable
+                                    isMulti
+                                    onChange={handleChangeIndustry}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  開発環境
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    options={options.development_environment}
+                                    value={searchSource.development_environment}
+                                    isClearable
+                                    isMulti
+                                    onChange={
+                                      handleChangeDevelopmentEnvironment
+                                    }
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  プログラミング言語
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    options={options.programming_language}
+                                    value={searchSource.programming_language}
+                                    isClearable
+                                    isMulti
+                                    onChange={handleChangeProgrammingLanguage}
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  歓迎資格
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    options={options.acquisition_qualification}
+                                    value={
+                                      searchSource.acquisition_qualification
+                                    }
+                                    isClearable
+                                    isMulti
+                                    onChange={
+                                      handleChangeAcquisitionQualification
+                                    }
+                                  />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={2} sm={4} md={4}>
+                              <div
+                                style={{
+                                  display: "",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{ fontWeight: "Bold", color: "#666" }}
+                                >
+                                  ソフトウェア
+                                </div>
+                                <div style={{ color: "#444" }}>
+                                  <Select
+                                    options={options.software}
+                                    value={searchSource.software}
+                                    isClearable
+                                    isMulti
+                                    onChange={handleChangeSoftware}
                                   />
                                 </div>
                               </div>
@@ -2930,193 +3413,68 @@ export default function Searchbar() {
                         ) : (
                           ""
                         )}
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>企業名</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                placeholder="▼"
-                                options={options.company_name}
-                                value={searchSource.company_name}
-                                isClearable
-                                // isMulti
-                                onChange={handleChangeCompanyName}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>職種</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                options={options.selected_occupation}
-                                value={searchSource.selected_occupation}
-                                isClearable
-                                isMulti
-                                onChange={handleChangeSelectedOccupation}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>勤務地</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                options={options.prefecture}
-                                value={searchSource.prefecture}
-                                isClearable
-                                isMulti
-                                onChange={handleChangePrefecture}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>業界キーワード</div>
-                            <div style={{ color: "#444" }}>
-                              <Select options={options.industry} value={searchSource.industry} isClearable isMulti onChange={handleChangeIndustry} />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                options={options.development_environment}
-                                value={searchSource.development_environment}
-                                isClearable
-                                isMulti
-                                onChange={handleChangeDevelopmentEnvironment}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                options={options.programming_language}
-                                value={searchSource.programming_language}
-                                isClearable
-                                isMulti
-                                onChange={handleChangeProgrammingLanguage}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>歓迎資格</div>
-                            <div style={{ color: "#444" }}>
-                              <Select
-                                options={options.acquisition_qualification}
-                                value={searchSource.acquisition_qualification}
-                                isClearable
-                                isMulti
-                                onChange={handleChangeAcquisitionQualification}
-                              />
-                            </div>
-                          </div>
-                        </Grid>
-                        <Grid item xs={2} sm={4} md={4}>
-                          <div
-                            style={{
-                              display: "",
-                              marginTop: "20px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <div style={{ fontWeight: "Bold", color: "#666" }}>ソフトウェア</div>
-                            <div style={{ color: "#444" }}>
-                              <Select options={options.software} value={searchSource.software} isClearable isMulti onChange={handleChangeSoftware} />
-                            </div>
-                          </div>
-                        </Grid>
-                      </>
-                    ) : (
-                      ""
-                    )}
-                    {/* </div> */}
-                  </Grid>
-                  {/* </StyledSearchbar> */}
-                </Stack>
+                        {/* </div> */}
+                      </Grid>
+                      {/* </StyledSearchbar> */}
+                    </Stack>
 
-                {/* ---------------------------------------------------------- */}
-                <Divider sx={{ borderStyle: "dashed", m: 0, display: "block" }} />
-                <Stack
-                  direction="row"
-                  sx={{
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <Stack spacing={2} direction="row" sx={{ alignItems: "center" }}>
-                    <Button className={classes.textField} variant="outlined" onClick={handleClose}>
-                      閉じる
-                    </Button>
+                    {/* ---------------------------------------------------------- */}
+                    <Divider
+                      sx={{ borderStyle: "dashed", m: 0, display: "block" }}
+                    />
+                    <Stack
+                      direction="row"
+                      sx={{
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Stack
+                        spacing={2}
+                        direction="row"
+                        sx={{ alignItems: "center" }}
+                      >
+                        <Button
+                          className={classes.textField}
+                          variant="outlined"
+                          onClick={handleClose}
+                        >
+                          閉じる
+                        </Button>
+                      </Stack>
+                      <Stack
+                        direction="row"
+                        spacing={2}
+                        sx={{ alignItems: "center" }}
+                      >
+                        <Button
+                          className={classes.textField}
+                          variant="outlined"
+                          onClick={handleTagReset}
+                        >
+                          タグをリセット
+                        </Button>
+                        <Button
+                          className={classes.textField}
+                          variant="outlined"
+                          onClick={handleCancel}
+                        >
+                          キャンセル
+                        </Button>
+                        <Button
+                          className={classes.textField}
+                          variant="contained"
+                          onClick={handleSearch}
+                        >
+                          検索
+                        </Button>
+                      </Stack>
+                    </Stack>
                   </Stack>
-                  <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
-                    <Button className={classes.textField} variant="outlined" onClick={handleTagReset}>
-                      タグをリセット
-                    </Button>
-                    <Button className={classes.textField} variant="outlined" onClick={handleCancel}>
-                      キャンセル
-                    </Button>
-                    <Button className={classes.textField} variant="contained" onClick={handleSearch}>
-                      検索
-                    </Button>
-                  </Stack>
-                </Stack>
-              </Stack>
-            </Box>
-          </Modal>
+                </Box>
+              </Modal>
+            </>
+          )}
         </>
       )}
     </div>

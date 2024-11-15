@@ -170,6 +170,8 @@ const ImageUpload = ({ handleValueChange, onImagesUploaded, callSetImage }) => {
   const fileInputRef = useRef(null); // ファイルインプットの参照を保持
   // AllItemsContextから状態を取得
   const { workImage, setWorkImage } = useContext(WorkImageContext);
+  // レンダリングを行うかの判定で使用
+  const [hasRun, setHasRun] = useState(true);
 
   // 10/21追加
   const [items, setItems] = useState([]); // 画像アイテムの状態管理
@@ -197,13 +199,17 @@ const ImageUpload = ({ handleValueChange, onImagesUploaded, callSetImage }) => {
   }, []);
 
   useEffect(() => {
+    if (!hasRun) {
+      resetItems();
+      setHasRun(true);
+    }
     console.log("workImage", workImage);
-  }, [workImage]);
+  }, [workImage, hasRun]);
 
   // 画像アップロードの処理
   const handleImageUpload = (event) => {
     callSetImage(event.target.files); // アップロードしたファイルを処理
-    setWorkImage(event.target.files); // File型のデータを追加
+    // setWorkImage(event.target.files); // File型のデータを追加
     const files = Array.from(event.target.files); // アップロードされたファイルを配列に変換
     const newItems = files.map((file, index) => ({
       id: `${file.name}-${index}-${Date.now()}`, // 一意のIDを生成
@@ -211,20 +217,8 @@ const ImageUpload = ({ handleValueChange, onImagesUploaded, callSetImage }) => {
       name: file.name,
       description: "", // 初期状態は空の説明
     }));
+    setWorkImage((prevImages) => [...prevImages, ...newItems]); // 既存の画像リストに追加
 
-    // setWorkImage((prevItems) => {
-    //   const updatedItems = [...prevItems, ...newItems];
-    //   onImagesUploaded(updatedItems); // 親コンポーネントに通知
-    //   return updatedItems;
-    // });
-
-    // 新しいアイテムを追加し、状態を更新
-    /*
-    10/21 未修整
-    !!!!!!!!!!!要修正!!!!!!!!!!!
-    setWorkImageだとよくないので別のものに変える。
-    setWorkImageにはFile型のみを入れる!!
-    */
     setItems((prevItems) => {
       // 配列型
       const updatedItems = [...prevItems, ...newItems];
@@ -242,21 +236,23 @@ const ImageUpload = ({ handleValueChange, onImagesUploaded, callSetImage }) => {
 
     // アイテムを削除するロジック
     setWorkImage((workImage) => {
-      const updateId = id.split(".");
-      console.log("updateId", updateId[0]);
+      const updateId = id.split(".")[0];
+      console.log("updateId", updateId);
 
-      // const updatedItems = workImage.filter(
-      //   (workImage) => workImage.name !== updateId
-      // );
       const dt = new DataTransfer();
       const workImageArray = Array.from(workImage);
       console.log("workImageArray", workImageArray[0].name.split(".")[0]);
-      // 10/25追加
       workImageArray.forEach((file) => {
         if (file.name.split(".")[0] !== updateId) {
           dt.items.add(file);
         }
       });
+
+      if (dt.files.length == 0) {
+        // 選択ファイル数が0のとき配列とinput内をリセットする
+        setHasRun(false);
+      }
+
       fileInputRef.current.files = dt.files; // input内のFileListを更新
       console.log("fileInputRef.current.files", fileInputRef.current.files);
 

@@ -362,8 +362,8 @@ const ProfileMypage = () => {
                 sx={{
                   marginLeft: "auto", // 右揃え
                   "&:hover": { backgroundColor: "#f0f0f0", title: "a" },
-                  width: "30px",
-                  height: "30px",
+                  // width: "30px",
+                  // height: "30px",
                 }}
               >
                 <ModeEditIcon sx={{ fontSize: 55 }} />

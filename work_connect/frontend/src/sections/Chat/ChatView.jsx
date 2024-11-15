@@ -512,8 +512,13 @@ const ChatView = () => {
     restoreScrollPosition();
     scrollToBottom();
 
-    handleResize(); // 初期値を設定
+    // UI調整
+    handleResize();
     window.addEventListener('resize', handleResize);
+    // 画面全体のwidthが900px未満かつチャット相手未選択のときはフォローリスト表示
+    if(window.innerWidth < 900 && !chatViewId){
+      setShowFollowList(true);
+    }
 
     // クリーンアップ関数でリスナーを削除
     return () => {

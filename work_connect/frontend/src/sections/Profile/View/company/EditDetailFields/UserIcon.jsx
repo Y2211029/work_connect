@@ -176,13 +176,13 @@ const ImageCard = ({IconData}) => {
         </label>
       </Card>
       <Box>
-
-        <Button variant="outlined" onClick={handleImageReset}
-        sx={{ borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
-          <PersonIcon/>初期化
-        </Button>
-
-    </Box>
+        <Tooltip title="デフォルトのアイコンに戻します。">
+          <Button variant="outlined" onClick={handleImageReset}
+          sx={{ borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
+            <PersonIcon/>初期化
+          </Button>
+        </Tooltip>
+      </Box>
     </>
   );
 };

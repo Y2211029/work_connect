@@ -512,8 +512,7 @@ const ProfileMypage = () => {
           ResponseData.software ||
           ResponseData.acquisition_qualification ||
           ResponseData.hp_url ||
-          ResponseData.video_url ||
-          ResponseData.companyInformation) && (
+          ResponseData.video_url) && (
           <Box>
             <Showmore>
               <Button
@@ -606,31 +605,6 @@ const ProfileMypage = () => {
           </Box>
         )}
 
-        {/* {ResponseData.companyInformation && !close && (
-          <Box ref={el => (detail.current[3] = el)} id="detail">
-            <Typography variant="h6">企業情報</Typography>
-            <table className="company_information_table">
-              <tbody>
-                {ResponseData.companyInformation.map((info, index) => (
-                  <tr key={index}>
-                    <th>
-                      <Typography variant="title">
-                        {ShowTagsCompanyInformation(info.title)}
-                      </Typography>
-                    </th>
-                    <td>
-                      <Typography variant="contents">
-                        {info.contents}
-                      </Typography>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </Box>
-        )} */}
-
-        {/* </span> */}
       </Stack>
     </Box>
   );

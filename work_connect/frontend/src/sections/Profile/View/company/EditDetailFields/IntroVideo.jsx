@@ -73,7 +73,7 @@ const IntroVideo = ({ IntroVideoData }) => {
     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
       <TextField
         fullWidth
-        label="紹介動画"
+        label="YouTubeのURLをここにコピー"
         margin="normal"
         name="IntroVideo"
         onChange={handleChange}

@@ -88,11 +88,15 @@ const IntroVideo = ({ IntroVideoData }) => {
           marginBottom: '0'
         }}
       />
-      <Iframe
-        url={IntroVideoURL}
-        width="100%"
-        height="400px"
-      />
+
+      {IntroVideoURL ? (
+              <Iframe
+              url={IntroVideoURL}
+              width="100%"
+              height="400px"
+            />
+      ): null}
+
     </div>
 
 

@@ -12,7 +12,7 @@ class PostMypageController extends Controller
 {
     public function PostMypageController(Request $request)
     {
-
+        \Log::info("PostMypageController通っています!");
         // 学生か企業か判断
         $kind = $request->input('kind');
 
@@ -68,6 +68,7 @@ class PostMypageController extends Controller
                     'acquisition_qualification' => $Qualification,
                     'software' => $Software,
                 ];
+                \Log::info(json_encode(value: $data));
                 // user_nameを指定しデータを更新
                 DB::table('w_users')
                 ->where('user_name', $ProfileUserName)

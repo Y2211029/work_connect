@@ -362,7 +362,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           genre: company.genre,
           header_img: company.header_img,
           news_created_at: company.news_created_at,
-          icon_id: company.icon_id,
+          icon: company.icon,
           followStatus: company.follow_status,
           count: company.form_data_count,
         })),

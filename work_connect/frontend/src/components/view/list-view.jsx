@@ -159,13 +159,6 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           break;
         }
 
-        case path === `/CreateForm/${NewsDetailId}`: {
-          const { default: CreateFormPostCard } = await import("src/sections/CreateForm/post-card");
-          setPostCard(() => CreateFormPostCard);
-          console.log("CreateFormPostCard");
-          break;
-        }
-
         case options.DecodeURL === `/Profile/${ParamUserName}` && options.page === "checkform": {
           const { default: CheckFormPostCard } = await import("src/sections/Profile/View/company/CheckForm/post-card");
           setPostCard(() => CheckFormPostCard);
@@ -378,20 +371,6 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
     writeforms: {
       ItemName: "応募用フォーム",
       url: `http://localhost:8000/write_form_get/${NewsDetailId}`,
-      idKey: "id",
-      tags: ["company_name"],
-      generatePosts: (WorkOfList) => {
-        return WorkOfList.map((company) => ({
-          company_id: company.company_id,
-          create_form: company.create_form,
-          news_id: company.news_id,
-          article_title: company.article_title,
-        }));
-      },
-    },
-    createforms: {
-      ItemName: "応募用フォームを作成する",
-      url: `http://localhost:8000/create_form_get/${NewsDetailId}`,
       idKey: "id",
       tags: ["company_name"],
       generatePosts: (WorkOfList) => {
@@ -622,7 +601,6 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
       PathName === "/CompanyList" ||
       PathName === "/Internship_JobOffer" ||
       PathName === `/WriteForm/${NewsDetailId}` ||
-      PathName === `/CreateForm/${NewsDetailId}` ||
       PathName === "/Internship_JobOffer?page=JobOffer" ||
       PathName === "/Internship_JobOffer?page=Internship" ||
       PathName === "/Internship_JobOffer?page=Session" ||

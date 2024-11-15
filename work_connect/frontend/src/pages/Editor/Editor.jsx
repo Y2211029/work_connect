@@ -63,6 +63,9 @@ import { useNavigate } from 'react-router-dom';
 import specialCompanyNewsItem from "src/_mock/specialCompanyNewsItem";
 import NewsMenu from "./clickedmenu/NewsMenu"
 
+//クリエイトフォーム
+import CreateForm from "./CreateForm";
+
 
 const Editor = () => {
 
@@ -82,7 +85,9 @@ const Editor = () => {
   const [usedImages, setUsedImages] = useState(null);
   const [newsContent, setNewsContent] = useState("");
   const [isSaved, setIsSaved] = useState(false);
-  const [NewsValue,setNewsValue] = useState(null);
+  const [CreateFormOpen, setCreateFormOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const news_save_url = "http://127.0.0.1:8000/news_save";
   const thumbnail_image_save_url = "http://127.0.0.1:8000/thumbnail_image_save";
 
@@ -106,6 +111,7 @@ const Editor = () => {
 
   //ニュースを投稿した際の処理
   const news_upload = async () => {
+    setNewsMenuShow(false);
     alert("ニュースを投稿しました");
 
     try {
@@ -113,9 +119,6 @@ const Editor = () => {
         console.error("Editor instance or save function not available");
         return;
       }
-
-      //採用担当者からの一言メッセージを変数に入れる
-
 
       const outputData = await editorInstance.current.save();
 
@@ -134,18 +137,17 @@ const Editor = () => {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-          body: {
-            company_id: sessionId, // 企業ID
-            news_id: news_id,     //ニュースid
-            title: title,     //ニュースタイトル
-            header_img: imageUrl, //ニュースサムネイル画像
-            value: outputData,  //ニュースの内容
-            message: newsContent, //採用担当者からの一言メッセージ
-            genre: genre
-          },
+          company_id: sessionId, // 企業ID
+          news_id: news_id,     //ニュースid
+          title: title,     //ニュースタイトル
+          header_img: imageUrl, //ニュースサムネイル画像
+          value: outputData,  //ニュースの内容
+          message: newsContent, //採用担当者からの一言メッセージ
+          genre: genre
         }
       );
 
+      console.log(response);
       console.log(response.data.id);
       console.log(response.data);
       console.log("成功");
@@ -165,11 +167,11 @@ const Editor = () => {
     console.log("newValue", newValue);
   }
 
-  const notification_messagehandleChange = (e) =>{
+  const notification_messagehandleChange = (e) => {
     const newValue = e.target.value;
     setNewsContent(newValue);
-    console.log("newValue",newValue);
-}
+    console.log("newValue", newValue);
+  }
 
 
 
@@ -206,9 +208,9 @@ const Editor = () => {
 
       setDraftList(response.data.news_draft_list); // 下書きリスト最新に更新
       setNewsId(response.data.id); // news_idを更新する
-      setNewsValue(outputData); //エディタの内容を更新する
       setIsSaved(true); // 保存済みとして状態を設定
       console.log("成功");
+      console.log(response);
       alert("下書きを保存しました!");
       return response.data; // 保存されたnews_idを返す
     } catch (error) {
@@ -289,7 +291,7 @@ const Editor = () => {
     }
   };
 
-  const rewrite_news = async(id) => {
+  const rewrite_news = async (id) => {
     //ニュースメニューを閉じる
     closeModal("NewsMenu");
     // ドラフトリストから選択したIDのアイテムを取得
@@ -310,13 +312,13 @@ const Editor = () => {
       setImageUrl("");
       setDisplayInput(true);
       console.log("画像NULL");
-      console.log("画像パス",select_draft_list.header_img);
+      console.log("画像パス", select_draft_list.header_img);
     } else {
       // header_img が空でない場合
       setImageUrl(select_draft_list.header_img); // ヘッダー画像上書き
       setDisplayInput(false);
       console.log("画像NULLじゃない");
-      console.log("画像パス",select_draft_list.header_img);
+      console.log("画像パス", select_draft_list.header_img);
     }
 
     // エディタの内容を更新
@@ -341,8 +343,7 @@ const Editor = () => {
   };
 
   const rewrite_news_delete = async (id) => {
-    confirm("本当に削除しますか");
-    if (confirm && id) {
+    if (confirm("本当に削除しますか") && id) {
       console.log("delete_id", id);
       console.log("company_id", sessionId);
       try {
@@ -360,7 +361,6 @@ const Editor = () => {
         console.error("Error sending data!", error);
       }
     }
-
   };
 
   //エディタの編集状況を見て、チェックボックスで表示する
@@ -480,7 +480,7 @@ const Editor = () => {
 
   //テキストの文字数(テーブルやリスト・コードなど)使用したプラグインの名前を格納
   const countChars = async () => {
-    console.log("countChars関数のニュース内容",editorInstance.current);
+    console.log("countChars関数のニュース内容", editorInstance.current);
     if (editorInstance.current) {
       const outputData = await editorInstance.current.save();
       let text = '';
@@ -546,7 +546,6 @@ const Editor = () => {
       console.log("文字", text);
       console.log("リプレイス後の文字", plainText);
       setCharCount(plainText.length); // 文字数を設定
-      setNewsValue(outputData);
       // 使用された画像を配列に変換
       const usedImagesArray = Array.from(usedImages);
       console.log("使用された画像", usedImagesArray);
@@ -557,42 +556,8 @@ const Editor = () => {
   const postsFrominternshipJobOffer = specialCompanyNewsItem();
   console.log("postsFromCompany", postsFrominternshipJobOffer);
 
-  const create_form_jump = async () => {
-    if (!isSaved) {
-      const savedNewsData = await news_save(); // 保存されていなければ保存してから取得
-      if (savedNewsData) {
-        SessionStoragePush()
-        navigate(`/CreateForm/${savedNewsData.id}`);
-      }
-    } else {
-      // すでに保存されている場合、保存したnews_idを使用してそのまま遷移
-      // 応募フォーム作成ページからニュース記事編集ページに戻る際にデータをセッションストレージに入れて、行き来ができるようにする
-      SessionStoragePush()
-      navigate(`/CreateForm/${news_id}`);
-    }
-  };
 
-  //ニュースデータをセッションストレージに入れる関数
-  const SessionStoragePush = () => {
-    const sessionData = {
-      imageUrl,
-      displayInput,
-      title,
-      sessionId,
-      news_id,
-      draft_list,
-      selected_draft,
-      NewsValue,
-      charCount,
-      usedImages,
-      newsContent,
-      genre,
-    };
 
-    sessionStorage.setItem("editorSessionData", JSON.stringify(sessionData)); // 一つのオブジェクトにまとめて保存
-
-    console.log("SessionStoragePush通りました");
-  };
 
   useEffect(() => {
 
@@ -1040,50 +1005,6 @@ const Editor = () => {
     newsDraftList();
   }, [sessionId]); // sessionIdが変更されたときに実行される
 
-// ページ遷移後にエディタのデータを復元
-useEffect(() => {
-  const SessionStoragePull = async () => {
-    const editorSessionData = JSON.parse(sessionStorage.getItem("editorSessionData"));
-    if (editorSessionData) {
-      // 各状態を設定
-      setImageUrl(editorSessionData.imageUrl);
-      setDisplayInput(editorSessionData.displayInput);
-      setTitle(editorSessionData.title);
-      setSessionId(editorSessionData.sessionId);
-      setNewsId(editorSessionData.news_id);
-      setDraftList(editorSessionData.draft_list);
-      setSelectedDraft(editorSessionData.selected_draft);
-      setNewsValue(editorSessionData.NewsValue);
-      setUsedImages(editorSessionData.usedImages);
-      setCharCount(editorSessionData.charCount);
-      setNewsContent(editorSessionData.newsContent);
-      console.log("ニュースの内容", editorSessionData.NewsValue);
-      console.log("エディタインスタンスカレント", editorInstance.current);
-
-      if (editorInstance.current) {
-        console.log("Editor instance available:", editorInstance.current);
-        try {
-          // isReadyが解決するのを待つ
-          await editorInstance.current.isReady;
-
-          // renderを呼び出す
-          await editorInstance.current.render(editorSessionData.NewsValue);
-          await editorInstance.current.save();
-          console.log("ここ通ってます");
-        } catch (error) {
-          console.error("Error rendering or saving editor content:", error);
-        }
-      } else {
-        console.error("Editor instance is not initialized");
-      }
-    } else {
-      console.error("No saved editor data found in session storage");
-    }
-
-    sessionStorage.removeItem("editorSessionData");
-  };
-  SessionStoragePull();
-}, [])
 
   // 画像を削除する処理
   const thumbnail_img_delete = async () => {
@@ -1153,6 +1074,23 @@ useEffect(() => {
     );
   };
 
+  const CreateFormJump = async () => {
+    if (!isSaved) {
+      setIsLoading(true); // ローディング開始
+      const savedNewsData = await news_save(); // 保存されていなければ保存してから取得
+      if (savedNewsData) {
+        setIsLoading(false); // ローディング終了
+        setCreateFormOpen(true);
+        setNewsMenuShow(false);
+      }
+    } else {
+      setIsLoading(false); // ローディング終了
+      setCreateFormOpen(true);
+      setNewsMenuShow(false);
+    }
+  };
+
+
 
 
   return (
@@ -1160,81 +1098,94 @@ useEffect(() => {
       <Helmet>
         <title>ニュースの投稿 | Work&Connect</title>
       </Helmet>
-
-      {getNewsTitle()}
-
-      {/* アップロードされた画像の表示 */}
-      {imageUrl &&
-      (
-        <div className="uploaded-image" id="uploaded-image">
-          <img src={`${imageUrl}`} alt="Uploaded" style={{ width: '100%', height: '300px' }} />
-          <CancelIcon onClick={thumbnail_img_delete} />
+  
+      {isLoading ? (
+         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+          <div>ローディング中...</div>
         </div>
+      ) : (
+        <>
+          {/* ニュースタイトルを表示 */}
+          {getNewsTitle()}
+  
+          {/* アップロードされた画像の表示 */}
+          {imageUrl && (
+            <div className="uploaded-image" id="uploaded-image">
+              <img src={`${imageUrl}`} alt="Uploaded" style={{ width: '100%', height: '300px' }} />
+              <CancelIcon onClick={thumbnail_img_delete} />
+            </div>
+          )}
+  
+          {/* 画像選択のフォーム */}
+          <form>
+            <input
+              id="fileInput"
+              type="file"
+              accept="image/*"
+              style={{ display: 'none' }}
+              ref={fileInputRef}
+              onChange={handleFileSelect}
+            />
+          </form>
+  
+          {/* ニュースメニューのボタン */}
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <MUIButton onClick={NewsMenuShow} variant="contained" sx={buttonStyle}>
+              ニュースメニュー
+            </MUIButton>
+          </Stack>
+  
+          {/* ニュースメニュー */}
+          <NewsMenu
+            IsOpen={newsmenushow}
+            CloseModal={closeModal}
+            genre={genre}
+            draftlist={draft_list}
+            CreateFormJump={CreateFormJump}
+            newsid={news_id}
+            RewriteNewsDelete={rewrite_news_delete}
+            RewriteNewsEnter={rewrite_news}
+            EditorStatusCheck={EditorStatusCheck}
+            EditorContentsStatusCheck={EditorContentsStatusCheck}
+            NewsSave={news_save}
+            handleChange={handleChange}
+            imageUrl={imageUrl}
+            title={title}
+            NewsUpLoad={news_upload}
+            NotificationMessageHandleChange={notification_messagehandleChange}
+            message={newsContent}
+            charCount={charCount}
+          />
+  
+          {/* CreateForm の表示 */}
+          {CreateFormOpen && <CreateForm select_draft_list={selected_draft} />}
+  
+          {/* カバー画像アップロード */}
+          <ImageSearchIcon
+            className="cover_img_upload"
+            style={{ display: displayInput ? 'block' : 'none' }}
+            onClick={() => document.getElementById('fileInput').click()}
+          />
+  
+          {/* 記事タイトルの入力エリア */}
+          <textarea
+            className="editor_title"
+            id="editor_title"
+            wrap="soft"
+            placeholder="記事タイトル"
+            value={title}
+            onChange={titlechange}
+          />
+  
+          {/* エディターコンポーネント */}
+          <div className="editor-wrapper">
+            <div ref={editorHolder} id="editor" />
+          </div>
+        </>
       )}
-
-
-      {/* 画像を選ぶ */}
-      <form>
-        <input
-          id="fileInput"
-          type="file"
-          accept="image/*"
-          style={{ display: 'none' }}
-          ref={fileInputRef}
-          onChange={handleFileSelect}
-        />
-      </form>
-
-
-      <Stack direction="row" alignItems="center" spacing={1}>
-        <MUIButton onClick={NewsMenuShow} variant="contained" sx={buttonStyle}>
-          ニュースメニュー
-        </MUIButton>
-      </Stack>
-
-      {/* /* 関数の場合は大文字、変数の場合は最初小文字 */}
-      <NewsMenu
-        IsOpen={newsmenushow}   //モーダルを開く関数
-        CloseModal={closeModal} // モーダルを閉じる関数
-        genre={genre}  //説明会・ブログなどのジャンル
-        draftlist={draft_list} //下書きリストの配列
-        CreateFormJump = {create_form_jump} //ニュースを保存後に応募フォーム作成画面に遷移する
-        newsid = {news_id} //ニュースのID
-        RewriteNewsDelete = {rewrite_news_delete} //下書きニュースを削除する関数
-        RewriteNewsEnter = {rewrite_news}
-        EditorStatusCheck = {EditorStatusCheck}
-        EditorContentsStatusCheck = {EditorContentsStatusCheck}
-        NewsSave = {news_save}
-        handleChange = {handleChange}
-        imageUrl = {imageUrl}
-        title = {title}
-        NewsUpLoad = {news_upload}
-        NotificationMessageHandleChange = {notification_messagehandleChange}
-        message = {newsContent}
-        charCount = {charCount}
-      />
-
-
-      <ImageSearchIcon
-        className="cover_img_upload"
-        style={{ display: displayInput ? 'block' : 'none' }}
-        onClick={() => document.getElementById('fileInput').click()}
-      />
-
-      <textarea
-        className="editor_title"
-        id="editor_title"
-        wrap="soft"
-        placeholder="記事タイトル"
-        value={title} // 状態の値をテキストエリアにセット
-        onChange={titlechange} // テキストエリアの変更を監視し、stateを更新
-      />
-
-      <div className="editor-wrapper">
-        <div ref={editorHolder} id="editor"/>
-      </div>
     </div>
   );
+  
 };
 
 export default Editor;

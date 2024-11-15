@@ -45,9 +45,7 @@ export const InternshipJobOfferPage = lazy(() => import("src/pages/internshipJob
 //ニュースを編集・投稿画面
 export const EditorPage = lazy(() => import("src/pages/Editor/Editor"));
 
-//応募用フォームを編集・回答画面
-export const CreateFormPage = lazy(() => import("src/pages/CreateForm/CreateForm"));
-
+//応募用フォームを回答画面
 export const WriteFormPage = lazy(() => import("src/pages/WriteForm/WriteForm"));
 
 
@@ -101,7 +99,6 @@ export default function Router() {
         { path: "Settings/ChangeEmail", element: <ChangeEmail /> },
         { path: "Settings/CheckEmail", element: <CheckEmail /> },
         { path: "Editor/:genre", element: <EditorPage /> },
-        { path: "CreateForm/:NewsId", element: <CreateFormPage /> },
         { path: "WriteForm/:newsdetail_id", element: <WriteFormPage /> },
 
 

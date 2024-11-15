@@ -103,6 +103,9 @@ export default function Header({ onOpenNav }) {
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget); // ボタンがクリックされた要素を保存
+    console.log("あいうえお通ってます!");
+    //パスを取得
+    console.log(window.location.pathname);
   };
 
   const handleClose = () => {
@@ -133,8 +136,19 @@ export default function Header({ onOpenNav }) {
   ];
 
   const handleMenuItemClick = (path) => {
-    handleClose();
-    navigate(path);
+    const now_pathname = window.location.pathname;
+    // ニュース編集からニュース編集へジャンプしようとした場合はリロードを行う
+    if (
+      ['/Editor/Session', '/Editor/Internship', '/Editor/JobOffer', '/Editor/Blog'].some((partialPath) =>
+        now_pathname.includes(partialPath)
+      )
+    ) {
+      handleClose();
+      window.location.reload(); // ページをリロードして内容をリセット
+    } else {
+      handleClose();
+      navigate(path); // 新しいパスに移動
+    }
   };
 
   //クリックすると一番上まで戻るボタン

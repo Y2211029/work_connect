@@ -63,7 +63,7 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 .FormDemo {
-  overflow: auto;
+  overflow: hidden;
   flex-grow: 1;
   width: 100%;
   /* 幅を少し狭くする */

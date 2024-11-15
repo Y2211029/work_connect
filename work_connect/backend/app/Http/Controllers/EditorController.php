@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\w_create_form;
 use App\Models\w_follow;
 use App\Models\w_news;
 use App\Models\w_notice;
@@ -70,7 +71,8 @@ class EditorController extends Controller
         return response()->json(
             [
                 'id' => $id,
-                'news_draft_list' => $newsDraftList
+                'news_draft_list' => $newsDraftList,
+                'now ' => $now
             ],
             200
         );
@@ -342,19 +344,64 @@ class EditorController extends Controller
         }
     }
 
+    //下書きのニュースを削除する
+    public function rewrite_news_delete(Request $request)
+    {
+        try {
+            $Delete_id = $request->input('delete_id');
+            $Company_id = $request->input('company_id');
+    
+            $newsDeleteList = w_news::where('id', $Delete_id)
+                ->where('company_id', $Company_id)
+                ->first();
+    
+            if ($newsDeleteList) {
+                $newsDeleteList->delete();
+            }
+    
+            // news_draft_list 関数を呼び出してニュースドラフトリストを取得
+            $prevDraftList = $this->news_draft_list($request, $Company_id);
+    
+            // レスポンスとして成功ステータスを返す
+            return response()->json([
+                'message' => '成功',
+                'success' => true,
+                'news_draft_list' => $prevDraftList,
+            ]);
+            
+        } catch (\Exception $e) {
+            // エラーレスポンスを返す
+            return response()->json([
+                'error' => 'Failed to delete news',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
     public function news_draft_list(Request $request, $id)
     {
         try {
-
             // 条件に一致するニュースドラフトリストを取得
             $newsDraftList = w_news::where('company_id', $id)
                 ->where('public_status', 0)
                 ->orderBy('updated_at', 'desc') // 降順でソート
                 ->get();
-
-
+    
+            // 各ニュースドラフトに対応する w_create_form データを追加
+            foreach ($newsDraftList as $newsDraft) {
+                // news_id に対応する w_create_form レコードを取得
+                $createForm = w_create_form::where('news_id', $newsDraft->id)->get();
+                Log::info($newsDraft->id);
+                Log::info($createForm);
+                if($createForm){
+                // newsDraft に create_form プロパティとして追加
+                $newsDraft->create_form = $createForm;
+                }
+            }
+    
             Log::info($newsDraftList);
-
+    
             return $newsDraftList;
         } catch (\Exception $e) {
             // エラーレスポンスを返す

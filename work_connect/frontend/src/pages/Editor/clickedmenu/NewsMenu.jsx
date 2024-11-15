@@ -24,7 +24,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 //時間
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 const modalStyle = {
   overlay: {
@@ -43,7 +43,7 @@ const modalStyle = {
     padding: '1.5rem',
     overflow: 'hidden',
     zIndex: 1300, // コンテンツの z-index
-    backgroundColor: 'white',
+    backgroundColor: 'blue',
     height: '60%',
     width: '70%',
   },
@@ -78,9 +78,10 @@ const NewsMenu = ({
 
   //関数
   const FormattedDate = (time) => {
-    return moment(time).format('YYYY/MM/DD HH:mm:ss');
+    console.log("時間", time);
+    return moment(time).tz('Asia/Tokyo').format('YYYY/MM/DD HH:mm:ss');
   };
-
+  
   const header_img_show = (draft) => {
     console.log("サムネイル画像", draft.header_img);
     if (draft.header_img === null) {
@@ -150,7 +151,7 @@ const NewsMenu = ({
                       whiteSpace: 'nowrap',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
-                      maxWidth: '200px',
+                      maxWidth: '500px',
                     }}
                   >
                     {draft.article_title}

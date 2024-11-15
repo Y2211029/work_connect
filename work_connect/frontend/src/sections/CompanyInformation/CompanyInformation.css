@@ -60,10 +60,7 @@
     box-sizing: border-box; /* ボックスのサイズを調整 */
 }
 
-.DragSort{
-    width:120%;
-    background-color: crimson;
-}
+
 
 .editButtonContainer {
     display: block; /* フレックスボックスを無効化 */
@@ -81,6 +78,7 @@
 .Modal_tableContainer {
     height: 400px; /* TableContainer全体の高さを設定 */
     overflow-y: auto; /* 縦方向にスクロール可能にする */
+    
 }
 
 .FixedTableHead {
@@ -95,15 +93,26 @@
     overflow-y: auto; /* 縦方向のスクロールを有効にする */
 }
 
-.EditCompanyInformation-Accordion{
-    height:100%;
-    width:60%;
+.EditCompanyInformation-Accordion {
+    height: 100%;
+    width: 50%;
     overflow-y: auto;
     overflow-x: hidden;
     align-items: center;
     text-align: left;
-    margin-left:20%;
-    padding-bottom:5px;
+    margin-left: 25%;
+    margin-top:5%;
+    margin-bottom: 5%;
+    transition: width 0.3s ease; /* 開閉時のスムーズなアニメーション */
+    border: 2px solid;
+}
+
+.EditCompanyInformation-Accordion.Mui-expanded {
+    width: 50%;
+    height: 100%;
+    margin-left: 25%;
+    background-color: antiquewhite;
+    margin-bottom: 200px;
 }
 
 .EditTitle{
@@ -132,7 +141,7 @@
 
 /* ドラッグアイコン専用のスタイル */
 .DragIcon {
-    width: 40px; /* 必要に応じて調整 */
+    width: 50px; /* 必要に応じて調整 */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -141,5 +150,6 @@
 /* AccordionWrapper のスタイルはアコーディオン本体に影響しないように指定 */
 .AccordionWrapper {
     width: 100%; /* アコーディオン全体の幅を100%に */
-    background-color: crimson; /* 必要に応じて他の背景色に変更 */
+    align-items: center;
+    justify-content: center;
 }

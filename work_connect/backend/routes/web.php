@@ -275,6 +275,10 @@ Route::get('/news_detail/{newsdetail_id}', [NewsController::class, 'news_detail_
 Route::post('/news_bookmark', [NewsController::class, 'news_bookmark']);
 Route::get('/thumbnail_img_delete/{id}', [EditorController::class, 'thumbnail_img_delete']);
 Route::get('/api/embed', action: [EditorController::class, 'embed']);
+Route::post('/rewrite_news_delete', [EditorController::class, 'rewrite_news_delete']);
+
+
+
 
 //企業の詳細情報を取得
 Route::get('/company_informations/{CompanyName}', action: [CompanyInformationController::class, 'company_informations']);

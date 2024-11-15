@@ -78,10 +78,12 @@ const PostCard = forwardRef(({ post },) => {
   useEffect(() => {
     // 編集時に公開・非公開含めたすべての企業情報を取得する
     async function AllCompanyInformationsPull() {
+      const InformationUserName = decodeURIComponent(URLUserName);
+      console.log("InformationUserName",InformationUserName);
       try {
         // Laravel側から企業一覧データを取得
         const response = await axios.post(AllCompanyInformationsPullURL, {
-          InformationUserName: URLUserName
+          InformationUserName: InformationUserName
         });
         setEditedContents(response.data.title_contents);
         setCompanyId(response.data.id);
@@ -247,7 +249,6 @@ const PostCard = forwardRef(({ post },) => {
             <ModeEditIcon />
           </IconButton>
         </Tooltip>
-          まだ公開されている情報がありません
         </div>
       )}
 

@@ -42,6 +42,8 @@ const PostCard = forwardRef(({ post }, ref) => {
     }
   };
 
+  console.log("アイコンID",icon_id);
+
   // 企業アイコン
   const renderAvatar = (
     <Avatar

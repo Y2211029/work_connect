@@ -393,24 +393,34 @@ export default function Searchbar() {
   useEffect(() => {
     let url = new URL(window.location.href);
     let urlPageParams = url.searchParams.get("page");
+    let urlCategoryParams = url.searchParams.get("category");
     if (urlPageParams != null) {
       setPathName(location.pathname + "/" + urlPageParams);
+    } else if(urlPageParams == "news") {
+      setPathName(location.pathname + "/" + urlCategoryParams);
     } else {
       setPathName(location.pathname);
     }
-    // console.log("setPathName(location.pathname)", location.pathname);
+    // console.log("urlCategoryParams", urlCategoryParams);
   }, [location]);
   useEffect(() => {
     let url = new URL(window.location.href);
     let urlPageParams = url.searchParams.get("page");
-    if (urlPageParams != null) {
+    let urlCategoryParams = url.searchParams.get("category");
+    if(urlPageParams == "news") {
+      // console.log("ababab2");
+      setPathName(location.pathname + "/" + urlCategoryParams);
+    }else if (urlPageParams != null) {
+      // console.log("ababab1");
       setPathName(location.pathname + "/" + urlPageParams);
       // let a = location.pathname + "/" + urlPageParams;
       // console.log("location.pathname + + urlPageParams", a);
     } else {
+      // console.log("ababab3");
       setPathName(location.pathname);
     }
     // console.log("setPathName(urlPageParams):search", urlPageParams);
+    // console.log("setPathName(urlCategoryParams):search", urlCategoryParams);
   }, [searchParams]);
 
   useEffect(() => {
@@ -587,7 +597,7 @@ export default function Searchbar() {
       // ソフトウェアのタグ一覧を取得
       getTag("company_software", "software");
     }
-    // console.log("PathNamePathName: ", PathName);
+    console.log("PathNamePathName: ", PathName);
   }, [PathName]);
 
   // useEffect(() => {
@@ -859,7 +869,7 @@ export default function Searchbar() {
         // StudentList-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
-      } else if (PathName == "/Profile/yoshioka/work") {
+      } else if (PathName.startsWith("/Profile/") && PathName.endsWith("/work")) {
         // 学生プロフィール内の作品一覧の場合
         const url = `http://localhost:8000/search_work?page=${Page}&sort=${sortOption}`;
 
@@ -880,12 +890,12 @@ export default function Searchbar() {
           development_environment.push(value.value);
         });
 
-        let urlStr = location.pathname.split("/")[2];
+        let urlUserNameStr = location.pathname.split("/")[2];
 
         const response = await axios.get(url, {
           params: {
             info_str: "学生プロフィール内作品検索",
-            user_name: urlStr,
+            user_name: urlUserNameStr,
             searchText: searchSource.searchText,
             work_genre: work_genre,
             programming_language: programming_language,
@@ -897,7 +907,7 @@ export default function Searchbar() {
         // company-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
-      } else if (PathName == "/Profile/yoshioka/movie") {
+      } else if (PathName.startsWith("/Profile/") && PathName.endsWith("/movie")) {
         // 学生プロフィール内の作品一覧の場合
         const url = `http://localhost:8000/search_video?page=${Page}&sort=${sortOption}`;
 
@@ -908,12 +918,12 @@ export default function Searchbar() {
           video_genre.push(value.value);
         });
 
-        let urlStr = location.pathname.split("/")[2];
+        let urlUserNameStr = location.pathname.split("/")[2];
 
         const response = await axios.get(url, {
           params: {
             info_str: "学生プロフィール内動画検索",
-            user_name: urlStr,
+            user_name: urlUserNameStr,
             searchText: searchSource.searchText,
             video_genre: video_genre,
           },
@@ -976,6 +986,266 @@ export default function Searchbar() {
           },
         });
         // console.log("response.data", response.data);
+
+        // company-view.jsxにデータを渡す
+        const responseData = response.data;
+        responseItems(responseData);
+      } else if (PathName.startsWith("/Profile/") && PathName.endsWith("/JobOffer")) {
+        // 企業プロフィール内での求人の場合
+        const url = `http://localhost:8000/search_internship_job_offer?page=${Page}`;
+
+        let follow_status = [];
+        let company_name = [];
+        let selected_occupation = [];
+        let prefecture = [];
+        let industry = [];
+        let development_environment = [];
+        let programming_language = [];
+        let acquisition_qualification = [];
+        let software = [];
+
+        searchSource.follow_status.map((value) => {
+          follow_status.push(value.value);
+        });
+        searchSource.company_name.map((value) => {
+          company_name.push(value.value);
+        });
+        searchSource.selected_occupation.map((value) => {
+          selected_occupation.push(value.value);
+        });
+        searchSource.prefecture.map((value) => {
+          prefecture.push(value.value);
+        });
+        searchSource.industry.map((value) => {
+          industry.push(value.value);
+        });
+        searchSource.development_environment.map((value) => {
+          development_environment.push(value.value);
+        });
+        searchSource.programming_language.map((value) => {
+          programming_language.push(value.value);
+        });
+        searchSource.acquisition_qualification.map((value) => {
+          acquisition_qualification.push(value.value);
+        });
+        searchSource.software.map((value) => {
+          software.push(value.value);
+        });
+
+        let urlUserNameStr = location.pathname.split("/")[2];
+
+        const response = await axios.get(url, {
+          params: {
+            myId: myId,
+            user_name: urlUserNameStr,
+            searchText: searchSource.searchText,
+            follow_status: follow_status,
+            company_name: company_name,
+            selected_occupation: selected_occupation,
+            prefecture: prefecture,
+            industry: industry,
+            development_environment: development_environment,
+            programming_language: programming_language,
+            acquisition_qualification: acquisition_qualification,
+            software: software,
+            genre: "Joboffer",
+          },
+        });
+
+        // company-view.jsxにデータを渡す
+        const responseData = response.data;
+        responseItems(responseData);
+      } else if (PathName.startsWith("/Profile/") && PathName.endsWith("/Internship")) {
+        // 企業プロフィール内での求人の場合
+        const url = `http://localhost:8000/search_internship_job_offer?page=${Page}`;
+
+        let follow_status = [];
+        let company_name = [];
+        let selected_occupation = [];
+        let prefecture = [];
+        let industry = [];
+        let development_environment = [];
+        let programming_language = [];
+        let acquisition_qualification = [];
+        let software = [];
+
+        searchSource.follow_status.map((value) => {
+          follow_status.push(value.value);
+        });
+        searchSource.company_name.map((value) => {
+          company_name.push(value.value);
+        });
+        searchSource.selected_occupation.map((value) => {
+          selected_occupation.push(value.value);
+        });
+        searchSource.prefecture.map((value) => {
+          prefecture.push(value.value);
+        });
+        searchSource.industry.map((value) => {
+          industry.push(value.value);
+        });
+        searchSource.development_environment.map((value) => {
+          development_environment.push(value.value);
+        });
+        searchSource.programming_language.map((value) => {
+          programming_language.push(value.value);
+        });
+        searchSource.acquisition_qualification.map((value) => {
+          acquisition_qualification.push(value.value);
+        });
+        searchSource.software.map((value) => {
+          software.push(value.value);
+        });
+
+        let urlUserNameStr = location.pathname.split("/")[2];
+
+        const response = await axios.get(url, {
+          params: {
+            myId: myId,
+            user_name: urlUserNameStr,
+            searchText: searchSource.searchText,
+            follow_status: follow_status,
+            company_name: company_name,
+            selected_occupation: selected_occupation,
+            prefecture: prefecture,
+            industry: industry,
+            development_environment: development_environment,
+            programming_language: programming_language,
+            acquisition_qualification: acquisition_qualification,
+            software: software,
+            genre: "Internship",
+          },
+        });
+
+        // company-view.jsxにデータを渡す
+        const responseData = response.data;
+        responseItems(responseData);
+      } else if (PathName.startsWith("/Profile/") && PathName.endsWith("/Session")) {
+        // 企業プロフィール内での求人の場合
+        const url = `http://localhost:8000/search_internship_job_offer?page=${Page}`;
+
+        let follow_status = [];
+        let company_name = [];
+        let selected_occupation = [];
+        let prefecture = [];
+        let industry = [];
+        let development_environment = [];
+        let programming_language = [];
+        let acquisition_qualification = [];
+        let software = [];
+
+        searchSource.follow_status.map((value) => {
+          follow_status.push(value.value);
+        });
+        searchSource.company_name.map((value) => {
+          company_name.push(value.value);
+        });
+        searchSource.selected_occupation.map((value) => {
+          selected_occupation.push(value.value);
+        });
+        searchSource.prefecture.map((value) => {
+          prefecture.push(value.value);
+        });
+        searchSource.industry.map((value) => {
+          industry.push(value.value);
+        });
+        searchSource.development_environment.map((value) => {
+          development_environment.push(value.value);
+        });
+        searchSource.programming_language.map((value) => {
+          programming_language.push(value.value);
+        });
+        searchSource.acquisition_qualification.map((value) => {
+          acquisition_qualification.push(value.value);
+        });
+        searchSource.software.map((value) => {
+          software.push(value.value);
+        });
+
+        let urlUserNameStr = location.pathname.split("/")[2];
+
+        const response = await axios.get(url, {
+          params: {
+            myId: myId,
+            user_name: urlUserNameStr,
+            searchText: searchSource.searchText,
+            follow_status: follow_status,
+            company_name: company_name,
+            selected_occupation: selected_occupation,
+            prefecture: prefecture,
+            industry: industry,
+            development_environment: development_environment,
+            programming_language: programming_language,
+            acquisition_qualification: acquisition_qualification,
+            software: software,
+            genre: "Session",
+          },
+        });
+
+        // company-view.jsxにデータを渡す
+        const responseData = response.data;
+        responseItems(responseData);
+      } else if (PathName.startsWith("/Profile/") && PathName.endsWith("/Blog")) {
+        // 企業プロフィール内での求人の場合
+        const url = `http://localhost:8000/search_internship_job_offer?page=${Page}`;
+
+        let follow_status = [];
+        let company_name = [];
+        let selected_occupation = [];
+        let prefecture = [];
+        let industry = [];
+        let development_environment = [];
+        let programming_language = [];
+        let acquisition_qualification = [];
+        let software = [];
+
+        searchSource.follow_status.map((value) => {
+          follow_status.push(value.value);
+        });
+        searchSource.company_name.map((value) => {
+          company_name.push(value.value);
+        });
+        searchSource.selected_occupation.map((value) => {
+          selected_occupation.push(value.value);
+        });
+        searchSource.prefecture.map((value) => {
+          prefecture.push(value.value);
+        });
+        searchSource.industry.map((value) => {
+          industry.push(value.value);
+        });
+        searchSource.development_environment.map((value) => {
+          development_environment.push(value.value);
+        });
+        searchSource.programming_language.map((value) => {
+          programming_language.push(value.value);
+        });
+        searchSource.acquisition_qualification.map((value) => {
+          acquisition_qualification.push(value.value);
+        });
+        searchSource.software.map((value) => {
+          software.push(value.value);
+        });
+
+        let urlUserNameStr = location.pathname.split("/")[2];
+
+        const response = await axios.get(url, {
+          params: {
+            myId: myId,
+            user_name: urlUserNameStr,
+            searchText: searchSource.searchText,
+            follow_status: follow_status,
+            company_name: company_name,
+            selected_occupation: selected_occupation,
+            prefecture: prefecture,
+            industry: industry,
+            development_environment: development_environment,
+            programming_language: programming_language,
+            acquisition_qualification: acquisition_qualification,
+            software: software,
+            genre: "Blog",
+          },
+        });
 
         // company-view.jsxにデータを渡す
         const responseData = response.data;
@@ -1429,7 +1699,9 @@ export default function Searchbar() {
     if (IsSearch.Check && Page) {
       let url = new URL(window.location.href);
       let urlPageParams = url.searchParams.get("page");
+      let urlCategoryParams = url.searchParams.get("category");
       console.log("searchSourceList:urlPageParams", "/Internship_JobOffer/" + urlPageParams);
+      console.log("searchSourceList:urlCategoryParams", "/Profile/" + urlCategoryParams);
       console.log("searchSourceList:PathName", PathName);
       if ("/Internship_JobOffer/" + urlPageParams == PathName) {
         console.log("searchSourceList:Page", Page);

@@ -107,6 +107,7 @@ export default function NavTabs() {
   };
 
   function pageCheck(pageStr) {
+    // navigate(`/Profile/${user_name}?page=${pageStr}`);
     const url = new URL(window.location.href);
     const urlStr = url.pathname.split('?')[0]; // クエリパラメータを取り除く
     window.history.pushState({}, '', `${urlStr}?page=${pageStr}`);

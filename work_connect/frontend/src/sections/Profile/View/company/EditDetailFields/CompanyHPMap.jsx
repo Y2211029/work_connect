@@ -43,7 +43,7 @@ const CompanyHPMap = ({ CompanyHPMapData }) => {
     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
       <TextField
         fullWidth
-        label=""
+        label="URLをここにコピー"
         margin="normal"
         name="CompanyHPMap"
         onChange={handleChange}

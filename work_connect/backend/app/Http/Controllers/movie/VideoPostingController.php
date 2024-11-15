@@ -16,7 +16,7 @@ class VideoPostingController extends Controller
         \Log::info($userId);
         \Log::info($userId);
 
-        $VideoTitle = $request->input('WorkTitle');
+        $VideoTitle = $request->input('VideoTitle');
         $VideoGenre = $request->input('VideoGenre');
         $YoutubeURL = $request->input('YoutubeURL');
         $Introduction = $request->input('Introduction');
@@ -58,6 +58,7 @@ class VideoPostingController extends Controller
                     'detail' => $movieItem["id"],
                     'already_read' => 0,
                 ]);
+
                 \Log::info("動画ID");
                 \Log::info($movieItem["id"]);
             } else {
@@ -73,24 +74,25 @@ class VideoPostingController extends Controller
             }
         }
 
+        $noticeData = [];
+        if(count($followData) != 0){
+            // IDに通知を送る
+            $queryNotice = w_notice::query();
 
-        // IDに通知を送る
-        $queryNotice = w_notice::query();
+            $queryNotice->select(
+                'w_users.*',
+                'w_notices.*',
+            );
 
-        $queryNotice->select(
-            'w_users.*',
-            'w_notices.*',
-        );
+            $queryNotice->where('w_notices.id', $oneNoticeData['id']);
 
-        $queryNotice->where('w_notices.id', $oneNoticeData['id']);
-
-        $queryNotice->join('w_users', 'w_users.id', '=', 'w_notices.send_user_id');
+            $queryNotice->join('w_users', 'w_users.id', '=', 'w_notices.send_user_id');
 
 
-        $queryNotice->orderBy('w_notices.created_at', 'asc');
+            $queryNotice->orderBy('w_notices.created_at', 'asc');
 
-        $noticeData = $queryNotice->get();
-
+            $noticeData = $queryNotice->get();
+        }
         return response()->json(['message' => 'Work data saved successfully', 'follower' => $followAllData, 'noticeData' => $noticeData], 200);
     }
 }

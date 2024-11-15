@@ -122,7 +122,6 @@ const CompanyAddressMap = ({ CompanyAddressMapData }) => {
       <TextField
         error={inputError.CompanyAddressMapError}
         fullWidth
-        label="本社所在地マップ"
         margin="normal"
         name="CompanyAddressMap"
         onChange={handleChange}

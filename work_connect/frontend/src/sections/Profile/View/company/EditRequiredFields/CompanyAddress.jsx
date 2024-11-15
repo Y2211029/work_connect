@@ -62,7 +62,6 @@ const CompanyAddress = ({ CompanyAddressData }) => {
         <TextField
             error={inputError.CompanyAddressError}
             fullWidth
-            label="本社所在地"
             margin="normal"
             name="CompanyAddress"
             onChange={handleChange}

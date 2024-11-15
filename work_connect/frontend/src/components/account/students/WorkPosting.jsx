@@ -12,11 +12,15 @@ import "../../../App.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 const WorkPosting = () => {
   let navigation = useNavigate();
+  const { getSessionData } = useSessionStorage();
+  const accountData = getSessionData("accountData");
 
   const [workData, setWorkData] = useState({
+    creatorId: "",
     YoutubeURL: "",
     WorkTitle: "",
     WorkGenre: "",
@@ -74,6 +78,7 @@ const WorkPosting = () => {
   const handleImageChange = (e) => {
     console.log("e: ", e);
 
+    callSetWorkData("creatorId", accountData.id);
     // 現在のFileListを維持するために新しいDataTransferを作成
     let dt = new DataTransfer();
 
@@ -87,7 +92,7 @@ const WorkPosting = () => {
           console.log("file.name", file.name);
           console.log("file.name", file);
           dt.items.add(file);
-          console.log("Image:",dt.files);
+          console.log("Image:", dt.files);
         }
       }
     });
@@ -99,7 +104,6 @@ const WorkPosting = () => {
       dt.clearData();
       console.log("dt", dt.files);
     }
-
   };
 
   useEffect(() => {

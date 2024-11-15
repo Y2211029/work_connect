@@ -19,8 +19,11 @@ import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import { PulseLoader } from "react-spinners";
+import { ColorRing } from "react-loader-spinner";
 
 import ProfileMypageEdit from "./MypageEdit";
+// デフォルトのアイコンをインポート
+import DefaultIcon from "src/sections/Profile/View/DefaultIcon";
 import { follow } from "src/_mock/follow";
 import { WebScokectContext } from "src/layouts/dashboard/index";
 
@@ -30,6 +33,7 @@ import { WebScokectContext } from "src/layouts/dashboard/index";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
+  border: "#DAE2ED 2px solid",
   padding: theme.spacing(1),
   textAlign: "left",
   color: theme.palette.text.secondary,
@@ -43,6 +47,38 @@ const Showmore = styled(Paper)(({ theme }) => ({
   textAlign: "center",
   fontSize: "20px",
 }));
+
+// ローディングのコンポーネント
+const ColorRingStyle = () => {
+  return(
+    <Box
+      sx={{
+        marginTop: '20%',
+        display: 'flex', // Flexboxを使用
+        justifyContent: 'center', // 水平方向中央
+        alignItems: 'center', // 垂直方向中央
+      }}
+    >
+      <ColorRing
+        style={{
+          visible: true,
+          margin: "0px",
+          height: "10",
+          width: "10",
+          ariaLabel: "color-ring-loading",
+          wrapperClass: "custom-color-ring-wrapper",
+          colors:
+          ["#e15b64",
+            "#f47e60",
+            "#f8b26a",
+            "#abbd81",
+            "#849b87"]
+        }}
+      />
+    </Box>
+  );
+
+}
 
 const ProfileMypage = () => {
   // 「さらに表示」ボタンの初期設定
@@ -68,6 +104,7 @@ const ProfileMypage = () => {
 
   // DBからのレスポンスが入る変数
   const [ResponseData, setResponseData] = useState([]);
+  const [responseIcon, setResponseIcon] = useState(true);
 
   // セッションストレージ取得
   const { getSessionData } = useSessionStorage();
@@ -104,8 +141,6 @@ const ProfileMypage = () => {
         if (response) {
           setResponseData(response.data[0]);
           setFollowStatus(response.data[0].follow_status);
-          // console.log("ResponseData:", response.data[0]);
-          console.log("follow_status:", response.data[0].follow_status);
         }
       } catch (err) {
         console.log("err:", err);
@@ -162,6 +197,15 @@ const ProfileMypage = () => {
   useEffect(() => {
     console.log("notificationContext", notificationContext);
   }, [notificationContext]);
+
+  // アイコンの設定
+  useEffect(() => {
+    if (ResponseData.icon !== undefined) {
+      setResponseIcon(false);
+    }
+  }, [ResponseData.icon]);
+
+  // マップのURL
   const handleMapUrl = (URL) => {
     let extractedUrl = null;
 
@@ -386,17 +430,44 @@ const ProfileMypage = () => {
             boxShadow: "none",
           }}
         >
-          <CardMedia
-            component="img"
-            sx={{
-              height: 350,
-              width: 350,
-              objectFit: "cover", // 画像をカード内でカバーするように設定
-              borderRadius: "50%", // 画像を丸くする
-            }}
-            image={ResponseData.icon ? `http://localhost:8000/storage/images/userIcon/${ResponseData.icon}` : ""}
-            alt="Loading..."
-          />
+           {responseIcon ? (
+            <Box sx={{ height: "calc(100vw * 0.58)", width: "calc(100vw * 0.58)", maxHeight: 350, maxWidth: 350 }}>
+              <ColorRingStyle />
+            </Box>
+          ) : ResponseData.icon ? (
+            <CardMedia
+              component="img"
+              sx={{
+                height: "calc(100vw * 0.58)",
+                width: "calc(100vw * 0.58)",
+                objectFit: "cover",
+                borderRadius: "50%",
+                maxHeight: 350,
+                maxWidth: 350,
+                "@media (min-width: 600px)": {
+                  height: 350,
+                  width: 350,
+                },
+              }}
+              image={`http://localhost:8000/storage/images/userIcon/${ResponseData.icon}`}
+            />
+          ) : (
+            <DefaultIcon
+              sx={{
+                height: "calc(100vw * 0.58)",
+                width: "calc(100vw * 0.58)",
+                padding: '20px',
+                objectFit: "cover",
+                borderRadius: "50%",
+                maxHeight: 350,
+                maxWidth: 350,
+                "@media (min-width: 600px)": {
+                  height: 350,
+                  width: 350,
+                },
+              }}
+            />
+          )}
         </Card>
 
         <Box>
@@ -441,8 +512,7 @@ const ProfileMypage = () => {
           ResponseData.software ||
           ResponseData.acquisition_qualification ||
           ResponseData.hp_url ||
-          ResponseData.video_url ||
-          ResponseData.companyInformation) && (
+          ResponseData.video_url) && (
           <Box>
             <Showmore>
               <Button
@@ -535,31 +605,6 @@ const ProfileMypage = () => {
           </Box>
         )}
 
-        {/* {ResponseData.companyInformation && !close && (
-          <Box ref={el => (detail.current[3] = el)} id="detail">
-            <Typography variant="h6">企業情報</Typography>
-            <table className="company_information_table">
-              <tbody>
-                {ResponseData.companyInformation.map((info, index) => (
-                  <tr key={index}>
-                    <th>
-                      <Typography variant="title">
-                        {ShowTagsCompanyInformation(info.title)}
-                      </Typography>
-                    </th>
-                    <td>
-                      <Typography variant="contents">
-                        {info.contents}
-                      </Typography>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </Box>
-        )} */}
-
-        {/* </span> */}
       </Stack>
     </Box>
   );
@@ -567,3 +612,5 @@ const ProfileMypage = () => {
 
 export default ProfileMypage;
 ProfileMypage.displayName = "Parent";
+ColorRingStyle.propTypes = {
+};

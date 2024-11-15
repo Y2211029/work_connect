@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import Avatar from "@mui/material/Avatar";
 import Grid from "@mui/material/Unstable_Grid2";
@@ -106,21 +105,7 @@ const PostCard = forwardRef(({ post, index }, ref) => {
     graduationYear !== null ? (
       <div>
         卒業年度:
-        <Button
-          variant="contained"
-          // color="primary"
-          sx={{
-            padding: "2px",
-            margin: "2px",
-            // background: "#41A4FF",
-            background: "linear-gradient(#41A4FF, #9198e5)",
-            "&:hover": {
-              background: "linear-gradient(#c2c2c2, #e5ad91)",
-            },
-          }}
-        >
           {graduationYear}
-        </Button>
       </div>
     ) : null;
 
@@ -128,21 +113,7 @@ const PostCard = forwardRef(({ post, index }, ref) => {
     schoolName !== null ? (
       <div>
         学校名:
-        <Button
-          variant="contained"
-          // color="primary"
-          sx={{
-            padding: "2px",
-            margin: "2px",
-            // background: "#41A4FF",
-            background: "linear-gradient(#41A4FF, #9198e5)",
-            "&:hover": {
-              background: "linear-gradient(#c2c2c2, #e5ad91)",
-            },
-          }}
-        >
           {schoolName}
-        </Button>
       </div>
     ) : null;
 
@@ -150,21 +121,7 @@ const PostCard = forwardRef(({ post, index }, ref) => {
     desiredWorkRegion !== null ? (
       <div>
         希望勤務地:
-        <Button
-          variant="contained"
-          // color="primary"
-          sx={{
-            padding: "2px",
-            margin: "2px",
-            // background: "#41A4FF",
-            background: "linear-gradient(#41A4FF, #9198e5)",
-            "&:hover": {
-              background: "linear-gradient(#c2c2c2, #e5ad91)",
-            },
-          }}
-        >
           {desiredWorkRegion}
-        </Button>
       </div>
     ) : null;
 
@@ -172,47 +129,10 @@ const PostCard = forwardRef(({ post, index }, ref) => {
     desiredOccupation !== null ? (
       <div>
         希望職種:
-        <Button
-          variant="contained"
-          // color="primary"
-          sx={{
-            padding: "2px",
-            margin: "2px",
-            // background: "#41A4FF",
-            background: "linear-gradient(#41A4FF, #9198e5)",
-            "&:hover": {
-              background: "linear-gradient(#c2c2c2, #e5ad91)",
-            },
-          }}
-        >
           {desiredOccupation}
-        </Button>
       </div>
     ) : null;
 
-  // const renderInfo = (
-  //   <Stack
-  //     direction="row"
-  //     flexWrap="wrap"
-  //     spacing={1.5}
-  //     justifyContent="flex-end"
-  //     sx={{
-  //       mt: 3,
-  //       color: "text.disabled",
-  //     }}
-  //   >
-  //     {[
-  //       { number: comment, icon: "eva:message-circle-fill" },
-  //       { number: view, icon: "eva:eye-fill" },
-  //       // { number: share, icon: "eva:share-fill" },
-  //     ].map((info, _index) => (
-  //       <Stack key={_index} direction="row">
-  //         <Iconify width={16} icon={info.icon} sx={{ mr: 0.5 }} />
-  //         <Typography variant="caption">{fShortenNumber(info.number)}</Typography>
-  //       </Stack>
-  //     ))}
-  //   </Stack>
-  // );
 
   const renderCover = (
     <Box

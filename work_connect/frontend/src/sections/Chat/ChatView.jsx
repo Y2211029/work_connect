@@ -15,6 +15,8 @@ import { ColorRing } from "react-loader-spinner";
 // work_connect/frontend/src/layouts/dashboard/index.jsxと
 // ChatView.jsx使う*/
 import { WebScokectContext } from "src/layouts/dashboard/index";
+// デフォルトのアイコンをインポート
+import DefaultIcon from "src/sections/Profile/View/DefaultIcon";
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -44,6 +46,7 @@ import EastIcon from '@mui/icons-material/East';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
+
 
 
 const blue = {
@@ -99,6 +102,30 @@ const Textarea = styled(BaseTextareaAutosize)(
 `,
 );
 
+
+const SelectIcon = ({chatViewIcon}) => {
+  return(
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+    {chatViewIcon ? (
+      <img
+        src={`http://localhost:8000/storage/images/userIcon/${chatViewIcon}`}
+        alt="User Icon"
+        style={{
+          width: '40px',
+          height: '40px',
+          margin: '0 5px',
+          borderRadius: '50%',
+          border: '2px solid #999'
+        }}
+      />
+    ) : (
+      <DefaultIcon />
+    )}
+  </div>
+  );
+
+}
+
 // フォローリストのコンポーネント
 const FollowGroup = ({
   title,
@@ -150,13 +177,7 @@ const FollowGroup = ({
               }}>
               {/* アイコン */}
               <ListItemIcon>
-                <img
-                  src={element.icon ?
-                    `http://localhost:8000/storage/images/userIcon/${element.icon}` :
-                    'assets/images/avatars/avatar_4.jpg'}
-                  alt={element.user_name}
-                  style={{ width: '40px', height: '40px', borderRadius: '50%', border: '2px solid #999' }}
-                />
+              <SelectIcon chatViewIcon={element.icon}/>
               </ListItemIcon>
               {/* ユーザー名 */}
               <ListItemText primary={element.company_name ? element.company_name : element.user_name} />
@@ -440,22 +461,6 @@ const ChatView = () => {
   // メッセージの送信日時を記憶しておく
   let PrevChatDate = null;
 
-  // チャットアイコンの設定
-  const avatarSrc = chatViewIcon
-  ? `http://localhost:8000/storage/images/userIcon/${chatViewIcon}`
-  : (() => {
-      switch (chatViewFollowStatus) {
-        case '相互フォローしています':
-          return 'assets/images/avatars/avatar_1.jpg';
-        case 'フォローしています':
-          return 'assets/images/avatars/avatar_2.jpg';
-        case 'フォローされています':
-          return 'assets/images/avatars/avatar_3.jpg';
-        default:
-          return 'assets/images/avatars/avatar_1.jpg'; // デフォルトの画像を指定
-      }
-    })();
-
   // Laravelとの通信用URL
   const get_channel_list = "http://localhost:8000/get_channel_list";
   const get_chat = "http://localhost:8000/get_chat";
@@ -484,6 +489,7 @@ const ChatView = () => {
       setChatViewCompanyName(sessionData.ChatOpenCompanyName);
       setChatViewIcon(sessionData.ChatOpenIcon);
       setChatViewFollowStatus(sessionData.ChatOpenFollowStatus);
+      console.log(chatViewFollowStatus);
     }
 
     // ResponseChannelListDataが存在している場合のみ処理
@@ -506,8 +512,13 @@ const ChatView = () => {
     restoreScrollPosition();
     scrollToBottom();
 
-    handleResize(); // 初期値を設定
+    // UI調整
+    handleResize();
     window.addEventListener('resize', handleResize);
+    // 画面全体のwidthが900px未満かつチャット相手未選択のときはフォローリスト表示
+    if(window.innerWidth < 900 && !chatViewId){
+      setShowFollowList(true);
+    }
 
     // クリーンアップ関数でリスナーを削除
     return () => {
@@ -1097,18 +1108,16 @@ const ChatView = () => {
               <Link
                 to={`/Profile/${chatViewUserName}`}
               >
-                <img src={avatarSrc}
-
-                style={{
-                  width: '40px',
-                  height: '40px',
-                  margin: '0 5px',
-                  borderRadius: '50%',
-                  border: '2px solid #999' }}
-                />
-                {chatViewCompanyName ?
-                chatViewCompanyName :
-                chatViewUserName}
+                <Box sx={{ display: 'flex'}}>
+                  {/* アイコン */}
+                  <SelectIcon chatViewIcon={chatViewIcon}/>
+                  {/* 企業名またはユーザーネーム */}
+                  <Box sx={{ fontSize: '1.9rem'}}>
+                    {chatViewCompanyName ?
+                    chatViewCompanyName :
+                    chatViewUserName}
+                  </Box>
+                </Box>
               </Link>
             </Tooltip>
           </Box>
@@ -1205,15 +1214,7 @@ const ChatView = () => {
                       <Link
                         to={`/Profile/${chatViewUserName}`}
                       >
-                        <img src={avatarSrc}
-
-                        style={{
-                          width: '40px',
-                          height: '40px',
-                          margin: '0 5px',
-                          borderRadius: '50%',
-                          border: '2px solid #999' }}
-                        />
+                        <SelectIcon chatViewIcon={chatViewIcon}/>
                       </Link>
                     </Tooltip>
                     ):(null)}
@@ -1393,6 +1394,9 @@ const ChatView = () => {
 }
 
 // PropTypesの定義
+SelectIcon.propTypes = {
+  chatViewIcon:PropTypes.string,
+};
 FollowGroup.propTypes = {
   title: PropTypes.string,
   followStatusCount: PropTypes.number,

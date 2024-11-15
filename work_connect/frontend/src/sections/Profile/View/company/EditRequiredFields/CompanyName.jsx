@@ -59,7 +59,6 @@ const CompanyName = ({ CompanyNameData }) => {
         <TextField
             error={inputError.CompanyNameError}
             fullWidth
-            label="企業名"
             margin="normal"
             name="CompanyName"
             onChange={handleChange}

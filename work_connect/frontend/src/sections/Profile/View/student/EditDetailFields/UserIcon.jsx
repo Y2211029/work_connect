@@ -11,6 +11,9 @@ import Tooltip from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 
+// デフォルトのアイコンをインポート
+import DefaultIcon from "src/sections/Profile/View/DefaultIcon";
+
 
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
@@ -40,8 +43,8 @@ const ImageCard = ({IconData}) => {
          // DBから最新のデータを取得
          setSelectedImage(IconData);
       } else {
-        // デフォルト(アイコン設定なし)
-        setSelectedImage("cover_19.jpg");
+        // // デフォルト(アイコン設定なし)
+        // setSelectedImage("cover_19.jpg");
       }
     }
   }, [IconData]);
@@ -56,7 +59,8 @@ const ImageCard = ({IconData}) => {
 
   // アイコンの初期化
   const handleImageReset = async () => {
-    setSelectedImage("cover_19.jpg");
+    setSelectedImage(null);
+    updateSessionData("accountData", "CompanyIcon", null);
   }
 
   // アイコンの変更操作
@@ -106,7 +110,8 @@ const ImageCard = ({IconData}) => {
         boxShadow: 'none',
         position: 'relative'
       }}>
-        <CardMedia
+        {selectedImage ? (
+          <CardMedia
           component="img"
           sx={{
             height: 'calc(100vw * 0.58)',
@@ -125,6 +130,22 @@ const ImageCard = ({IconData}) => {
             ""}
           alt="Loading..."
         />
+        ):(
+          <DefaultIcon sx={{
+            height: "calc(100vw * 0.58)",
+            width: "calc(100vw * 0.58)",
+            padding: '20px',
+            objectFit: "cover",
+            borderRadius: "50%",
+            maxHeight: 350,
+            maxWidth: 350,
+            "@media (min-width: 600px)": {
+              height: 350,
+              width: 350,
+            },
+          }}/>
+        )}
+
         <input
           accept=".jpg,.jpeg,.png"
           style={{ display: 'none' }}
@@ -133,36 +154,36 @@ const ImageCard = ({IconData}) => {
           onChange={handleImageChange}
         />
         <label htmlFor="icon-button-file" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-        <Tooltip title="アイコンを変更する">
-          <IconButton aria-label="upload picture" component="span"
-          sx={{
-            color: 'rgba(0, 0, 0, 0.8)',
-            width: 'calc(10vw)',
-            height: 'calc(10vw)',
-            maxWidth: 60,
-            maxHeight: 60,
-            '@media (min-width: 600px)': {
-              width: 60,
-              height: 60,
-            }
-          }}>
-            <PhotoCameraIcon
+          <Tooltip title="アイコンを変更する">
+            <IconButton aria-label="upload picture" component="span"
             sx={{
-              width: 50,
-              height: 50,
-            }}/>
-          </IconButton>
+              color: 'rgba(0, 0, 0, 0.8)',
+              width: 'calc(10vw)',
+              height: 'calc(10vw)',
+              maxWidth: 60,
+              maxHeight: 60,
+              '@media (min-width: 600px)': {
+                width: 60,
+                height: 60,
+              }
+            }}>
+              <PhotoCameraIcon
+              sx={{
+                width: 50,
+                height: 50,
+              }}/>
+            </IconButton>
           </Tooltip>
         </label>
       </Card>
       <Box>
-
-        <Button variant="outlined" onClick={handleImageReset}
-        sx={{ borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
-          <PersonIcon/>初期化
-        </Button>
-
-    </Box>
+        <Tooltip title="デフォルトのアイコンに戻します。">
+          <Button variant="outlined" onClick={handleImageReset}
+          sx={{ borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
+            <PersonIcon/>初期化
+          </Button>
+        </Tooltip>
+      </Box>
     </>
   );
 };

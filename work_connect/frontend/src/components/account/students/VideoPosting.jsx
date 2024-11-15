@@ -23,17 +23,14 @@ const VideoPosting = () => {
     VideoTitle: "",
     VideoGenre: "",
     Introduction: "",
-    Obsession: "",
-    Language: "",
-    Environment: "",
   });
+  const [message, setMessage] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [videoId, setVideoId] = useState("");
   const [hasError, setHasError] = useState(false);
 
-
   useEffect(() => {
-    console.log(workData);
+    console.log("workData: ", workData);
   }, [workData]);
 
   const callSetVideoData = (key, value) => {
@@ -48,8 +45,7 @@ const VideoPosting = () => {
     setVideoUrl(url);
     setHasError(url === "");
 
-
-    callSetVideoData("creatorId", accountData.id)
+    callSetVideoData("creatorId", accountData.id);
 
     // 入力が空の場合、videoIdをリセットしてYoutubeURLをクリア
     if (url === "") {
@@ -108,32 +104,47 @@ const VideoPosting = () => {
     e.preventDefault();
     console.log("e", e.target);
     console.log("workData[key]", workData);
+    async function PostData() {
+      const formData = new FormData();
 
-    // const formData = [];
-    // for (const key in workData) {
-    //   // console.log("keyworkData", workData[key]);
-    //   // console.log("keyworkDatakey", key);
-    //   // console.log("keyworkData", workData[key]);
-    //   formData.push({ [key]: workData[key] });
-    // }
-    // console.log("formData.append", formData);
-    try {
-      const response = await axios.post(
-        "http://localhost:3000/video_posting",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-          body: workData,
-        }
-      );
-      console.log(response.data.message);
-      navigation("/VideoSelect");
-    } catch (error) {
-      console.log(error.message);
+      for (const key in workData) {
+        formData.append(key, workData[key]);
+      }
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/video_posting",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        console.log("formData: ", formData);
+        navigation("/VideoSelect");
+        setMessage(response.data.message);
+      } catch (error) {
+        console.error(
+          "Error:",
+          error.response ? error.response.data : error.message
+        );
+        setMessage(
+          error.response ? error.response.data.message : error.message
+        );
+      }
     }
 
+    if (
+      !workData.YoutubeURL ||
+      !workData.VideoTitle ||
+      !workData.VideoGenre ||
+      !workData.Introduction
+    ) {
+      alert("エラー：未入力項目があります。");
+    } else {
+      // それ以外(実行)
+      PostData();
+    }
     // e.target.map
   };
 
@@ -184,6 +195,7 @@ const VideoPosting = () => {
           </div>
           <input type="submit" value="送信" className="VideoSubmit" />
         </form>
+        {message && <p>{message}</p>}
       </div>
       {/* </Modal> */}
     </div>

@@ -66,7 +66,6 @@ const CompanyKanaName = ({CompanyKanaNameData}) => {
             error={inputError.CompanyKanaNameError}
             helperText={CompanyKanaName !== "" && inputError.CompanyKanaNameError ? "カタカナで入力してください" : ""}
             fullWidth
-            label="企業名(カタカナ)"
             margin="normal"
             name="CompanyKanaName"
             onChange={handleChange}

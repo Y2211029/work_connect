@@ -12,11 +12,15 @@ import "../../../App.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 const WorkPosting = () => {
   let navigation = useNavigate();
+  const { getSessionData } = useSessionStorage();
+  const accountData = getSessionData("accountData");
 
   const [workData, setWorkData] = useState({
+    creatorId: "",
     YoutubeURL: "",
     WorkTitle: "",
     WorkGenre: "",
@@ -42,6 +46,7 @@ const WorkPosting = () => {
   useEffect(() => {
     console.log("Description: ", Description);
   }, [Description]);
+
   const callSetImage = (e) => {
     // const image = Array.from(e);
     setImage(e);
@@ -74,6 +79,7 @@ const WorkPosting = () => {
   const handleImageChange = (e) => {
     console.log("e: ", e);
 
+    callSetWorkData("creatorId", accountData.id);
     // 現在のFileListを維持するために新しいDataTransferを作成
     let dt = new DataTransfer();
 
@@ -87,7 +93,7 @@ const WorkPosting = () => {
           console.log("file.name", file.name);
           console.log("file.name", file);
           dt.items.add(file);
-          console.log("Image:",dt.files);
+          console.log("Image:", dt.files);
         }
       }
     });
@@ -97,18 +103,19 @@ const WorkPosting = () => {
 
     if (e.length == 0) {
       dt.clearData();
+      setImage(dt.file);
       console.log("dt", dt.files);
     }
-
   };
 
   useEffect(() => {
     console.log("imageFiles updated: ", imageFiles);
     console.log(Array.isArray(imageFiles)); // trueなら配列です
     let dt = new DataTransfer();
+    console.log("dt: ",dt);
+
     // 既存のimageFilesをDataTransferに追加
     imageFiles.forEach((file) => {
-      // dt.setData("image/png", file);
       dt.items.add(file);
       console.log("imageFiles: ", dt.files[0].type);
     });

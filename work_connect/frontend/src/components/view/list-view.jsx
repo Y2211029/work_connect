@@ -119,13 +119,13 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
         case path === "/VideoList" ||
           path === `/Profile/${SessionAccountData.user_name}?page=movie` ||
           path === `/Profile/${ParamUserName}?page=movie`: {
-          const { default: VideoListPostCard } = await import("src/sections/VideoList/post-card");
-          const { default: VideoListPostSort } = await import("src/sections/VideoList/post-sort");
-          setPostCard(() => VideoListPostCard);
-          setPostSort(() => VideoListPostSort);
-          console.log("VideoListPostCard");
-          break;
-        }
+            const { default: VideoListPostCard } = await import("src/sections/VideoList/post-card");
+            const { default: VideoListPostSort } = await import("src/sections/VideoList/post-sort");
+            setPostCard(() => VideoListPostCard);
+            setPostSort(() => VideoListPostSort);
+            console.log("VideoListPostCard");
+            break;
+          }
 
         case path === "/StudentList": {
           const { default: StudentListPostCard } = await import("src/sections/StudentList/post-card");
@@ -145,11 +145,11 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           (options.DecodeURL === `/Profile/${ParamUserName}` &&
             options.page === "news" &&
             ["JobOffer", "Internship", "Blog", "Session"].includes(options.category)): {
-          const { default: Internship_JobOfferPostCard } = await import("src/sections/InternshipJobOffer/post-card");
-          setPostCard(() => Internship_JobOfferPostCard);
-          console.log("Internship_JobOfferPostCard");
-          break;
-        }
+            const { default: Internship_JobOfferPostCard } = await import("src/sections/InternshipJobOffer/post-card");
+            setPostCard(() => Internship_JobOfferPostCard);
+            console.log("Internship_JobOfferPostCard");
+            break;
+          }
 
         case path === `/WriteForm/${NewsDetailId}` || options.DecodeURL === `/Profile/${ParamUserName}/News/Forms`: {
           const { default: WriteFormPostCard } = await import("src/sections/WriteForm/post-card");
@@ -216,14 +216,14 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           title: work.work_name,
           genre: work.work_genre,
           intro: work.work_intro.length > 200 ? work.work_intro.trim().substring(0, 200) + "..." : work.work_intro,
-          author: {
-            avatarUrl: `/assets/images/avatars/avatar_${work.icon}.jpg`,
-          },
           // view: faker.number.int(99999),
           // comment: faker.number.int(99999),
           favorite: faker.number.int(99999),
           userName: work.user_name,
           createdAt: work.created_at,
+          author: {
+            avatarUrl: `/assets/images/avatars/avatar_0.jpg`,
+          },
         })),
     },
     movies: {
@@ -234,19 +234,19 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       generatePosts: (WorkOfList) =>
         WorkOfList.map((movie) => ({
           movie_id: movie.movie_id,
-
+          icon: movie.icon,
           movie: movie.youtube_url,
           title: movie.title,
           genre: movie.genre,
           intro: movie.intro.length > 200 ? movie.intro.substring(0, 200) + "..." : movie.intro,
-          author: {
-            avatarUrl: `/assets/images/avatars/avatar_${movie.icon}.jpg`,
-          },
           // view: faker.number.int(99999),
           // comment: faker.number.int(99999),
           favorite: faker.number.int(99999),
           userName: movie.user_name,
           createdAt: movie.created_at,
+          author: {
+            avatarUrl: `/assets/images/avatars/avatar_0.jpg`,
+          },
         })),
     },
     students: {
@@ -579,7 +579,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   // 初回ロード完了のフラグ
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
 
-  useEffect(() => {}, [IsLoading]);
+  useEffect(() => { }, [IsLoading]);
   useEffect(() => {
     loginStatusCheckFunction();
   }, []);
@@ -792,8 +792,8 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   const renderWorkItems =
     WorkOfList.length !== 0 && PostCard
       ? WorkOfList.map((post, index) => (
-          <PostCard className="mediaCard" ref={index === WorkOfList.length - 1 ? ref : null} key={`${post}-${index}`} post={post} index={index} />
-        ))
+        <PostCard className="mediaCard" ref={index === WorkOfList.length - 1 ? ref : null} key={`${post}-${index}`} post={post} index={index} />
+      ))
       : WorkOfList.length === 0 && !IsLoading && !LaravelResponse && hasLoadedOnce
         ? "0件です"
         : null;

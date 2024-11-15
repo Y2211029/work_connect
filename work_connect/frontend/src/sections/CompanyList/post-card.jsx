@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import Avatar from "@mui/material/Avatar";
 import { follow } from "src/_mock/follow";
@@ -112,21 +111,7 @@ const PostCard = forwardRef(({ post, index }, ref) => {
     selectedOccupation !== null ? (
       <div>
         募集職種:
-        <Button
-          variant="contained"
-          // color="primary"
-          sx={{
-            padding: "2px",
-            margin: "2px",
-            // background: "#41A4FF",
-            background: "linear-gradient(#41A4FF, #9198e5)",
-            "&:hover": {
-              background: "linear-gradient(#c2c2c2, #e5ad91)",
-            },
-          }}
-        >
           {selectedOccupation}
-        </Button>
       </div>
     ) : null;
 
@@ -135,21 +120,7 @@ const PostCard = forwardRef(({ post, index }, ref) => {
     prefecture !== null ? (
       <div>
         勤務地:
-        <Button
-          variant="contained"
-          // color="primary"
-          sx={{
-            padding: "2px",
-            margin: "2px",
-            // background: "#41A4FF",
-            background: "linear-gradient(#41A4FF, #9198e5)",
-            "&:hover": {
-              background: "linear-gradient(#c2c2c2, #e5ad91)",
-            },
-          }}
-        >
           {prefecture}
-        </Button>
       </div>
     ) : null;
 

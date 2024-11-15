@@ -14,7 +14,7 @@ import Divider from "@mui/material/Divider";
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef(({ post }, ref) => {
-  const { movie_id, movie, title, genre, intro, /* view, comment,*/ author, userName, createdAt } = post;
+  const { movie_id, movie, icon, title, genre, intro, /* view, comment,*/ author, userName, createdAt } = post;
 
   // const opts = {
   //   height: "100%",
@@ -46,9 +46,14 @@ const PostCard = forwardRef(({ post }, ref) => {
   // アイコン
   const renderAvatar = (
     <Avatar
-      alt={author.name}
-      src={author.avatarUrl}
-    />
+    alt={author.name}
+    src={icon ? `http://localhost:8000/storage/images/userIcon/${icon}` : author.avatarUrl}
+    sx={{
+      zIndex: 9,
+      width: 30,
+      height: 30,
+    }}
+  />
   );
 
   // タイトル

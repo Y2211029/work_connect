@@ -280,19 +280,25 @@ export default function NotificationsPopover() {
         />
         {!NoticeSelectMode ? (
           <>
-            <CancelIcon
+            <button
               onClick={() => deleteSingleNotice(notification.id)}
               className="deleteSingleNoticeIcon"
               data-notice={notification.id}
-              sx={{
-                fontSize: "20px",
-                transition: "color 0.3s ease",
-                "&:hover": {
-                  color: "lightgrey",
-                  cursor: "pointer",
-                },
-              }}
-            />
+              style={{ zIndex: 1300 }}
+            >
+
+              <CancelIcon
+
+                sx={{
+                  fontSize: "20px",
+                  transition: "color 0.3s ease",
+                  "&:hover": {
+                    color: "lightgrey",
+                    cursor: "pointer",
+                  },
+                }}
+              />
+            </button>
           </>
         ) : (
           <>

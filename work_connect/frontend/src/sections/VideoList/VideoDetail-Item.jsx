@@ -8,7 +8,9 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
 
+import {  AVATAR } from "src/layouts/dashboard/config-layout";
 import { UseCreateTagbutton } from "src/hooks/use-createTagbutton";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
@@ -91,28 +93,28 @@ const VideoDetailItem = () => {
     console.log("VideoDetail", VideoDetail);
   }, [VideoDetail]);
 
+
+
+
+
   // 動画タイトル
-  const renderTitle = VideoDetail.title && VideoDetail.title.length > 0 && (
-    <>
-      <p>{VideoDetail.title}</p>
-    </>
-  );
+  const renderTitle = VideoDetail.title && <h1 className="WorkDetail-title">{VideoDetail.title}</h1>;
 
   // 動画投稿者アイコン
-  const renderIcon = VideoDetail.icon && VideoDetail.icon.length > 0 && (
-    <>
-      <Link to={`/Profile/${VideoDetail.user_name}?page=mypage`}>
-        <img src={`/assets/images/avatars/avatar_${VideoDetail.icon}.jpg`} alt="" />
-      </Link>
-    </>
+  const renderIcon = VideoDetail.icon && (
+    <img
+      src={
+        VideoDetail.icon
+          ? `http://localhost:8000/storage/images/userIcon/${VideoDetail.icon}`
+          : `http://localhost:8000/storage/images/userIcon/subNinja.jpg`
+      }
+      alt=""
+      style={{ width: AVATAR.A_WIDTH, height: AVATAR.A_HEIGHT, borderRadius: AVATAR.A_RADIUS }}
+    />
   );
 
   // 動画作成者ユーザーネーム
-  const renderUserName = VideoDetail.user_name && VideoDetail.user_name.length > 0 && (
-    <>
-      <Link to={`/Profile/${VideoDetail.user_name}?page=mypage`}>{VideoDetail.user_name}</Link>
-    </>
-  );
+  const renderUserName = VideoDetail.user_name && <Typography variant="h6">{VideoDetail.user_name}</Typography>;
 
   // // コメント欄表示
   // const handleTextOpen = () => {
@@ -237,7 +239,9 @@ const VideoDetailItem = () => {
   const renderYoutubeFrame = (
     <>
       <Iframe
-        url={"https://www.youtube.com/embed/hge3fr50o0o?iv_load_policy=3&modestbranding=1&fs=0"}
+
+        // https://www.youtube.com/watch?v=6bm54L6tZMs
+        url={`https://www.youtube.com/embed/${VideoDetail.youtube_url}?iv_load_policy=3&modestbranding=1&fs=0`}
         width="100%"
         height="500px"
         title="YouTube video player"
@@ -304,7 +308,7 @@ const VideoDetailItem = () => {
       {videoComment && Object.keys(Comment).length > 0 && <h3>コメント一覧</h3>}
       {videoComment.map((item, index) =>
         (item.commenter_id === AccountData.id && item.commenter_user_name === AccountData.user_name) ||
-        (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
+          (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
           <div key={index}>
             {/* {console.log("comment", Comment)} */}
             <Divider sx={{ borderStyle: "dashed", margin: "5px 0px 20px 0px", width: "90%" }} />
@@ -380,24 +384,29 @@ const VideoDetailItem = () => {
 
   return (
     <>
-      <Link to="/VideoList">動画一覧に戻る</Link>
+      <Container>
 
-      <div>
-        {renderTitle}
+        <Link to="/VideoList">動画一覧に戻る</Link>
         <div>
-          {renderIcon}
-          {renderUserName}
+          <Link to={`/Profile/${VideoDetail.user_name}?page=mypage`}>
+            <Stack direction="row" justifyContent="left" alignItems="center" spacing={3}>
+              {renderIcon}
+              {renderUserName}
+            </Stack>
+          </Link>
+          {renderTitle}
         </div>
-      </div>
-      {/* 各項目の表示、ここから */}
-      <Box>
-        {renderYoutubeFrame}
-        {renderGenre}
-        {renderIntro}
-        {renderCommentButton}
-        {renderComment}
-      </Box>
-      {/* 各項目の表示、ここまで */}
+
+        {/* 各項目の表示、ここから */}
+        <Box>
+          {renderYoutubeFrame}
+          {renderGenre}
+          {renderIntro}
+          {renderCommentButton}
+          {renderComment}
+        </Box>
+        {/* 各項目の表示、ここまで */}
+      </Container>
     </>
   );
 };

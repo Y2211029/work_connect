@@ -46,6 +46,7 @@ const WorkPosting = () => {
   useEffect(() => {
     console.log("Description: ", Description);
   }, [Description]);
+
   const callSetImage = (e) => {
     // const image = Array.from(e);
     setImage(e);
@@ -102,6 +103,7 @@ const WorkPosting = () => {
 
     if (e.length == 0) {
       dt.clearData();
+      setImage(dt.file);
       console.log("dt", dt.files);
     }
   };
@@ -110,9 +112,10 @@ const WorkPosting = () => {
     console.log("imageFiles updated: ", imageFiles);
     console.log(Array.isArray(imageFiles)); // trueなら配列です
     let dt = new DataTransfer();
+    console.log("dt: ",dt);
+
     // 既存のimageFilesをDataTransferに追加
     imageFiles.forEach((file) => {
-      // dt.setData("image/png", file);
       dt.items.add(file);
       console.log("imageFiles: ", dt.files[0].type);
     });

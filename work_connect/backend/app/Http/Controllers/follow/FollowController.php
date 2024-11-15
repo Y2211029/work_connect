@@ -98,7 +98,7 @@ class FollowController extends Controller
             $query->join('w_users', 'w_users.id', '=', 'w_notices.send_user_id');
         }
 
-        $query->orderBy('w_notices.created_at', 'asc');
+        $query->orderBy('w_notices.created_at', 'desc');
 
         $noticeData = $query->get();
 

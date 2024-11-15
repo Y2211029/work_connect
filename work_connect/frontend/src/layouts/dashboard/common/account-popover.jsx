@@ -13,6 +13,7 @@ import Box from "@mui/material/Box";
 import { account } from "src/_mock/account";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import { AllItemsContext } from "src/layouts/dashboard/index";
+import DefaultIcon from "src/sections/Profile/View/DefaultIcon";
 // ----------------------------------------------------------------------
 
 // ----------------------------------------------------------------------
@@ -97,7 +98,7 @@ export default function AccountPopover() {
     },
   ];
 
-  
+
 
   return (
     <>
@@ -113,9 +114,10 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar
-          // ログアウト時はゲストアバターを使用
-          src={popoverIcon ? `http://localhost:8000/storage/images/userIcon/${popoverIcon}`:account.photoURL}
+        {popoverIcon ? (
+          // アイコンを設定しているとき
+          <Avatar
+          src={`http://localhost:8000/storage/images/userIcon/${popoverIcon}`}
           alt={account.displayName}
           sx={{
             width: 36,
@@ -125,6 +127,17 @@ export default function AccountPopover() {
         >
           {account.displayName.charAt(0).toUpperCase()}
         </Avatar>
+        ) : (
+          // アイコンを設定していないとき
+          <DefaultIcon
+            sx={{
+              width: 36,
+              height: 36,
+              border: (theme) => `solid 2px ${theme.palette.background.default}`,
+            }}
+          />
+        )}
+
       </IconButton>
 
       <Popover

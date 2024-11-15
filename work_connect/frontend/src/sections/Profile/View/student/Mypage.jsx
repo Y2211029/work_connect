@@ -101,7 +101,7 @@ const ProfileMypage = () => {
 
   // DBからのレスポンスが入る変数
   const [ResponseData, setResponseData] = useState([]);
-  const [responseIcon, setResponseIcon] = useState([]);
+  const [responseIcon, setResponseIcon] = useState(true);
 
   // セッションストレージ取得
   const { getSessionData } = useSessionStorage();
@@ -125,14 +125,6 @@ const ProfileMypage = () => {
   // websocket通信のデータ保存先
   const notificationContext = useContext(WebScokectContext);
 
-  // // セッションストレージからaccountDataを取得し、MypageEditStateを初期値として設定
-  // // マイページ編集時なら"1",マイページ時なら"0"
-  // const getInitialMypageEditState = () => {
-  //   const accountData = getSessionData("accountData");
-  //   return accountData.MypageEditState ? accountData.MypageEditState : 0;
-  // };
-  // const [MypageEditState, setMypageEditState] = useState(getInitialMypageEditState);
-
   // セッションストレージからaccountDataを取得し、idを初期値として設定(ログイン中のIDを取得)
   const getUserId = () => {
     const accountData = getSessionData("accountData");
@@ -141,21 +133,6 @@ const ProfileMypage = () => {
 
   //ログイン中のid
   const MyUserId = useState(getUserId);
-
-  // // MypageEditStateが変化したとき
-  // useEffect(() => {
-  //   if (Profile.current) {
-  //     if (MypageEditState === 0) {
-  //       Profile.current.style.display = '';
-  //     } else if (MypageEditState === 1) {
-  //       // 編集画面をオープン
-  //       childRef.current?.openEdit();
-  //       // プロフィール画面を閉じる
-  //       Profile.current.style.display = 'none';
-  //     }
-  //   }
-  //   updateSessionData("accountData", "MypageEditState", MypageEditState);
-  // }, [MypageEditState]);
 
   // ProfileUserNameが変化したとき
   useEffect(() => {
@@ -170,14 +147,9 @@ const ProfileMypage = () => {
           },
         });
         if (response) {
-          // console.log(response.data[0].follow_status);
           setResponseData(response.data[0]);
-
           setFollowStatus(response.data[0].follow_status);
-
-          console.log("follow_status:", response.data[0].follow_status);
         }
-        // console.log("ResponseData:", ResponseData);
       } catch (err) {
         console.log("err:", err);
       }
@@ -248,10 +220,8 @@ const ProfileMypage = () => {
 
   // アイコンの設定
   useEffect(() => {
-    if(ResponseData.icon){
-      setResponseIcon(ResponseData.icon);
-    } else {
-      setResponseIcon("null");
+    if (ResponseData.icon !== undefined) {
+      setResponseIcon(false);
     }
   }, [ResponseData.icon]);
 
@@ -429,42 +399,43 @@ const ProfileMypage = () => {
             position: "relative",
           }}
         >
-          {responseIcon && responseIcon !== "null" ? (
+          {responseIcon ? (
+            <Box sx={{ height: "calc(100vw * 0.58)", width: "calc(100vw * 0.58)", maxHeight: 350, maxWidth: 350 }}>
+              <ColorRingStyle />
+            </Box>
+          ) : ResponseData.icon ? (
             <CardMedia
-            component="img"
-            sx={{
-              height: "calc(100vw * 0.58)",
-              width: "calc(100vw * 0.58)",
-              objectFit: "cover",
-              borderRadius: "50%",
-              maxHeight: 350,
-              maxWidth: 350,
-              "@media (min-width: 600px)": {
-                height: 350,
-                width: 350,
-              },
-            }}
-            image={
-                `http://localhost:8000/storage/images/userIcon/${responseIcon}`
-            }
-          />
-          ) : responseIcon === "null" ? (
-            <DefaultIcon sx={{
-              height: "calc(100vw * 0.58)",
-              width: "calc(100vw * 0.58)",
-              padding: '20px',
-              objectFit: "cover",
-              borderRadius: "50%",
-              maxHeight: 350,
-              maxWidth: 350,
-              "@media (min-width: 600px)": {
-                height: 350,
-                width: 350,
-              },
-            }}/>
+              component="img"
+              sx={{
+                height: "calc(100vw * 0.58)",
+                width: "calc(100vw * 0.58)",
+                objectFit: "cover",
+                borderRadius: "50%",
+                maxHeight: 350,
+                maxWidth: 350,
+                "@media (min-width: 600px)": {
+                  height: 350,
+                  width: 350,
+                },
+              }}
+              image={`http://localhost:8000/storage/images/userIcon/${ResponseData.icon}`}
+            />
           ) : (
-            <ColorRingStyle />
-
+            <DefaultIcon
+              sx={{
+                height: "calc(100vw * 0.58)",
+                width: "calc(100vw * 0.58)",
+                padding: '20px',
+                objectFit: "cover",
+                borderRadius: "50%",
+                maxHeight: 350,
+                maxWidth: 350,
+                "@media (min-width: 600px)": {
+                  height: 350,
+                  width: 350,
+                },
+              }}
+            />
           )}
 
         </Card>

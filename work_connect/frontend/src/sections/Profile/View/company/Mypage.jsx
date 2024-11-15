@@ -19,6 +19,7 @@ import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import { PulseLoader } from "react-spinners";
+import { ColorRing } from "react-loader-spinner";
 
 import ProfileMypageEdit from "./MypageEdit";
 // デフォルトのアイコンをインポート
@@ -47,6 +48,38 @@ const Showmore = styled(Paper)(({ theme }) => ({
   fontSize: "20px",
 }));
 
+// ローディングのコンポーネント
+const ColorRingStyle = () => {
+  return(
+    <Box
+      sx={{
+        marginTop: '20%',
+        display: 'flex', // Flexboxを使用
+        justifyContent: 'center', // 水平方向中央
+        alignItems: 'center', // 垂直方向中央
+      }}
+    >
+      <ColorRing
+        style={{
+          visible: true,
+          margin: "0px",
+          height: "10",
+          width: "10",
+          ariaLabel: "color-ring-loading",
+          wrapperClass: "custom-color-ring-wrapper",
+          colors:
+          ["#e15b64",
+            "#f47e60",
+            "#f8b26a",
+            "#abbd81",
+            "#849b87"]
+        }}
+      />
+    </Box>
+  );
+
+}
+
 const ProfileMypage = () => {
   // 「さらに表示」ボタンの初期設定
   const [showMoreText, setShowMoreText] = useState(
@@ -71,6 +104,7 @@ const ProfileMypage = () => {
 
   // DBからのレスポンスが入る変数
   const [ResponseData, setResponseData] = useState([]);
+  const [responseIcon, setResponseIcon] = useState(true);
 
   // セッションストレージ取得
   const { getSessionData } = useSessionStorage();
@@ -107,8 +141,6 @@ const ProfileMypage = () => {
         if (response) {
           setResponseData(response.data[0]);
           setFollowStatus(response.data[0].follow_status);
-          // console.log("ResponseData:", response.data[0]);
-          console.log("follow_status:", response.data[0].follow_status);
         }
       } catch (err) {
         console.log("err:", err);
@@ -165,6 +197,15 @@ const ProfileMypage = () => {
   useEffect(() => {
     console.log("notificationContext", notificationContext);
   }, [notificationContext]);
+
+  // アイコンの設定
+  useEffect(() => {
+    if (ResponseData.icon !== undefined) {
+      setResponseIcon(false);
+    }
+  }, [ResponseData.icon]);
+
+  // マップのURL
   const handleMapUrl = (URL) => {
     let extractedUrl = null;
 
@@ -389,39 +430,43 @@ const ProfileMypage = () => {
             boxShadow: "none",
           }}
         >
-          {ResponseData.icon ? (
+           {responseIcon ? (
+            <Box sx={{ height: "calc(100vw * 0.58)", width: "calc(100vw * 0.58)", maxHeight: 350, maxWidth: 350 }}>
+              <ColorRingStyle />
+            </Box>
+          ) : ResponseData.icon ? (
             <CardMedia
-            component="img"
-            sx={{
-              height: "calc(100vw * 0.58)",
-              width: "calc(100vw * 0.58)",
-              objectFit: "cover",
-              borderRadius: "50%",
-              maxHeight: 350,
-              maxWidth: 350,
-              "@media (min-width: 600px)": {
-                height: 350,
-                width: 350,
-              },
-            }}
-            image={
-                `http://localhost:8000/storage/images/userIcon/${ResponseData.icon}`
-            }
-          />
-          ):(
-            <DefaultIcon sx={{
-              height: "calc(100vw * 0.58)",
-              width: "calc(100vw * 0.58)",
-              padding: '20px',
-              objectFit: "cover",
-              borderRadius: "50%",
-              maxHeight: 350,
-              maxWidth: 350,
-              "@media (min-width: 600px)": {
-                height: 350,
-                width: 350,
-              },
-            }}/>
+              component="img"
+              sx={{
+                height: "calc(100vw * 0.58)",
+                width: "calc(100vw * 0.58)",
+                objectFit: "cover",
+                borderRadius: "50%",
+                maxHeight: 350,
+                maxWidth: 350,
+                "@media (min-width: 600px)": {
+                  height: 350,
+                  width: 350,
+                },
+              }}
+              image={`http://localhost:8000/storage/images/userIcon/${ResponseData.icon}`}
+            />
+          ) : (
+            <DefaultIcon
+              sx={{
+                height: "calc(100vw * 0.58)",
+                width: "calc(100vw * 0.58)",
+                padding: '20px',
+                objectFit: "cover",
+                borderRadius: "50%",
+                maxHeight: 350,
+                maxWidth: 350,
+                "@media (min-width: 600px)": {
+                  height: 350,
+                  width: 350,
+                },
+              }}
+            />
           )}
         </Card>
 
@@ -593,3 +638,5 @@ const ProfileMypage = () => {
 
 export default ProfileMypage;
 ProfileMypage.displayName = "Parent";
+ColorRingStyle.propTypes = {
+};

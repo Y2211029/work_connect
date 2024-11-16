@@ -350,25 +350,25 @@ class EditorController extends Controller
         try {
             $Delete_id = $request->input('delete_id');
             $Company_id = $request->input('company_id');
-    
+
             $newsDeleteList = w_news::where('id', $Delete_id)
                 ->where('company_id', $Company_id)
                 ->first();
-    
+
             if ($newsDeleteList) {
                 $newsDeleteList->delete();
             }
-    
+
             // news_draft_list 関数を呼び出してニュースドラフトリストを取得
             $prevDraftList = $this->news_draft_list($request, $Company_id);
-    
+
             // レスポンスとして成功ステータスを返す
             return response()->json([
                 'message' => '成功',
                 'success' => true,
                 'news_draft_list' => $prevDraftList,
             ]);
-            
+
         } catch (\Exception $e) {
             // エラーレスポンスを返す
             return response()->json([
@@ -387,7 +387,7 @@ class EditorController extends Controller
                 ->where('public_status', 0)
                 ->orderBy('updated_at', 'desc') // 降順でソート
                 ->get();
-    
+
             // 各ニュースドラフトに対応する w_create_form データを追加
             foreach ($newsDraftList as $newsDraft) {
                 // news_id に対応する w_create_form レコードを取得
@@ -399,9 +399,9 @@ class EditorController extends Controller
                 $newsDraft->create_form = $createForm;
                 }
             }
-    
+
             Log::info($newsDraftList);
-    
+
             return $newsDraftList;
         } catch (\Exception $e) {
             // エラーレスポンスを返す
@@ -411,6 +411,27 @@ class EditorController extends Controller
             ], 500);
         }
     }
+
+    public function createform_search(Request $request){
+        try {
+
+            $newsid = $request->input('newsid');
+
+            // 条件に一致するニュースドラフトリストを取得
+            $createForm = w_create_form::where('company_id', $newsid)
+                ->get();
+            return response()->json(['create_form' => $createForm]);
+
+        } catch (\Exception $e) {
+            // エラーレスポンスを返す
+            return response()->json([
+                'error' => 'Failed to fetch news draft list',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
 
     public function embed(Request $request)
     {

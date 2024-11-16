@@ -165,13 +165,6 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           break;
         }
 
-        case options.DecodeURL === `/Profile/${ParamUserName}/Checkform` && options.category === "statistical_data": {
-          const { default: StatisticalDataPostCard } = await import("src/sections/Profile/View/company/CheckForm/Statistical_Data/post-card");
-          setPostCard(() => StatisticalDataPostCard);
-          console.log("StatisticalDataPostCard");
-          break;
-        }
-
         case options.DecodeURL === `/Profile/${ParamUserName}` && options.page === "companyinformation": {
           const { default: CompanyInformationPostCard } = await import("src/sections/CompanyInformation/post-card");
           setPostCard(() => CompanyInformationPostCard);
@@ -300,6 +293,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
         WorkOfList.map((company) => ({
           company_id: company.company_id,
           news_id: company.news_id,
+          user_name: company.user_name,
           company_name: company.company_name[0].props.children,
           article_title: company.article_title,
           genre: company.genre,
@@ -319,6 +313,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
         WorkOfList.map((company) => ({
           company_id: company.company_id,
           news_id: company.news_id,
+          user_name: company.user_name,
           company_name: company.company_name[0].props.children,
           article_title: company.article_title,
           genre: company.genre,
@@ -338,6 +333,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
         WorkOfList.map((company) => ({
           company_id: company.company_id,
           news_id: company.news_id,
+          user_name: company.user_name,
           company_name: company.company_name[0].props.children,
           article_title: company.article_title,
           genre: company.genre,
@@ -357,6 +353,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
         WorkOfList.map((company) => ({
           company_id: company.company_id,
           news_id: company.news_id,
+          user_name: company.user_name,
           company_name: company.company_name[0].props.children,
           article_title: company.article_title,
           genre: company.genre,
@@ -463,21 +460,6 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
     },
     specialforms: {
       ItemName: `応募フォーム一覧`,
-      url: `http://localhost:8000/special_forms/${SessionAccountData.id}`,
-      idKey: "id",
-      tags: ["company_name"],
-      generatePosts: (WorkOfList) => {
-        if (Array.isArray(WorkOfList)) {
-          const application_form = WorkOfList.map((company) => ({
-            article_title: company.article_title,
-            user_name: company.users,
-          }));
-          return [{ application_form }];
-        }
-      },
-    },
-    specialstatisticaldata: {
-      ItemName: `応募フォーム一覧(グラフ)`,
       url: `http://localhost:8000/special_forms/${SessionAccountData.id}`,
       idKey: "id",
       tags: ["company_name"],
@@ -608,7 +590,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
         page === "news" &&
         (category === "JobOffer" || category === "Internship" || category === "Blog" || category === "Session")) ||
       (DecodeURL === `/Profile/${ParamUserName}` && page === "companyinformation") ||
-      (DecodeURL === `/Profile/${ParamUserName}` && page === "checkform"))
+      (PathName === `/Profile/${ParamUserName}` && page === "checkform"))
   ) {
     // console.log(" URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合");
     lastUrl = `${url}?page=${Page}&sort=${sortOption}`;

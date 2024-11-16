@@ -1,3 +1,11 @@
+body {
+  overflow: scroll; /* 縦のスクロールバーを自動で表示 */
+  height: 100%; /* 高さを100%に設定して、親要素の高さに合わせる */
+  margin: 0; /* マージンをリセットして、余白が生じないようにする */
+
+}
+
+
 .editor_title{
   position: relative;
   width:1000px;

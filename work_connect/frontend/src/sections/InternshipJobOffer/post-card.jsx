@@ -18,7 +18,7 @@ import { follow } from "src/_mock/follow";
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef(({ post }, ref) => {
-  const { company_id, news_id, company_name, article_title, genre, header_img, news_created_at, follow_status: initialFollowStatus, icon, count } = post;
+  const { company_id, news_id, company_name,user_name, article_title, genre, header_img, news_created_at, follow_status: initialFollowStatus, icon, count } = post;
 
   useEffect(() => {
     console.log("company_id", company_id);
@@ -43,7 +43,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   };
 
   console.log("アイコンID",icon);
-  console.log("企業名",company_name);
+  console.log("企業名",user_name);
 
   // 企業アイコン
   const renderAvatar = (
@@ -62,7 +62,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   // フォームのレンダリング（企業の投稿の場合）
   const renderForm = company_id === accountData.id && count > 0 ? (
     <Link
-      to={`/Profile/${company_name}/Checkform?page=checkform`}
+      to={`/Profile/${user_name}?page=checkform`}
     >
       <Typography opacity="0.48">
         {count}件のフォーム回答

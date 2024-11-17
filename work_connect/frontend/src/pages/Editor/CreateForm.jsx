@@ -60,8 +60,10 @@ const CreateForm = ({ newsid, HandleBack}) => {
         });
 
         if (Array.isArray(response.data.create_form) && response.data.create_form.length > 0) {
-          createform = response.data.create_form;
+          createform = JSON.parse(response.data.create_form[0].create_form);
+          const log = response.data.create_form[0].company_id;
           console.log("クリエイトフォーム", createform);
+          console.log("なんかみるログ", log);
         } else {
           createform = [
             {
@@ -575,15 +577,15 @@ const CreateForm = ({ newsid, HandleBack}) => {
 
         <div className="FormDemo"> {/* フォーム部分 */}
 
+        <div className="back_news_draft" onClick={WriteNewsHandleBack}>
+                <Typography>← ニュースの下書きに戻る</Typography>
+        </div>
+
+
           {!questions || questions.length === 0 ? (
             <p>フォームがありません</p>
           ) : (
             <>
-              <div className="back_news_draft" onClick={WriteNewsHandleBack}>
-                <Typography>← ニュースの下書きに戻る</Typography>
-              </div>
-
-
               <div className="SurveyModal">
                 <Survey model={survey} />
               </div>

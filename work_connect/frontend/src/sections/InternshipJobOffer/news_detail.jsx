@@ -22,6 +22,8 @@ const InternshipJobOfferPage = () => {
     const [isHover, SetFavoriteIcon_hover] = useState(false);  //ホバーしたら「クリックするとブックマークできます」というテキストが出現
     const [showNav, setShowNav] = useState(false); // ナビゲーションバーを表示するかどうかの状態を管理
     const [followStatus, setFollowStatus] = useState(null);
+    const [writeformStatus, setWriteFormStatus] = useState(null);
+
 
     const csrf_url = "http://localhost:8000/csrf-token";
     const news_bookmark_url = "http://localhost:8000/news_bookmark";
@@ -55,6 +57,7 @@ const InternshipJobOfferPage = () => {
                 console.log(response.data);
                 SetNewsDetail(response.data);
                 setFollowStatus(response.data.follow_status);
+                setWriteFormStatus(response.data.writeform_status);
             } catch (error) {
                 console.error("データの取得中にエラーが発生しました！", error);
             }
@@ -166,9 +169,9 @@ const InternshipJobOfferPage = () => {
         Genre = "インターンシップ";
     } else if (NewsDetail && NewsDetail.genre === "Blog") {
         Genre = "ブログ";
-    } else if(NewsDetail && NewsDetail.genre === "Session"){
+    } else if (NewsDetail && NewsDetail.genre === "Session") {
         Genre = "説明会";
-    }else {
+    } else {
         Genre = "求人";
     }
 
@@ -229,31 +232,38 @@ const InternshipJobOfferPage = () => {
                                                 fontSize: "10px",
                                                 padding: "8px 16px",
                                                 margin: "4px",
-                                                background: "linear-gradient(#41A4FF, #9198e5)",
-                                                "&:hover": {
-                                                    background: "linear-gradient(#c2c2c2, #e5ad91)",
-                                                },
+                                                background: writeformStatus
+                                                ? "linear-gradient(#41A4FF, #9198e5)" // 応募する場合
+                                                : "linear-gradient(#d3d3d3, #a6a6a6)", // 応募済みの場合
+                                            "&:hover": {
+                                                background: writeformStatus
+                                                    ? "linear-gradient(#c2c2c2, #e5ad91)" // 応募する場合
+                                                    : "linear-gradient(#b8b8b8, #9e9e9e)", // 応募済みの場合
+                                            },
                                             }}
-                                            onClick={handleFormJump}
+                                            onClick={writeformStatus ? handleFormJump : undefined} // trueの場合のみクリックイベントを設定
                                         >
-                                            応募する
-                                        </Button>
+                                            {writeformStatus ? "応募する" : "応募済み"}
+                                    </Button>
 
-                                        <Button
-                                            variant="contained"
-                                            sx={{
-                                                fontSize: "10px",
-                                                padding: "8px 16px",
-                                                margin: "4px",
-                                                background: "linear-gradient(#41A4FF, #9198e5)",
-                                                "&:hover": {
-                                                    background: "linear-gradient(#c2c2c2, #e5ad91)",
-                                                },
-                                            }}
-                                            onClick={handleChatJump}
-                                        >
-                                            チャットする
-                                        </Button>
+
+                                        {(followStatus === "フォローしています" || followStatus === "フォローされています") && (
+                                            <Button
+                                                variant="contained"
+                                                sx={{
+                                                    fontSize: "10px",
+                                                    padding: "8px 16px",
+                                                    margin: "4px",
+                                                    background: "linear-gradient(#41A4FF, #9198e5)",
+                                                    "&:hover": {
+                                                        background: "linear-gradient(#c2c2c2, #e5ad91)",
+                                                    },
+                                                }}
+                                                onClick={handleChatJump}
+                                            >
+                                                チャットする
+                                            </Button>
+                                        )}
                                     </>
                                 )}
                             </Stack>
@@ -273,7 +283,7 @@ const InternshipJobOfferPage = () => {
                         }}
                     >
 
-                    {Genre}
+                        {Genre}
 
                     </Button>
                     <h1 className="news_title">{NewsDetail.article_title}</h1>
@@ -297,41 +307,46 @@ const InternshipJobOfferPage = () => {
                                 プロフィール
                             </Button>
                             {data?.id?.[0] === "S" && (
-                                    <>
-                                        <Button
+                                <>
+                                    <Button
+                                        variant="contained"
+                                        sx={{
+                                            fontSize: "10px",
+                                            padding: "8px 16px",
+                                            margin: "4px",
+                                            background: "linear-gradient(#41A4FF, #9198e5)",
+                                            "&:hover": {
+                                                background: "linear-gradient(#c2c2c2, #e5ad91)",
+                                            },
+                                        }}
+                                        onClick={handleFollowClick}
+                                    >
+                                        {followStatus}
+                                        {/* useStateから持ってくる */}
+                                    </Button>
+
+                                    <Button
                                             variant="contained"
                                             sx={{
                                                 fontSize: "10px",
                                                 padding: "8px 16px",
                                                 margin: "4px",
-                                                background: "linear-gradient(#41A4FF, #9198e5)",
-                                                "&:hover": {
-                                                    background: "linear-gradient(#c2c2c2, #e5ad91)",
-                                                },
+                                                background: writeformStatus
+                                                ? "linear-gradient(#41A4FF, #9198e5)" // 応募する場合
+                                                : "linear-gradient(#d3d3d3, #a6a6a6)", // 応募済みの場合
+                                            "&:hover": {
+                                                background: writeformStatus
+                                                    ? "linear-gradient(#c2c2c2, #e5ad91)" // 応募する場合
+                                                    : "linear-gradient(#b8b8b8, #9e9e9e)", // 応募済みの場合
+                                            },
                                             }}
-                                            onClick={handleFollowClick}
+                                            onClick={writeformStatus ? handleFormJump : undefined} // trueの場合のみクリックイベントを設定
                                         >
-                                            {followStatus}
-                                            {/* useStateから持ってくる */}
-                                        </Button>
+                                            {writeformStatus ? "応募する" : "応募済み"}
+                                    </Button>
 
-                                        <Button
-                                            variant="contained"
-                                            sx={{
-                                                fontSize: "10px",
-                                                padding: "8px 16px",
-                                                margin: "4px",
-                                                background: "linear-gradient(#41A4FF, #9198e5)",
-                                                "&:hover": {
-                                                    background: "linear-gradient(#c2c2c2, #e5ad91)",
-                                                },
-                                            }}
-                                            onClick={handleFormJump}
-                                        >
-                                            応募する
-                                        </Button>
 
-                                        {followStatus === "フォローしています" && (
+                                    {followStatus === "フォローしています" && (
                                         <Button
                                             variant="contained"
                                             sx={{
@@ -347,9 +362,9 @@ const InternshipJobOfferPage = () => {
                                         >
                                             チャットする
                                         </Button>
-                                        )}
-                                    </>
-                                )}
+                                    )}
+                                </>
+                            )}
                         </Stack>
                     </Stack>
                     {/* NewsDetailHeader要素 サムネイルと会社名・お気に入りボタンを一括りにする */}

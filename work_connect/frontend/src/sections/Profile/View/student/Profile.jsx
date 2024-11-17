@@ -71,6 +71,7 @@ export default function NavTabs() {
 
   /* 作品か動画かを判断する用のパラメータ追加処理 */
   function pageCheck(pageStr) {
+    console.log("pageCheck通りました");
     navigate(`/Profile/${user_name}?page=${pageStr}`);
   }
 
@@ -83,8 +84,6 @@ export default function NavTabs() {
       // マイページが押されたとき
       setProfileTabState(0);
       pageCheck('mypage');
-
-
     } else if (value === 1) {
       // 作品が押されたとき
       setProfileTabState(1);
@@ -93,7 +92,12 @@ export default function NavTabs() {
       // 動画が押されたとき
       setProfileTabState(2);
       pageCheck('movie');
-    }
+     }
+    //  else if (value === 3) {
+    //   // 動画が押されたとき
+    //   setProfileTabState(3);
+    //   pageCheck('apply_history');
+    // }
   }, [value]);
 
 
@@ -121,6 +125,11 @@ export default function NavTabs() {
       setProfileTabState(2);
       pageCheck('movie');
     }
+    // else if (newValue === 3) {
+    //   // 動画が押されたとき
+    //   setProfileTabState(3);
+    //   pageCheck('apply_history');
+    // }
     // 作品・動画一覧を正常に再表示するために必要な処理
     setAllItems((prevItems) => ({
       ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
@@ -147,10 +156,12 @@ export default function NavTabs() {
         <Tab label="マイページ" onClick={(e) => handleTabClick(e, 0)} />
         <Tab label="作品" onClick={(e) => handleTabClick(e, 1)} />
         <Tab label="動画" onClick={(e) => handleTabClick(e, 2)} />
+        {/* <Tab label="応募履歴" onClick={(e) => handleTabClick(e, 3)} /> */}
       </Tabs>
       {value === 0 && <ProfileMypage />}
       {value === 1 && <ListView type="works" ParamUserName={user_name} />}
       {value === 2 && <ListView type="movies" ParamUserName={user_name} />}
+      {/* {value === 3 && <ListView type="apply_history" ParamUserName={user_name} />} */}
     </Box>
   );
 

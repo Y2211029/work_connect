@@ -130,7 +130,7 @@ const Editor = () => {
 
       // websocketサーバーに送信
       const response = await axios.post(
-        "http://localhost:3000/news_upload",
+        "http://localhost:8000/news_upload",
         {
           method: "POST",
           headers: {
@@ -246,6 +246,7 @@ const Editor = () => {
       formData.append('file', file);
       formData.append('news_id', news_id);
       formData.append('session_id', sessionId);
+      formData.append('genre', genre);
 
       console.log('file', file);
       console.log('news_id', news_id);
@@ -336,6 +337,7 @@ const Editor = () => {
           {
             delete_id: id,
             company_id: sessionId,
+            genre: genre
           }
         );
         console.log(response.data);
@@ -580,8 +582,8 @@ const Editor = () => {
   useEffect(() => {
     async function newsDraftList() {
       if (sessionId) {
-        const news_draft_list_url = `http://localhost:8000/news_draft_list/${sessionId}`;
-        console.log(news_draft_list_url);
+        const news_draft_list_url = `http://localhost:8000/news_draft_list/${sessionId}/${genre}`;
+        console.log("news_draft_list_url",news_draft_list_url);
         try {
           const response = await axios.get(news_draft_list_url);
           console.log("ドラフトリスト:", response.data); // 配列そのものが返ってくる
@@ -1014,6 +1016,7 @@ const Editor = () => {
         const response = await axios.get(header_img_delete_url, {
           params: {
             Company_Id: sessionId,
+            genre: genre,
           },
         });
         if (response.data.success) {
@@ -1580,14 +1583,6 @@ const Editor = () => {
             value={title}
             onChange={titlechange}
           />
-
-          {formSummary &&
-          <>
-          <p>フォームサマリあります</p>
-          </>
-          }
-
-
 
           {/* エディターコンポーネント */}
           <div className="editor-wrapper">

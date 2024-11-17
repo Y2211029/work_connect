@@ -43,6 +43,8 @@ const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, s
       filteredNewWorks = newWorks.filter((element) => !existingIds.has(element[idKey]));
     }
 
+    console.log("filteredNewWorks",filteredNewWorks);
+
     // 全作品アイテム
     filteredNewWorks.forEach((element) => {
       // 作品のジャンル取り出す
@@ -104,7 +106,6 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
   console.log("category", category);
 
   useEffect(() => {
-    // 各パスに対するコンポーネントを動的にロード
     const loadComponentForPath = async (path, options = {}) => {
       switch (true) {
         case path === "/" || path === `/Profile/${SessionAccountData.user_name}?page=work` || path === `/Profile/${ParamUserName}?page=work`: {
@@ -126,6 +127,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
             console.log("VideoListPostCard");
             break;
           }
+
 
         case path === "/StudentList": {
           const { default: StudentListPostCard } = await import("src/sections/StudentList/post-card");
@@ -151,12 +153,24 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
             break;
           }
 
+          case path === `/Profile/${ParamUserName}` && options.page === "apply_history": {
+            try {
+              const { default: ApplyHistoryPostCard } = await import("src/sections/ApplyHistory/post-card");
+              setPostCard(() => ApplyHistoryPostCard);
+              console.log("ApplyHistoryPostCard loaded successfully");
+            } catch (error) {
+              console.error("Error loading ApplyHistoryPostCard:", error);
+            }
+            break;
+          }
+
         case path === `/WriteForm/${NewsDetailId}` || options.DecodeURL === `/Profile/${ParamUserName}/News/Forms`: {
           const { default: WriteFormPostCard } = await import("src/sections/WriteForm/post-card");
           setPostCard(() => WriteFormPostCard);
           console.log("WriteFormPostCard");
           break;
         }
+
 
         case options.DecodeURL === `/Profile/${ParamUserName}` && options.page === "checkform": {
           const { default: CheckFormPostCard } = await import("src/sections/Profile/View/company/CheckForm/post-card");
@@ -234,6 +248,40 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
             avatarUrl: `/assets/images/avatars/avatar_0.jpg`,
           },
         })),
+    },
+
+    apply_history: {
+      ItemName: `${ParamUserName}さんの応募履歴`,
+      url: `http://localhost:8000/get_apply_history/${SessionAccountData.id}`,
+      idKey: "id",
+      tags: ["genre"],
+      generatePosts: (WorkOfList) => {
+        // 各app.write_formの中身をログ出力
+        return WorkOfList.map((app) => {
+          console.log("Mapped app:", {
+            apply_histories: app,
+            companies_name: app.companies_name,
+            news_id: app.news_id,
+            news_title: app.news_title,
+            news_genre: app.news_genre,
+            img: app.img,
+            write_form_id: app.write_form_id,
+            write_form: app.write_form,
+            form_writed_at: app.form_writed_at,
+          });
+          return {
+            apply_histories: app,
+            companies_name: app.companies_name,
+            news_id: app.news_id,
+            news_title: app.news_title,
+            news_genre: app.news_genre,
+            img: app.img,
+            write_form_id: app.write_form_id,
+            write_form: app.write_form,
+            form_writed_at: app.form_writed_at,
+          };
+        });
+      },
     },
     students: {
       ItemName: "学生一覧",

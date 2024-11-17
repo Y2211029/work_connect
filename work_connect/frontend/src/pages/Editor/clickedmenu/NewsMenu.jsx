@@ -257,7 +257,7 @@ const NewsMenu = ({
         <Button variant="outlined" onClick={() => {
           setExpanded(false);
           CloseModal();
-        }}>
+        }} className="CloseModalButton">
           閉じる
         </Button>
 

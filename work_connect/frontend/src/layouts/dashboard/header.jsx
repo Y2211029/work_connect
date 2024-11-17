@@ -137,17 +137,17 @@ export default function Header({ onOpenNav }) {
 
   const handleMenuItemClick = (path) => {
     const now_pathname = window.location.pathname;
-    // ニュース編集からニュース編集へジャンプしようとした場合はリロードを行う
+
+    handleClose();
+
     if (
       ['/Editor/Session', '/Editor/Internship', '/Editor/JobOffer', '/Editor/Blog'].some((partialPath) =>
         now_pathname.includes(partialPath)
       )
     ) {
-      handleClose();
-      window.location.reload(); // ページをリロードして内容をリセット
+      window.location.href = path; // 新しいパスに移動して即座にリロード
     } else {
-      handleClose();
-      navigate(path); // 新しいパスに移動
+      navigate(path); // 通常の遷移
     }
   };
 

@@ -64,7 +64,7 @@ class EditorController extends Controller
         $id = $w_news->id;
 
         // news_draft_list 関数を呼び出してニュースドラフトリストを取得
-        $newsDraftList = $this->news_draft_list($request, $Company_id);
+        $newsDraftList = $this->news_draft_list($request, $Company_id,$genre);
 
 
         // IDを返す
@@ -86,6 +86,7 @@ class EditorController extends Controller
         // リクエストからnews_idとsession_idを取得
         $news_id = $request->input('news_id');
         $Company_Id = $request->input('session_id');
+        $genre = $request->input('genre');
 
         // 画像を保存
         if ($request->hasFile('file')) {
@@ -119,6 +120,7 @@ class EditorController extends Controller
                     'company_id' => $Company_Id,
                     'header_img' => $publicPath,
                     'created_at' => $now,
+                    'genre' => $genre,
                     'public_status' => "0"
                 ]);
             } else {
@@ -128,6 +130,7 @@ class EditorController extends Controller
                     return response()->json(['error' => 'Record not found'], 404);
                 }
                 $w_news->header_img = $publicPath; // 相対パスを保存
+                $w_news->genre = $genre;
                 $w_news->created_at = $now;
                 $w_news->save();
             }
@@ -136,7 +139,7 @@ class EditorController extends Controller
             $id = $w_news->id;
 
             // news_draft_list 関数を呼び出してニュースドラフトリストを取得
-            $newsDraftList = $this->news_draft_list($request, $Company_Id);
+            $newsDraftList = $this->news_draft_list($request, $Company_Id,$genre);
 
             // IDと画像パスを返す
             return response()->json([
@@ -189,7 +192,7 @@ class EditorController extends Controller
 
 
     //選んだ画像リンクを削除・別フォルダに移動したファイルを削除
-    public function thumbnail_img_delete(Request $request, $id)
+    public function thumbnail_img_delete(Request $request, $id, $genre)
     {
         try {
 
@@ -214,7 +217,7 @@ class EditorController extends Controller
                 w_news::where('id', $id)->update(['header_img' => null]);
 
                 // news_draft_list 関数を呼び出してニュースドラフトリストを取得
-                $prevDraftList = $this->news_draft_list($request, $Company_Id);
+                $prevDraftList = $this->news_draft_list($request, $Company_Id,$genre);
 
                 Log::info($prevDraftList);
             }
@@ -350,6 +353,7 @@ class EditorController extends Controller
         try {
             $Delete_id = $request->input('delete_id');
             $Company_id = $request->input('company_id');
+            $genre = $request->input('genre');
 
             $newsDeleteList = w_news::where('id', $Delete_id)
                 ->where('company_id', $Company_id)
@@ -360,7 +364,7 @@ class EditorController extends Controller
             }
 
             // news_draft_list 関数を呼び出してニュースドラフトリストを取得
-            $prevDraftList = $this->news_draft_list($request, $Company_id);
+            $prevDraftList = $this->news_draft_list($request, $Company_id, $genre);
 
             // レスポンスとして成功ステータスを返す
             return response()->json([
@@ -379,12 +383,13 @@ class EditorController extends Controller
     }
 
 
-    public function news_draft_list(Request $request, $id)
+    public function news_draft_list(Request $request, $id, $genre)
     {
         try {
-            // 条件に一致するニュースドラフトリストを取得
+            // 条件に一致するニュースドラフトリストを取得 //適合したジャンルのものだけ持ってくる
             $newsDraftList = w_news::where('company_id', $id)
                 ->where('public_status', 0)
+                ->where('genre', $genre)
                 ->orderBy('updated_at', 'desc') // 降順でソート
                 ->get();
 
@@ -418,7 +423,7 @@ class EditorController extends Controller
             $newsid = $request->input('newsid');
 
             // 条件に一致するニュースドラフトリストを取得
-            $createForm = w_create_form::where('company_id', $newsid)
+            $createForm = w_create_form::where('news_id', $newsid)
                 ->get();
             return response()->json(['create_form' => $createForm]);
 

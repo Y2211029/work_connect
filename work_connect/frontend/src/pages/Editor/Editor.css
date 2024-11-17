@@ -200,12 +200,12 @@ input[type="radio"]:checked + .label {
 }
 
 
-.editingstatusscroll{
+.editingstatusscroll {
   margin-left: 20px;
   width: 100%;
-  overflow-y: auto; /* スクロールバーを必要に応じて表示 */
+  overflow-y: scroll;
   overflow-x: hidden;
-  height: 50%; /* 高さを具体的に指定 */
+  height: 250px; /* 固定の高さを設定 */
 }
 
 
@@ -222,6 +222,11 @@ input[type="radio"]:checked + .label {
   padding:0;
 }
 
+.CloseModalButton{
+  margin-top: 1%;
+  margin-left:1%;
+}
+
 .draftlist{
   color:black;
   height:100%;
@@ -231,7 +236,7 @@ input[type="radio"]:checked + .label {
 .draftlistScroll {
   overflow-y: auto; /* 必要に応じてスクロールバーを表示 */
   overflow-x: hidden;
-  height: 100%;
+  height: 300px;
 }
 
 
@@ -334,6 +339,10 @@ td{
     padding-bottom: 10px;
   }
 
+  div.ce-paragraph.cdx-block.ce-paragraph--left[contenteditable="true"] {
+    padding: 0 !important;
+    background-color: coral !important;
+}
 
 
 }

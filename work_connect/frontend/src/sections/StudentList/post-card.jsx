@@ -21,6 +21,7 @@ const PostCard = forwardRef(({ post }, ref) => {
     student_id,
     icon,
     userName,
+    studentName,
     graduationYear,
     departmentName,
     facultyName,
@@ -73,21 +74,36 @@ const PostCard = forwardRef(({ post }, ref) => {
   );
 
   const renderUserName = (
-    <Typography
-      variant="caption"
-      component="div"
-      sx={{
-        mb: 2,
-        opacity: 0.48,
-        // color: "common.white",
-        color: "common.black",
-      }}
-    >
-      {userName}
-    </Typography>
+    <div style={{ textAlign: "center" }}>
+      <Typography
+        variant="caption"
+        component="div"
+        sx={(theme) => ({
+          mb: 0,
+          fontSize: "0.5rem",
+          color: "common.black",
+          opacity: "0.5",
+          [theme.breakpoints.up("sm")]: { fontSize: "0.6rem" }, // スモールスクリーン以上でフォントサイズを変更
+          [theme.breakpoints.up("md")]: { fontSize: "0.8rem" }, // 中サイズスクリーン以上でフォントサイズを変更
+        })}
+      >
+        {userName}
+      </Typography>
+      <Typography
+        variant="caption"
+        component="div"
+        sx={(theme) => ({
+          mb: 0,
+          fontSize: "0.8rem",
+          color: "common.black",
+          [theme.breakpoints.up("sm")]: { fontSize: "1rem" }, // スモールスクリーン以上で変更
+          [theme.breakpoints.up("md")]: { fontSize: "1.2rem" }, // 中サイズスクリーン以上で変更
+        })}
+      >
+        {studentName}
+      </Typography>
+    </div>
   );
-
-
 
   const renderFollow = followStatus !== "フォローできません" && (
     <Typography opacity="0.48" sx={{ width: "100%" }} onClick={handleFollowClick}>
@@ -141,9 +157,9 @@ const PostCard = forwardRef(({ post }, ref) => {
         underline="none"
         className="link item-Link"
       >
-       <Stack sx={{ display: "inline-block", width: "100%" }} >
+        <Stack sx={{ display: "inline-block", width: "100%" }} >
 
-          <div className="postCard item-stack" style={{ width: "100%", padding: "10px"  }} >
+          <div className="postCard item-stack" style={{ width: "100%", padding: "10px" }} >
 
             {/* フォロー状況 */}
             <Stack direction="row" alignItems="center" justifyContent="flex-start" sx={{ width: "100%" }} >
@@ -154,7 +170,7 @@ const PostCard = forwardRef(({ post }, ref) => {
             </Stack>
 
             {/* アバターとユーザー名 */}
-            <Stack direction="column" alignItems="center" justifyContent="space-between" spacing={1} sx={{marginTop: "10px"}}>
+            <Stack direction="column" alignItems="center" justifyContent="space-between" spacing={1} sx={{ marginTop: "10px" }}>
               {renderAvatar}
               <Typography variant="h6" sx={{ mt: 2 }}>
                 {renderUserName}

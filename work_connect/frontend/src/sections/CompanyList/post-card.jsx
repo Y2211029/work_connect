@@ -155,7 +155,6 @@ const PostCard = forwardRef(({ post }, ref) => {
               {renderIndustry}
               {renderSelectedOccupation}
               {renderPrefecture}
-
             </Stack>
           </div>
         </Stack>

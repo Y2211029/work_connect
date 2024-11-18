@@ -24,11 +24,11 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Typography from "@mui/material/Typography";
-
+import Divider from '@mui/material/Divider';
 import "./CompanyInformation.css"
 
 
-
+Modal.setAppElement('#root');
 
 
 const modalStyle = {
@@ -80,11 +80,6 @@ const SortableRow = ({ id, children }) => {
 SortableRow.propTypes = {
     id: PropTypes.number.isRequired,
     children: PropTypes.node.isRequired,
-};
-
-SortableRow.propTypes = {
-    id: PropTypes.number.isRequired,
-    children: PropTypes.func.isRequired,
 };
 
 
@@ -179,6 +174,7 @@ const EditCompanyInformation = ({
 
                                                             </AccordionDetails>
                                                         </Accordion>
+                                                        <Divider />
                                                     </>
                                                 </SortableRow>
                                             ))}

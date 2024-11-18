@@ -9,6 +9,7 @@ import ProfileCompanyInformation from './CompanyInformation';
 import ProfileCheckForm from './CheckForm';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import { AllItemsContext } from "src/layouts/dashboard/index";
+import { useNavigate } from "react-router-dom";
 
 
 // 同一ページ内リンク用のナビゲーション制御
@@ -46,6 +47,8 @@ LinkTab.propTypes = {
   selected: PropTypes.bool,
 };
 
+
+
 //応募フォームタブを表示させるか否かの判断
 const Profile = ({ value, companyname: initialCompanyname }) => {
   const [companyname, setCompanyname] = useState(initialCompanyname);
@@ -74,10 +77,13 @@ export function NavTabs({ initialTabValue, companyname }) {
   const { getSessionData, updateSessionData } = useSessionStorage();
   const [ProfileTabState, setProfileTabState] = useState(getInitialProfileTabState);
   const { setAllItems } = useContext(AllItemsContext);
-  const [value, setValue] = useState(initialTabValue);
+  const [value, setValue] = useState(initialTabValue ?? getInitialProfileTabState());
   const [checkformboolean, setCheckFormBoolean] = useState(false);
   console.log(companyname);
   console.log(checkformboolean);
+
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     updateSessionData("accountData", "ProfileTabState", ProfileTabState);
@@ -85,8 +91,28 @@ export function NavTabs({ initialTabValue, companyname }) {
 
   function getInitialProfileTabState() {
     const accountData = getSessionData("accountData");
-    return accountData.ProfileTabState || 0; // 初期値を設定
+    return accountData?.ProfileTabState ?? initialTabValue ?? 0; // 初期値を厳密に設定
   }
+  useEffect(() => {
+    if (value === 0) {
+      // マイページが押されたとき
+      setProfileTabState(0);
+      // pageCheck('?page=mypage');
+      // 検索アイコン非表示にする
+    } else if (value === 1) {
+      // ニュースが押されたとき
+      setProfileTabState(1);
+      // pageCheck('?page=news&category=JobOffer');
+    } else if (value === 2) {
+      // 企業情報が押されたとき
+      setProfileTabState(2);
+      // pageCheck('?page=companyinformation');
+    } else if (value === 3) {
+      // 応募フォームが押されたとき
+      setProfileTabState(3);
+    }
+  }, [value]);
+
 
 
   useEffect(() => {
@@ -101,13 +127,14 @@ export function NavTabs({ initialTabValue, companyname }) {
   }, [companyname, getSessionData]);
 
   useEffect(() => {
-    console.log("profileのvalue", value);
-    if (value !== undefined) {
-      setValue(value);
+    if (value === undefined) {
+      setValue(getInitialProfileTabState());
     } else {
-      setValue(0);
+      updateSessionData("accountData", "ProfileTabState", value);
     }
+    console.log("valueの内容",value);
   }, [value]);
+
 
   const handleTabClick = (event, newValue) => {
 
@@ -149,12 +176,12 @@ export function NavTabs({ initialTabValue, companyname }) {
   function pageCheck(pageStr) {
     const url = new URL(window.location.href);
     const urlStr = url.pathname.split('?')[0]; // クエリパラメータを取り除く
-    window.history.pushState({}, '', `${urlStr}${pageStr}`);
+    navigate(`${urlStr}${pageStr}`);
   }
   return (
     <Box sx={{ width: '100%' }}>
       <Tabs
-        value={value}
+        value={value ?? 0}
         aria-label="nav tabs example"
         role="navigation"
       >

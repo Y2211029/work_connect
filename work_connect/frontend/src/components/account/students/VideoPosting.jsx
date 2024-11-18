@@ -135,6 +135,7 @@ const VideoPosting = () => {
     }
 
     if (
+      !workData.YoutubeURL ||
       !workData.VideoTitle ||
       !workData.VideoGenre ||
       !workData.Introduction

@@ -25,16 +25,16 @@ const CompanyAddressMap = ({ CompanyAddressMapData }) => {
     /// 編集の途中ならセッションストレージからデータを取得する。
     /// (リロードした時も、データが残った状態にする。)
     if ((SessionData.CompanyAddressMap !== undefined && SessionData.CompanyAddressMap !== "") ||
-    SessionData.CompanyAddressMapEditing) {
+      SessionData.CompanyAddressMapEditing) {
       // セッションストレージから最新のデータを取得
       setCompanyAddressMap(SessionData.CompanyAddressMap);
-      if(SessionData.CompanyAddressMap){
+      if (SessionData.CompanyAddressMap) {
         iframeURLChange(SessionData.CompanyAddressMap);
       }
     } else {
       // DBから最新のデータを取得
       setCompanyAddressMap(CompanyAddressMapData);
-      if(CompanyAddressMapData){
+      if (CompanyAddressMapData) {
         iframeURLChange(CompanyAddressMapData);
       }
     }
@@ -75,30 +75,30 @@ const CompanyAddressMap = ({ CompanyAddressMapData }) => {
     //     }
     //     console.log("通ってます");
     // }
-        //"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3282.721823314568!2d135.5073750761962!3d34.6364693866558!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000ddea49ae21d7%3A0x448a2ceddab9b8e!2z5riF6aKo5oOF5aCx5bel56eR5a2m6Zmi!5e0!3m2!1sja!2sjp!4v1725774347774!5m2!1sja!2sjp"
+    //"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3282.721823314568!2d135.5073750761962!3d34.6364693866558!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000ddea49ae21d7%3A0x448a2ceddab9b8e!2z5riF6aKo5oOF5aCx5bel56eR5a2m6Zmi!5e0!3m2!1sja!2sjp!4v1725774347774!5m2!1sja!2sjp"
     // 埋め込み用リンクを入力した場合 (iframe srcから始まる)
     if (URL.includes("iframe")) {
-        // src属性からURLを抽出する
-        const regex = /src="([^"]+)"/;
-        const match = URL.match(regex);
-        if (match && match[1]) {
-            extractedUrl = match[1];
-        }
+      // src属性からURLを抽出する
+      const regex = /src="([^"]+)"/;
+      const match = URL.match(regex);
+      if (match && match[1]) {
+        extractedUrl = match[1];
       }
-      //   else if (URL.includes("https://maps.app.goo.gl/")) {
-      //     // Google Maps の URL から ID を抽出
-      //     const mapId = URL.split('/').pop();
+    }
+    //   else if (URL.includes("https://maps.app.goo.gl/")) {
+    //     // Google Maps の URL から ID を抽出
+    //     const mapId = URL.split('/').pop();
 
-      //     if (mapId) {
-      //         // 埋め込み URL を生成
-      //         extractedUrl = `https://www.google.com/maps/embed?pb=${mapId}`;
-      //     }
-      // }
+    //     if (mapId) {
+    //         // 埋め込み URL を生成
+    //         extractedUrl = `https://www.google.com/maps/embed?pb=${mapId}`;
+    //     }
+    // }
 
-        // URL を設定し、コンソールに出力する
-        setCompanyAddressMapURL(extractedUrl);
-        console.log(extractedUrl);
-    };
+    // URL を設定し、コンソールに出力する
+    setCompanyAddressMapURL(extractedUrl);
+    console.log(extractedUrl);
+  };
 
 
 
@@ -107,10 +107,10 @@ const CompanyAddressMap = ({ CompanyAddressMapData }) => {
     updateSessionData("accountData", "CompanyAddressMap", CompanyAddressMap);
 
     // バリデーション
-    if(CompanyAddressMap === ""){
+    if (CompanyAddressMap === "") {
       // 姓が空だったら、error表示
       setInputError((prev) => ({ ...prev, CompanyAddressMapError: true }));
-    } else if(CompanyAddressMap !== ""){
+    } else if (CompanyAddressMap !== "") {
       // 姓が空でないなら、error非表示
       setInputError((prev) => ({ ...prev, CompanyAddressMapError: false }));
     }
@@ -119,13 +119,13 @@ const CompanyAddressMap = ({ CompanyAddressMapData }) => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+
       <TextField
         error={inputError.CompanyAddressMapError}
         fullWidth
         margin="normal"
         name="CompanyAddressMap"
         onChange={handleChange}
-        // required
         type="text"
         value={CompanyAddressMap}
         variant="outlined"
@@ -136,11 +136,15 @@ const CompanyAddressMap = ({ CompanyAddressMapData }) => {
           marginBottom: '0'
         }}
       />
-      <Iframe
-        url={CompanyAddressMapURL}
-        width="100%"
-        height="400px"
-      />
+
+      {CompanyAddressMap ? (
+        <Iframe
+          url={CompanyAddressMapURL}
+          width="100%"
+          height="400px"
+        />
+      ) : null}
+
     </div>
 
 

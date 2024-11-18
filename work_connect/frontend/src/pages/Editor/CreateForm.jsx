@@ -1,13 +1,11 @@
 import 'survey-core/defaultV2.min.css';
-import { useState, useEffect, forwardRef } from "react";
+import { useState, useEffect } from "react";
 import { Model } from 'survey-core';
 import { Survey } from 'survey-react-ui';
 import "./CreateForm.css";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import Modal from "react-modal";
 
-//ルーティング
-import { useNavigate } from 'react-router-dom';
 
 
 // フォームメニュー
@@ -28,7 +26,6 @@ import ImagePicker from "./SelectOptionMenu/ImagePicker";
 
 // MUI
 import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
 import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
 import TranslateIcon from '@mui/icons-material/Translate';
@@ -43,17 +40,62 @@ import NotesIcon from '@mui/icons-material/Notes';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import StarIcon from '@mui/icons-material/Star';
 import BurstModeIcon from '@mui/icons-material/BurstMode';
+import Typography from "@mui/material/Typography";
 
 // データ保存
 import axios from "axios";
 
-const PostCard = forwardRef(({ post },) => {
-  const { create_form, news_id, article_title } = post;
+const CreateForm = ({ newsid, HandleBack}) => {
+  console.log("ニュースid", newsid);
+  console.log("HandleBack関数", HandleBack);
+  const createform_search_url = "http://127.0.0.1:8000/createform_search";
+  const [questions, setQuestions] = useState([]);
+  useEffect(() => {
+    const getcreateform = async () => {
+      let createform = [];  // createformを初期化
 
-  console.log("クリエイトフォーム", create_form);
+      try {
+        const response = await axios.get(createform_search_url, {
+          params: { newsid: newsid }, // GETリクエストのパラメータとしてnewsidを送信
+        });
 
-  // Form の内容を useState にセットする例
-  const [questions, setQuestions] = useState(create_form); // 配列を初期値として設定
+        if (Array.isArray(response.data.create_form) && response.data.create_form.length > 0) {
+          createform = JSON.parse(response.data.create_form[0].create_form);
+          const log = response.data.create_form[0].company_id;
+          console.log("クリエイトフォーム", createform);
+          console.log("なんかみるログ", log);
+        } else {
+          createform = [
+            {
+              id: `1`,
+              name: `Question1`,
+              title: `デフォルトの質問`,
+              type: 'text',
+              inputType: 'text',
+            }
+          ];
+        }
+      } catch (error) {
+        console.error("Error fetching create form data:", error);
+        // エラーハンドリング、必要に応じてcreateformを空配列で返すなど
+        createform = [
+          {
+            id: `1`,
+            name: `Question1`,
+            title: `エラーが発生しました`,
+            type: 'text',
+            inputType: 'text',
+          },
+        ];
+      }
+
+      setQuestions(createform); // 質問データをステートにセット
+    };
+
+    getcreateform();
+  }, []); // 空の依存配列で最初のレンダリング時に実行
+
+
 
   // const [survey, setSurvey] = useState(null); // Survey モデルを state に保存
   const [modalopen, setModalOpen] = useState(false);
@@ -68,21 +110,20 @@ const PostCard = forwardRef(({ post },) => {
   const data = {
     id: accountData.id,
   };
-  const [create_news_id] = useState(news_id);
-  const navigate = useNavigate();
+  const [create_news_id] = useState(newsid);
 
   const modalStyle = {
     overlay: {
       backgroundColor: 'rgba(0, 0, 0, 0.7)', // オーバーレイの背景色
       zIndex: 1200, // オーバーレイの z-index
-      width:'110%',
-      height:'100%',
+      width: '110%',
+      height: '100%',
     },
     content: {
       position: 'absolute',
       top: '45%',
       left: '45%',
-      height:'100%',
+      height: '100%',
       transform: 'translate(-50%, -50%)',
       border: 'none',
       padding: '1.5rem',
@@ -90,6 +131,8 @@ const PostCard = forwardRef(({ post },) => {
       zIndex: 1200, // コンテンツの z-index
     },
   };
+
+
 
 
   // 質問を追加する関数 //dropdown
@@ -242,7 +285,7 @@ const PostCard = forwardRef(({ post },) => {
     });
 
     console.log("handleSaveSettings通ってます");
-    console.log("modalopen",modalopen);
+    console.log("modalopen", modalopen);
 
     setModalOpen(false);
     setButtonOpen(true);
@@ -412,15 +455,17 @@ const PostCard = forwardRef(({ post },) => {
   useEffect(() => {
     // 完了ボタンを非表示にする
     const css = `
-      .sv-action__content .sd-btn--action.sd-navigation__complete-btn {
-        display: none;
-      }
-    `;
+        .sv-action__content .sd-btn--action.sd-navigation__complete-btn {
+          display: none;
+        }
+      `;
     const styleSheet = document.createElement("style");
     styleSheet.type = "text/css";
     styleSheet.innerText = css;
     document.head.appendChild(styleSheet);
   }, []);
+
+
 
   // フォームの編集データを保存
   const CreateFormSave = async () => {
@@ -435,7 +480,7 @@ const PostCard = forwardRef(({ post },) => {
         create_news_id: create_news_id,
       });
       console.log("サーバーからのレスポンス", response.data);
-      window.location.reload()
+      // window.location.reload()
       alert("保存が完了しました");
     } catch (error) {
       console.error("フォーム保存エラー", error);
@@ -452,13 +497,19 @@ const PostCard = forwardRef(({ post },) => {
     setButtonOpen(true);
   };
 
-  //ニュースの下書きに戻る
-  const handleBack = () => {
-    const editorSessionData = JSON.parse(sessionStorage.getItem("editorSessionData"));
-    const genre = editorSessionData.genre; // null チェックを追加
-    console.log("ジャンル", genre);
-    navigate(`/Editor/${genre}`);
+  const WriteNewsHandleBack = async (event) => {
+    event.preventDefault(); // デフォルトの挙動を防ぐ
+    HandleBack();
+    // const isConfirmed = window.confirm("フォームを保存しますか?");
+    // try {
+    //   if (isConfirmed) {
+    //     await CreateFormSave(); // ユーザーがOKを選択した場合に保存処理を実行
+    //   }
+    // } finally {
+    //   HandleBack(); // 必ず HandleBack を呼び出す
+    // }
   };
+
 
 
   const FormSelectArray = [
@@ -520,51 +571,36 @@ const PostCard = forwardRef(({ post },) => {
 
   return (
     <>
-      <Stack direction="row" spacing={2} style={{ width: "1000px" }}>
+      <Stack direction="row" spacing={2} style={{ width: "1000px", }}>
+
 
 
         <div className="FormDemo"> {/* フォーム部分 */}
 
-        <Typography>{article_title}</Typography>
+        <div className="back_news_draft" onClick={WriteNewsHandleBack}>
+                <Typography>← ニュースの下書きに戻る</Typography>
+        </div>
 
 
           {!questions || questions.length === 0 ? (
             <p>フォームがありません</p>
           ) : (
             <>
-              <div className="back_news_draft" onClick={handleBack}>
-                <Typography>← ニュースの下書きに戻る</Typography>
-              </div>
-
-
               <div className="SurveyModal">
                 <Survey model={survey} />
               </div>
 
             </>
           )}
-          <Button
-            variant="outlined"
-            onClick={CreateFormSave}
-            sx={{
-              borderColor: "#5956FF",
-              color: "#5956FF",
-              "&:hover": { borderColor: "#5956FF" },
-              cursor: "pointer",
-              marginTop: "10px"
-            }}
-          >
-            保存する
-          </Button>
         </div>
 
         <Modal
-              isOpen={modalopen}
-              onRequestClose={CreateFormCancel} // モーダルを閉じるコールバック
-              shouldCloseOnOverlayClick={true} // オーバーレイクリックでモーダルを閉じる
-              contentLabel="Example Modal"
-              style={modalStyle}
-            >
+          isOpen={modalopen}
+          onRequestClose={CreateFormCancel} // モーダルを閉じるコールバック
+          shouldCloseOnOverlayClick={true} // オーバーレイクリックでモーダルを閉じる
+          contentLabel="Example Modal"
+          style={modalStyle}
+        >
           <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
             {SelectMenuArray.map((menu, index) => {
               const Component = menu.component; // 各メニューに対応するコンポーネントを取得
@@ -578,11 +614,12 @@ const PostCard = forwardRef(({ post },) => {
                   />
                 )
               );
+
             })}
           </Stack>
         </Modal>
 
-       {buttonOpen && (
+        {buttonOpen && (
           <Stack spacing={2} className="SelectMenu">
             {FormSelectArray.map((form, index) => (
               <Button
@@ -595,38 +632,56 @@ const PostCard = forwardRef(({ post },) => {
                 {form.lavel}
               </Button>
             ))}
+            <Button
+              variant="outlined"
+              onClick={CreateFormSave}
+              sx={{
+                borderColor: "#5956FF",
+                color: "#5956FF",
+                "&:hover": { borderColor: "#5956FF" },
+                cursor: "pointer",
+                textAlign: 'center',
+                width: "150px",
+                left: "40%",
+              }}
+            >
+              保存する
+            </Button>
           </Stack>
+
         )}
       </Stack>
     </>
   );
-
-});
+}
 
 
 // displayName を設定
-PostCard.displayName = 'PostCard';
+CreateForm.displayName = 'CreateForm';
 
 // PropTypesバリデーション
 Text.propTypes = {
   onSave: PropTypes.func.isRequired,
 };
 
-PostCard.propTypes = {
-  post: PropTypes.shape({
-    company_id: PropTypes.string,
-    news_id: PropTypes.string,
-    article_title: PropTypes.string,
-    create_form: PropTypes.arrayOf(PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      type: PropTypes.string.isRequired,
-      inputtype: PropTypes.string,
-      validators: PropTypes.array,
-    })).isRequired, // JSON 配列として修正
-  }).isRequired,
+CreateForm.propTypes = {
+  newsid: PropTypes.number,
+  HandleBack: PropTypes.func.isRequired,
 };
+// post: PropTypes.shape({
+//   company_id: PropTypes.string,
+//   news_id: PropTypes.string,
+//   article_title: PropTypes.string,
+//   create_form: PropTypes.arrayOf(PropTypes.shape({
+//     name: PropTypes.string.isRequired,
+//     title: PropTypes.string.isRequired,
+//     type: PropTypes.string.isRequired,
+//     inputtype: PropTypes.string,
+//     validators: PropTypes.array,
+//   })).isRequired, // JSON 配列として修正
+// }).isRequired,
 
 
-export default PostCard;
+
+export default CreateForm;
 

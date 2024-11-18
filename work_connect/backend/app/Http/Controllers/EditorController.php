@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\w_create_form;
 use App\Models\w_follow;
 use App\Models\w_news;
 use App\Models\w_notice;
@@ -63,14 +64,15 @@ class EditorController extends Controller
         $id = $w_news->id;
 
         // news_draft_list 関数を呼び出してニュースドラフトリストを取得
-        $newsDraftList = $this->news_draft_list($request, $Company_id);
+        $newsDraftList = $this->news_draft_list($request, $Company_id,$genre);
 
 
         // IDを返す
         return response()->json(
             [
                 'id' => $id,
-                'news_draft_list' => $newsDraftList
+                'news_draft_list' => $newsDraftList,
+                'now ' => $now
             ],
             200
         );
@@ -84,6 +86,7 @@ class EditorController extends Controller
         // リクエストからnews_idとsession_idを取得
         $news_id = $request->input('news_id');
         $Company_Id = $request->input('session_id');
+        $genre = $request->input('genre');
 
         // 画像を保存
         if ($request->hasFile('file')) {
@@ -117,6 +120,7 @@ class EditorController extends Controller
                     'company_id' => $Company_Id,
                     'header_img' => $publicPath,
                     'created_at' => $now,
+                    'genre' => $genre,
                     'public_status' => "0"
                 ]);
             } else {
@@ -126,6 +130,7 @@ class EditorController extends Controller
                     return response()->json(['error' => 'Record not found'], 404);
                 }
                 $w_news->header_img = $publicPath; // 相対パスを保存
+                $w_news->genre = $genre;
                 $w_news->created_at = $now;
                 $w_news->save();
             }
@@ -134,7 +139,7 @@ class EditorController extends Controller
             $id = $w_news->id;
 
             // news_draft_list 関数を呼び出してニュースドラフトリストを取得
-            $newsDraftList = $this->news_draft_list($request, $Company_Id);
+            $newsDraftList = $this->news_draft_list($request, $Company_Id,$genre);
 
             // IDと画像パスを返す
             return response()->json([
@@ -187,7 +192,7 @@ class EditorController extends Controller
 
 
     //選んだ画像リンクを削除・別フォルダに移動したファイルを削除
-    public function thumbnail_img_delete(Request $request, $id)
+    public function thumbnail_img_delete(Request $request, $id, $genre)
     {
         try {
 
@@ -212,7 +217,7 @@ class EditorController extends Controller
                 w_news::where('id', $id)->update(['header_img' => null]);
 
                 // news_draft_list 関数を呼び出してニュースドラフトリストを取得
-                $prevDraftList = $this->news_draft_list($request, $Company_Id);
+                $prevDraftList = $this->news_draft_list($request, $Company_Id,$genre);
 
                 Log::info($prevDraftList);
             }
@@ -342,16 +347,63 @@ class EditorController extends Controller
         }
     }
 
-    public function news_draft_list(Request $request, $id)
+    //下書きのニュースを削除する
+    public function rewrite_news_delete(Request $request)
     {
         try {
+            $Delete_id = $request->input('delete_id');
+            $Company_id = $request->input('company_id');
+            $genre = $request->input('genre');
 
-            // 条件に一致するニュースドラフトリストを取得
+            $newsDeleteList = w_news::where('id', $Delete_id)
+                ->where('company_id', $Company_id)
+                ->first();
+
+            if ($newsDeleteList) {
+                $newsDeleteList->delete();
+            }
+
+            // news_draft_list 関数を呼び出してニュースドラフトリストを取得
+            $prevDraftList = $this->news_draft_list($request, $Company_id, $genre);
+
+            // レスポンスとして成功ステータスを返す
+            return response()->json([
+                'message' => '成功',
+                'success' => true,
+                'news_draft_list' => $prevDraftList,
+            ]);
+
+        } catch (\Exception $e) {
+            // エラーレスポンスを返す
+            return response()->json([
+                'error' => 'Failed to delete news',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+    public function news_draft_list(Request $request, $id, $genre)
+    {
+        try {
+            // 条件に一致するニュースドラフトリストを取得 //適合したジャンルのものだけ持ってくる
             $newsDraftList = w_news::where('company_id', $id)
                 ->where('public_status', 0)
+                ->where('genre', $genre)
                 ->orderBy('updated_at', 'desc') // 降順でソート
                 ->get();
 
+            // 各ニュースドラフトに対応する w_create_form データを追加
+            foreach ($newsDraftList as $newsDraft) {
+                // news_id に対応する w_create_form レコードを取得
+                $createForm = w_create_form::where('news_id', $newsDraft->id)->get();
+                Log::info($newsDraft->id);
+                Log::info($createForm);
+                if($createForm){
+                // newsDraft に create_form プロパティとして追加
+                $newsDraft->create_form = $createForm;
+                }
+            }
 
             Log::info($newsDraftList);
 
@@ -364,6 +416,27 @@ class EditorController extends Controller
             ], 500);
         }
     }
+
+    public function createform_search(Request $request){
+        try {
+
+            $newsid = $request->input('newsid');
+
+            // 条件に一致するニュースドラフトリストを取得
+            $createForm = w_create_form::where('news_id', $newsid)
+                ->get();
+            return response()->json(['create_form' => $createForm]);
+
+        } catch (\Exception $e) {
+            // エラーレスポンスを返す
+            return response()->json([
+                'error' => 'Failed to fetch news draft list',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
 
     public function embed(Request $request)
     {

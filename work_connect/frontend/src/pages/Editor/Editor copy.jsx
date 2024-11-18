@@ -86,8 +86,8 @@ const Editor = () => {
   const [notificationMessage, setNotificationMessage] = useState("");
   const [isSaved, setIsSaved] = useState(false);
   const [CreateFormOpen, setCreateFormOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [formSummary, setFormSummary] = useState(null);
-
 
   const news_save_url = "http://127.0.0.1:8000/news_save";
   const thumbnail_image_save_url = "http://127.0.0.1:8000/thumbnail_image_save";
@@ -130,7 +130,7 @@ const Editor = () => {
 
       // websocketサーバーに送信
       const response = await axios.post(
-        "http://localhost:8000/news_upload",
+        "http://localhost:3000/news_upload",
         {
           method: "POST",
           headers: {
@@ -179,14 +179,16 @@ const Editor = () => {
         return;
       }
 
-      console.log("保存するときのニュース内容", formSummary);
+      const outputData = await editorInstance.current.save();
+      
+      console.log("保存するときのニュース内容", outputData);
       console.log(sessionId);
       console.log(news_id);
       console.log(notificationMessage);
       console.log(genre);
 
       const response = await axios.post(news_save_url, {
-        value: formSummary,    // ニュース記事
+        value: outputData,    // ニュース記事
         title: title,     // タイトル
         news_id: news_id,     // ID
         message: notificationMessage, //通知に添えるメッセージ
@@ -202,7 +204,7 @@ const Editor = () => {
       console.log("レスポンスのドラフトリスト",response.data.news_draft_list);
       setNewsId(response.data.id); // news_idを更新する
       setIsSaved(true); // 保存済みとして状態を設定
-      setFormSummary(formSummary);
+      setFormSummary(outputData);
       console.log("成功");
       console.log(response);
       alert("下書きを保存しました!");
@@ -246,7 +248,6 @@ const Editor = () => {
       formData.append('file', file);
       formData.append('news_id', news_id);
       formData.append('session_id', sessionId);
-      formData.append('genre', genre);
 
       console.log('file', file);
       console.log('news_id', news_id);
@@ -337,7 +338,6 @@ const Editor = () => {
           {
             delete_id: id,
             company_id: sessionId,
-            genre: genre
           }
         );
         console.log(response.data);
@@ -537,7 +537,6 @@ const Editor = () => {
       console.log("使用された画像", usedImagesArray);
       setUsedImages(usedImagesArray);
       setFormSummary(outputData);
-
     }
   };
 
@@ -582,8 +581,8 @@ const Editor = () => {
   useEffect(() => {
     async function newsDraftList() {
       if (sessionId) {
-        const news_draft_list_url = `http://localhost:8000/news_draft_list/${sessionId}/${genre}`;
-        console.log("news_draft_list_url",news_draft_list_url);
+        const news_draft_list_url = `http://localhost:8000/news_draft_list/${sessionId}`;
+        console.log(news_draft_list_url);
         try {
           const response = await axios.get(news_draft_list_url);
           console.log("ドラフトリスト:", response.data); // 配列そのものが返ってくる
@@ -598,7 +597,7 @@ const Editor = () => {
   }, [sessionId]); // sessionIdが変更されたときに実行される
 
   useEffect(() =>{
-    if (editorHolder.current && !editorInstance.current) {
+    if (editorHolder.current) {
       console.log("editorHolder.current入りました");
       editorInstance.current = new EditorJS({
         holder: editorHolder.current,
@@ -990,13 +989,6 @@ const Editor = () => {
         },
       });
     }
-        // エディタのクリーンアップ
-        return () => {
-          if (editorInstance.current) {
-            editorInstance.current.destroy();
-            editorInstance.current = null;
-          }
-        };
 
   },[]);
 
@@ -1016,7 +1008,6 @@ const Editor = () => {
         const response = await axios.get(header_img_delete_url, {
           params: {
             Company_Id: sessionId,
-            genre: genre,
           },
         });
         if (response.data.success) {
@@ -1072,424 +1063,30 @@ const Editor = () => {
   };
 
   const CreateFormJump = async () => {
-    setCreateFormOpen(true);
-    setNewsMenuShow(false);
     if (!isSaved) {
-      // const savedNewsData = await news_save(); // 保存されていなければ保存してから取得
-      // console.log("セーブ後のデータ",savedNewsData);
-      console.log("issaved");
+      setIsLoading(true); // ローディング開始
+      const savedNewsData = await news_save(); // 保存されていなければ保存してから取得
+      if (savedNewsData) {
+        setIsLoading(false); // ローディング終了
+        setCreateFormOpen(true);
+        setNewsMenuShow(false);
+      }
     } else {
-      console.log("notissaved");
+      setIsLoading(false); // ローディング終了
+      setCreateFormOpen(true);
+      setNewsMenuShow(false);
     }
   };
-
 
   const handleBack = async () => {
     console.log("フォームサマリ", formSummary); // 確認用ログ
     setCreateFormOpen(false); // フォームのモーダルを閉じる
 
-    if (editorInstance.current) {
+    if (editorInstance.current && typeof editorInstance.current.render === "function") {
       try {
         const content = formSummary || JSON.parse(selected_draft.summary); // formSummaryがなければselect_draft_listを使用
         console.log("handleBack内のコンテンツ:", content);
-
-        // エディタをリセットしてから再描画
-        await editorInstance.current.destroy();  // エディタを破棄
-        editorInstance.current = new EditorJS({
-          holder: editorHolder.current,
-          onChange: countChars,
-          placeholder: "コンテンツを入力してください",
-          tools: {
-            paragraph: {
-              class: Paragraph,
-              inlineToolbar: true,
-              tunes: ["textVariant", "indentTune", "noticeTune"],
-            },
-            embed: {
-              class: Embed,
-              config: {
-                services: {
-                  facebook: true,  //このfacebook投稿は利用できません。削除されたか、プライバシー設定が変更された可能性があります。と表示され埋め込みできない
-                  instagram: true, //埋め込み可能
-                  youtube: true,  //埋め込み可能
-                  twitter: true,  //埋め込み可能
-                  twitch: true,
-                  miro: true,
-                  vimeo: true,
-                  gfycat: true,
-                  imgur: true,
-                  vine: true,
-                  aparat: true,
-                  codepen: true,
-                  pinterest: true,
-                  github: true,
-                  coub: true,
-                  note: {
-                    regex: /https?:\/\/note\.com\/[^/]+\/n\/([^/?]+)/,
-                    embedUrl: '/api/embed/?url=<%= remote_id %>',
-                    html: "<iframe height='150' scrolling='no' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'></iframe>",
-                    height: 150,
-                    width: 600,
-                    id: (groups) => groups.join(''),
-                  },
-                  ogp: {
-                    regex: /(https?:\/\/[\w!?/+\-_~;.,*&@#$%()'[\]]+)/,
-                    embedUrl: '/api/embed/?url=<%= remote_id %>',
-                    html: "<iframe height='150' scrolling='no' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'></iframe>",
-                    height: 150,
-                    width: 600,
-                    id: (groups) => groups.join(''),
-                  },
-                },
-              },
-            },
-            Color: {
-              class: ColorPlugin,
-              config: {
-                colorCollections: [
-                  "#FF1300",
-                  "#EC7878",
-                  "#9C27B0",
-                  "#673AB7",
-                  "#3F51B5",
-                  "#0070FF",
-                  "#03A9F4",
-                  "#00BCD4",
-                  "#4CAF50",
-                  "#8BC34A",
-                  "#CDDC39",
-                  "#FFF"
-                ],
-                defaultColor: "#FF1300",
-                type: "text",
-                customPicker: true,
-              }
-            },
-            Marker: {
-              class: ColorPlugin,
-              config: {
-                defaultColor: '#FFBF00',
-                type: 'marker',
-                icon: `<svg fill="#000000" height="200px" width="200px" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path d="M17.6,6L6.9,16.7c-0.2,0.2-0.3,0.4-0.3,0.6L6,23.9c0,0.3,0.1,0.6,0.3,0.8C6.5,24.9,6.7,25,7,25c0,0,0.1,0,0.1,0l6.6-0.6 c0.2,0,0.5-0.1,0.6-0.3L25,13.4L17.6,6z"></path> <path d="M26.4,12l1.4-1.4c1.2-1.2,1.1-3.1-0.1-4.3l-3-3c-0.6-0.6-1.3-0.9-2.2-0.9c-0.8,0-1.6,0.3-2.2,0.9L19,4.6L26.4,12z"></path> </g> <g> <path d="M28,29H4c-0.6,0-1-0.4-1-1s0.4-1,1-1h24c0.6,0,1,0.4,1,1S28.6,29,28,29z"></path> </g> </g></svg>`
-              }
-            },
-            table: {
-              class: Table,
-              inlineToolbar: true,
-            },
-            code: {
-              class: Code,
-              inlineToolbar: true,
-              config: {
-                modes: {
-                  'js': 'JavaScript',     // JavaScript
-                  'py': 'Python',         // Python
-                  'java': 'Java',         // Java
-                  'cpp': 'C++',           // C++
-                  'cs': 'C#',             // C#
-                  'php': 'PHP',           // PHP
-                  'rb': 'Ruby',           // Ruby
-                  'go': 'Go',             // Go
-                  'ts': 'TypeScript',     // TypeScript
-                  'swift': 'Swift',       // Swift
-                  'kt': 'Kotlin',         // Kotlin
-                  'rs': 'Rust',           // Rust
-                  'md': 'Markdown',       // Markdown
-                  'html': 'HTML',         // HTML
-                  'css': 'CSS',           // CSS
-                  'sql': 'SQL',           // SQL
-                  'sh': 'Shell',          // Shell
-                  'r': 'R',               // R
-                  'scala': 'Scala',       // Scala
-                  'perl': 'Perl',         // Perl
-                  'dart': 'Dart',         // Dart
-                },
-                defaultMode: 'js'
-              }
-            },
-            carousel: {
-              class: Carousel,
-              inlineToolbar: true,
-              config: {
-                uploader: {
-                  uploadByFile: handleImageUpload,
-                },
-              },
-            },
-            image: {
-              class: ImageTool,
-              config: {
-                uploader: {
-                  uploadByFile: handleImageUpload,
-                  uploadByURL: handleImageUpload,
-                  deleteByFile: handleImageDelete,
-                },
-              },
-            },
-            slide: {
-              class: SKMFlipBox,
-              inlineToolbar: true,
-            },
-            audioPlayer: {
-              class: AudioPlayer,
-              inlineToolbar: true,
-            },
-            imageGallery: {
-              class: ImageGallery,
-              inlineToolbar: true,
-              config: {
-                placeholder: "画像アドレスをコピーして貼付してください(最後はjpg)",
-                actions: {
-                  "Edit Images": '画像URLを表示・非表示',
-                  "Activate/Deactivate dark mode": 'ダークモードを有効化/無効化',
-                  "Default layout": 'デフォルトのレイアウト',
-                  "Set horizontal layout": '水平レイアウト',
-                  "Set square layout": '正方形レイアウト',
-                  "Set layout with gap": '隙間のあるレイアウト',
-                  "Set layout with fixed size": '固定サイズのレイアウト',
-                }
-              },
-            },
-            raw: {
-              class: Raw,
-              inlineToolbar: true,
-              config: {
-                placeholder: "HTMLのコードを書いてください",
-              },
-            },
-            header: {
-              class: Header,
-              config: {
-                placeholder: "Enter a header",
-                levels: [1, 2, 3, 4, 5, 6],
-                defaultLevel: 3,
-                allowAnchor: true,
-                anchorLength: 100,
-              },
-            },
-            title: {
-              class: Title,
-              inlineToolbar: true,
-            },
-            alert: {
-              class: Alert,
-              inlineToolbar: true,
-              config: {
-                alertTypes: [
-                  "primary",
-                  "secondary",
-                  "info",
-                  "success",
-                  "warning",
-                  "danger",
-                  "light",
-                  "dark",
-                ],
-                defaultType: "primary",
-                messagePlaceholder: "Enter something",
-              },
-            },
-            quote: Quote,
-            checklist: CheckList,
-            delimiter: Delimiter,
-            inlineCode: InlineCode,
-            textVariant: TextVariantTune,
-            noticeTune: NoticeTune,
-            indentTune: {
-              class: IndentTune,
-              config: {
-                customBlockIndentLimits: {
-                  someOtherBlock: { max: 5 },
-                },
-                maxIndent: 10,
-                indentSize: 30,
-                multiblock: true,
-                tuneName: 'indentTune',
-              }
-            },
-            bold: {
-              class: createGenericInlineTool({
-                sanitize: {
-                  strong: {},
-                },
-                shortcut: "CMD+B",
-                tagName: "STRONG",
-                toolboxIcon: '<span style="font-weight: bold;">B</span>',
-              }),
-            },
-            italic: {
-              class: createGenericInlineTool({
-                sanitize: {
-                  italic: {},
-                },
-                shortcut: "CMD+L",
-                tagName: "I",
-                toolboxIcon: '<span style="font-weight: bold;">L</span>',
-              }),
-            },
-            underline: UnderlineInlineTool,
-            toggle: {
-              class: ToggleBlock,
-              inlineToolbar: true,
-              config: {
-                placeholder:
-                  "この機能で、\n折りたたみメニュー(アコーディオンメニュー)を作成できます",
-              },
-            },
-            tooltip: {
-              class: Tooltip,
-              inlineToolbar: true,
-              config: {
-                location: 'left',
-                underline: true,
-                placeholder: '注釈を書いてください',
-                highlightColor: '#FFEFD5',
-                backgroundColor: '#154360',
-                textColor: '#FDFEFE',
-                holder: 'editor',
-              }
-            },
-            strikethrough: {
-              class: Strikethrough,
-              inlineToolbar: true,
-            },
-            changeCase: {
-              class: ChangeCase,
-              inlineToolbar: true,
-              config: {
-                showLocaleOption: true,
-                locale: 'ja'
-              }
-            },
-            hyperlink: {
-              class: Hyperlink,
-              config: {
-                shortcut: 'CMD+L',
-                target: '_blank',
-                rel: 'nofollow',
-                availableTargets: ['_blank', '_self'],
-                availableRels: ['author', 'noreferrer'],
-                validate: false,
-              }
-            },
-            button: {
-              class: Button,
-              inlineToolbar: true,
-              config: {
-                css: {
-                  btnColor: "btn--gray",
-                  btnBorder: "solid",
-                },
-                textValidation: (text) => {
-                  // ボタンテキストが空でないことを確認する
-                  if (text.trim() !== "") {
-                    return true;
-                  } else {
-                    console.log("error! Button text is empty.");
-                    return false;
-                  }
-                },
-                linkValidation: (text) => {
-                  // リンクURLがhttp://またはhttps://で始まることを確認する
-                  if (text.startsWith("https://") || text.startsWith("http://")) {
-                    return true;
-                  } else {
-                    console.log("error! Invalid URL:", text);
-                    return false;
-                  }
-                }
-              }
-            },
-            nestedchecklist: EditorjsNestedChecklist,
-          },
-          tunes: ["indentTune", "noticeTune"],
-          autofocus: true,
-          i18n: {
-            messages: {
-              ui: {
-                blockTunes: {
-                  toggler: {
-                    "Click to tune": "クリックして調整",
-                    "or drag to move": "またはドラッグして移動",
-                    "Move up": "上に移動する",
-                    "Move down": "下に移動する",
-                    "Delete": "削除",
-                  },
-                },
-                inlineToolbar: {
-                  converter: {
-                    "Convert to": "変換",
-                  },
-                },
-                toolbar: {
-                  toolbox: {
-                    Add: "追加",
-                  },
-                },
-              },
-              tools: {
-                noticeTune: {
-                  'Notice caption': '強調表示をする'
-                },
-                hyperlink: {
-                  Save: 'Salvar',
-                  'Select target': 'Seleziona destinazione',
-                  'Select rel': 'Wählen rel'
-                },
-                button: {
-                  'Button Text': 'ボタンに表示するテキスト',
-                  'Link Url': 'ボタンのジャンプ先のURL',
-                  'Set': "設定する",
-                  'Default Button': "デフォルト",
-                },
-                textVariant: {
-                  'Call-out': 'コールアウト',
-                },
-              },
-              toolNames: {
-                //メニュー
-                Text: "テキスト",
-                Table: "テーブル",
-                Code: "コード",
-                Carousel: "カルーセル",
-                Image: "画像",
-                FlipBox: "スライド(テキストのみ)",
-                AudioPlayer: "オーディオ",
-                "Image Gallery": "画像ギャラリー",
-                "Raw HTML": "HTML",
-                Heading: "見出し",
-                Title: "タイトル",
-                Alert: "警告",
-                Quote: "引用",
-                Checklist: "チェックリスト",
-                Delimiter: "区切り",
-                Toggle: "折りたたみメニュー",
-                Button: "ボタン",
-                "Nested Checklist": "リスト",
-                Embed: "埋め込み",
-
-                //サブメニュー
-                Bold: "太字",
-                Italic: "斜体",
-                Link: "リンク",
-                Color: "カラー",
-                Marker: "マーカー",
-                InlineCode: "インラインコード",
-                Underline: "下線",
-                Tooltip: "ツールチップ",
-                Strikethrough: "取り消し線",
-                ChangeCase: "大文字:小文字 変換",
-                Hyperlink: 'ハイパーリンク',
-              },
-            },
-          },
-        });
-
-        // 新しいデータでエディタをレンダリング
- await editorInstance.current.isReady;
- await editorInstance.current.render(content); // 渡されたコンテンツをレンダリング
-
-        setFormSummary(content);
+        editorInstance.current.render(content); // エディタにデータをセット
         const savedData = await editorInstance.current.save();
         console.log("保存されたデータ:", savedData);
         // await countChars(); // countChars関数を用いて文字数を反映
@@ -1502,14 +1099,18 @@ const Editor = () => {
   };
 
 
-
   return (
     <div>
       <Helmet>
         <title>ニュースの投稿 | Work&Connect</title>
       </Helmet>
 
-
+      {isLoading ? (
+         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+          <div>ローディング中...</div>
+        </div>
+      ) : (
+        <>
           {/* ニュースタイトルを表示 */}
           {getNewsTitle()}
 
@@ -1584,13 +1185,22 @@ const Editor = () => {
             onChange={titlechange}
           />
 
+          {formSummary &&
+          <>
+          <p>フォームサマリあります</p>
+          </>
+          }
+
+
+
           {/* エディターコンポーネント */}
           <div className="editor-wrapper">
             <div ref={editorHolder} id="editor" />
           </div>
           </>
           }
-
+        </>
+      )}
     </div>
   );
 

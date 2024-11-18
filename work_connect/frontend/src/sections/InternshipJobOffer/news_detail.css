@@ -15,7 +15,6 @@
 .news_img {
     width: 50%;
     height: 50%;
-    border: solid 2px #329eff; /* border プロパティから不要な引用符を削除 */
 }
 
 .news_company_name {

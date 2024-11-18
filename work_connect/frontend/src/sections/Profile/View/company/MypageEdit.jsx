@@ -176,6 +176,7 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
     async function PostData() {
       try {
         console.log(SessionData.CompanyName);
+        console.log("あいうえおかきくけこ");
         // Laravel側からデータを取得
         const response = await axios.post(Post_url, {
           // 企業側で送信
@@ -215,6 +216,7 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
           // ホームページURL
           CompanyHPMap: SessionData.CompanyHPMap
         });
+        console.log("レスポンス",response);
         if (response.data === true) {
 
           console.log("保存成功");

@@ -7,6 +7,7 @@ use App\Models\w_follow;
 use App\Models\w_company;
 use App\Models\w_bookmark;
 use App\Models\w_write_form;
+use App\Models\w_create_form;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -26,6 +27,7 @@ class NewsController extends Controller
         if ($news_detail) {
             $news_detail->summary = json_decode($news_detail->summary);
 
+            //フォロー状況をチェック
             $isFollowing = w_follow::where('follow_sender_id', $MyId)
                 ->where('follow_recipient_id', $news_detail->id)
                 ->exists();
@@ -48,11 +50,70 @@ class NewsController extends Controller
 
             $news_detail->follow_status = $followStatus;
 
+            //今見ている人が応募済みかどうかチェック
+            $createForm = w_create_form::where('news_id', $newsdetail_id)
+            ->get();
+
+        //もしもジャンルがブログではないかつフォームを作成していた場合
+        if($news_detail->genre !== 'Blog' && !$createForm){
+            $writeformStatus = w_write_form::where('user_id', $MyId)
+            ->get();
+
+            if($writeformStatus){
+                $news_detail->writeform_status = $writeformStatus;
+            }
+        }
+
+
             return response()->json($news_detail);
         } else {
             return response()->json(['error' => 'ニュースが見つかりませんでした。'], 404);
         }
     }
+
+    public function get_apply_history($id)
+    {
+        $apply_history = w_write_form::where('user_id', $id)
+            ->join('w_news', 'w_write_forms.news_id', '=', 'w_news.id')
+            ->join('w_companies', 'w_write_forms.recipient_company_id', '=', 'w_companies.id')
+            ->select(
+                'w_companies.company_name as companies_name',
+                'w_news.id as news_id',
+                'w_news.article_title as news_title',
+                'w_news.genre as news_genre',
+                'w_news.header_img as img',
+                'w_write_forms.id as write_form_id',
+                'w_write_forms.write_form as write_form',
+                'w_write_forms.writeformDateTime as form_writed_at',
+            )
+            ->get();
+
+        $posts = [];
+
+        foreach ($apply_history as $app) {
+            $posts[] = [
+                'companies_name' => $app->companies_name,
+                'news_id' => $app->news_id,
+                'news_title' => $app->news_title,
+                'news_genre' => $app->news_genre,
+                'img' => $app->img,
+                'write_form_id' => $app->write_form_id,
+                'write_form' => json_decode($app->write_form, true), // 配列としてデコード
+                'form_writed_at' => $app->form_writed_at,
+            ];
+        }
+
+        // 配列全体をログ出力する
+        Log::info('Posts data: ' . json_encode($posts, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+
+        // 特定の項目を個別に確認する
+        foreach ($posts as $index => $post) {
+            Log::info("Post #$index: ", $post);
+        }
+
+        return response()->json($posts);
+    }
+
 
     // ブックマーク機能
     public function news_bookmark(Request $request)

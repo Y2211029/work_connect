@@ -1,81 +1,49 @@
-import { forwardRef, useState } from "react";
+import { forwardRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 import ListSubheader from '@mui/material/ListSubheader';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Box from '@mui/material/Box';
-import TooltipTitle from '@mui/material/Tooltip';
+import Tooltip from '@mui/material/Tooltip';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-// import { AllItemsContext } from "src/layouts/dashboard/index";
-import Summary from "./Summary"
-import Question from "./Question"
-import Individual from "./Individual"
-
+import Summary from "./Summary";
+import Question from "./Question";
+import Individual from "./Individual";
 import './checkform.css';
-
 
 const PostCard = forwardRef(({ post }) => {
   const { application_form } = post;
-
-  const { getSessionData } = useSessionStorage();
-  const accountData = getSessionData("accountData") || {};
-  const MyUserId = accountData.id;
-  console.log(MyUserId);
 
   const [writeformshow, setWriteFormShow] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(0);
   const [viewingStudentName, setViewStudentName] = useState("");
-  // const { setAllItems } = useContext(AllItemsContext);
+  const [isLoading, setIsLoading] = useState(true); // ローディング状態
 
+  useEffect(() => {
+    // データのロードが終わるまでに遅延をシミュレーション（API呼び出しの場合はここに記述）
+    const timer = setTimeout(() => {
+      setIsLoading(false); // ローディング状態を解除
+    }, 1000); // ローディング表示時間を調整
+
+    return () => clearTimeout(timer); // クリーンアップ
+  }, []);
 
   const handleClick = (index) => {
     setOpen(!open);
-    // 同じインデックスが選ばれた場合、何もしない
     if (selectedIndex === index) return;
-    // 新しいインデックスを選択した場合、データを表示
     setWriteFormShow(true);
     setSelectedIndex(index);
   };
 
   const handleTabClick = (event, newValue) => {
-
-    // event.type can be equal to focus with selectionFollowsFocus.
-    if (
-      event.type !== 'click' ||
-      (event.type === 'click' && samePageLinkNavigation(event))
-    ) {
-      setValue(newValue);
-    }
-    // setAllItems((prevItems) => ({
-    //   ...prevItems,
-    //   ResetItem: true,
-    //   DataList: [],
-    //   IsSearch: { searchToggle: 0, Check: false, searchResultEmpty: false },
-    //   Page: 1,
-    //   sortOption: "orderNewPostsDate",
-    // }));
+    setValue(newValue);
   };
-
-  // 同一ページ内リンク用のナビゲーション制御
-  function samePageLinkNavigation(event) {
-    if (
-      event.defaultPrevented ||
-      event.button !== 0 || // 左クリックのみ許可
-      event.metaKey ||
-      event.ctrlKey ||
-      event.altKey ||
-      event.shiftKey
-    ) {
-      return false;
-    }
-    return true;
-  }
 
   const groupedResponses = application_form[selectedIndex]?.user_name.reduce((acc, user) => {
     user.write_form.forEach((response) => {
@@ -87,32 +55,17 @@ const PostCard = forwardRef(({ post }) => {
     return acc;
   }, {});
 
-  // カスタムリンクタブ
-  function LinkTab(props) {
+  if (isLoading) {
     return (
-      <Tab
-        component="a"
-        onClick={(event) => {
-          if (samePageLinkNavigation(event)) {
-            event.preventDefault(); // ナビゲーションを防止
-          }
-        }}
-        aria-current={props.selected ? 'page' : undefined}
-        {...props}
-      />
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <CircularProgress /> {/* ローディングスピナー */}
+      </div>
     );
   }
 
-  LinkTab.propTypes = {
-    selected: PropTypes.bool,
-  };
-
-
-
-
   return (
     <>
-      <div style={{ width: '90%', margin: 'auto',}}>
+      <div style={{ width: '90%', margin: 'auto' }}>
         <List
           sx={(theme) => ({
             width: '100%',
@@ -134,13 +87,16 @@ const PostCard = forwardRef(({ post }) => {
           }
         >
           {application_form.map((posts, index) => (
-            <ListItemButton onClick={() => handleClick(index)} key={index} id={index}
-            sx={{
-              backgroundColor: selectedIndex === index ? 'gray' : 'transparent', // クリックされた場合は背景色をグレーに
-              '&:hover': {
-                backgroundColor: selectedIndex === index ? 'darkgray' : 'lightgray', // ホバー時の背景色
-              }
-            }}
+            <ListItemButton
+              onClick={() => handleClick(index)}
+              key={index}
+              id={index}
+              sx={{
+                backgroundColor: selectedIndex === index ? 'gray' : 'transparent',
+                '&:hover': {
+                  backgroundColor: selectedIndex === index ? 'darkgray' : 'lightgray',
+                },
+              }}
             >
               <ListItemText
                 primary={
@@ -148,20 +104,19 @@ const PostCard = forwardRef(({ post }) => {
                     <Typography className="circle_number">
                       {posts.user_name.length}
                     </Typography>
-                    <TooltipTitle title={posts.article_title}>
+                    <Tooltip title={posts.article_title}>
                       <Typography
                         textOverflow="ellipsis"
                         sx={{
                           fontSize: '0.8rem',
                           overflow: 'hidden',
                           whiteSpace: 'nowrap',
-                          textOverflow: 'ellipsis', // 省略記号を表示
+                          textOverflow: 'ellipsis',
                         }}
                       >
                         {posts.article_title}
                       </Typography>
-                    </TooltipTitle>
-
+                    </Tooltip>
                   </>
                 }
               />
@@ -173,47 +128,43 @@ const PostCard = forwardRef(({ post }) => {
       {writeformshow && selectedIndex !== null && (
         <div style={{ flexGrow: 1 }}>
           <div className="write-form">
-
             <Box sx={{ width: '100%', paddingBottom: '10%' }}>
-              <Tabs
-                value={value}
-                aria-label="nav tabs example"
-                role="navigation"
-              >
+              <Tabs value={value} aria-label="nav tabs example" role="navigation">
                 <Tab label="要約" onClick={(e) => handleTabClick(e, 0)} />
                 <Tab label="回答別" onClick={(e) => handleTabClick(e, 1)} />
                 <Tab label="個別" onClick={(e) => handleTabClick(e, 2)} />
               </Tabs>
-              {value === 0 && <Summary
-                application_form={application_form}
-                selectedIndex={selectedIndex}
-                GroupedResponses={groupedResponses}
-                HandleTabClick = {handleTabClick}
-                setViewStudentName={setViewStudentName}
-                />}
-              {value === 1 && <Question
-                application_form={application_form}
-                selectedIndex={selectedIndex}
-                GroupedResponses={groupedResponses}
-              />}
-              {value === 2 && <Individual
-                application_form={application_form}
-                selectedIndex={selectedIndex}
-                GroupedResponses={groupedResponses}
-                viewingStudentName ={viewingStudentName}
-                // 名前
-              />}
+              {value === 0 && (
+                <Summary
+                  application_form={application_form}
+                  selectedIndex={selectedIndex}
+                  GroupedResponses={groupedResponses}
+                  HandleTabClick={handleTabClick}
+                  setViewStudentName={setViewStudentName}
+                />
+              )}
+              {value === 1 && (
+                <Question
+                  application_form={application_form}
+                  selectedIndex={selectedIndex}
+                  GroupedResponses={groupedResponses}
+                />
+              )}
+              {value === 2 && (
+                <Individual
+                  application_form={application_form}
+                  selectedIndex={selectedIndex}
+                  GroupedResponses={groupedResponses}
+                  viewingStudentName={viewingStudentName}
+                />
+              )}
             </Box>
-
-          </div >
-        </div >
+          </div>
+        </div>
       )}
-
-
     </>
   );
 });
-
 
 PostCard.displayName = 'PostCard';
 
@@ -241,7 +192,6 @@ PostCard.propTypes = {
       })
     ).isRequired,
   }).isRequired,
-  responses: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default PostCard;

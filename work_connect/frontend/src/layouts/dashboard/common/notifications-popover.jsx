@@ -40,7 +40,10 @@ export default function NotificationsPopover() {
 
   // セッションからログインしているアカウントのデータ取得
   const { getSessionData } = useSessionStorage();
-  const accountData = getSessionData("accountData");
+  let accountData = getSessionData("accountData");
+  if(accountData == null) {
+    accountData = {};
+  }
 
   // 表示する用の通知を入れる用
   const [notifications, setNotifications] = useState(NOTIFICATIONS);
@@ -109,19 +112,21 @@ export default function NotificationsPopover() {
   };
 
   // 削除ボタンを押した通知を削除する
-  const deleteSingleNotice = async (e) => {
+  const deleteSingleNotice = async (notificationId) => {
     try {
-      const noticeId = Number(e.target.dataset.notice);
-      console.log("noticeId", noticeId);
+      console.log("deleteSingleNotice:notificationId: ", notificationId);
 
-      setDeleteNotice((prevNoticeId) => [...prevNoticeId, noticeId]);
+      // const noticeId = Number(e.target.dataset.notice);
+      // console.log("noticeId", noticeId);
+
+      setDeleteNotice((prevNoticeId) => [...prevNoticeId, notificationId]);
 
       // 通知削除用URL
       const url = "http://localhost:8000/post_notice_delete";
 
       // Laravel側か通知一覧データを取得
       await axios.post(url, {
-        noticeId: noticeId,
+        noticeId: notificationId,
       });
     } catch (err) {
       console.log("err:", err);
@@ -170,6 +175,9 @@ export default function NotificationsPopover() {
 
   // 1つの通知をクリックしたときにその通知を選択状態にする
   const clickOneNotice = (e) => {
+    e.preventDefault(); // デフォルト動作をキャンセル
+    e.stopPropagation(); // イベントのバブリングを防ぐ
+    console.log("clickOneNotice:e.target: ", e.target);
     if (!e.target.classList.contains("deleteSingleNoticeButton")) {
       if (NoticeSelectMode) {
         const haveNoticeIdElement = e.target.closest("[data-notice_id]");
@@ -208,6 +216,18 @@ export default function NotificationsPopover() {
               userName = value.userName;
             });
             navigate(`/Profile/${userName}?page=mypage`);
+            setOpen(null);
+          } else if (clickTitle === "作品") {
+            // 通知の中でもdata-notice_idが含まれる要素を代入
+            const haveNoticeIdElement = e.target.closest("[data-notice_id]");
+            // そしてクリックしたnotice_idが代入
+            const noticeId = haveNoticeIdElement.dataset.notice_id;
+            var workId = "";
+            NOTIFICATIONS.filter((value) => value.id == noticeId).map((value) => {
+              workId = value.detail;
+            });
+
+            navigate(`/WorkDetail/${workId}`);
             setOpen(null);
           } else if (clickTitle === "動画") {
             // 通知の中でもdata-notice_idが含まれる要素を代入
@@ -280,25 +300,22 @@ export default function NotificationsPopover() {
         />
         {!NoticeSelectMode ? (
           <>
-            <button
-              onClick={() => deleteSingleNotice(notification.id)}
-              className="deleteSingleNoticeIcon"
+            <CancelIcon
+              onClick={(event) => {
+                event.stopPropagation(); // バブリングを防ぐ
+                deleteSingleNotice(notification.id);
+              }}
+              className="deleteSingleNoticeButton"
               data-notice={notification.id}
-              style={{ zIndex: 1300 }}
-            >
-
-              <CancelIcon
-
-                sx={{
-                  fontSize: "20px",
-                  transition: "color 0.3s ease",
-                  "&:hover": {
-                    color: "lightgrey",
-                    cursor: "pointer",
-                  },
-                }}
-              />
-            </button>
+              sx={{
+                fontSize: "20px",
+                transition: "color 0.3s ease",
+                "&:hover": {
+                  color: "lightgrey",
+                  cursor: "pointer",
+                },
+              }}
+            />
           </>
         ) : (
           <>
@@ -317,7 +334,7 @@ export default function NotificationsPopover() {
       const url = "http://localhost:8000/get_notice";
 
       // ログインしているアカウントの情報を取得
-      const accountData = getSessionData("accountData");
+
       console.log("noticeListFunction:accountData", accountData);
 
       // Laravel側か通知一覧データを取得
@@ -342,8 +359,11 @@ export default function NotificationsPopover() {
   }
 
   useEffect(() => {
-    noticeListFunction();
-  }, []);
+    console.log("accountDataid");
+    if(location.pathname != "/Top") {
+      noticeListFunction();
+    }
+  }, [accountData.id]);
 
   // 通知監視用
   useEffect(() => {
@@ -367,6 +387,7 @@ export default function NotificationsPopover() {
 
   // Laravelから取得した通知データをもとに表示に適した形に変換する
   useEffect(() => {
+    console.log("NoticeArrayNoticeArray: ", NoticeArray);
     var noticeData = [];
     NoticeArray.map((value) => {
       const id = value.id;
@@ -442,6 +463,7 @@ export default function NotificationsPopover() {
 
   // 表示するのに適した形になった通知データを表示用配列にセット
   useEffect(() => {
+    console.log("NOTIFICATIONSNOTIFICATIONS: ", NOTIFICATIONS)
     if (NoticeArray.length !== 0) {
       setNotifications(NOTIFICATIONS);
     } else {
@@ -479,6 +501,7 @@ export default function NotificationsPopover() {
   }, [NoticeSelectMode]);
 
   useEffect(() => {
+    console.log("DeleteNoticeDeleteNotice: ", DeleteNotice);
     setNoticeArray(
       NoticeArray.filter((value) => {
         return !DeleteNotice.includes(value.id);

@@ -1,3 +1,9 @@
+body {
+  overflow-y: auto !important; /* 縦のスクロールバーを自動で表示 */
+  height: 100%; /* 高さを100%に設定して、親要素の高さに合わせる */
+  margin: 0; /* マージンをリセットして、余白が生じないようにする */
+}
+
 .TextFormButton {
   width: 20%;
 }
@@ -63,7 +69,7 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 .FormDemo {
-  overflow: auto;
+  overflow: hidden;
   flex-grow: 1;
   width: 100%;
   /* 幅を少し狭くする */

@@ -24,7 +24,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 //時間
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 const modalStyle = {
   overlay: {
@@ -43,7 +43,7 @@ const modalStyle = {
     padding: '1.5rem',
     overflow: 'hidden',
     zIndex: 1300, // コンテンツの z-index
-    backgroundColor: 'white',
+    backgroundColor: 'blue',
     height: '60%',
     width: '70%',
   },
@@ -61,14 +61,14 @@ const NewsMenu = ({
   NewsSave,
   genre,
   draftlist,
-  newsid,
   imageUrl,
   title,
   RewriteNewsDelete,
   NotificationMessageHandleChange,
   NewsUpLoad,
   message,
-  charCount }) => {
+  charCount,
+  selected_draft }) => {
 
   const [expanded, setExpanded] = useState(false);
 
@@ -78,7 +78,8 @@ const NewsMenu = ({
 
   //関数
   const FormattedDate = (time) => {
-    return moment(time).format('YYYY/MM/DD HH:mm:ss');
+    console.log("時間", time);
+    return moment(time).tz('Asia/Tokyo').format('YYYY/MM/DD HH:mm:ss');
   };
 
   const header_img_show = (draft) => {
@@ -91,6 +92,8 @@ const NewsMenu = ({
       return <img src={`${draft.header_img}`} alt="Draft Image" />;
     }
   };
+
+  console.log("選んだ内容", selected_draft);
 
   const AddDraftNews = () => {
     if (window.confirm("編集したニュースを保存しますか?")) {
@@ -107,117 +110,137 @@ const NewsMenu = ({
 
   const draftListrender = (
     <div className="draftlistScroll">
-    <div className="add_draft_news">
-      <Button variant="outlined" onClick={AddDraftNews} className="add_draft_news">
-        新たな下書き
-      </Button>
+      <div className="add_draft_news">
+        <Button variant="outlined" onClick={AddDraftNews} className="add_draft_news">
+          新たな下書き
+        </Button>
+      </div>
+      {draftlist.length > 0 ? (
+        draftlist.map(draft => (
+          <NewsMenuTable className="draftlisttable" key={draft.id}>
+            <TableHead>
+              <TableRow>
+                <TableCell style={{ backgroundColor: "#fff", border: "none" }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    {/* 画像を左側に配置 */}
+                    <div className="news_img">
+                      {header_img_show(draft)}
+                    </div>
+                    {/* テキストと削除ボタンを右側に配置 */}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                      <div style={{ marginBottom: '8px' }}>
+                        最終更新日: {FormattedDate(draft.updated_at)}
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+                        <DeleteIcon />
+                        <p style={{ margin: 0, marginLeft: '4px' }} onClick={() => RewriteNewsDelete(draft.id)}>削除</p>
+                      </div>
+                    </div>
+                  </div>
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Tooltip title={draft.article_title}>
+                    <p
+                      className="draftlist"
+                      onClick={() => {
+                        setExpanded(false); // 展開状態を閉じる
+                        RewriteNewsEnter(draft.id); // 次の処理を実行
+                      }}
+                      style={{
+                        cursor: 'pointer',
+                        wordBreak: 'break-all',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        maxWidth: '500px',
+                      }}
+                    >
+                      {draft.article_title}
+                    </p>
+                  </Tooltip>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </NewsMenuTable>
+        ))
+      ) : (
+        <p>下書き中の記事はありません</p>
+      )}
     </div>
-    {draftlist.length > 0 ? (
-      draftlist.map(draft => (
-        <NewsMenuTable className="draftlisttable" key={draft.id}>
-          <TableHead>
-            <TableRow>
-              <TableCell style={{ backgroundColor: "#fff", border: "none" }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  {/* 画像を左側に配置 */}
-                  <div className="news_img">
-                    {header_img_show(draft)}
-                  </div>
-                  {/* テキストと削除ボタンを右側に配置 */}
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                    <div style={{ marginBottom: '8px' }}>
-                      最終更新日: {FormattedDate(draft.updated_at)}
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
-                      <DeleteIcon />
-                      <p style={{ margin: 0, marginLeft: '4px' }} onClick={() => RewriteNewsDelete(draft.id)}>削除</p>
-                    </div>
-                  </div>
-                </div>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Tooltip title={draft.article_title}>
-                  <p
-                    className="draftlist"
-                    onClick={() => RewriteNewsEnter(draft.id)}
-                    style={{
-                      cursor: 'pointer',
-                      wordBreak: 'break-all',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      maxWidth: '200px',
-                    }}
-                  >
-                    {draft.article_title}
-                  </p>
-                </Tooltip>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </NewsMenuTable>
-      ))
-    ) : (
-      <p>下書き中の記事はありません</p>
-    )}
-  </div>
   )
 
   const saveNewsrender = (
     <div className="news_button">
-    <button id="save" className="save" onClick={NewsSave}>下書きを保存する</button>
-  </div>
+      <button id="save" className="save" onClick={NewsSave}>下書きを保存する</button>
+    </div>
   )
 
   const editingStatusrender = (
     <div className="editingstatusscroll">
-    <p>現在の編集状況</p>
-    <p>タイトル</p>
-    {EditorStatusCheck(title)}
-    <p>サムネイル</p>
-    {EditorStatusCheck(imageUrl)}
-    <p>通知に添えるメッセージ</p>
-    {EditorStatusCheck(message)}
-    <p>コンテンツ</p>
-    {EditorContentsStatusCheck()}
-  </div>
+      <p>現在の編集状況</p>
+      <p>タイトル</p>
+      {EditorStatusCheck(title)}
+      <p>サムネイル</p>
+      {EditorStatusCheck(imageUrl)}
+      <p>通知に添えるメッセージ</p>
+      {EditorStatusCheck(message)}
+      <p>コンテンツ</p>
+      {EditorContentsStatusCheck()}
+    </div>
   )
 
   const notificationMessagerender = (
     <ReleaseNews
-    MessageData={message}
-    handleChange={HandleChange}
-    NotificationMessageHandleChange={NotificationMessageHandleChange}
-  />
+      MessageData={message}
+      handleChange={HandleChange}
+      NotificationMessageHandleChange={NotificationMessageHandleChange}
+    />
   )
+
+  console.log("ドラフトリスト", draftlist);
 
   const createFormrender = (
     <div className="create_form">
-    <p>インターンシップや求人・説明会のニュースでは、<br></br>
-      応募フォームを作成することができます。
-    </p>
-    <button id="createFormJump" className="save" onClick={() => CreateFormJump(newsid)}>応募フォームを作成する</button>
+      <p>インターンシップや求人・説明会のニュースでは、<br></br>
+        応募フォームを作成することができます。
+      </p>
 
-  </div>
+      {/* selected_draftが存在し、create_form配列が空でない場合に表示 */}
+      {selected_draft?.create_form.length > 0 ? (
+        <p>編集中のフォームがあります</p>
+      ) : (
+        <p>編集中のフォームはありません</p>
+      )}
+
+      <button id="createFormJump" className="save" onClick={() => {
+        setExpanded(false);
+        CreateFormJump();
+      }}>
+        応募フォームを作成する
+      </button>
+
+    </div>
 
   )
+
+
 
   const releaseNewsrender = (
     <p><button onClick={NewsUpLoad}>投稿</button></p>
   )
 
   const menuItems = [
-    { key: "draftList", text: "下書きリスト",render:draftListrender},
-    { key: "saveNews", text: "ニュースを保存する",render:saveNewsrender },
-    { key: "editingStatus", text: "現在の編集状況",render:editingStatusrender },
-    { key: "notificationMessage", text: "通知に添えるメッセージ",render:notificationMessagerender},
+    { key: "draftList", text: "下書きリスト", render: draftListrender },
+    { key: "saveNews", text: "ニュースを保存する", render: saveNewsrender },
+    { key: "editingStatus", text: "現在の編集状況", render: editingStatusrender },
+    { key: "notificationMessage", text: "通知に添えるメッセージ", render: notificationMessagerender },
     // 条件を満たした場合のみ追加
-    ...(genre !== "blogs" ? [{ key: "createForm", text: "応募フォームを作成する",render:createFormrender}] : []),
-    ...(title && imageUrl && message && charCount ? [{ key: "releaseNews", text: "ニュースを公開する",render:releaseNewsrender}] : []),
+    ...(genre !== "Blog" ? [{ key: "createForm", text: "応募フォームを作成する", render: createFormrender }] : []),
+    ...(title && imageUrl && message && charCount ? [{ key: "releaseNews", text: "ニュースを公開する", render: releaseNewsrender }] : []),
   ];
 
 
@@ -231,15 +254,19 @@ const NewsMenu = ({
     >
       <div className="NewsMenu-Accordion">
 
-        <Button variant="outlined" onClick={CloseModal}>
+        <Button variant="outlined" onClick={() => {
+          setExpanded(false);
+          CloseModal();
+        }} className="CloseModalButton">
           閉じる
         </Button>
 
-        {menuItems.map(({ key, text,render }) => (
+
+        {menuItems.map(({ key, text, render }) => (
           <Accordion
             key={key}
             expanded={expanded === key}
-            onChange={AccordionhandleChange(key)} 
+            onChange={AccordionhandleChange(key)}
             className="Accordion"
           >
             <AccordionSummary
@@ -277,7 +304,8 @@ NewsMenu.propTypes = {
   newsid: PropTypes.number.isRequired, //ニュースID
   title: PropTypes.string.isRequired,
   imageUrl: PropTypes.string.isRequired, //サムネイル画像
-  charCount: PropTypes.number.isRequired //文字数カウント
+  charCount: PropTypes.number.isRequired, //文字数カウント
+  selected_draft: PropTypes.array.isRequired, //現在下書き中のニュース＆フォームの情報
 };
 
 export default NewsMenu;

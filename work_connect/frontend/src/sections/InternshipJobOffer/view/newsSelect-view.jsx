@@ -65,7 +65,6 @@ export default function NavTabs() {
       IsLoading : true, // 一時的にローディングを解除
     }));
     if (sortOption !== "orderNewPostsDate" || Page > 1 || IsSearch.Check == true) {
-      console.log("あいうえお")
       setAllItems((prevItems) => ({
         ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
         ResetItem: true,

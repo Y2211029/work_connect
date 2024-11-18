@@ -267,14 +267,20 @@ Route::post('/news_upload', [EditorController::class, 'news_upload']);
 Route::post('/thumbnail_image_save', [EditorController::class, 'thumbnail_image_save']);
 Route::post('/contents_image_save', [EditorController::class, 'contents_image_save']);
 Route::post('/contents_url_image_save', [EditorController::class, 'contents_url_image_save']);
-Route::get('/news_draft_list/{id}', [EditorController::class, 'news_draft_list']);
+Route::get('/news_draft_list/{id}/{genre}', [EditorController::class, 'news_draft_list']);
 Route::get('/Internship_JobOffer/{id}/{category}', [NewsController::class, 'all_news_get']);
 Route::get('/Internship_JobOffer/special_company_news/{username}/{Myid}/{genre}', [NewsController::class, 'special_company_news']);
 Route::get('/special_forms/{CompanyId}', [NewsController::class, 'special_forms']);
 Route::get('/news_detail/{newsdetail_id}', [NewsController::class, 'news_detail_get']);
 Route::post('/news_bookmark', [NewsController::class, 'news_bookmark']);
 Route::get('/thumbnail_img_delete/{id}', [EditorController::class, 'thumbnail_img_delete']);
+Route::get('/createform_search', action: [EditorController::class, 'createform_search']);
 Route::get('/api/embed', action: [EditorController::class, 'embed']);
+Route::post('/rewrite_news_delete', [EditorController::class, 'rewrite_news_delete']);
+//学生(自分)が応募した履歴を確認
+Route::get('/get_apply_history/{id}', action: [NewsController::class, 'get_apply_history']);
+
+
 
 //企業の詳細情報を取得
 Route::get('/company_informations/{CompanyName}', action: [CompanyInformationController::class, 'company_informations']);

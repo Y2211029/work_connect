@@ -43,6 +43,8 @@ const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, s
       filteredNewWorks = newWorks.filter((element) => !existingIds.has(element[idKey]));
     }
 
+    console.log("filteredNewWorks",filteredNewWorks);
+
     // 全作品アイテム
     filteredNewWorks.forEach((element) => {
       // 作品のジャンル取り出す
@@ -104,7 +106,6 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
   console.log("category", category);
 
   useEffect(() => {
-    // 各パスに対するコンポーネントを動的にロード
     const loadComponentForPath = async (path, options = {}) => {
       switch (true) {
         case path === "/" || path === `/Profile/${SessionAccountData.user_name}?page=work` || path === `/Profile/${ParamUserName}?page=work`: {
@@ -126,6 +127,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
             console.log("VideoListPostCard");
             break;
           }
+
 
         case path === "/StudentList": {
           const { default: StudentListPostCard } = await import("src/sections/StudentList/post-card");
@@ -151,6 +153,17 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
             break;
           }
 
+          case path === `/Profile/${ParamUserName}` && options.page === "apply_history": {
+            try {
+              const { default: ApplyHistoryPostCard } = await import("src/sections/ApplyHistory/post-card");
+              setPostCard(() => ApplyHistoryPostCard);
+              console.log("ApplyHistoryPostCard loaded successfully");
+            } catch (error) {
+              console.error("Error loading ApplyHistoryPostCard:", error);
+            }
+            break;
+          }
+
         case path === `/WriteForm/${NewsDetailId}` || options.DecodeURL === `/Profile/${ParamUserName}/News/Forms`: {
           const { default: WriteFormPostCard } = await import("src/sections/WriteForm/post-card");
           setPostCard(() => WriteFormPostCard);
@@ -158,24 +171,11 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           break;
         }
 
-        case path === `/CreateForm/${NewsDetailId}`: {
-          const { default: CreateFormPostCard } = await import("src/sections/CreateForm/post-card");
-          setPostCard(() => CreateFormPostCard);
-          console.log("CreateFormPostCard");
-          break;
-        }
 
         case options.DecodeURL === `/Profile/${ParamUserName}` && options.page === "checkform": {
           const { default: CheckFormPostCard } = await import("src/sections/Profile/View/company/CheckForm/post-card");
           setPostCard(() => CheckFormPostCard);
           console.log("CheckFormPostCard");
-          break;
-        }
-
-        case options.DecodeURL === `/Profile/${ParamUserName}/Checkform` && options.category === "statistical_data": {
-          const { default: StatisticalDataPostCard } = await import("src/sections/Profile/View/company/CheckForm/Statistical_Data/post-card");
-          setPostCard(() => StatisticalDataPostCard);
-          console.log("StatisticalDataPostCard");
           break;
         }
 
@@ -249,6 +249,40 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           },
         })),
     },
+
+    apply_history: {
+      ItemName: `${ParamUserName}さんの応募履歴`,
+      url: `http://localhost:8000/get_apply_history/${SessionAccountData.id}`,
+      idKey: "id",
+      tags: ["genre"],
+      generatePosts: (WorkOfList) => {
+        // 各app.write_formの中身をログ出力
+        return WorkOfList.map((app) => {
+          console.log("Mapped app:", {
+            apply_histories: app,
+            companies_name: app.companies_name,
+            news_id: app.news_id,
+            news_title: app.news_title,
+            news_genre: app.news_genre,
+            img: app.img,
+            write_form_id: app.write_form_id,
+            write_form: app.write_form,
+            form_writed_at: app.form_writed_at,
+          });
+          return {
+            apply_histories: app,
+            companies_name: app.companies_name,
+            news_id: app.news_id,
+            news_title: app.news_title,
+            news_genre: app.news_genre,
+            img: app.img,
+            write_form_id: app.write_form_id,
+            write_form: app.write_form,
+            form_writed_at: app.form_writed_at,
+          };
+        });
+      },
+    },
     students: {
       ItemName: "学生一覧",
       url: "http://localhost:8000/get_student_list",
@@ -314,6 +348,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
         WorkOfList.map((company) => ({
           company_id: company.company_id,
           news_id: company.news_id,
+          user_name: company.user_name,
           company_name: company.company_name[0].props.children,
           article_title: company.article_title,
           genre: company.genre,
@@ -333,6 +368,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
         WorkOfList.map((company) => ({
           company_id: company.company_id,
           news_id: company.news_id,
+          user_name: company.user_name,
           company_name: company.company_name[0].props.children,
           article_title: company.article_title,
           genre: company.genre,
@@ -352,6 +388,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
         WorkOfList.map((company) => ({
           company_id: company.company_id,
           news_id: company.news_id,
+          user_name: company.user_name,
           company_name: company.company_name[0].props.children,
           article_title: company.article_title,
           genre: company.genre,
@@ -371,12 +408,13 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
         WorkOfList.map((company) => ({
           company_id: company.company_id,
           news_id: company.news_id,
+          user_name: company.user_name,
           company_name: company.company_name[0].props.children,
           article_title: company.article_title,
           genre: company.genre,
           header_img: company.header_img,
           news_created_at: company.news_created_at,
-          icon_id: company.icon_id,
+          icon: company.icon,
           followStatus: company.follow_status,
           count: company.form_data_count,
         })),
@@ -384,20 +422,6 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
     writeforms: {
       ItemName: "応募用フォーム",
       url: `http://localhost:8000/write_form_get/${NewsDetailId}`,
-      idKey: "id",
-      tags: ["company_name"],
-      generatePosts: (WorkOfList) => {
-        return WorkOfList.map((company) => ({
-          company_id: company.company_id,
-          create_form: company.create_form,
-          news_id: company.news_id,
-          article_title: company.article_title,
-        }));
-      },
-    },
-    createforms: {
-      ItemName: "応募用フォームを作成する",
-      url: `http://localhost:8000/create_form_get/${NewsDetailId}`,
       idKey: "id",
       tags: ["company_name"],
       generatePosts: (WorkOfList) => {
@@ -491,21 +515,6 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
     },
     specialforms: {
       ItemName: `応募フォーム一覧`,
-      url: `http://localhost:8000/special_forms/${SessionAccountData.id}`,
-      idKey: "id",
-      tags: ["company_name"],
-      generatePosts: (WorkOfList) => {
-        if (Array.isArray(WorkOfList)) {
-          const application_form = WorkOfList.map((company) => ({
-            article_title: company.article_title,
-            user_name: company.users,
-          }));
-          return [{ application_form }];
-        }
-      },
-    },
-    specialstatisticaldata: {
-      ItemName: `応募フォーム一覧(グラフ)`,
       url: `http://localhost:8000/special_forms/${SessionAccountData.id}`,
       idKey: "id",
       tags: ["company_name"],
@@ -628,7 +637,6 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
       PathName === "/CompanyList" ||
       PathName === "/Internship_JobOffer" ||
       PathName === `/WriteForm/${NewsDetailId}` ||
-      PathName === `/CreateForm/${NewsDetailId}` ||
       PathName === "/Internship_JobOffer?page=JobOffer" ||
       PathName === "/Internship_JobOffer?page=Internship" ||
       PathName === "/Internship_JobOffer?page=Session" ||
@@ -637,7 +645,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
         page === "news" &&
         (category === "JobOffer" || category === "Internship" || category === "Blog" || category === "Session")) ||
       (DecodeURL === `/Profile/${ParamUserName}` && page === "companyinformation") ||
-      (DecodeURL === `/Profile/${ParamUserName}` && page === "checkform"))
+      (PathName === `/Profile/${ParamUserName}` && page === "checkform"))
   ) {
     // console.log(" URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合");
     lastUrl = `${url}?page=${Page}&sort=${sortOption}`;

@@ -72,7 +72,7 @@ export default function AccountPopover() {
       // 「はい」が選択された場合の処理
       // ログアウト
       sessionStorage.removeItem("accountData");
-      alert("ログアウトしました。");
+      // alert("ログアウトしました。");
       // 画面を一度だけリロードする(リロードしないとモーダルに前の情報が残ったままになる)
       window.location.href = "/Top";
     } else {

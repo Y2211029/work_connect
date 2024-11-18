@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\w_chat;
+use App\Models\w_follow;
 use Illuminate\Support\Facades\Log;
 
 
@@ -31,6 +32,40 @@ class PostChatController extends Controller
                 'send_datetime' => $sendDateTime,
             ]);
             Log::info(':', ['send_user_id' => $responseData]);
+
+            // 相互関係をチェック
+            $relationExists = w_follow::where(function ($query) use ($MyUserId, $PairUserId) {
+                $query->where('follow_sender_id', $MyUserId)
+                    ->where('follow_recipient_id', $PairUserId);
+            })
+            ->orWhere(function ($query) use ($MyUserId, $PairUserId) {
+                $query->where('follow_sender_id', $PairUserId)
+                    ->where('follow_recipient_id', $MyUserId);
+            })
+            ->exists();
+
+            if ($relationExists) {
+            // 両方のIDに関連するレコードを更新
+            w_follow::where(function ($query) use ($MyUserId, $PairUserId) {
+                    $query->where('follow_sender_id', $MyUserId)
+                        ->where('follow_recipient_id', $PairUserId);
+                })
+                ->orWhere(function ($query) use ($MyUserId, $PairUserId) {
+                    $query->where('follow_sender_id', $PairUserId)
+                        ->where('follow_recipient_id', $MyUserId);
+                })
+                ->update(['chat_datetime' => $sendDateTime]);
+            } else {
+            // 片方のIDに関連するレコードを更新
+            w_follow::where('follow_sender_id', $MyUserId)
+                ->where('follow_recipient_id', $PairUserId)
+                ->orWhere(function ($query) use ($MyUserId, $PairUserId) {
+                    $query->where('follow_sender_id', $PairUserId)
+                        ->where('follow_recipient_id', $MyUserId);
+                })
+                ->update(['chat_datetime' => $sendDateTime]);
+            }
+
             // Reactに返す
             return response()->json($responseData);
 

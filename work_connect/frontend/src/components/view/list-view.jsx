@@ -43,7 +43,7 @@ const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, s
       filteredNewWorks = newWorks.filter((element) => !existingIds.has(element[idKey]));
     }
 
-    console.log("filteredNewWorks",filteredNewWorks);
+    console.log("filteredNewWorks", filteredNewWorks);
 
     // 全作品アイテム
     filteredNewWorks.forEach((element) => {
@@ -153,16 +153,16 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
             break;
           }
 
-          case path === `/Profile/${ParamUserName}` && options.page === "apply_history": {
-            try {
-              const { default: ApplyHistoryPostCard } = await import("src/sections/ApplyHistory/post-card");
-              setPostCard(() => ApplyHistoryPostCard);
-              console.log("ApplyHistoryPostCard loaded successfully");
-            } catch (error) {
-              console.error("Error loading ApplyHistoryPostCard:", error);
-            }
-            break;
+        case path === `/Profile/${ParamUserName}` && options.page === "apply_history": {
+          try {
+            const { default: ApplyHistoryPostCard } = await import("src/sections/ApplyHistory/post-card");
+            setPostCard(() => ApplyHistoryPostCard);
+            console.log("ApplyHistoryPostCard loaded successfully");
+          } catch (error) {
+            console.error("Error loading ApplyHistoryPostCard:", error);
           }
+          break;
+        }
 
         case path === `/WriteForm/${NewsDetailId}` || options.DecodeURL === `/Profile/${ParamUserName}/News/Forms`: {
           const { default: WriteFormPostCard } = await import("src/sections/WriteForm/post-card");
@@ -215,7 +215,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           icon: work.icon,
           title: work.work_name,
           genre: work.work_genre,
-          intro: work.work_intro.length > 200 ? work.work_intro.trim().substring(0, 200) + "..." : work.work_intro,
+          intro: work.intro !== null && work.work_intro.length > 200 ? work.work_intro.trim().substring(0, 200) + "..." : work.work_intro,
           // view: faker.number.int(99999),
           // comment: faker.number.int(99999),
           favorite: faker.number.int(99999),
@@ -238,7 +238,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           movie: movie.youtube_url,
           title: movie.title,
           genre: movie.genre,
-          intro: movie.intro.length > 200 ? movie.intro.substring(0, 200) + "..." : movie.intro,
+          intro: movie.intro !== null && movie.intro.length > 200 ? movie.intro.substring(0, 200) + "..." : movie.intro,
           // view: faker.number.int(99999),
           // comment: faker.number.int(99999),
           favorite: faker.number.int(99999),
@@ -302,8 +302,13 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           icon: student.icon,
           cover: `/assets/images/covers/cover_${key + 1}.jpg`,
           userName: student.user_name,
+          studentName: student.student_surname  + student.student_name,
           graduationYear: student.graduation_year,
-          schoolName: student.school_name,
+          departmentName: student.department_name,
+          facultyName: student.faculty_name,
+          majorName: student.major_name,
+          courseName: student.course_name,
+          intro: student.intro !== null && student.intro.length > 200 ? student.intro.substring(0, 200) + "..." : student.intro,
           desiredWorkRegion: student.desired_work_region,
           desiredOccupation: student.desired_occupation,
           followStatus: student.follow_status,
@@ -321,10 +326,12 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
         WorkOfList.map((company, key) => ({
           company_id: company.id,
           icon: company.icon,
-          userName: company.user_name,
           companyName: company.company_name,
+          userName: company.user_name,
+          industry: company.industry,
           selectedOccupation: company.selected_occupation,
           prefecture: company.prefecture,
+          intro: company.intro !== null && company.intro.length > 200 ? company.intro.substring(0, 200) + "..." : company.intro,
           cover: `/assets/images/covers/cover_${key + 1}.jpg`,
           author: {
             avatarUrl: `/assets/images/avatars/avatar_${company.icon}.jpg`,

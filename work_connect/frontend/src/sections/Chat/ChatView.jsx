@@ -168,7 +168,7 @@ const FollowGroup = ({
                 pl: 4,
                 background: element.id === chatViewId ? '#cce5ff' : 'initial',
                 '&:hover': {
-                  background: element.id === chatViewId ? '#cce5ff' : '#eee',
+                  background: element.id === chatViewId ? '#99ccff' : '#eee',
                 },
               }}
               onClick={() => {
@@ -608,7 +608,7 @@ const ChatView = () => {
         });
 
         if (response) {
-          //console.log(JSON.stringify(response, null, 2));
+          //console.log("GetChannelList は "+JSON.stringify(response, null, 2));
           const data = response.data;
           setResponseChannelListData(data);
 
@@ -804,7 +804,7 @@ const ChatView = () => {
     const options = { weekday: 'long' }; // 曜日のオプション
     const dayOfWeek = date.toLocaleDateString('ja-JP', options); // 日本語の曜日を取得
 
-    return `${formattedDate} (${dayOfWeek})`; // 返り値(例: 10月7日 (日曜日) )
+    return `${formattedDate} (${dayOfWeek.slice(0,1)})`; // 返り値(例: 10月7日 (日曜日) )
   };
 
   // 送信時間から時:分だけを取り出す関数
@@ -1159,10 +1159,17 @@ const ChatView = () => {
                   top: '0',
                   backgroundColor: '#F9FAFB',
                   zIndex: 1,
-                  fontSize: '16px'
+                  fontSize: '14px'
                 }}
               >
-                {GetDay(element.send_datetime)}
+                <span
+                  style={{
+                    backgroundColor: '#ffe45e',
+                    padding: '0 10px',
+                  }}
+                >
+                  {GetDay(element.send_datetime)}
+                </span>
               </Typography>
 
               {/* ここから未読 */}

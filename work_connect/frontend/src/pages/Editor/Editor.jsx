@@ -87,6 +87,7 @@ const Editor = () => {
   const [isSaved, setIsSaved] = useState(false);
   const [CreateFormOpen, setCreateFormOpen] = useState(false);
   const [formSummary, setFormSummary] = useState(null);
+  const [followerCounter,setFollowerCounter] = useState(0);
 
 
   const news_save_url = "http://127.0.0.1:8000/news_save";
@@ -127,6 +128,8 @@ const Editor = () => {
       console.log("header_img", imageUrl);
       console.log("outputData", outputData);
       console.log("notificationMessage", notificationMessage);
+      console.log("followerCounter", followerCounter);
+
 
       // websocketサーバーに送信
       const response = await axios.post(
@@ -142,15 +145,15 @@ const Editor = () => {
           header_img: imageUrl, //ニュースサムネイル画像
           value: outputData,  //ニュースの内容
           message: notificationMessage, //採用担当者からの一言メッセージ
-          genre: genre
+          genre: genre,
+          followerCounter: followerCounter //通知が必要かどうかの判断材料(0なら通知処理を行わない)
         }
       );
-
       console.log(response);
       console.log(response.data.id);
       console.log(response.data);
       console.log("成功");
-      navigate(`/Internship_JobOffer?page=${genre}`);
+      navigate(`/news_detail/${news_id}`);
     } catch (error) {
       console.log("Error:", error);
     }
@@ -588,6 +591,9 @@ const Editor = () => {
           const response = await axios.get(news_draft_list_url);
           console.log("ドラフトリスト:", response.data); // 配列そのものが返ってくる
           setDraftList(response.data); // 直接配列をセット
+          const Follower_Counter = response.data[0]?.follower_counter;
+          console.log("フォロワーカウンター",Follower_Counter);
+          setFollowerCounter(Follower_Counter);
         } catch (error) {
           console.error("Error fetching news draft list:", error);
         }
@@ -1565,6 +1571,7 @@ const Editor = () => {
             message={notificationMessage}
             charCount={charCount}
             selected_draft={selected_draft}
+            followerCounter={followerCounter}
           />
 
           {/* カバー画像アップロード */}

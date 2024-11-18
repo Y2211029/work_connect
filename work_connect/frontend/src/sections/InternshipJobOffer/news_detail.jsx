@@ -57,7 +57,18 @@ const InternshipJobOfferPage = () => {
                 console.log(response.data);
                 SetNewsDetail(response.data);
                 setFollowStatus(response.data.follow_status);
-                setWriteFormStatus(response.data.writeform_status);
+                const writeform_status = response.data.writeform_status;
+
+                if(writeform_status){
+                    setWriteFormStatus(true);
+                }else{
+                    setWriteFormStatus(false);
+                }
+                // if(writeform_status == undefined){
+                //     setWriteFormStatus(false);
+                // }else{
+                //     setWriteFormStatus(true);
+                // }
             } catch (error) {
                 console.error("データの取得中にエラーが発生しました！", error);
             }
@@ -175,11 +186,14 @@ const InternshipJobOfferPage = () => {
         Genre = "求人";
     }
 
+    console.log("writeformStatus",writeformStatus);
+
     return (
         <>
             <Helmet>
                 <title>ニュースの詳細 | Work&Connect</title>
             </Helmet>
+
 
 
             {NewsDetail ? (
@@ -233,17 +247,19 @@ const InternshipJobOfferPage = () => {
                                                 padding: "8px 16px",
                                                 margin: "4px",
                                                 background: writeformStatus
-                                                ? "linear-gradient(#41A4FF, #9198e5)" // 応募する場合
-                                                : "linear-gradient(#d3d3d3, #a6a6a6)", // 応募済みの場合
+                                                ? "linear-gradient(#d3d3d3, #a6a6a6)" // 応募済みの場合
+                                                : "linear-gradient(#41A4FF, #9198e5)", // 応募する場合
+                                                
                                             "&:hover": {
                                                 background: writeformStatus
-                                                    ? "linear-gradient(#c2c2c2, #e5ad91)" // 応募する場合
-                                                    : "linear-gradient(#b8b8b8, #9e9e9e)", // 応募済みの場合
+                                                    ? "linear-gradient(#b8b8b8, #9e9e9e)" // 応募済みの場合
+                                                    : "linear-gradient(#c2c2c2, #e5ad91)", // 応募する場合
+                                                    
                                             },
                                             }}
-                                            onClick={writeformStatus ? handleFormJump : undefined} // trueの場合のみクリックイベントを設定
+                                            onClick={writeformStatus ? undefined : handleFormJump} // trueの場合のみクリックイベントを設定
                                         >
-                                            {writeformStatus ? "応募する" : "応募済み"}
+                                            {writeformStatus ? "応募済み" : "応募する"}
                                     </Button>
 
 
@@ -332,18 +348,21 @@ const InternshipJobOfferPage = () => {
                                                 padding: "8px 16px",
                                                 margin: "4px",
                                                 background: writeformStatus
-                                                ? "linear-gradient(#41A4FF, #9198e5)" // 応募する場合
-                                                : "linear-gradient(#d3d3d3, #a6a6a6)", // 応募済みの場合
+                                                ? "linear-gradient(#d3d3d3, #a6a6a6)" // 応募済みの場合
+                                                : "linear-gradient(#41A4FF, #9198e5)", // 応募する場合
+                                                
                                             "&:hover": {
                                                 background: writeformStatus
-                                                    ? "linear-gradient(#c2c2c2, #e5ad91)" // 応募する場合
-                                                    : "linear-gradient(#b8b8b8, #9e9e9e)", // 応募済みの場合
+                                                    ? "linear-gradient(#b8b8b8, #9e9e9e)" // 応募済みの場合
+                                                    : "linear-gradient(#c2c2c2, #e5ad91)", // 応募する場合
+                                                    
                                             },
                                             }}
-                                            onClick={writeformStatus ? handleFormJump : undefined} // trueの場合のみクリックイベントを設定
+                                            onClick={writeformStatus ? undefined : handleFormJump} // trueの場合のみクリックイベントを設定
                                         >
-                                            {writeformStatus ? "応募する" : "応募済み"}
+                                            {writeformStatus ? "応募済み" : "応募する"}
                                     </Button>
+
 
 
                                     {followStatus === "フォローしています" && (

@@ -68,10 +68,10 @@ const NewsMenu = ({
   NewsUpLoad,
   message,
   charCount,
-  selected_draft }) => {
+  selected_draft,
+  followerCounter }) => {
 
   const [expanded, setExpanded] = useState(false);
-
   const AccordionhandleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
@@ -179,6 +179,8 @@ const NewsMenu = ({
     </div>
   )
 
+
+
   const editingStatusrender = (
     <div className="editingstatusscroll">
       <p>現在の編集状況</p>
@@ -186,8 +188,12 @@ const NewsMenu = ({
       {EditorStatusCheck(title)}
       <p>サムネイル</p>
       {EditorStatusCheck(imageUrl)}
-      <p>通知に添えるメッセージ</p>
-      {EditorStatusCheck(message)}
+      {followerCounter > 0 && (
+        <>
+        <p>通知に添えるメッセージ</p>
+        {EditorStatusCheck(message)}
+        </>
+      )}
       <p>コンテンツ</p>
       {EditorContentsStatusCheck()}
     </div>
@@ -233,14 +239,25 @@ const NewsMenu = ({
     <p><button onClick={NewsUpLoad}>投稿</button></p>
   )
 
+  const isContentReady = !!(title && imageUrl && charCount); // 必須データが揃っているか確認
+  const isFollowerValid = 
+    (followerCounter > 0 && message) ||  // フォロワーがいる場合はメッセージ必須
+    (followerCounter === 0);             // フォロワーがいない場合はメッセージ不要
+  
+  // デバッグログ
+  console.log("isContentReady", isContentReady);  // 必須データが揃っているか
+  console.log("isFollowerValid", isFollowerValid); // フォロワー条件が満たされているか
+  console.log("follower_counter", followerCounter); // フォロワー数の確認
+  console.log("message", message); // メッセージの内容
+
   const menuItems = [
     { key: "draftList", text: "下書きリスト", render: draftListrender },
     { key: "saveNews", text: "ニュースを保存する", render: saveNewsrender },
     { key: "editingStatus", text: "現在の編集状況", render: editingStatusrender },
-    { key: "notificationMessage", text: "通知に添えるメッセージ", render: notificationMessagerender },
+    ...(followerCounter > 0 ? [{ key: "notificationMessage", text: "通知に添えるメッセージ", render: notificationMessagerender }]:[]),
     // 条件を満たした場合のみ追加
     ...(genre !== "Blog" ? [{ key: "createForm", text: "応募フォームを作成する", render: createFormrender }] : []),
-    ...(title && imageUrl && message && charCount ? [{ key: "releaseNews", text: "ニュースを公開する", render: releaseNewsrender }] : []),
+    ...((isContentReady && isFollowerValid) ? [{ key: "releaseNews", text: "ニュースを公開する", render: releaseNewsrender }] : []),
   ];
 
 
@@ -306,6 +323,7 @@ NewsMenu.propTypes = {
   imageUrl: PropTypes.string.isRequired, //サムネイル画像
   charCount: PropTypes.number.isRequired, //文字数カウント
   selected_draft: PropTypes.array.isRequired, //現在下書き中のニュース＆フォームの情報
+  followerCounter: PropTypes.number.isRequired,
 };
 
 export default NewsMenu;

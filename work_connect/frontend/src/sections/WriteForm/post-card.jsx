@@ -48,10 +48,13 @@ const PostCard = forwardRef(({ post }, ref) => {
   // フォームフィールドをSurveyの形式に変換する
   const transformFormFields = (fields) => {
     // fieldsが存在するかチェック
+    console.error("バリデーション", fields.validators);
+
     if (!fields || !Array.isArray(fields)) {
       console.error("フォームフィールドがありません。fields:", fields);
+
       return {
-        title: {article_title},
+        title: { article_title },
         pages: [],
       };
     }
@@ -69,6 +72,15 @@ const PostCard = forwardRef(({ post }, ref) => {
             ...(field.validators && { validators: field.validators }), // validators を確認
             ...(field.response && { defaultValue: field.response }),  // response を defaultValue に設定
             ...(field.choices && { choices: field.choices }), // choices を追加
+            ...(field.placeholder && { placeholder: field.placeholder }), // placeholder を追加
+            ...(field.description && {description: field.description}), //descriptionを追加
+            ...(field.autocomplete && {autocomplete: field.autocomplete}), 
+            ...(field.otherText && {otherText: field.otherText}),
+            ...(field.showOtherItem && {showOtherItem: field.showOtherItem}),
+            ...(field.colCount && {colCount: field.colCount}),
+            ...(field.maxLength && {maxLength: field.maxLength}),
+            ...(field.rows && {rows: field.rows}),
+
           })),
         }
       ]
@@ -119,6 +131,7 @@ const PostCard = forwardRef(({ post }, ref) => {
         .then(response => {
           console.log('保存成功', response);
         })
+        //ここで応募履歴に飛ばしたい
         .catch(error => {
           console.error('保存エラー', error);
         });
@@ -141,14 +154,15 @@ const PostCard = forwardRef(({ post }, ref) => {
 
   return (
     <div ref={ref}>
-      <Stack sx={{ display: "inline-block"}}>
-        <div className="WriteForm">
-        <Survey model={survey} />
+      <Button variant="outlined" onClick={WriteFormSave}
+        sx={{position:'sticky', top: '100px', width: "100px", borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
+        保存する
+      </Button>
 
-        <Button variant="outlined" onClick={WriteFormSave}
-          sx={{ width: "40px", borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
-          保存する
-        </Button>
+      <Stack sx={{ display: "inline-block" }}>
+        <div className="WriteForm">
+          <Survey model={survey} />
+
         </div>
       </Stack>
     </div>

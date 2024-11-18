@@ -50,13 +50,15 @@ class NewsController extends Controller
 
             $news_detail->follow_status = $followStatus;
 
-            //今見ている人が応募済みかどうかチェック
+            //フォームを作成しているかどうかチェック            
             $createForm = w_create_form::where('news_id', $newsdetail_id)
             ->get();
 
         //もしもジャンルがブログではないかつフォームを作成していた場合
+        //今見ている人が応募済みかどうかチェック
         if($news_detail->genre !== 'Blog' && !$createForm){
             $writeformStatus = w_write_form::where('user_id', $MyId)
+            ->where('news_id', $newsdetail_id)
             ->get();
 
             if($writeformStatus){

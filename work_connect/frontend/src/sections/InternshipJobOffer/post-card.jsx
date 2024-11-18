@@ -43,7 +43,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   };
 
   console.log("アイコンID",icon);
-  console.log("企業名",user_name);
+  console.log("ユーザーネーム",user_name);
 
   // 企業アイコン
   const renderAvatar = (
@@ -57,6 +57,7 @@ const PostCard = forwardRef(({ post }, ref) => {
       }}
     />
   );
+
 
     // /Profile/株式会社アーキテクト
   // フォームのレンダリング（企業の投稿の場合）

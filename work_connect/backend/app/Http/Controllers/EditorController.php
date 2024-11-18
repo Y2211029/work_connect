@@ -64,7 +64,7 @@ class EditorController extends Controller
         $id = $w_news->id;
 
         // news_draft_list 関数を呼び出してニュースドラフトリストを取得
-        $newsDraftList = $this->news_draft_list($request, $Company_id,$genre);
+        $newsDraftList = $this->news_draft_list($request, $Company_id, $genre);
 
 
         // IDを返す
@@ -139,7 +139,7 @@ class EditorController extends Controller
             $id = $w_news->id;
 
             // news_draft_list 関数を呼び出してニュースドラフトリストを取得
-            $newsDraftList = $this->news_draft_list($request, $Company_Id,$genre);
+            $newsDraftList = $this->news_draft_list($request, $Company_Id, $genre);
 
             // IDと画像パスを返す
             return response()->json([
@@ -217,7 +217,7 @@ class EditorController extends Controller
                 w_news::where('id', $id)->update(['header_img' => null]);
 
                 // news_draft_list 関数を呼び出してニュースドラフトリストを取得
-                $prevDraftList = $this->news_draft_list($request, $Company_Id,$genre);
+                $prevDraftList = $this->news_draft_list($request, $Company_Id, $genre);
 
                 Log::info($prevDraftList);
             }
@@ -253,6 +253,7 @@ class EditorController extends Controller
         $summary = $request->input('value');
         $message = $request->input('message');
         $genre = $request->input('genre');
+        $followerCounter = $request->input('followerCounter');
         $public_status = 1;
 
         $notice_genre = "";
@@ -283,65 +284,69 @@ class EditorController extends Controller
             $w_news->updated_at = $now;
             $w_news->save();
 
-            // 投稿した人をフォローしている人のIDをすべて挙げる
-            $followData = [];
-            $followAllData = [];
+            //もしもフォロワーがいたら通知処理を行う
+            if ($followerCounter > 0) {
+                // 投稿した人をフォローしている人のIDをすべて挙げる
+                $followData = [];
+                $followAllData = [];
 
-            $query = w_follow::query();
-            $query->select('w_follow.follow_sender_id');
-            $followData = $query->where("follow_recipient_id", $company_id)->get();
+                $query = w_follow::query();
+                $query->select('w_follow.follow_sender_id');
+                $followData = $query->where("follow_recipient_id", $company_id)->get();
 
-            foreach ($followData as $follow) {
-                $followAllData[] = $follow["follow_sender_id"];
-            }
-
-            $oneNoticeData = [];
-            foreach ($followData as $follow) {
-                if ($oneNoticeData == []) {
-                    \Log::info($follow);
-
-                    $oneNoticeData = w_notice::create([
-                        'get_user_id' => $follow["follow_sender_id"],
-                        'send_user_id' => $company_id,
-                        'category' => $notice_genre,
-                        'detail' => $news_id,
-                        'already_read' => 0,
-                    ]);
-                    \Log::info("ID");
-                    \Log::info($news_id);
-                } else {
-                    w_notice::create([
-                        'get_user_id' => $follow["follow_sender_id"],
-                        'send_user_id' => $company_id,
-                        'category' => $notice_genre,
-                        'detail' => $news_id,
-                        'already_read' => 0,
-                    ]);
-                    \Log::info("ID");
-                    \Log::info($news_id);
+                foreach ($followData as $follow) {
+                    $followAllData[] = $follow["follow_sender_id"];
                 }
+
+                $oneNoticeData = [];
+                foreach ($followData as $follow) {
+                    if ($oneNoticeData == []) {
+                        \Log::info($follow);
+
+                        $oneNoticeData = w_notice::create([
+                            'get_user_id' => $follow["follow_sender_id"],
+                            'send_user_id' => $company_id,
+                            'category' => $notice_genre,
+                            'detail' => $news_id,
+                            'already_read' => 0,
+                        ]);
+                        \Log::info("ID");
+                        \Log::info($news_id);
+                    } else {
+                        w_notice::create([
+                            'get_user_id' => $follow["follow_sender_id"],
+                            'send_user_id' => $company_id,
+                            'category' => $notice_genre,
+                            'detail' => $news_id,
+                            'already_read' => 0,
+                        ]);
+                        \Log::info("ID");
+                        \Log::info($news_id);
+                    }
+                }
+
+
+                // IDに通知を送る
+                $queryNotice = w_notice::query();
+
+                $queryNotice->select(
+                    'w_companies.*',
+                    'w_notices.*',
+                );
+
+                $queryNotice->where('w_notices.id', $oneNoticeData['id']);
+
+                $queryNotice->join('w_companies', 'w_companies.id', '=', 'w_notices.send_user_id');
+
+
+                $queryNotice->orderBy('w_notices.created_at', 'asc');
+
+                $noticeData = $queryNotice->get();
+                $noticeData[0]["message"] = $message;
+
+                return response()->json(['message' => 'successfully', 'follower' => $followAllData, 'noticeData' => $noticeData], 200);
             }
-
-
-            // IDに通知を送る
-            $queryNotice = w_notice::query();
-
-            $queryNotice->select(
-                'w_companies.*',
-                'w_notices.*',
-            );
-
-            $queryNotice->where('w_notices.id', $oneNoticeData['id']);
-
-            $queryNotice->join('w_companies', 'w_companies.id', '=', 'w_notices.send_user_id');
-
-
-            $queryNotice->orderBy('w_notices.created_at', 'asc');
-
-            $noticeData = $queryNotice->get();
-            $noticeData[0]["message"] = $message;
-
-            return response()->json(['message' => 'successfully', 'follower' => $followAllData, 'noticeData' => $noticeData], 200);
+            return response()->json('成功');
         } else {
             return response()->json(['error' => 'Record not found'], 404);
         }
@@ -372,7 +377,6 @@ class EditorController extends Controller
                 'success' => true,
                 'news_draft_list' => $prevDraftList,
             ]);
-
         } catch (\Exception $e) {
             // エラーレスポンスを返す
             return response()->json([
@@ -393,15 +397,20 @@ class EditorController extends Controller
                 ->orderBy('updated_at', 'desc') // 降順でソート
                 ->get();
 
+            //通知を受け取るための自社をフォローしている学生が何名いるかカウント
+            $follower_counter = w_follow::where('follow_recipient_id', $id)
+                ->count();
+
             // 各ニュースドラフトに対応する w_create_form データを追加
             foreach ($newsDraftList as $newsDraft) {
                 // news_id に対応する w_create_form レコードを取得
                 $createForm = w_create_form::where('news_id', $newsDraft->id)->get();
                 Log::info($newsDraft->id);
                 Log::info($createForm);
-                if($createForm){
-                // newsDraft に create_form プロパティとして追加
-                $newsDraft->create_form = $createForm;
+                if ($createForm) {
+                    // newsDraft に create_form プロパティとして追加
+                    $newsDraft->create_form = $createForm;
+                    $newsDraft->follower_counter = $follower_counter;
                 }
             }
 
@@ -417,7 +426,8 @@ class EditorController extends Controller
         }
     }
 
-    public function createform_search(Request $request){
+    public function createform_search(Request $request)
+    {
         try {
 
             $newsid = $request->input('newsid');
@@ -426,7 +436,6 @@ class EditorController extends Controller
             $createForm = w_create_form::where('news_id', $newsid)
                 ->get();
             return response()->json(['create_form' => $createForm]);
-
         } catch (\Exception $e) {
             // エラーレスポンスを返す
             return response()->json([

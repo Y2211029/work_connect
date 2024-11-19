@@ -34,16 +34,17 @@ const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, s
   if (newWorks) {
     console.log("newWorks", newWorks);
 
-    const existingIds = new Set(currentWorkList.map((item) => item[idKey]));
+    const existingIds = new Set(currentWorkList.map(item => item[idKey]));
 
     let filteredNewWorks;
     if (newWorks.title_contents) {
-      filteredNewWorks = newWorks.title_contents.filter((element) => !existingIds.has(element[idKey]));
+      filteredNewWorks = newWorks.title_contents.filter(element => !existingIds.has(element[idKey]));
     } else {
-      filteredNewWorks = newWorks.filter((element) => !existingIds.has(element[idKey]));
+      filteredNewWorks = newWorks.filter(element => !existingIds.has(element[idKey]));
     }
 
-    console.log("filteredNewWorks", filteredNewWorks);
+    console.log("idKey", idKey); // idKey の値を確認
+    console.log("filteredNewWorks", filteredNewWorks); // フィルタリング後の結果
 
     // 全作品アイテム
     filteredNewWorks.forEach((element) => {
@@ -153,17 +154,6 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
             break;
           }
 
-        case path === `/Profile/${ParamUserName}` && options.page === "apply_history": {
-          try {
-            const { default: ApplyHistoryPostCard } = await import("src/sections/ApplyHistory/post-card");
-            setPostCard(() => ApplyHistoryPostCard);
-            console.log("ApplyHistoryPostCard loaded successfully");
-          } catch (error) {
-            console.error("Error loading ApplyHistoryPostCard:", error);
-          }
-          break;
-        }
-
         case path === `/WriteForm/${NewsDetailId}` || options.DecodeURL === `/Profile/${ParamUserName}/News/Forms`: {
           const { default: WriteFormPostCard } = await import("src/sections/WriteForm/post-card");
           setPostCard(() => WriteFormPostCard);
@@ -249,40 +239,6 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           },
         })),
     },
-
-    apply_history: {
-      ItemName: `${ParamUserName}さんの応募履歴`,
-      url: `http://localhost:8000/get_apply_history/${SessionAccountData.id}`,
-      idKey: "id",
-      tags: ["genre"],
-      generatePosts: (WorkOfList) => {
-        // 各app.write_formの中身をログ出力
-        return WorkOfList.map((app) => {
-          console.log("Mapped app:", {
-            apply_histories: app,
-            companies_name: app.companies_name,
-            news_id: app.news_id,
-            news_title: app.news_title,
-            news_genre: app.news_genre,
-            img: app.img,
-            write_form_id: app.write_form_id,
-            write_form: app.write_form,
-            form_writed_at: app.form_writed_at,
-          });
-          return {
-            apply_histories: app,
-            companies_name: app.companies_name,
-            news_id: app.news_id,
-            news_title: app.news_title,
-            news_genre: app.news_genre,
-            img: app.img,
-            write_form_id: app.write_form_id,
-            write_form: app.write_form,
-            form_writed_at: app.form_writed_at,
-          };
-        });
-      },
-    },
     students: {
       ItemName: "学生一覧",
       url: "http://localhost:8000/get_student_list",
@@ -302,7 +258,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           icon: student.icon,
           cover: `/assets/images/covers/cover_${key + 1}.jpg`,
           userName: student.user_name,
-          studentName: student.student_surname  + student.student_name,
+          studentName: student.student_surname + student.student_name,
           graduationYear: student.graduation_year,
           departmentName: student.department_name,
           facultyName: student.faculty_name,
@@ -528,6 +484,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
         }
       },
     },
+
     companyinformations: {
       ItemName: `${ParamUserName}さんの詳細な企業情報`,
       url: `http://localhost:8000/company_informations/${ParamUserName}`,
@@ -535,6 +492,11 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       tags: ["company_name"],
       generatePosts: (WorkOfList) => {
         if (Array.isArray(WorkOfList)) {
+          if (WorkOfList.length === 0) {
+            // 空配列の場合に空配列を返す
+            return [{ title_contents: [] }];
+          }
+
           const title_contents = WorkOfList.map((company) => ({
             title: company.title,
             contents: company.contents,
@@ -547,7 +509,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           return [{ title_contents }]; // 1つのオブジェクトにまとめた配列として返す
         }
       },
-    },
+    }
   };
 
   return (

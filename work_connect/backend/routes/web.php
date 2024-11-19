@@ -278,7 +278,7 @@ Route::get('/createform_search', action: [EditorController::class, 'createform_s
 Route::get('/api/embed', action: [EditorController::class, 'embed']);
 Route::post('/rewrite_news_delete', [EditorController::class, 'rewrite_news_delete']);
 //学生(自分)が応募した履歴を確認
-Route::get('/get_apply_history/{id}', action: [NewsController::class, 'get_apply_history']);
+Route::post('/get_apply_history', action: [NewsController::class, 'get_apply_history']);
 
 
 

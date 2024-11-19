@@ -25,12 +25,29 @@ const PostCard = forwardRef(({ post },) => {
   const [MyUserName, setMyUserName] = useState("");
   const [showEdit, setShowEdit] = useState(false);
   const [editedContents, setEditedContents] = useState([]);
-  const [TrueTitleContents, setTitleContents] = useState(title_contents);
-  const [CompanyId,setCompanyId] = useState(null);
+  const [TrueTitleContents, setTitleContents] = useState([]);
+  const [CompanyId, setCompanyId] = useState(null);
   const location = useLocation();
   const path = location.pathname;
   const URLUserName = path.split('/')[2];
   const canEdit = (CompanyId === MyUserId) || (URLUserName === MyUserName);
+
+  console.log("title_contents",title_contents);
+
+  useEffect(() => {
+    if (Array.isArray(title_contents)) {
+      if (title_contents.length > 0) {
+        console.log("title_contents", title_contents);
+        setTitleContents(title_contents);
+      } else {
+        console.log("title_contents が空配列です");
+        setTitleContents([]); // 空配列として保持
+      }
+    } else {
+      console.log("title_contents が配列ではありません。NULLまたは未定義です");
+      setTitleContents([]); // 空配列として初期化
+    }
+  }, [title_contents]);
 
   useEffect(() => {
     const accountData = JSON.parse(sessionStorage.getItem("accountData"));
@@ -41,6 +58,7 @@ const PostCard = forwardRef(({ post },) => {
 
   useEffect(() => {
     if (TrueTitleContents && TrueTitleContents.length > 0) {
+      console.log("TrueTitleContents",TrueTitleContents);
       const companyId = TrueTitleContents[0].company_id;
       setCompanyId(companyId);
       console.log("companyIdが設定されました:", companyId);
@@ -48,16 +66,17 @@ const PostCard = forwardRef(({ post },) => {
     console.log("title_contents", title_contents);
   }, [TrueTitleContents]);
 
-
   useEffect(() => {
+    if (!canEdit) return; // canEdit が false の場合、何も実行しない
+
     async function CompanyInformationSave() {
       console.log("保存するデータ", editedContents);
       try {
         const response = await axios.post(CompanyInformationsSaveURL, {
           CompanyInformation: editedContents,
-          CompanyName: MyUserName
+          CompanyName: MyUserName,
         });
-        //成功したらtitle_contentsを更新する
+        // 成功したら title_contents を更新する
         if (response) {
           console.log("saveが成功です");
           setTitleContents(response.data.title_contents);
@@ -67,19 +86,23 @@ const PostCard = forwardRef(({ post },) => {
       }
     }
 
-    // editedContentsのタイトルまたはコンテンツがnullでないことを確認
-    const hasValidData = editedContents.every(item => item.title !== "" && item.contents !== "");
+    // editedContents のタイトルまたはコンテンツが空でないことを確認
+    const hasValidData = editedContents.every(
+      (item) => item.title !== "" && item.contents !== ""
+    );
 
     if (editedContents.length && hasValidData) {
       CompanyInformationSave();
     }
-  }, [editedContents]);
+  }, [canEdit, editedContents]);
+
 
   useEffect(() => {
+    if (!canEdit) return; // canEdit が false の場合、何も実行しない
     // 編集時に公開・非公開含めたすべての企業情報を取得する
     async function AllCompanyInformationsPull() {
       const InformationUserName = decodeURIComponent(URLUserName);
-      console.log("InformationUserName",InformationUserName);
+      console.log("InformationUserName", InformationUserName);
       try {
         // Laravel側から企業一覧データを取得
         const response = await axios.post(AllCompanyInformationsPullURL, {
@@ -95,7 +118,7 @@ const PostCard = forwardRef(({ post },) => {
       }
     }
     AllCompanyInformationsPull();
-  }, []);
+  }, [canEdit]);
 
 
   useEffect(() => {
@@ -199,9 +222,6 @@ const PostCard = forwardRef(({ post },) => {
     setShowEdit(false)
   }
 
-
-
-
   return (
     <div>
 
@@ -217,30 +237,39 @@ const PostCard = forwardRef(({ post },) => {
         HandleTextChange={handleTextChange}
       />
 
-      {TrueTitleContents && TrueTitleContents.length > 0 && (
+      {TrueTitleContents && TrueTitleContents.length > 0 ? (
         <TableContainer component={Paper} className="tableContainer">
           <Table className="Table">
             <TableHead>
               <TableRow>
                 <TableCell style={{ fontWeight: 'bold', width: '40%' }}>タイトル</TableCell>
-                <TableCell style={{ fontWeight: 'bold', width: '150%' }}>内容</TableCell>
+                <TableCell style={{ fontWeight: 'bold', width: '60%' }}>内容</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {TrueTitleContents.map((item) => (
                 <TableRow key={item.id}>
-                  <TableCell>{item.title}</TableCell>
-                  <TableCell>{item.contents}</TableCell>
+                  <TableCell>{item.title || "タイトルなし"}</TableCell>
+                  <TableCell>{item.contents || "内容なし"}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
+      ) : (
+        <p>0件です</p>
       )}
 
-      {!canEdit ? (
+
+
+
+      {/* {!canEdit ? (
         <div>
-          企業情報はありません
+        <Tooltip title="編集する">
+          <IconButton onClick={() => handleEditClick(CompanyId)}>
+            <ModeEditIcon />
+          </IconButton>
+        </Tooltip>
         </div>
       ) : (
         <div>
@@ -250,7 +279,17 @@ const PostCard = forwardRef(({ post },) => {
           </IconButton>
         </Tooltip>
         </div>
-      )}
+      )} */}
+
+      {canEdit ? (
+        <div>
+          <Tooltip title="編集する">
+            <IconButton onClick={() => handleEditClick(CompanyId)}>
+              <ModeEditIcon />
+            </IconButton>
+          </Tooltip>
+        </div>
+      ) : null}
 
 
     </div>

@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 export default function CompanyNewsPage() {
 
 const { user_name } = useParams();
-console.log(user_name);
+console.log("企業の詳細情報:user_name",user_name);
 
   return (
     <>

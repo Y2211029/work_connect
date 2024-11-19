@@ -5,7 +5,7 @@ import { Survey } from 'survey-react-ui';
 import "./CreateForm.css";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import Modal from "react-modal";
-
+import MUIButton from "@mui/material/Button";
 
 
 // フォームメニュー
@@ -21,8 +21,6 @@ import Comment from "./SelectOptionMenu/Comment";
 import Rating from "./SelectOptionMenu/Rating";
 import Ranking from "./SelectOptionMenu/Ranking";
 import ImagePicker from "./SelectOptionMenu/ImagePicker";
-
-
 
 // MUI
 import Stack from "@mui/material/Stack";
@@ -44,12 +42,15 @@ import Typography from "@mui/material/Typography";
 
 // データ保存
 import axios from "axios";
+import FormMenu from './clickedmenu/FormMenu';
 
-const CreateForm = ({ newsid, HandleBack}) => {
+const CreateForm = ({ newsid, HandleBack }) => {
   console.log("ニュースid", newsid);
   console.log("HandleBack関数", HandleBack);
   const createform_search_url = "http://127.0.0.1:8000/createform_search";
   const [questions, setQuestions] = useState([]);
+
+
   useEffect(() => {
     const getcreateform = async () => {
       let createform = [];  // createformを初期化
@@ -105,7 +106,7 @@ const CreateForm = ({ newsid, HandleBack}) => {
   const [selectmenu, setSelectMenu] = useState("");
   const { getSessionData } = useSessionStorage();
   const [questionData, setQuestionData] = useState(null);
-
+  const [formmenushow, setFormMenuShow] = useState(false);
   const accountData = getSessionData("accountData");
   const data = {
     id: accountData.id,
@@ -500,14 +501,6 @@ const CreateForm = ({ newsid, HandleBack}) => {
   const WriteNewsHandleBack = async (event) => {
     event.preventDefault(); // デフォルトの挙動を防ぐ
     HandleBack();
-    // const isConfirmed = window.confirm("フォームを保存しますか?");
-    // try {
-    //   if (isConfirmed) {
-    //     await CreateFormSave(); // ユーザーがOKを選択した場合に保存処理を実行
-    //   }
-    // } finally {
-    //   HandleBack(); // 必ず HandleBack を呼び出す
-    // }
   };
 
 
@@ -567,19 +560,62 @@ const CreateForm = ({ newsid, HandleBack}) => {
 
   ];
 
-  console.log("surveyの中身", survey);
+
+  const FormMenuShow = () => {
+    setFormMenuShow(true);
+    console.log("開く");
+    document.body.style.overflow = 'hidden';
+  }
+
+  const closeModal = () => {
+    setFormMenuShow(false);
+    console.log("閉じる");
+    document.body.style.overflow = 'auto';
+  };
+
+
 
   return (
     <>
-      <Stack direction="row" spacing={2} style={{ width: "1000px", }}>
-
-
+      <Stack direction="row" spacing={2} style={{ width: "1000px" }}>
 
         <div className="FormDemo"> {/* フォーム部分 */}
 
-        <div className="back_news_draft" onClick={WriteNewsHandleBack}>
-                <Typography>← ニュースの下書きに戻る</Typography>
-        </div>
+
+                  {/*フォームメニューのボタン */}
+                  <Stack direction="row" alignItems="center" spacing={1}>
+            <div className="back_news_draft" onClick={WriteNewsHandleBack}>
+            <Typography>← ニュースの下書きに戻る</Typography>
+            </div>
+            {/* <MUIButton onClick={NewsMenuShow} variant="contained" sx={buttonStyle}> */}
+            <MUIButton variant="contained" onClick={FormMenuShow} className='FormMenuButton'>
+              フォームメニュー
+            </MUIButton>
+          </Stack>
+
+
+          <FormMenu
+            IsOpen={formmenushow}
+            CloseModal={closeModal}
+            questions={questions}
+            // genre={genre}
+            // draftlist={draft_list}
+            // CreateFormJump={CreateFormJump}
+            // newsid={news_id}
+            // RewriteNewsDelete={rewrite_news_delete}
+            // RewriteNewsEnter={rewrite_news}
+            // EditorStatusCheck={EditorStatusCheck}
+            // EditorContentsStatusCheck={EditorContentsStatusCheck}
+            // NewsSave={news_save}
+            // imageUrl={imageUrl}
+            // title={title}
+            // NewsUpLoad={news_upload}
+            // NotificationMessageHandleChange={notification_messagehandleChange}
+            // message={notificationMessage}
+            // charCount={charCount}
+            // selected_draft={selected_draft}
+            // followerCounter={followerCounter}
+          />
 
 
           {!questions || questions.length === 0 ? (
@@ -587,7 +623,7 @@ const CreateForm = ({ newsid, HandleBack}) => {
           ) : (
             <>
               <div className="SurveyModal">
-                <Survey model={survey} />
+                <Survey model={survey} className=""/>
               </div>
 
             </>
@@ -668,18 +704,6 @@ CreateForm.propTypes = {
   newsid: PropTypes.number,
   HandleBack: PropTypes.func.isRequired,
 };
-// post: PropTypes.shape({
-//   company_id: PropTypes.string,
-//   news_id: PropTypes.string,
-//   article_title: PropTypes.string,
-//   create_form: PropTypes.arrayOf(PropTypes.shape({
-//     name: PropTypes.string.isRequired,
-//     title: PropTypes.string.isRequired,
-//     type: PropTypes.string.isRequired,
-//     inputtype: PropTypes.string,
-//     validators: PropTypes.array,
-//   })).isRequired, // JSON 配列として修正
-// }).isRequired,
 
 
 

@@ -20,9 +20,11 @@ const PostCard = forwardRef(({ post }, ref) => {
   const accountData = getSessionData("accountData");
   const data = {
     account_id: accountData.id,
+    account_username: accountData.user_name,
   };
 
   const writeformsaveurl = `http://localhost:8000/write_form_save`;
+
 
   useEffect(() => {
     console.log("company_id", company_id);
@@ -74,9 +76,12 @@ const PostCard = forwardRef(({ post }, ref) => {
             ...(field.choices && { choices: field.choices }), // choices を追加
             ...(field.placeholder && { placeholder: field.placeholder }), // placeholder を追加
             ...(field.description && {description: field.description}), //descriptionを追加
-            ...(field.autocomplete && {autocomplete: field.autocomplete}), 
+            ...(field.autocomplete && {autocomplete: field.autocomplete}),
+            ...(field.autoGrow && {autoGrow: field.autoGrow}),
             ...(field.otherText && {otherText: field.otherText}),
             ...(field.showOtherItem && {showOtherItem: field.showOtherItem}),
+            ...(field.clearText && {clearText: field.clearText}),
+            ...(field.showClearButton && {showClearButton: field.showClearButton}),
             ...(field.colCount && {colCount: field.colCount}),
             ...(field.maxLength && {maxLength: field.maxLength}),
             ...(field.rows && {rows: field.rows}),
@@ -130,8 +135,10 @@ const PostCard = forwardRef(({ post }, ref) => {
       })
         .then(response => {
           console.log('保存成功', response);
+          //応募履歴ページに飛ばす
+          window.location.href = `/Profile/${data.account_username}?page=apply_history`;
         })
-        //ここで応募履歴に飛ばしたい
+
         .catch(error => {
           console.error('保存エラー', error);
         });
@@ -153,16 +160,15 @@ const PostCard = forwardRef(({ post }, ref) => {
 
 
   return (
-    <div ref={ref}>
+    <div className="WriteForm_Container" ref={ref}>
       <Button variant="outlined" onClick={WriteFormSave}
         sx={{position:'sticky', top: '100px', width: "100px", borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
-        保存する
+        応募する
       </Button>
 
       <Stack sx={{ display: "inline-block" }}>
         <div className="WriteForm">
           <Survey model={survey} />
-
         </div>
       </Stack>
     </div>

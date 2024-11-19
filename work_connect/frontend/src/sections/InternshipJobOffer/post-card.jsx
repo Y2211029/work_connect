@@ -59,16 +59,16 @@ const PostCard = forwardRef(({ post }, ref) => {
   );
 
 
-    // /Profile/株式会社アーキテクト
   // フォームのレンダリング（企業の投稿の場合）
   const renderForm = company_id === accountData.id && count > 0 ? (
-    <Link
-      to={`/Profile/${user_name}?page=checkform`}
+    <Typography
+      sx={{ opacity: 0.48, cursor: 'pointer' }}
+      onClick={() => {
+        window.location.href = `/Profile/${user_name}?page=checkform`;
+      }}
     >
-      <Typography opacity="0.48">
-        {count}件のフォーム回答
-      </Typography>
-    </Link>
+      {count}件のフォーム回答
+    </Typography>
   ) : null;
 
   // ジャンル

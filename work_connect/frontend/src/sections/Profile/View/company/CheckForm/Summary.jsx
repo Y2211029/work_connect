@@ -85,12 +85,38 @@ const Summary = ({
 }) => {
   console.log(GroupedResponses);
 
-  const IndividualJump = (e, number,studentName) => {
+  const IndividualJump = (e, number, studentName) => {
     console.log("IndividualJump通りました");
     console.log(studentName);
     setViewStudentName(studentName)
     HandleTabClick(e, number);
   };
+
+  console.log("application_form", application_form);
+  console.log("時間", application_form[0].user_name[0].news_created_at);
+
+  const time_check = (time) => {
+    const targetDate = time; // 対象の日付
+    const currentDate = new Date(); // 現在の日付
+
+    // 現在の日付から24時間前の日付を計算
+    const twentyFourHoursAgo = new Date(currentDate - 24 * 60 * 60 * 1000);
+
+    // 文字列の日付をDateオブジェクトに変換
+    const targetDateObj = new Date(targetDate);
+
+    if (targetDateObj >= twentyFourHoursAgo) {
+      return (
+        <>
+          <TooltipTitle title={'24時間以内に応募されました'}>
+          <p style={{ color: 'red', marginLeft: '5%' }}>New!</p>
+          </TooltipTitle>
+        </>
+      )
+  } else {
+  return null;
+  }
+}
 
 
 
@@ -107,11 +133,15 @@ return (
             <Typography
               key={user.write_form_id || index}
               className="writeform-answereddata"
-              onClick={(e) => IndividualJump(e, 2,user.user_name)}
+              onClick={(e) => IndividualJump(e, 2, user.user_name)}
             >
-              <TooltipTitle title={`クリックすると${user.user_name}の回答が見られます`}>
-                <span>{user.user_name}さん</span>
-              </TooltipTitle>
+               <Stack direction={"row"}>
+                <TooltipTitle title={`クリックすると${user.user_name}の回答が見られます`}>
+                  <p>{user.user_name}さん</p>
+                </TooltipTitle>
+                  {time_check(user.news_created_at)}
+                </Stack>
+
             </Typography>
           ))}
         </div>
@@ -119,7 +149,7 @@ return (
           Object.entries(GroupedResponses).map(([title, { responses, type, contents }], index) => (
             <div key={index} className="writeform-container">
               <Typography className="writeform-title">
-                {title} ({type}):
+                {title}
               </Typography>
               <Typography className="writeform-contents">
                 {contents}
@@ -132,7 +162,7 @@ return (
                   {response}
                 </Typography>
               ))}
-              {type === 'checkbox' && <Graph title={title} responses={responses} />}
+              {type === 'checkbox' || type === 'radiogroup' && <Graph title={title} responses={responses} />}
             </div>
           ))}
       </Stack>

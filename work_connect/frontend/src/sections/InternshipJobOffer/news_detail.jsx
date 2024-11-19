@@ -140,7 +140,7 @@ const InternshipJobOfferPage = () => {
     };
 
     const handleProfileJump = () => {
-        navigate(`/Profile/${NewsDetail.company_name}`);
+        navigate(`/Profile/${NewsDetail.company_name}?page=mypage`);
     }
 
     const handleFormJump = () => {
@@ -249,12 +249,12 @@ const InternshipJobOfferPage = () => {
                                                 background: writeformStatus
                                                 ? "linear-gradient(#d3d3d3, #a6a6a6)" // 応募済みの場合
                                                 : "linear-gradient(#41A4FF, #9198e5)", // 応募する場合
-                                                
+
                                             "&:hover": {
                                                 background: writeformStatus
                                                     ? "linear-gradient(#b8b8b8, #9e9e9e)" // 応募済みの場合
                                                     : "linear-gradient(#c2c2c2, #e5ad91)", // 応募する場合
-                                                    
+
                                             },
                                             }}
                                             onClick={writeformStatus ? undefined : handleFormJump} // trueの場合のみクリックイベントを設定
@@ -350,12 +350,12 @@ const InternshipJobOfferPage = () => {
                                                 background: writeformStatus
                                                 ? "linear-gradient(#d3d3d3, #a6a6a6)" // 応募済みの場合
                                                 : "linear-gradient(#41A4FF, #9198e5)", // 応募する場合
-                                                
+
                                             "&:hover": {
                                                 background: writeformStatus
                                                     ? "linear-gradient(#b8b8b8, #9e9e9e)" // 応募済みの場合
                                                     : "linear-gradient(#c2c2c2, #e5ad91)", // 応募する場合
-                                                    
+
                                             },
                                             }}
                                             onClick={writeformStatus ? undefined : handleFormJump} // trueの場合のみクリックイベントを設定

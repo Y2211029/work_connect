@@ -50,7 +50,7 @@ class NewsController extends Controller
 
             $news_detail->follow_status = $followStatus;
 
-            //フォームを作成しているかどうかチェック            
+            //フォームを作成しているかどうかチェック
             $createForm = w_create_form::where('news_id', $newsdetail_id)
             ->get();
 
@@ -73,13 +73,18 @@ class NewsController extends Controller
         }
     }
 
-    public function get_apply_history($id)
+    public function get_apply_history(Request $request)
     {
+
+        $id = $request->input("MyId");
+
+
         $apply_history = w_write_form::where('user_id', $id)
             ->join('w_news', 'w_write_forms.news_id', '=', 'w_news.id')
             ->join('w_companies', 'w_write_forms.recipient_company_id', '=', 'w_companies.id')
             ->select(
                 'w_companies.company_name as companies_name',
+                'w_companies.icon as icon',
                 'w_news.id as news_id',
                 'w_news.article_title as news_title',
                 'w_news.genre as news_genre',
@@ -88,12 +93,15 @@ class NewsController extends Controller
                 'w_write_forms.write_form as write_form',
                 'w_write_forms.writeformDateTime as form_writed_at',
             )
+            ->orderBy('form_writed_at', direction: 'desc')
             ->get();
 
         $posts = [];
+        $id = 1;
 
         foreach ($apply_history as $app) {
             $posts[] = [
+                'id' => $id,
                 'companies_name' => $app->companies_name,
                 'news_id' => $app->news_id,
                 'news_title' => $app->news_title,
@@ -102,7 +110,9 @@ class NewsController extends Controller
                 'write_form_id' => $app->write_form_id,
                 'write_form' => json_decode($app->write_form, true), // 配列としてデコード
                 'form_writed_at' => $app->form_writed_at,
+                'icon' => $app->icon,
             ];
+            $id+=1;
         }
 
         // 配列全体をログ出力する
@@ -113,7 +123,7 @@ class NewsController extends Controller
             Log::info("Post #$index: ", $post);
         }
 
-        return response()->json($posts);
+        return response()->json(['apply_histories' => $posts]);
     }
 
 
@@ -146,80 +156,6 @@ class NewsController extends Controller
             return response()->json(["message" => "新規追加成功しました"], 201);
         }
     }
-
-    // 企業ニュース取得
-    // public function special_company_news(Request $request, $username, $Myid, $Genre)
-    // {
-    //     //$usernameは今プロフィールで見ている人のユーザーネーム
-    //     //$Myidはログイン中のid
-
-    //     Log::info("special_company_news通ってます");
-    //     $page = (int) $request->query('page', 1);
-    //     $perPage = 20;
-    //     $offset = ($page - 1) * $perPage;
-    //     $sortOption = $request->query('sort');
-
-    //     // w_companiesテーブルからIdを取得
-    //     $company = w_company::where('user_name', $username)->first();
-
-    //     if (!$company) {
-    //         return response()->json(['error' => '指定されたユーザーが見つかりません。'], 404);
-    //     } else {
-    //         $special_company_news_id = $company->id; // IDを取得
-    //     }
-
-    //     // ニュースの取得
-    //     $query = w_news::where('company_id', $special_company_news_id)
-    //         ->where('genre', $Genre)
-    //         ->where('public_status', 1)
-    //         ->join('w_companies', 'w_news.company_id', '=', 'w_companies.id')
-    //         ->select('w_news.*', 'w_companies.*', 'w_news.created_at as news_created_at', 'w_news.id as news_id');
-
-    //     // ソート処理
-    //     if ($sortOption === 'orderNewPostsDate') {
-    //         $query->orderBy('w_news.created_at', 'desc');
-    //     } elseif ($sortOption === 'orderOldPostsDate') {
-    //         $query->orderBy('w_news.created_at', 'asc');
-    //     } else {
-    //         // デフォルトのソート（最新の投稿が最初）
-    //         $query->orderBy('news_created_at', 'desc');
-    //     }
-
-    //     // ページネーションの適用
-    //     $posts = $query->skip($offset)->take($perPage)->get();
-
-    //     foreach ($posts as $post) {
-    //         $isFollowing = w_follow::where('follow_sender_id', $Myid)
-    //             ->where('follow_recipient_id', $post->company_id)
-    //             ->exists();
-
-    //         $isFollowedByUser = w_follow::where('follow_sender_id', $post->company_id)
-    //             ->where('follow_recipient_id', $Myid)
-    //             ->exists();
-
-    //         Log::info($Myid);
-    //         Log::info($post->company_id);
-
-    //         if ($Myid[0] == $post->company_id[0]) {
-    //             $post->follow_status = 'フォローできません';
-    //         } else if ($isFollowing && $isFollowedByUser) {
-    //             $post->follow_status = '相互フォローしています';
-    //         } elseif ($isFollowing) {
-    //             $post->follow_status = 'フォローしています';
-    //         } elseif ($isFollowedByUser) {
-    //             $post->follow_status = 'フォローされています';
-    //         } else {
-    //             $post->follow_status = 'フォローする';
-    //         }
-    //     }
-
-    //     return response()->json($posts);
-    //     // if ($posts->isNotEmpty()) {
-    //     //     return response()->json($posts);
-    //     // } else {
-    //     //     return response()->json([['error' => 'ニュースが見つかりませんでした。']], 404);
-    //     // }
-    // }
 
     //自社が投稿したニュースの中で応募フォームを作成したニュースを表示させる
     //応募フォームの回答(面談の日程とか?)とその人のプロフィールを確認することができる

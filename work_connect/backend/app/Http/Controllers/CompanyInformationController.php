@@ -16,8 +16,17 @@ class CompanyInformationController extends Controller
         $title_contents_array = $this->getCompanyInformationData($CompanyName);
 
         if ($title_contents_array === null) {
+            Log::info("会社情報が見つかりません: " . $CompanyName);
             return response()->json(['error' => '会社が見つかりません'], 404);
         }
+
+        // 配列が空の場合もエラー回避
+        if (empty($title_contents_array)) {
+            Log::info("会社情報が空の配列です: " . $CompanyName);
+            return response()->json(['title_contents' => []]);
+        }
+
+        Log::info("title_contents_array: " . json_encode($title_contents_array));
 
         return response()->json(['title_contents' => $title_contents_array]);
     }
@@ -28,6 +37,10 @@ class CompanyInformationController extends Controller
 
         $companyInformationArray = $request->input("CompanyInformation");
         $CompanyName = $request->input("CompanyName");
+
+        Log::info("companyInformationArray" . json_encode($companyInformationArray));
+        Log::info("CompanyName" . $CompanyName);
+
 
         foreach ($companyInformationArray as $companyInformation) {
             Log::info("Processing ID: {$companyInformation['id']}");
@@ -68,14 +81,20 @@ class CompanyInformationController extends Controller
 
     private function getCompanyInformationData($CompanyName)
     {
-        $company = w_company::where('user_name', $CompanyName)->first();
+        Log::info("処理開始: {$CompanyName}");
 
+        $company = w_company::where('user_name', $CompanyName)->first();
         if (!$company) {
             Log::info("会社が見つかりませんでした: {$CompanyName}");
             return null;
         }
 
         $Company_Id = $company->id;
+        Log::info("会社ID: {$Company_Id}");
+
+        $test = w_company_information::where('company_id', $Company_Id)
+        ->get();
+        Log::info($test);
 
         $company_information = w_company_information::where('company_id', $Company_Id)
             ->where('public_status', 1)
@@ -90,6 +109,7 @@ class CompanyInformationController extends Controller
             ->get();
 
         if ($company_information->isNotEmpty()) {
+            Log::info("企業情報が見つかりました: 件数 " . $company_information->count());
             return $company_information->map(function ($item) {
                 return [
                     'title' => $item->title,
@@ -100,21 +120,27 @@ class CompanyInformationController extends Controller
                     'public_status' => $item->public_status,
                 ];
             })->toArray();
+        } else {
+            Log::info("企業情報が見つかりませんでした: {$CompanyName}");
+            return [];
         }
-
-        Log::info("企業情報が見つかりませんでした");
-        return [];
     }
+
 
     public function all_company_informations_pull(Request $request)
     {
 
+        Log::info("all_company_informations_pull通ってます");
+
         // リクエストから名前を取得し、w_compinesテーブルからidを取得
         $InformationUserName = $request->input("InformationUserName");
+        Log::info("InformationUserName: {$InformationUserName}");
 
         $company = w_company::where('user_name', $InformationUserName)->first();
 
         $CompanyId = $company->id;
+        Log::info("CompanyId: {$CompanyId}");
+
 
         // 企業情報が存在するかチェック
         $company_information = w_company_information::where('company_id', $CompanyId)

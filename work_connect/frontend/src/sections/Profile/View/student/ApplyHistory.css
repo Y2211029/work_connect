@@ -1,0 +1,71 @@
+.post_card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 16px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    font-family: Arial, sans_serif;
+    width:100%;
+}
+
+.post_card_header {
+    position: relative;
+    width: 10%;
+    overflow: hidden;
+}
+
+.post_card_img {
+    margin-top:15%;
+    margin-left:20%;
+    width: 36px;
+    height: 36px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.form_writed_at{
+    margin-left: 10px;
+}
+
+.post_card_content {
+    padding: 16px;
+}
+
+.post_card_title {
+    font-size: 1.5rem;
+    margin: 0;
+    color: #333;
+}
+
+.post_card_genre,
+.post_card_company,
+.post_card_date,
+.post_card_postDateTimeDisplay{
+    font-size: 1rem;
+    margin: 20px 0;
+    color: #555;
+}
+
+
+.post_card_form h3 {
+    margin: 16px 0 8px;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.post_card_form ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.post_card_form li {
+    margin: 8px 0;
+    font-size: 1rem;
+    color: #333;
+}
+
+.post_card_form li strong {
+    color: #555;
+}

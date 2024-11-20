@@ -17,6 +17,7 @@ import './checkform.css';
 
 const PostCard = forwardRef(({ post }) => {
   const { application_form } = post;
+  console.log("application_form",application_form);
 
   const [writeformshow, setWriteFormShow] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState(null);
@@ -65,65 +66,72 @@ const PostCard = forwardRef(({ post }) => {
 
   return (
     <>
-      <div style={{ width: '90%', margin: 'auto' }}>
-        <List
-          sx={(theme) => ({
-            width: '100%',
-            height: '100%',
-            bgcolor: 'background.paper',
-            overflow: 'auto',
-            border: '#DAE2ED 2px solid',
-            borderRadius: '10px',
-            [theme.breakpoints.down('1200')]: {
-              marginLeft: '2%',
-            },
-          })}
-          component="nav"
-          aria-labelledby="nested-list-subheader"
-          subheader={
-            <ListSubheader component="div" id="nested-list-subheader" className="news-list">
-              ニュース一覧
-            </ListSubheader>
-          }
-        >
-          {application_form.map((posts, index) => (
-            <ListItemButton
-              onClick={() => handleClick(index)}
-              key={index}
-              id={index}
-              sx={{
-                backgroundColor: selectedIndex === index ? 'gray' : 'transparent',
-                '&:hover': {
-                  backgroundColor: selectedIndex === index ? 'darkgray' : 'lightgray',
-                },
-              }}
-            >
-              <ListItemText
-                primary={
-                  <>
-                    <Typography className="circle_number">
-                      {posts.user_name.length}
-                    </Typography>
-                    <Tooltip title={posts.article_title}>
-                      <Typography
-                        textOverflow="ellipsis"
-                        sx={{
-                          fontSize: '0.8rem',
-                          overflow: 'hidden',
-                          whiteSpace: 'nowrap',
-                          textOverflow: 'ellipsis',
-                        }}
-                      >
-                        {posts.article_title}
+      {application_form.length > 0 ? (
+        <div style={{ width: '90%', margin: 'auto' }}>
+          <List
+            sx={(theme) => ({
+              width: '100%',
+              height: '100%',
+              bgcolor: 'background.paper',
+              overflow: 'auto',
+              border: '#DAE2ED 2px solid',
+              borderRadius: '10px',
+              [theme.breakpoints.down('1200')]: {
+                marginLeft: '2%',
+              },
+            })}
+            component="nav"
+            aria-labelledby="nested-list-subheader"
+            subheader={
+              <ListSubheader component="div" id="nested-list-subheader" className="news-list">
+                ニュース一覧
+              </ListSubheader>
+            }
+          >
+            {application_form.map((posts, index) => (
+              <ListItemButton
+                onClick={() => handleClick(index)}
+                key={index}
+                id={index}
+                sx={{
+                  backgroundColor: selectedIndex === index ? 'gray' : 'transparent',
+                  '&:hover': {
+                    backgroundColor: selectedIndex === index ? 'darkgray' : 'lightgray',
+                  },
+                }}
+              >
+                <ListItemText
+                  primary={
+                    <>
+                      <Typography className="circle_number">
+                        {posts.user_name.length}
                       </Typography>
-                    </Tooltip>
-                  </>
-                }
-              />
-            </ListItemButton>
-          ))}
-        </List>
-      </div>
+                      <Tooltip title={posts.article_title}>
+                        <Typography
+                          textOverflow="ellipsis"
+                          sx={{
+                            fontSize: '0.8rem',
+                            overflow: 'hidden',
+                            whiteSpace: 'nowrap',
+                            textOverflow: 'ellipsis',
+                          }}
+                        >
+                          {posts.article_title}
+                        </Typography>
+                      </Tooltip>
+                    </>
+                  }
+                />
+              </ListItemButton>
+            ))}
+          </List>
+        </div>
+
+      ) : (
+        <>
+          応募はありません
+        </>
+      )}
 
       {writeformshow && selectedIndex !== null && (
         <div style={{ flexGrow: 1 }}>

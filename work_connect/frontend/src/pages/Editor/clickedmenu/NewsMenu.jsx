@@ -240,10 +240,9 @@ const NewsMenu = ({
   )
 
   const isContentReady = !!(title && imageUrl && charCount); // 必須データが揃っているか確認
-  const isFollowerValid = 
-    (followerCounter > 0 && message) ||  // フォロワーがいる場合はメッセージ必須
-    (followerCounter === 0);             // フォロワーがいない場合はメッセージ不要
-  
+  const isFollowerValid = (followerCounter > 0 && message) || (followerCounter === 0 || followerCounter === undefined );
+  // フォロワーがいない場合はメッセージ不要
+
   // デバッグログ
   console.log("isContentReady", isContentReady);  // 必須データが揃っているか
   console.log("isFollowerValid", isFollowerValid); // フォロワー条件が満たされているか

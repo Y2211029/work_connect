@@ -38,6 +38,7 @@ const InternshipJobOfferPage = () => {
     const accountData = getSessionData("accountData");
     const data = {
         id: accountData.id,
+
     };
 
     useEffect(() => {
@@ -140,7 +141,7 @@ const InternshipJobOfferPage = () => {
     };
 
     const handleProfileJump = () => {
-        navigate(`/Profile/${NewsDetail.company_name}?page=mypage`);
+        navigate(`/Profile/${NewsDetail.user_name}?page=mypage`);
     }
 
     const handleFormJump = () => {
@@ -390,7 +391,7 @@ const InternshipJobOfferPage = () => {
                     <div className="NewsDetailHeader">
                         <img
                             src={`${NewsDetail.header_img}`}
-                            className="news_img"
+                            className="news_headerimg"
                             alt={NewsDetail.article_title}
                         />
                     </div>

@@ -43,14 +43,8 @@ const WorkPosting = () => {
     setDescription(newValue);
   };
 
-  useEffect(() => {
-    console.log("Description: ", Description);
-  }, [Description]);
-
   const callSetImage = (e) => {
-    // const image = Array.from(e);
     setImage(e);
-    console.log("image: ", Image);
     if (e.length > 0) {
       // Fileオブジェクトのプロパティをログに表示
       for (let i = 0; i < e.length; i++) {
@@ -61,13 +55,12 @@ const WorkPosting = () => {
     }
     const imagesArray = Array.from(e);
     setImageFiles(imagesArray);
-    console.log("imageArray: ", imagesArray);
     handleImageChange(e);
   };
 
-  useEffect(() => {
-    console.log("workData", workData);
-  }, [workData]);
+  // useEffect(() => {
+  //   console.log("workData", workData);
+  // }, [workData]);
 
   const callSetWorkData = (key, value) => {
     setWorkData({
@@ -77,7 +70,7 @@ const WorkPosting = () => {
   };
 
   const handleImageChange = (e) => {
-    console.log("e: ", e);
+    // console.log("e: ", e);
 
     callSetWorkData("creatorId", accountData.id);
     // 現在のFileListを維持するために新しいDataTransferを作成
@@ -86,14 +79,14 @@ const WorkPosting = () => {
     // 既存のimageFilesをDataTransferに追加
     imageFiles.forEach((file) => {
       for (let i = 0; i < e.length; i++) {
-        console.log("length", i);
-        console.log("name", e[i].name);
+        // console.log("length", i);
+        // console.log("name", e[i].name);
         // console.log("file.name",file.name);
         if (file.name == e[i].name) {
-          console.log("file.name", file.name);
-          console.log("file.name", file);
+          // console.log("file.name", file.name);
+          // console.log("file.name", file);
           dt.items.add(file);
-          console.log("Image:", dt.files);
+          // console.log("Image:", dt.files);
         }
       }
     });

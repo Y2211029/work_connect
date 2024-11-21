@@ -7,6 +7,7 @@ import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import './checkform.css';
 
 const Question = ({ application_form, selectedIndex }) => {
     const [groupedResponses, setGroupedResponses] = useState({});
@@ -159,12 +160,10 @@ const Question = ({ application_form, selectedIndex }) => {
                 <div>
                     <h3>{selectedTitle}</h3>
                     {responses.usernames.map((username, idx) => (
-                        <div key={idx}>
-                            <p>ユーザー名: {username}</p>
-                            <p>回答:</p>
-                            <ul>
-                                <li>{responses.responses[idx]}</li>
-                            </ul>
+                        <div className="questions" key={idx}>
+                            <p>{username}</p>
+                            <div className="bar"></div>    
+                            <p>{responses.responses[idx]}</p>
                         </div>
                     ))}
                 </div>

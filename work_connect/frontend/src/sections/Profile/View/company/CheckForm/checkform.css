@@ -47,10 +47,9 @@
     display: block;
     border-radius: 8px;
     padding: 10px 10px 24px;
-    width:100%;
-    margin-left:10%;
+    width:400px;
     height: auto;
-    overflow: auto;
+    overflow: hidden;
   }
 
   .summary-form{
@@ -126,4 +125,24 @@
   .title-dropdown{
     width:80%;
   }
+
+  .questions{
+    box-shadow: none;
+    background-color: #fff;
+    border: 1px solid rgb(218, 220, 224);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    margin-left:10px;
+    padding-left: 10px;
+    margin-top: 12px;
+    width: 350px;
+  }
+
+  .bar{
+    align-items: center;
+    justify-content: center;
+    border-top: 1px solid black;
+    width:210px;
+  }
+  
 

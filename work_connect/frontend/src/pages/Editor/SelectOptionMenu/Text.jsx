@@ -5,15 +5,16 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Typography from '@mui/material/Typography';
 import Button from "@mui/material/Button";
 import PropTypes from 'prop-types';
+import Checkbox from '@mui/material/Checkbox';
 
-export default function Text({ onSave, onCancel,questionData }) {
+export default function Text({ onSave, onCancel, questionData }) {
     const [title, setTitle] = useState("");
     const [maxLength, setMaxLength] = useState("");
     const [minLength, setMinLength] = useState("");
     const [selectedType, setSelectedType] = useState(null);
     const [placeholder, setPlaceholder] = useState("");
     const [autocomplete, setAutoComplete] = useState(false);
-    const [isRequired, setIsRequired] = useState(false);
+    const [isrequired, setIsRequired ] = useState(false);
     const [description, setDescription] = useState("");
     const [validatorsMinLength, setValidatorsMinLength] = useState("");
     const [validatorsMaxLength, setValidatorsMaxLength] = useState("");
@@ -35,7 +36,7 @@ export default function Text({ onSave, onCancel,questionData }) {
             setSelectedType(inputtype.find(type => type.name === questionData.inputType) || null);
             setPlaceholder(questionData.placeholder || "");
             setAutoComplete(questionData.autocomplete || false);
-            setIsRequired(questionData.isRequired || false);
+            setIsRequired (questionData.isrequired || false);
             setDescription(questionData.description || "");
 
             if (questionData.validators && questionData.validators[0]) {
@@ -65,7 +66,7 @@ export default function Text({ onSave, onCancel,questionData }) {
             minLength: minLength ? parseInt(minLength, 10) : undefined,
             placeholder: placeholder || "",
             autocomplete: autocomplete || false,
-            isRequired: isRequired || false,
+            isrequired: isrequired || false,
             description: description || "",
             validators: validators
         };
@@ -100,7 +101,17 @@ export default function Text({ onSave, onCancel,questionData }) {
                     onChange={(e) => setTitle(e.target.value)}
                     fullWidth
                 />
-                
+
+
+                        <Stack direction="row" alignItems="center" spacing={1}>
+                            <Checkbox
+                                checked={isrequired}
+                                onChange={(e) => setIsRequired(e.target.checked)}
+                            />
+                            <Typography>フォームを必須にする</Typography>
+                        </Stack>
+
+
                 <Button variant="contained" color="primary" onClick={handleSave}  className="FormButton">
                     保存
                 </Button>

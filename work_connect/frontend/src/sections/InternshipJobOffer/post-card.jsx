@@ -132,6 +132,9 @@ const PostCard = forwardRef(({ post }, ref) => {
         aspectRatio: 16 / 9,
         borderRadius: "10px",
         marginBottom: "10px",
+        width: '400px',
+        height: '250px',
+        borderColor: "blue",
       }}
     />
   );

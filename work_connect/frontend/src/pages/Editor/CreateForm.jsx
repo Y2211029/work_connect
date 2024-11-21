@@ -408,12 +408,21 @@ const CreateForm = ({ newsid, HandleBack }) => {
       // `questions` ステートから削除対象の質問を除外
       const updatedQuestions = questions.filter(q => q.name !== questionId);
 
+      // ID と name を振り直す
+      const reassignedQuestions = updatedQuestions.map((q, index) => ({
+        ...q,
+        id: (index + 1).toString(), // 新しいID
+        name: `Question${index + 1}`, // 新しいname
+      }));
+
       // ステートを更新して再描画
-      setQuestions(updatedQuestions);
+      setQuestions(reassignedQuestions);
 
       // SurveyJS 内でも削除
       const page = options.question.page;
       page.removeQuestion(options.question);
+
+      console.log(reassignedQuestions); // 再割り当てされた質問を確認
     };
 
     // 編集ボタンのクリックイベント
@@ -582,10 +591,10 @@ const CreateForm = ({ newsid, HandleBack }) => {
         <div className="FormDemo"> {/* フォーム部分 */}
 
 
-                  {/*フォームメニューのボタン */}
-                  <Stack direction="row" alignItems="center" spacing={1}>
+          {/*フォームメニューのボタン */}
+          <Stack direction="row" alignItems="center" spacing={1}>
             <div className="back_news_draft" onClick={WriteNewsHandleBack}>
-            <Typography>← ニュースの下書きに戻る</Typography>
+              <Typography>← ニュースの下書きに戻る</Typography>
             </div>
             {/* <MUIButton onClick={NewsMenuShow} variant="contained" sx={buttonStyle}> */}
             <MUIButton variant="contained" onClick={FormMenuShow} className='FormMenuButton'>
@@ -598,23 +607,23 @@ const CreateForm = ({ newsid, HandleBack }) => {
             IsOpen={formmenushow}
             CloseModal={closeModal}
             questions={questions}
-            // genre={genre}
-            // draftlist={draft_list}
-            // CreateFormJump={CreateFormJump}
-            // newsid={news_id}
-            // RewriteNewsDelete={rewrite_news_delete}
-            // RewriteNewsEnter={rewrite_news}
-            // EditorStatusCheck={EditorStatusCheck}
-            // EditorContentsStatusCheck={EditorContentsStatusCheck}
-            // NewsSave={news_save}
-            // imageUrl={imageUrl}
-            // title={title}
-            // NewsUpLoad={news_upload}
-            // NotificationMessageHandleChange={notification_messagehandleChange}
-            // message={notificationMessage}
-            // charCount={charCount}
-            // selected_draft={selected_draft}
-            // followerCounter={followerCounter}
+          // genre={genre}
+          // draftlist={draft_list}
+          // CreateFormJump={CreateFormJump}
+          // newsid={news_id}
+          // RewriteNewsDelete={rewrite_news_delete}
+          // RewriteNewsEnter={rewrite_news}
+          // EditorStatusCheck={EditorStatusCheck}
+          // EditorContentsStatusCheck={EditorContentsStatusCheck}
+          // NewsSave={news_save}
+          // imageUrl={imageUrl}
+          // title={title}
+          // NewsUpLoad={news_upload}
+          // NotificationMessageHandleChange={notification_messagehandleChange}
+          // message={notificationMessage}
+          // charCount={charCount}
+          // selected_draft={selected_draft}
+          // followerCounter={followerCounter}
           />
 
 
@@ -623,7 +632,7 @@ const CreateForm = ({ newsid, HandleBack }) => {
           ) : (
             <>
               <div className="SurveyModal">
-                <Survey model={survey} className=""/>
+                <Survey model={survey} />
               </div>
 
             </>

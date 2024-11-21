@@ -85,7 +85,7 @@ const PostCard = forwardRef(({ post }, ref) => {
             ...(field.colCount && {colCount: field.colCount}),
             ...(field.maxLength && {maxLength: field.maxLength}),
             ...(field.rows && {rows: field.rows}),
-
+            ...(field.isrequired && {isrequired: field.isrequired}),
           })),
         }
       ]

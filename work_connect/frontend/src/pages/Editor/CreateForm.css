@@ -132,3 +132,6 @@ input[type="number"]::-webkit-inner-spin-button {
   text-align: center;
 }
 
+.sd-root-modern {
+  background-color: #F9FAFB !important;
+}

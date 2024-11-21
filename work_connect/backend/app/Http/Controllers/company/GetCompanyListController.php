@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 class GetCompanyListController extends Controller
 {
 
-    public function GetCompanyListController(Request $request)
+    public function GetCompanyListController(Request $request,$MyId)
     {
         try {
             $page = (int) $request->query('page', 1);
@@ -27,25 +27,25 @@ class GetCompanyListController extends Controller
             // Log::info(json_encode($companyList));
 
             // 各企業のフォロー状態を確認して更新
-            $companyList = $companyList->map(function ($company) {
+            $companyList = $companyList->map(function ($company) use ($MyId) {
                 $id = $company->id;
 
-                // IDの最初の文字が "S" の場合にフォロー状態を確認
-                if ($id[0] === "S") {
+                // IDの最初の文字が "C" の場合にフォロー状態を確認
+                if ($id[0] !== $MyId[0]) {
                     // Log::info('ID[0]が "S" の場合の処理を実行');
                     // Log::info('IDの値: ' . $id);
 
-                    // ログインしているユーザーのIDを取得する必要があります（例: auth()->id()）
-                    $currentUserId = auth()->id();
+                    // ログインしているユーザーのIDを取得する必要があります（例: auth()->id()       
+             
 
                     // ユーザーがログインしているアカウントをフォローしているかどうか
-                    $isFollowing = w_follow::where('follow_sender_id', $currentUserId)
+                    $isFollowing = w_follow::where('follow_sender_id', $MyId)
                         ->where('follow_recipient_id', $id)
                         ->exists();
 
                     // ログインしているアカウントがユーザーをフォローしているかどうか
                     $isFollowedByUser = w_follow::where('follow_sender_id', $id)
-                        ->where('follow_recipient_id', $currentUserId)
+                        ->where('follow_recipient_id', $MyId)
                         ->exists();
 
                     // フォロー状態を設定
@@ -59,7 +59,7 @@ class GetCompanyListController extends Controller
                         $company->follow_status = 'フォローする';
                     }
                 } else {
-                    // IDの最初の文字が "S" でない場合はフォローできないメッセージを設定
+                    // IDの最初の文字が "C" でない場合はフォローできないメッセージを設定
                     $company->follow_status = 'フォローできません';
                 }
 

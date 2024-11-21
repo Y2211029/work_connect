@@ -10,9 +10,10 @@ use Illuminate\Support\Facades\Log;
 
 class GetStudentListController extends Controller
 {
-    public function GetStudentListController(Request $request)
+    public function GetStudentListController(Request $request, $MyId)
     {
         try {
+            
             // ページネーションの設定
             $page = (int) $request->query('page', 1);
             $perPage = 20; // 一ページ当たりのアイテム数
@@ -24,24 +25,24 @@ class GetStudentListController extends Controller
                 ->get();
 
             // 各ユーザーのフォロー状態を確認して更新
-            $StudentOfList = $StudentOfList->map(function ($user) {
+            $StudentOfList = $StudentOfList->map(function ($user) use ($MyId) {
                 // ユーザーのIDを取得
                 $id = $user->id;
                 // Log::info('$user->id');
                 // Log::info($id);
-                // もしも $id の最初の文字が "C" であれば、フォロー状態を確認
-                if ("C" === $id[0]) {
+                // もしも $id の最初の文字が "S" であれば、フォロー状態を確認
+                if ($id[0] !== $MyId[0]) {
                     // Log::info('ID[0]が "C" の場合の処理を実行');
                     // Log::info('IDの値: ' . $id);
 
-                    // ユーザーがログインしているアカウントをフォローしているかどうか
-                    $isFollowing = w_follow::where('follow_sender_id', $id)
-                        ->where('follow_recipient_id', $user->id)
+                    // フォローしているかどうか
+                    $isFollowing = w_follow::where('follow_sender_id', $MyId)
+                        ->where('follow_recipient_id', $id)
                         ->exists();
 
-                    // ログインしているアカウントがユーザーをフォローしているかどうか
-                    $isFollowedByUser = w_follow::where('follow_sender_id', $user->id)
-                        ->where('follow_recipient_id', $id)
+                    // フォローされているかどうか
+                    $isFollowedByUser = w_follow::where('follow_sender_id', $id)
+                        ->where('follow_recipient_id', $MyId)
                         ->exists();
 
                     // フォロー状態を設定
@@ -51,11 +52,12 @@ class GetStudentListController extends Controller
                         $user->follow_status = 'フォローしています';
                     } elseif ($isFollowedByUser) {
                         $user->follow_status = 'フォローされています';
-                    } else {
+                    } else  {
                         $user->follow_status = 'フォローする';
                     }
+
                 } else {
-                    // $id の最初の文字が "C" でない場合はフォローできないメッセージを設定
+                    // $id の最初の文字が "S" でない場合はフォローできないメッセージを設定
                     $user->follow_status = 'フォローできません';
                 }
 

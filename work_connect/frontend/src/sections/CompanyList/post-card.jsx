@@ -36,6 +36,9 @@ const PostCard = forwardRef(({ post }, ref) => {
     account_id: accountData.id,
   };
 
+  console.log("followStatus",followStatus);
+
+
   useEffect(() => {
     console.log("company_id", company_id);
   }, [company_id]);
@@ -50,18 +53,13 @@ const PostCard = forwardRef(({ post }, ref) => {
       console.error("フォロー処理中にエラーが発生しました！", error);
     }
   };
+  
+  const renderFollow = followStatus !== "フォローできません" && (
+    <Typography opacity="0.48" sx={{ width: "100%" }} onClick={handleFollowClick}>
+      {followStatus}
+    </Typography>
+  );
 
-  const renderFollow = () => {
-    if (followStatus === "フォローできません") {
-      return <Typography opacity="0.48"></Typography>;
-    } else {
-      return (
-        <Typography opacity="0.48" onClick={handleFollowClick}>
-          {followStatus}
-        </Typography>
-      );
-    }
-  };
 
   const renderAvatar = (
     <Avatar

@@ -16,21 +16,15 @@ const Environment = (props) => {
           params: {All:"tags"},
         });
 
-        // response.dataは配列の中にオブジェクトがある形になっています
-        // console.log("response.data:", response.data);
-
         // 希望職業、希望勤務地、取得資格、プログラミング言語、開発環境、ソフトウェア、趣味、その他
         // はタグのため、カンマ区切りの文字列を配列に変換する
 
         const responseData = response.data;
         const EnvironmentArray = [];
-        console.log(responseData);
         responseData.map((value) => {
           EnvironmentArray.push({value:value.name,label:value.name});
         });
         setOptions(EnvironmentArray);
-        console.log(EnvironmentArray);
-        console.log("CompanyListObject:", response.data);
       } catch (err) {
         console.log("err:", err);
       }
@@ -40,11 +34,9 @@ const Environment = (props) => {
   },[])
 
   const handleChange = (selectedOption, actionMeta) => {
-    console.log(actionMeta);
     if (actionMeta && actionMeta.action === 'create-option') {
 
       const inputValue = actionMeta;
-      console.log(inputValue);
       const newOption = { value: inputValue.option.value, label: inputValue.option.label };
       setOptions([...options, newOption]);
       // 13は作品投稿の開発環境です。

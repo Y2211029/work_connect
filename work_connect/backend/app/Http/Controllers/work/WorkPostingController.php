@@ -54,12 +54,12 @@ class WorkPostingController extends Controller
         ]);
 
         // 作成したw_worksのIDを取得
-        // $work_id = $work->id;
+        $work_id = $workItem->id;
         foreach ($pathArray as $index => $data) {
             w_images::create([
                 'image' => $data, // 'column_name'は実際のカラム名に変更
                 'annotation' => $annotation[$index],
-                // 'work_id' => $work_id // w_worksのIDを関連付け
+                'work_id' => $work_id // w_worksのIDを関連付け
             ]);
         }
 

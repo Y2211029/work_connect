@@ -208,17 +208,23 @@ const ImageUpload = ({ handleValueChange, onImagesUploaded, callSetImage }) => {
 
   // 画像アップロードの処理
   const handleImageUpload = (event) => {
-    callSetImage(event.target.files); // アップロードしたファイルを処理
     // setWorkImage(event.target.files); // File型のデータを追加
     const files = Array.from(event.target.files); // アップロードされたファイルを配列に変換
+
+    const dt = new DataTransfer();
+    files.forEach((file) => {
+      dt.items.add(file);
+    });
+    console.log("files:", dt.files);
+    setWorkImage((prevImages) => [...prevImages, ...dt.files]);
+    callSetImage(workImage); // アップロードしたファイルを処理
+
     const newItems = files.map((file, index) => ({
       id: `${file.name}-${index}-${Date.now()}`, // 一意のIDを生成
       image: URL.createObjectURL(file), // ローカルURLを作成
       name: file.name,
       description: "", // 初期状態は空の説明
     }));
-    setWorkImage((prevImages) => [...prevImages, ...newItems]); // 既存の画像リストに追加
-
     setItems((prevItems) => {
       // 配列型
       const updatedItems = [...prevItems, ...newItems];
@@ -315,6 +321,7 @@ const ImageUpload = ({ handleValueChange, onImagesUploaded, callSetImage }) => {
 
         // DataTransferオブジェクトを作成
         const dataTransfer = new DataTransfer();
+        console.log("updatedItems:", updatedItems);
 
         updatedItems.forEach((item) => {
           // itemがFileオブジェクトでない場合、Fileとして生成（例）
@@ -328,12 +335,57 @@ const ImageUpload = ({ handleValueChange, onImagesUploaded, callSetImage }) => {
 
         // FileList型として取得
         const fileList = dataTransfer.files;
+        console.log("fileList:", fileList);
 
-        callSetImage(fileList); // アップロードしたファイルを処理
-        onImagesUploaded(updatedItems);
+        // callSetImage(fileList); // アップロードしたファイルを処理
+        // onImagesUploaded(updatedItems);
         setItems(updatedItems);
 
         return updatedItems;
+      });
+
+      setWorkImage((workImage) => {
+        console.log("Current workImage:", workImage); // workImageが配列か確認
+
+        if (!Array.isArray(workImage)) {
+          console.error("Error: workImage is not an array.");
+          return workImage; // 配列でない場合はそのまま返す
+        }
+        // 正規表現でファイル名部分を抽出
+        const match1 = active.id.match(/^(.+?\.[a-zA-Z0-9]+)(?:-[^-]+)+$/);
+        const activeId = match1 ? match1[1] : active.id;
+        const match2 = over.id.match(/^(.+?\.[a-zA-Z0-9]+)(?:-[^-]+)+$/);
+        const overId = match2 ? match2[1] : over.id;
+        console.log("activeId:", activeId);
+        console.log("overId:", overId);
+
+        const oldIndex = workImage.findIndex((image) => image.name === activeId);
+        const newIndex = workImage.findIndex((image) => image.name === overId);
+        const updatedWorkImage = arrayMove(workImage, oldIndex, newIndex);
+
+        // DataTransferオブジェクトを作成
+        const dataTransfer = new DataTransfer();
+        console.log("updatedWorkImage:", updatedWorkImage);
+
+        updatedWorkImage.forEach((file) => {
+          // itemがFileオブジェクトでない場合、Fileとして生成（例）
+          // const file =
+          //   item instanceof File
+          //     ? item
+          //     : new File([item.content], item.name, { type: item.type });
+
+          dataTransfer.items.add(file);
+        });
+
+        // FileList型として取得
+        const fileList = dataTransfer.files;
+        console.log("fileList:", fileList);
+
+        callSetImage(fileList); // アップロードしたファイルを処理
+        onImagesUploaded(updatedWorkImage);
+        setWorkImage(updatedWorkImage);
+
+        return updatedWorkImage;
       });
     }
   };

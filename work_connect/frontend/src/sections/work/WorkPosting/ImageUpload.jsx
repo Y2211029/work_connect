@@ -204,6 +204,7 @@ const ImageUpload = ({ handleValueChange, onImagesUploaded, callSetImage }) => {
       setHasRun(true);
     }
     console.log("workImage", workImage);
+    callSetImage(workImage); // アップロードしたファイルを処理
   }, [workImage, hasRun]);
 
   // 画像アップロードの処理
@@ -217,7 +218,7 @@ const ImageUpload = ({ handleValueChange, onImagesUploaded, callSetImage }) => {
     });
     console.log("files:", dt.files);
     setWorkImage((prevImages) => [...prevImages, ...dt.files]);
-    callSetImage(workImage); // アップロードしたファイルを処理
+    // callSetImage(workImage); // アップロードしたファイルを処理
 
     const newItems = files.map((file, index) => ({
       id: `${file.name}-${index}-${Date.now()}`, // 一意のIDを生成
@@ -381,7 +382,7 @@ const ImageUpload = ({ handleValueChange, onImagesUploaded, callSetImage }) => {
         const fileList = dataTransfer.files;
         console.log("fileList:", fileList);
 
-        callSetImage(fileList); // アップロードしたファイルを処理
+        // callSetImage(fileList); // アップロードしたファイルを処理
         onImagesUploaded(updatedWorkImage);
         setWorkImage(updatedWorkImage);
 

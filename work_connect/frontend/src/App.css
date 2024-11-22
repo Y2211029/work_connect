@@ -656,11 +656,12 @@ textarea {
 /* 作品アイテムホバー */
 .item-stack {
   transition: 0.2s;
+  border: 1px solid white;
 
 }
 
 .item-stack:hover {
-  border: 2px solid #989899;
+  /* border: 1px solid #70a2ff; */
   transform: scale(1.05);
   /* 1より小さい数値で縮小 */
 }

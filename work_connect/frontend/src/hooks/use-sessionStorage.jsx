@@ -43,21 +43,6 @@ export const useSessionStorage = () => {
     });
   };
 
-  //
-  // const tagSessionData = (tagName, setStatename) => {
-  //   if (getSessionData("accountData") !== undefined) {
-  //     let SessionData = getSessionData("accountData");
-  //     console.log("SessionData[tagName]", SessionData[tagName]);
-
-  //     if (SessionData[tagName] !== undefined && SessionData[tagName] !== "") {
-        
-  //       setStatename({
-  //         value: SessionData[tagName],
-  //         label: `${SessionData[tagName]}`,
-  //       });
-  //     }
-  //   }
-  // };
 
   return {
     getSessionData,

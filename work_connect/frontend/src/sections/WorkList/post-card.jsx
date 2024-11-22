@@ -16,12 +16,16 @@ import Divider from "@mui/material/Divider";
 const PostCard = forwardRef(({ post }, ref) => {
   const { work_id, genre, thumbnail, icon, title, intro, author, userName, createdAt } = post;
 
+  const alternativeImage = "http://localhost:8000/storage/images/work/NoImage.png";
   const renderThumbnail =
     (console.log("thumbnail", thumbnail),
       (
         <Box
           component="img"
           src={thumbnail}
+          onError={(e) => {
+            e.target.src = alternativeImage; // エラー時にサンプル画像をセット
+          }}
           sx={{
             aspectRatio: 16 / 9,
             borderRadius: "5px",

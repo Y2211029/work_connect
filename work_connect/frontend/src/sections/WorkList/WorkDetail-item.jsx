@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
+import { ColorRing } from "react-loader-spinner";
 
 import Modal from "react-modal";
 import Box from "@mui/material/Box";
@@ -103,6 +104,9 @@ const WorkDetailItem = () => {
   const modalSplideRef = useRef(null);
   const thumbnailSplideRef = useRef(null);
 
+  // ローディング
+  const [isLoadItem, setIsLoadItem] = useState(true);
+
   // メインスライドのCSS
 
   // モーダルスライドのCSS
@@ -136,6 +140,8 @@ const WorkDetailItem = () => {
 
         setWorkDetail(response.data["作品"][0]);
         setWorkComment(response.data["作品コメント"]);
+        setIsLoadItem(false)
+
 
         // console.log("response.data[作品コメント]", response.data["作品コメント"]);
         response.data["作品"][0].images.forEach((value) => {
@@ -372,6 +378,9 @@ const WorkDetailItem = () => {
   // 作品投稿者ユーザーネーム
   const renderUserName = workDetail.user_name && <Typography variant="h6">{workDetail.user_name}</Typography>;
 
+  // 作品画像がない場合、NO IMAGEを表示
+  const alternativeImage = "http://localhost:8000/storage/images/work/NoImage.png";
+
   // メインスライド
   const renderMainSlider = WorkSlideCheck && (
     <Splide
@@ -383,22 +392,19 @@ const WorkDetailItem = () => {
       style={{ width: "100%", height: "100%", margin: "0 auto", marginBottom: "80px" }}
     >
       <div style={{ position: "relative" }}>
-        {/* <SplideTrack>
+        <SplideTrack>
           {WorkSlide.map((slide, index) => (
             <SplideSlide key={slide.work_id + slide.id} onClick={() => openModal(index)}>
-              <img src={slide.image} alt={slide.image} style={{ aspectRatio: "16 / 9", width: "100%", height: "100%" }} />
+              <img
+                src={slide.image}
+                // alt={slide.image}
+                onError={(e) => {
+                  e.target.src = alternativeImage; // エラー時にサンプル画像をセット
+                }}
+                style={{ aspectRatio: "16 / 9", width: "100%", height: "100%" }}
+              />
             </SplideSlide>
           ))}
-        </SplideTrack> */}
-        <SplideTrack>
-          {/* {WorkSlide.map((slide, index) => ( */}
-          <SplideSlide key={"LVGZeHPo5iyKSWOayRufpt1ovYbHNF4L9SLERRrL"} onClick={() => openModal(0)}>
-            <img
-              src={`/assets/workImages/thumbnail/LVGZeHPo5iyKSWOayRufpt1ovYbHNF4L9SLERRrL.png`}
-              style={{ aspectRatio: "16 / 9", width: "100%", height: "100%" }}
-            />
-          </SplideSlide>
-          {/* ))} */}
         </SplideTrack>
       </div>
     </Splide>
@@ -430,7 +436,13 @@ const WorkDetailItem = () => {
                 <SplideTrack>
                   {WorkSlide.map((slide) => (
                     <SplideSlide key={slide.work_id + slide.id}>
-                      <img src={`/assets/workImages/thumbnail/LVGZeHPo5iyKSWOayRufpt1ovYbHNF4L9SLERRrL.png`} alt={slide.image} />
+                      <img
+                        src={slide.image}
+                        alt={slide.image}
+                        onError={(e) => {
+                          e.target.src = alternativeImage; // エラー時にサンプル画像をセット
+                        }}
+                      />
                     </SplideSlide>
                   ))}
                   {/* {WorkSlide.map((slide) => (
@@ -455,7 +467,7 @@ const WorkDetailItem = () => {
                   },
                 }}
                 aria-label="..."
-                // sx={{ justifyContent: "center", alignItems: "center", display: "flex" }}
+              // sx={{ justifyContent: "center", alignItems: "center", display: "flex" }}
               >
                 <SplideTrack>
                   {/* {WorkSlide.map((slide) => (
@@ -465,7 +477,13 @@ const WorkDetailItem = () => {
                   ))} */}
                   {WorkSlide.map((slide) => (
                     <SplideSlide key={slide.work_id + slide.id}>
-                      <img src={`/assets/workImages/thumbnail/LVGZeHPo5iyKSWOayRufpt1ovYbHNF4L9SLERRrL.png`} alt={slide.image} />
+                      <img
+                        src={slide.image}
+                        alt={slide.image}
+                        onError={(e) => {
+                          e.target.src = alternativeImage; // エラー時にサンプル画像をセット
+                        }}
+                      />
                     </SplideSlide>
                   ))}
                 </SplideTrack>
@@ -511,7 +529,17 @@ const WorkDetailItem = () => {
           <div className="gallery-container">
             {WorkSlide.map((slide, index) => (
               <div key={`${slide}-${index}`} className="GalleryPostCard" style={{ width: "100%" }}>
-                <img className="gallery_img" key={slide.work_id + slide.id} src={slide.image} alt={slide.image} onClick={() => openModal(index)} />
+                <img
+                  className="gallery_img"
+                  key={slide.work_id + slide.id}
+                  src={slide.image}
+                  alt={slide.image}
+                  onClick={() => openModal(index)}
+                  onError={(e) => {
+                    e.target.src = alternativeImage; // エラー時にサンプル画像をセット
+                  }}
+
+                />
               </div>
             ))}
           </div>
@@ -581,7 +609,7 @@ const WorkDetailItem = () => {
       {workComment && Object.keys(Comment).length > 0 && <h3>コメント一覧</h3>}
       {workComment.map((item, index) =>
         (item.commenter_id === AccountData.id && item.commenter_user_name === AccountData.user_name) ||
-        (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
+          (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
           <div key={index}>
             {/* {console.log("comment", Comment)} */}
             <Divider sx={{ borderStyle: "dashed", margin: "5px 0px 20px 0px", width: "90%" }} />
@@ -654,7 +682,7 @@ const WorkDetailItem = () => {
       )}
     </>
   );
-  const renderCommentButton = (
+  const renderCommentButton = workDetail.work_name && (
     <>
       <div
         className="top_comment_area"
@@ -700,6 +728,18 @@ const WorkDetailItem = () => {
 
   return (
     <>
+      {isLoadItem && (
+        <ColorRing
+          visible={true}
+          height="100"
+          width="100"
+          ariaLabel="color-ring-loading"
+          wrapperStyle={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
+          wrapperClass="custom-color-ring-wrapper" // カスタムクラスを指定
+          colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+          style={{ flexDirection: "column" }}
+        />
+      )}
       <Container>
         <div>
           <Link to={`/Profile/${workDetail.user_name}?page=mypage`}>

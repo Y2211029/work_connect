@@ -201,7 +201,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       generatePosts: (WorkOfList) =>
         WorkOfList.map((work /*, key*/) => ({
           work_id: work.work_id,
-          thumbnail: `/assets/workImages/thumbnail/LVGZeHPo5iyKSWOayRufpt1ovYbHNF4L9SLERRrL.png`,
+          thumbnail: `http://localhost:8000/storage/images/work/${work.thumbnail}`,
           icon: work.icon,
           title: work.work_name,
           genre: work.work_genre,

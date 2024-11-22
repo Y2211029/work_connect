@@ -45,6 +45,8 @@ const WorkPosting = () => {
 
   const callSetImage = (e) => {
     setImage(e);
+    console.log("e:",e);
+
     if (e.length > 0) {
       // Fileオブジェクトのプロパティをログに表示
       for (let i = 0; i < e.length; i++) {
@@ -166,6 +168,8 @@ const WorkPosting = () => {
   const WorkSubmit = async (e) => {
     e.preventDefault();
     console.log("e", e.target);
+    console.log(imageFiles.length);
+
     async function PostData() {
       if (
         !workData.WorkTitle ||

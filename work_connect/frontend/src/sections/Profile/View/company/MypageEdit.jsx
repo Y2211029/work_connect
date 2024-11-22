@@ -126,7 +126,7 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
     }
     // DBからデータを取得
     GetData();
-  }, []);
+  }, [user_name, ProfileUserName]);
 
   // 初回レンダリング時の一度だけ実行させる
   useEffect(() => {
@@ -135,6 +135,11 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
     });
     Edit.current.style.display = 'none';
   }, []);
+
+
+  useEffect(() => {
+    console.log("ResponseDataResponseDataResponseData", ResponseData);
+  }, [ResponseData]);
 
 
 

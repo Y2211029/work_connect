@@ -16,6 +16,7 @@ import DefaultIcon from "src/sections/Profile/View/DefaultIcon";
 
 
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import { useParams } from "react-router-dom";
 
 
 const ImageCard = ({IconData}) => {
@@ -26,6 +27,8 @@ const ImageCard = ({IconData}) => {
   const { getSessionData, updateSessionData } = useSessionStorage();
   const [selectedImage, setSelectedImage] = useState(IconData);
   const theme = useTheme();
+
+  const { user_name } = useParams();
 
   // valueの初期値をセット
   useEffect(() => {
@@ -47,7 +50,7 @@ const ImageCard = ({IconData}) => {
         //setSelectedImage("cover_19.jpg");
       }
     }
-  }, [IconData]);
+  }, [IconData, user_name]);
 
   useEffect(() => {
     // sessionStrageに値を保存

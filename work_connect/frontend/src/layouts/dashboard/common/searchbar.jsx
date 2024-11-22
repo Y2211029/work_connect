@@ -170,6 +170,7 @@ export default function Searchbar() {
     desired_work_region: [],
     selected_occupation: [],
     prefecture: [],
+    conpany_prefecture: [],
     company_name: [],
     industry: [],
   });
@@ -196,6 +197,7 @@ export default function Searchbar() {
     desired_work_region: [],
     selected_occupation: [],
     prefecture: [],
+    conpany_prefecture: [],
     company_name: [],
     industry: [],
   });
@@ -222,6 +224,7 @@ export default function Searchbar() {
     desired_work_region: [],
     selected_occupation: [],
     prefecture: [],
+    conpany_prefecture: [],
     company_name: [],
     industry: [],
   });
@@ -234,11 +237,11 @@ export default function Searchbar() {
     let optionArray = [];
     let optionArrayPromise = GetTagListFunction(urlIn);
     optionArrayPromise.then((result) => {
-      // console.log("result: ", result);
+      // console.log("resultresultresult: ", result);
       result.map((value) => {
         optionArray.push({ value: value.name, label: value.name });
       });
-      // console.log("optionArray", optionArray);
+      console.log("optionArrayoptionArrayoptionArray", optionArray);
       setOptions((prevOptions) => ({
         ...prevOptions,
         [option]: optionArray,
@@ -268,7 +271,7 @@ export default function Searchbar() {
     }));
   };
 
-  const schoolTypeCodes = ["H1", "H2"]; // 複数のschool_type_codeを配列として定義
+  const schoolTypeCodes = ["H1", "F1"]; // 複数のschool_type_codeを配列として定義
   const fetchSchoolNameData = async () => {
     let allSchools = [];
     let page = 1;
@@ -282,7 +285,7 @@ export default function Searchbar() {
 
         while (hasMore) {
           const response = await axios.get(
-            `https://api.edu-data.jp/api/v1/school?school_type_code=${code}&pref_code=27&page=${page}&school_status_code=1,2`,
+            `https://api.edu-data.jp/api/v1/school?school_type_code=${code}&page=${page}&school_status_code=1,2`,
             {
               headers: {
                 Authorization: `Bearer ${accessToken}`, // アクセストークンをBearerトークンとしてヘッダーに含める
@@ -517,13 +520,13 @@ export default function Searchbar() {
       getTag("student_desired_occupation", "desired_occupation");
 
       // 希望勤務地のタグ一覧を取得
-      getTag("student_desired_work_region", "desired_work_region");
+      getTag("student_prefecture", "desired_work_region");
 
       // プログラミング言語のタグ一覧を取得
-      getTag("student_programming_language", "programming_language");
+      getTag("student_programming_language", "student_programming_language");
 
       // 開発環境のタグ一覧を取得
-      getTag("student_development_environment", "development_environment");
+      getTag("student_development_environment", "student_development_environment");
 
       // ソフトウェアのタグ一覧を取得
       getTag("student_software", "software");

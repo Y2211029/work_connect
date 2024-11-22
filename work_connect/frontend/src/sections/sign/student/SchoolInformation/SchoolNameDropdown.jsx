@@ -13,7 +13,7 @@ const SchoolNameDropdown = (props) => {
   const { getSessionData, updateSessionData } = useSessionStorage();
 
   useEffect(() => {
-    const schoolTypeCodes = ["H1", "H2"]; // 複数のschool_type_codeを配列として定義
+    const schoolTypeCodes = ["H1", "F1"]; // 複数のschool_type_codeを配列として定義
     const fetchData = async () => {
       let allSchools = [];
       let page = 1;
@@ -26,7 +26,7 @@ const SchoolNameDropdown = (props) => {
 
           while (hasMore) {
             const response = await axios.get(
-              `https://api.edu-data.jp/api/v1/school?school_type_code=${code}&pref_code=27&page=${page}&school_status_code=1,2`,
+              `https://api.edu-data.jp/api/v1/school?school_type_code=${code}&page=${page}&school_status_code=1,2`,
               {
                 headers: {
                   Authorization: `Bearer ${accessToken}`, // アクセストークンをBearerトークンとしてヘッダーに含める

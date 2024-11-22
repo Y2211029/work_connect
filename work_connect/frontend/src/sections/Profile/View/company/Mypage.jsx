@@ -151,7 +151,7 @@ const ProfileMypage = () => {
     if (user_name) {
       GetData();
     }
-  }, []); // user_name を依存配列に含める
+  }, [user_name]); // user_name を依存配列に含める
 
   // 初回レンダリング時の一度だけ実行させる
   useEffect(() => {

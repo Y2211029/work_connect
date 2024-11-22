@@ -98,6 +98,76 @@ const CompanyLoginModal = (props) => {
     console.log("password=" + password);
     console.log("kind=" + kind);
 
+    async function GetData(user_name, id) {
+      try {
+        const response = await axios.get("http://localhost:8000/get_profile_mypage", {
+          params: {
+            ProfileUserName: user_name, // プロフィールとして表示されている人のユーザーネーム
+            MyUserId: id, //ログイン中のID
+          },
+        });
+        if (response) {
+          updateSessionData("accountData", "CourseName", "");
+          updateSessionData("accountData", "DepartmentName", "");
+          updateSessionData("accountData", "DesiredOccupation", "");
+          updateSessionData("accountData", "Environment", "");
+          updateSessionData("accountData", "FacultyName", "");
+          updateSessionData("accountData", "Graduation", "");
+          updateSessionData("accountData", "Hobby", "");
+          updateSessionData("accountData", "Icon", "");
+          updateSessionData("accountData", "Intro", "");
+          updateSessionData("accountData", "MajorName", "");
+          updateSessionData("accountData", "Prefecture", "");
+          updateSessionData("accountData", "ProgrammingLanguage", "");
+          updateSessionData("accountData", "Qualification", "");
+          updateSessionData("accountData", "SchoolName", "");
+          updateSessionData("accountData", "Software", "");
+          updateSessionData("accountData", "StudentKanaName", "");
+          updateSessionData("accountData", "StudentKanaSurName", "");
+          updateSessionData("accountData", "StudentName", "");
+          updateSessionData("accountData", "StudentSurName", "");
+
+          updateSessionData("accountData", "CourseName", response.data[0].course_name);
+          updateSessionData("accountData", "DepartmentName", response.data[0].department_name);
+          updateSessionData("accountData", "DesiredOccupation", response.data[0].desired_occupation);
+          updateSessionData("accountData", "Environment", response.data[0].development_environment);
+          updateSessionData("accountData", "FacultyName", response.data[0].faculty_name);
+          updateSessionData("accountData", "Graduation", response.data[0].graduation_year);
+          updateSessionData("accountData", "Hobby", response.data[0].hobby);
+          updateSessionData("accountData", "Icon", response.data[0].icon);
+          updateSessionData("accountData", "Intro", response.data[0].intro);
+          updateSessionData("accountData", "MajorName", response.data[0].major_name);
+          updateSessionData("accountData", "Prefecture", response.data[0].desired_work_region);
+          updateSessionData("accountData", "ProgrammingLanguage", response.data[0].programming_language);
+          updateSessionData("accountData", "Qualification", response.data[0].acquisition_qualification);
+          updateSessionData("accountData", "SchoolName", response.data[0].school_name);
+          updateSessionData("accountData", "Software", response.data[0].software);
+          updateSessionData("accountData", "StudentKanaName", response.data[0].student_kananame);
+          updateSessionData("accountData", "StudentKanaSurName", response.data[0].student_kanasurname);
+          updateSessionData("accountData", "StudentName", response.data[0].student_name);
+          updateSessionData("accountData", "StudentSurName", response.data[0].student_surname);
+
+          updateSessionData("accountData", "CompanyAddress", response.data[0].address);
+          updateSessionData("accountData", "CompanyAddressMap", response.data[0].map_url);
+          updateSessionData("accountData", "CompanyEnvironment", response.data[0].development_environment);
+          updateSessionData("accountData", "CompanyHPMap", response.data[0].hp_url);
+          updateSessionData("accountData", "CompanyIcon", response.data[0].icon);
+          updateSessionData("accountData", "CompanyIndustry", response.data[0].industry);
+          updateSessionData("accountData", "CompanyIntro", response.data[0].intro);
+          updateSessionData("accountData", "CompanyIntroVideo", response.data[0].video_url);
+          updateSessionData("accountData", "CompanyKanaName", response.data[0].company_namecana);
+          updateSessionData("accountData", "CompanyName", response.data[0].company_name);
+          updateSessionData("accountData", "CompanyPrefecture", response.data[0].prefecture);
+          updateSessionData("accountData", "CompanyProgrammingLanguage", response.data[0].programming_language);
+          updateSessionData("accountData", "CompanyQualification", response.data[0].acquisition_qualification);
+          updateSessionData("accountData", "CompanySelectedOccupation", response.data[0].selected_occupation);
+          updateSessionData("accountData", "CompanySoftware", response.data[0].software);
+        }
+      } catch (err) {
+        console.log("err:", err);
+      }
+    }
+
     //ajax
     $.ajax({
       url: url, // アクセスするURL "http://localhost:8000/login"
@@ -126,6 +196,9 @@ const CompanyLoginModal = (props) => {
           updateSessionData("accountData", "user_name", data.user_name);
           updateSessionData("accountData", "mail", data.mail);
           updateSessionData("accountData", "popover_icon", data.icon);
+
+          // 右上から自分のプロフィールに飛んだ時に、セッションにデータをセットする
+          GetData(data.user_name, data.id);
 
           console.log("ユーザーidは" + sessionStorage.getItem("user_id"));
 

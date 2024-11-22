@@ -63,7 +63,9 @@ export default function AccountPopover() {
       }));
     }
     handleClose();
+
     navigate(path);
+    window.location.reload();
   };
 
   const handleLogout = () => {

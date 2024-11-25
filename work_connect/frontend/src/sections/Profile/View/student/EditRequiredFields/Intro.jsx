@@ -33,7 +33,7 @@ const Textarea = styled(BaseTextareaAutosize)(
   box-sizing: border-box;
   width: 100%;
   font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 0.875rem;
+  font-size: 1.2rem;
   font-weight: 400;
   line-height: 1.5;
   padding: 8px 12px;
@@ -77,7 +77,7 @@ const IntroComponent = ({IntroData}) => {
 
     /// 編集の途中ならセッションストレージからデータを取得する。
     /// (リロードした時も、データが残った状態にする。)
-    if ((SessionData.Intro !== undefined && SessionData.Intro !== "") || 
+    if ((SessionData.Intro !== undefined && SessionData.Intro !== "") ||
     SessionData.IntroEditing) {
       // セッションストレージから最新のデータを取得
       setIntro(SessionData.Intro);
@@ -122,8 +122,8 @@ const IntroComponent = ({IntroData}) => {
           border: Intro === "" ? "1px red solid" : `1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]}`
         }}
       />
-      
-      <Typography variant="body2" color="textSecondary" align="right" sx={{ marginTop: 0 }}>
+
+      <Typography variant="body2" color="textSecondary" align="right" sx={{ marginTop: 0,fontSize: '16px' }}>
         {/* 文字数カウント */}
         {Intro ? Intro.length : <span style={{ color:'red',opacity:0.7 }}>0</span>} / 500
       </Typography>

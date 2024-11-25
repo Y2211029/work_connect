@@ -613,7 +613,7 @@ const WorkDetailItem = () => {
           <div key={index}>
             {/* {console.log("comment", Comment)} */}
             <Divider sx={{ borderStyle: "dashed", margin: "5px 0px 20px 0px", width: "90%" }} />
-            <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={3} sx={{ width: "80%", paddingBottom: "5px" }}>
+            <Stack dir ection="row" justifyContent="space-between" alignItems="center" spacing={3} sx={{ width: "80%", paddingBottom: "5px" }}>
               <Stack direction="row" justifyContent="left" alignItems="center" spacing={1}>
                 <div>{item.commenter_user_name || item.commenter_company_name}</div>
               </Stack>

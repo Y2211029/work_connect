@@ -1,6 +1,6 @@
 body {
-  font-size: 1rem;
-  /* color: #3F4551; */
+  font-size: 16px;
+  color: #3F4551;
 }
 
 .App {
@@ -660,10 +660,13 @@ textarea {
 
 }
 
+/* 作品一覧ホバー */
 .item-stack:hover {
-  /* border: 1px solid #70a2ff; */
-  transform: scale(1.05);
+  border: 1px solid #70a2ff;
+  background-color: #1877F2;
+  /* transform: scale(1.05); */
   /* 1より小さい数値で縮小 */
+  color: white;
 }
 
 
@@ -679,21 +682,6 @@ textarea {
   margin: 0 auto;
   /* 中央揃え */
 
-  @media (max-width: 1200px) {
-    column-count: 4;
-  }
-
-  @media (max-width: 900px) {
-    column-count: 3;
-  }
-
-  @media (max-width: 600px) {
-    column-count: 2;
-  }
-
-  @media (max-width: 400px) {
-    column-count: 1;
-  }
 }
 
 .gallery-container {
@@ -704,29 +692,13 @@ textarea {
   /* 最大幅を設定（必要に応じて変更） */
   margin: 0 auto;
   /* 中央揃え */
-
-  @media (max-width: 1200px) {
-    column-count: 4;
-  }
-
-  @media (max-width: 900px) {
-    column-count: 3;
-  }
-
-  @media (max-width: 600px) {
-    column-count: 2;
-  }
-
-  @media (max-width: 400px) {
-    column-count: 1;
-  }
 }
 
 
 
 .postCard {
-  /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
-  margin: 10px 0px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.07);
+  /* margin-bottom: 10px; */
   border-radius: 1cqmin;
 
   width: "100%";
@@ -748,13 +720,18 @@ textarea {
 
 .link {
   /* color: white; */
-  color: black;
+  color: #3F4551;
 
   text-decoration: none;
 }
 
 .link:hover {
   text-decoration: underline;
+}
+
+.item-Link {
+  font-size: 16px;
+  font-weight: Bold;
 }
 
 .custom-color-ring-wrapper {
@@ -938,14 +915,11 @@ textarea {
   }
 } */
 
-
-.item-Link {
-  color: #3C98EF;
-  height: 30;
-  font-size: 16px;
-  font-weight: Bold;
-  padding: 5px;
+.postCardTopElement {
+  margin: 5px;
 }
+
+
 
 .userNameLink {
   color: #3F4551;
@@ -1012,7 +986,42 @@ textarea {
   cursor: pointer;
 }
 
-/* 検索バーの虫眼鏡マークをホバーしたときにカーソルをpointerにする */
-.mushimeganeSearch:hover {
-  cursor: pointer;
+
+.selectBoxInfo {
+  -webkit-min-logical-width: 150px;
+}
+
+
+
+@media (max-width: 1200px) {
+
+  .column-container,
+  .gallery-container {
+    column-count: 4;
+  }
+
+}
+
+@media (max-width: 900px) {
+
+  .column-container,
+  .gallery-container {
+    column-count: 3;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .column-container,
+  .gallery-container {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 400px) {
+
+  .column-container,
+  .gallery-container {
+    column-count: 1;
+  }
 }

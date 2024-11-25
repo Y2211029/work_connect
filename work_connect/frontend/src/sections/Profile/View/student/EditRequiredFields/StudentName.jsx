@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'; // prop-types をインポート
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 const StudentName = ({StudentSurnameData, StudentnameData}) => {
-  
+
   const [StudentSurName, setStudentSurName] = useState(StudentSurnameData);
   const [StudentName, setStudentName] = useState(StudentnameData);
   const { getSessionData, updateSessionData } = useSessionStorage();
@@ -19,10 +19,10 @@ const StudentName = ({StudentSurnameData, StudentnameData}) => {
   useEffect(() => {
     // セッションデータ取得
     const SessionData = getSessionData("accountData");
-    
+
     /// 編集の途中ならセッションストレージからデータを取得する。
     /// (リロードした時も、データが残った状態にする。)
-    if ((SessionData.StudentSurName !== undefined && SessionData.StudentSurName !== "") || 
+    if ((SessionData.StudentSurName !== undefined && SessionData.StudentSurName !== "") ||
     SessionData.StudentSurNameEditing) {
       // セッションストレージから最新のデータを取得
       setStudentSurName(SessionData.StudentSurName);
@@ -31,7 +31,7 @@ const StudentName = ({StudentSurnameData, StudentnameData}) => {
       setStudentSurName(StudentSurnameData);
     }
 
-    if ((SessionData.StudentName !== undefined && SessionData.StudentName !== "") || 
+    if ((SessionData.StudentName !== undefined && SessionData.StudentName !== "") ||
     SessionData.StudentNameEditing) {
       // セッションストレージから最新のデータを取得
       setStudentName(SessionData.StudentName);
@@ -39,7 +39,7 @@ const StudentName = ({StudentSurnameData, StudentnameData}) => {
       // DBから最新のデータを取得
       setStudentName(StudentnameData);
     }
-    
+
   }, [StudentSurnameData, StudentnameData]);
 
   const handleChange = (e) => {
@@ -55,15 +55,15 @@ const StudentName = ({StudentSurnameData, StudentnameData}) => {
       // 編集中状態をオン(保存もしくはログアウトされるまで保持)
       updateSessionData("accountData", "StudentNameEditing", true);
     }
-    
+
   };
 
-  
+
   useEffect(() => {
     // 編集中のデータを保存しておく
     updateSessionData("accountData", "StudentSurName", StudentSurName);
     updateSessionData("accountData", "StudentName", StudentName);
-    
+
     // バリデーション
     if(StudentSurName === ""){
       // 姓が空だったら、error表示
@@ -103,6 +103,16 @@ const StudentName = ({StudentSurnameData, StudentnameData}) => {
                 marginTop:'6px',
                 marginBottom:'0'
             }}
+            InputProps={{
+              sx: {
+                fontSize: '20px', // 入力テキストのフォントサイズ
+              },
+            }}
+            InputLabelProps={{
+              sx: {
+                fontSize: '20px', // ラベルのフォントサイズ
+              },
+            }}
         />
         <TextField
             // error={NULL_validation2 == true || inputError.student_name}
@@ -121,6 +131,16 @@ const StudentName = ({StudentSurnameData, StudentnameData}) => {
                 borderRadius: '8px', // 角の丸みを設定
                 marginTop:'6px',
                 marginBottom:'0'
+            }}
+            InputProps={{
+              sx: {
+                fontSize: '20px', // 入力テキストのフォントサイズ
+              },
+            }}
+            InputLabelProps={{
+              sx: {
+                fontSize: '20px', // ラベルのフォントサイズ
+              },
             }}
         />
         </div>

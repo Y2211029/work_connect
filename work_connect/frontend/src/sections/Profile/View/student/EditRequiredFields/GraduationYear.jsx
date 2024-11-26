@@ -7,7 +7,7 @@ import { useSessionStorage } from "src/hooks/use-sessionStorage";
 const currentYear = new Date().getFullYear();
 const options = [];
 for (let i = currentYear; i <= currentYear + 5; i++) {
-  options.push({ value: `${i}`, label: `${i}年` });
+  options.push({ value: `${i}年卒業`, label: `${i}年卒業` });
 }
 
 const GraduationYearDropdown = ({GraduationData}) => {
@@ -27,13 +27,13 @@ const GraduationYearDropdown = ({GraduationData}) => {
         // セッションストレージから最新のデータを取得
         setGraduation({
           value: SessionData.Graduation,
-          label: `${SessionData.Graduation}年`,
+          label: SessionData.Graduation,
         });
       } else if(GraduationData !== undefined){
         // DBから最新のデータを取得
         setGraduation({
           value: GraduationData,
-          label: `${GraduationData}年`,
+          label: GraduationData,
         });
         // セッションストレージの初期値をセット
         updateSessionData("accountData", "Graduation", GraduationData);
@@ -47,7 +47,7 @@ const GraduationYearDropdown = ({GraduationData}) => {
     // 編集中状態をオン(保存もしくはログアウトされるまで保持)
     updateSessionData("accountData", "GraduationEditing", true);
   };
-  
+
 
   return (
       <Select
@@ -57,8 +57,22 @@ const GraduationYearDropdown = ({GraduationData}) => {
         onChange={handleChange}
         placeholder="▼"
         required
+        styles={{
+          control: (base) => ({
+            ...base,
+            fontSize: '20px', // テキストサイズを調整
+          }),
+          placeholder: (base) => ({
+            ...base,
+            fontSize: '20px', // プレースホルダーのサイズを調整
+          }),
+          menu: (base) => ({
+            ...base,
+            fontSize: '20px', // ドロップダウンメニューの文字サイズ
+          }),
+        }}
       />
-      
+
   );
 };
 

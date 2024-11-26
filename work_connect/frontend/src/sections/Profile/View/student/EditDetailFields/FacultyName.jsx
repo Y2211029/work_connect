@@ -48,6 +48,8 @@ const FacultyNameDropdown = ({ FacultyNameData }) => {
   useEffect(() => {
     if (selectedFaculty) {
       updateSessionData("accountData", "FacultyName", selectedFaculty.value);
+    } else {
+      updateSessionData("accountData", "FacultyName", "");
     }
   }, [selectedFaculty]);
 
@@ -75,6 +77,20 @@ const FacultyNameDropdown = ({ FacultyNameData }) => {
         options={options}
         placeholder="▼"
         isClearable
+        styles={{
+          control: (base) => ({
+            ...base,
+            fontSize: '20px', // テキストサイズを調整
+          }),
+          placeholder: (base) => ({
+            ...base,
+            fontSize: '20px', // プレースホルダーのサイズを調整
+          }),
+          menu: (base) => ({
+            ...base,
+            fontSize: '20px', // ドロップダウンメニューの文字サイズ
+          }),
+        }}
       />
     </div>
   );

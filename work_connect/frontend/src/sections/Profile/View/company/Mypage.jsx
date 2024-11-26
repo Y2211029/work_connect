@@ -498,7 +498,7 @@ const ProfileMypage = () => {
                 height="400px"
               />
             ) : (
-              "Loading..."
+              <PulseLoader color="#DAE2ED" />
             )}
           </Item>
         </Box>

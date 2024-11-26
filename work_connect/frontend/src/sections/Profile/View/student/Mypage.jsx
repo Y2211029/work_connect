@@ -454,11 +454,11 @@ const ProfileMypage = () => {
         </Box>
         <Box>
           <Typography variant="h6">自己紹介</Typography>
-          <Item sx={{ fontSize: "20px" }}>{ResponseData.intro ? ResponseData.intro : <PulseLoader color="#DAE2ED" />}</Item>
+          <Item>{ResponseData.intro ? ResponseData.intro : <PulseLoader color="#DAE2ED" />}</Item>
         </Box>
         <Box>
           <Typography variant="h6">卒業年度</Typography>
-          <Item>{ResponseData.graduation_year ? ResponseData.graduation_year + "年" : <PulseLoader color="#DAE2ED" />}</Item>
+          <Item>{ResponseData.graduation_year ? ResponseData.graduation_year : <PulseLoader color="#DAE2ED" />}</Item>
         </Box>
 
         <Box>

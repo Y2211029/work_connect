@@ -9,7 +9,7 @@ const StudentKanaName = ({StudentKanaSurnameData, StudentKananameData}) => {
   const [StudentKanaName, setStudentKanaName] = useState(StudentKananameData);
   const { getSessionData, updateSessionData } = useSessionStorage();
 
-  
+
 
   // 入力エラーの状態管理
   const [inputError, setInputError] = useState({
@@ -21,7 +21,7 @@ const StudentKanaName = ({StudentKanaSurnameData, StudentKananameData}) => {
   useEffect(() => {
     // セッションデータ取得
     const SessionData = getSessionData("accountData");
-    
+
     /// 編集の途中ならセッションストレージからデータを取得する。
     /// (リロードした時も、データが残った状態にする。)
     if ((SessionData.StudentKanaSurName !== undefined && SessionData.StudentKanaSurName !== "") ||
@@ -89,7 +89,7 @@ const StudentKanaName = ({StudentKanaSurnameData, StudentKananameData}) => {
             error={inputError.StudentKanaSurNameError}
             fullWidth
             // カタカナ以外ならhelperText表示
-            helperText={StudentKanaSurName !== "" && inputError.StudentKanaSurNameError ? "カタカナで入力してください" : ""}            
+            helperText={StudentKanaSurName !== "" && inputError.StudentKanaSurNameError ? "カタカナで入力してください" : ""}
             label="セイ"
             margin="normal"
             name="StudentKanaSurName"
@@ -103,6 +103,16 @@ const StudentKanaName = ({StudentKanaSurnameData, StudentKananameData}) => {
                 borderRadius: '8px', // 角の丸みを設定
                 marginTop:'6px',
                 marginBottom:'0'
+            }}
+            InputProps={{
+              sx: {
+                fontSize: '20px', // 入力テキストのフォントサイズ
+              },
+            }}
+            InputLabelProps={{
+              sx: {
+                fontSize: '20px', // ラベルのフォントサイズ
+              },
             }}
             // helperTextを赤色にする
             FormHelperTextProps={{
@@ -127,6 +137,16 @@ const StudentKanaName = ({StudentKanaSurnameData, StudentKananameData}) => {
                 borderRadius: '8px', // 角の丸みを設定
                 marginTop:'6px',
                 marginBottom:'0'
+            }}
+            InputProps={{
+              sx: {
+                fontSize: '20px', // 入力テキストのフォントサイズ
+              },
+            }}
+            InputLabelProps={{
+              sx: {
+                fontSize: '20px', // ラベルのフォントサイズ
+              },
             }}
             // helperTextを赤色にする
             FormHelperTextProps={{

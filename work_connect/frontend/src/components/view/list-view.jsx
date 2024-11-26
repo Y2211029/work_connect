@@ -820,10 +820,12 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
           )}
         </Stack>
 
-        <Grid container spacing={3}>
+          
+        <Grid className="column-container" spacing={1}>
+          {/* <div> */}
           {/* 作品アイテムの表示 */}
-          <div className="column-container">{renderWorkItems}</div>
-
+          {/* <div className="column-container">{renderWorkItems}</div> */}
+          {renderWorkItems}
           {isLoadItemColorLing && (
             <ColorRing
               visible={true}
@@ -833,8 +835,9 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
               wrapperStyle={{}}
               wrapperClass="color-ring-wrapper"
               colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
-            />
-          )}
+              />
+            )}
+            {/* </div> */}
         </Grid>
       </div>
       {/* </Container> */}

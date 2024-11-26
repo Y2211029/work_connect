@@ -72,6 +72,11 @@ const CompanyName = ({ CompanyNameData }) => {
                 marginTop: '6px',
                 marginBottom: '0'
             }}
+            InputProps={{
+              sx: {
+                fontSize: '20px', // 入力テキストのフォントサイズ
+              },
+            }}
         />
 
     </div>

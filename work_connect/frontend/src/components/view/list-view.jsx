@@ -34,13 +34,13 @@ const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, s
   if (newWorks) {
     console.log("newWorks", newWorks);
 
-    const existingIds = new Set(currentWorkList.map(item => item[idKey]));
+    const existingIds = new Set(currentWorkList.map((item) => item[idKey]));
 
     let filteredNewWorks;
     if (newWorks.title_contents) {
-      filteredNewWorks = newWorks.title_contents.filter(element => !existingIds.has(element[idKey]));
+      filteredNewWorks = newWorks.title_contents.filter((element) => !existingIds.has(element[idKey]));
     } else {
-      filteredNewWorks = newWorks.filter(element => !existingIds.has(element[idKey]));
+      filteredNewWorks = newWorks.filter((element) => !existingIds.has(element[idKey]));
     }
 
     console.log("idKey", idKey); // idKey の値を確認
@@ -121,14 +121,13 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
         case path === "/VideoList" ||
           path === `/Profile/${SessionAccountData.user_name}?page=movie` ||
           path === `/Profile/${ParamUserName}?page=movie`: {
-            const { default: VideoListPostCard } = await import("src/sections/VideoList/post-card");
-            const { default: VideoListPostSort } = await import("src/sections/VideoList/post-sort");
-            setPostCard(() => VideoListPostCard);
-            setPostSort(() => VideoListPostSort);
-            console.log("VideoListPostCard");
-            break;
-          }
-
+          const { default: VideoListPostCard } = await import("src/sections/VideoList/post-card");
+          const { default: VideoListPostSort } = await import("src/sections/VideoList/post-sort");
+          setPostCard(() => VideoListPostCard);
+          setPostSort(() => VideoListPostSort);
+          console.log("VideoListPostCard");
+          break;
+        }
 
         case path === "/StudentList": {
           const { default: StudentListPostCard } = await import("src/sections/StudentList/post-card");
@@ -148,11 +147,11 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           (options.DecodeURL === `/Profile/${ParamUserName}` &&
             options.page === "news" &&
             ["JobOffer", "Internship", "Blog", "Session"].includes(options.category)): {
-            const { default: Internship_JobOfferPostCard } = await import("src/sections/InternshipJobOffer/post-card");
-            setPostCard(() => Internship_JobOfferPostCard);
-            console.log("Internship_JobOfferPostCard");
-            break;
-          }
+          const { default: Internship_JobOfferPostCard } = await import("src/sections/InternshipJobOffer/post-card");
+          setPostCard(() => Internship_JobOfferPostCard);
+          console.log("Internship_JobOfferPostCard");
+          break;
+        }
 
         case path === `/WriteForm/${NewsDetailId}` || options.DecodeURL === `/Profile/${ParamUserName}/News/Forms`: {
           const { default: WriteFormPostCard } = await import("src/sections/WriteForm/post-card");
@@ -160,7 +159,6 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           console.log("WriteFormPostCard");
           break;
         }
-
 
         case options.DecodeURL === `/Profile/${ParamUserName}` && options.page === "checkform": {
           const { default: CheckFormPostCard } = await import("src/sections/Profile/View/company/CheckForm/post-card");
@@ -509,7 +507,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           return [{ title_contents }]; // 1つのオブジェクトにまとめた配列として返す
         }
       },
-    }
+    },
   };
 
   return (
@@ -557,7 +555,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   // 初回ロード完了のフラグ
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
 
-  useEffect(() => { }, [IsLoading]);
+  useEffect(() => {}, [IsLoading]);
   useEffect(() => {
     loginStatusCheckFunction();
   }, []);
@@ -623,26 +621,26 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     console.log("lastUrllastUrl:PathName", PathName);
   }
 
-  const fetcher = (lastUrl) => fetch(lastUrl).then((res) => {
-    return res.json().then((data) => {
-      console.log("fetcher:res:data:  ", data);
-      if (data.length == 0) {
-        setAllItems((prevItems) => ({
-          ...prevItems,
-          IsLoading: false,
-          DataList: [],
-        }));
-      }
-      return data;
+  const fetcher = (lastUrl) =>
+    fetch(lastUrl).then((res) => {
+      return res.json().then((data) => {
+        console.log("fetcher:res:data:  ", data);
+        if (data.length == 0) {
+          setAllItems((prevItems) => ({
+            ...prevItems,
+            IsLoading: false,
+            DataList: [],
+          }));
+        }
+        return data;
+      });
     });
-  });
 
   const { data, error, isLoading } = useSWR(lastUrl, fetcher);
 
   // const [SWRLoadFlg, setSWRLoadFlg] = useState(false);
 
   let LaravelResponse = isLoading;
-
 
   // 検索時にsetWorkOfListをリセット
   useEffect(() => {
@@ -750,7 +748,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     console.log("useSWR:LaravelResponse:", LaravelResponse);
     console.log("useSWR:page:", Page);
     console.log("useSWR:WorkOfList:", WorkOfList);
-    if ((LaravelResponse == false && Page != 1)) {
+    if (LaravelResponse == false && Page != 1) {
       console.log("ローディング削除:1");
       setAllItems((prevItems) => ({
         ...prevItems,
@@ -769,8 +767,8 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   const renderWorkItems =
     WorkOfList.length !== 0 && PostCard
       ? WorkOfList.map((post, index) => (
-        <PostCard className="mediaCard" ref={index === WorkOfList.length - 1 ? ref : null} key={`${post}-${index}`} post={post} index={index} />
-      ))
+          <PostCard className="mediaCard" ref={index === WorkOfList.length - 1 ? ref : null} key={`${post}-${index}`} post={post} index={index} />
+        ))
       : WorkOfList.length === 0 && !IsLoading && !LaravelResponse && hasLoadedOnce
         ? "0件です"
         : null;
@@ -784,10 +782,11 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
           ariaLabel="color-ring-loading"
           wrapperStyle={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
           wrapperClass="custom-color-ring-wrapper" // カスタムクラスを指定
-          colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+          colors={["#41a4ff", "#FFFFFF", "#41a4ff", "#41a4ff", "#FFFFFF"]}
           style={{ flexDirection: "column" }}
         />
       )}
+
       {/* <Container  style={{ width: "100%" }}> */}
       <div className="list-view-Container">
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
@@ -820,7 +819,6 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
           )}
         </Stack>
 
-          
         <Grid className="column-container" spacing={1}>
           {/* <div> */}
           {/* 作品アイテムの表示 */}
@@ -834,10 +832,10 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
               ariaLabel="color-ring-loading"
               wrapperStyle={{}}
               wrapperClass="color-ring-wrapper"
-              colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
-              />
-            )}
-            {/* </div> */}
+              colors={["#41a4ff", "#FFFFFF", "#41a4ff", "#41a4ff", "#FFFFFF"]}
+            />
+          )}
+          {/* </div> */}
         </Grid>
       </div>
       {/* </Container> */}

@@ -149,10 +149,6 @@ nav ul li a:hover {
   /* 必要に応じて調整 */
 }
 
-/* h1 {
-  text-align: center;
-} */
-
 /* モーダルが開いているときは背景がスクロールしないようにする */
 .ReactModal__Body--open {
   position: fixed;
@@ -717,6 +713,9 @@ textarea {
 
 
 
+
+
+
 .link {
   /* color: white; */
   color: #3F4551;
@@ -776,30 +775,20 @@ textarea {
 
 
 /* ギャラリーー */
-/* #gallery .gallery_images {
-  height: 94%;
-  overflow-y: scroll;
-  padding-top: 20px;
-  width: 100%;
-} */
-
-/* #gallery .gallery_images .gallery_img {
-  transition: 0.5s all;
-  aspect-ratio: 16/9;
-  object-fit: contain;
-  width: 300px;
-} */
-
 .gallery_images {
   align-items: center;
   justify-content: center;
 }
 
-/* .gallery_img:hover {
-  border: 4px solid #41a4ff;
-  transform: scale(1.1);
+.gallery_img {
   transition: 0.5s all;
-} */
+  object-fit: contain;
+}
+
+.gallery_img:hover {
+  border: 2px solid #41a4ff;
+  transform: scale(1.1);
+}
 
 
 /* 矢印の大きさを調整 */
@@ -812,17 +801,6 @@ textarea {
   /* 矢印アイコンのサイズ */
 }
 
-/* 左矢印のスタイル */
-/* .splide__arrow--prev {
-  left: -60px;
-  位置調整
-} */
-
-/* 右矢印のスタイル */
-/* .splide__arrow--next {
-  right: -60px;
-  位置調整
-} */
 
 
 /* 作品の紹介・ジャンル・開発言語・開発環境などの項目 */
@@ -895,6 +873,24 @@ textarea {
   /* color: #fff; */
   transition: 0.5s;
 }
+
+/* モーダルスライド */
+.modal_slide_stack {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-custom-splide {
+  height: 100%;
+}
+
+.modal-custom-splide-track {
+  height: 100%;
+  padding: 10px;
+}
+
 
 /* 作品詳細 　ここまで */
 

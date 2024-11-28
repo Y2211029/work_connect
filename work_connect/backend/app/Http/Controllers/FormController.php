@@ -22,6 +22,8 @@ class FormController extends Controller
         $create_form = json_encode($request->input('create_form')); // フォーム内容
         $news_id = $request->input('create_news_id'); //投稿するニュースのID
         $company_id = $request->input('company_id'); //企業のID
+        $deadline = $request->input('deadline'); //締切日
+
 
 
         Log::info('create_form: ' . $create_form); // JSONエンコードしてログに出力
@@ -38,6 +40,7 @@ class FormController extends Controller
         // レコードが見つかれば更新、なければ新規作成
         $w_create_form->create_form = $create_form;
         $w_create_form->createformDateTime = $now;
+        $w_create_form->deadline = $deadline;
         $w_create_form->save();
 
         // 作成または更新されたレコードのIDを取得する

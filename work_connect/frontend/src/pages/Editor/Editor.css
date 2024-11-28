@@ -9,8 +9,7 @@ body {
 .editor_title{
   position: relative;
   width:1000px;
-  height:200px;
-  font-weight:bold;
+  height:200px;font-weight:bold;
   font-size: 30px;
   outline: none;
   border:none;
@@ -25,10 +24,9 @@ body {
 .editor-wrapper {
   position: relative;
   margin-left: 5%;
-  top: 10px;
   padding: 4px;
   margin-bottom: 0;
-  height:100%;
+  height:auto;
   overflow-y:auto;
   overflow-x: hidden;
 }
@@ -269,31 +267,29 @@ td{
 }
 
 
-/* タブレット向けのスタイル */
-@media (max-width: 768px) {
-  .news_menu_modal_content {
-    width: 80%;
-    padding: 0.5em;
-    border: 5px solid black;
+/* スマホサイズの場合 */
+@media (max-width: 767px) {
+
+
+
+  .editor_title::placeholder,
+  .editor_title{
+    font-size: 100%;
   }
 
-
-  .menu-container {
-    width: 100%;
-    margin-bottom: 10px;
+  .editor-wrapper {
+    width:90%;
+    height:auto;
   }
 
-  .hover-content {
-    padding-left: 10px;
+  .ce-popover{
+    top:50%;
+    height:auto;
+    width: 40%;
+    overflow-y:scroll;
   }
+  
 
-  .CancelButton {
-    width: 80px;
-  }
-}
-
-/* スマートフォン向けのスタイル */
-@media (max-width: 480px) {
   .news_menu_modal_content {
     width: 90%;
     padding: 0.5em;
@@ -341,7 +337,6 @@ td{
 
   div.ce-paragraph.cdx-block.ce-paragraph--left[contenteditable="true"] {
     padding: 0 !important;
-    background-color: coral !important;
 }
 
 

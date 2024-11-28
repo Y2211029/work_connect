@@ -16,7 +16,13 @@ class w_create_form extends Model
         'company_id',
         'news_id',
         'create_form',
-        'createformDateTime',
+        'deadline',
+        'createformDateTime'
     ];
 
+        // キャストする属性を指定
+        protected $casts = [
+            'deadline' => 'datetime',
+        ];
+    
 }

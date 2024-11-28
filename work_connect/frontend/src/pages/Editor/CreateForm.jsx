@@ -43,13 +43,15 @@ import Typography from "@mui/material/Typography";
 // データ保存
 import axios from "axios";
 import FormMenu from './clickedmenu/FormMenu';
+import dayjs from "dayjs";
+import "dayjs/locale/ja";
 
 const CreateForm = ({ newsid, HandleBack }) => {
   console.log("ニュースid", newsid);
   console.log("HandleBack関数", HandleBack);
   const createform_search_url = "http://127.0.0.1:8000/createform_search";
   const [questions, setQuestions] = useState([]);
-
+  const [deadlineDate, setDeadlineDate] = useState(dayjs());
 
   useEffect(() => {
     const getcreateform = async () => {
@@ -480,7 +482,7 @@ const CreateForm = ({ newsid, HandleBack }) => {
   // フォームの編集データを保存
   const CreateFormSave = async () => {
     console.log("フォーム内容", questions);
-
+    console.log("締切日",deadlineDate);
     const create_form_save_url = `http://localhost:8000/create_form_save`;
 
     try {
@@ -488,6 +490,7 @@ const CreateForm = ({ newsid, HandleBack }) => {
         create_form: questions,
         company_id: data.id,
         create_news_id: create_news_id,
+        deadline: deadlineDate,
       });
       console.log("サーバーからのレスポンス", response.data);
       // window.location.reload()
@@ -607,6 +610,8 @@ const CreateForm = ({ newsid, HandleBack }) => {
             IsOpen={formmenushow}
             CloseModal={closeModal}
             questions={questions}
+            SetDeadlineDate = {setDeadlineDate}
+            deadlineDate = {deadlineDate}
           // genre={genre}
           // draftlist={draft_list}
           // CreateFormJump={CreateFormJump}

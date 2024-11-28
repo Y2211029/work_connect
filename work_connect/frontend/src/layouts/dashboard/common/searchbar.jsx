@@ -1959,23 +1959,18 @@ export default function Searchbar() {
                     {/* ---------------------------------------------------------- */}
                     <Stack
                       sx={{
-                        // overflowY: "scroll",
                         marginTop: "10px",
                         height: "100%",
                         overflow: "scroll",
                       }}
                     >
-                      {/* <StyledSearchbar> */}
                       <div
-                        // container
-                        // spacing={{ xs: 2, md: 3 }}
-                        // columns={{ xF s: 2, sm: 8, md: 12 }}
                         style={{
                           width: "100%",
                           height: "100%",
                           alignItems: "center",
                           justifyContents: "center",
-                          // padding: "5px 8px 5px 5px",
+                          padding: "5px",
                         }}
                       >
                         {PathName === "/" ? (
@@ -2877,7 +2872,7 @@ export default function Searchbar() {
                     </Stack>
 
                     {/* ---------------------------------------------------------- */}
-                    <Divider sx={{ borderStyle: "dashed", m: 0, display: "block" }} />
+                    <Divider sx={{ borderStyle: "dashed", marginTop: "10px", display: "block" }} />
                     <Stack
                       direction={{ xs: "column", md: "row" }} // xsでは縦並び、sm以上では横並び
                       sx={{

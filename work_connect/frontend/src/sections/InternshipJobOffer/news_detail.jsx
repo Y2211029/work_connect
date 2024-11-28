@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Helmet } from "react-helmet-async";
-// import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
@@ -14,21 +13,23 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+
 
 const InternshipJobOfferPage = () => {
     const [csrfToken, setCsrfToken] = useState("");
     const [NewsDetail, SetNewsDetail] = useState(null);
     const [bookmarked, setBookmarked] = useState(false);
-    const [isHover, SetFavoriteIcon_hover] = useState(false);  //ホバーしたら「クリックするとブックマークできます」というテキストが出現
-    const [showNav, setShowNav] = useState(false); // ナビゲーションバーを表示するかどうかの状態を管理
+    const [isHover, SetFavoriteIcon_hover] = useState(false);
     const [followStatus, setFollowStatus] = useState(null);
     const [writeformStatus, setWriteFormStatus] = useState(null);
+    const [deadlinestatus, setDeadLineStatus] = useState(null);
+    const [createformstatus, setCreateFormStatus] = useState(null);
+
 
 
     const csrf_url = "http://localhost:8000/csrf-token";
     const news_bookmark_url = "http://localhost:8000/news_bookmark";
-    // const location = useLocation();
-    // const parameter = location.state; // パラメータ(w_newsテーブルのidカラムの値)を代入
     const { news_id } = useParams(); // パラメータから id を取得
     const newsdetail_id = String(news_id); // id を文字列に変換する
     const navigate = useNavigate();
@@ -59,17 +60,17 @@ const InternshipJobOfferPage = () => {
                 SetNewsDetail(response.data);
                 setFollowStatus(response.data.follow_status);
                 const writeform_status = response.data.writeform_status;
+                const deadline_status = response.data.deadline_status;
+                const createform_status = response.data.createform_status;
 
-                if(writeform_status){
-                    setWriteFormStatus(true);
-                }else{
-                    setWriteFormStatus(false);
-                }
-                // if(writeform_status == undefined){
-                //     setWriteFormStatus(false);
-                // }else{
-                //     setWriteFormStatus(true);
-                // }
+                console.log("デッドラインステータス", deadline_status);
+                console.log("ライトフォームステータス", writeform_status);
+                console.log("クリエイトフォームステータス", createform_status);
+
+                setWriteFormStatus(writeform_status);
+                setDeadLineStatus(deadline_status);
+                setCreateFormStatus(createform_status);
+
             } catch (error) {
                 console.error("データの取得中にエラーが発生しました！", error);
             }
@@ -152,29 +153,7 @@ const InternshipJobOfferPage = () => {
         navigate(`/Chat`);
     }
 
-    useEffect(() => {
-        // スクロールイベントのハンドラー関数
-        const handleScroll = () => {
-            // 現在のスクロール位置を取得
-            const ScrollPos = window.scrollY;
-            // 目的のスクロール位置を比較
-            const TargetPos = 350;
 
-            if (ScrollPos > TargetPos) {
-                setShowNav(true);
-            } else {
-                setShowNav(false);
-            }
-        };
-
-        // スクロールイベントを追加
-        window.addEventListener('scroll', handleScroll);
-
-        // クリーンアップ関数でスクロールイベントを削除
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, []);
 
     let Genre;
     if (NewsDetail && NewsDetail.genre === "Internship") {
@@ -187,7 +166,9 @@ const InternshipJobOfferPage = () => {
         Genre = "求人";
     }
 
-    console.log("writeformStatus",writeformStatus);
+    console.log("ジャンル", Genre);
+    console.log("writeformStatus", writeformStatus);
+    console.log("followstatus", followStatus);
 
     return (
         <>
@@ -199,83 +180,77 @@ const InternshipJobOfferPage = () => {
 
             {NewsDetail ? (
                 <div className="NewsDetailContainer">
-                    {/* ある程度下へスクロールしたら出てくるメニュー */}
-                    {showNav && (
-                        <div className="popup_menu">
-                            <Stack direction="row" spacing={2}>
-                                <p>{NewsDetail.article_title}</p>
+                    <div className="StickyMenu">
+                        <Button className="NewsDetail_Button"
+                            variant="contained"
+                        >
 
-                                <Button
+                            {Genre}
+
+                        </Button>
+                        <h1 className="news_title">{NewsDetail.article_title}</h1>
+
+                        <Stack direction="row" spacing={2} >
+                            <p className="news_company_name">{NewsDetail.company_name}</p>
+                            <p className="news_created_at">{formatDate(NewsDetail.news_created_at)}</p>
+                        </Stack>
+                        
+                        <Stack direction="row" spacing={2} className="NewsDetail_Stack">
+                                <Button className="NewsDetail_Button"
                                     variant="contained"
-                                    sx={{
-                                        fontSize: "10px",
-                                        padding: "8px 16px",
-                                        margin: "4px",
-                                        background: "linear-gradient(#41A4FF, #9198e5)",
-                                        "&:hover": {
-                                            background: "linear-gradient(#c2c2c2, #e5ad91)",
-                                        },
-                                    }}
                                     onClick={handleProfileJump}
                                 >
                                     プロフィール
                                 </Button>
-
-                                {/* data?.id?.[0] === "S" が true の場合にボタンを表示 */}
                                 {data?.id?.[0] === "S" && (
                                     <>
-                                        <Button
+                                        <Button className="NewsDetail_Button"
                                             variant="contained"
-                                            sx={{
-                                                fontSize: "10px",
-                                                padding: "8px 16px",
-                                                margin: "4px",
-                                                background: "linear-gradient(#41A4FF, #9198e5)",
-                                                "&:hover": {
-                                                    background: "linear-gradient(#c2c2c2, #e5ad91)",
-                                                },
-                                            }}
                                             onClick={handleFollowClick}
                                         >
                                             {followStatus}
                                             {/* useStateから持ってくる */}
                                         </Button>
 
-                                        <Button
-                                            variant="contained"
-                                            sx={{
-                                                fontSize: "10px",
-                                                padding: "8px 16px",
-                                                margin: "4px",
-                                                background: writeformStatus
-                                                ? "linear-gradient(#d3d3d3, #a6a6a6)" // 応募済みの場合
-                                                : "linear-gradient(#41A4FF, #9198e5)", // 応募する場合
+                                        {createformstatus && ( // createformstatus が true の場合のみボタンを表示
+                                            <Button className="Apply_Button"
+                                                variant="contained"
+                                                sx={{
+                                                    background: deadlinestatus
+                                                        ? "linear-gradient(#d3d3d3, #a6a6a6)" // 応募できない場合の背景
+                                                        : writeformStatus
+                                                            ? "linear-gradient(#d3d3d3, #a6a6a6)" // 応募済みの場合の背景
+                                                            : "linear-gradient(#41A4FF, #9198e5)", // 応募する場合の背景
+                                                    "&:hover": {
+                                                        background: deadlinestatus
+                                                            ? "linear-gradient(#b8b8b8, #9e9e9e)" // 応募できない場合のホバー時の背景
+                                                            : writeformStatus
+                                                                ? "linear-gradient(#b8b8b8, #9e9e9e)" // 応募済みの場合のホバー時の背景
+                                                                : "linear-gradient(#c2c2c2, #e5ad91)", // 応募する場合のホバー時の背景
+                                                    },
+                                                    color: deadlinestatus ? "white" : "black", // 締切が過ぎた場合の文字色を白に変更
+                                                }}
+                                                onClick={
+                                                    deadlinestatus || writeformStatus
+                                                        ? undefined // 応募できない場合または応募済みの場合は無効化
+                                                        : handleFormJump // 応募可能な場合のクリックイベント
+                                                }
+                                                disabled={deadlinestatus || writeformStatus} // 応募できないまたは応募済みの場合にボタンを無効化
+                                            >
+                                                {deadlinestatus
+                                                    ? "応募できません" // 締切が過ぎている場合
+                                                    : writeformStatus
+                                                        ? "応募済み" // 応募済みの場合
+                                                        : "応募する"} 
+                                            </Button>
+                                        )}
 
-                                            "&:hover": {
-                                                background: writeformStatus
-                                                    ? "linear-gradient(#b8b8b8, #9e9e9e)" // 応募済みの場合
-                                                    : "linear-gradient(#c2c2c2, #e5ad91)", // 応募する場合
-
-                                            },
-                                            }}
-                                            onClick={writeformStatus ? undefined : handleFormJump} // trueの場合のみクリックイベントを設定
-                                        >
-                                            {writeformStatus ? "応募済み" : "応募する"}
-                                    </Button>
 
 
                                         {(followStatus === "フォローしています" || followStatus === "フォローされています") && (
                                             <Button
                                                 variant="contained"
-                                                sx={{
-                                                    fontSize: "10px",
-                                                    padding: "8px 16px",
-                                                    margin: "4px",
-                                                    background: "linear-gradient(#41A4FF, #9198e5)",
-                                                    "&:hover": {
-                                                        background: "linear-gradient(#c2c2c2, #e5ad91)",
-                                                    },
-                                                }}
+                                            className="NewsDetail_Button"
                                                 onClick={handleChatJump}
                                             >
                                                 チャットする
@@ -284,109 +259,10 @@ const InternshipJobOfferPage = () => {
                                     </>
                                 )}
                             </Stack>
-                        </div>
-                    )}
 
-                    <Button
-                        variant="contained"
-                        sx={{
-                            fontSize: "10px",
-                            padding: "8px 16px",
-                            margin: "4px",
-                            background: "linear-gradient(#41A4FF, #9198e5)",
-                            "&:hover": {
-                                background: "linear-gradient(#c2c2c2, #e5ad91)",
-                            },
-                        }}
-                    >
+                        <Divider className="StickyMenu_Divider"></Divider>
+                    </div>
 
-                        {Genre}
-
-                    </Button>
-                    <h1 className="news_title">{NewsDetail.article_title}</h1>
-                    <Stack direction="row" spacing={2}>
-                        <p className="news_company_name">{NewsDetail.company_name}</p>
-                        <p className="news_created_at">{formatDate(NewsDetail.news_created_at)}</p>
-                        <Stack direction="row" spacing={2}>
-                            <Button
-                                variant="contained"
-                                sx={{
-                                    fontSize: "10px",
-                                    padding: "8px 16px",
-                                    margin: "4px",
-                                    background: "linear-gradient(#41A4FF, #9198e5)",
-                                    "&:hover": {
-                                        background: "linear-gradient(#c2c2c2, #e5ad91)",
-                                    },
-                                }}
-                                onClick={handleProfileJump}
-                            >
-                                プロフィール
-                            </Button>
-                            {data?.id?.[0] === "S" && (
-                                <>
-                                    <Button
-                                        variant="contained"
-                                        sx={{
-                                            fontSize: "10px",
-                                            padding: "8px 16px",
-                                            margin: "4px",
-                                            background: "linear-gradient(#41A4FF, #9198e5)",
-                                            "&:hover": {
-                                                background: "linear-gradient(#c2c2c2, #e5ad91)",
-                                            },
-                                        }}
-                                        onClick={handleFollowClick}
-                                    >
-                                        {followStatus}
-                                        {/* useStateから持ってくる */}
-                                    </Button>
-
-                                    <Button
-                                            variant="contained"
-                                            sx={{
-                                                fontSize: "10px",
-                                                padding: "8px 16px",
-                                                margin: "4px",
-                                                background: writeformStatus
-                                                ? "linear-gradient(#d3d3d3, #a6a6a6)" // 応募済みの場合
-                                                : "linear-gradient(#41A4FF, #9198e5)", // 応募する場合
-
-                                            "&:hover": {
-                                                background: writeformStatus
-                                                    ? "linear-gradient(#b8b8b8, #9e9e9e)" // 応募済みの場合
-                                                    : "linear-gradient(#c2c2c2, #e5ad91)", // 応募する場合
-
-                                            },
-                                            }}
-                                            onClick={writeformStatus ? undefined : handleFormJump} // trueの場合のみクリックイベントを設定
-                                        >
-                                            {writeformStatus ? "応募済み" : "応募する"}
-                                    </Button>
-
-
-
-                                    {followStatus === "フォローしています" && (
-                                        <Button
-                                            variant="contained"
-                                            sx={{
-                                                fontSize: "10px",
-                                                padding: "8px 16px",
-                                                margin: "4px",
-                                                background: "linear-gradient(#41A4FF, #9198e5)",
-                                                "&:hover": {
-                                                    background: "linear-gradient(#c2c2c2, #e5ad91)",
-                                                },
-                                            }}
-                                            onClick={handleChatJump}
-                                        >
-                                            チャットする
-                                        </Button>
-                                    )}
-                                </>
-                            )}
-                        </Stack>
-                    </Stack>
                     {/* NewsDetailHeader要素 サムネイルと会社名・お気に入りボタンを一括りにする */}
                     <div className="NewsDetailHeader">
                         <img

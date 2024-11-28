@@ -63,20 +63,20 @@ class NewsController extends Controller
             //もしもジャンルがブログではないかつフォームを作成していた場合
             //今見ている人が応募済みかどうかチェック
             if ($news_detail->genre !== 'Blog' && $createForm) { // 存在するかどうかをチェック
-                
+
                 $createFormStatus = true;
                 $news_detail->createform_status = $createFormStatus;
 
                 Log::info('クリエイトフォームステータス' . $createFormStatus);
-            
+
                 $writeformStatus = w_write_form::where('user_id', $MyId)
                     ->where('news_id', $newsdetail_id)
                     ->first();
-            
+
                 if ($writeformStatus) {
                     $news_detail->writeform_status = true;
                     $now = Carbon::now('Asia/Tokyo');
-            
+
                     // 締め切りを確認する 締切日を設定していないもしくは締切日超過の場合はfalseを返す
                     if ($createForm->deadline !== null && $createForm->deadline->lt($now)) {
                         $news_detail->deadline_status = true;
@@ -282,8 +282,29 @@ class NewsController extends Controller
 
             foreach ($posts as $post) {
 
+                // w_create_formsテーブルから応募用フォームがあるかチェック
+                $createformData = w_create_form::where('news_id', $post->news_id)->first();
+                Log::info('$createformData'. $createformData);
+
+                if ($createformData) {
+                    // 現在のデッドラインを取得
+                    $Deadline = $createformData->deadline;
+
+                    // デッドラインが指定されている場合のみ更新
+                    if (!empty($Deadline)) {
+                        Log::info('デッドライン: ' . $Deadline);
+
+                        // デッドラインを更新
+                        $post->deadline = $Deadline;
+
+                    } else {
+                        Log::info('新しいデッドラインが指定されていません。変更は行われません。');
+                    }
+                }
+
                 // w_write_formsテーブルからすべてのフォームデータを取得
                 $formData = w_write_form::where('news_id', $post->news_id)->get();
+
 
                 // 取得したフォームデータの数をpostsに追加
                 $post->form_data_count = $formData->count();

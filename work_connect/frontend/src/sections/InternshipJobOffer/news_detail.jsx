@@ -194,7 +194,7 @@ const InternshipJobOfferPage = () => {
                             <p className="news_company_name">{NewsDetail.company_name}</p>
                             <p className="news_created_at">{formatDate(NewsDetail.news_created_at)}</p>
                         </Stack>
-                        
+
                         <Stack direction="row" spacing={2} className="NewsDetail_Stack">
                                 <Button className="NewsDetail_Button"
                                     variant="contained"
@@ -241,7 +241,7 @@ const InternshipJobOfferPage = () => {
                                                     ? "応募できません" // 締切が過ぎている場合
                                                     : writeformStatus
                                                         ? "応募済み" // 応募済みの場合
-                                                        : "応募する"} 
+                                                        : "応募する"}
                                             </Button>
                                         )}
 

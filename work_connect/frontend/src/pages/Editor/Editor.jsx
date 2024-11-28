@@ -1527,7 +1527,7 @@ const Editor = () => {
                     {/* アップロードされた画像の表示 */}
                     {imageUrl && (
             <div className="uploaded-image" id="uploaded-image">
-              <img src={`${imageUrl}`} alt="Uploaded" style={{ width: '100%', height: '300px' }} />
+              <img src={`${imageUrl}`} alt="Uploaded"/>
               <CancelIcon onClick={thumbnail_img_delete} />
             </div>
           )}

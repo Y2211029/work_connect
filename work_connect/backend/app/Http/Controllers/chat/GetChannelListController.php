@@ -77,6 +77,8 @@ class GetChannelListController extends Controller
             if ($channel_list) {
                 // Reactに返す
                 return response()->json($channel_list);
+            } else {
+                return response()->json(null);
             }
 
         } catch (\Exception $e) {

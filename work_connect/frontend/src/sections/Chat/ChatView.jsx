@@ -139,25 +139,30 @@ const FollowGroup = ({
 
   return (
     <>
-      {/* 見出し部分 */}
-      <ListItemButton onClick={handleClick}>
-        <ListItemIcon>
-          <PersonIcon />
-          {title === "相互フォロー" && <SyncAltIcon />}
-          {title === "フォローしています" && <EastIcon />}
-          {title === "フォローされています" && <WestIcon />}
-        </ListItemIcon>
-        <ListItemText
-          primary={
-            <Typography sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>
-              {title} {followStatusCount ? `(${followStatusCount})` : null}
-            </Typography>
-          }
-        />
-        {groupingOpen ? <ExpandLess /> : <ExpandMore />}
-      </ListItemButton>
+      {/***  見出し部分 ***/}
 
-      {/* フォローリスト部分 */}
+      {/* ホバーでフォロー数を表示 */}
+      <Tooltip title={followStatusCount ? `${followStatusCount}人` : "0人"}>
+        <ListItemButton onClick={handleClick}>
+          <ListItemIcon>
+            <PersonIcon />
+            {/* 矢印のアイコン */}
+            {title === "相互フォロー" && <SyncAltIcon />}
+            {title === "フォローしています" && <EastIcon />}
+            {title === "フォローされています" && <WestIcon />}
+          </ListItemIcon>
+          <ListItemText
+            primary={
+              <Typography sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>
+                {title}
+              </Typography>
+            }
+          />
+          {groupingOpen ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+      </Tooltip>
+
+      {/***  フォローリスト部分 ***/}
       <Collapse in={groupingOpen} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           {/* ユーザーリスト */}
@@ -181,6 +186,22 @@ const FollowGroup = ({
               </ListItemIcon>
               {/* ユーザー名 */}
               <ListItemText primary={element.company_name ? element.company_name : element.user_name} />
+              {/* チャットの更新時間を表示(未読がある場合は非表示) */}
+              {element.unread === 0 ? (
+                <Box
+                  sx={{
+                    fontSize: '15px', // 文字サイズを小さく
+                    position: 'absolute', // リストアイテムの右上に配置
+                    top: '8px',
+                    right: '8px',
+                    color: '#666', // 色を薄める
+                  }}
+                >
+                  {element.chat_log}
+                </Box>
+              ) : (
+                ""
+              )}
 
               {/* 未読の件数を表示 */}
               <Box>
@@ -607,8 +628,8 @@ const ChatView = () => {
           },
         });
 
-        if (response) {
-          //console.log("GetChannelList は "+JSON.stringify(response, null, 2));
+        if (response.data && Object.keys(response.data).length > 0) {
+          console.log("GetChannelList は "+JSON.stringify(response, null, 2));
           const data = response.data;
           setResponseChannelListData(data);
 
@@ -616,10 +637,12 @@ const ChatView = () => {
           handleFollowStatus(data, '相互フォローしています', setFollowStatus_1, setFollowStatusCount_1);
           handleFollowStatus(data, 'フォローしています', setFollowStatus_2, setFollowStatusCount_2);
           handleFollowStatus(data, 'フォローされています', setFollowStatus_3, setFollowStatusCount_3);
+        } else {
+          alert("フォロワーがいません");
+          setResponseChannelListData(null);
         }
       } catch (err) {
         console.log("err:", err);
-        alert("フォロワーがいません");
       }
     }
     // DBからデータを取得
@@ -1112,7 +1135,12 @@ const ChatView = () => {
                   {/* アイコン */}
                   <SelectIcon chatViewIcon={chatViewIcon}/>
                   {/* 企業名またはユーザーネーム */}
-                  <Box sx={{ fontSize: '1.9rem'}}>
+                  <Box sx={{
+                    fontSize: '1em',
+                    whiteSpace: 'nowrap', // 改行を防ぐ
+                    overflow: 'hidden',  // はみ出した部分を非表示
+                    textOverflow: 'ellipsis', // 省略記号を付ける
+                    }}>
                     {chatViewCompanyName ?
                     chatViewCompanyName :
                     chatViewUserName}
@@ -1121,16 +1149,25 @@ const ChatView = () => {
               </Link>
             </Tooltip>
           </Box>
-        ) : (
-          // 未選択状態
+        ) : (ResponseChannelListData) ? (
+          // 未選択状態(学生側)
           <Box sx={{
+            display:'flex',
+            alignItems: 'center',
             padding: '5px 0',
             borderBottom: '#DAE2ED 2px solid',
             fontSize: '25px'
             }}>
-
-
-            &emsp;←選んでください
+            &nbsp;<WestIcon />{MyUserId[0] === "S" ? "企業" : "学生"}とチャットできます
+          </Box>
+        ) : (
+           // フォロー関係が0の場合
+           <Box sx={{
+            padding: '5px 0',
+            borderBottom: '#DAE2ED 2px solid',
+            fontSize: '25px'
+            }}>
+            &nbsp;{MyUserId[0] === "S" ? "企業" : "学生"}をフォローするとチャットできます
           </Box>
         )}
 
@@ -1138,7 +1175,7 @@ const ChatView = () => {
         <Box
         ref={chatBoxscroll} // refを適用
         sx={{
-          height:'82%',
+          height:'84%',
           overflow: 'auto',
             }}>
 

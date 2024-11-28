@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import PropTypes from 'prop-types'; // prop-types をインポート
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import Box from '@mui/material/Box';
 
 const StudentName = ({StudentSurnameData, StudentnameData}) => {
 
@@ -84,66 +85,73 @@ const StudentName = ({StudentSurnameData, StudentnameData}) => {
 
 
   return (
-    <div style={{ display: "flex" }}>
-        <TextField
-            // error={NULL_validation1 == true || inputError.student_surname}
-            error={inputError.StudentSurNameError}
-            fullWidth
-            label="姓"
-            margin="normal"
-            name="StudentSurName"
-            onChange={handleChange}
-            // required
-            type="text"
-            value={StudentSurName}
-            variant="outlined"
-            sx={{
-                backgroundColor: '#fff', // 背景色を指定
-                borderRadius: '8px', // 角の丸みを設定
-                marginTop:'6px',
-                marginBottom:'0'
-            }}
-            InputProps={{
-              sx: {
-                fontSize: '20px', // 入力テキストのフォントサイズ
-              },
-            }}
-            InputLabelProps={{
-              sx: {
-                fontSize: '20px', // ラベルのフォントサイズ
-              },
-            }}
-        />
-        <TextField
-            // error={NULL_validation2 == true || inputError.student_name}
-            error={inputError.StudentNameError}
-            fullWidth
-            label="名"
-            margin="normal"
-            name="StudentName"
-            onChange={handleChange}
-            // required
-            type="text"
-            value={StudentName}
-            variant="outlined"
-            sx={{
-                backgroundColor: '#fff', // 背景色を指定
-                borderRadius: '8px', // 角の丸みを設定
-                marginTop:'6px',
-                marginBottom:'0'
-            }}
-            InputProps={{
-              sx: {
-                fontSize: '20px', // 入力テキストのフォントサイズ
-              },
-            }}
-            InputLabelProps={{
-              sx: {
-                fontSize: '20px', // ラベルのフォントサイズ
-              },
-            }}
-        />
-        </div>
+    <Box
+      sx={{
+        display: {
+          xs: 'block', // 0px ~ 899px の間は非表示
+          md: 'flex', // 900px 以上では flex
+        },
+      }}
+    >
+      <TextField
+          // error={NULL_validation1 == true || inputError.student_surname}
+          error={inputError.StudentSurNameError}
+          fullWidth
+          label="姓"
+          margin="normal"
+          name="StudentSurName"
+          onChange={handleChange}
+          // required
+          type="text"
+          value={StudentSurName}
+          variant="outlined"
+          sx={{
+              backgroundColor: '#fff', // 背景色を指定
+              borderRadius: '8px', // 角の丸みを設定
+              marginTop:'6px',
+              marginBottom:'0'
+          }}
+          InputProps={{
+            sx: {
+              fontSize: '20px', // 入力テキストのフォントサイズ
+            },
+          }}
+          InputLabelProps={{
+            sx: {
+              fontSize: '20px', // ラベルのフォントサイズ
+            },
+          }}
+      />
+      <TextField
+          // error={NULL_validation2 == true || inputError.student_name}
+          error={inputError.StudentNameError}
+          fullWidth
+          label="名"
+          margin="normal"
+          name="StudentName"
+          onChange={handleChange}
+          // required
+          type="text"
+          value={StudentName}
+          variant="outlined"
+          sx={{
+              backgroundColor: '#fff', // 背景色を指定
+              borderRadius: '8px', // 角の丸みを設定
+              marginTop:'6px',
+              marginBottom:'0'
+          }}
+          InputProps={{
+            sx: {
+              fontSize: '20px', // 入力テキストのフォントサイズ
+            },
+          }}
+          InputLabelProps={{
+            sx: {
+              fontSize: '20px', // ラベルのフォントサイズ
+            },
+          }}
+      />
+    </Box>
   );
 };
 

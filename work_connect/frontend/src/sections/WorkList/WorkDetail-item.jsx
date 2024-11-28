@@ -460,11 +460,15 @@ const WorkDetailItem = () => {
                     aria-labelledby="modal-autoplay-example-heading"
                     hasTrack={false}
                     className="modal-custom-splide" // クラス名を追加
-                    // style={{ height: "100%" }}
+                  // style={{ height: "100%" }}
                   >
                     <SplideTrack className="modal-custom-splide-track">
                       {WorkSlide.map((slide) => (
-                        <SplideSlide key={slide.work_id + slide.id} style={{ textAlign: "center" }}>
+                        <SplideSlide key={slide.work_id + slide.id} style={{
+                          textAlign: "center", display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}>
                           <Box
                             component="img"
                             src={slide.image}
@@ -670,7 +674,7 @@ const WorkDetailItem = () => {
       {workComment && Object.keys(Comment).length > 0 && <h3>コメント一覧</h3>}
       {workComment.map((item, index) =>
         (item.commenter_id === AccountData.id && item.commenter_user_name === AccountData.user_name) ||
-        (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
+          (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
           <div key={index}>
             {/* {console.log("comment", Comment)} */}
             <Divider sx={{ borderStyle: "dashed", margin: "5px 0px 20px 0px", width: "90%" }} />

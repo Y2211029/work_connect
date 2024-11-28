@@ -103,25 +103,30 @@ const Textarea = styled(BaseTextareaAutosize)(
 );
 
 
-const SelectIcon = ({chatViewIcon}) => {
-  return(
+const SelectIcon = ({ chatViewIcon }) => {
+  // 画像がない場合に設定する画像
+  const alternativeImage = "http://localhost:8000/storage/images/userIcon/subNinja.jpg";
+
+  return (
     <div style={{ display: 'flex', alignItems: 'center' }}>
-    {chatViewIcon ? (
-      <img
-        src={`http://localhost:8000/storage/images/userIcon/${chatViewIcon}`}
-        alt="User Icon"
-        style={{
-          width: '40px',
-          height: '40px',
-          margin: '0 5px',
-          borderRadius: '50%',
-          border: '2px solid #999'
-        }}
-      />
-    ) : (
-      <DefaultIcon />
-    )}
-  </div>
+      {chatViewIcon ? (
+        <img
+          src={`http://localhost:8000/storage/images/userIcon/${chatViewIcon}`}
+          onError={(e) => {
+            e.target.src = alternativeImage; // エラー時にサンプル画像をセット
+          }}
+          style={{
+            width: '40px',
+            height: '40px',
+            margin: '0 5px',
+            borderRadius: '50%',
+            border: '2px solid #999'
+          }}
+        />
+      ) : (
+        <DefaultIcon />
+      )}
+    </div>
   );
 
 }
@@ -177,7 +182,7 @@ const FollowGroup = ({
               }}>
               {/* アイコン */}
               <ListItemIcon>
-              <SelectIcon chatViewIcon={element.icon}/>
+                <SelectIcon chatViewIcon={element.icon} />
               </ListItemIcon>
               {/* ユーザー名 */}
               <ListItemText primary={element.company_name ? element.company_name : element.user_name} />
@@ -257,12 +262,12 @@ const ChatEditModal = ({
   chatEditData,
   chatEditChange,
   chatEditUpDate }) => {
-  return(
+  return (
     <Modal
-        open={modalOpen}
-        onClose={handleModalClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+      open={modalOpen}
+      onClose={handleModalClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
     >
       <Box sx={{
         position: 'absolute',
@@ -274,7 +279,8 @@ const ChatEditModal = ({
         border: '2px solid #DAE2ED',
         borderRadius: '10px',
         boxShadow: 24,
-        p: 4,}}>
+        p: 4,
+      }}>
 
         <Typography
           id="modal-modal-title"
@@ -310,16 +316,16 @@ const ChatEditModal = ({
           }}
         >
           <Button
-          variant="text"
-          sx={{ marginRight: '10px' }}
-          onClick={handleModalClose}
+            variant="text"
+            sx={{ marginRight: '10px' }}
+            onClick={handleModalClose}
           >
             キャンセル
           </Button>
           <Button
-          variant="contained"
-          size="medium"
-          onClick={chatEditUpDate}
+            variant="contained"
+            size="medium"
+            onClick={chatEditUpDate}
           >
             更新
           </Button>
@@ -331,7 +337,7 @@ const ChatEditModal = ({
 
 // ローディングのコンポーネント
 const ColorRingStyle = () => {
-  return(
+  return (
     <Box
       sx={{
         marginTop: '20%',
@@ -349,11 +355,11 @@ const ColorRingStyle = () => {
           ariaLabel: "color-ring-loading",
           wrapperClass: "custom-color-ring-wrapper",
           colors:
-          ["#e15b64",
-            "#f47e60",
-            "#f8b26a",
-            "#abbd81",
-            "#849b87"]
+            ["#e15b64",
+              "#f47e60",
+              "#f8b26a",
+              "#abbd81",
+              "#849b87"]
         }}
       />
     </Box>
@@ -368,7 +374,7 @@ const ChatView = () => {
   const chatContext = useContext(WebScokectContext);
 
   /// セッションストレージ取得
-  const { getSessionData , updateSessionData } = useSessionStorage();
+  const { getSessionData, updateSessionData } = useSessionStorage();
   /// セッションストレージからaccountDataを取得し、idを初期値として設定(ログイン中のIDを取得)
   const [accountData, setAccountData] = useState(getSessionData("accountData"));
 
@@ -516,7 +522,7 @@ const ChatView = () => {
     handleResize();
     window.addEventListener('resize', handleResize);
     // 画面全体のwidthが900px未満かつチャット相手未選択のときはフォローリスト表示
-    if(window.innerWidth < 900 && !chatViewId){
+    if (window.innerWidth < 900 && !chatViewId) {
       setShowFollowList(true);
     }
 
@@ -539,7 +545,7 @@ const ChatView = () => {
     //alert("GET CHAT");
     AlreadyReadChat(chatViewId);
 
-  }, [chatContext.WebSocketState.Chat,chatViewId]);
+  }, [chatContext.WebSocketState.Chat, chatViewId]);
 
   // chatContext.WebSocketState.Chat2を取得したとき
   // リアルタイムで既読や削除を反映させる
@@ -584,13 +590,13 @@ const ChatView = () => {
     const newValue = e.target.value;
     // newValueをセット
     setTextData(newValue);
-    console.log("newvalue:"+newValue);
+    console.log("newvalue:" + newValue);
   };
 
   // 送信ボタンが押されたとき
   const sendClick = () => {
     const newValue = TextData;
-    console.log("送信内容は:"+newValue+"です");
+    console.log("送信内容は:" + newValue + "です");
     PostChat();
     // チャットのスクロールを下にする
     scrollToBottom();
@@ -637,7 +643,7 @@ const ChatView = () => {
   /// 最新のチャットを取得する処理
   const GetChat = (id) => {
     async function GetData() {
-      console.log('チャットデータを取得中...'+id);
+      console.log('チャットデータを取得中...' + id);
 
       try {
         // Laravel側からデータを取得
@@ -731,8 +737,8 @@ const ChatView = () => {
   const AlreadyReadChat = (id) => {
     async function PostData() {
       try {
-         // バックエンドにフォローリクエストを送信
-         await fetch("http://localhost:3000/already_read_chat", {
+        // バックエンドにフォローリクエストを送信
+        await fetch("http://localhost:3000/already_read_chat", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -787,7 +793,7 @@ const ChatView = () => {
   const GetDay = (time) => {
     // 日付部分を切り取る
     const ChatDate = time.slice(0, 10); // "2024-10-07" などを取得
-    if(PrevChatDate && PrevChatDate === ChatDate){
+    if (PrevChatDate && PrevChatDate === ChatDate) {
       // 前のデータと日付が同じ場合は、日付を表示しないのでreturnで空文字列を返す
       return "";
     }
@@ -804,7 +810,7 @@ const ChatView = () => {
     const options = { weekday: 'long' }; // 曜日のオプション
     const dayOfWeek = date.toLocaleDateString('ja-JP', options); // 日本語の曜日を取得
 
-    return `${formattedDate} (${dayOfWeek.slice(0,1)})`; // 返り値(例: 10月7日 (日曜日) )
+    return `${formattedDate} (${dayOfWeek.slice(0, 1)})`; // 返り値(例: 10月7日 (日曜日) )
   };
 
   // 送信時間から時:分だけを取り出す関数
@@ -825,7 +831,7 @@ const ChatView = () => {
   };
 
   // 「ここから未読」を表示する関数
-  const GetStartUnread = (read,id) => {
+  const GetStartUnread = (read, id) => {
 
     if (read === "未読" && unreadMessageFlag === false) {
       /* 1度きりの表示なので2回目以降は出さないようにする。
@@ -836,7 +842,7 @@ const ChatView = () => {
       updateSessionData("accountData", "GetStartUnread", unreadid);
     }
     // 「ここから未読」を表示
-    if(unreadid === id){
+    if (unreadid === id) {
       // コンポーネント呼び出し
       return <UnreadStart />;
     }
@@ -872,8 +878,8 @@ const ChatView = () => {
     };
   };
 
-   // フォローリストのスクロール位置をセッションストレージに保存する関数
-   const saveScrollPosition = () => {
+  // フォローリストのスクロール位置をセッションストレージに保存する関数
+  const saveScrollPosition = () => {
     updateSessionData("accountData", "ListBoxscroll", ListBoxscroll.current.scrollTop);
   };
 
@@ -897,10 +903,10 @@ const ChatView = () => {
   // widthが変化したとき
   const handleResize = () => {
     setShowChatView(true);
-    if(window.innerWidth < 900){
+    if (window.innerWidth < 900) {
       // 画面全体のwidthが900px未満のとき
       setShowFollowWidth(window.innerWidth * 0.96);
-      if(getSessionData("accountData") && !getSessionData("accountData").ChatViewOpen){
+      if (getSessionData("accountData") && !getSessionData("accountData").ChatViewOpen) {
         // トーク画面を開いていないとき
         setShowChatView(false);
       }
@@ -913,7 +919,7 @@ const ChatView = () => {
 
   // 戻るボタン(画面全体のwidthが900px未満のとき)
   const handleBackClick = () => {
-    if(window.innerWidth < 900){
+    if (window.innerWidth < 900) {
       // 画面全体のwidthが900px未満のとき
       setShowChatView(false);
       setShowFollowList(true);
@@ -935,8 +941,8 @@ const ChatView = () => {
   };
 
   // チャットの編集(モーダルを開く)
-  const popMenuEdit = (id,message) => {
-    console.log(id+":"+message);
+  const popMenuEdit = (id, message) => {
+    console.log(id + ":" + message);
 
     // 開いたチャットのidを保存しておく
     updateSessionData("accountData", "ChatEditId", id);
@@ -994,407 +1000,412 @@ const ChatView = () => {
         }}
       >
         {showFollowList && (
-        <List
-          ref={ListBoxscroll}
-          sx={(theme) => ({
-            width: showFollowListWidth,
-            minWidth: '360px',
-            flexShrink: 0,
-            height: showChatView ? '100%' : 'auto',  // false のときに高さを自動に設定
-            marginLeft: '0',
-            bgcolor: 'background.paper',
-            maxHeight: showChatView ? 500 : 'none',  // false のときに最大高さを解除
-            overflow: 'auto',
-            border: '#DAE2ED 2px solid',
-            borderRadius: '10px',
-            [theme.breakpoints.down('1200')]: {
-              marginLeft: '2%',
-            },
-          })}
-
-          component="nav"
-          aria-labelledby="nested-list-subheader"
-          subheader={
-            // ヘッダー
-            <ListSubheader component="div" id="nested-list-subheader">
-              チャット
-            </ListSubheader>
-          }
-        >
-
-          <FollowGroup
-            title="相互フォロー"
-            followStatusCount={FollowStatusCount_1}
-            followStatus={FollowStatus_1}
-            groupingOpen={GroupingOpen_1}
-            handleClick={groupinghandleClick_1}
-            chatViewId={chatViewId}
-            chatOpen={ChatOpen}
-            saveScrollPosition={saveScrollPosition}
-          />
-
-          <FollowGroup
-            title="フォローしています"
-            followStatusCount={FollowStatusCount_2}
-            followStatus={FollowStatus_2}
-            groupingOpen={GroupingOpen_2}
-            handleClick={groupinghandleClick_2}
-            chatViewId={chatViewId}
-            chatOpen={ChatOpen}
-            saveScrollPosition={saveScrollPosition}
-          />
-
-          <FollowGroup
-            title="フォローされています"
-            followStatusCount={FollowStatusCount_3}
-            followStatus={FollowStatus_3}
-            groupingOpen={GroupingOpen_3}
-            handleClick={groupinghandleClick_3}
-            chatViewId={chatViewId}
-            chatOpen={ChatOpen}
-            saveScrollPosition={saveScrollPosition}
-          />
-
-        </List>
-      )}
-      {showChatView && (
-      <Box style={{
-        flexGrow: 1, // 残りのスペースを全て使用
-        marginLeft: '2%',
-        marginRight: '2%',
-        border: '#DAE2ED 2px solid',
-        borderRadius: '10px'}}>
-
-        {/****** チャット編集のモーダル呼び出し ******/}
-        <ChatEditModal
-          modalOpen={modalOpen}
-          handleModalClose={handleModalClose}
-          chatEditData={chatEditData}
-          chatEditChange={chatEditChange}
-          chatEditUpDate={chatEditUpDate}
-        />
-
-        {/****** チャット相手のアイコン、名前を表示させる ******/}
-        {(chatViewId) ? (
-          // 選択状態
-          <Box sx={{
-            display: 'flex',
-            padding: '5px 0',
-            borderBottom: '#DAE2ED 2px solid',
-            fontSize: '25px'
-            }}>
-
-            {/* 戻るボタン(画面全体のwidthが900px未満のとき) */}
-            {!showFollowList && (
-            <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
-              <Tooltip title="戻る">
-                <IconButton
-                  onClick={handleBackClick}
-                  sx={{
-                    '&:hover': { backgroundColor: '#f0f0f0' },
-                  }}
-                >
-                  <ArrowBackOutlinedIcon />
-                </IconButton>
-              </Tooltip>
-            </Box>
-            )}
-
-            {/* 企業名もしくはユーザーネームを表示(企業は企業名、学生はユーザーネーム) */}
-            <Tooltip title={
-              (chatViewCompanyName ?
-                chatViewCompanyName :
-              chatViewUserName) + "さんのマイページ"}>
-              <Link
-                to={`/Profile/${chatViewUserName}`}
-              >
-                <Box sx={{ display: 'flex'}}>
-                  {/* アイコン */}
-                  <SelectIcon chatViewIcon={chatViewIcon}/>
-                  {/* 企業名またはユーザーネーム */}
-                  <Box sx={{ fontSize: '1.9rem'}}>
-                    {chatViewCompanyName ?
-                    chatViewCompanyName :
-                    chatViewUserName}
-                  </Box>
-                </Box>
-              </Link>
-            </Tooltip>
-          </Box>
-        ) : (
-          // 未選択状態
-          <Box sx={{
-            padding: '5px 0',
-            borderBottom: '#DAE2ED 2px solid',
-            fontSize: '25px'
-            }}>
-
-
-            &emsp;←選んでください
-          </Box>
-        )}
-
-        {/****** チャット内容 ******/}
-        <Box
-        ref={chatBoxscroll} // refを適用
-        sx={{
-          height:'82%',
-          overflow: 'auto',
-            }}>
-
-          {(ResponseData && ResponseData.length > 0 && ResponseData !== "null") ? (ResponseData.map((element, index) => (
-            // チャット履歴があるとき
-            // element.send_user_id(チャットの送信者のid)とMyUserId(自分のid)が一致すれば右側、そうでなければ左側
-            <div key={index}>
-
-              {/* 日にち(毎回表示するわけではない。同じ日にちが2回以上続く場合は省略) */}
-              <Typography
-                display="flex"
-                justifyContent="center"
-                variant="caption"
-                component="div"
-                sx={{
-                  //margin: '0 10px',
-                  position: 'sticky',
-                  top: '0',
-                  backgroundColor: '#F9FAFB',
-                  zIndex: 1,
-                  fontSize: '14px'
-                }}
-              >
-                <span
-                  style={{
-                    backgroundColor: '#ffe45e',
-                    padding: '0 10px',
-                  }}
-                >
-                  {GetDay(element.send_datetime)}
-                </span>
-              </Typography>
-
-              {/* ここから未読 */}
-              {/* メッセージが相手、かつcheck_readが未読 */}
-              {element.send_user_id !== MyUserId ? (
-                GetStartUnread(element.check_read,element.id)
-
-              ):(null)}
-
-              {/* 削除済みでないメッセージ */}
-              {element.check_read !== '削除' ? (
-                <>
-                  {/* 時間 */}
-                  <Typography
-                  display="flex"
-                  justifyContent={element.send_user_id === MyUserId ? 'flex-end' : 'flex-start'}
-                  alignItems="center"  // アイコンとテキストを中央揃え
-                  variant="caption"
-                  component="div"
-                  sx={{
-                    margin: '5px 15px 0 55px',
-                  }}
-                  >
-                    {GetTime(element.send_datetime)}
-                    {(element.send_user_id === MyUserId && element.edit_flag === 1)?(
-                      <>
-                        <CircleIcon sx={{ fontSize: '0.4rem', marginLeft: '5px' }} />
-                        <span style={{ marginLeft: '5px' }}>編集済み</span> {/* 文字列を追加 */}
-                      </>
-                    ):(
-                      null)}
-                  </Typography>
-
-                  {/* メッセージ部分 */}
-                  <Box
-                    display="flex"
-                    justifyContent={element.send_user_id === MyUserId ? 'flex-end' : 'flex-start'}
-                    sx={{
-                      margin:0
-                      }}
-                    mb={2}
-                  >
-                    {/* アイコン (相手のメッセージのみ) */}
-                    {(element.send_user_id !== MyUserId)?(
-                    <Tooltip title={
-                      (chatViewCompanyName ?
-                        chatViewCompanyName :
-                      chatViewUserName) + "さんのマイページ"}>
-                      <Link
-                        to={`/Profile/${chatViewUserName}`}
-                      >
-                        <SelectIcon chatViewIcon={chatViewIcon}/>
-                      </Link>
-                    </Tooltip>
-                    ):(null)}
-                    {/* 既読マーク (自分のメッセージのみ) */}
-                    {(element.send_user_id === MyUserId && element.check_read === '既読')?(
-                      <Box
-                      display="flex"
-                      justifyContent="flex-end"
-                      alignItems="flex-end"
-                      sx={{
-                        margin:'0 5px 10px 0'
-                      }}><Tooltip title={"既読"}>
-                        <CheckIcon sx={{ color: green[500] ,fontSize: 20 }}/>
-                        </Tooltip>
-                      </Box>
-                    ):(
-                    null)}
-
-                    {/* メッセージ部分(吹き出し) */}
-                    <Paper
-                      id={element.id}
-                      data-message={element.message}
-                      aria-controls={anchorElOpen ? 'demo-positioned-menu' : undefined}
-                      aria-haspopup="true"
-                      aria-expanded={anchorElOpen ? 'true' : undefined}
-                      onClick={element.send_user_id === MyUserId ? (e) => popMenu(e) : null}
-                      sx={{
-                        padding: '10px',
-                        margin:element.send_user_id === MyUserId ?'0 10px 10px 0':'0 0 10px 0',
-                        color: 'black',
-                        borderRadius: '10px',
-                        maxWidth: '60%',
-                        // 背景色
-                        bgcolor: element.send_user_id === MyUserId ?'#dbdbff':'#dbdbdb',
-                        // 背景色(ホバー時)
-                        '&:hover': {
-                          bgcolor: element.send_user_id === MyUserId ? 'rgba(199, 199, 255)':'rgba(199, 199, 199)',
-                        },
-                      }}
-                    >
-                      <Typography variant="body1">
-                        {/* 改行、aタグに対応 */}
-                        {element.message.split('\n').map((msg, idx) => {
-
-                        const linkRegex = /(https?:\/\/[^\s]+)/g;
-                        const msgText = msg.split(linkRegex);
-
-                        return (
-                          <React.Fragment key={idx}>
-                            {msgText.map((part, index) =>
-                              linkRegex.test(part) ? (
-                                // aタグを含む場合
-                                <a key={index} href={part} target="_blank" rel="noopener noreferrer">
-                                  {part}
-                                </a>
-                              ) : (
-                                // aタグを含まない場合
-                                part
-                              )
-                            )}
-                            {idx < element.message.split('\n').length - 1 && <br />}
-                          </React.Fragment>
-                        );
-                      })}
-                      </Typography>
-                    </Paper>
-
-                  </Box>
-
-                  {/* チャットのメッセージを押したときのメニュー (自分のメッセージのみ) */}
-                  {(element.send_user_id === MyUserId)?(
-                    <Menu
-                      id="demo-positioned-menu"
-                      aria-labelledby="demo-positioned-button"
-                      anchorEl={anchorEl}
-                      open={anchorElOpen}
-                      onClose={popMenuClose}
-                      anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'right',
-                      }}
-                      transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                      }}
-                    >
-                      <MenuItem onClick={() => popMenuEdit(popMenuId,popMenuMessage)} ><EditIcon />&nbsp;編集</MenuItem>
-                      <MenuItem onClick={() => popMenuDelete(popMenuId)} sx={{color:'red'}}><DeleteIcon color="error"/>&nbsp;削除</MenuItem>
-                    </Menu>
-                  ):(null)}
-
-
-                </>
-                ) : (
-                  // 削除済みのメッセージ
-                  <Typography
-                    variant="caption"
-                    justifyContent={element.send_user_id === MyUserId ? 'flex-end' : 'flex-start'}
-                    sx={{
-                      margin: '10px',
-                      color: 'gray',
-                      display:'flex',
-                      }}>
-                    このメッセージは削除されました
-                  </Typography>
-                )}
-            </div>
-
-          ))):(ResponseData === "null") ? (
-              // トークがないとき
-              <div>
-                メッセージがありません
-              </div>
-          ):(chatViewId !== null) ? (
-            // ローディング(読み込み)
-            <div>
-              <ColorRingStyle />
-            </div>
-          ):(null)}
-
-        </Box>
-
-        {/****** チャット送信フォーム ******/}
-        {(chatViewId) ? (
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center', // 横方向の中央揃え
-            width: '100%',
-          }}
-        >
-          <Textarea
-            multiline
-            minRows={1} // 最小行数
-            maxRows={4} // 最大行数
-            sx={{
-              margin: '1% 3%',
-              width: '80%', // 必要に応じて幅を調整
-              alignSelf: 'center', // 子要素に適用
-            }}
-            InputProps={{
-              sx: {
-                height: '100%', // TextFieldの内部要素も親の高さに合わせる
+          <List
+            ref={ListBoxscroll}
+            sx={(theme) => ({
+              width: showFollowListWidth,
+              minWidth: '360px',
+              flexShrink: 0,
+              height: showChatView ? '100%' : 'auto',  // false のときに高さを自動に設定
+              marginLeft: '0',
+              bgcolor: 'background.paper',
+              maxHeight: showChatView ? 500 : 'none',  // false のときに最大高さを解除
+              overflow: 'auto',
+              border: '#DAE2ED 2px solid',
+              borderRadius: '10px',
+              [theme.breakpoints.down('1200')]: {
+                marginLeft: '2%',
               },
-            }}
-            value={TextData}
-            onChange={textChange}
-            placeholder="メッセージを入力してください"
-          />
-          <IconButton
-            onClick={sendClick}
-            sx={{
-              '&:hover': { backgroundColor: '#c1e0ff' },
-            }}
-          >
-            <SendIcon color="primary" sx={{ fontSize: 30 }} />
-          </IconButton>
-        </Box>
+            })}
 
-        ) : (
-          // 未選択状態
-          <Box sx={{
-            display: 'flex',
-            alignItems: 'center',
-            width: '100%',
-            height: '10%'
+            component="nav"
+            aria-labelledby="nested-list-subheader"
+            subheader={
+              // ヘッダー
+              <ListSubheader component="div" id="nested-list-subheader">
+                チャット
+              </ListSubheader>
+            }
+          >
+
+            <FollowGroup
+              title="相互フォロー"
+              followStatusCount={FollowStatusCount_1}
+              followStatus={FollowStatus_1}
+              groupingOpen={GroupingOpen_1}
+              handleClick={groupinghandleClick_1}
+              chatViewId={chatViewId}
+              chatOpen={ChatOpen}
+              saveScrollPosition={saveScrollPosition}
+            />
+
+            <FollowGroup
+              title="フォローしています"
+              followStatusCount={FollowStatusCount_2}
+              followStatus={FollowStatus_2}
+              groupingOpen={GroupingOpen_2}
+              handleClick={groupinghandleClick_2}
+              chatViewId={chatViewId}
+              chatOpen={ChatOpen}
+              saveScrollPosition={saveScrollPosition}
+            />
+
+            <FollowGroup
+              title="フォローされています"
+              followStatusCount={FollowStatusCount_3}
+              followStatus={FollowStatus_3}
+              groupingOpen={GroupingOpen_3}
+              handleClick={groupinghandleClick_3}
+              chatViewId={chatViewId}
+              chatOpen={ChatOpen}
+              saveScrollPosition={saveScrollPosition}
+            />
+
+          </List>
+        )}
+        {showChatView && (
+          <Box style={{
+            flexGrow: 1, // 残りのスペースを全て使用
+            marginLeft: '2%',
+            marginRight: '2%',
+            border: '#DAE2ED 2px solid',
+            borderRadius: '10px'
           }}>
 
+            {/****** チャット編集のモーダル呼び出し ******/}
+            <ChatEditModal
+              modalOpen={modalOpen}
+              handleModalClose={handleModalClose}
+              chatEditData={chatEditData}
+              chatEditChange={chatEditChange}
+              chatEditUpDate={chatEditUpDate}
+            />
+
+            {/****** チャット相手のアイコン、名前を表示させる ******/}
+            {(chatViewId) ? (
+              // 選択状態
+              <Box sx={{
+                display: 'flex',
+                padding: '5px 0',
+                borderBottom: '#DAE2ED 2px solid',
+                fontSize: '25px'
+              }}>
+
+                {/* 戻るボタン(画面全体のwidthが900px未満のとき) */}
+                {!showFollowList && (
+                  <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+                    <Tooltip title="戻る">
+                      <IconButton
+                        onClick={handleBackClick}
+                        sx={{
+                          '&:hover': { backgroundColor: '#f0f0f0' },
+                        }}
+                      >
+                        <ArrowBackOutlinedIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                )}
+
+                {/* 企業名もしくはユーザーネームを表示(企業は企業名、学生はユーザーネーム) */}
+                <Tooltip title={
+                  (chatViewCompanyName ?
+                    chatViewCompanyName :
+                    chatViewUserName) + "さんのマイページ"}>
+                  <Link
+                    to={`/Profile/${chatViewUserName}`}
+                    variant="subtitle2"
+                    underline="none"
+                    className="link item-Link"
+
+                  >
+                    <Box sx={{ display: 'flex' }}>
+                      {/* アイコン */}
+                      <SelectIcon chatViewIcon={chatViewIcon} />
+                      {/* 企業名またはユーザーネーム */}
+                      <Box sx={{ fontSize: '1.9rem' }}>
+                        {chatViewCompanyName ?
+                          chatViewCompanyName :
+                          chatViewUserName}
+                      </Box>
+                    </Box>
+                  </Link>
+                </Tooltip>
+              </Box>
+            ) : (
+              // 未選択状態
+              <Box sx={{
+                padding: '5px 0',
+                borderBottom: '#DAE2ED 2px solid',
+                fontSize: '25px'
+              }}>
+
+
+                &emsp;←選んでください
+              </Box>
+            )}
+
+            {/****** チャット内容 ******/}
+            <Box
+              ref={chatBoxscroll} // refを適用
+              sx={{
+                height: '82%',
+                overflow: 'auto',
+              }}>
+
+              {(ResponseData && ResponseData.length > 0 && ResponseData !== "null") ? (ResponseData.map((element, index) => (
+                // チャット履歴があるとき
+                // element.send_user_id(チャットの送信者のid)とMyUserId(自分のid)が一致すれば右側、そうでなければ左側
+                <div key={index}>
+
+                  {/* 日にち(毎回表示するわけではない。同じ日にちが2回以上続く場合は省略) */}
+                  <Typography
+                    display="flex"
+                    justifyContent="center"
+                    variant="caption"
+                    component="div"
+                    sx={{
+                      //margin: '0 10px',
+                      position: 'sticky',
+                      top: '0',
+                      backgroundColor: '#F9FAFB',
+                      zIndex: 1,
+                      fontSize: '14px'
+                    }}
+                  >
+                    <span
+                      style={{
+                        backgroundColor: '#ffe45e',
+                        padding: '0 10px',
+                      }}
+                    >
+                      {GetDay(element.send_datetime)}
+                    </span>
+                  </Typography>
+
+                  {/* ここから未読 */}
+                  {/* メッセージが相手、かつcheck_readが未読 */}
+                  {element.send_user_id !== MyUserId ? (
+                    GetStartUnread(element.check_read, element.id)
+
+                  ) : (null)}
+
+                  {/* 削除済みでないメッセージ */}
+                  {element.check_read !== '削除' ? (
+                    <>
+                      {/* 時間 */}
+                      <Typography
+                        display="flex"
+                        justifyContent={element.send_user_id === MyUserId ? 'flex-end' : 'flex-start'}
+                        alignItems="center"  // アイコンとテキストを中央揃え
+                        variant="caption"
+                        component="div"
+                        sx={{
+                          margin: '5px 15px 0 55px',
+                        }}
+                      >
+                        {GetTime(element.send_datetime)}
+                        {(element.send_user_id === MyUserId && element.edit_flag === 1) ? (
+                          <>
+                            <CircleIcon sx={{ fontSize: '0.4rem', marginLeft: '5px' }} />
+                            <span style={{ marginLeft: '5px' }}>編集済み</span> {/* 文字列を追加 */}
+                          </>
+                        ) : (
+                          null)}
+                      </Typography>
+
+                      {/* メッセージ部分 */}
+                      <Box
+                        display="flex"
+                        justifyContent={element.send_user_id === MyUserId ? 'flex-end' : 'flex-start'}
+                        sx={{
+                          margin: 0
+                        }}
+                        mb={2}
+                      >
+                        {/* アイコン (相手のメッセージのみ) */}
+                        {(element.send_user_id !== MyUserId) ? (
+                          <Tooltip title={
+                            (chatViewCompanyName ?
+                              chatViewCompanyName :
+                              chatViewUserName) + "さんのマイページ"}>
+                            <Link
+                              to={`/Profile/${chatViewUserName}`}
+                            >
+                              <SelectIcon chatViewIcon={chatViewIcon} />
+                            </Link>
+                          </Tooltip>
+                        ) : (null)}
+                        {/* 既読マーク (自分のメッセージのみ) */}
+                        {(element.send_user_id === MyUserId && element.check_read === '既読') ? (
+                          <Box
+                            display="flex"
+                            justifyContent="flex-end"
+                            alignItems="flex-end"
+                            sx={{
+                              margin: '0 5px 10px 0'
+                            }}><Tooltip title={"既読"}>
+                              <CheckIcon sx={{ color: green[500], fontSize: 20 }} />
+                            </Tooltip>
+                          </Box>
+                        ) : (
+                          null)}
+
+                        {/* メッセージ部分(吹き出し) */}
+                        <Paper
+                          id={element.id}
+                          data-message={element.message}
+                          aria-controls={anchorElOpen ? 'demo-positioned-menu' : undefined}
+                          aria-haspopup="true"
+                          aria-expanded={anchorElOpen ? 'true' : undefined}
+                          onClick={element.send_user_id === MyUserId ? (e) => popMenu(e) : null}
+                          sx={{
+                            padding: '10px',
+                            margin: element.send_user_id === MyUserId ? '0 10px 10px 0' : '0 0 10px 0',
+                            color: 'black',
+                            borderRadius: '10px',
+                            maxWidth: '60%',
+                            // 背景色
+                            bgcolor: element.send_user_id === MyUserId ? '#dbdbff' : '#dbdbdb',
+                            // 背景色(ホバー時)
+                            '&:hover': {
+                              bgcolor: element.send_user_id === MyUserId ? 'rgba(199, 199, 255)' : 'rgba(199, 199, 199)',
+                            },
+                          }}
+                        >
+                          <Typography variant="body1">
+                            {/* 改行、aタグに対応 */}
+                            {element.message.split('\n').map((msg, idx) => {
+
+                              const linkRegex = /(https?:\/\/[^\s]+)/g;
+                              const msgText = msg.split(linkRegex);
+
+                              return (
+                                <React.Fragment key={idx}>
+                                  {msgText.map((part, index) =>
+                                    linkRegex.test(part) ? (
+                                      // aタグを含む場合
+                                      <a key={index} href={part} target="_blank" rel="noopener noreferrer">
+                                        {part}
+                                      </a>
+                                    ) : (
+                                      // aタグを含まない場合
+                                      part
+                                    )
+                                  )}
+                                  {idx < element.message.split('\n').length - 1 && <br />}
+                                </React.Fragment>
+                              );
+                            })}
+                          </Typography>
+                        </Paper>
+
+                      </Box>
+
+                      {/* チャットのメッセージを押したときのメニュー (自分のメッセージのみ) */}
+                      {(element.send_user_id === MyUserId) ? (
+                        <Menu
+                          id="demo-positioned-menu"
+                          aria-labelledby="demo-positioned-button"
+                          anchorEl={anchorEl}
+                          open={anchorElOpen}
+                          onClose={popMenuClose}
+                          anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'right',
+                          }}
+                          transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                          }}
+                        >
+                          <MenuItem onClick={() => popMenuEdit(popMenuId, popMenuMessage)} ><EditIcon />&nbsp;編集</MenuItem>
+                          <MenuItem onClick={() => popMenuDelete(popMenuId)} sx={{ color: 'red' }}><DeleteIcon color="error" />&nbsp;削除</MenuItem>
+                        </Menu>
+                      ) : (null)}
+
+
+                    </>
+                  ) : (
+                    // 削除済みのメッセージ
+                    <Typography
+                      variant="caption"
+                      justifyContent={element.send_user_id === MyUserId ? 'flex-end' : 'flex-start'}
+                      sx={{
+                        margin: '10px',
+                        color: 'gray',
+                        display: 'flex',
+                      }}>
+                      このメッセージは削除されました
+                    </Typography>
+                  )}
+                </div>
+
+              ))) : (ResponseData === "null") ? (
+                // トークがないとき
+                <div>
+                  メッセージがありません
+                </div>
+              ) : (chatViewId !== null) ? (
+                // ローディング(読み込み)
+                <div>
+                  <ColorRingStyle />
+                </div>
+              ) : (null)}
+
+            </Box>
+
+            {/****** チャット送信フォーム ******/}
+            {(chatViewId) ? (
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center', // 横方向の中央揃え
+                  width: '100%',
+                }}
+              >
+                <Textarea
+                  multiline
+                  minRows={1} // 最小行数
+                  maxRows={4} // 最大行数
+                  sx={{
+                    margin: '1% 3%',
+                    width: '80%', // 必要に応じて幅を調整
+                    alignSelf: 'center', // 子要素に適用
+                  }}
+                  InputProps={{
+                    sx: {
+                      height: '100%', // TextFieldの内部要素も親の高さに合わせる
+                    },
+                  }}
+                  value={TextData}
+                  onChange={textChange}
+                  placeholder="メッセージを入力してください"
+                />
+                <IconButton
+                  onClick={sendClick}
+                  sx={{
+                    '&:hover': { backgroundColor: '#c1e0ff' },
+                  }}
+                >
+                  <SendIcon color="primary" sx={{ fontSize: 30 }} />
+                </IconButton>
+              </Box>
+
+            ) : (
+              // 未選択状態
+              <Box sx={{
+                display: 'flex',
+                alignItems: 'center',
+                width: '100%',
+                height: '10%'
+              }}>
+
+              </Box>
+            )}
           </Box>
         )}
-      </Box>
-      )}
       </Box>
     </>
   )
@@ -1402,7 +1413,7 @@ const ChatView = () => {
 
 // PropTypesの定義
 SelectIcon.propTypes = {
-  chatViewIcon:PropTypes.string,
+  chatViewIcon: PropTypes.string,
 };
 FollowGroup.propTypes = {
   title: PropTypes.string,

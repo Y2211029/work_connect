@@ -347,16 +347,17 @@ export default function Header({ onOpenNav }) {
         <ArrowUpwardIcon
           onClick={handleScrollToTop}
           style={{
+            display: Display.HomePage? "none" : "block",
             cursor: "pointer",
             width: "50px",
             height: "50px",
             position: "fixed",
-            top: "873px",
-            right: "20px",
+            top: "52vw",
+            right: "1.5vw",
             color: "black",
             borderRadius: "50%",
-            boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
-            display: Display.HomePage? "none" : "block",
+            boxShadow: "rgba(0, 0, 0, 0.5) 0px 0px 10px",
+            
           }}
         />
       </AppBar>

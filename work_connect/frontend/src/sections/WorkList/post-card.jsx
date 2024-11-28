@@ -155,7 +155,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   );
 
   return (
-    <div ref={ref}>
+    <div ref={ref} /*className="postCardTopElement"*/>
       <Link
         to={`/WorkDetail/${work_id}`}
         variant="subtitle2"

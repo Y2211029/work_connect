@@ -263,7 +263,7 @@ const Card = ({ PathName, urlMapping, PostCard, PostSort }) => {
           ariaLabel="color-ring-loading"
           wrapperStyle={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
           wrapperClass="custom-color-ring-wrapper" // カスタムクラスを指定
-          colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+          colors={["#41a4ff", "#FFFFFF", "#41a4ff", "#41a4ff", "#FFFFFF"]}
         />
       )}
       <Container maxWidth="xl" >
@@ -302,7 +302,7 @@ const Card = ({ PathName, urlMapping, PostCard, PostSort }) => {
               ariaLabel="color-ring-loading"
               wrapperStyle={{}}
               wrapperClass="color-ring-wrapper"
-              colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+              colors={["#41a4ff", "#FFFFFF", "#41a4ff", "#41a4ff", "#FFFFFF"]}
             />
           )}
         </Grid>

@@ -79,6 +79,11 @@ const CompanyKanaName = ({CompanyKanaNameData}) => {
                 marginTop:'6px',
                 marginBottom:'0'
             }}
+            InputProps={{
+              sx: {
+                fontSize: '20px', // 入力テキストのフォントサイズ
+              },
+            }}
             // helperTextを赤色にする
             FormHelperTextProps={{
               sx: { color: 'red' },

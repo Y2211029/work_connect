@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { TextareaAutosize as BaseTextareaAutosize } from '@mui/base/TextareaAutosize';
-import PropTypes from 'prop-types'; 
+import PropTypes from 'prop-types';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 import { styled , useTheme } from '@mui/material/styles';
@@ -33,7 +33,7 @@ const Textarea = styled(BaseTextareaAutosize)(
   box-sizing: border-box;
   width: 100%;
   font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 0.875rem;
+  font-size: 1.2rem;
   font-weight: 400;
   line-height: 1.5;
   padding: 8px 12px;
@@ -64,7 +64,7 @@ const IntroComponent = ({IntroData}) => {
   const [Intro, setIntro] = useState(IntroData);
   const { getSessionData, updateSessionData } = useSessionStorage();
   const theme = useTheme();
-  
+
   // 入力エラーの状態管理
   const [inputError, setInputError] = useState({
     IntroError: false,

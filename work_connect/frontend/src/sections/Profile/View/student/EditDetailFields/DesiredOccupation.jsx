@@ -89,6 +89,20 @@ const DesiredOccupation = ({ DesiredOccupationData }) => {
       options={options}
       placeholder="▼"
       isMulti
+      styles={{
+        control: (base) => ({
+          ...base,
+          fontSize: '20px', // テキストサイズを調整
+        }),
+        placeholder: (base) => ({
+          ...base,
+          fontSize: '20px', // プレースホルダーのサイズを調整
+        }),
+        menu: (base) => ({
+          ...base,
+          fontSize: '20px', // ドロップダウンメニューの文字サイズ
+        }),
+      }}
     />
   );
 };

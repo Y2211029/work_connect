@@ -87,7 +87,7 @@ const NewsMenu = ({
   const draftListrender = (
     <div className="draftlistScroll">
       <div className="add_draft_news">
-        <Button variant="outlined" onClick={AddDraftNews} className="add_draft_news">
+        <Button variant="outlined" onClick={AddDraftNews} >
           新たな下書き
         </Button>
       </div>
@@ -104,7 +104,7 @@ const NewsMenu = ({
                     </div>
                     {/* テキストと削除ボタンを右側に配置 */}
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                      <div style={{ marginBottom: '8px' }}>
+                      <div className="Last_updated_date">
                         最終更新日: {FormattedDate(draft.updated_at)}
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
@@ -125,14 +125,6 @@ const NewsMenu = ({
                       onClick={() => {
                         setExpanded(false); // 展開状態を閉じる
                         RewriteNewsEnter(draft.id); // 次の処理を実行
-                      }}
-                      style={{
-                        cursor: 'pointer',
-                        wordBreak: 'break-all',
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        maxWidth: '500px',
                       }}
                     >
                       {draft.article_title}

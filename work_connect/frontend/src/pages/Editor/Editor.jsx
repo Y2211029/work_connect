@@ -87,7 +87,7 @@ const Editor = () => {
   const [isSaved, setIsSaved] = useState(false);
   const [CreateFormOpen, setCreateFormOpen] = useState(false);
   const [formSummary, setFormSummary] = useState(null);
-  const [followerCounter,setFollowerCounter] = useState(0);
+  const [followerCounter, setFollowerCounter] = useState(0);
 
 
   const news_save_url = "http://127.0.0.1:8000/news_save";
@@ -202,7 +202,7 @@ const Editor = () => {
       });
 
       setDraftList(response.data.news_draft_list); // 下書きリスト最新に更新
-      console.log("レスポンスのドラフトリスト",response.data.news_draft_list);
+      console.log("レスポンスのドラフトリスト", response.data.news_draft_list);
       setNewsId(response.data.id); // news_idを更新する
       setIsSaved(true); // 保存済みとして状態を設定
       setFormSummary(formSummary);
@@ -586,13 +586,13 @@ const Editor = () => {
     async function newsDraftList() {
       if (sessionId) {
         const news_draft_list_url = `http://localhost:8000/news_draft_list/${sessionId}/${genre}`;
-        console.log("news_draft_list_url",news_draft_list_url);
+        console.log("news_draft_list_url", news_draft_list_url);
         try {
           const response = await axios.get(news_draft_list_url);
           console.log("ドラフトリスト:", response.data); // 配列そのものが返ってくる
           setDraftList(response.data); // 直接配列をセット
           const Follower_Counter = response.data[0]?.follower_counter;
-          console.log("フォロワーカウンター",Follower_Counter);
+          console.log("フォロワーカウンター", Follower_Counter);
           setFollowerCounter(Follower_Counter);
         } catch (error) {
           console.error("Error fetching news draft list:", error);
@@ -603,7 +603,7 @@ const Editor = () => {
     newsDraftList();
   }, [sessionId]); // sessionIdが変更されたときに実行される
 
-  useEffect(() =>{
+  useEffect(() => {
     if (editorHolder.current && !editorInstance.current) {
       console.log("editorHolder.current入りました");
       editorInstance.current = new EditorJS({
@@ -996,15 +996,15 @@ const Editor = () => {
         },
       });
     }
-        // エディタのクリーンアップ
-        return () => {
-          if (editorInstance.current) {
-            editorInstance.current.destroy();
-            editorInstance.current = null;
-          }
-        };
+    // エディタのクリーンアップ
+    return () => {
+      if (editorInstance.current) {
+        editorInstance.current.destroy();
+        editorInstance.current = null;
+      }
+    };
 
-  },[]);
+  }, []);
 
 
 
@@ -1015,9 +1015,10 @@ const Editor = () => {
       console.log("value", fileInputRef.current.value);
       fileInputRef.current.value = null; // ファイル入力の値をリセット
       const header_img_delete_url = `http://localhost:8000/thumbnail_img_delete/${news_id}`;
-      console.log(news_id);
+      console.log("ニュースID",news_id);
       console.log(header_img_delete_url);
-      console.log(sessionId);
+      console.log("セッションID",sessionId);
+      console.log("ジャンル",genre);
       try {
         const response = await axios.get(header_img_delete_url, {
           params: {
@@ -1492,8 +1493,8 @@ const Editor = () => {
         });
 
         // 新しいデータでエディタをレンダリング
- await editorInstance.current.isReady;
- await editorInstance.current.render(content); // 渡されたコンテンツをレンダリング
+        await editorInstance.current.isReady;
+        await editorInstance.current.render(content); // 渡されたコンテンツをレンダリング
 
         setFormSummary(content);
         const savedData = await editorInstance.current.save();
@@ -1516,18 +1517,18 @@ const Editor = () => {
       </Helmet>
 
 
-          {/* ニュースタイトルを表示 */}
-          {getNewsTitle()}
+      {/* ニュースタイトルを表示 */}
+      {getNewsTitle()}
 
-          {/* CreateForm の表示 */}
-          {CreateFormOpen && <CreateForm newsid={news_id} HandleBack={handleBack} />}
+      {/* CreateForm の表示 */}
+      {CreateFormOpen && <CreateForm newsid={news_id} HandleBack={handleBack} />}
 
-          {!CreateFormOpen &&
-            <>
-                    {/* アップロードされた画像の表示 */}
-                    {imageUrl && (
+      {!CreateFormOpen &&
+        <>
+          {/* アップロードされた画像の表示 */}
+          {imageUrl && (
             <div className="uploaded-image" id="uploaded-image">
-              <img src={`${imageUrl}`} alt="Uploaded"/>
+              <img src={`${imageUrl}`} alt="Uploaded" />
               <CancelIcon onClick={thumbnail_img_delete} />
             </div>
           )}
@@ -1595,8 +1596,8 @@ const Editor = () => {
           <div className="editor-wrapper">
             <div ref={editorHolder} id="editor" />
           </div>
-          </>
-          }
+        </>
+      }
 
     </div>
   );

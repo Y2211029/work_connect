@@ -1,23 +1,27 @@
 body {
-  overflow: scroll; /* 縦のスクロールバーを自動で表示 */
-  height: 100%; /* 高さを100%に設定して、親要素の高さに合わせる */
-  margin: 0; /* マージンをリセットして、余白が生じないようにする */
+  overflow: scroll;
+  /* 縦のスクロールバーを自動で表示 */
+  height: 100%;
+  /* 高さを100%に設定して、親要素の高さに合わせる */
+  margin: 0;
+  /* マージンをリセットして、余白が生じないようにする */
 
 }
 
 
-.editor_title{
+.editor_title {
   position: relative;
-  width:1000px;
-  height:200px;font-weight:bold;
+  width: 1000px;
+  height: 200px;
+  font-weight: bold;
   font-size: 30px;
   outline: none;
-  border:none;
-  left:15%;
-  padding-top:50px;
-  padding-bottom:50px;
-  overflow-x:hidden;
-  overflow-y:hidden;
+  border: none;
+  left: 15%;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  overflow-x: hidden;
+  overflow-y: hidden;
   background-color: #F9FAFB;
 }
 
@@ -26,21 +30,19 @@ body {
   margin-left: 5%;
   padding: 4px;
   margin-bottom: 0;
-  height:auto;
-  overflow-y:auto;
-  overflow-x: hidden;
+  height: auto;
 }
 
 
 
-  .cover_img_upload {
-    width: 100px;
-    height: 100px;
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-    border: none;
-  }
+.cover_img_upload {
+  width: 100px;
+  height: 100px;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  border: none;
+}
 
 
 .uploaded-image {
@@ -48,8 +50,8 @@ body {
   display: inline-block;
   align-items: center;
   justify-content: center;
-  width:200px;
-  height:200px;
+  width: 200px;
+  height: 200px;
 }
 
 
@@ -58,9 +60,12 @@ body {
   top: 0;
   right: 4;
   transform: translate(-50%, -50%);
-  width: 30px; /* 適切なサイズに調整 */
-  height: 30px; /* 適切なサイズに調整 */
-  z-index: 10; /* 画像よりも手前に表示するために必要な場合 */
+  width: 30px;
+  /* 適切なサイズに調整 */
+  height: 30px;
+  /* 適切なサイズに調整 */
+  z-index: 10;
+  /* 画像よりも手前に表示するために必要な場合 */
 }
 
 .save {
@@ -74,9 +79,9 @@ body {
   border-radius: 4px;
 }
 
-.news_img img{
-  width:70px;
-  height:70px;
+.news_img img {
+  width: 70px;
+  height: 70px;
 }
 
 figure {
@@ -101,35 +106,51 @@ figcaption {
 
 /* エディター　公開設定　ラジオボタン */
 input[type=radio] {
-  display: none; /* ラジオボタンを非表示にする */
+  display: none;
+  /* ラジオボタンを非表示にする */
 }
 
-input[type="radio"]:checked + .label {
-  background: #F3704B; /* マウス選択時の背景色を指定する */
-  color: white; /* マウス選択時のフォント色を指定する */
+input[type="radio"]:checked+.label {
+  background: #F3704B;
+  /* マウス選択時の背景色を指定する */
+  color: white;
+  /* マウス選択時のフォント色を指定する */
 }
 
 .label {
-  display: block; /* ブロックレベル要素化する */
-  float: right; /* 要素の左寄せ・回り込を指定する */
-  margin: 5px; /* ボックス外側の余白を指定する */
-  width: 100px; /* ボックスの横幅を指定する */
-  height: 45px; /* ボックスの高さを指定する */
-  padding-left: 5px; /* ボックス内左側の余白を指定する */
-  padding-right: 5px; /* ボックス内右側の余白を指定する */
-  color: black; /* フォントの色を指定 */
-  text-align: center; /* テキストのセンタリングを指定する */
-  line-height: 45px; /* 行の高さを指定する */
-  cursor: pointer; /* マウスカーソルの形（リンクカーソル）を指定する */
-  border: 2px solid #006DD9; /* ボックスの境界線を実線で指定する */
-  border-radius: 5px; /* 角丸を指定する */
+  display: block;
+  /* ブロックレベル要素化する */
+  float: right;
+  /* 要素の左寄せ・回り込を指定する */
+  margin: 5px;
+  /* ボックス外側の余白を指定する */
+  width: 100px;
+  /* ボックスの横幅を指定する */
+  height: 45px;
+  /* ボックスの高さを指定する */
+  padding-left: 5px;
+  /* ボックス内左側の余白を指定する */
+  padding-right: 5px;
+  /* ボックス内右側の余白を指定する */
+  color: black;
+  /* フォントの色を指定 */
+  text-align: center;
+  /* テキストのセンタリングを指定する */
+  line-height: 45px;
+  /* 行の高さを指定する */
+  cursor: pointer;
+  /* マウスカーソルの形（リンクカーソル）を指定する */
+  border: 2px solid #006DD9;
+  /* ボックスの境界線を実線で指定する */
+  border-radius: 5px;
+  /* 角丸を指定する */
   font-size: 10px;
 }
 
 
-.news_textarea{
+.news_textarea {
   resize: none;
-  width:300px;
+  width: 300px;
   max-height: 100px;
   min-height: 100px;
 }
@@ -164,13 +185,15 @@ input[type="radio"]:checked + .label {
 .icon-text-container {
   display: flex;
   align-items: center;
-  width: 100px; /* サイズを小さく調整 */
+  width: 100px;
+  /* サイズを小さく調整 */
   padding-right: 5%;
 }
 
 .icon-text-container p {
   margin-left: 8px;
-  white-space: nowrap; /* テキストを一列に保つ */
+  white-space: nowrap;
+  /* テキストを一列に保つ */
 }
 
 
@@ -188,8 +211,8 @@ input[type="radio"]:checked + .label {
   width: 70%;
 }
 
-.NewsMenu-Accordion{
-  height:auto;
+.NewsMenu-Accordion {
+  height: auto;
   overflow-y: auto;
   overflow-x: hidden;
   background-color: white;
@@ -201,7 +224,8 @@ input[type="radio"]:checked + .label {
   width: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
-  height: 250px; /* 固定の高さを設定 */
+  height: 250px;
+  /* 固定の高さを設定 */
 }
 
 
@@ -215,61 +239,66 @@ input[type="radio"]:checked + .label {
   border: none;
   font-size: 14px;
   cursor: pointer;
-  padding:0;
+  padding: 0;
 }
 
-.CloseModalButton{
+.CloseModalButton {
   margin-top: 1%;
-  margin-left:1%;
+  margin-left: 1%;
 }
 
-.draftlist{
-  color:black;
-  height:100%;
+.draftlist {
+  color: black;
+  height: 100%;
 
 }
 
 .draftlistScroll {
-  overflow-y: auto; /* 必要に応じてスクロールバーを表示 */
+  overflow-y: auto;
+  /* 必要に応じてスクロールバーを表示 */
   overflow-x: hidden;
-  height: 300px;
+  height: auto;
 }
 
 
 .draftlisttable {
-  width: 90%; /* テーブルの幅を親要素に合わせる */
+  width: auto;
+  /* テーブルの幅を親要素に合わせる */
   border: solid black;
   border-width: 1px;
   margin-bottom: 20px;
-  border-collapse: separate; /* テーブルの境界線を一貫して表示 */
-
+  border-collapse: separate;
+  /* テーブルの境界線を一貫して表示 */
 }
 
-.draftlisttable thead{
+.draftlisttable thead {
   background-color: #338DC9;
-  padding:5px;
+  padding: 5px;
 }
 
-td{
-  border:none;
+td {
+  border: none;
 }
 
-.news_img{
-  width:30%;
-  height:30%;
+.news_img {
+  width: 30%;
+  height: 30%;
 }
 
-.add_draft_news{
-  cursor:pointer;
+.add_draft_news {
+  cursor: pointer;
   padding-bottom: 10px;
 }
 
 .modal-overlay {
-  background-color: rgba(0, 0, 0, 0.7); /* オーバーレイの背景色 */
-  z-index: 1200; /* オーバーレイの z-index */
+  background-color: rgba(0, 0, 0, 0.7);
+  /* オーバーレイの背景色 */
+  z-index: 1200;
+  /* オーバーレイの z-index */
   width: 100%;
   height: 100%;
-  position: fixed; /* 全画面に表示させるため */
+  position: fixed;
+  /* 全画面に表示させるため */
   top: 0;
   left: 0;
 }
@@ -280,13 +309,22 @@ td{
   left: 50%;
   transform: translate(-50%, -50%);
   border: none;
-  border-radius: 4%; /* モーダルの角丸 */
+  border-radius: 4%;
+  /* モーダルの角丸 */
   padding: 1.5rem;
   overflow: hidden;
-  z-index: 1300; /* コンテンツの z-index */
-  height: 60%; /* モーダルの高さ */
-  width: 60%; /* モーダルの幅 */
-  background-color: white; /* コンテンツの背景色 (必要に応じて追加) */
+  z-index: 1300;
+  /* コンテンツの z-index */
+  height: 60%;
+  /* モーダルの高さ */
+  width: 60%;
+  /* モーダルの幅 */
+  background-color: white;
+  /* コンテンツの背景色 (必要に応じて追加) */
+}
+
+.Last_updated_date {
+  margin-bottom: 8px;
 }
 
 
@@ -298,14 +336,13 @@ td{
 @media (max-width: 767px) {
 
   .editor_title::placeholder,
-  .editor_title{
+  .editor_title {
     font-size: 100%;
   }
 
   .editor-wrapper {
-    width:90%;
-    height:auto;
-    overflow: auto;
+    width: 90%;
+    height: auto;
   }
 
 
@@ -338,59 +375,43 @@ td{
     margin-left: 20px;
     gap: 10px;
     width: 100%;
-    height: 100%; /* 高さを具体的に指定 */
-    overflow-y: scroll; /* スクロールバーを必要に応じて表示 */
+    height: 100%;
+    /* 高さを具体的に指定 */
+    overflow-y: scroll;
+    /* スクロールバーを必要に応じて表示 */
     overflow-x: hidden;
   }
 
 
   .editor_status_check_text {
     display: flex;
-    align-items: center; /* アイコンとテキストを縦方向で中央揃えにする */
+    align-items: center;
+    /* アイコンとテキストを縦方向で中央揃えにする */
   }
 
-  .add_draft_news{
-    cursor:pointer;
+  .add_draft_news {
+    cursor: pointer;
     padding-bottom: 10px;
   }
 
   div.ce-paragraph.cdx-block.ce-paragraph--left[contenteditable="true"] {
     padding: 0 !important;
-}
-
-.ce-popover__items {
-  width: 100% !important;
-}
-
-
-
-
-@media (max-width: 650px) {
-  .ce-popover {
-    min-width: 350px !important;
-    top: 15% !important; /* 必要なら調整 */
-    left: 4% !important;
-    border-radius: 10px !important;
-    z-index: 3 !important;
-    max-height: 300px; /* 必要に応じて制限 */
-    overflow-y: auto; /* スクロールを有効化 */
   }
 
-  .modal-content {
-    height: auto; /* モーダルの高さ */
-    width: 100%; /* モーダルの幅 */
+  .ce-popover__items {
+    width: 100% !important;
   }
 
-  .news_button {
-    width: 50%;
+  .draftlisttable {
+    width: auto;
+    /* テーブルの幅を親要素に合わせる */
+    border: solid black;
+    border-width: 1px;
   }
 
-  .uploaded-image {
-    align-items: center;
-    justify-content: center;
-    left:7%;
-    width:50%;
-    height:10%;
+  .Last_updated_date {
+    margin-bottom: 8px;
+    font-size: 10px;
   }
 
 
@@ -398,13 +419,45 @@ td{
 
 
 
+
+
+
+
+
+
+  @media (max-width: 650px) {
+    .ce-popover {
+      min-width: 250px !important;
+      top: 15% !important;
+      /* 必要なら調整 */
+      left: 5% !important;
+      border-radius: 10px !important;
+      z-index: 3 !important;
+      max-height: 300px;
+      /* 必要に応じて制限 */
+      overflow-y: auto;
+      /* スクロールを有効化 */
+    }
+
+    .modal-content {
+      height: auto;
+      /* モーダルの高さ */
+      width: 100%;
+      /* モーダルの幅 */
+      left: 50%;
+    }
+
+    .news_button {
+      width: 50%;
+    }
+
+    .uploaded-image {
+      align-items: center;
+      justify-content: center;
+      left: 7%;
+      width: 50%;
+      height: 10%;
+    }
+
+  }
 }
-
-
-
-
-
-
-}
-
-

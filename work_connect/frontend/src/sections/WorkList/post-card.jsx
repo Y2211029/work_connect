@@ -1,6 +1,10 @@
-import { forwardRef, useState } from "react";
+import { forwardRef, useEffect, /*useRef,*/ useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
+
+
+import $ from "jquery";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -9,47 +13,88 @@ import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import Tooltip from "@mui/material/Tooltip";
+import Popover from "@mui/material/Popover";
 
 import SvgColor from "src/components/svg-color";
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 import Divider from "@mui/material/Divider";
-import { useLayoutEffect } from "react";
 
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef(({ post }, ref) => {
-  const { work_id, genre, thumbnail, icon, title, intro, author, userName, createdAt } = post;
   const myProfileURL = useLocation();
+  const { work_id, genre, thumbnail, icon, title, intro, author, userName, createdAt } = post;
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  // const buttonRef = useRef(null);
+  // マイページの作品を参照している際は編集（・・・）ボタンを表示。
   const isNotMyProfile = myProfileURL.pathname != "/Profile/" + userName;
-  useLayoutEffect(() => {
-    console.log("myProfileURL", myProfileURL);
-    console.log("myProfileURL.pathname", myProfileURL.pathname);
-    console.log("/Profile/ + renderUserName", "/Profile/" + userName);
-  }, []);
-  const [Editing, setEditing] = useState(false);
+  const navigate = useNavigate();
 
-  const workDeleteButton = () => {
-    setEditing(true);
+  
+  // 編集ボタン以外の要素が押されたらポップアップメニューを閉じる
+  $("*").click(function (e) {
+    // クリックした要素の<html>までのすべての親要素の中に"formInModal"クラスがついている要素を取得
+    var targetParants = $(e.target).parents(".button-container");
+    if (targetParants.length == 0) {
+      // クリックした要素に"formInModal"クラスがついていない場合
+      if ($(e.target).attr("class") != "button-container" && open) {
+        console.log("新規登録モーダルを閉じる");
+        setOpen(false);
+      }
+    }
+  });
+
+  // ボタンがクリックされたときの処理
+
+  const handleButtonClick = (e, action) => {
+    if (action == "edit") {
+      // 作品編集
+      navigate("/");
+    } else if (action == "delete") {
+      // 削除
+      navigate("/VideoList");
+    }
+
+    if (open) {
+      console.log("open", open)
+      setOpen(false);
+    } else {
+      console.log("open", open)
+      setOpen(true);
+    }
+
+    e.preventDefault(); // これでリンクの遷移を防ぐ
+    // 他の処理（例: ボタンのクリック時に実行したい処理）をここに書く
+
   };
+
+  useEffect(() => {
+    console.log("isPopoverOpen", isPopoverOpen)
+  }, [isPopoverOpen])
+
   const alternativeImage = "http://localhost:8000/storage/images/work/NoImage.png";
+
   const renderThumbnail =
     (console.log("thumbnail", thumbnail),
-    (
-      <Box
-        component="img"
-        src={thumbnail}
-        onError={(e) => {
-          e.target.src = alternativeImage; // エラー時にサンプル画像をセット
-        }}
-        sx={{
-          aspectRatio: 16 / 9,
-          borderRadius: "5px",
-          width: "100%",
-          objectFit: "cover",
-          marginBottom: "10px",
-        }}
-      />
-    ));
+      (
+        <Box
+          component="img"
+          src={thumbnail}
+          onError={(e) => {
+            e.target.src = alternativeImage; // エラー時にサンプル画像をセット
+          }}
+          sx={{
+            aspectRatio: 16 / 9,
+            borderRadius: "5px",
+            width: "100%",
+            objectFit: "cover",
+            marginBottom: "10px",
+          }}
+        />
+      ));
 
   // アイコン
   const renderAvatar = (
@@ -129,15 +174,48 @@ const PostCard = forwardRef(({ post }, ref) => {
           color: "common.black",
         }}
       >
+
+
+        {/* 編集とゴミ箱 */}
+
         {isNotMyProfile ? (
           renderAvatar
         ) : (
-          <Button onClick={workDeleteButton}>
-            <MoreVertIcon />
-          </Button>
+          <>
+            <div className="button-container" >
+              <Button /*ref={buttonRef}*/ onClick={(e) => handleButtonClick(e, "")}>
+                <MoreVertIcon color="action" />
+              </Button>
+              <Popover
+                open={open}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                transformOrigin={{
+                  vertical: "bottom",
+                  horizontal: "center",
+                }}
+                onClose={() => setIsPopoverOpen(false)}
+              >
+                <Tooltip title="編集">
+                  <Button onClick={(e) => handleButtonClick(e, "edit")}>
+                    <EditNoteIcon color="action" />
+                  </Button>
+                </Tooltip>
+                <Tooltip title="削除">
+                  <Button onClick={(e) => handleButtonClick(e, "delete")}>
+                    <DeleteIcon sx={{ color: "red" }} />
+                  </Button>
+                </Tooltip>
+              </Popover>
+            </div>
+          </>
         )}
-        {Editing ? <DeleteIcon /> : ""}
-        {isNotMyProfile ? renderUserName : ""}
+
+
+        {isNotMyProfile ? renderUserName : null}
+
       </Stack>
     </Stack>
   );
@@ -175,9 +253,12 @@ const PostCard = forwardRef(({ post }, ref) => {
     </Typography>
   );
 
-  return (
-    <div ref={ref} /*className="postCardTopElement"*/>
-      <Link to={`/WorkDetail/${work_id}`} variant="subtitle2" underline="none" className="link item-Link">
+  const renderItems = (
+    <div ref={ref}>
+      <Link to={`/WorkDetail/${work_id}`}
+        variant="subtitle2"
+        underline="none"
+        className="link item-Link">
         <Stack sx={{ display: "inline-block", width: "100%" }}>
           <div className="postCard item-stack" style={{ width: "100%" }}>
             {renderShape}
@@ -193,6 +274,36 @@ const PostCard = forwardRef(({ post }, ref) => {
         </Stack>
       </Link>
     </div>
+  );
+
+
+  const renderEditItems = (
+    <div ref={ref}>
+      <Stack sx={{ display: "inline-block", width: "100%" }}>
+        <div className="postCard item-stack" style={{ width: "100%" }}>
+          <Link to={`/WorkDetail/${work_id}`}
+            variant="subtitle2"
+            underline="none"
+            className="link item-Link">
+            {renderShape}
+            {renderThumbnail}
+            {renderTitle}
+            <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 0px 0px" }} />
+            {renderGenre}
+            <Divider sx={{ borderStyle: "dashed", display: "block", margin: "0px 0px 5px 0px" }} />
+            {renderIntro}
+            <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 5px 0px" }} />
+          </Link>
+          {renderInfo}
+        </div>
+      </Stack>
+    </div>
+  );
+
+
+
+  return (
+    isNotMyProfile ? renderItems : renderEditItems
   );
 });
 

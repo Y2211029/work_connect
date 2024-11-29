@@ -14,6 +14,7 @@ import Divider from "@mui/material/Divider";
 import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 import PostAddIcon from '@mui/icons-material/PostAdd';
+import AddIcon from '@mui/icons-material/Add';
 
 import { useResponsive } from "src/hooks/use-responsive";
 import { bgBlur } from "src/theme/css";
@@ -51,6 +52,7 @@ export default function Header({ onOpenNav }) {
     id: accountData.id || "",
   };
   const [open, setOpen] = useState(null);
+  const [OpenToolbarNewsButton, setOpenToolbarNewsButton] = useState(null);
   const [login_state, setLoginState] = useState(false);
 
   const [ModalChange, setModalChange] = useState("");
@@ -110,9 +112,15 @@ export default function Header({ onOpenNav }) {
     //パスを取得
     console.log(window.location.pathname);
   };
+  const handleOpenToolbarNews = (event) => {
+    setOpenToolbarNewsButton(event.currentTarget);
+  };
 
   const handleClose = () => {
     setOpen(null); // ポップオーバーを閉じる
+  };
+  const handleToolbarNewsButtonClose = () => {
+    setOpenToolbarNewsButton(null); // ポップオーバーを閉じる
   };
 
   const NEWS_MENU_OPTIONS = [
@@ -246,11 +254,11 @@ export default function Header({ onOpenNav }) {
         ) : data.id[0] === "C" ? (
           <>
             <Stack direction="row" alignItems="center" spacing={1}>
-              <Button onClick={handleOpen} variant="contained">
+              <Button onClick={handleOpen} variant="contained" sx={{ display: Display.HomePage === "none" ? "none" : { xs: "none", md: "flex" }, }}>
                 ニュース投稿
               </Button>
               <Popover
-                open={!!open}
+                open={open}
                 anchorEl={open}
                 onClose={handleClose}
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
@@ -274,6 +282,7 @@ export default function Header({ onOpenNav }) {
             </Stack>
           </>
         ) : null}
+
 
         <Button id="LoginButton" onClick={handleChange} variant="contained" style={{ display: Display.HomePage === "" ? "none" : "block" }}>
           ログイン
@@ -338,10 +347,10 @@ export default function Header({ onOpenNav }) {
         className="toolbar"
         sx={{
           height: HEADER.H_DESKTOP,
-          display: { xs: "flex", md: "none" },
+          display: Display.HomePage === "none" ? "none" : { xs: "flex", md: "none" },
           zIndex: theme.zIndex.appBar + 1,
-        }}
 
+        }}
       >
         {/* チャット */}
         <Tooltip title="チャット">
@@ -352,7 +361,6 @@ export default function Header({ onOpenNav }) {
               height: "30px",
               display: Display.HomePage ? "none" : "flex",
             }}
-
           >
             <ChatPng />
           </IconButton>
@@ -363,33 +371,88 @@ export default function Header({ onOpenNav }) {
 
         {data.id[0] === "S" ? (
           <>
-            <Button onClick={handleOpenModal} variant="contained" sx={buttonStyle}>
-              作品投稿
-            </Button>
-            <Button onClick={handleOpenModal2} variant="contained" sx={buttonStyle}>
-              動画投稿
-            </Button>
-            <PostAddIcon />
+            <IconButton onClick={handleOpen}
+              sx={{
+                position: "relative",
+                bottom: "22px",
+                boxShadow: "0px 3px 7px 0px rgba(0, 0, 0, 0.3)",
+                color: "white",
+                backgroundColor: "#4BA2FB",
+                width: "60px",
+                height: "60px",
+                "&:hover": {
+                  backgroundColor: "#3b8fd4", // ホバー時の背景色
+                },
+                "&:focus": {
+                  backgroundColor: "#4BA2FB", // フォーカス時の背景色を固定
+                },
+                "&:active": {
+                  backgroundColor: "#367dc0", // クリック時の背景色
+                },
+              }}>
+              <PostAddIcon />
+            </IconButton>
+            <Popover
+              open={open}
+              anchorEl={open}
+              onClose={handleClose}
+              anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+              transformOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+              // popover全体ではなく、ボタンを囲っている一つ階層が上の要素のスタイリングをする。
+              PaperProps={{
+                sx: {
+                  p: 0, // 内側の余白（padding）を0に設定
+                  mt: 1, // 上方向のマージン（margin-top）を設定
+                  ml: 0.75, // 左方向のマージン（margin-left）を設定
+                  width: "fit-contents", // 幅を250pxに設定
+                },
+              }}
+            >
+              <Button onClick={handleOpenModal} variant="contained" sx={buttonStyle}>
+                作品投稿
+              </Button>
+              <Button onClick={handleOpenModal2} variant="contained" sx={buttonStyle}>
+                動画投稿
+              </Button>
+            </Popover>
           </>
         ) : data.id[0] === "C" ? (
           <>
             <Stack direction="row" alignItems="center" spacing={1}>
-              <Button onClick={handleOpen} variant="contained">
-                ニュース投稿
-              </Button>
-
+              <IconButton onClick={handleOpenToolbarNews}
+                sx={{
+                  position: "relative",
+                  bottom: "22px",
+                  boxShadow: "0px 3px 7px 0px rgba(0, 0, 0, 0.3)",
+                  color: "white",
+                  backgroundColor: "#4BA2FB",
+                  width: "60px",
+                  height: "60px",
+                  "&:hover": {
+                    backgroundColor: "#3b8fd4", // ホバー時の背景色
+                  },
+                  "&:focus": {
+                    backgroundColor: "#4BA2FB", // フォーカス時の背景色を固定
+                  },
+                  "&:active": {
+                    backgroundColor: "#367dc0", // クリック時の背景色
+                  },
+                }}>
+                <AddIcon />
+              </IconButton>
               <Popover
-                open={!!open}
-                anchorEl={open}
-                onClose={handleClose}
-                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                transformOrigin={{ vertical: "top", horizontal: "right" }}
+                open={OpenToolbarNewsButton}
+                anchorEl={OpenToolbarNewsButton}
+                onClose={handleToolbarNewsButtonClose}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                transformOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                // popover全体ではなく、ボタンを囲っている一つ階層が上の要素のスタイリングをする。
                 PaperProps={{
                   sx: {
-                    p: 0,
-                    mt: 1,
-                    ml: 0.75,
-                    width: 250,
+                    p: 0, // 内側の余白（padding）を0に設定
+                    mt: 1, // 上方向のマージン（margin-top）を設定
+                    ml: 0.75, // 左方向のマージン（margin-left）を設定
+                    width: "fit-contents", // 幅を250pxに設定
                   },
                 }}
               >

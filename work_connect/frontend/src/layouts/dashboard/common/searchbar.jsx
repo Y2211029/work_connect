@@ -24,6 +24,8 @@ import GetTagList from "src/components/tag/GetTagList";
 import { AllItemsContext } from "src/layouts/dashboard/index";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
+import schoolList from 'src/data/school_list.json';
+
 // ----------------------------------------------------------------------
 
 const useStyles = makeStyles(() => {
@@ -222,65 +224,65 @@ export default function Searchbar() {
     }));
   };
 
-  const schoolTypeCodes = ["H1", "F1"]; // 複数のschool_type_codeを配列として定義
-  const fetchSchoolNameData = async () => {
-    let allSchools = [];
-    let page = 1;
-    let hasMore = true;
-    const accessToken = "268|G5fHGAGA7Col8FetXAQ6EMNHnjDIA5TInN2uByIB";
+  // const schoolTypeCodes = ["H1", "F1"]; // 複数のschool_type_codeを配列として定義
+  // const fetchSchoolNameData = async () => {
+    // let allSchools = [];
+    // let page = 1;
+    // let hasMore = true;
+    // const accessToken = "268|G5fHGAGA7Col8FetXAQ6EMNHnjDIA5TInN2uByIB";
 
-    try {
-      for (const code of schoolTypeCodes) {
-        hasMore = true;
-        page = 1;
+    // try {
+    //   for (const code of schoolTypeCodes) {
+    //     hasMore = true;
+    //     page = 1;
 
-        while (hasMore) {
-          const response = await axios.get(`https://api.edu-data.jp/api/v1/school?school_type_code=${code}&page=${page}&school_status_code=1,2`, {
-            headers: {
-              Authorization: `Bearer ${accessToken}`, // アクセストークンをBearerトークンとしてヘッダーに含める
-              Accept: "application/json",
-            },
-          });
+    //     while (hasMore) {
+    //       const response = await axios.get(`https://api.edu-data.jp/api/v1/school?school_type_code=${code}&page=${page}&school_status_code=1,2`, {
+    //         headers: {
+    //           Authorization: `Bearer ${accessToken}`, // アクセストークンをBearerトークンとしてヘッダーに含める
+    //           Accept: "application/json",
+    //         },
+    //       });
 
-          // console.log(`API response for code ${code} and page ${page}:`, response.data); // レスポンスデータを詳細にログ出力
+    //       // console.log(`API response for code ${code} and page ${page}:`, response.data); // レスポンスデータを詳細にログ出力
 
-          // console.log("allSchools response: ");
-          // console.log(response.data.schools.data);
+    //       // console.log("allSchools response: ");
+    //       // console.log(response.data.schools.data);
 
-          // allSchools = response.data.schools.data;
+    //       // allSchools = response.data.schools.data;
 
-          if (Array.isArray(response.data.schools.data)) {
-            allSchools = [...allSchools, ...response.data.schools.data]; // 取得したデータを蓄積
-            hasMore = response.data.schools.data.length > 0; // データが存在する限り繰り返す
-            page += 1; // 次のページを設定
-          } else {
-            console.error("Unexpected response format:", response.data);
-            hasMore = false;
-          }
-        }
-      }
+    //       if (Array.isArray(response.data.schools.data)) {
+    //         allSchools = [...allSchools, ...response.data.schools.data]; // 取得したデータを蓄積
+    //         hasMore = response.data.schools.data.length > 0; // データが存在する限り繰り返す
+    //         page += 1; // 次のページを設定
+    //       } else {
+    //         console.error("Unexpected response format:", response.data);
+    //         hasMore = false;
+    //       }
+    //     }
+    //   }
 
-      // console.log("allSchools: ");
-      // console.log(allSchools);
+    //   // console.log("allSchools: ");
+    //   // console.log(allSchools);
 
-      return allSchools;
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+    //   return allSchools;
+    // } catch (error) {
+    //   console.error("Error fetching data:", error);
+    // }
+  // };
 
   const getSchoolNameTag = async () => {
-    let optionArray = [];
-    let result = await fetchSchoolNameData();
+    // let optionArray = [];
+    // let result = await fetchSchoolNameData();
 
     // console.log("result: ", result);
-    result.map((value) => {
-      optionArray.push({ value: value.school_name, label: value.school_name });
-    });
+    // result.map((value) => {
+    //   optionArray.push({ value: value.school_name, label: value.school_name });
+    // });
     // console.log("optionArray", optionArray);
     setOptions((prevOptions) => ({
       ...prevOptions,
-      school_name: optionArray,
+      school_name: schoolList,
     }));
   };
 

@@ -9,7 +9,7 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
-
+import Tooltip from "@mui/material/Tooltip";
 
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
@@ -18,14 +18,13 @@ import { follow } from "src/_mock/follow";
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef(({ post }, ref) => {
-  const { company_id, news_id, company_name,user_name, article_title, genre, header_img, news_created_at, follow_status: initialFollowStatus, icon, count } = post;
+  const { company_id, news_id, company_name, user_name, article_title, genre, header_img, news_created_at, follow_status: initialFollowStatus, icon, deadline, count } = post;
 
   useEffect(() => {
     console.log("company_id", company_id);
   }, [company_id])
 
-
-
+  console.log("締切日", deadline);
 
   const [followStatus, setFollowStatus] = useState(initialFollowStatus);
   const { getSessionData } = useSessionStorage();
@@ -42,8 +41,35 @@ const PostCard = forwardRef(({ post }, ref) => {
     }
   };
 
-  console.log("アイコンID",icon);
-  console.log("ユーザーネーム",user_name);
+  console.log("アイコンID", icon);
+  console.log("ユーザーネーム", user_name);
+
+  // 日付をYY/MM/DDに変換する
+  const formatDate = (dateString) => {
+    if (!dateString) {
+      return null; // nullを返して非表示にする
+    }
+
+    const dateObj = new Date(dateString);
+    if (isNaN(dateObj.getTime())) {
+      // 無効な日付の場合
+      return null;
+    }
+
+    const year = dateObj.getFullYear();
+    const month = dateObj.getMonth() + 1;
+    const day = dateObj.getDate();
+    return(
+      <>
+            <Tooltip title="締め切り間近!">
+            応募締切日:{year}/{month}/{day}
+            </Tooltip>
+    </>
+    )
+
+  };
+
+
 
   // 企業アイコン
   const renderAvatar = (
@@ -74,54 +100,56 @@ const PostCard = forwardRef(({ post }, ref) => {
   // ジャンル
   const renderGenre = genre ? (
     <Stack
-    direction="row"
-    justifyContent="space-between"
-    alignItems="center"
-    spacing={1}
-    sx={{
-      mt: 3,
-      color: "common.black",
-      padding: "5px",
-    }}
-  >
-
-    <Button
-      variant="contained"
+      direction="row"
+      justifyContent="space-between"
+      alignItems="center"
+      spacing={1}
       sx={{
-        padding: "2px",
-        margin: "2px",
-        background: "linear-gradient(#41A4FF, #9198e5)",
-        "&:hover": {
-          background: "linear-gradient(#c2c2c2, #e5ad91)",
-        },
+        mt: 3,
+        color: "common.black",
+        padding: "5px",
       }}
     >
-    {genre === 'Internship' ? 'インターンシップ' :
-    genre === 'Blog' ? 'ブログ' :
-    genre === 'JobOffer' ? '求人' :
-    genre === 'Session' ? '説明会' :
-    genre}    </Button>
 
-    {renderForm}
+      <Button
+        variant="contained"
+        sx={{
+          padding: "2px",
+          margin: "2px",
+          background: "linear-gradient(#41A4FF, #9198e5)",
+          "&:hover": {
+            background: "linear-gradient(#c2c2c2, #e5ad91)",
+          },
+        }}
+      >
+        {genre === 'Internship' ? 'インターンシップ' :
+          genre === 'Blog' ? 'ブログ' :
+            genre === 'JobOffer' ? '求人' :
+              genre === 'Session' ? '説明会' :
+                genre}    </Button>
+
+      {renderForm}
+
+      {formatDate(deadline)}
 
     </Stack>
 
-) : null;
+  ) : null;
 
-    // タイトル
-    const renderTitle = (
-      <Link
-        to={`/news_detail/${news_id}`}
-        className="link"
-        style={{
-          color: "common.black",
-          height: 30,
-          fontWeight: "Bold",
-        }}
-      >
-        {article_title}
-      </Link>
-    );
+  // タイトル
+  const renderTitle = (
+    <Link
+      to={`/news_detail/${news_id}`}
+      className="link"
+      style={{
+        color: "common.black",
+        height: 30,
+        fontWeight: "Bold",
+      }}
+    >
+      {article_title}
+    </Link>
+  );
 
   // サムネイル
   const renderThumbnail = (

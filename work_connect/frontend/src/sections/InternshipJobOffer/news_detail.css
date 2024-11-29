@@ -41,7 +41,7 @@
 }
 
 .news_title{
-    margin-top: 6%;
+
     text-align: left;
     font-size:1.500rem;
 }
@@ -122,3 +122,104 @@
     font-size: 20px;
   }
 
+.StickyMenu{
+    position: sticky;
+    top:80px;
+    background-color: #F9FAFB;
+    z-index:1;
+    height:auto;
+}
+
+
+.NewsDetail_Stack{
+    width:100%;
+    padding-top: 1%;
+  }
+
+.StickyMenu_Divider {
+    margin-top: 10px;
+    border-width: 1px; /* 線の太さを2pxに設定 */
+    border-color: #000; /* 線の色を黒に設定 */
+}
+
+.NewsDetail_Button{
+    font-size: 10px;
+    padding: 8px 16px;
+    margin:4px;
+    background: linear-gradient(#41A4FF, #9198e5);
+}
+
+.Apply_Button{
+    font-size: 10px;
+    padding: 8px 16px;
+    margin:4px;
+}
+
+
+.NewsDetail_Button:hover{
+    background: linear-gradient(#c2c2c2, #e5ad91);
+}
+
+.css-1szdb53-MuiButtonBase-root-MuiButton-root.Mui-disabled{
+    color:white;
+}
+                     
+
+/* スマホサイズの場合 */
+@media (max-width: 767px) {
+    .NewsSelect_Box {
+        font-size: 60%;
+    }
+
+    .news_title{
+        font-size:1.000rem;
+    }
+
+    .news_company_name {
+        font-size:1.000rem;
+        height: 30px; /* 高さはそのままにしておく */
+        overflow: hidden;
+    }
+
+    .news_created_at{
+        display: inline-block; /* テキストの幅に合わせるための設定 */
+        color: inherit;
+        font-size:1.000rem;        
+        height: 30px; /* 高さはそのままにしておく */
+    }
+
+    .NewsDetail_Stack{
+      width:100%;
+      justify-content: center;
+    }
+
+    .NewsDetail_Button{
+        font-size: 7px;
+        padding: 8px 16px;
+    }
+
+    .Apply_Button{
+        font-size: 7px;
+        padding: 6px 16px;
+    }
+
+    .NewsDetail_Button:hover,
+    .Apply_Button:hover{
+        background: linear-gradient(#c2c2c2, #e5ad91);
+    }
+    
+    .news_summary {
+        width:80%;
+        padding-top: 5%;
+        align-items: center;
+        left:17%;
+        font-size:80%;
+    }
+
+    .StickyMenu{
+        top:60px;
+        height:auto;
+    }
+
+
+}

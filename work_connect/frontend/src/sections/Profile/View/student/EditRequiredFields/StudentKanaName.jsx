@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import PropTypes from 'prop-types'; // prop-types をインポート
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import Box from '@mui/material/Box';
 
 const StudentKanaName = ({StudentKanaSurnameData, StudentKananameData}) => {
 
@@ -84,76 +85,83 @@ const StudentKanaName = ({StudentKanaSurnameData, StudentKananameData}) => {
 
 
   return (
-    <div style={{ display: "flex" }}>
-        <TextField
-            error={inputError.StudentKanaSurNameError}
-            fullWidth
-            // カタカナ以外ならhelperText表示
-            helperText={StudentKanaSurName !== "" && inputError.StudentKanaSurNameError ? "カタカナで入力してください" : ""}
-            label="セイ"
-            margin="normal"
-            name="StudentKanaSurName"
-            onChange={handleChange}
-            // required
-            type="text"
-            value={StudentKanaSurName}
-            variant="outlined"
-            sx={{
-                backgroundColor: '#fff', // 背景色を指定
-                borderRadius: '8px', // 角の丸みを設定
-                marginTop:'6px',
-                marginBottom:'0'
-            }}
-            InputProps={{
-              sx: {
-                fontSize: '20px', // 入力テキストのフォントサイズ
-              },
-            }}
-            InputLabelProps={{
-              sx: {
-                fontSize: '20px', // ラベルのフォントサイズ
-              },
-            }}
-            // helperTextを赤色にする
-            FormHelperTextProps={{
-              sx: { color: 'red' },
-            }}
-        />
-        <TextField
-            error={inputError.StudentKanaNameError}
-            fullWidth
-            // カタカナ以外ならhelperText表示
-            helperText={StudentKanaName !== "" && inputError.StudentKanaNameError ? "カタカナで入力してください" : ""}
-            label="メイ"
-            margin="normal"
-            name="StudentKanaName"
-            onChange={handleChange}
-            // required
-            type="text"
-            value={StudentKanaName}
-            variant="outlined"
-            sx={{
-                backgroundColor: '#fff', // 背景色を指定
-                borderRadius: '8px', // 角の丸みを設定
-                marginTop:'6px',
-                marginBottom:'0'
-            }}
-            InputProps={{
-              sx: {
-                fontSize: '20px', // 入力テキストのフォントサイズ
-              },
-            }}
-            InputLabelProps={{
-              sx: {
-                fontSize: '20px', // ラベルのフォントサイズ
-              },
-            }}
-            // helperTextを赤色にする
-            FormHelperTextProps={{
-              sx: { color: 'red' },
-            }}
-        />
-        </div>
+    <Box
+      sx={{
+        display: {
+          xs: 'block', // 0px ~ 899px の間は非表示
+          md: 'flex', // 900px 以上では flex
+        },
+      }}
+    >
+      <TextField
+          error={inputError.StudentKanaSurNameError}
+          fullWidth
+          // カタカナ以外ならhelperText表示
+          helperText={StudentKanaSurName !== "" && inputError.StudentKanaSurNameError ? "カタカナで入力してください" : ""}
+          label="セイ"
+          margin="normal"
+          name="StudentKanaSurName"
+          onChange={handleChange}
+          // required
+          type="text"
+          value={StudentKanaSurName}
+          variant="outlined"
+          sx={{
+              backgroundColor: '#fff', // 背景色を指定
+              borderRadius: '8px', // 角の丸みを設定
+              marginTop:'6px',
+              marginBottom:'0'
+          }}
+          InputProps={{
+            sx: {
+              fontSize: '20px', // 入力テキストのフォントサイズ
+            },
+          }}
+          InputLabelProps={{
+            sx: {
+              fontSize: '20px', // ラベルのフォントサイズ
+            },
+          }}
+          // helperTextを赤色にする
+          FormHelperTextProps={{
+            sx: { color: 'red' },
+          }}
+      />
+      <TextField
+          error={inputError.StudentKanaNameError}
+          fullWidth
+          // カタカナ以外ならhelperText表示
+          helperText={StudentKanaName !== "" && inputError.StudentKanaNameError ? "カタカナで入力してください" : ""}
+          label="メイ"
+          margin="normal"
+          name="StudentKanaName"
+          onChange={handleChange}
+          // required
+          type="text"
+          value={StudentKanaName}
+          variant="outlined"
+          sx={{
+              backgroundColor: '#fff', // 背景色を指定
+              borderRadius: '8px', // 角の丸みを設定
+              marginTop:'6px',
+              marginBottom:'0'
+          }}
+          InputProps={{
+            sx: {
+              fontSize: '20px', // 入力テキストのフォントサイズ
+            },
+          }}
+          InputLabelProps={{
+            sx: {
+              fontSize: '20px', // ラベルのフォントサイズ
+            },
+          }}
+          // helperTextを赤色にする
+          FormHelperTextProps={{
+            sx: { color: 'red' },
+          }}
+      />
+    </Box>
   );
 };
 

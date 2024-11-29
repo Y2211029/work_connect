@@ -4,8 +4,8 @@ import axios from "axios";
 import { ColorRing } from "react-loader-spinner";
 
 import Modal from "react-modal";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
@@ -140,8 +140,7 @@ const WorkDetailItem = () => {
 
         setWorkDetail(response.data["作品"][0]);
         setWorkComment(response.data["作品コメント"]);
-        setIsLoadItem(false)
-
+        setIsLoadItem(false);
 
         // console.log("response.data[作品コメント]", response.data["作品コメント"]);
         response.data["作品"][0].images.forEach((value) => {
@@ -359,27 +358,34 @@ const WorkDetailItem = () => {
     console.log("workDetail.icon", workDetail.icon);
   }, [workDetail.icon]);
 
+  // -----------------------------------------------
   // 作品タイトル
   const renderTitle = workDetail.work_name && <h1 className="WorkDetail-title">{workDetail.work_name}</h1>;
 
-  // 作品投稿者アイコン
-  const renderIcon = workDetail.icon && (
-    <img
-      src={
-        workDetail.icon
-          ? `http://localhost:8000/storage/images/userIcon/${workDetail.icon}`
-          : `http://localhost:8000/storage/images/userIcon/subNinja.jpg`
-      }
-      alt=""
-      style={{ width: AVATAR.A_WIDTH, height: AVATAR.A_HEIGHT, borderRadius: AVATAR.A_RADIUS }}
-    />
-  );
-
-  // 作品投稿者ユーザーネーム
-  const renderUserName = workDetail.user_name && <Typography variant="h6">{workDetail.user_name}</Typography>;
-
   // 作品画像がない場合、NO IMAGEを表示
   const alternativeImage = "http://localhost:8000/storage/images/work/NoImage.png";
+
+  // 作品投稿者アイコン
+  // 作品投稿者ユーザーネーム
+  const renderLink = workDetail.icon && workDetail.user_name && (
+    <Link to={`/Profile/${workDetail.user_name}?page=mypage`} variant="subtitle2" underline="none" className="link item-Link">
+      <Stack direction="row" justifyContent="left" alignItems="center" spacing={3}>
+        <Box
+          component="img"
+          src={`http://localhost:8000/storage/images/userIcon/${workDetail.icon}`}
+          onError={(e) => {
+            e.target.src = "http://localhost:8000/storage/images/userIcon/subNinja.jpg"; // エラー時にサンプル画像をセット
+          }}
+          sx={{
+            width: AVATAR.A_WIDTH,
+            height: AVATAR.A_HEIGHT,
+            borderRadius: AVATAR.A_RADIUS,
+          }}
+        />
+        <Typography variant="h6">{workDetail.user_name}</Typography>
+      </Stack>
+    </Link>
+  );
 
   // メインスライド
   const renderMainSlider = WorkSlideCheck && (
@@ -395,13 +401,18 @@ const WorkDetailItem = () => {
         <SplideTrack>
           {WorkSlide.map((slide, index) => (
             <SplideSlide key={slide.work_id + slide.id} onClick={() => openModal(index)}>
-              <img
+              <Box
+                component="img"
                 src={slide.image}
                 // alt={slide.image}
                 onError={(e) => {
                   e.target.src = alternativeImage; // エラー時にサンプル画像をセット
                 }}
-                style={{ aspectRatio: "16 / 9", width: "100%", height: "100%" }}
+                sx={{
+                  aspectRatio: "16 / 9",
+                  width: "100%",
+                  height: "100%",
+                }}
               />
             </SplideSlide>
           ))}
@@ -412,139 +423,193 @@ const WorkDetailItem = () => {
 
   // モーダルスライド
   const renderModalSlider = modalIsOpen && WorkSlideCheck && (
-    <>
-      <div style={{ borderBottom: "1px dashed #e0e0e0" }}>
-        <Button onClick={closeModal} className="close-button">
-          <span className="close-button_text">閉じる</span>
-        </Button>
-        <Button onClick={openGallery} className="oepn-gallery">
-          ギャラリー
-        </Button>
-      </div>
-
-      <div style={{ zIndex: theme.zIndex.modal, display: "flex", height: "calc(100% - 20px)" }}>
-        <Stack direction="column" justifyContent="space-around" alignItems="center" spacing={0} style={{ width: SLIDER.MODAL_WIDTH }}>
-          {modalIsOpen && WorkSlideCheck && (
-            <>
-              <Splide
-                ref={modalSplideRef}
-                options={ModalOptions}
-                onMoved={(splide, newIndex) => setCurrentSlideIndex(newIndex)}
-                aria-labelledby="modal-autoplay-example-heading"
-                hasTrack={false}
-              >
-                <SplideTrack>
-                  {WorkSlide.map((slide) => (
-                    <SplideSlide key={slide.work_id + slide.id}>
-                      <img
-                        src={slide.image}
-                        alt={slide.image}
-                        onError={(e) => {
-                          e.target.src = alternativeImage; // エラー時にサンプル画像をセット
-                        }}
-                      />
-                    </SplideSlide>
-                  ))}
-                  {/* {WorkSlide.map((slide) => (
-                    <SplideSlide key={slide.work_id + slide.id}>
-                      <img src={slide.image} alt={slide.image} />
-                    </SplideSlide>
-                  ))} */}
-                </SplideTrack>
-              </Splide>
-
-              {/* モーダルメインスライドの下にある小さなスライド */}
-              <Splide
-                ref={thumbnailSplideRef}
-                options={thumbsOptions}
-                aria-labelledby="thumbnail-slider-example"
-                onMoved={(splide, newIndex) => setCurrentSlideIndex(newIndex)}
-                hasTrack={false}
-                arrows={false}
-                sx={{
-                  ".splide__arrow": {
-                    display: "none !important",
-                  },
-                }}
-                aria-label="..."
-              // sx={{ justifyContent: "center", alignItems: "center", display: "flex" }}
-              >
-                <SplideTrack>
-                  {/* {WorkSlide.map((slide) => (
-                    <SplideSlide key={slide.work_id + slide.id}>
-                      <img src={slide.image} alt={slide.image} />
-                    </SplideSlide>
-                  ))} */}
-                  {WorkSlide.map((slide) => (
-                    <SplideSlide key={slide.work_id + slide.id}>
-                      <img
-                        src={slide.image}
-                        alt={slide.image}
-                        onError={(e) => {
-                          e.target.src = alternativeImage; // エラー時にサンプル画像をセット
-                        }}
-                      />
-                    </SplideSlide>
-                  ))}
-                </SplideTrack>
-                <div className="splide__arrows">
-                  <button className="splide__arrow splide__arrow--prev" style={{ left: "-60px" }}>
-                    {/* 左矢印アイコン */}
-                    <ArrowBackIosNewIcon style={{ transform: "scaleX(1)" }} />
-                  </button>
-                  <button className="splide__arrow splide__arrow--next" style={{ right: "-60px" }}>
-                    {/* 右矢印アイコン */}
-                    <ArrowForwardIosIcon />
-                  </button>
+    <Modal
+      isOpen={modalIsOpen}
+      onRequestClose={closeModal}
+      contentLabel="Image Modal"
+      overlayClassName="custom-overlay ModalSlide"
+      style={{
+        content: {
+          zIndex: theme.zIndex.modal,
+          overflow: "hidden", // モーダル内でスクロールや範囲超過を防ぐ
+          padding: "20px 10px 20px 20px",
+          maxWidth: "90vw", // モーダルの幅を画面の90%以内に制限
+          maxHeight: "90vh", // モーダルの高さを画面の90%以内に制限
+          margin: "0 auto",
+        },
+      }}
+    >
+      <div className="modal_slide_stack">
+        <div style={{ borderBottom: "1px dashed #e0e0e0" }}>
+          <Button onClick={closeModal} className="close-button">
+            閉じる
+          </Button>
+          <Button onClick={openGallery} className="oepn-gallery">
+            ギャラリー
+          </Button>
+        </div>
+        <div style={{ width: "100%", height: "100%", zIndex: theme.zIndex.modal, display: "flex" }}>
+          <Stack direction="column" justifyContent="space-around" alignItems="center" spacing={0} style={{ width: SLIDER.MODAL_WIDTH }}>
+            {modalIsOpen && WorkSlideCheck && (
+              <>
+                <div style={{ width: "100%", height: "calc(100% - 20%)", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                  <Splide
+                    ref={modalSplideRef}
+                    options={ModalOptions}
+                    onMoved={(splide, newIndex) => setCurrentSlideIndex(newIndex)}
+                    aria-labelledby="modal-autoplay-example-heading"
+                    hasTrack={false}
+                    className="modal-custom-splide" // クラス名を追加
+                  // style={{ height: "100%" }}
+                  >
+                    <SplideTrack className="modal-custom-splide-track">
+                      {WorkSlide.map((slide) => (
+                        <SplideSlide key={slide.work_id + slide.id} style={{
+                          textAlign: "center", display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}>
+                          <Box
+                            component="img"
+                            src={slide.image}
+                            // alt={slide.image}
+                            onError={(e) => {
+                              e.target.src = alternativeImage; // エラー時にサンプル画像をセット
+                            }}
+                            sx={{
+                              maxWidth: "100%",
+                              maxHeight: "100%",
+                              aspectRatio: "16 / 9",
+                              objectFit: "contain",
+                            }}
+                          />
+                        </SplideSlide>
+                      ))}
+                    </SplideTrack>
+                  </Splide>
                 </div>
-              </Splide>
-            </>
-          )}
-        </Stack>
+                <div style={{ width: "100%", height: "calc(100% - 80%)", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                  {/* モーダルメインスライドの下にある小さなスライド */}
+                  <Splide
+                    ref={thumbnailSplideRef}
+                    options={thumbsOptions}
+                    aria-labelledby="thumbnail-slider-example"
+                    onMoved={(splide, newIndex) => setCurrentSlideIndex(newIndex)}
+                    hasTrack={false}
+                    arrows={false}
+                    sx={{
+                      ".splide__arrow": {
+                        display: "none !important",
+                      },
+                    }}
+                    aria-label="..."
+                  >
+                    <SplideTrack>
+                      {WorkSlide.map((slide) => (
+                        <SplideSlide key={slide.work_id + slide.id}>
+                          <Box
+                            component="img"
+                            src={slide.image}
+                            onError={(e) => {
+                              e.target.src = alternativeImage; // エラー時にサンプル画像をセット
+                            }}
+                            sx={{
+                              maxWidth: "100%",
+                              maxHeight: "100%",
+                              aspectRatio: "16 / 9",
+                              objectFit: "contain",
+                            }}
+                          />
+                        </SplideSlide>
+                      ))}
+                    </SplideTrack>
 
-        {/* overScroll 追加 */}
-        {modalIsOpen && (
-          <div
-            className="annotation-container"
-            style={{
-              width: SLIDER.ANOTATION,
-              wordBreak: "break-word",
-              borderLeft: "1px dashed #e0e0e0",
-              padding: "10px",
-              marginLeft: "10px",
-              overflow: "scroll",
-            }}
-          >
-            <div style={{ width: "100%" }}>{WorkSlide[currentSlideIndex].annotation}</div>
-          </div>
-        )}
+                    <div className="splide__arrows">
+                      <button className="splide__arrow splide__arrow--prev" style={{ left: "-60px" }}>
+                        <ArrowBackIosNewIcon style={{ transform: "scaleX(1)" }} />
+                      </button>
+                      <button className="splide__arrow splide__arrow--next" style={{ right: "-60px" }}>
+                        <ArrowForwardIosIcon />
+                      </button>
+                    </div>
+                  </Splide>
+                </div>
+              </>
+            )}
+          </Stack>
+
+          {/* overScroll 追加 */}
+          {modalIsOpen && (
+            <div
+              className="annotation-container"
+              style={{
+                width: SLIDER.ANOTATION,
+                wordBreak: "break-word",
+                borderLeft: "1px dashed #e0e0e0",
+                padding: "10px",
+                marginLeft: "10px",
+                overflow: "scroll",
+              }}
+            >
+              <div style={{ width: "100%" }}>{WorkSlide[currentSlideIndex].annotation}</div>
+            </div>
+          )}
+        </div>
       </div>
-    </>
+    </Modal>
   );
   // モーダルギャラリー
   const renderGallery = (
     <>
-      <div id="gallery">
-        <div className="gallery_images" id="gallery_images">
-          <div className="gallery-container">
-            {WorkSlide.map((slide, index) => (
-              <div key={`${slide}-${index}`} className="GalleryPostCard" style={{ width: "100%" }}>
-                <img
-                  className="gallery_img"
-                  key={slide.work_id + slide.id}
-                  src={slide.image}
-                  alt={slide.image}
-                  onClick={() => openModal(index)}
-                  onError={(e) => {
-                    e.target.src = alternativeImage; // エラー時にサンプル画像をセット
-                  }}
-
-                />
-              </div>
-            ))}
+      <Modal
+        isOpen={galleryIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Image Modal"
+        overlayClassName="custom-overlay"
+        style={{
+          content: {
+            zIndex: theme.zIndex.modal,
+          },
+        }}
+      >
+        <div className="gallery_header">
+          <div className="g_h_left"></div>
+          <div className="g_h_right">
+            <Button onClick={closeGallery} className="close-button">
+              <span className="close-button_text">閉じる</span>
+            </Button>
+            <Button
+              onClick={() => {
+                openModal(0);
+              }}
+              className="oepn-gallery"
+            >
+              スライド
+            </Button>
           </div>
         </div>
-      </div>
+        <div id="gallery">
+          <div className="gallery_images" id="gallery_images">
+            <div className="gallery-container">
+              {WorkSlide.map((slide, index) => (
+                <div key={`${slide}-${index}`} className="GalleryPostCard" style={{ width: "100%" }}>
+                  <Box
+                    className="gallery_img"
+                    component="img"
+                    key={slide.work_id + slide.id}
+                    src={slide.image}
+                    alt={slide.image}
+                    onClick={() => openModal(index)}
+                    onError={(e) => {
+                      e.target.src = alternativeImage; // エラー時にサンプル画像をセット
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Modal>
     </>
   );
 
@@ -736,74 +801,26 @@ const WorkDetailItem = () => {
           ariaLabel="color-ring-loading"
           wrapperStyle={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
           wrapperClass="custom-color-ring-wrapper" // カスタムクラスを指定
-          colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+          colors={["#41a4ff", "#FFFFFF", "#41a4ff", "#41a4ff", "#FFFFFF"]}
           style={{ flexDirection: "column" }}
         />
       )}
       <Container>
-        <div>
-          <Link to={`/Profile/${workDetail.user_name}?page=mypage`}>
-            <Stack direction="row" justifyContent="left" alignItems="center" spacing={3}>
-              {renderIcon}
-              {renderUserName}
-            </Stack>
-          </Link>
-          {renderTitle}
-        </div>
+        {renderLink}
+        {renderTitle}
 
         {renderMainSlider}
+        {renderModalSlider}
+        {renderGallery}
 
-        <Modal
-          isOpen={modalIsOpen}
-          onRequestClose={closeModal}
-          contentLabel="Image Modal"
-          overlayClassName="custom-overlay"
-          style={{
-            content: {
-              zIndex: theme.zIndex.modal,
-              overflow: "",
-              padding: "20px 10px 20px 20px",
-            },
-          }}
-        >
-          {renderModalSlider}
-        </Modal>
+        {renderIntro}
+        {renderGenre}
+        {renderProgrammingLang}
+        {renderDevelopmentEnv}
+        {renderWorkURL}
 
-        <Modal
-          isOpen={galleryIsOpen}
-          onRequestClose={closeModal}
-          contentLabel="Image Modal"
-          overlayClassName="custom-overlay"
-          style={{
-            content: {
-              zIndex: theme.zIndex.modal,
-            },
-          }}
-        >
-          <div className="gallery_header">
-            <div className="g_h_left"></div>
-            <div className="g_h_right">
-              <Button onClick={closeGallery} className="close-button">
-                <span className="close-button_text">閉じる</span>
-              </Button>
-              <Button onClick={openGallery} className="oepn-gallery">
-                スライド
-              </Button>
-            </div>
-          </div>
-
-          {renderGallery}
-        </Modal>
-
-        <Box>
-          {renderIntro}
-          {renderGenre}
-          {renderProgrammingLang}
-          {renderDevelopmentEnv}
-          {renderWorkURL}
-          {renderCommentButton}
-          {renderComment}
-        </Box>
+        {renderCommentButton}
+        {renderComment}
       </Container>
     </>
   );

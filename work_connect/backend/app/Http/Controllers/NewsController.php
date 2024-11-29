@@ -52,20 +52,46 @@ class NewsController extends Controller
 
             //フォームを作成しているかどうかチェック
             $createForm = w_create_form::where('news_id', $newsdetail_id)
-            ->get();
+                ->first();
 
-        //もしもジャンルがブログではないかつフォームを作成していた場合
-        //今見ている人が応募済みかどうかチェック
-        if($news_detail->genre !== 'Blog' && !$createForm){
-            $writeformStatus = w_write_form::where('user_id', $MyId)
-            ->where('news_id', $newsdetail_id)
-            ->get();
+            Log::info('クリエイトフォーム' . $createForm);
+            Log::info('ジャンル'. $news_detail->genre);
 
-            if($writeformStatus){
-                $news_detail->writeform_status = $writeformStatus;
+
+
+
+            //もしもジャンルがブログではないかつフォームを作成していた場合
+            //今見ている人が応募済みかどうかチェック
+            if ($news_detail->genre !== 'Blog' && $createForm) { // 存在するかどうかをチェック
+
+                $createFormStatus = true;
+                $news_detail->createform_status = $createFormStatus;
+
+                Log::info('クリエイトフォームステータス' . $createFormStatus);
+
+                $writeformStatus = w_write_form::where('user_id', $MyId)
+                    ->where('news_id', $newsdetail_id)
+                    ->first();
+
+                if ($writeformStatus) {
+                    $news_detail->writeform_status = true;
+                    $now = Carbon::now('Asia/Tokyo');
+
+                    // 締め切りを確認する 締切日を設定していないもしくは締切日超過の場合はfalseを返す
+                    if ($createForm->deadline !== null && $createForm->deadline->lt($now)) {
+                        $news_detail->deadline_status = true;
+                    } else {
+                        $news_detail->deadline_status = false;
+                    }
+                } else {
+                    $news_detail->writeform_status = false;
+                    $news_detail->deadline_status = false;
+                }
+            } else {
+                $news_detail->writeform_status = false;
+                $news_detail->deadline_status = false;
+                $news_detail->createform_status = false;
             }
-        }
-
 
             return response()->json($news_detail);
         } else {
@@ -112,7 +138,7 @@ class NewsController extends Controller
                 'form_writed_at' => $app->form_writed_at,
                 'icon' => $app->icon,
             ];
-            $id+=1;
+            $id += 1;
         }
 
         // 配列全体をログ出力する
@@ -179,7 +205,7 @@ class NewsController extends Controller
             ->join('w_news', 'w_write_forms.news_id', '=', 'w_news.id')
             ->join('w_users', 'w_write_forms.user_id', '=', 'w_users.id')
             ->where('w_news.public_status', 1)
-            ->select('w_write_forms.*', 'w_news.*', 'w_users.*', 'w_news.created_at as news_created_at','w_write_forms.id as write_form_id')
+            ->select('w_write_forms.*', 'w_news.*', 'w_users.*', 'w_news.created_at as news_created_at', 'w_write_forms.id as write_form_id')
             ->get();
 
         // ソート処理
@@ -256,8 +282,29 @@ class NewsController extends Controller
 
             foreach ($posts as $post) {
 
+                // w_create_formsテーブルから応募用フォームがあるかチェック
+                $createformData = w_create_form::where('news_id', $post->news_id)->first();
+                Log::info('$createformData'. $createformData);
+
+                if ($createformData) {
+                    // 現在のデッドラインを取得
+                    $Deadline = $createformData->deadline;
+
+                    // デッドラインが指定されている場合のみ更新
+                    if (!empty($Deadline)) {
+                        Log::info('デッドライン: ' . $Deadline);
+
+                        // デッドラインを更新
+                        $post->deadline = $Deadline;
+
+                    } else {
+                        Log::info('新しいデッドラインが指定されていません。変更は行われません。');
+                    }
+                }
+
                 // w_write_formsテーブルからすべてのフォームデータを取得
                 $formData = w_write_form::where('news_id', $post->news_id)->get();
+
 
                 // 取得したフォームデータの数をpostsに追加
                 $post->form_data_count = $formData->count();

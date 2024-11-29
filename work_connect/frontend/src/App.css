@@ -24,6 +24,14 @@ header .logo {
   font-size: 30px;
 }
 
+.toolbar {
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+}
+.
+
 nav ul {
   margin: 0px;
 }
@@ -148,10 +156,6 @@ nav ul li a:hover {
   z-index: 1300;
   /* 必要に応じて調整 */
 }
-
-/* h1 {
-  text-align: center;
-} */
 
 /* モーダルが開いているときは背景がスクロールしないようにする */
 .ReactModal__Body--open {
@@ -648,7 +652,6 @@ textarea {
 /* 動画投稿画面 ここまで */
 
 /* 作品一覧画面　ここから */
-/* styles.css */
 .list-view-Container {
   margin: 20px;
 }
@@ -657,22 +660,15 @@ textarea {
 .item-stack {
   transition: 0.2s;
   border: 1px solid white;
-
 }
 
 /* 作品一覧ホバー */
 .item-stack:hover {
-  /* border: 1px solid #70a2ff;
-  background-color: #1877F2; */
-  transform: scale(1.05);
-  /* 1より小さい数値で縮小 */
-  /* color: white; */
+  background-color: #f7f7f7;
 }
 
-
-
 .column-container {
-  column-gap: 20px;
+  column-gap: 10px;
   column-count: 5;
   /* デフォルトは5カラム */
   width: 100%;
@@ -681,7 +677,6 @@ textarea {
   /* 最大幅を設定（必要に応じて変更） */
   margin: 0 auto;
   /* 中央揃え */
-
 }
 
 .gallery-container {
@@ -694,13 +689,10 @@ textarea {
   /* 中央揃え */
 }
 
-
-
 .postCard {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.07);
-  /* margin-bottom: 10px; */
+  margin: 5px -5px;
   border-radius: 1cqmin;
-
   width: "100%";
   background: white;
   padding: 5px;
@@ -714,6 +706,9 @@ textarea {
   background: white;
   padding: 20px;
 }
+
+
+
 
 
 
@@ -777,30 +772,20 @@ textarea {
 
 
 /* ギャラリーー */
-/* #gallery .gallery_images {
-  height: 94%;
-  overflow-y: scroll;
-  padding-top: 20px;
-  width: 100%;
-} */
-
-/* #gallery .gallery_images .gallery_img {
-  transition: 0.5s all;
-  aspect-ratio: 16/9;
-  object-fit: contain;
-  width: 300px;
-} */
-
 .gallery_images {
   align-items: center;
   justify-content: center;
 }
 
-/* .gallery_img:hover {
-  border: 4px solid #41a4ff;
-  transform: scale(1.1);
+.gallery_img {
   transition: 0.5s all;
-} */
+  object-fit: contain;
+}
+
+.gallery_img:hover {
+  border: 2px solid #41a4ff;
+  transform: scale(1.1);
+}
 
 
 /* 矢印の大きさを調整 */
@@ -813,17 +798,6 @@ textarea {
   /* 矢印アイコンのサイズ */
 }
 
-/* 左矢印のスタイル */
-/* .splide__arrow--prev {
-  left: -60px;
-  位置調整
-} */
-
-/* 右矢印のスタイル */
-/* .splide__arrow--next {
-  right: -60px;
-  位置調整
-} */
 
 
 /* 作品の紹介・ジャンル・開発言語・開発環境などの項目 */
@@ -896,6 +870,24 @@ textarea {
   /* color: #fff; */
   transition: 0.5s;
 }
+
+/* モーダルスライド */
+.modal_slide_stack {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-custom-splide {
+  height: 100%;
+}
+
+.modal-custom-splide-track {
+  height: 100%;
+  padding: 10px;
+}
+
 
 /* 作品詳細 　ここまで */
 
@@ -997,7 +989,11 @@ textarea {
 
   .column-container,
   .gallery-container {
-    column-count: 4;
+    column-count: 3;
+  }
+
+  .column-container {
+    column-gap: 10px;
   }
 
 }
@@ -1006,7 +1002,11 @@ textarea {
 
   .column-container,
   .gallery-container {
-    column-count: 3;
+    column-count: 2;
+  }
+
+  .column-container {
+    column-gap: 7px;
   }
 }
 
@@ -1014,14 +1014,16 @@ textarea {
 
   .column-container,
   .gallery-container {
-    column-count: 2;
+    column-count: 1;
+  }
+
+  .column-container {
+    column-gap: 5px;
   }
 }
 
 @media (max-width: 400px) {
-
-  .column-container,
-  .gallery-container {
-    column-count: 1;
+  .column-container {
+    column-gap: 2px;
   }
 }

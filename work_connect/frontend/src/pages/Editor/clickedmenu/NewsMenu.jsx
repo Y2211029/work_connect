@@ -26,30 +26,6 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 //時間
 import moment from 'moment-timezone';
 
-const modalStyle = {
-  overlay: {
-    backgroundColor: 'rgba(0, 0, 0, 0.7)', // オーバーレイの背景色
-    zIndex: 1200, // オーバーレイの z-index
-    width: '100%',
-    height: '100%',
-  },
-  content: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    border: 'none',
-    borderRadius: '4%',
-    padding: '1.5rem',
-    overflow: 'hidden',
-    zIndex: 1300, // コンテンツの z-index
-    backgroundColor: 'blue',
-    height: '60%',
-    width: '70%',
-  },
-};
-
-
 const NewsMenu = ({
   IsOpen,
   CloseModal,
@@ -190,8 +166,8 @@ const NewsMenu = ({
       {EditorStatusCheck(imageUrl)}
       {followerCounter > 0 && (
         <>
-        <p>通知に添えるメッセージ</p>
-        {EditorStatusCheck(message)}
+          <p>通知に添えるメッセージ</p>
+          {EditorStatusCheck(message)}
         </>
       )}
       <p>コンテンツ</p>
@@ -240,7 +216,7 @@ const NewsMenu = ({
   )
 
   const isContentReady = !!(title && imageUrl && charCount); // 必須データが揃っているか確認
-  const isFollowerValid = (followerCounter > 0 && message) || (followerCounter === 0 || followerCounter === undefined );
+  const isFollowerValid = (followerCounter > 0 && message) || (followerCounter === 0 || followerCounter === undefined);
   // フォロワーがいない場合はメッセージ不要
 
   // デバッグログ
@@ -253,7 +229,7 @@ const NewsMenu = ({
     { key: "draftList", text: "下書きリスト", render: draftListrender },
     { key: "saveNews", text: "ニュースを保存する", render: saveNewsrender },
     { key: "editingStatus", text: "現在の編集状況", render: editingStatusrender },
-    ...(followerCounter > 0 ? [{ key: "notificationMessage", text: "通知に添えるメッセージ", render: notificationMessagerender }]:[]),
+    ...(followerCounter > 0 ? [{ key: "notificationMessage", text: "通知に添えるメッセージ", render: notificationMessagerender }] : []),
     // 条件を満たした場合のみ追加
     ...(genre !== "Blog" ? [{ key: "createForm", text: "応募フォームを作成する", render: createFormrender }] : []),
     ...((isContentReady && isFollowerValid) ? [{ key: "releaseNews", text: "ニュースを公開する", render: releaseNewsrender }] : []),
@@ -263,10 +239,11 @@ const NewsMenu = ({
   return (
     <Modal
       isOpen={IsOpen}
-      onRequestClose={CloseModal} // モーダルを閉じるコールバック
-      shouldCloseOnOverlayClick={true} // オーバーレイクリックでモーダルを閉じる
+      onRequestClose={CloseModal}
+      shouldCloseOnOverlayClick={true}
       contentLabel="Example Modal"
-      style={modalStyle}
+      overlayClassName="modal-overlay" /* オーバーレイに適用 */
+      className="modal-content" /* コンテンツに適用 */
     >
       <div className="NewsMenu-Accordion">
 

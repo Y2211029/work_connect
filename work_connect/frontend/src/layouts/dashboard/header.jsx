@@ -13,6 +13,7 @@ import Popover from "@mui/material/Popover";
 import Divider from "@mui/material/Divider";
 import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
+import PostAddIcon from '@mui/icons-material/PostAdd';
 
 import { useResponsive } from "src/hooks/use-responsive";
 import { bgBlur } from "src/theme/css";
@@ -64,7 +65,9 @@ export default function Header({ onOpenNav }) {
     "&:hover": {
       backgroundColor: "#a9a9a9",
     },
+
   };
+
   // style CSS ここまで
 
   useEffect(() => {
@@ -217,13 +220,26 @@ export default function Header({ onOpenNav }) {
 
       <Box sx={{ flexGrow: 1 }} />
       {/* ログイン、新規登録、本登録、チャット、通知、アカウントプロフィール */}
-      <Stack direction="row" alignItems="center" spacing={1}>
+      <Stack direction="row" alignItems="center" spacing={1} >
         {data.id[0] === "S" ? (
           <>
-            <Button onClick={handleOpenModal} variant="contained" sx={buttonStyle}>
+            <Button onClick={handleOpenModal} variant="contained" sx={{
+              display: Display.HomePage === "none" ? "none" : { xs: "none", md: "flex" },
+              margin: 4,
+              "&:hover": {
+                backgroundColor: "#a9a9a9",
+              },
+            }}>
               作品投稿
             </Button>
-            <Button onClick={handleOpenModal2} variant="contained" sx={buttonStyle}>
+            <Button onClick={handleOpenModal2} variant="contained"
+              sx={{
+                display: Display.HomePage === "none" ? "none" : { xs: "none", md: "flex" },
+                margin: 4,
+                "&:hover": {
+                  backgroundColor: "#a9a9a9",
+                },
+              }}>
               動画投稿
             </Button>
           </>
@@ -233,7 +249,6 @@ export default function Header({ onOpenNav }) {
               <Button onClick={handleOpen} variant="contained">
                 ニュース投稿
               </Button>
-
               <Popover
                 open={!!open}
                 anchorEl={open}
@@ -286,7 +301,7 @@ export default function Header({ onOpenNav }) {
               marginLeft: "auto", // 右揃え
               width: "30px",
               height: "30px",
-              display: Display.HomePage ? "none" : "flex",
+              display: Display.HomePage === "none" ? "none" : { xs: "none", md: "flex" },
             }}
           >
             <ChatPng />
@@ -302,7 +317,7 @@ export default function Header({ onOpenNav }) {
               "&:hover": { backgroundColor: "#f0f0f0", title: "a" },
               width: "30px",
               height: "30px",
-              display: Display.HomePage ? "none" : "felx",
+              display: Display.HomePage === "none" ? "none" : { xs: "none", md: "flex" },
             }}
           >
             <AccountPopover />
@@ -312,6 +327,100 @@ export default function Header({ onOpenNav }) {
     </>
   );
 
+
+  const renderToolBar = (
+    <>
+      <Stack
+        direction="row"
+        justifyContent="space-around"
+        alignItems="center"
+        spacing={1}
+        className="toolbar"
+        sx={{
+          height: HEADER.H_DESKTOP,
+          display: { xs: "flex", md: "none" },
+          zIndex: theme.zIndex.appBar + 1,
+        }}
+
+      >
+        {/* チャット */}
+        <Tooltip title="チャット">
+          <IconButton
+            sx={{
+              marginLeft: "auto", // 右揃え
+              width: "30px",
+              height: "30px",
+              display: Display.HomePage ? "none" : "flex",
+            }}
+
+          >
+            <ChatPng />
+          </IconButton>
+        </Tooltip>
+
+
+        {/* ＋ */}
+
+        {data.id[0] === "S" ? (
+          <>
+            <Button onClick={handleOpenModal} variant="contained" sx={buttonStyle}>
+              作品投稿
+            </Button>
+            <Button onClick={handleOpenModal2} variant="contained" sx={buttonStyle}>
+              動画投稿
+            </Button>
+            <PostAddIcon />
+          </>
+        ) : data.id[0] === "C" ? (
+          <>
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <Button onClick={handleOpen} variant="contained">
+                ニュース投稿
+              </Button>
+
+              <Popover
+                open={!!open}
+                anchorEl={open}
+                onClose={handleClose}
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                transformOrigin={{ vertical: "top", horizontal: "right" }}
+                PaperProps={{
+                  sx: {
+                    p: 0,
+                    mt: 1,
+                    ml: 0.75,
+                    width: 250,
+                  },
+                }}
+              >
+                {NEWS_MENU_OPTIONS.map((option) => (
+                  <MenuItem key={option.label} onClick={() => handleMenuItemClick(option.path)} sx={{ display: login_state ? "block" : "none" }}>
+                    {option.label}
+                    <Divider sx={{ borderStyle: "dashed", display: "block" }} />
+                  </MenuItem>
+                ))}
+              </Popover>
+            </Stack>
+          </>
+        ) : null}
+
+        {/* アカウントアイコン */}
+        <Tooltip title="アカウント" sx={{ display: Display.HomePage ? "none" : "flex" }}>
+          <IconButton
+            sx={{
+              marginLeft: "auto", // 右揃え
+              "&:hover": { backgroundColor: "#f0f0f0", title: "a" },
+              width: "30px",
+              height: "30px",
+              display: Display.HomePage ? "none" : "felx",
+            }}
+          >
+            <AccountPopover />
+          </IconButton>
+        </Tooltip>
+      </Stack >
+    </>
+  )
   useEffect(() => {
     console.log("theme.zIndex", theme.zIndex);
   }, [theme]);
@@ -331,9 +440,9 @@ export default function Header({ onOpenNav }) {
           }),
           ...(lgUp &&
             !Display.HomePage && {
-              width: `calc(100% - ${NAV.WIDTH + 1}px)`,
-              height: HEADER.H_DESKTOP,
-            }),
+            width: `calc(100% - ${NAV.WIDTH + 1}px)`,
+            height: HEADER.H_DESKTOP,
+          }),
         }}
       >
         <Toolbar
@@ -347,19 +456,22 @@ export default function Header({ onOpenNav }) {
         <ArrowUpwardIcon
           onClick={handleScrollToTop}
           style={{
+            display: Display.HomePage ? "none" : "block",
             cursor: "pointer",
             width: "50px",
             height: "50px",
             position: "fixed",
-            top: "873px",
-            right: "20px",
+            top: "52vw",
+            right: "1.5vw",
             color: "black",
             borderRadius: "50%",
-            boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
-            display: Display.HomePage? "none" : "block",
+            boxShadow: "rgba(0, 0, 0, 0.5) 0px 0px 10px",
+
           }}
         />
       </AppBar>
+
+      {renderToolBar}
     </>
   );
 }

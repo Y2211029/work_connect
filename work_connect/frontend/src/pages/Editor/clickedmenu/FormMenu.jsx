@@ -14,6 +14,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 // 応募締め切り日を設定:MUI
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 import "dayjs/locale/ja";
 
 //フォーム情報 MUI
@@ -47,23 +48,22 @@ const modalStyle = {
     },
 };
 
-const InputDateWithTime = ({ date, handleChange, format = "YYYY/MM/DD HH:mm" }) => {
+const InputDateWithTime = ({ date, deadlineChange, format = "YYYY/MM/DD HH:mm" }) => {
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"ja"}>
             <DateTimePicker
-                value={date}
+                value={dayjs(date)}
                 format={format}
-                onChange={handleChange}
+                onChange={deadlineChange}
                 slotProps={{ calendarHeader: { format: "YYYY/MM" } }}
                 ampm={false}
-            />
-        </LocalizationProvider>
+            />        </LocalizationProvider>
     );
 };
 
-const FormMenu = ({ IsOpen, CloseModal, questions }) => {
+const FormMenu = ({ IsOpen, CloseModal, questions, SetDeadlineDate, deadlineDate }) => {
+    dayjs.locale("ja");
     const [expanded, setExpanded] = useState(false);
-    const [deadlineDate, setDeadlineDate] = useState(null);
     console.log("質問", questions);
     console.log("質問数", questions.length);
 
@@ -77,42 +77,42 @@ const FormMenu = ({ IsOpen, CloseModal, questions }) => {
     }, []);
 
     const TypeChangeArray =
-    [
-           //テキスト
-    { menu: "text",    text: "テキスト" },
-    { menu: "username", text: "ユーザーネーム" },
-    { menu: "email", text: "メールアドレス" },
-    { menu: "password", text: "パスワード" },
-    { menu: "url", text: "URL" },
-    //日時
-    { menu: "date", text: "日付" },
-    { menu: "time", text: "時間" },
-    { menu: "datetime-local", text: "年月日/時分" },
-    { menu: "month", text: "月間" },
-    { menu: "week", text: "週間" },
-    //数値
-    { menu: "number", text: "数値" },
-    { menu: "range", text: "範囲" },
-    { menu: "tel", text: "電話番号" },
-    //ラジオボタン
-    { menu: "radio", text: "単一選択:ラジオボタン" },
-    { menu: "radiogroup", text: "複数選択:ラジオボタン" },
-    //ドロップダウン
-    { menu: "dropdown", text: "単一選択:ドロップダウンメニュー" },
-    { menu: "tagbox", text: "複数選択:ドロップダウンメニュー" },
-    //チェックボックス
-    { menu: "checkbox", text: "チェックボックス" },
-    //クローズドクエスチョン
-    { menu: "boolean", text: "真偽値" },
-    //ロングテキストボックス
-    { menu: "comment", text: "コメント" },
-    //(10段階)評価
-    { menu: "rating", text: "評価" },
-    //ランキング
-    { menu: "ranking", text: "ランキング" },
-    //画像ピッカー
-    { menu: "imagepicker", text: "画像ピッカー" },
-    ]
+        [
+            //テキスト
+            { menu: "text", text: "テキスト" },
+            { menu: "username", text: "ユーザーネーム" },
+            { menu: "email", text: "メールアドレス" },
+            { menu: "password", text: "パスワード" },
+            { menu: "url", text: "URL" },
+            //日時
+            { menu: "date", text: "日付" },
+            { menu: "time", text: "時間" },
+            { menu: "datetime-local", text: "年月日/時分" },
+            { menu: "month", text: "月間" },
+            { menu: "week", text: "週間" },
+            //数値
+            { menu: "number", text: "数値" },
+            { menu: "range", text: "範囲" },
+            { menu: "tel", text: "電話番号" },
+            //ラジオボタン
+            { menu: "radio", text: "単一選択:ラジオボタン" },
+            { menu: "radiogroup", text: "複数選択:ラジオボタン" },
+            //ドロップダウン
+            { menu: "dropdown", text: "単一選択:ドロップダウンメニュー" },
+            { menu: "tagbox", text: "複数選択:ドロップダウンメニュー" },
+            //チェックボックス
+            { menu: "checkbox", text: "チェックボックス" },
+            //クローズドクエスチョン
+            { menu: "boolean", text: "真偽値" },
+            //ロングテキストボックス
+            { menu: "comment", text: "コメント" },
+            //(10段階)評価
+            { menu: "rating", text: "評価" },
+            //ランキング
+            { menu: "ranking", text: "ランキング" },
+            //画像ピッカー
+            { menu: "imagepicker", text: "画像ピッカー" },
+        ]
 
     const typechange = (type) => {
         const matched = TypeChangeArray.find((item) => item.menu === type);
@@ -162,8 +162,13 @@ const FormMenu = ({ IsOpen, CloseModal, questions }) => {
             render: (
                 <InputDateWithTime
                     date={deadlineDate}
-                    handleChange={(newDate) => setDeadlineDate(newDate)}
+                    deadlineChange={(newDate) => {
+                        const formattedDate = dayjs(newDate.$d).format("YYYY-MM-DD HH:mm:ss");
+                        console.log("新しい締切日", formattedDate);
+                        SetDeadlineDate(formattedDate);
+                    }}
                 />
+
             ),
         },
         {
@@ -233,12 +238,14 @@ FormMenu.propTypes = {
     IsOpen: PropTypes.bool.isRequired,
     CloseModal: PropTypes.func.isRequired,
     questions: PropTypes.array,
+    SetDeadlineDate: PropTypes.func,
+    deadlineDate: PropTypes.date
 };
 
 // PropTypesの型定義
 InputDateWithTime.propTypes = {
     date: PropTypes.object,
-    handleChange: PropTypes.func.isRequired,
+    deadlineChange: PropTypes.func.isRequired,
     format: PropTypes.string,
 };
 

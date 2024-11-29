@@ -652,7 +652,6 @@ textarea {
 /* 動画投稿画面 ここまで */
 
 /* 作品一覧画面　ここから */
-/* styles.css */
 .list-view-Container {
   margin: 20px;
 }
@@ -661,19 +660,12 @@ textarea {
 .item-stack {
   transition: 0.2s;
   border: 1px solid white;
-
 }
 
 /* 作品一覧ホバー */
 .item-stack:hover {
-  border: 1px solid #70a2ff;
-  background-color: #1877F2;
-  /* transform: scale(1.05); */
-  /* 1より小さい数値で縮小 */
-  color: white;
+  background-color: #f7f7f7;
 }
-
-
 
 .column-container {
   column-gap: 10px;
@@ -685,7 +677,6 @@ textarea {
   /* 最大幅を設定（必要に応じて変更） */
   margin: 0 auto;
   /* 中央揃え */
-
 }
 
 .gallery-container {
@@ -697,8 +688,6 @@ textarea {
   margin: 0 auto;
   /* 中央揃え */
 }
-
-
 
 .postCard {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.07);

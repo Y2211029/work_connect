@@ -1,40 +1,55 @@
-import { forwardRef /*useEffect, /*useState*/ } from "react";
-import { Link } from "react-router-dom";
+import { forwardRef, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
+import DeleteIcon from "@mui/icons-material/Delete";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 import SvgColor from "src/components/svg-color";
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 import Divider from "@mui/material/Divider";
+import { useLayoutEffect } from "react";
 
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef(({ post }, ref) => {
   const { work_id, genre, thumbnail, icon, title, intro, author, userName, createdAt } = post;
+  const myProfileURL = useLocation();
+  const isNotMyProfile = myProfileURL.pathname != "/Profile/" + userName;
+  useLayoutEffect(() => {
+    console.log("myProfileURL", myProfileURL);
+    console.log("myProfileURL.pathname", myProfileURL.pathname);
+    console.log("/Profile/ + renderUserName", "/Profile/" + userName);
+  }, []);
+  const [Editing, setEditing] = useState(false);
 
+  const workDeleteButton = () => {
+    setEditing(true);
+  };
   const alternativeImage = "http://localhost:8000/storage/images/work/NoImage.png";
   const renderThumbnail =
     (console.log("thumbnail", thumbnail),
-      (
-        <Box
-          component="img"
-          src={thumbnail}
-          onError={(e) => {
-            e.target.src = alternativeImage; // エラー時にサンプル画像をセット
-          }}
-          sx={{
-            aspectRatio: 16 / 9,
-            borderRadius: "5px",
-            width: "100%",
-            objectFit: "cover",
-            marginBottom: "10px",
-          }}
-        />
-      ));
+    (
+      <Box
+        component="img"
+        src={thumbnail}
+        onError={(e) => {
+          e.target.src = alternativeImage; // エラー時にサンプル画像をセット
+        }}
+        sx={{
+          aspectRatio: 16 / 9,
+          borderRadius: "5px",
+          width: "100%",
+          objectFit: "cover",
+          marginBottom: "10px",
+        }}
+      />
+    ));
 
   // アイコン
   const renderAvatar = (
@@ -50,9 +65,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   );
 
   // タイトル
-  const renderTitle = title && (
-    title
-  );
+  const renderTitle = title && title;
 
   // ジャンル
   const renderGenre = genre !== null ? <div style={{ margin: "10px 0px 10px 0px" }}>{genre}</div> : null;
@@ -91,6 +104,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   /* 表示：ユーザー名、コメント数、閲覧数、投稿日 */
   const renderInfo = (
     // 素を垂直または水平方向に整列
+
     <Stack
       direction="row"
       justifyContent="space-between"
@@ -115,8 +129,15 @@ const PostCard = forwardRef(({ post }, ref) => {
           color: "common.black",
         }}
       >
-        {renderAvatar}
-        {renderUserName}
+        {isNotMyProfile ? (
+          renderAvatar
+        ) : (
+          <Button onClick={workDeleteButton}>
+            <MoreVertIcon />
+          </Button>
+        )}
+        {Editing ? <DeleteIcon /> : ""}
+        {isNotMyProfile ? renderUserName : ""}
       </Stack>
     </Stack>
   );
@@ -156,15 +177,9 @@ const PostCard = forwardRef(({ post }, ref) => {
 
   return (
     <div ref={ref} /*className="postCardTopElement"*/>
-      <Link
-        to={`/WorkDetail/${work_id}`}
-        variant="subtitle2"
-        underline="none"
-        className="link item-Link"
-      >
-        
-        <Stack sx={{ display: "inline-block", width: "100%" }} >
-          <div className="postCard item-stack" style={{ width: "100%" }} >
+      <Link to={`/WorkDetail/${work_id}`} variant="subtitle2" underline="none" className="link item-Link">
+        <Stack sx={{ display: "inline-block", width: "100%" }}>
+          <div className="postCard item-stack" style={{ width: "100%" }}>
             {renderShape}
             {renderThumbnail}
             {renderTitle}

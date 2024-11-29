@@ -29,10 +29,10 @@ header .logo {
   bottom: 0px;
   left: 0px;
   width: 100%;
+  background-color: #FFFFFF
 }
-.
 
-nav ul {
+.nav ul {
   margin: 0px;
 }
 
@@ -643,6 +643,7 @@ textarea {
   transition: .3s;
   border: 2px solid #6666ff;
 }
+
 
 .VideoSubmit:hover {
   color: #6666ff;

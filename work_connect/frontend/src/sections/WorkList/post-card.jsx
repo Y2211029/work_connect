@@ -33,46 +33,19 @@ const PostCard = forwardRef(({ post }, ref) => {
   const isNotMyProfile = myProfileURL.pathname != "/Profile/" + userName;
   const navigate = useNavigate();
 
-  // 外部クリックを検出するための関数
-  // const handleClickOutside = (e) => {
-  //   // もしポップアップが開いていて、クリックされたターゲットがボタン以外なら閉じる
-  //   if (open && !e.target.closest(".button-container")) {
-  //     console.log("ボタン要素以外をクリックしました")
-  //     setOpen(false);
-  //   }
-  // };
-
-  // // useEffect で、外部クリックのリスナーを追加
-  // useEffect(() => {
-  //   if (open) {
-  //     document.addEventListener("click", handleClickOutside);
-  //   } else {
-  //     document.removeEventListener("click", handleClickOutside);
-  //   }
-
-  //   return () => {
-  //     document.removeEventListener("click", handleClickOutside);
-  //   };
-  // }, [open]);
-
-
+  
+  // 編集ボタン以外の要素が押されたらポップアップメニューを閉じる
   $("*").click(function (e) {
     // クリックした要素の<html>までのすべての親要素の中に"formInModal"クラスがついている要素を取得
     var targetParants = $(e.target).parents(".button-container");
-
-    // 取得した要素の個数が0個の場合
-    // ***if (targetParants.length == 0 || $(e.target).text() == "閉じる")***
-    console.log("targetParants", targetParants);
     if (targetParants.length == 0) {
       // クリックした要素に"formInModal"クラスがついていない場合
       if ($(e.target).attr("class") != "button-container" && open) {
-        // 新規登録モーダルを閉じる
         console.log("新規登録モーダルを閉じる");
         setOpen(false);
       }
     }
   });
-
 
   // ボタンがクリックされたときの処理
 

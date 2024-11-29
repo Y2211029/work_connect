@@ -40,6 +40,17 @@ import StarIcon from '@mui/icons-material/Star';
 import BurstModeIcon from '@mui/icons-material/BurstMode';
 import Typography from "@mui/material/Typography";
 
+//モバイルUI
+import { useMediaQuery } from 'react-responsive';
+import IconButton from "@mui/material/IconButton";
+import Drawer from "@mui/material/Drawer";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+
+import MenuIcon from '@mui/icons-material/Menu';
+
+
 // データ保存
 import axios from "axios";
 import FormMenu from './clickedmenu/FormMenu';
@@ -52,6 +63,14 @@ const CreateForm = ({ newsid, HandleBack }) => {
   const createform_search_url = "http://127.0.0.1:8000/createform_search";
   const [questions, setQuestions] = useState([]);
   const [deadlineDate, setDeadlineDate] = useState(dayjs());
+  const isMobile = useMediaQuery({ query: '(max-width: 650px)' });
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const toggleDrawer = (open) => {
+    setDrawerOpen(open);
+    console.log("toggleDrawer発火");
+  };
+
 
   useEffect(() => {
     const getcreateform = async () => {
@@ -482,7 +501,7 @@ const CreateForm = ({ newsid, HandleBack }) => {
   // フォームの編集データを保存
   const CreateFormSave = async () => {
     console.log("フォーム内容", questions);
-    console.log("締切日",deadlineDate);
+    console.log("締切日", deadlineDate);
     const create_form_save_url = `http://localhost:8000/create_form_save`;
 
     try {
@@ -529,7 +548,8 @@ const CreateForm = ({ newsid, HandleBack }) => {
     { lavel: '評価', icon: <AssessmentIcon />, click: 'rating' },
     { lavel: 'ランキング', icon: <StarIcon />, click: 'ranking' },
     { lavel: '画像ピッカー', icon: <BurstModeIcon />, click: 'imagepicker' },
-    // { lavel: 'デザイン変更', icon: <BrushIcon />, click: 'FormDesign' },
+    // isMobileがtrueのときだけ「保存する」を追加
+    ...(isMobile ? [{ lavel: '保存する', icon: <BurstModeIcon />, click: 'save' }] : []),
   ];
 
   const SelectMenuArray = [
@@ -586,7 +606,6 @@ const CreateForm = ({ newsid, HandleBack }) => {
   };
 
 
-
   return (
     <>
       <Stack direction="row" spacing={2} style={{ width: "1000px" }}>
@@ -610,8 +629,8 @@ const CreateForm = ({ newsid, HandleBack }) => {
             IsOpen={formmenushow}
             CloseModal={closeModal}
             questions={questions}
-            SetDeadlineDate = {setDeadlineDate}
-            deadlineDate = {deadlineDate}
+            SetDeadlineDate={setDeadlineDate}
+            deadlineDate={deadlineDate}
           // genre={genre}
           // draftlist={draft_list}
           // CreateFormJump={CreateFormJump}
@@ -669,37 +688,88 @@ const CreateForm = ({ newsid, HandleBack }) => {
           </Stack>
         </Modal>
 
-        {buttonOpen && (
-          <Stack spacing={2} className="SelectMenu">
-            {FormSelectArray.map((form, index) => (
-              <Button
-                key={index}
-                startIcon={form.icon}
-                onClick={() => addQuestion(form.click)}
-                variant="outlined"
-                style={{ textAlign: 'center', width: "250px", marginLeft: "40%", }}  // アイコンとテキストを左寄せ
-              >
-                {form.lavel}
-              </Button>
-            ))}
-            <Button
-              variant="outlined"
-              onClick={CreateFormSave}
-              sx={{
-                borderColor: "#5956FF",
-                color: "#5956FF",
-                "&:hover": { borderColor: "#5956FF" },
-                cursor: "pointer",
-                textAlign: 'center',
-                width: "150px",
-                left: "40%",
-              }}
-            >
-              保存する
-            </Button>
-          </Stack>
 
+
+
+        {buttonOpen && (
+          <>
+            <Stack spacing={2} className="SelectMenu">
+
+              {isMobile ? (
+                <div className="Menu">
+                  {/* ハンバーガーメニュー用のボタン */}
+                  <IconButton
+                    edge="start"
+                    color="inherit"
+                    aria-label="menu"
+                    onClick={() => toggleDrawer(true)}
+                  >
+                    <MenuIcon className="Menu" />
+                  </IconButton>
+
+                  {/* ドロワーメニュー */}
+                  <Drawer
+                    anchor="left"
+                    open={drawerOpen}
+                    onClose={() => toggleDrawer(false)}
+                  >
+                    <List>
+                      {FormSelectArray.map((form, index) => (
+                        <ListItem
+                          button
+                          key={index}
+                          onClick={() => {
+                            // メニュー選択時のアクション
+                            console.log(form.lavel);
+                            setDrawerOpen(false); // ドロワーを閉じる
+                          }}
+                        >
+                          <ListItemText primary={form.lavel} />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Drawer>
+                </div>
+              ) : (
+                <>
+                  {FormSelectArray.map((form, index) => (
+                    <Button
+                      key={index}
+                      startIcon={form.icon}
+                      onClick={() => addQuestion(form.click)}
+                      variant="outlined"
+                      sx={{
+                        textAlign: "center",
+                        width: "250px",
+                        marginLeft: "40%",
+                      }}
+                    >
+                      {form.lavel}
+                    </Button>
+                  ))}
+
+                  {/* 保存ボタン */}
+                  <Button
+                    variant="outlined"
+                    onClick={CreateFormSave}
+                    sx={{
+                      borderColor: "#5956FF",
+                      color: "#5956FF",
+                      "&:hover": { borderColor: "#5956FF" },
+                      cursor: "pointer",
+                      textAlign: "center",
+                      width: "150px",
+                      left: "40%",
+                    }}
+                  >
+                    保存する
+                  </Button>
+                </>
+              )}
+            </Stack>
+          </>
         )}
+
       </Stack>
     </>
   );

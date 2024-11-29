@@ -84,6 +84,7 @@
     "react-infinite-scroller": "^1.2.6",
     "react-loader-spinner": "^6.1.6",
     "react-modal": "^3.16.1",
+    "react-responsive": "^10.0.0",
     "react-router-dom": "^6.23.1",
     "react-select": "^5.8.0",
     "react-spinners": "^0.14.1",

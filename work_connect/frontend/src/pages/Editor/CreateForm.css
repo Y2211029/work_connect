@@ -31,7 +31,6 @@ body {
   overflow-x: auto;
   overflow-y: hidden;
   /* 縦のオーバーフローは非表示 */
-  margin-left: 20%;
 }
 
 input[type="number"] {
@@ -69,13 +68,14 @@ input[type="number"]::-webkit-inner-spin-button {
   width: 100%;
 }
 
-.FormDemo {
+/* .FormDemo {
   overflow: auto; /* スクロールを有効にする */
-  flex-grow: 1;
-  width: 100%;
+  /* flex-grow: 1; */
+  /* width: 0%;
   margin-left: 15%;
-  height:100%;
-}
+  height:100%; */
+/* }  */
+*/
 
 .FormMenuScroll {
   height: 100%; /* 親要素の高さいっぱいに設定 */
@@ -87,6 +87,10 @@ input[type="number"]::-webkit-inner-spin-button {
 
 .FormButton{
   width:30%;
+}
+
+.MuiStack-root .SelectMenu .css-1sazv7p-MuiStack-root{
+  left:10%;
 }
 
 .SelectMenu{
@@ -135,3 +139,32 @@ input[type="number"]::-webkit-inner-spin-button {
 .sd-root-modern {
   background-color: #F9FAFB !important;
 }
+
+
+/* スマホサイズの場合 */
+@media (max-width: 767px) {
+  
+
+}
+
+@media (max-width: 650px) {
+  .SurveyModal {
+    width: 100%;
+  }
+
+  .SelectMenu{
+    margin-left: 10px !important;
+    margin-top:210px !important;
+    height:600px;
+  }  
+
+  .Menu{
+    background-color: aquamarine;
+    width: 100px;
+    font-size:100px;
+    margin-left:10% !important;
+  }
+
+  
+}
+

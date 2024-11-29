@@ -192,11 +192,12 @@ class EditorController extends Controller
 
 
     //選んだ画像リンクを削除・別フォルダに移動したファイルを削除
-    public function thumbnail_img_delete(Request $request, $id, $genre)
+    public function thumbnail_img_delete(Request $request, $id)
     {
         try {
 
             $Company_Id = $request->input('Company_Id');
+            $genre = $request->input('genre');
 
             // 条件に一致する画像リンクを取得
             $header_img_delete = w_news::where('id', $id)

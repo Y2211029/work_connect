@@ -29,7 +29,8 @@ header .logo {
   bottom: 0px;
   left: 0px;
   width: 100%;
-  background-color: #FFFFFF
+  background-color: #FFFFFF;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 .nav ul {

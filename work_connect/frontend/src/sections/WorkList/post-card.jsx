@@ -3,6 +3,9 @@ import { Link, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
+
+import $ from "jquery";
+
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
@@ -52,7 +55,24 @@ const PostCard = forwardRef(({ post }, ref) => {
   //   };
   // }, [open]);
 
-  
+
+  $("*").click(function (e) {
+    // クリックした要素の<html>までのすべての親要素の中に"formInModal"クラスがついている要素を取得
+    var targetParants = $(e.target).parents(".button-container");
+
+    // 取得した要素の個数が0個の場合
+    // ***if (targetParants.length == 0 || $(e.target).text() == "閉じる")***
+    console.log("targetParants", targetParants);
+    if (targetParants.length == 0) {
+      // クリックした要素に"formInModal"クラスがついていない場合
+      if ($(e.target).attr("class") != "button-container" && open) {
+        // 新規登録モーダルを閉じる
+        console.log("新規登録モーダルを閉じる");
+        setOpen(false);
+      }
+    }
+  });
+
 
   // ボタンがクリックされたときの処理
 
@@ -189,22 +209,22 @@ const PostCard = forwardRef(({ post }, ref) => {
           renderAvatar
         ) : (
           <>
-            <Button /*ref={buttonRef}*/ onClick={(e) => handleButtonClick(e, "")}>
-              <MoreVertIcon color="action" />
-            </Button>
-            <Popover
-              open={open}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              transformOrigin={{
-                vertical: "bottom",
-                horizontal: "center",
-              }}
-              onClose={() => setIsPopoverOpen(false)}
-            >
-              <div className="button-container">
+            <div className="button-container" >
+              <Button /*ref={buttonRef}*/ onClick={(e) => handleButtonClick(e, "")}>
+                <MoreVertIcon color="action" />
+              </Button>
+              <Popover
+                open={open}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                transformOrigin={{
+                  vertical: "bottom",
+                  horizontal: "center",
+                }}
+                onClose={() => setIsPopoverOpen(false)}
+              >
                 <Tooltip title="編集">
                   <Button onClick={(e) => handleButtonClick(e, "edit")}>
                     <EditNoteIcon color="action" />
@@ -215,8 +235,8 @@ const PostCard = forwardRef(({ post }, ref) => {
                     <DeleteIcon sx={{ color: "red" }} />
                   </Button>
                 </Tooltip>
-              </div>
-            </Popover>
+              </Popover>
+            </div>
           </>
         )}
 

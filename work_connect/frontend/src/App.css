@@ -662,11 +662,11 @@ textarea {
 
 /* 作品一覧ホバー */
 .item-stack:hover {
-  border: 1px solid #70a2ff;
-  background-color: #1877F2;
-  /* transform: scale(1.05); */
+  /* border: 1px solid #70a2ff;
+  background-color: #1877F2; */
+  transform: scale(1.05);
   /* 1より小さい数値で縮小 */
-  color: white;
+  /* color: white; */
 }
 
 

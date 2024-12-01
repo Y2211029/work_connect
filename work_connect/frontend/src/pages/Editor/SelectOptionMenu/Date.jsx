@@ -1,4 +1,4 @@
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -6,37 +6,43 @@ import Typography from "@mui/material/Typography";
 import PropTypes from 'prop-types';
 import Autocomplete from '@mui/material/Autocomplete';
 import Checkbox from '@mui/material/Checkbox';
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
 import "../CreateForm.css";
 
 
-export default function Data({ onSave,onCancel,questionData }) {
+export default function Data({ onSave, onCancel, questionData }) {
     const [title, setTitle] = useState("");
     const [selectedType, setSelectedType] = useState(null);
     const [isrequired, setIsrequired] = useState(false);
     const [pastdate, setPastDate] = useState(false);
     const [defaultValueExpression, setdefaultValueExpression] = useState("");
+    const [expanded, setExpanded] = useState(false);
 
 
     const [max, setMax] = useState("");
     const [min, setMin] = useState("");
 
-        // questionData が変更されたら、各フィールドにデータをセットする
-        useEffect(() => {
-            if (questionData) {
-                setTitle(questionData.title || "");
-                setSelectedType(inputtype.find(type => type.name === questionData.inputType) || null);
-                setIsrequired(questionData.isRequired || false);
-                // setPastDate(questionData.isRequired || false);
-                setMin(questionData.min || "");
-                setMax(questionData.max || "");
-                setdefaultValueExpression(questionData.defaultValueExpression || "");
+    // questionData が変更されたら、各フィールドにデータをセットする
+    useEffect(() => {
+        if (questionData) {
+            setTitle(questionData.title || "");
+            setSelectedType(inputtype.find(type => type.name === questionData.inputType) || null);
+            setIsrequired(questionData.isRequired || false);
+            // setPastDate(questionData.isRequired || false);
+            setMin(questionData.min || "");
+            setMax(questionData.max || "");
+            setdefaultValueExpression(questionData.defaultValueExpression || "");
 
-                if(questionData.minValueExpression){
-                    setPastDate(true)
-                }
-
+            if (questionData.minValueExpression) {
+                setPastDate(true)
             }
-        }, [questionData]);
+
+        }
+    }, [questionData]);
 
 
 
@@ -58,7 +64,7 @@ export default function Data({ onSave,onCancel,questionData }) {
     };
 
     //編集をキャンセルして追加したフォームを削除
-    const handleCancel = () =>{
+    const handleCancel = () => {
         onCancel();
     }
 
@@ -73,11 +79,11 @@ export default function Data({ onSave,onCancel,questionData }) {
 
     useEffect(() => {
         if (selectedType?.name === "datetime-local") {
-          setdefaultValueExpression("currentDate()");
-        }else if(selectedType?.name === "date"){
+            setdefaultValueExpression("currentDate()");
+        } else if (selectedType?.name === "date") {
             setdefaultValueExpression("today()");
         }
-      }, [selectedType, setdefaultValueExpression]);
+    }, [selectedType, setdefaultValueExpression]);
 
 
 
@@ -105,20 +111,36 @@ export default function Data({ onSave,onCancel,questionData }) {
 
                 {selectedType?.name === "date" && (
                     <div>
-                        <Stack direction="row" alignItems="center" spacing={1}>
-                            <Checkbox
-                                checked={pastdate}
-                                onChange={(e) => setPastDate(e.target.checked)}
-                            />
-                            <Typography>過去の日時を選択できないようにする</Typography>
-                        </Stack>
-                        <Stack direction="row" alignItems="center" spacing={1}>
-                            <Checkbox
-                                checked={isrequired}
-                                onChange={(e) => setIsrequired(e.target.checked)}
-                            />
-                            <Typography>フォームを必須にする</Typography>
-                        </Stack>
+                        <Accordion
+                            expanded={expanded === "optionAccordion"}
+                            onChange={() => setExpanded(expanded === "optionAccordion" ? false : "optionAccordion")}
+                            className="Accordion"
+                        >
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="optionAccordion-content"
+                                id="optionAccordion-header"
+                            >
+                                <Typography sx={{ fontSize: "15px", width: "80%", flexShrink: 0 }}>オプション</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <Stack direction="row" alignItems="center" spacing={1}>
+                                    <Checkbox
+                                        checked={pastdate}
+                                        onChange={(e) => setPastDate(e.target.checked)}
+                                    />
+                                    <Typography>過去の日時を選択できないようにする</Typography>
+                                </Stack>
+                                <Stack direction="row" alignItems="center" spacing={1}>
+                                    <Checkbox
+                                        checked={isrequired}
+                                        onChange={(e) => setIsrequired(e.target.checked)}
+                                    />
+                                    <Typography>フォームを必須にする</Typography>
+                                </Stack>
+                            </AccordionDetails>
+                            </Accordion>
+
                     </div>
                 )}
 
@@ -164,7 +186,7 @@ export default function Data({ onSave,onCancel,questionData }) {
                 )}
 
 
-                <Button variant="contained" color="primary" onClick={handleSave}  className="FormButton">
+                <Button variant="contained" color="primary" onClick={handleSave} className="FormButton">
                     保存
                 </Button>
 

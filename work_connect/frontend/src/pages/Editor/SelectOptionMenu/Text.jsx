@@ -93,6 +93,7 @@ export default function Text({ onSave, onCancel, questionData }) {
                     isOptionEqualToValue={(option, value) => option.name === value.name}
                     fullWidth
                     renderInput={(params) => <TextField {...params} label="種類" />}
+                    sx={{width: "90%",}}
                 />
 
                 <TextField
@@ -100,6 +101,7 @@ export default function Text({ onSave, onCancel, questionData }) {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     fullWidth
+                    sx={{width: "90%",}}
                 />
 
 

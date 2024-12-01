@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Modal from "react-modal";
 import PropTypes from "prop-types";
 import "../Editor.css";
@@ -17,40 +17,28 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Tooltip from '@mui/material/Tooltip';
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import Accordion from '@mui/material/Accordion';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 //時間
 import moment from 'moment-timezone';
 
 const NewsMenu = ({
-  IsOpen,
-  CloseModal,
+  menuKey,
   CreateFormJump,
   RewriteNewsEnter,
-  EditorStatusCheck,
-  EditorContentsStatusCheck,
-  HandleChange,
+  EditorStatusCheck = () => { },
+  EditorContentsStatusCheck = () => { },
   NewsSave,
-  genre,
-  draftlist,
+  draftlist = [],
   imageUrl,
   title,
   RewriteNewsDelete,
   NotificationMessageHandleChange,
   NewsUpLoad,
   message,
-  charCount,
   selected_draft,
   followerCounter }) => {
 
-  const [expanded, setExpanded] = useState(false);
-  const AccordionhandleChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
-  };
+  console.log("menuKey",menuKey);
 
   //関数
   const FormattedDate = (time) => {
@@ -123,8 +111,7 @@ const NewsMenu = ({
                     <p
                       className="draftlist"
                       onClick={() => {
-                        setExpanded(false); // 展開状態を閉じる
-                        RewriteNewsEnter(draft.id); // 次の処理を実行
+                        RewriteNewsEnter(draft.id);
                       }}
                     >
                       {draft.article_title}
@@ -170,7 +157,6 @@ const NewsMenu = ({
   const notificationMessagerender = (
     <ReleaseNews
       MessageData={message}
-      handleChange={HandleChange}
       NotificationMessageHandleChange={NotificationMessageHandleChange}
     />
   )
@@ -191,7 +177,6 @@ const NewsMenu = ({
       )}
 
       <button id="createFormJump" className="save" onClick={() => {
-        setExpanded(false);
         CreateFormJump();
       }}>
         応募フォームを作成する
@@ -207,71 +192,39 @@ const NewsMenu = ({
     <p><button onClick={NewsUpLoad}>投稿</button></p>
   )
 
-  const isContentReady = !!(title && imageUrl && charCount); // 必須データが揃っているか確認
-  const isFollowerValid = (followerCounter > 0 && message) || (followerCounter === 0 || followerCounter === undefined);
-  // フォロワーがいない場合はメッセージ不要
 
-  // デバッグログ
-  console.log("isContentReady", isContentReady);  // 必須データが揃っているか
-  console.log("isFollowerValid", isFollowerValid); // フォロワー条件が満たされているか
-  console.log("follower_counter", followerCounter); // フォロワー数の確認
-  console.log("message", message); // メッセージの内容
+  // `menuKey` に基づいてレンダリングする内容を切り替え
+  const renderComponentByKey = (key) => {
+    console.log("renderComponentByKey関数キー", key);
+    switch (key) {
+      case 'draftList':
+        return draftListrender;
+      case 'saveNews':
+        return saveNewsrender;
+      case 'editingStatus':
+        return editingStatusrender;
+      case 'notificationMessage':
+        return notificationMessagerender;
+      case 'createForm':
+        return createFormrender;
+      case 'releaseNews':
+        return releaseNewsrender;
+      default:
+        return null;
+    }
+  };
 
-  const menuItems = [
-    { key: "draftList", text: "下書きリスト", render: draftListrender },
-    { key: "saveNews", text: "ニュースを保存する", render: saveNewsrender },
-    { key: "editingStatus", text: "現在の編集状況", render: editingStatusrender },
-    ...(followerCounter > 0 ? [{ key: "notificationMessage", text: "通知に添えるメッセージ", render: notificationMessagerender }] : []),
-    // 条件を満たした場合のみ追加
-    ...(genre !== "Blog" ? [{ key: "createForm", text: "応募フォームを作成する", render: createFormrender }] : []),
-    ...((isContentReady && isFollowerValid) ? [{ key: "releaseNews", text: "ニュースを公開する", render: releaseNewsrender }] : []),
-  ];
 
 
   return (
-    <Modal
-      isOpen={IsOpen}
-      onRequestClose={CloseModal}
-      shouldCloseOnOverlayClick={true}
-      contentLabel="Example Modal"
-      overlayClassName="modal-overlay" /* オーバーレイに適用 */
-      className="modal-content" /* コンテンツに適用 */
-    >
-      <div className="NewsMenu-Accordion">
-
-        <Button variant="outlined" onClick={() => {
-          setExpanded(false);
-          CloseModal();
-        }} className="CloseModalButton">
-          閉じる
-        </Button>
-
-
-        {menuItems.map(({ key, text, render }) => (
-          <Accordion
-            key={key}
-            expanded={expanded === key}
-            onChange={AccordionhandleChange(key)}
-            className="Accordion"
-          >
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls={`${key}-content`}
-              id={`${key}-header`}
-            >
-              <Typography sx={{ width: '70%', flexShrink: 0 }}>{text}</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              {render}
-            </AccordionDetails>
-          </Accordion>
-        ))}
-      </div>
-    </Modal>
+    <div>
+      {renderComponentByKey(menuKey)}
+    </div>
   );
 };
 
 NewsMenu.propTypes = {
+  menuKey: PropTypes.string.isRequired,
   IsOpen: PropTypes.bool.isRequired,      //モーダルを閉じる
   CloseModal: PropTypes.func.isRequired,  //モーダル閉じる関数
   CreateFormJump: PropTypes.func.isRequired, //ニュース保存後に応募フォーム作成画面に遷移する
@@ -284,12 +237,10 @@ NewsMenu.propTypes = {
   HandleChange: PropTypes.func.isRequired,
   NewsUpLoad: PropTypes.func.isRequired,
   NotificationMessageHandleChange: PropTypes.func.isRequired,
-  genre: PropTypes.string.isRequired,      //ニュースのジャンル
   draftlist: PropTypes.array.isRequired, //下書きリスト
   newsid: PropTypes.number.isRequired, //ニュースID
   title: PropTypes.string.isRequired,
   imageUrl: PropTypes.string.isRequired, //サムネイル画像
-  charCount: PropTypes.number.isRequired, //文字数カウント
   selected_draft: PropTypes.array.isRequired, //現在下書き中のニュース＆フォームの情報
   followerCounter: PropTypes.number.isRequired,
 };

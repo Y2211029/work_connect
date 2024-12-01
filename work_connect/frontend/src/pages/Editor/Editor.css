@@ -11,13 +11,13 @@ body {
 
 .editor_title {
   position: relative;
-  width: 1000px;
+  width: 50%;
   height: 200px;
   font-weight: bold;
   font-size: 30px;
   outline: none;
   border: none;
-  left: 15%;
+  left: 10%;
   padding-top: 50px;
   padding-bottom: 50px;
   overflow-x: hidden;
@@ -290,7 +290,7 @@ td {
   padding-bottom: 10px;
 }
 
-.modal-overlay {
+.selectmodal-overlay {
   background-color: rgba(0, 0, 0, 0.7);
   /* オーバーレイの背景色 */
   z-index: 1200;
@@ -303,7 +303,7 @@ td {
   left: 0;
 }
 
-.modal-content {
+.selectmodal-content {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -315,9 +315,9 @@ td {
   overflow: hidden;
   z-index: 1300;
   /* コンテンツの z-index */
-  height: 60%;
+  height: auto;
   /* モーダルの高さ */
-  width: 60%;
+  width: 20%;
   /* モーダルの幅 */
   background-color: white;
   /* コンテンツの背景色 (必要に応じて追加) */
@@ -338,6 +338,9 @@ td {
   .editor_title::placeholder,
   .editor_title {
     font-size: 100%;
+    width: 80%;
+    align-items: center;
+    justify-content: center;
   }
 
   .editor-wrapper {
@@ -414,15 +417,9 @@ td {
     font-size: 10px;
   }
 
-
-
-
-
-
-
-
-
-
+  .selectmodal-content {
+    width: 90%;
+  }
 
 
   @media (max-width: 650px) {
@@ -458,6 +455,8 @@ td {
       width: 50%;
       height: 10%;
     }
+
+
 
   }
 }

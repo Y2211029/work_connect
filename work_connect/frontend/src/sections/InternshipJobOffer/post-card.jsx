@@ -22,6 +22,7 @@ const PostCard = forwardRef(({ post }, ref) => {
 
   useEffect(() => {
     console.log("company_id", company_id);
+    console.log("user_name", user_name);
   }, [company_id])
 
   console.log("締切日", deadline);
@@ -84,6 +85,7 @@ const PostCard = forwardRef(({ post }, ref) => {
     />
   );
 
+  console.log("ユーザネーム", user_name);
 
   // フォームのレンダリング（企業の投稿の場合）
   const renderForm = company_id === accountData.id && count > 0 ? (

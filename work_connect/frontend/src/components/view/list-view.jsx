@@ -56,8 +56,8 @@ const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, s
         }
       });
     });
+    
     setWorkList((prev) => [...prev, ...generatePosts(filteredNewWorks)]);
-    // setLoading(false);
     setItemLoading(false);
   }
 

@@ -25,11 +25,11 @@ export const UseCreateTagbutton = () => {
             </span>
           </>
         ));
-      } else if (CreateTagLocation === "CompanyList" || CreateTagLocation === "StudentList") {
+      } else if (CreateTagLocation === "CompanyList" || CreateTagLocation === "StudentList" || CreateTagLocation === "Internship_JobOffer") {
         // item 配列の要素が順番に入ってる ["a"]
         // index 配列の番号 [0]
         // array 配列そのものが入ってる ["a","b","c"]
-        TagButton = TagString.split(",").map((item,index, array) => (
+        TagButton = TagString.split(",").map((item, index, array) => (
           <>
             <span
               style={{

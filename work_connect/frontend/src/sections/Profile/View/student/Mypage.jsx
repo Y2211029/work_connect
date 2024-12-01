@@ -3,6 +3,7 @@ import { useEffect, useState, useRef, useContext } from "react";
 import axios from "axios";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import { useParams } from "react-router-dom";
+import { ColorRing } from "react-loader-spinner";
 
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
@@ -18,7 +19,6 @@ import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import { PulseLoader } from "react-spinners";
-import { ColorRing } from "react-loader-spinner";
 
 import ProfileMypageEdit from "./MypageEdit";
 // デフォルトのアイコンをインポート
@@ -64,12 +64,7 @@ const ColorRingStyle = () => {
           width: "10",
           ariaLabel: "color-ring-loading",
           wrapperClass: "custom-color-ring-wrapper",
-          colors:
-          ["#e15b64",
-            "#f47e60",
-            "#f8b26a",
-            "#abbd81",
-            "#849b87"]
+          colors:["#41a4ff", "#FFFFFF", "#41a4ff", "#41a4ff", "#FFFFFF"]
         }}
       />
     </Box>
@@ -112,15 +107,6 @@ const ProfileMypage = () => {
   //フォローステータスが変更されるまでの間ボタンを押せなくする
   const [ButtonDisable, setButtonDisable] = useState(false);
 
-  // const coloRing = {
-  //   visible: true,  // コロンで区切る
-  //   margin: "0px",
-  //   height: "10",
-  //   width: "10",
-  //   ariaLabel: "color-ring-loading",
-  //   wrapperClass: "custom-color-ring-wrapper", // コメントを外に
-  //   colors: ["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]
-  // };
 
   // websocket通信のデータ保存先
   const notificationContext = useContext(WebScokectContext);

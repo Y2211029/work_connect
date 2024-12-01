@@ -3,9 +3,6 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-// import Card from "@mui/material/Card";
-// import Grid from "@mui/material/Unstable_Grid2";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
@@ -18,11 +15,24 @@ import { follow } from "src/_mock/follow";
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef(({ post }, ref) => {
-  const { company_id, news_id, company_name, user_name, article_title, genre, header_img, news_created_at, follow_status: initialFollowStatus, icon, deadline, count } = post;
+  const {
+    company_id,
+    news_id,
+    company_name,
+    user_name,
+    article_title,
+    genre,
+    header_img,
+    news_created_at,
+    follow_status: initialFollowStatus,
+    icon,
+    deadline,
+    count,
+  } = post;
 
   useEffect(() => {
     console.log("company_id", company_id);
-  }, [company_id])
+  }, [company_id]);
 
   console.log("締切日", deadline);
 
@@ -59,17 +69,14 @@ const PostCard = forwardRef(({ post }, ref) => {
     const year = dateObj.getFullYear();
     const month = dateObj.getMonth() + 1;
     const day = dateObj.getDate();
-    return(
+    return (
       <>
-            <Tooltip title="締め切り間近!">
-            応募締切日:{year}/{month}/{day}
-            </Tooltip>
-    </>
-    )
-
+        <Tooltip title="締め切り間近!">
+          応募締切日:{year}/{month}/{day}
+        </Tooltip>
+      </>
+    );
   };
-
-
 
   // 企業アイコン
   const renderAvatar = (
@@ -84,18 +91,18 @@ const PostCard = forwardRef(({ post }, ref) => {
     />
   );
 
-
   // フォームのレンダリング（企業の投稿の場合）
-  const renderForm = company_id === accountData.id && count > 0 ? (
-    <Typography
-      sx={{ opacity: 0.48, cursor: 'pointer' }}
-      onClick={() => {
-        window.location.href = `/Profile/${user_name}?page=checkform`;
-      }}
-    >
-      {count}件のフォーム回答
-    </Typography>
-  ) : null;
+  const renderForm =
+    company_id === accountData.id && count > 0 ? (
+      <Typography
+        sx={{ opacity: 0.48, cursor: "pointer" }}
+        onClick={() => {
+          window.location.href = `/Profile/${user_name}?page=checkform`;
+        }}
+      >
+        {count}件のフォーム回答
+      </Typography>
+    ) : null;
 
   // ジャンル
   const renderGenre = genre ? (
@@ -110,30 +117,23 @@ const PostCard = forwardRef(({ post }, ref) => {
         padding: "5px",
       }}
     >
-
-      <Button
-        variant="contained"
-        sx={{
-          padding: "2px",
-          margin: "2px",
-          background: "linear-gradient(#41A4FF, #9198e5)",
-          "&:hover": {
-            background: "linear-gradient(#c2c2c2, #e5ad91)",
-          },
-        }}
-      >
-        {genre === 'Internship' ? 'インターンシップ' :
-          genre === 'Blog' ? 'ブログ' :
-            genre === 'JobOffer' ? '求人' :
-              genre === 'Session' ? '説明会' :
-                genre}    </Button>
+      <div>{genre}</div>
+      {/* <div>
+        {genre === "Internship"
+          ? "インターンシップ"
+          : genre === "Blog"
+            ? "ブログ"
+            : genre === "JobOffer"
+              ? "求人"
+              : genre === "Session"
+                ? "説明会"
+                : genre}{" "}
+      </div> */}
 
       {renderForm}
 
       {formatDate(deadline)}
-
     </Stack>
-
   ) : null;
 
   // タイトル
@@ -160,8 +160,8 @@ const PostCard = forwardRef(({ post }, ref) => {
         aspectRatio: 16 / 9,
         borderRadius: "10px",
         marginBottom: "10px",
-        width: '400px',
-        height: '250px',
+        width: "400px",
+        height: "250px",
         borderColor: "blue",
       }}
     />
@@ -179,7 +179,6 @@ const PostCard = forwardRef(({ post }, ref) => {
       );
     }
   };
-
 
   // 投稿日
   const renderDate = (
@@ -241,19 +240,18 @@ const PostCard = forwardRef(({ post }, ref) => {
     </Stack>
   );
 
-
   return (
-    <div ref={ref} >
+    <div ref={ref}>
       <Stack sx={{ display: "inline-block" }}>
-        <div className="postCard" style={{ width: '100%' }}>
+        <div className="postCard" style={{ width: "100%" }}>
           {renderThumbnail}
           {renderTitle}
           {renderGenre}
           {renderFollow}
           {renderInfo}
         </div>
-      </Stack >
-    </div >
+      </Stack>
+    </div>
   );
 });
 

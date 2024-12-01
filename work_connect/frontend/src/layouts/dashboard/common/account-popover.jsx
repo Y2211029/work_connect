@@ -1,5 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Icon } from "@iconify/react";
+
 import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
 import Popover from "@mui/material/Popover";
@@ -84,10 +86,6 @@ export default function AccountPopover() {
 
   // MENU_OPTIONSの設定
   const MENU_OPTIONS = [
-    // {
-    //   label: 'Home',
-    //   icon: 'eva:home-fill',
-    // },
     {
       label: "プロフィール",
       path: `/Profile/${UserName}`,
@@ -100,8 +98,6 @@ export default function AccountPopover() {
     },
   ];
 
-
-
   return (
     <>
       <IconButton
@@ -111,24 +107,23 @@ export default function AccountPopover() {
           height: 40,
           background: (theme) => alpha(theme.palette.grey[500], 0.08),
           ...(open && {
-            background: (theme) =>
-              `linear-gradient(135deg, ${theme.palette.primary.light} 0%, ${theme.palette.primary.main} 100%)`,
+            background: (theme) => `linear-gradient(135deg, ${theme.palette.primary.light} 0%, ${theme.palette.primary.main} 100%)`,
           }),
         }}
       >
         {popoverIcon ? (
           // アイコンを設定しているとき
           <Avatar
-          src={`http://localhost:8000/storage/images/userIcon/${popoverIcon}`}
-          alt={account.displayName}
-          sx={{
-            width: 36,
-            height: 36,
-            border: (theme) => `solid 2px ${theme.palette.background.default}`,
-          }}
-        >
-          {account.displayName.charAt(0).toUpperCase()}
-        </Avatar>
+            src={`http://localhost:8000/storage/images/userIcon/${popoverIcon}`}
+            alt={account.displayName}
+            sx={{
+              width: 36,
+              height: 36,
+              border: (theme) => `solid 2px ${theme.palette.background.default}`,
+            }}
+          >
+            {account.displayName.charAt(0).toUpperCase()}
+          </Avatar>
         ) : (
           // アイコンを設定していないとき
           <DefaultIcon
@@ -139,7 +134,6 @@ export default function AccountPopover() {
             }}
           />
         )}
-
       </IconButton>
 
       <Popover
@@ -168,25 +162,23 @@ export default function AccountPopover() {
           </Typography>
         </Box>
 
-        <Divider sx={{ borderStyle: "dashed", display: login_state ? "block" : "none" }} />
-
-        {MENU_OPTIONS.map((option) => (
-          <MenuItem
-            key={option.label}
-            onClick={() => handleMenuItemClick(option.path)}
-            sx={{ display: login_state ? "block" : "none" }}
-          >
-            {option.label}
-          </MenuItem>
-        ))}
-
         <Divider sx={{ borderStyle: "dashed", m: 0, display: login_state ? "block" : "none" }} />
+
+        {MENU_OPTIONS.map((option, index) => (
+          <MenuItem key={option.label} onClick={() => handleMenuItemClick(option.path)} sx={{ display: login_state ? "block" : "none" }}>
+            <div key={index} style={{ display: "flex", alignItems: "center", margin: "10px 0px" }}>
+              <Icon icon={option.icon} style={{ fontSize: "24px", color: "rgba(0, 0, 0, 0.54)", marginRight: "10px" }} />
+              <span>{option.label}</span>
+            </div>
+          </MenuItem>
+        ))}            
+        <Divider sx={{ borderStyle: "dashed", m: "0 !important", display: login_state ? "block" : "none" }} />
 
         <MenuItem
           disableRipple
           disableTouchRipple
           onClick={handleLogout}
-          sx={{ typography: "body2", color: "error.main", py: 1.5, display: login_state ? "block" : "none" }}
+          sx={{ typography: "body2", color: "error.main", py: 1.2, display: login_state ? "block" : "none" }}
         >
           ログアウト
         </MenuItem>

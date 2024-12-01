@@ -807,11 +807,11 @@ textarea {
   padding: 20px 0 0 0;
 }
 
-.WorkDetail_info {
+.Detail_info {
   margin: 10px;
 }
 
-.WorkDetail_info-intro {
+.Detail_info-intro {
   overflow-wrap: anywhere;
   white-space: pre-line;
   width: 100%;

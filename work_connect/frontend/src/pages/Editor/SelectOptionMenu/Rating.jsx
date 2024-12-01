@@ -7,6 +7,11 @@ import PropTypes from "prop-types";
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
 
 
 export default function Rating({ onSave, onCancel, questionData }) {
@@ -15,6 +20,8 @@ export default function Rating({ onSave, onCancel, questionData }) {
     const [rateType, setRateType] = useState("default");
     const [rateNumber, setRateNumber] = useState("tensteps");
     const [rateMax, setRateMax] = useState(10);
+    const [expanded, setExpanded] = useState(false);
+
 
     // questionData が変更されたら、各フィールドにデータをセットする
     useEffect(() => {
@@ -86,7 +93,20 @@ export default function Rating({ onSave, onCancel, questionData }) {
                     fullWidth
                 />
 
-                <Typography>評価アイコン</Typography>
+                <Accordion
+                    expanded={expanded === "optionAccordion"}
+                    onChange={() => setExpanded(expanded === "optionAccordion" ? false : "optionAccordion")}
+                    className="Accordion"
+                >
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="optionAccordion-content"
+                        id="optionAccordion-header"
+                    >
+                        <Typography sx={{ fontSize: "15px", width: "80%", flexShrink: 0 }}>アイコン・段階</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                    <Typography>評価アイコン</Typography>
                 <Stack direction="row" alignItems="center" spacing={1}>
                     <RadioGroup
                         value={rateType}
@@ -126,6 +146,11 @@ export default function Rating({ onSave, onCancel, questionData }) {
                         />
                     </div>
                 )}
+                    </AccordionDetails>
+                </Accordion>
+
+
+
 
                 <Button variant="contained" color="primary" onClick={handleSave}  className="FormButton">
                     保存

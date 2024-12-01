@@ -7,6 +7,10 @@ import PropTypes from 'prop-types';
 import Autocomplete from '@mui/material/Autocomplete';
 import Checkbox from '@mui/material/Checkbox';
 import Divider from "@mui/material/Divider";
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 
 
@@ -19,6 +23,7 @@ export default function Number({ onSave, onCancel, questionData }) {
     const [validatorstext, setValidatorstext] = useState("電話番号として認識できません");
     const [placeholder, setPlaceholder] = useState("");
     const [hyphen, sethyphen] = useState(false);
+    const [expanded, setExpanded] = useState(false);
 
 
 
@@ -193,7 +198,20 @@ export default function Number({ onSave, onCancel, questionData }) {
                             fullWidth
                         />
 
-                        <Stack direction="row" alignItems="center" spacing={1}>
+                <Accordion
+                    expanded={expanded === "optionAccordion"}
+                    onChange={() => setExpanded(expanded === "optionAccordion" ? false : "optionAccordion")}
+                    className="Accordion"
+                >
+                                        <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="optionAccordion-content"
+                        id="optionAccordion-header"
+                    >
+                        <Typography sx={{ fontSize: "15px", width: "80%", flexShrink: 0 }}>オプション</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                    <Stack direction="row" alignItems="center" spacing={1}>
                             <Checkbox
                                 checked={isrequired}
                                 onChange={(e) => setIsrequired(e.target.checked)}
@@ -220,6 +238,12 @@ export default function Number({ onSave, onCancel, questionData }) {
                             fullWidth
                         />
                         <Divider color="black" sx={{ borderStyle: 'dashed', marginBottom: '10px', display: 'block' }} />
+
+                    </AccordionDetails>
+
+                </Accordion>
+
+
 
                     </div>
 

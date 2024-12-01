@@ -8,6 +8,11 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
 
 
 export default function Boolean({ onSave,onCancel,questionData }) {
@@ -15,6 +20,8 @@ export default function Boolean({ onSave,onCancel,questionData }) {
     const [description, setDescription] = useState("");
     const [renderAs, setRenderAs] = useState("");
     const [titleLocation,setTitleLocation] = useState("top");
+    const [expanded, setExpanded] = useState(false);
+
 
         // questionData が変更されたら、各フィールドにデータをセットする
         useEffect(() => {
@@ -86,8 +93,20 @@ export default function Boolean({ onSave,onCancel,questionData }) {
 
                 {renderAs?.name === "checkbox" && (
                     <div>
-                        <Typography>テキストの位置</Typography>
-                        <Stack direction="row" alignItems="center" spacing={1}>
+                <Accordion
+                    expanded={expanded === "optionAccordion"}
+                    onChange={() => setExpanded(expanded === "optionAccordion" ? false : "optionAccordion")}
+                    className="Accordion"
+                >
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="optionAccordion-content"
+                        id="optionAccordion-header"
+                    >
+                        <Typography sx={{ fontSize: "15px", width: "80%", flexShrink: 0 }}>テキストの位置</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                    <Stack direction="row" alignItems="center" spacing={1}>
                             <RadioGroup
                                 value={titleLocation}
                                 onChange={(e) => setTitleLocation(e.target.value)}
@@ -98,6 +117,12 @@ export default function Boolean({ onSave,onCancel,questionData }) {
                                 <FormControlLabel value="hidden" control={<Radio />} label="隠す" />
                             </RadioGroup>
                         </Stack>
+                    </AccordionDetails>
+                </Accordion>
+
+
+
+
                     </div>
                 )}
 

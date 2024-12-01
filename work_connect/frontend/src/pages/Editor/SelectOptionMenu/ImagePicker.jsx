@@ -5,6 +5,11 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import PropTypes from "prop-types";
 import Checkbox from "@mui/material/Checkbox";
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
 
 export default function ImagePicker({ onSave, onCancel, questionData }) {
     const [title, setTitle] = useState("");
@@ -14,6 +19,8 @@ export default function ImagePicker({ onSave, onCancel, questionData }) {
     const [choicesImageUrl, setChoicesImageUrl] = useState([""]);
     const [multiSelect, setMultiSelect] = useState(false);
     const [showLabel, setShowLabel] = useState(true);
+    const [expanded, setExpanded] = useState(false);
+
 
     // questionData が変更されたら、各フィールドにデータをセットする
     useEffect(() => {
@@ -74,7 +81,7 @@ export default function ImagePicker({ onSave, onCancel, questionData }) {
 
     return (
         <div className="TextSetting">
-             <Stack spacing={2} className="FormMenuScroll">
+            <Stack spacing={2} className="FormMenuScroll">
                 <Typography variant="h6">画像ピッカーフォーム設定</Typography>
 
                 <TextField
@@ -91,8 +98,25 @@ export default function ImagePicker({ onSave, onCancel, questionData }) {
                     fullWidth
                 />
 
-                <Typography>画像ピッカーメニューの選択肢</Typography>
-                {choices.map((choice, index) => (
+                {Array.isArray(choices) && choices.length > 0 && (
+                    <Accordion
+                        expanded={expanded === "ChoiceListAccordion"}
+                        onChange={() =>
+                            setExpanded(expanded === "ChoiceListAccordion" ? false : "ChoiceListAccordion")
+                        }
+                        className="Accordion"
+                    >
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="ChoiceListAccordion-content"
+                            id="ChoiceListAccordion-header"
+                        >
+                            <Typography sx={{ fontSize: "15px", width: "80%", flexShrink: 0 }}>
+                                選択肢一覧
+                            </Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                        {choices.map((choice, index) => (
                     <div key={index}>
                         <TextField
                             label={`選択肢 ${index + 1} テキスト`}
@@ -109,35 +133,57 @@ export default function ImagePicker({ onSave, onCancel, questionData }) {
                         />
                     </div>
                 ))}
-                <Button variant="outlined" onClick={addChoiceField} className="FormButton">
+                        </AccordionDetails>
+                    </Accordion>
+                )}
+
+
+                <Button variant="outlined" onClick={addChoiceField}>
                     選択肢を追加
                 </Button>
 
-                <Stack direction="row" alignItems="center" spacing={1}>
-                    <Checkbox
-                        checked={isRequired}
-                        onChange={(e) => setIsRequired(e.target.checked)}
-                    />
-                    <Typography>フォームを必須にする</Typography>
-                </Stack>
+                <Accordion
+                    expanded={expanded === "optionAccordion"}
+                    onChange={() => setExpanded(expanded === "optionAccordion" ? false : "optionAccordion")}
+                    className="Accordion"
+                >
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="optionAccordion-content"
+                        id="optionAccordion-header"
+                    >
+                        <Typography sx={{ fontSize: "15px", width: "80%", flexShrink: 0 }}>オプション</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <Stack direction="row" alignItems="center" spacing={1}>
+                            <Checkbox
+                                checked={isRequired}
+                                onChange={(e) => setIsRequired(e.target.checked)}
+                            />
+                            <Typography>フォームを必須にする</Typography>
+                        </Stack>
 
-                <Stack direction="row" alignItems="center" spacing={1}>
-                    <Checkbox
-                        checked={multiSelect}
-                        onChange={(e) => setMultiSelect(e.target.checked)}
-                    />
-                    <Typography>複数選択を可能にする</Typography>
-                </Stack>
+                        <Stack direction="row" alignItems="center" spacing={1}>
+                            <Checkbox
+                                checked={multiSelect}
+                                onChange={(e) => setMultiSelect(e.target.checked)}
+                            />
+                            <Typography>複数選択を可能にする</Typography>
+                        </Stack>
 
-                <Stack direction="row" alignItems="center" spacing={1}>
-                    <Checkbox
-                        checked={showLabel}
-                        onChange={(e) => setShowLabel(e.target.checked)}
-                    />
-                    <Typography>テキストを見せる</Typography>
-                </Stack>
+                        <Stack direction="row" alignItems="center" spacing={1}>
+                            <Checkbox
+                                checked={showLabel}
+                                onChange={(e) => setShowLabel(e.target.checked)}
+                            />
+                            <Typography>テキストを見せる</Typography>
+                        </Stack>
 
-                <Button variant="contained" color="primary" onClick={handleSave}  className="FormButton">
+                    </AccordionDetails>
+                </Accordion>
+
+
+                <Button variant="contained" color="primary" onClick={handleSave} className="FormButton">
                     保存
                 </Button>
 

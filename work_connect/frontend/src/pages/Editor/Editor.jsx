@@ -40,7 +40,6 @@ import Carousel from 'editorjs-carousel';
 //MUIアイコン
 import ImageSearchIcon from '@mui/icons-material/ImageSearch';
 import CancelIcon from '@mui/icons-material/Cancel';
-import MUIButton from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
@@ -52,6 +51,15 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import { Helmet } from 'react-helmet-async';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
+import IconButton from "@mui/material/IconButton";
+import Drawer from "@mui/material/Drawer";
+import List from "@mui/material/List";
+import MenuIcon from '@mui/icons-material/Menu';
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
 
 //データ保存
 import axios from "axios";
@@ -80,7 +88,6 @@ const Editor = () => {
   const [news_id, setNewsId] = useState(0); // ニュースの情報が格納されているDBのidを格納する
   const [draft_list, setDraftList] = useState([]); // ニュースの下書きリストを保持するステート
   const [selected_draft, setSelectedDraft] = useState(null); // 選択された下書きを保持するステート
-  const [newsmenushow, setNewsMenuShow] = useState(false);
   const [charCount, setCharCount] = useState(0);
   const [usedImages, setUsedImages] = useState(null);
   const [notificationMessage, setNotificationMessage] = useState("");
@@ -88,30 +95,32 @@ const Editor = () => {
   const [CreateFormOpen, setCreateFormOpen] = useState(false);
   const [formSummary, setFormSummary] = useState(null);
   const [followerCounter, setFollowerCounter] = useState(0);
-
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   const news_save_url = "http://127.0.0.1:8000/news_save";
   const thumbnail_image_save_url = "http://127.0.0.1:8000/thumbnail_image_save";
 
   const csrf_url = "http://localhost:8000/csrf-token";
+  const isContentReady = !!(title && imageUrl && charCount); // 必須データが揃っているか確認
+  const isFollowerValid = (followerCounter > 0 && notificationMessage) || (followerCounter === 0 || followerCounter === undefined);
+
   const navigate = useNavigate();
   const { genre } = useParams();
   console.log(genre);
 
-  // style CSS ここから
-  const buttonStyle = {
-    display: "block",
-    margin: 4,
-    "&:hover": {
-      backgroundColor: "#a9a9a9",
-    },
+
+  const toggleDrawer = (open) => {
+    setDrawerOpen(open);
   };
-  // style CSS ここまで
+
+  const AccordionhandleChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
 
 
   //ニュースを投稿した際の処理
   const news_upload = async () => {
-    setNewsMenuShow(false);
     alert("ニュースを投稿しました");
 
     try {
@@ -280,8 +289,6 @@ const Editor = () => {
   };
 
   const rewrite_news = async (id) => {
-    //ニュースメニューを閉じる
-    closeModal("NewsMenu");
     // ドラフトリストから選択したIDのアイテムを取得
     const select_draft_list = draft_list.find(d => d.id === id);
     console.log('Selected draft:', select_draft_list);
@@ -1015,10 +1022,10 @@ const Editor = () => {
       console.log("value", fileInputRef.current.value);
       fileInputRef.current.value = null; // ファイル入力の値をリセット
       const header_img_delete_url = `http://localhost:8000/thumbnail_img_delete/${news_id}`;
-      console.log("ニュースID",news_id);
+      console.log("ニュースID", news_id);
       console.log(header_img_delete_url);
-      console.log("セッションID",sessionId);
-      console.log("ジャンル",genre);
+      console.log("セッションID", sessionId);
+      console.log("ジャンル", genre);
       try {
         const response = await axios.get(header_img_delete_url, {
           params: {
@@ -1044,17 +1051,7 @@ const Editor = () => {
   };
 
 
-  const NewsMenuShow = () => {
-    setNewsMenuShow(true);
-    console.log("開く");
-    document.body.style.overflow = 'hidden';
-  }
 
-  const closeModal = () => {
-    setNewsMenuShow(false);
-    console.log("閉じる");
-    document.body.style.overflow = 'auto';
-  };
 
 
   const getNewsTitle = () => {
@@ -1080,7 +1077,6 @@ const Editor = () => {
 
   const CreateFormJump = async () => {
     setCreateFormOpen(true);
-    setNewsMenuShow(false);
     if (!isSaved) {
       // const savedNewsData = await news_save(); // 保存されていなければ保存してから取得
       // console.log("セーブ後のデータ",savedNewsData);
@@ -1509,6 +1505,48 @@ const Editor = () => {
   };
 
 
+  const menuItems = [
+    {
+      key: "draftList", text: "下書きリスト", render:
+        <NewsMenu menuKey={'draftList'}
+          draftlist={draft_list}
+          RewriteNewsDelete={rewrite_news_delete}
+          RewriteNewsEnter={rewrite_news}
+          NewsSave={news_save}
+        />
+    },
+    { key: "saveNews", text: "ニュースを保存する", render: <NewsMenu menuKey={'saveNews'} NewsSave={news_save} /> },
+    {
+      key: "editingStatus", text: "現在の編集状況", render: <NewsMenu menuKey={'editingStatus'}
+        EditorStatusCheck={EditorStatusCheck}
+        EditorContentsStatusCheck={EditorContentsStatusCheck}
+        imageUrl={imageUrl}
+        title={title}
+        followerCounter={followerCounter}
+      />
+    },
+    ...(followerCounter > 0 ? [{
+      key: "notificationMessage", text: "通知に添えるメッセージ", render: <NewsMenu menuKey={'notificationMessage'}
+        NotificationMessageHandleChange={notification_messagehandleChange}
+        message={notificationMessage}
+      />
+    }] : []),
+    // 条件を満たした場合のみ追加
+    ...(genre !== "Blog" ? [{
+      key: "createForm", text: "応募フォームを作成する", render:
+        <NewsMenu menuKey={'createForm'}
+          CreateFormJump={CreateFormJump}
+          selected_draft={selected_draft}
+        />
+    }] : []),
+    ...((isContentReady && isFollowerValid) ? [{
+      key: "releaseNews", text: "ニュースを公開する", render: <NewsMenu menuKey={'releaseNews'}
+        NewsUpLoad={news_upload}
+      />
+    }] : []),
+  ];
+
+
 
   return (
     <div>
@@ -1545,35 +1583,64 @@ const Editor = () => {
             />
           </form>
 
-          {/* ニュースメニューのボタン */}
-          <Stack direction="row" alignItems="center" spacing={1}>
-            <MUIButton onClick={NewsMenuShow} variant="contained" sx={buttonStyle}>
-              ニュースメニュー
-            </MUIButton>
+
+          <Stack spacing={2} className="SelectMenu">
+            <div className="SelectMenu_Hamburger">
+              {/* ハンバーガーメニュー用のボタン */}
+              <IconButton
+                edge="start"
+                color="inherit"
+                aria-label="menu"
+                onClick={() => toggleDrawer(true)}
+              >
+                <Typography className="FormMenu">
+                  <MenuIcon className="FormMenuIcon" />
+                  ニュースメニューを開く
+                </Typography>
+              </IconButton>
+
+              {/* ドロワーメニュー */}
+              <Drawer
+                anchor="right"
+                open={drawerOpen}
+                onClose={() => {
+                  setExpanded(false);
+                  toggleDrawer(false);
+                }}
+
+              >
+                <List sx={{ width: "300px" }}>
+                  {menuItems.map(({ key, text, render }) => {
+                    // デバッグ: 各アイテムを確認
+                    console.log({ key, text, render });
+                    return (
+                      <Accordion
+                        key={key}
+                        expanded={expanded === key}
+                        onChange={AccordionhandleChange(key)}
+                        className="Accordion"
+                      >
+                        <AccordionSummary
+                          expandIcon={<ExpandMoreIcon />}
+                          aria-controls={`${key}-content`}
+                          id={`${key}-header`}
+                        >
+                          <Typography sx={{ fontSize: "15px", width: "80%", flexShrink: 0 }}>
+                            {text}
+                          </Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          {render || <Typography>コンテンツが見つかりません</Typography>}
+                        </AccordionDetails>
+                      </Accordion>
+                    );
+                  })}
+                </List>
+              </Drawer>
+            </div>
           </Stack>
 
-          {/* ニュースメニュー */}
-          <NewsMenu
-            IsOpen={newsmenushow}
-            CloseModal={closeModal}
-            genre={genre}
-            draftlist={draft_list}
-            CreateFormJump={CreateFormJump}
-            newsid={news_id}
-            RewriteNewsDelete={rewrite_news_delete}
-            RewriteNewsEnter={rewrite_news}
-            EditorStatusCheck={EditorStatusCheck}
-            EditorContentsStatusCheck={EditorContentsStatusCheck}
-            NewsSave={news_save}
-            imageUrl={imageUrl}
-            title={title}
-            NewsUpLoad={news_upload}
-            NotificationMessageHandleChange={notification_messagehandleChange}
-            message={notificationMessage}
-            charCount={charCount}
-            selected_draft={selected_draft}
-            followerCounter={followerCounter}
-          />
+
 
           {/* カバー画像アップロード */}
           <ImageSearchIcon

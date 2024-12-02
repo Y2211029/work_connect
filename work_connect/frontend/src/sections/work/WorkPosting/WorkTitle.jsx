@@ -38,6 +38,7 @@ const WorkTitle = (props) => {
 
 WorkTitle.propTypes = {
   callSetWorkData: PropTypes.func,
+  WorkTitle: PropTypes.string.isRequired,
 };
 
 export default WorkTitle;

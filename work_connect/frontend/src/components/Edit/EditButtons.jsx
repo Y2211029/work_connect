@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import PropTypes from "prop-types";
 
 import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -9,7 +10,7 @@ import Tooltip from "@mui/material/Tooltip";
 import Popover from "@mui/material/Popover";
 import IconButton from "@mui/material/IconButton";
 
-const EditButtons = () => {
+const EditButtons = ({ workId, videoId }) => {
   const [open, setOpen] = useState(false);
   const buttonRef = useRef(null); // ボタンの参照を取得
   const navigate = useNavigate();
@@ -35,12 +36,21 @@ const EditButtons = () => {
     };
   }, [open]);
 
-  
+  const useQueryParams = () => {
+    const location = useLocation();
+    return new URLSearchParams(location.search);
+  };
+  const queryParams = useQueryParams();
+
   const handleButtonClick = (e, action) => {
     e.preventDefault(); // リンク遷移を防止
-
+    const page = queryParams.get("page");
     if (action === "edit") {
-      navigate("/"); // 作品編集
+      if (page === "work") {
+        navigate(`/WorkEdit/${workId}`); // 作品編集
+      } else if(page === "movie") {
+        navigate(`/VideoEdit/${videoId}`); // 作品編集
+      }
     } else if (action === "delete") {
       navigate("/VideoList"); // 削除
     }
@@ -58,12 +68,12 @@ const EditButtons = () => {
           open={open} // Popoverの開閉状態
           anchorEl={buttonRef.current} // ボタンに基づいてPopoverを表示
           anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'left',
+            vertical: "top",
+            horizontal: "left",
           }}
           transformOrigin={{
-            vertical: 'center',
-            horizontal: 'right',
+            vertical: "center",
+            horizontal: "right",
           }}
           PaperProps={{
             sx: {
@@ -87,6 +97,11 @@ const EditButtons = () => {
       </div>
     </>
   );
+};
+
+EditButtons.propTypes = {
+  workId: PropTypes.string.isRequired,
+  videoId: PropTypes.string.isRequired,
 };
 
 export default EditButtons;

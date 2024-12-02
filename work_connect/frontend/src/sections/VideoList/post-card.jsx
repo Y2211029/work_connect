@@ -109,7 +109,7 @@ const PostCard = forwardRef(({ post }, ref) => {
           color: "common.black",
         }}
       >
-        {isNotMyProfile ? renderAvatar : <EditButtons />}
+        {isNotMyProfile ? renderAvatar : <EditButtons videoId={movie_id}/>}
         {isNotMyProfile ? renderUserName : null}
       </Stack>
     </Stack>
@@ -157,7 +157,7 @@ const PostCard = forwardRef(({ post }, ref) => {
             {renderTitle}
             <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 0px 0px" }} />
             {renderGenre}
-            <Divider sx={{ borderStyle: "dashed", display: "block", margin: "5px 0px" }} /> 
+            <Divider sx={{ borderStyle: "dashed", display: "block", margin: "5px 0px" }} />
             {renderIntro}
             <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 5px 0px" }} />
           </Link>

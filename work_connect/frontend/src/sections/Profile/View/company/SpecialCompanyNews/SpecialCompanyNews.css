@@ -1,0 +1,7 @@
+@media (max-width: 767px) {
+    .NewsSelect_Box {
+        font-size: 100%;
+        align-items: center;
+        justify-content: center;
+    }
+}

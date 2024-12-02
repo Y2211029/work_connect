@@ -168,7 +168,7 @@
 /* スマホサイズの場合 */
 @media (max-width: 767px) {
     .NewsSelect_Box {
-        font-size: 60%;
+        font-size: 100%;
     }
 
     .news_title{

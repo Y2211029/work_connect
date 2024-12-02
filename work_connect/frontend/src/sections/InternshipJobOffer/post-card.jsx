@@ -120,7 +120,7 @@ const PostCard = forwardRef(({ post }, ref) => {
         padding: "5px",
       }}
     >
-      <div>{genre}</div>
+      
       {/* <div>
         {genre === "Internship"
           ? "インターンシップ"
@@ -132,6 +132,8 @@ const PostCard = forwardRef(({ post }, ref) => {
                 ? "説明会"
                 : genre}{" "}
       </div> */}
+
+      <div>{genre}</div>
 
       {renderForm}
 

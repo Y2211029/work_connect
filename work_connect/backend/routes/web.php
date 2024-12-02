@@ -4,6 +4,7 @@
 use App\Http\Controllers\movie\PostMovieCommentDeleteController;
 use App\Http\Controllers\movie\PostMovieCommentPostController;
 use App\Http\Controllers\movie\PostMovieCommentSaveController;
+use App\Http\Controllers\tag\GetStudentSchoolNameTagController;
 use App\Http\Controllers\tag\GetStudentCourseNameTagController;
 use App\Http\Controllers\tag\GetStudentDepartmentNameTagController;
 use App\Http\Controllers\tag\GetStudentFacultyNameTagController;
@@ -138,6 +139,8 @@ Route::post('/video_edit', [VideoEditController::class, 'VideoEditController']);
 // 動画ジャンルタグ取得
 Route::get('/get_video_genre_tag', [GetVideoGenreTagController::class, 'GetVideoGenreTagController']);
 
+// 学生の学校名タグ取得
+Route::get('/get_student_school_name_tag', [GetStudentSchoolNameTagController::class, 'GetStudentSchoolNameTagController']);
 // 学生の学部名タグ取得
 Route::get('/get_student_faculty_name_tag', [GetStudentFacultyNameTagController::class, 'GetStudentFacultyNameTagController']);
 // 学生の学科名タグ取得

@@ -27,6 +27,7 @@ const PostCard = forwardRef(({ post }, ref) => {
     follow_status: initialFollowStatus,
     icon,
     deadline,
+    event_day,
     count,
   } = post;
 
@@ -36,7 +37,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   }, [company_id])
 
   console.log("締切日", deadline);
-
+  console.log("開催日", event_day);
   const [followStatus, setFollowStatus] = useState(initialFollowStatus);
   const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData");
@@ -120,7 +121,7 @@ const PostCard = forwardRef(({ post }, ref) => {
         padding: "5px",
       }}
     >
-      
+
       {/* <div>
         {genre === "Internship"
           ? "インターンシップ"
@@ -137,7 +138,10 @@ const PostCard = forwardRef(({ post }, ref) => {
 
       {renderForm}
 
-      {formatDate(deadline)}
+      {formatDate(deadline)}<br></br>
+      {event_day && (
+  <div>開催日: {event_day}</div>
+    )}
     </Stack>
   ) : null;
 

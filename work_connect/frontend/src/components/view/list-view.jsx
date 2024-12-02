@@ -56,7 +56,7 @@ const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, s
         }
       });
     });
-    
+
     setWorkList((prev) => [...prev, ...generatePosts(filteredNewWorks)]);
     setItemLoading(false);
   }
@@ -311,6 +311,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           icon_id: company.icon_id,
           followStatus: company.follow_status,
           deadline: company.deadline,
+          event_day: company.event_day,
           count: company.form_data_count,
         })),
     },
@@ -332,6 +333,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           icon_id: company.icon_id,
           followStatus: company.follow_status,
           deadline: company.deadline,
+          event_day: company.event_day,
           count: company.form_data_count,
         })),
     },
@@ -353,6 +355,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           icon_id: company.icon_id,
           followStatus: company.follow_status,
           deadline: company.deadline,
+          event_day: company.event_day,
           count: company.form_data_count,
         })),
     },

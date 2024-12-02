@@ -16,6 +16,7 @@ class w_create_form extends Model
         'company_id',
         'news_id',
         'create_form',
+        'event_day',
         'deadline',
         'createformDateTime'
     ];
@@ -24,5 +25,5 @@ class w_create_form extends Model
         protected $casts = [
             'deadline' => 'datetime',
         ];
-    
+
 }

@@ -303,7 +303,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           company_id: company.company_id,
           news_id: company.news_id,
           user_name: company.user_name,
-          company_name: company.company_name[0].props.children,
+          company_name: company.company_name,
           article_title: company.article_title,
           genre: company.genre,
           header_img: company.header_img,
@@ -318,13 +318,13 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       ItemName: "インターンシップ一覧",
       url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/Internship`,
       idKey: "id",
-      tags: ["company_name"],
+      tags: ["genre"],
       generatePosts: (WorkOfList) =>
         WorkOfList.map((company) => ({
           company_id: company.company_id,
           news_id: company.news_id,
           user_name: company.user_name,
-          company_name: company.company_name[0].props.children,
+          company_name: company.company_name,
           article_title: company.article_title,
           genre: company.genre,
           header_img: company.header_img,
@@ -339,13 +339,13 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       ItemName: "説明会一覧",
       url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/Session`,
       idKey: "id",
-      tags: ["company_name"],
+      tags: ["genre"],
       generatePosts: (WorkOfList) =>
         WorkOfList.map((company) => ({
           company_id: company.company_id,
           news_id: company.news_id,
           user_name: company.user_name,
-          company_name: company.company_name[0].props.children,
+          company_name: company.company_name,
           article_title: company.article_title,
           genre: company.genre,
           header_img: company.header_img,
@@ -360,13 +360,13 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       ItemName: "ブログ一覧",
       url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/Blog`,
       idKey: "id",
-      tags: ["company_name"],
+      tags: ["genre"],
       generatePosts: (WorkOfList) =>
         WorkOfList.map((company) => ({
           company_id: company.company_id,
           news_id: company.news_id,
           user_name: company.user_name,
-          company_name: company.company_name[0].props.children,
+          company_name: company.company_name,
           article_title: company.article_title,
           genre: company.genre,
           header_img: company.header_img,
@@ -380,7 +380,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       ItemName: "応募用フォーム",
       url: `http://localhost:8000/write_form_get/${NewsDetailId}`,
       idKey: "id",
-      tags: ["company_name"],
+      tags: ["genre"],
       generatePosts: (WorkOfList) => {
         return WorkOfList.map((company) => ({
           company_id: company.company_id,
@@ -394,12 +394,12 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       ItemName: `${ParamUserName}さんの求人一覧`,
       url: `http://localhost:8000/Internship_JobOffer/special_company_news/${ParamUserName}/${SessionAccountData.id}/JobOffer`,
       idKey: "id",
-      tags: ["company_name"],
+      tags: ["genre"],
       generatePosts: (WorkOfList) => {
         return WorkOfList.map((company) => ({
           company_id: company.company_id,
           news_id: company.news_id,
-          company_name: company.company_name[0].props.children,
+          company_name: company.company_name,
           article_title: company.article_title,
           genre: company.genre,
           header_img: company.header_img,
@@ -414,12 +414,12 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       ItemName: `${ParamUserName}さんのインターンシップ一覧`,
       url: `http://localhost:8000/Internship_JobOffer/special_company_news/${ParamUserName}/${SessionAccountData.id}/Internship`,
       idKey: "id",
-      tags: ["company_name"],
+      tags: ["genre"],
       generatePosts: (WorkOfList) => {
         return WorkOfList.map((company) => ({
           company_id: company.company_id,
           news_id: company.news_id,
-          company_name: company.company_name[0].props.children,
+          company_name: company.company_name,
           article_title: company.article_title,
           genre: company.genre,
           header_img: company.header_img,
@@ -434,12 +434,12 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       ItemName: `${ParamUserName}さんの説明会一覧`,
       url: `http://localhost:8000/Internship_JobOffer/special_company_news/${ParamUserName}/${SessionAccountData.id}/Session`,
       idKey: "id",
-      tags: ["company_name"],
+      tags: ["genre"],
       generatePosts: (WorkOfList) => {
         return WorkOfList.map((company) => ({
           company_id: company.company_id,
           news_id: company.news_id,
-          company_name: company.company_name[0].props.children,
+          company_name: company.company_name,
           article_title: company.article_title,
           genre: company.genre,
           header_img: company.header_img,
@@ -454,12 +454,12 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       ItemName: `${ParamUserName}さんのブログ一覧`,
       url: `http://localhost:8000/Internship_JobOffer/special_company_news/${ParamUserName}/${SessionAccountData.id}/Blog`,
       idKey: "id",
-      tags: ["company_name"],
+      tags: ["genre"],
       generatePosts: (WorkOfList) => {
         return WorkOfList.map((company) => ({
           company_id: company.company_id,
           news_id: company.news_id,
-          company_name: company.company_name[0].props.children,
+          company_name: company.company_name,
           article_title: company.article_title,
           genre: company.genre,
           header_img: company.header_img,
@@ -474,7 +474,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       ItemName: `応募フォーム一覧`,
       url: `http://localhost:8000/special_forms/${SessionAccountData.id}`,
       idKey: "id",
-      tags: ["company_name"],
+      tags: ["genre"],
       generatePosts: (WorkOfList) => {
         if (Array.isArray(WorkOfList)) {
           const application_form = WorkOfList.map((company) => ({
@@ -490,7 +490,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       ItemName: `${ParamUserName}さんの詳細な企業情報`,
       url: `http://localhost:8000/company_informations/${ParamUserName}`,
       idKey: "id",
-      tags: ["company_name"],
+      tags: ["genre"],
       generatePosts: (WorkOfList) => {
         if (Array.isArray(WorkOfList)) {
           if (WorkOfList.length === 0) {

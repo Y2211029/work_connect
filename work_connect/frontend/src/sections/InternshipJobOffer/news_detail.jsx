@@ -196,69 +196,84 @@ const InternshipJobOfferPage = () => {
                         </Stack>
 
                         <Stack direction="row" spacing={2} className="NewsDetail_Stack">
-                                <Button className="NewsDetail_Button"
-                                    variant="contained"
-                                    onClick={handleProfileJump}
-                                >
-                                    プロフィール
-                                </Button>
-                                {data?.id?.[0] === "S" && (
-                                    <>
-                                        <Button className="NewsDetail_Button"
-                                            variant="contained"
-                                            onClick={handleFollowClick}
-                                        >
-                                            {followStatus}
-                                            {/* useStateから持ってくる */}
-                                        </Button>
+                            <Button className="NewsDetail_Button"
+                                variant="contained"
+                                onClick={handleProfileJump}
+                            >
+                                プロフィール
+                            </Button>
+                            {data?.id?.[0] === "S" && (
+                                <>
+                                    <Button className="NewsDetail_Button"
+                                        variant="contained"
+                                        onClick={handleFollowClick}
+                                    >
+                                        {followStatus}
+                                        {/* useStateから持ってくる */}
+                                    </Button>
 
-                                        {createformstatus && ( // createformstatus が true の場合のみボタンを表示
-                                            <Button className="Apply_Button"
+                                    {createformstatus ? ( // createformstatus が true の場合のみボタンを表示
+                                        <Button className="Apply_Button"
+                                            variant="contained"
+                                            sx={{
+                                                background: deadlinestatus
+                                                    ? "linear-gradient(#d3d3d3, #a6a6a6)" // 応募できない場合の背景
+                                                    : writeformStatus
+                                                        ? "linear-gradient(#d3d3d3, #a6a6a6)" // 応募済みの場合の背景
+                                                        : "linear-gradient(#41A4FF, #9198e5)", // 応募する場合の背景
+                                                "&:hover": {
+                                                    background: deadlinestatus
+                                                        ? "linear-gradient(#b8b8b8, #9e9e9e)" // 応募できない場合のホバー時の背景
+                                                        : writeformStatus
+                                                            ? "linear-gradient(#b8b8b8, #9e9e9e)" // 応募済みの場合のホバー時の背景
+                                                            : "linear-gradient(#c2c2c2, #e5ad91)", // 応募する場合のホバー時の背景
+                                                },
+                                                color: deadlinestatus ? "white" : "black", // 締切が過ぎた場合の文字色を白に変更
+                                            }}
+                                            onClick={
+                                                deadlinestatus || writeformStatus
+                                                    ? undefined // 応募できない場合または応募済みの場合は無効化
+                                                    : handleFormJump // 応募可能な場合のクリックイベント
+                                            }
+                                            disabled={deadlinestatus || writeformStatus} // 応募できないまたは応募済みの場合にボタンを無効化
+                                        >
+                                            {deadlinestatus
+                                                ? "応募できません" // 締切が過ぎている場合
+                                                : writeformStatus
+                                                    ? "応募済み" // 応募済みの場合
+                                                    : "応募する"}
+                                        </Button>
+                                    ) : (
+                                            <Button
+                                                className="Apply_Button"
                                                 variant="contained"
                                                 sx={{
-                                                    background: deadlinestatus
-                                                        ? "linear-gradient(#d3d3d3, #a6a6a6)" // 応募できない場合の背景
-                                                        : writeformStatus
-                                                            ? "linear-gradient(#d3d3d3, #a6a6a6)" // 応募済みの場合の背景
-                                                            : "linear-gradient(#41A4FF, #9198e5)", // 応募する場合の背景
+                                                    background: "linear-gradient(#d3d3d3, #a6a6a6)", // 応募できない場合の背景
                                                     "&:hover": {
-                                                        background: deadlinestatus
-                                                            ? "linear-gradient(#b8b8b8, #9e9e9e)" // 応募できない場合のホバー時の背景
-                                                            : writeformStatus
-                                                                ? "linear-gradient(#b8b8b8, #9e9e9e)" // 応募済みの場合のホバー時の背景
-                                                                : "linear-gradient(#c2c2c2, #e5ad91)", // 応募する場合のホバー時の背景
+                                                        background: "linear-gradient(#b8b8b8, #9e9e9e)", // 応募できない場合のホバー時の背景
                                                     },
-                                                    color: deadlinestatus ? "white" : "black", // 締切が過ぎた場合の文字色を白に変更
+                                                    color: "white", // 締切が過ぎた場合の文字色を白に変更
                                                 }}
-                                                onClick={
-                                                    deadlinestatus || writeformStatus
-                                                        ? undefined // 応募できない場合または応募済みの場合は無効化
-                                                        : handleFormJump // 応募可能な場合のクリックイベント
-                                                }
-                                                disabled={deadlinestatus || writeformStatus} // 応募できないまたは応募済みの場合にボタンを無効化
+                                                disabled={true} // 応募できないまたは応募済みの場合にボタンを無効化
                                             >
-                                                {deadlinestatus
-                                                    ? "応募できません" // 締切が過ぎている場合
-                                                    : writeformStatus
-                                                        ? "応募済み" // 応募済みの場合
-                                                        : "応募する"}
+                                                応募できません
                                             </Button>
-                                        )}
+                                    )}
 
 
 
-                                        {(followStatus === "フォローしています" || followStatus === "フォローされています") && (
-                                            <Button
-                                                variant="contained"
+                                    {(followStatus === "フォローしています" || followStatus === "フォローされています") && (
+                                        <Button
+                                            variant="contained"
                                             className="NewsDetail_Button"
-                                                onClick={handleChatJump}
-                                            >
-                                                チャットする
-                                            </Button>
-                                        )}
-                                    </>
-                                )}
-                            </Stack>
+                                            onClick={handleChatJump}
+                                        >
+                                            チャットする
+                                        </Button>
+                                    )}
+                                </>
+                            )}
+                        </Stack>
 
                         <Divider className="StickyMenu_Divider"></Divider>
                     </div>

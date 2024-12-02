@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import Iframe from "react-iframe";
 import axios from "axios";
+import { ColorRing } from "react-loader-spinner";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -10,7 +11,7 @@ import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 
-import {  AVATAR } from "src/layouts/dashboard/config-layout";
+import { AVATAR } from "src/layouts/dashboard/config-layout";
 import { UseCreateTagbutton } from "src/hooks/use-createTagbutton";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
@@ -34,6 +35,9 @@ const VideoDetailItem = () => {
   const { tagCreate } = UseCreateTagbutton();
   // ジャンル
   const [VideoGenre, setVideoGenre] = useState("");
+
+  // ローディング
+  const [isLoadItem, setIsLoadItem] = useState(true);
 
   // 動画データ
   const videoDetailUrl = "http://localhost:8000/get_movie_detail";
@@ -60,16 +64,17 @@ const VideoDetailItem = () => {
 
         setVideoDetail(response.data["動画"][0]);
         setVideoComment(response.data["動画コメント"]);
+        setIsLoadItem(false);
 
         console.log("response.data[動画][0]", response.data);
-        // console.log("response.data[動画][0]", response.data);
       } catch (err) {
         console.log("err:", err);
       }
     }
     VideoListFunction();
-  }, [id]); // 空の依存配列を渡すことで初回のみ実行されるようにする
+  }, [id]);
 
+  // 空の依存配列を渡すことで初回のみ実行されるようにする
   useEffect(() => {
     const initialCommentState = {};
     videoComment.forEach((value) => {
@@ -92,34 +97,6 @@ const VideoDetailItem = () => {
     setVideoGenre(tagCreate(VideoDetail.genre));
     console.log("VideoDetail", VideoDetail);
   }, [VideoDetail]);
-
-
-
-
-
-  // 動画タイトル
-  const renderTitle = VideoDetail.title && <h1 className="WorkDetail-title">{VideoDetail.title}</h1>;
-
-  // 動画投稿者アイコン
-  const renderIcon = VideoDetail.icon && (
-    <img
-      src={
-        VideoDetail.icon
-          ? `http://localhost:8000/storage/images/userIcon/${VideoDetail.icon}`
-          : `http://localhost:8000/storage/images/userIcon/subNinja.jpg`
-      }
-      alt=""
-      style={{ width: AVATAR.A_WIDTH, height: AVATAR.A_HEIGHT, borderRadius: AVATAR.A_RADIUS }}
-    />
-  );
-
-  // 動画作成者ユーザーネーム
-  const renderUserName = VideoDetail.user_name && <Typography variant="h6">{VideoDetail.user_name}</Typography>;
-
-  // // コメント欄表示
-  // const handleTextOpen = () => {
-  //   setCommentPost({ ...CommentPost, display: "block" });
-  // };
 
   // コメント投稿キャンセル
   const handlePostCancel = () => {
@@ -235,21 +212,54 @@ const VideoDetailItem = () => {
     }
     videoCommentDeletefunc();
   };
+
+  // 動画タイトル
+  const renderTitle = VideoDetail.title && (
+    <Typography
+      variant="h2"
+      sx={{
+        fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" }, // 画面幅に応じたフォントサイズ
+        lineHeight: { xs: 2, sm: 2.5 },
+      }}
+    >
+      {VideoDetail.title}
+    </Typography>
+  );
+
+  const renderLink = VideoDetail.icon && VideoDetail.user_name && (
+    <Link to={`/Profile/${VideoDetail.user_name}?page=mypage`} variant="subtitle2" underline="none" className="link item-Link">
+      <Stack direction="row" justifyContent="left" alignItems="center" spacing={3}>
+        <Box
+          component="img"
+          src={`http://localhost:8000/storage/images/userIcon/${VideoDetail.icon}`}
+          onError={(e) => {
+            e.target.src = "http://localhost:8000/storage/images/userIcon/subNinja.jpg"; // エラー時にサンプル画像をセット
+          }}
+          sx={{
+            width: AVATAR.A_WIDTH,
+            height: AVATAR.A_HEIGHT,
+            borderRadius: AVATAR.A_RADIUS,
+          }}
+        />
+        <Typography variant="h6">{VideoDetail.user_name}</Typography>
+      </Stack>
+    </Link>
+  );
+
   // 動画URL
   const renderYoutubeFrame = (
-    <>
+    <di style={{ display: "flex", height: "fit-contents", aspectRatio: "16 / 9", border: "none", borderRadius: "10px" }}>
       <Iframe
-
-        // https://www.youtube.com/watch?v=6bm54L6tZMs
-        url={`https://www.youtube.com/embed/${VideoDetail.youtube_url}?iv_load_policy=3&modestbranding=1&fs=0`}
+        src={`https://www.youtube.com/embed/${VideoDetail.youtube_url}?iv_load_policy=3&modestbranding=1&fs=0`}
         width="100%"
-        height="500px"
+        height="fit-contents"
         title="YouTube video player"
-        frameborder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowfullscreen
+        allowFullScreen
+        frameBorder="0"
+        loading="auto"
       />
-    </>
+    </di>
   );
 
   // 動画紹介文
@@ -258,17 +268,19 @@ const VideoDetailItem = () => {
       <Typography variant="h5" className="WorkDetail_typo">
         ●動画の紹介
       </Typography>
-      <div className="WorkDetail_info-intro" style={{ fontSize: "16px" }}>
+      <div className="Detail_info-intro" style={{ fontSize: "16px" }}>
         {VideoDetail.intro}
       </div>
     </>
   );
 
   // 動画ジャンル
-  const renderGenre = VideoGenre && VideoGenre.length > 0 && (
+  const renderGenre = VideoGenre && (
     <>
-      <p>ジャンル</p>
-      {VideoGenre}
+      <Typography variant="h5" className="WorkDetail_typo">
+        ●ジャンル
+      </Typography>
+      <div className="Detail_info">{VideoGenre}</div>
     </>
   );
 
@@ -308,7 +320,7 @@ const VideoDetailItem = () => {
       {videoComment && Object.keys(Comment).length > 0 && <h3>コメント一覧</h3>}
       {videoComment.map((item, index) =>
         (item.commenter_id === AccountData.id && item.commenter_user_name === AccountData.user_name) ||
-          (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
+        (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
           <div key={index}>
             {/* {console.log("comment", Comment)} */}
             <Divider sx={{ borderStyle: "dashed", margin: "5px 0px 20px 0px", width: "90%" }} />
@@ -384,28 +396,28 @@ const VideoDetailItem = () => {
 
   return (
     <>
-      <Container>
+      {isLoadItem && (
+        <ColorRing
+          visible={true}
+          height="100"
+          width="100"
+          ariaLabel="color-ring-loading"
+          wrapperStyle={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
+          wrapperClass="custom-color-ring-wrapper" // カスタムクラスを指定
+          colors={["#41a4ff", "#FFFFFF", "#41a4ff", "#41a4ff", "#FFFFFF"]}
+          style={{ flexDirection: "column" }}
+        />
+      )}
+      <Container sx={{ padding: "20px 24px" }}>
+        {renderLink}
+        {renderTitle}
 
-        <Link to="/VideoList">動画一覧に戻る</Link>
-        <div>
-          <Link to={`/Profile/${VideoDetail.user_name}?page=mypage`}>
-            <Stack direction="row" justifyContent="left" alignItems="center" spacing={3}>
-              {renderIcon}
-              {renderUserName}
-            </Stack>
-          </Link>
-          {renderTitle}
-        </div>
+        {renderYoutubeFrame}
+        {renderGenre}
+        {renderIntro}
 
-        {/* 各項目の表示、ここから */}
-        <Box>
-          {renderYoutubeFrame}
-          {renderGenre}
-          {renderIntro}
-          {renderCommentButton}
-          {renderComment}
-        </Box>
-        {/* 各項目の表示、ここまで */}
+        {renderCommentButton}
+        {renderComment}
       </Container>
     </>
   );

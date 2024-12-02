@@ -539,14 +539,6 @@ export default function NotificationsPopover() {
         <Box sx={{ display: "flex", alignItems: "center", py: 2, px: 2.5 }}>
           <Box sx={{ flexGrow: 1 }}>
             <Typography variant="subtitle1">通知</Typography>
-            {/* {NOTIFICATIONS.filter((value) => value.selectCheckBox == true).length > 0 && NoticeSelectMode ? (
-              <button type="button" className="noticeDeleteButton" style={{ border: "0px" }} onClick={deleteSelectNotice}>
-                選択した通知を削除
-              </button>
-            ) : (
-              ""
-            )} */}
-
             <Stack spacing={2}>
               <Stack direction="row" spacing={2} sx={{ justifyContent: "space-between", alignItems: "center" }}>
                 <Typography variant="body2" sx={{ color: "text.secondary" }}>

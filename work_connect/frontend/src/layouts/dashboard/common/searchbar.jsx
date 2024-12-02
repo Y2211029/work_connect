@@ -24,6 +24,8 @@ import GetTagList from "src/components/tag/GetTagList";
 import { AllItemsContext } from "src/layouts/dashboard/index";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
+import schoolList from "src/data/school_list.json";
+
 // ----------------------------------------------------------------------
 
 const useStyles = makeStyles(() => {
@@ -222,65 +224,65 @@ export default function Searchbar() {
     }));
   };
 
-  const schoolTypeCodes = ["H1", "F1"]; // 複数のschool_type_codeを配列として定義
-  const fetchSchoolNameData = async () => {
-    let allSchools = [];
-    let page = 1;
-    let hasMore = true;
-    const accessToken = "268|G5fHGAGA7Col8FetXAQ6EMNHnjDIA5TInN2uByIB";
+  // const schoolTypeCodes = ["H1", "F1"]; // 複数のschool_type_codeを配列として定義
+  // const fetchSchoolNameData = async () => {
+  // let allSchools = [];
+  // let page = 1;
+  // let hasMore = true;
+  // const accessToken = "268|G5fHGAGA7Col8FetXAQ6EMNHnjDIA5TInN2uByIB";
 
-    try {
-      for (const code of schoolTypeCodes) {
-        hasMore = true;
-        page = 1;
+  // try {
+  //   for (const code of schoolTypeCodes) {
+  //     hasMore = true;
+  //     page = 1;
 
-        while (hasMore) {
-          const response = await axios.get(`https://api.edu-data.jp/api/v1/school?school_type_code=${code}&page=${page}&school_status_code=1,2`, {
-            headers: {
-              Authorization: `Bearer ${accessToken}`, // アクセストークンをBearerトークンとしてヘッダーに含める
-              Accept: "application/json",
-            },
-          });
+  //     while (hasMore) {
+  //       const response = await axios.get(`https://api.edu-data.jp/api/v1/school?school_type_code=${code}&page=${page}&school_status_code=1,2`, {
+  //         headers: {
+  //           Authorization: `Bearer ${accessToken}`, // アクセストークンをBearerトークンとしてヘッダーに含める
+  //           Accept: "application/json",
+  //         },
+  //       });
 
-          // console.log(`API response for code ${code} and page ${page}:`, response.data); // レスポンスデータを詳細にログ出力
+  //       // console.log(`API response for code ${code} and page ${page}:`, response.data); // レスポンスデータを詳細にログ出力
 
-          // console.log("allSchools response: ");
-          // console.log(response.data.schools.data);
+  //       // console.log("allSchools response: ");
+  //       // console.log(response.data.schools.data);
 
-          // allSchools = response.data.schools.data;
+  //       // allSchools = response.data.schools.data;
 
-          if (Array.isArray(response.data.schools.data)) {
-            allSchools = [...allSchools, ...response.data.schools.data]; // 取得したデータを蓄積
-            hasMore = response.data.schools.data.length > 0; // データが存在する限り繰り返す
-            page += 1; // 次のページを設定
-          } else {
-            console.error("Unexpected response format:", response.data);
-            hasMore = false;
-          }
-        }
-      }
+  //       if (Array.isArray(response.data.schools.data)) {
+  //         allSchools = [...allSchools, ...response.data.schools.data]; // 取得したデータを蓄積
+  //         hasMore = response.data.schools.data.length > 0; // データが存在する限り繰り返す
+  //         page += 1; // 次のページを設定
+  //       } else {
+  //         console.error("Unexpected response format:", response.data);
+  //         hasMore = false;
+  //       }
+  //     }
+  //   }
 
-      // console.log("allSchools: ");
-      // console.log(allSchools);
+  //   // console.log("allSchools: ");
+  //   // console.log(allSchools);
 
-      return allSchools;
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+  //   return allSchools;
+  // } catch (error) {
+  //   console.error("Error fetching data:", error);
+  // }
+  // };
 
   const getSchoolNameTag = async () => {
-    let optionArray = [];
-    let result = await fetchSchoolNameData();
+    // let optionArray = [];
+    // let result = await fetchSchoolNameData();
 
     // console.log("result: ", result);
-    result.map((value) => {
-      optionArray.push({ value: value.school_name, label: value.school_name });
-    });
+    // result.map((value) => {
+    //   optionArray.push({ value: value.school_name, label: value.school_name });
+    // });
     // console.log("optionArray", optionArray);
     setOptions((prevOptions) => ({
       ...prevOptions,
-      school_name: optionArray,
+      school_name: schoolList,
     }));
   };
 
@@ -575,11 +577,11 @@ export default function Searchbar() {
   // マイページ、Topページ、
   let RefineSearch =
     location.pathname != "/Profile/" + location.pathname.split("/")[2] + "/mypage" &&
-      location.pathname != "/Top" &&
-      location.pathname != "/Settings" &&
-      location.pathname != "/Chat" &&
-      location.pathname != "/WorkPosting" &&
-      location.pathname != "/VideoPosting"
+    location.pathname != "/Top" &&
+    location.pathname != "/Settings" &&
+    location.pathname != "/Chat" &&
+    location.pathname != "/WorkPosting" &&
+    location.pathname != "/VideoPosting"
       ? true
       : false;
   // console.log("let RefineSearch =", RefineSearch);
@@ -1848,8 +1850,8 @@ export default function Searchbar() {
       {RefineSearch && (
         <>
           {(PathName.startsWith("/Profile/") && PathName.endsWith("/mypage")) ||
-            (PathName.startsWith("/WorkDetail/") && PathName.endsWith("")) ||
-            (PathName.startsWith("/VideoDetail/") && PathName.endsWith("")) ? null : (
+          (PathName.startsWith("/WorkDetail/") && PathName.endsWith("")) ||
+          (PathName.startsWith("/VideoDetail/") && PathName.endsWith("")) ? null : (
             <>
               <Box>
                 <OutlinedInput
@@ -2500,72 +2502,76 @@ export default function Searchbar() {
                           </>
                         ) : PathName === "/Profile/yoshioka/work" ? (
                           <>
-                            <Grid item xs={12} sm={6} md={4}>
-                              <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
-                                <div style={{ color: "#444" }}>
-                                  <Select
-                                    ref={areaRef}
-                                    placeholder="▼"
-                                    options={options.work_genre}
-                                    value={searchSource.work_genre}
-                                    isClearable
-                                    isMulti
-                                    onChange={handleChangeWorkGenre}
-                                  />
-                                </div>
-                              </Box>
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4}>
-                              <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
-                                <div style={{ color: "#444" }}>
-                                  <Select
-                                    ref={areaRef}
-                                    placeholder="▼"
-                                    options={options.programming_language}
-                                    value={searchSource.programming_language}
-                                    isClearable
-                                    isMulti
-                                    onChange={handleChangeProgrammingLanguage}
-                                  />
-                                </div>
-                              </Box>
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4}>
-                              <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
-                                <div style={{ color: "#444" }}>
-                                  <Select
-                                    ref={areaRef}
-                                    placeholder="▼"
-                                    options={options.development_environment}
-                                    value={searchSource.development_environment}
-                                    isClearable
-                                    isMulti
-                                    onChange={handleChangeDevelopmentEnvironment}
-                                  />
-                                </div>
-                              </Box>
+                            <Grid container spacing={2}>
+                              <Grid item xs={12} sm={6} md={4}>
+                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
+                                  <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
+                                  <div style={{ color: "#444" }}>
+                                    <Select
+                                      ref={areaRef}
+                                      placeholder="▼"
+                                      options={options.work_genre}
+                                      value={searchSource.work_genre}
+                                      isClearable
+                                      isMulti
+                                      onChange={handleChangeWorkGenre}
+                                    />
+                                  </div>
+                                </Box>
+                              </Grid>
+                              <Grid item xs={12} sm={6} md={4}>
+                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
+                                  <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
+                                  <div style={{ color: "#444" }}>
+                                    <Select
+                                      ref={areaRef}
+                                      placeholder="▼"
+                                      options={options.programming_language}
+                                      value={searchSource.programming_language}
+                                      isClearable
+                                      isMulti
+                                      onChange={handleChangeProgrammingLanguage}
+                                    />
+                                  </div>
+                                </Box>
+                              </Grid>
+                              <Grid item xs={12} sm={6} md={4}>
+                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
+                                  <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
+                                  <div style={{ color: "#444" }}>
+                                    <Select
+                                      ref={areaRef}
+                                      placeholder="▼"
+                                      options={options.development_environment}
+                                      value={searchSource.development_environment}
+                                      isClearable
+                                      isMulti
+                                      onChange={handleChangeDevelopmentEnvironment}
+                                    />
+                                  </div>
+                                </Box>
+                              </Grid>
                             </Grid>
                           </>
                         ) : PathName === "/Profile/yoshioka/movie" ? (
                           <>
-                            <Grid item xs={12} sm={6} md={4}>
-                              <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
-                                <div style={{ color: "#444" }}>
-                                  <Select
-                                    ref={areaRef}
-                                    placeholder="▼"
-                                    options={options.work_genre}
-                                    value={searchSource.work_genre}
-                                    isClearable
-                                    isMulti
-                                    onChange={handleChangeWorkGenre}
-                                  />
-                                </div>
-                              </Box>
+                            <Grid container spacing={2}>
+                              <Grid item xs={12} sm={6} md={4}>
+                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
+                                  <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
+                                  <div style={{ color: "#444" }}>
+                                    <Select
+                                      ref={areaRef}
+                                      placeholder="▼"
+                                      options={options.work_genre}
+                                      value={searchSource.work_genre}
+                                      isClearable
+                                      isMulti
+                                      onChange={handleChangeWorkGenre}
+                                    />
+                                  </div>
+                                </Box>
+                              </Grid>
                             </Grid>
                           </>
                         ) : PathName === "/CompanyList" ? (
@@ -2725,14 +2731,17 @@ export default function Searchbar() {
                                   <Grid item xs={12} sm={6} md={4}>
                                     <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
                                       <div style={{ fontWeight: "Bold", color: "#666" }}>フォロー状況</div>
-                                      <div style={{ color: "#444" }}>      <Select
-                                        ref={areaRef}
-                                        options={options.follow_status}
-                                        value={searchSource.follow_status}
-                                        isClearable
-                                        isMulti
-                                        onChange={handleChangeFollowStatus}
-                                      />
+                                      <div style={{ color: "#444" }}>
+                                        {" "}
+                                        <Select
+                                          ref={areaRef}
+                                          placeholder="▼"
+                                          options={options.follow_status}
+                                          value={searchSource.follow_status}
+                                          isClearable
+                                          isMulti
+                                          onChange={handleChangeFollowStatus}
+                                        />
                                       </div>
                                     </Box>
                                   </Grid>
@@ -2762,6 +2771,7 @@ export default function Searchbar() {
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
+                                      placeholder="▼"
                                       options={options.selected_occupation}
                                       value={searchSource.selected_occupation}
                                       isClearable
@@ -2777,6 +2787,7 @@ export default function Searchbar() {
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
+                                      placeholder="▼"
                                       options={options.prefecture}
                                       value={searchSource.prefecture}
                                       isClearable
@@ -2792,6 +2803,7 @@ export default function Searchbar() {
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
+                                      placeholder="▼"
                                       options={options.industry}
                                       value={searchSource.industry}
                                       isClearable
@@ -2807,6 +2819,7 @@ export default function Searchbar() {
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
+                                      placeholder="▼"
                                       options={options.development_environment}
                                       value={searchSource.development_environment}
                                       isClearable
@@ -2822,6 +2835,7 @@ export default function Searchbar() {
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
+                                      placeholder="▼"
                                       options={options.programming_language}
                                       value={searchSource.programming_language}
                                       isClearable
@@ -2837,6 +2851,7 @@ export default function Searchbar() {
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
+                                      placeholder="▼"
                                       options={options.acquisition_qualification}
                                       value={searchSource.acquisition_qualification}
                                       isClearable
@@ -2852,6 +2867,7 @@ export default function Searchbar() {
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
+                                      placeholder="▼"
                                       options={options.software}
                                       value={searchSource.software}
                                       isClearable
@@ -2931,12 +2947,10 @@ export default function Searchbar() {
                 </Box>
               </Modal>
             </>
-          )
-          }
+          )}
         </>
-      )
-      }
-    </div >
+      )}
+    </div>
     // </ClickAwayListener>
   );
 }

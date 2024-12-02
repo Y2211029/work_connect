@@ -29,10 +29,11 @@ header .logo {
   bottom: 0px;
   left: 0px;
   width: 100%;
+  background-color: #FFFFFF;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
 }
 
-
-nav ul {
+.nav ul {
   margin: 0px;
 }
 
@@ -644,6 +645,7 @@ textarea {
   border: 2px solid #6666ff;
 }
 
+
 .VideoSubmit:hover {
   color: #6666ff;
   background: #ffffff;
@@ -805,11 +807,11 @@ textarea {
   padding: 20px 0 0 0;
 }
 
-.WorkDetail_info {
+.Detail_info {
   margin: 10px;
 }
 
-.WorkDetail_info-intro {
+.Detail_info-intro {
   overflow-wrap: anywhere;
   white-space: pre-line;
   width: 100%;

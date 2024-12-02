@@ -1,31 +1,38 @@
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import PropTypes from "prop-types";
 import Checkbox from '@mui/material/Checkbox';
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 
-export default function Comment({ onSave, onCancel,questionData }) {
+
+export default function Comment({ onSave, onCancel, questionData }) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [rows, setRows] = useState(1);
     const [autoGrow, setAutoGrow] = useState(true);
     const [allowResize, setAllowResize] = useState(false);
     const [maxLength, setMaxLength] = useState(20);
+    const [expanded, setExpanded] = useState(false);
 
-        // questionData が変更されたら、各フィールドにデータをセットする
-        useEffect(() => {
-            if (questionData) {
-                setTitle(questionData.title || "");
-                setDescription(questionData.description || "");
-                setRows(questionData.rows || 1);
-                setAutoGrow(questionData.autoGrow || false);
-                setAllowResize(questionData.allowResize || false);
-                setMaxLength(questionData.maxLength || "");
-            }
-        }, [questionData]);
+
+    // questionData が変更されたら、各フィールドにデータをセットする
+    useEffect(() => {
+        if (questionData) {
+            setTitle(questionData.title || "");
+            setDescription(questionData.description || "");
+            setRows(questionData.rows || 1);
+            setAutoGrow(questionData.autoGrow || false);
+            setAllowResize(questionData.allowResize || false);
+            setMaxLength(questionData.maxLength || "");
+        }
+    }, [questionData]);
 
 
     const handleSave = () => {
@@ -91,26 +98,45 @@ export default function Comment({ onSave, onCancel,questionData }) {
                     fullWidth
                 />
 
-                <Checkbox
-                    checked={autoGrow}
-                    onChange={(e) => {
-                        setAutoGrow(e.target.checked);
-                        console.log("autoGrow:", e.target.checked); // デバッグ用ログ
-                    }}
-                />
-                <Typography>テキストエリアの自動拡張を有効にする</Typography>
 
-                <Checkbox
-                    checked={allowResize}
-                    onChange={(e) => {
-                        setAllowResize(e.target.checked);
-                        console.log("allowResize:", e.target.checked); // デバッグ用ログ
-                    }}
-                />
-                <Typography>テキストエリアのサイズ変更を禁止する</Typography>
+                <Accordion
+                    expanded={expanded === "optionAccordion"}
+                    onChange={() => setExpanded(expanded === "optionAccordion" ? false : "optionAccordion")}
+                    className="Accordion"
+                >
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="optionAccordion-content"
+                        id="optionAccordion-header"
+                    >
+                        <Typography sx={{ fontSize: "15px", width: "80%", flexShrink: 0 }}>オプション</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <Checkbox
+                            checked={autoGrow}
+                            onChange={(e) => {
+                                setAutoGrow(e.target.checked);
+                                console.log("autoGrow:", e.target.checked); // デバッグ用ログ
+                            }}
+                        />
+                        <Typography>テキストエリアの自動拡張を有効にする</Typography>
+
+                        <Checkbox
+                            checked={allowResize}
+                            onChange={(e) => {
+                                setAllowResize(e.target.checked);
+                                console.log("allowResize:", e.target.checked); // デバッグ用ログ
+                            }}
+                        />
+                        <Typography>テキストエリアのサイズ変更を禁止する</Typography>
+                    </AccordionDetails>
+
+                </Accordion>
 
 
-                <Button variant="contained" color="primary" onClick={handleSave}  className="FormButton">
+
+
+                <Button variant="contained" color="primary" onClick={handleSave} className="FormButton">
                     保存
                 </Button>
 

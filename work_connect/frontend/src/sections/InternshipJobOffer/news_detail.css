@@ -163,7 +163,7 @@
 .css-1szdb53-MuiButtonBase-root-MuiButton-root.Mui-disabled{
     color:white;
 }
-                     
+
 
 /* スマホサイズの場合 */
 @media (max-width: 767px) {
@@ -184,7 +184,7 @@
     .news_created_at{
         display: inline-block; /* テキストの幅に合わせるための設定 */
         color: inherit;
-        font-size:1.000rem;        
+        font-size:1.000rem;
         height: 30px; /* 高さはそのままにしておく */
     }
 
@@ -207,7 +207,7 @@
     .Apply_Button:hover{
         background: linear-gradient(#c2c2c2, #e5ad91);
     }
-    
+
     .news_summary {
         width:80%;
         padding-top: 5%;

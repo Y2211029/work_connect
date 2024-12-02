@@ -5,7 +5,6 @@ import { Survey } from 'survey-react-ui';
 import "./CreateForm.css";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import Modal from "react-modal";
-import MUIButton from "@mui/material/Button";
 
 
 // フォームメニュー
@@ -25,20 +24,19 @@ import ImagePicker from "./SelectOptionMenu/ImagePicker";
 // MUI
 import Stack from "@mui/material/Stack";
 import PropTypes from 'prop-types';
-import Button from '@mui/material/Button';
-import TranslateIcon from '@mui/icons-material/Translate';
-import WatchLaterIcon from '@mui/icons-material/WatchLater';
-import MoneyIcon from '@mui/icons-material/Money';
-import RadioIcon from '@mui/icons-material/Radio';
-import ArrowDropDownCircleIcon from '@mui/icons-material/ArrowDropDownCircle';
-// import BrushIcon from '@mui/icons-material/Brush';
-import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import FlakyIcon from '@mui/icons-material/Flaky';
-import NotesIcon from '@mui/icons-material/Notes';
-import AssessmentIcon from '@mui/icons-material/Assessment';
-import StarIcon from '@mui/icons-material/Star';
-import BurstModeIcon from '@mui/icons-material/BurstMode';
 import Typography from "@mui/material/Typography";
+
+import IconButton from "@mui/material/IconButton";
+import Drawer from "@mui/material/Drawer";
+import List from "@mui/material/List";
+import MenuIcon from '@mui/icons-material/Menu';
+
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
+
 
 // データ保存
 import axios from "axios";
@@ -52,6 +50,18 @@ const CreateForm = ({ newsid, HandleBack }) => {
   const createform_search_url = "http://127.0.0.1:8000/createform_search";
   const [questions, setQuestions] = useState([]);
   const [deadlineDate, setDeadlineDate] = useState(dayjs());
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+
+  const toggleDrawer = (open) => {
+    setDrawerOpen(open);
+  };
+
+
+  const AccordionhandleChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
+
 
   useEffect(() => {
     const getcreateform = async () => {
@@ -114,29 +124,6 @@ const CreateForm = ({ newsid, HandleBack }) => {
     id: accountData.id,
   };
   const [create_news_id] = useState(newsid);
-
-  const modalStyle = {
-    overlay: {
-      backgroundColor: 'rgba(0, 0, 0, 0.7)', // オーバーレイの背景色
-      zIndex: 1200, // オーバーレイの z-index
-      width: '110%',
-      height: '100%',
-    },
-    content: {
-      position: 'absolute',
-      top: '45%',
-      left: '45%',
-      height: '100%',
-      transform: 'translate(-50%, -50%)',
-      border: 'none',
-      padding: '1.5rem',
-      overflow: 'hidden',
-      zIndex: 1200, // コンテンツの z-index
-    },
-  };
-
-
-
 
   // 質問を追加する関数 //dropdown
   const addQuestion = (Questions_Genre) => {
@@ -482,7 +469,7 @@ const CreateForm = ({ newsid, HandleBack }) => {
   // フォームの編集データを保存
   const CreateFormSave = async () => {
     console.log("フォーム内容", questions);
-    console.log("締切日",deadlineDate);
+    console.log("締切日", deadlineDate);
     const create_form_save_url = `http://localhost:8000/create_form_save`;
 
     try {
@@ -514,23 +501,6 @@ const CreateForm = ({ newsid, HandleBack }) => {
     event.preventDefault(); // デフォルトの挙動を防ぐ
     HandleBack();
   };
-
-
-
-  const FormSelectArray = [
-    { lavel: 'テキスト', icon: <TranslateIcon />, click: 'text' },
-    { lavel: '日時', icon: <WatchLaterIcon />, click: 'date' },
-    { lavel: '数値', icon: <MoneyIcon />, click: 'number' },
-    { lavel: 'ラジオボタン', icon: <RadioIcon />, click: 'radio' },
-    { lavel: 'ドロップダウン', icon: <ArrowDropDownCircleIcon />, click: 'dropdown' },
-    { lavel: 'チェックボックス', icon: <CheckBoxIcon />, click: 'checkbox' },
-    { lavel: 'クローズドクエスチョン', icon: <FlakyIcon />, click: 'boolean' },
-    { lavel: 'テキストボックス', icon: <NotesIcon />, click: 'comment' },
-    { lavel: '評価', icon: <AssessmentIcon />, click: 'rating' },
-    { lavel: 'ランキング', icon: <StarIcon />, click: 'ranking' },
-    { lavel: '画像ピッカー', icon: <BurstModeIcon />, click: 'imagepicker' },
-    // { lavel: 'デザイン変更', icon: <BrushIcon />, click: 'FormDesign' },
-  ];
 
   const SelectMenuArray = [
     //テキスト
@@ -572,12 +542,26 @@ const CreateForm = ({ newsid, HandleBack }) => {
 
   ];
 
-
-  const FormMenuShow = () => {
-    setFormMenuShow(true);
-    console.log("開く");
-    document.body.style.overflow = 'hidden';
-  }
+  const menuItems = [
+    {
+      key: "settingdeadline",
+      text: "応募締切日を設定する",
+      render: <FormMenu menuKey={'settingdeadline'} />
+    },
+    {
+      key: "formInformation",
+      text: "フォーム情報",
+      render: <FormMenu menuKey={'formInformation'} questions={questions} />
+    },
+    {
+      key: "addForm",
+      text: "フォームを追加する",
+      render: <FormMenu
+        menuKey={'addForm'}
+        addQuestion={addQuestion}
+        CreateFormSave={CreateFormSave} />
+    },
+  ];
 
   const closeModal = () => {
     setFormMenuShow(false);
@@ -586,70 +570,81 @@ const CreateForm = ({ newsid, HandleBack }) => {
   };
 
 
-
   return (
     <>
-      <Stack direction="row" spacing={2} style={{ width: "1000px" }}>
-
-        <div className="FormDemo"> {/* フォーム部分 */}
 
 
-          {/*フォームメニューのボタン */}
-          <Stack direction="row" alignItems="center" spacing={1}>
-            <div className="back_news_draft" onClick={WriteNewsHandleBack}>
-              <Typography>← ニュースの下書きに戻る</Typography>
-            </div>
-            {/* <MUIButton onClick={NewsMenuShow} variant="contained" sx={buttonStyle}> */}
-            <MUIButton variant="contained" onClick={FormMenuShow} className='FormMenuButton'>
-              フォームメニュー
-            </MUIButton>
-          </Stack>
+      <Stack direction="row" spacing={2} >
 
+        <FormMenu
+          IsOpen={formmenushow}
+          CloseModal={closeModal}
+          questions={questions}
+          SetDeadlineDate={setDeadlineDate}
+          deadlineDate={deadlineDate}
+        />
 
-          <FormMenu
-            IsOpen={formmenushow}
-            CloseModal={closeModal}
-            questions={questions}
-            SetDeadlineDate = {setDeadlineDate}
-            deadlineDate = {deadlineDate}
-          // genre={genre}
-          // draftlist={draft_list}
-          // CreateFormJump={CreateFormJump}
-          // newsid={news_id}
-          // RewriteNewsDelete={rewrite_news_delete}
-          // RewriteNewsEnter={rewrite_news}
-          // EditorStatusCheck={EditorStatusCheck}
-          // EditorContentsStatusCheck={EditorContentsStatusCheck}
-          // NewsSave={news_save}
-          // imageUrl={imageUrl}
-          // title={title}
-          // NewsUpLoad={news_upload}
-          // NotificationMessageHandleChange={notification_messagehandleChange}
-          // message={notificationMessage}
-          // charCount={charCount}
-          // selected_draft={selected_draft}
-          // followerCounter={followerCounter}
-          />
+        {buttonOpen && (
+          <>
+            <Stack spacing={2} className="SelectMenu">
+              <div className="SelectMenu_Hamburger">
+                {/* ハンバーガーメニュー用のボタン */}
+                <IconButton
+                  edge="start"
+                  color="inherit"
+                  aria-label="menu"
+                  onClick={() => toggleDrawer(true)}
+                >
+                  <Typography className="FormMenu">
+                    <MenuIcon className="FormMenuIcon" />
+                    フォームメニューを開く
+                  </Typography>
+                </IconButton>
 
-
-          {!questions || questions.length === 0 ? (
-            <p>フォームがありません</p>
-          ) : (
-            <>
-              <div className="SurveyModal">
-                <Survey model={survey} />
+                {/* ドロワーメニュー */}
+                <Drawer
+                  anchor="right"
+                  open={drawerOpen}
+                  onClose={() => {
+                    setExpanded(false);
+                    toggleDrawer(false);
+                  }}
+                >
+                  <List>
+                    {menuItems.map(({ key, text, render }) => (
+                      <Accordion
+                        key={key}
+                        expanded={expanded === key}
+                        onChange={AccordionhandleChange(key)}
+                        className="Accordion"
+                      >
+                        <AccordionSummary
+                          expandIcon={<ExpandMoreIcon />}
+                          aria-controls={`${key}-content`}
+                          id={`${key}-header`}
+                        >
+                          <Typography sx={{ fontSize: "15px", width: "80%", flexShrink: 0 }}>{text}</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>{render}</AccordionDetails>
+                      </Accordion>
+                    ))}
+                    <Typography className="back_news_draft" sx={{ fontSize: "15px", width: "80%", flexShrink: 0 }} onClick={WriteNewsHandleBack}>ニュースの下書きに戻る</Typography>
+                  </List>
+                </Drawer>
               </div>
+            </Stack>
+          </>
+        )}
 
-            </>
-          )}
-        </div>
+
 
         <Modal
           isOpen={modalopen}
           onRequestClose={CreateFormCancel} // モーダルを閉じるコールバック
           shouldCloseOnOverlayClick={true} // オーバーレイクリックでモーダルを閉じる
           contentLabel="Example Modal"
-          style={modalStyle}
+          overlayClassName="modal-overlay" /* オーバーレイに適用 */
+          className="modal-content" /* コンテンツに適用 */
         >
           <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
             {SelectMenuArray.map((menu, index) => {
@@ -668,39 +663,23 @@ const CreateForm = ({ newsid, HandleBack }) => {
             })}
           </Stack>
         </Modal>
-
-        {buttonOpen && (
-          <Stack spacing={2} className="SelectMenu">
-            {FormSelectArray.map((form, index) => (
-              <Button
-                key={index}
-                startIcon={form.icon}
-                onClick={() => addQuestion(form.click)}
-                variant="outlined"
-                style={{ textAlign: 'center', width: "250px", marginLeft: "40%", }}  // アイコンとテキストを左寄せ
-              >
-                {form.lavel}
-              </Button>
-            ))}
-            <Button
-              variant="outlined"
-              onClick={CreateFormSave}
-              sx={{
-                borderColor: "#5956FF",
-                color: "#5956FF",
-                "&:hover": { borderColor: "#5956FF" },
-                cursor: "pointer",
-                textAlign: 'center',
-                width: "150px",
-                left: "40%",
-              }}
-            >
-              保存する
-            </Button>
-          </Stack>
-
-        )}
       </Stack>
+
+      <div className="FormDemo"> {/* フォーム部分 */}
+
+
+        {!questions || questions.length === 0 ? (
+          <p>フォームがありません</p>
+        ) : (
+          <>
+            <div className="SurveyModal">
+              <Survey model={survey} />
+            </div>
+
+          </>
+        )}
+      </div>
+
     </>
   );
 }

@@ -22,7 +22,7 @@ const WorkEdit = () => {
   const work_id = useParams();
   const [workData, setWorkData] = useState("");
   // const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState(null);
+  const [error, setError] = useState(null);
 
   const [imageFiles, setImageFiles] = useState([]);
   const [message, setMessage] = useState("");
@@ -33,25 +33,31 @@ const WorkEdit = () => {
   const [Image, setImage] = useState();
   const [Description, setDescription] = useState();
 
-  useEffect(()=>{
+  // 作品データ
+  const workDetailUrl = "http://localhost:8000/get_work_detail";
+
+  useEffect(() => {
     const fetchWorkDetails = async () => {
       try {
-        const response = await fetch("http://localhost:8000/app/Http/Controllers/work/GetWorkDetailController", {
-          method: "POST",
+        // Laravel側から作品詳細データを取得
+        const response = await axios.get(workDetailUrl, {
+          params: { id: work_id },
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "json",
           },
-          body: JSON.stringify({ id: work_id }), // サーバーに work_id を渡す
         });
 
-        if (!response.ok) {
+        if (response.status !== 200) {
           throw new Error("サーバーからのデータ取得に失敗しました。");
         }
 
-        const data = await response.json();
-        setWorkData(data); // 取得したデータを保存
+        const data = await response.data;
+        console.log("data:", data);
+
+        setWorkData(data["作品"][0]); // 取得したデータを保存
+        setImage(data["作品"][0].images);
       } catch (error) {
-        // setError(error.message);
+        setError(error.message);
       } finally {
         // setLoading(false); // ローディングを終了
       }
@@ -67,7 +73,7 @@ const WorkEdit = () => {
 
   const callSetImage = (e) => {
     setImage(e);
-    console.log("e:",e);
+    console.log("e:", e);
 
     if (e.length > 0) {
       // Fileオブジェクトのプロパティをログに表示
@@ -129,7 +135,7 @@ const WorkEdit = () => {
     console.log("imageFiles updated: ", imageFiles);
     console.log(Array.isArray(imageFiles)); // trueなら配列です
     let dt = new DataTransfer();
-    console.log("dt: ",dt);
+    console.log("dt: ", dt);
 
     // 既存のimageFilesをDataTransferに追加
     imageFiles.forEach((file) => {
@@ -307,8 +313,9 @@ const WorkEdit = () => {
               </div>
             </div>
             <div className="WorkInformation">
+              {/* タイトル */}
               <div className="WorkPostingFormField">
-                <WorkTitle callSetWorkData={callSetWorkData} />
+                <WorkTitle callSetWorkData={callSetWorkData} WorkTitle={workData.work_name}/>
               </div>
               {/* ジャンル */}
               <div className="WorkPostingFormField">
@@ -348,6 +355,7 @@ const WorkEdit = () => {
           <input type="submit" value="送信" className="WorkSubmit" />
         </form>
         {message && <p>{message}</p>}
+        {error && <p>{error}</p>}
       </div>
       {/* </Modal> */}
     </div>

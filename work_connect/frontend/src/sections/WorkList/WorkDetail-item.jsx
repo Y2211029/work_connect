@@ -107,10 +107,6 @@ const WorkDetailItem = () => {
   // ローディング
   const [isLoadItem, setIsLoadItem] = useState(true);
 
-  // メインスライドのCSS
-
-  // モーダルスライドのCSS
-
   // 作品データ
   const workDetailUrl = "http://localhost:8000/get_work_detail";
   // 作品コメント投稿
@@ -360,7 +356,17 @@ const WorkDetailItem = () => {
 
   // -----------------------------------------------
   // 作品タイトル
-  const renderTitle = workDetail.work_name && <h1 className="WorkDetail-title">{workDetail.work_name}</h1>;
+  const renderTitle = workDetail.work_name && (
+    <Typography
+      variant="h2"
+      sx={{
+        fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" }, // 画面幅に応じたフォントサイズ
+        lineHeight: { xs: 2, sm: 2.5 },
+      }}
+    >
+      {workDetail.work_name}
+    </Typography>
+  );
 
   // 作品画像がない場合、NO IMAGEを表示
   const alternativeImage = "http://localhost:8000/storage/images/work/NoImage.png";
@@ -460,15 +466,19 @@ const WorkDetailItem = () => {
                     aria-labelledby="modal-autoplay-example-heading"
                     hasTrack={false}
                     className="modal-custom-splide" // クラス名を追加
-                  // style={{ height: "100%" }}
+                    // style={{ height: "100%" }}
                   >
                     <SplideTrack className="modal-custom-splide-track">
                       {WorkSlide.map((slide) => (
-                        <SplideSlide key={slide.work_id + slide.id} style={{
-                          textAlign: "center", display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}>
+                        <SplideSlide
+                          key={slide.work_id + slide.id}
+                          style={{
+                            textAlign: "center",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
                           <Box
                             component="img"
                             src={slide.image}
@@ -619,7 +629,7 @@ const WorkDetailItem = () => {
       <Typography variant="h5" className="WorkDetail_typo">
         ●作品の紹介
       </Typography>
-      <div className="WorkDetail_info-intro" style={{ fontSize: "16px" }}>
+      <div className="Detail_info-intro" style={{ fontSize: "16px" }}>
         {workDetail.work_intro}
       </div>
     </>
@@ -631,7 +641,7 @@ const WorkDetailItem = () => {
       <Typography variant="h5" className="WorkDetail_typo">
         ●ジャンル
       </Typography>
-      <div className="WorkDetail_info">{WorkGenre}</div>
+      <div className="Detail_info">{WorkGenre}</div>
     </>
   );
 
@@ -641,7 +651,7 @@ const WorkDetailItem = () => {
       <Typography variant="h5" className="WorkDetail_typo">
         ●開発言語
       </Typography>
-      <div className="WorkDetail_info">{WorkProgrammingLanguage}</div>
+      <div className="Detail_info">{WorkProgrammingLanguage}</div>
     </>
   );
 
@@ -651,7 +661,7 @@ const WorkDetailItem = () => {
       <Typography variant="h5" className="WorkDetail_typo">
         ●開発環境
       </Typography>
-      <div className="WorkDetail_info">{WorkDevelopmentEnvironment}</div>
+      <div className="Detail_info">{WorkDevelopmentEnvironment}</div>
     </>
   );
 
@@ -660,7 +670,7 @@ const WorkDetailItem = () => {
       <Typography variant="h5" className="WorkDetail_typo">
         ●作品リンク
       </Typography>
-      <div className="WorkDetail_info">
+      <div className="Detail_info">
         <Link target="_blank" to={workDetail.work_url}>
           こちら
         </Link>
@@ -674,7 +684,7 @@ const WorkDetailItem = () => {
       {workComment && Object.keys(Comment).length > 0 && <h3>コメント一覧</h3>}
       {workComment.map((item, index) =>
         (item.commenter_id === AccountData.id && item.commenter_user_name === AccountData.user_name) ||
-          (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
+        (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
           <div key={index}>
             {/* {console.log("comment", Comment)} */}
             <Divider sx={{ borderStyle: "dashed", margin: "5px 0px 20px 0px", width: "90%" }} />
@@ -805,7 +815,8 @@ const WorkDetailItem = () => {
           style={{ flexDirection: "column" }}
         />
       )}
-      <Container>
+
+      <Container sx={{ padding: "20px 24px" }}>
         {renderLink}
         {renderTitle}
 

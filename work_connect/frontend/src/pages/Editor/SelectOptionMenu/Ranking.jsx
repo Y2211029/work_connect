@@ -5,12 +5,19 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import PropTypes from "prop-types";
 import Checkbox from "@mui/material/Checkbox";
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
 
 
 export default function Rating({ onSave, onCancel, questionData }) {
     const [title, setTitle] = useState("");
     const [isRequired, setIsRequired] = useState(false);
     const [choices, setChoices] = useState([""]);
+    const [expanded, setExpanded] = useState(false);
+
 
 
     // questionData が変更されたら、各フィールドにデータをセットする
@@ -70,16 +77,37 @@ export default function Rating({ onSave, onCancel, questionData }) {
 
                 {/* 並び替えモードとドラックモード */}
 
-                <Typography>ランキングメニューの選択肢</Typography>
-                {choices.map((choice, index) => (
-                    <TextField
-                        key={index}
-                        label={`選択肢 ${index + 1}`}
-                        value={choice}
-                        onChange={(e) => handleChoiceChange(index, e.target.value)}
-                        fullWidth
-                    />
-                ))}
+                {Array.isArray(choices) && choices.length > 0 && (
+                    <Accordion
+                        expanded={expanded === "ChoiceListAccordion"}
+                        onChange={() =>
+                            setExpanded(expanded === "ChoiceListAccordion" ? false : "ChoiceListAccordion")
+                        }
+                        className="Accordion"
+                    >
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="ChoiceListAccordion-content"
+                            id="ChoiceListAccordion-header"
+                        >
+                            <Typography sx={{ fontSize: "15px", width: "80%", flexShrink: 0 }}>
+                                選択肢一覧
+                            </Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            {choices.map((choice, index) => (
+                                <TextField
+                                    key={`choice-${index}`} // key を一意にする
+                                    label={`選択肢 ${index + 1}`}
+                                    value={choice}
+                                    onChange={(e) => handleChoiceChange(index, e.target.value)}
+                                    fullWidth
+                                />
+                            ))}
+                        </AccordionDetails>
+                    </Accordion>
+                )}
+
                 <Button variant="outlined" onClick={addChoiceField}>
                     選択肢を追加
                 </Button>

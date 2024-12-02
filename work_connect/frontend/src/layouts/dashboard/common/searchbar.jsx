@@ -24,7 +24,7 @@ import GetTagList from "src/components/tag/GetTagList";
 import { AllItemsContext } from "src/layouts/dashboard/index";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
-import schoolList from "src/data/school_list.json";
+// import schoolList from "src/data/school_list.json";
 import DeadlineCalender from "src/components/search/DeadlineCalender";
 import EventCalender from "src/components/search/EventCalender";
 

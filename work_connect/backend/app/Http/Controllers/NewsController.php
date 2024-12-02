@@ -266,7 +266,7 @@ class NewsController extends Controller
                 ->join('w_companies', 'w_news.company_id', '=', 'w_companies.id')
                 ->select('w_news.*', 'w_companies.*', 'w_news.created_at as news_created_at', 'w_news.id as news_id');
 
-            if ($userName == null) {
+            if ($userName !== null) {
                 $postsQuery->where('w_companies.user_name', $userName);
             }
 
@@ -289,7 +289,6 @@ class NewsController extends Controller
                 if ($createformData) {
                     // 現在のデッドラインを取得
                     $Deadline = $createformData->deadline;
-                    $EventDay = $createformData->event_day;
 
                     // デッドラインが指定されている場合のみ更新
                     if (!empty($Deadline)) {
@@ -297,7 +296,6 @@ class NewsController extends Controller
 
                         // デッドラインを更新
                         $post->deadline = $Deadline;
-                        $post->event_day = $EventDay;
 
                     } else {
                         Log::info('新しいデッドラインが指定されていません。変更は行われません。');

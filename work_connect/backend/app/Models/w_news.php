@@ -19,6 +19,7 @@ class w_news extends Model
         'article_title',
         'genre',
         'header_img',
+        'event_day',
         'summary',
         'public_status',
         'created_at',

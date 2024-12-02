@@ -10,6 +10,8 @@ export const UseCreateTagbutton = () => {
       let CreateTagLocation = location.pathname.split("/")[1];
 
       if (CreateTagLocation === "WorkDetail" || CreateTagLocation === "VideoDetail") {
+        console.log("useCreateTag:if", TagString)
+        // 枠線あり
         TagButton = TagString.split(",").map((item) => (
           <>
             <span
@@ -25,10 +27,12 @@ export const UseCreateTagbutton = () => {
             </span>
           </>
         ));
-      } else if (CreateTagLocation === "CompanyList" || CreateTagLocation === "StudentList" || CreateTagLocation === "Internship_JobOffer") {
+      } else if (CreateTagLocation === "CompanyList" || CreateTagLocation === "StudentList") {
         // item 配列の要素が順番に入ってる ["a"]
         // index 配列の番号 [0]
         // array 配列そのものが入ってる ["a","b","c"]
+        console.log("useCreateTag:elseIf", TagString)
+        // 枠線なし
         TagButton = TagString.split(",").map((item, index, array) => (
           <>
             <span
@@ -42,6 +46,8 @@ export const UseCreateTagbutton = () => {
           </>
         ));
       } else {
+        console.log("useCreateTag:else", TagString)
+        // 枠線付き
         TagButton = TagString.split(",").map((item) => (
           <>
             <span

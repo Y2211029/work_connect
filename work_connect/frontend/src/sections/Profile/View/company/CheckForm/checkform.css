@@ -132,10 +132,9 @@
     border: 1px solid rgb(218, 220, 224);
     border-radius: 8px;
     margin-bottom: 12px;
-    margin-left:10px;
     padding-left: 10px;
     margin-top: 12px;
-    width: 350px;
+    width: 250px;
   }
 
   .bar{
@@ -144,5 +143,60 @@
     border-top: 1px solid black;
     width:210px;
   }
+
+  @media (max-width: 767px) {
+    .write-form {
+      display: block;
+      border-radius: 8px;
+      padding: 10px 10px 24px;
+      width: 350px;
+      height: auto;
+      overflow: hidden;
+  }
+
+    .FormSelect-Box{
+      width:90%;
+      align-items: center;
+      margin-left: 5%;
+    } 
+
+    .summary-form{
+      width:100%;
+    }
+
+   .question{
+    width:90%;
+    padding-top: 10%;
+    margin-left: 5%;
+   }
+
+   .selected_question{
+    margin-left:10%;
+   }
+
+   .questions{
+    margin-bottom: 12px;
+    margin-top: 12px;
+    width: 100%;
+  }
+
+  .title-dropdown{
+    margin-left:10%;
+  }
+
+  .question-slider{
+    padding-top:5%;
+    justify-content: center;
+  }
+
+  .Survey-Box{
+    width:95%;
+    padding-top: 10%;
+  }
+
+   
+  }
   
+
+
 

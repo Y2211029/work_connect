@@ -148,7 +148,6 @@ const Individual = ({
             // transformFormFieldsの処理をuseEffect内で行う
             console.log("responses.writeforms",responses.writeforms);
                 const surveyData = {
-                title: selectedUserName,
                 pages: [
                     {
                         name: "page1",
@@ -185,7 +184,7 @@ const Individual = ({
                         ))}
                     </Select>
 
-                    <Stack direction="row" spacing={1} alignItems="center">
+                    <Stack direction="row" spacing={1} alignItems="center" className="question-slider">
                         <ArrowBackIosNewIcon onClick={handleCountDown} />
 
                         <TextField
@@ -210,7 +209,7 @@ const Individual = ({
                     </Stack>
 
                     {surveyModel && (
-                        <Box>
+                        <Box className="Survey-Box">
                             <Survey model={surveyModel} />
                         </Box>
                     )}

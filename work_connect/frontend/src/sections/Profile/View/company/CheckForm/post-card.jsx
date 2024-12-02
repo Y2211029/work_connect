@@ -17,7 +17,7 @@ import './checkform.css';
 
 const PostCard = forwardRef(({ post }) => {
   const { application_form } = post;
-  console.log("application_form",application_form);
+  console.log("application_form", application_form);
 
   const [writeformshow, setWriteFormShow] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState(null);
@@ -128,46 +128,47 @@ const PostCard = forwardRef(({ post }) => {
         </div>
 
       ) : (
-        <>
-          応募はありません
-        </>
+        null
       )}
 
       {writeformshow && selectedIndex !== null && (
         <div style={{ flexGrow: 1 }}>
+
           <div className="write-form">
-            <Box sx={{ width: '100%', paddingBottom: '10%' }}>
+            <Box className="FormSelect-Box">
               <Tabs value={value} aria-label="nav tabs example" role="navigation">
                 <Tab label="要約" onClick={(e) => handleTabClick(e, 0)} />
                 <Tab label="回答別" onClick={(e) => handleTabClick(e, 1)} />
                 <Tab label="個別" onClick={(e) => handleTabClick(e, 2)} />
               </Tabs>
-              {value === 0 && (
-                <Summary
-                  application_form={application_form}
-                  selectedIndex={selectedIndex}
-                  GroupedResponses={groupedResponses}
-                  HandleTabClick={handleTabClick}
-                  setViewStudentName={setViewStudentName}
-                />
-              )}
-              {value === 1 && (
-                <Question
-                  application_form={application_form}
-                  selectedIndex={selectedIndex}
-                  GroupedResponses={groupedResponses}
-                />
-              )}
-              {value === 2 && (
-                <Individual
-                  application_form={application_form}
-                  selectedIndex={selectedIndex}
-                  GroupedResponses={groupedResponses}
-                  viewingStudentName={viewingStudentName}
-                />
-              )}
             </Box>
-          </div>
+ 
+          {value === 0 && (
+            <Summary
+              application_form={application_form}
+              selectedIndex={selectedIndex}
+              GroupedResponses={groupedResponses}
+              HandleTabClick={handleTabClick}
+              setViewStudentName={setViewStudentName}
+            />
+          )}
+          {value === 1 && (
+            <Question
+              application_form={application_form}
+              selectedIndex={selectedIndex}
+              GroupedResponses={groupedResponses}
+            />
+          )}
+          {value === 2 && (
+            <Individual
+              application_form={application_form}
+              selectedIndex={selectedIndex}
+              GroupedResponses={groupedResponses}
+              viewingStudentName={viewingStudentName}
+            />
+          )}
+        </div>
+
         </div>
       )}
     </>

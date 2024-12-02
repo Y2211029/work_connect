@@ -51,6 +51,15 @@ export default function RangeCalendar() {
     const [endDay, setEndDay] = useState(null);
     const [open, setOpen] = useState(null);
 
+    // // 最小の日付（例えば 2000年01月01日）を設定
+    // const startDate = new Date(2004, 0, 1); // 月は0から始まるので1月は0
+
+    // // 日付を0埋めした形式で設定
+    // const startDayZero = String(startDate.getDate()).padStart(2, '0');
+
+    // // useStateで初期値を設定
+    // const [startDayNum, setStartDayNum] = useState(startDayZero);
+
     const handleDayClick = (newValue) => {
         // スタート、エンドどちらにも値があるときはリセットする。
 

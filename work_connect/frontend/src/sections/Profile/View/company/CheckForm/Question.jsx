@@ -131,7 +131,7 @@ const Question = ({ application_form, selectedIndex }) => {
                 ))}
             </Select>
 
-            <Stack direction="row" spacing={1} alignItems="center">
+            <Stack direction="row" spacing={1} alignItems="center" className="question-slider">
 
                 <ArrowBackIosNewIcon onClick={handleCountDown} />
 
@@ -157,8 +157,8 @@ const Question = ({ application_form, selectedIndex }) => {
             </Stack>
 
             {selectedTitle && (
-                <div>
-                    <h3>{selectedTitle}</h3>
+                <div className="selected_qustion">
+                    <h4>{selectedTitle}</h4>
                     {responses.usernames.map((username, idx) => (
                         <div className="questions" key={idx}>
                             <p>{username}</p>

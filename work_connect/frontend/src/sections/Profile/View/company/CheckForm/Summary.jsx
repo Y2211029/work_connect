@@ -123,7 +123,6 @@ const Summary = ({
 return (
   <>
     <div className="summary-form">
-
       <Stack direction="column" spacing={2}>
         <div className="writeform-container">
           <Typography className="writeform-title">

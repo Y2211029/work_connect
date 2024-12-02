@@ -31,26 +31,6 @@ import "./CompanyInformation.css"
 Modal.setAppElement('#root');
 
 
-const modalStyle = {
-    overlay: {
-        backgroundColor: 'rgba(0, 0, 0, 0.7)', // オーバーレイの背景色
-        zIndex: 2, // オーバーレイの z-index
-        width: '110%',
-        height: '100%',
-    },
-    content: {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        border: 'none',
-        borderRadius: '0',
-        padding: '1.5rem',
-        zIndex: 2, // コンテンツの z-index
-        overflow: 'hidden',
-        width:'50%'
-    },
-};
 
 const SortableRow = ({ id, children }) => {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
@@ -108,10 +88,10 @@ const EditCompanyInformation = ({
             onRequestClose={CloseModal} // モーダルを閉じるコールバック
             shouldCloseOnOverlayClick={true} // オーバーレイクリックでモーダルを閉じる
             contentLabel="Example Modal"
-            style={modalStyle}
+            overlayClassName="modal_overlay" /* オーバーレイに適用 */
+            className="modal-content" /* コンテンツに適用 */
         >
             <div>
-                <div className="modal_overlay">
                     <div className="modal_window">
                         <TableContainer component={Paper} className="Modal_tableContainer">
 
@@ -140,7 +120,7 @@ const EditCompanyInformation = ({
                                                                 aria-controls={`${item.id}-content`}
                                                                 id={`${item.id}-header`}
                                                             >
-                                                                <Typography sx={{ width: '70%', flexShrink: 0 }}>{item.title}:{item.contents}</Typography>
+                                                                <Typography sx={{ width: '100%', flexShrink: 0, whiteSpace: 'pre-line'}}>{item.title}:<br></br>{item.contents}</Typography>
                                                             </AccordionSummary>
                                                             <AccordionDetails>
                                                             <input
@@ -185,7 +165,6 @@ const EditCompanyInformation = ({
                         </TableContainer>
                     </div>
                 </div>
-            </div>
         </Modal>
     );
 };

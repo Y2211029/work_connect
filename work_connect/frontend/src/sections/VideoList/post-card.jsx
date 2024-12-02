@@ -1,12 +1,18 @@
-import { forwardRef } from "react";
-import { Link } from "react-router-dom";
+import { forwardRef, useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
-
+import { useNavigate } from "react-router-dom";
 
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
+import DeleteIcon from "@mui/icons-material/Delete";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import EditNoteIcon from "@mui/icons-material/EditNote";
+import Tooltip from "@mui/material/Tooltip";
+import Popover from "@mui/material/Popover";
 
 import SvgColor from "src/components/svg-color";
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
@@ -14,8 +20,23 @@ import Divider from "@mui/material/Divider";
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef(({ post }, ref) => {
-  const { movie_id, movie, icon, title, genre, intro, /* view, comment,*/ author, userName, createdAt } = post;
-
+  const myProfileURL = useLocation();
+  const {
+    movie_id,
+    movie,
+    icon,
+    title,
+    genre,
+    intro,
+    /* view, comment,*/ author,
+    userName,
+    createdAt,
+  } = post;
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  // マイページの作品を参照している際は編集（・・・）ボタンを表示。
+  const isNotMyProfile = myProfileURL.pathname != "/Profile/" + userName;
+  const navigate = useNavigate();
   // const opts = {
   //   height: "100%",
   //   width: "100%",
@@ -26,49 +47,70 @@ const PostCard = forwardRef(({ post }, ref) => {
   //   },
   // };
 
+  const handleButtonClick = (e, action) => {
+    if (action == "edit") {
+      // 作品編集
+      navigate("/VideoEdit", {state:{movie_id}});
+    } else if (action == "delete") {
+      // 削除
+      navigate("/VideoList");
+    }
+
+    if (open) {
+      console.log("open", open);
+      setOpen(false);
+    } else {
+      console.log("open", open);
+      setOpen(true);
+    }
+
+    e.preventDefault(); // これでリンクの遷移を防ぐ
+    // 他の処理（例: ボタンのクリック時に実行したい処理）をここに書く
+  };
+
+  useEffect(() => {
+    console.log("isPopoverOpen", isPopoverOpen);
+  }, [isPopoverOpen]);
+
   // youtube iframe
   const renderMovie = (
     // <YouTube videoId={movie} opts={opts} />
     // <img style={{ borderRadius: "10px" }} src={`https://img.youtube.com/vi/${movie}/mqdefault.jpg`} alt="サンプル動画" width="100%" height="auto" />
     <Box
-          component="img"
-          src={`https://img.youtube.com/vi/${movie}/mqdefault.jpg`}
-          sx={{
-            aspectRatio: 16 / 9,
-            borderRadius: "5px",
-            width: "100%",
-            objectFit: "cover",
-            marginBottom: "10px",
-          }}
-        />
+      component="img"
+      src={`https://img.youtube.com/vi/${movie}/mqdefault.jpg`}
+      sx={{
+        aspectRatio: 16 / 9,
+        borderRadius: "5px",
+        width: "100%",
+        objectFit: "cover",
+        marginBottom: "10px",
+      }}
+    />
   );
 
   // アイコン
   const renderAvatar = (
     <Avatar
-    alt={author.name}
-    src={icon ? `http://localhost:8000/storage/images/userIcon/${icon}` : author.avatarUrl}
-    sx={{
-      zIndex: 9,
-      width: 30,
-      height: 30,
-    }}
-  />
+      alt={author.name}
+      src={
+        icon
+          ? `http://localhost:8000/storage/images/userIcon/${icon}`
+          : author.avatarUrl
+      }
+      sx={{
+        zIndex: 9,
+        width: 30,
+        height: 30,
+      }}
+    />
   );
 
   // タイトル
-  const renderTitle = title && (
-    title
-  );
+  const renderTitle = title && title;
 
   // ジャンル
-  const renderGenre =
-    genre !== null ? (
-      <div>
-        {genre}
-      </div>
-    ) : null;
-
+  const renderGenre = genre !== null ? <div>{genre}</div> : null;
 
   /* 投稿日 */
   const renderDate = (
@@ -129,10 +171,45 @@ const PostCard = forwardRef(({ post }, ref) => {
           color: "common.black",
         }}
       >
-        {/* アイコン */}
-        {renderAvatar}
+        {/* 編集とゴミ箱 */}
+        {isNotMyProfile ? (
+          renderAvatar
+        ) : (
+          <>
+            <Button
+              /*ref={buttonRef}*/ onClick={(e) => handleButtonClick(e, "")}
+            >
+              <MoreVertIcon color="action" />
+            </Button>
+            <Popover
+              open={open}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+              transformOrigin={{
+                vertical: "bottom",
+                horizontal: "center",
+              }}
+              onClose={() => setIsPopoverOpen(false)}
+            >
+              <div className="button-container">
+                <Tooltip title="編集">
+                  <Button onClick={(e) => handleButtonClick(e, "edit")}>
+                    <EditNoteIcon color="action" />
+                  </Button>
+                </Tooltip>
+                <Tooltip title="削除">
+                  <Button onClick={(e) => handleButtonClick(e, "delete")}>
+                    <DeleteIcon sx={{ color: "red" }} />
+                  </Button>
+                </Tooltip>
+              </div>
+            </Popover>
+          </>
+        )}
         {/* ユーザーネーム */}
-        {renderUserName}
+        {isNotMyProfile ? renderUserName : null}
       </Stack>
     </Stack>
   );
@@ -208,8 +285,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   );
 
   return (
-
-    <div ref={ref} >
+    <div ref={ref}>
       <Link
         to={`/VideoDetail/${movie_id}`}
         variant="subtitle2"
@@ -222,17 +298,29 @@ const PostCard = forwardRef(({ post }, ref) => {
             {renderMovie}
             {renderTitle}
             {/* <div style={{ borderBottom: "1px solid #bbb", margin: "5px 0px 10px 0px" }}></div> */}
-            <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 0px 0px" }} />
+            <Divider
+              sx={{
+                borderStyle: "dashed",
+                display: "block",
+                margin: "10px 0px 0px 0px",
+              }}
+            />
             {renderIntro}
             {/* <div style={{ borderBottom: "1px solid #bbb", margin: "10px 0px 5px 0px" }}></div> */}
             {renderGenre}
-            <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 0px 0px" }} />
+            <Divider
+              sx={{
+                borderStyle: "dashed",
+                display: "block",
+                margin: "10px 0px 0px 0px",
+              }}
+            />
             {/* <div style={{ borderBottom: "1px solid #bbb", margin: "10px 0px 5px 0px" }}></div> */}
             {renderInfo}
           </div>
-        </Stack >
+        </Stack>
       </Link>
-    </div >
+    </div>
   );
 });
 

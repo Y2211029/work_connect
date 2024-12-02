@@ -11,7 +11,7 @@ import Environment from "../../../sections/work/WorkPosting/Environment";
 import "../../../App.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 const WorkEdit = () => {
@@ -19,16 +19,10 @@ const WorkEdit = () => {
   const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData");
 
-  const [workData, setWorkData] = useState({
-    creatorId: "",
-    YoutubeURL: "",
-    WorkTitle: "",
-    WorkGenre: "",
-    Introduction: "",
-    Obsession: "",
-    Language: "",
-    Environment: "",
-  });
+  const work_id = useParams();
+  const [workData, setWorkData] = useState("");
+  // const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState(null);
 
   const [imageFiles, setImageFiles] = useState([]);
   const [message, setMessage] = useState("");
@@ -38,6 +32,34 @@ const WorkEdit = () => {
   const [hasError, setHasError] = useState(false);
   const [Image, setImage] = useState();
   const [Description, setDescription] = useState();
+
+  useEffect(()=>{
+    const fetchWorkDetails = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/app/Http/Controllers/work/GetWorkDetailController", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id: work_id }), // サーバーに work_id を渡す
+        });
+
+        if (!response.ok) {
+          throw new Error("サーバーからのデータ取得に失敗しました。");
+        }
+
+        const data = await response.json();
+        setWorkData(data); // 取得したデータを保存
+      } catch (error) {
+        // setError(error.message);
+      } finally {
+        // setLoading(false); // ローディングを終了
+      }
+    };
+
+    fetchWorkDetails();
+    console.log("work_id:", work_id);
+  }, [work_id]);
 
   const handleValueChange = (newValue) => {
     setDescription(newValue);

@@ -53,6 +53,7 @@ use App\Http\Controllers\tag\GetGenreTagController;
 use App\Http\Controllers\tag\GetLanguageTagController;
 use App\Http\Controllers\tag\GetEnvironmentTagController;
 use App\Http\Controllers\movie\VideoPostingController;
+use App\Http\Controllers\movie\VideoEditController;
 use App\Http\Controllers\tag\GetVideoGenreTagController;
 use App\Http\Controllers\tag\GetStudentProgrammingLanguageTagController;
 use App\Http\Controllers\tag\GetStudentDevelopmentEnvironmentTagController;
@@ -70,6 +71,7 @@ use App\Http\Controllers\tag\GetCompanyAcquisitionQualificationTagController;
 use App\Http\Controllers\tag\GetCompanySoftwareTagController;
 use App\Http\Controllers\tag\GetCompanyNameListController;
 use App\Http\Controllers\work\WorkPostingController;
+use App\Http\Controllers\work\WorkEditController;
 use App\Http\Controllers\search\SearchWorkController;
 use App\Http\Controllers\search\SearchVideoController;
 use App\Http\Controllers\search\SearchStudentController;
@@ -119,6 +121,10 @@ Route::get('/search_internship_job_offer', [SearchInternshipJobOfferController::
 /* タグ関係 */
 // タグ作成
 Route::post('/insert_tag', [InsertTagController::class, 'InsertTagController']);
+// 作品投稿
+Route::post('/work_posting', [WorkPostingController::class, 'store']);
+// 作品編集
+Route::post('/work_edit', [WorkEditController::class, 'store']);
 // 作品ジャンルタグ取得
 Route::get('/get_work_genre_tag', [GetGenreTagController::class, 'GetGenreTagController']);
 // 作品のプログラミング言語タグ取得
@@ -127,6 +133,8 @@ Route::get('/get_work_language_tag', [GetLanguageTagController::class, 'GetLangu
 Route::get('/get_work_environment_tag', [GetEnvironmentTagController::class, 'GetEnvironmentTagController']);
 // 動画投稿
 Route::post('/video_posting', [VideoPostingController::class, 'VideoPostingController']);
+// 動画編集
+Route::post('/video_edit', [VideoEditController::class, 'VideoEditController']);
 // 動画ジャンルタグ取得
 Route::get('/get_video_genre_tag', [GetVideoGenreTagController::class, 'GetVideoGenreTagController']);
 
@@ -171,8 +179,6 @@ Route::get('/get_company_software_tag', [GetCompanySoftwareTagController::class,
 // 企業名一覧を取得
 Route::get('/get_company_name_list', [GetCompanyNameListController::class, 'GetCompanyNameListController']);
 
-// 作品投稿
-Route::post('/work_posting', [WorkPostingController::class, 'store']);
 // ログイン状態のチェック
 Route::post('/login_status_check', [LoginStatusCheckController::class, 'LoginStatusCheckController']);
 

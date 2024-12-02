@@ -10,7 +10,7 @@ import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import EditNoteIcon from '@mui/icons-material/EditNote';
+import EditNoteIcon from "@mui/icons-material/EditNote";
 import Tooltip from "@mui/material/Tooltip";
 import Popover from "@mui/material/Popover";
 
@@ -22,7 +22,17 @@ import Divider from "@mui/material/Divider";
 
 const PostCard = forwardRef(({ post }, ref) => {
   const myProfileURL = useLocation();
-  const { work_id, genre, thumbnail, icon, title, intro, author, userName, createdAt } = post;
+  const {
+    work_id,
+    genre,
+    thumbnail,
+    icon,
+    title,
+    intro,
+    author,
+    userName,
+    createdAt,
+  } = post;
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [open, setOpen] = useState(false);
   // const buttonRef = useRef(null);
@@ -52,62 +62,64 @@ const PostCard = forwardRef(({ post }, ref) => {
   //   };
   // }, [open]);
 
-  
-
   // ボタンがクリックされたときの処理
 
   const handleButtonClick = (e, action) => {
     if (action == "edit") {
       // 作品編集
-      navigate("/");
+      navigate(`/WorkEdit/${work_id}`);
     } else if (action == "delete") {
       // 削除
       navigate("/VideoList");
     }
 
     if (open) {
-      console.log("open", open)
+      console.log("open", open);
       setOpen(false);
     } else {
-      console.log("open", open)
+      console.log("open", open);
       setOpen(true);
     }
 
     e.preventDefault(); // これでリンクの遷移を防ぐ
     // 他の処理（例: ボタンのクリック時に実行したい処理）をここに書く
-
   };
 
   useEffect(() => {
-    console.log("isPopoverOpen", isPopoverOpen)
-  }, [isPopoverOpen])
+    console.log("isPopoverOpen", isPopoverOpen);
+  }, [isPopoverOpen]);
 
-  const alternativeImage = "http://localhost:8000/storage/images/work/NoImage.png";
+  const alternativeImage =
+    "http://localhost:8000/storage/images/work/NoImage.png";
 
   const renderThumbnail =
     (console.log("thumbnail", thumbnail),
-      (
-        <Box
-          component="img"
-          src={thumbnail}
-          onError={(e) => {
-            e.target.src = alternativeImage; // エラー時にサンプル画像をセット
-          }}
-          sx={{
-            aspectRatio: 16 / 9,
-            borderRadius: "5px",
-            width: "100%",
-            objectFit: "cover",
-            marginBottom: "10px",
-          }}
-        />
-      ));
+    (
+      <Box
+        component="img"
+        src={thumbnail}
+        onError={(e) => {
+          e.target.src = alternativeImage; // エラー時にサンプル画像をセット
+        }}
+        sx={{
+          aspectRatio: 16 / 9,
+          borderRadius: "5px",
+          width: "100%",
+          objectFit: "cover",
+          marginBottom: "10px",
+        }}
+      />
+    ));
 
   // アイコン
   const renderAvatar = (
     <Avatar
       alt={author.name}
-      src={icon ? `http://localhost:8000/storage/images/userIcon/${icon}` : author.avatarUrl}
+      src={
+        icon
+          ? `http://localhost:8000/storage/images/userIcon/${icon}`
+          : author.avatarUrl
+      }
       sx={{
         zIndex: 9,
         width: 30,
@@ -120,7 +132,10 @@ const PostCard = forwardRef(({ post }, ref) => {
   const renderTitle = title && title;
 
   // ジャンル
-  const renderGenre = genre !== null ? <div style={{ margin: "10px 0px 10px 0px" }}>{genre}</div> : null;
+  const renderGenre =
+    genre !== null ? (
+      <div style={{ margin: "10px 0px 10px 0px" }}>{genre}</div>
+    ) : null;
 
   /* 投稿日 */
   const renderDate = (
@@ -181,15 +196,15 @@ const PostCard = forwardRef(({ post }, ref) => {
           color: "common.black",
         }}
       >
-
-
         {/* 編集とゴミ箱 */}
 
         {isNotMyProfile ? (
           renderAvatar
         ) : (
           <>
-            <Button /*ref={buttonRef}*/ onClick={(e) => handleButtonClick(e, "")}>
+            <Button
+              /*ref={buttonRef}*/ onClick={(e) => handleButtonClick(e, "")}
+            >
               <MoreVertIcon color="action" />
             </Button>
             <Popover
@@ -220,9 +235,7 @@ const PostCard = forwardRef(({ post }, ref) => {
           </>
         )}
 
-
         {isNotMyProfile ? renderUserName : null}
-
       </Stack>
     </Stack>
   );
@@ -262,20 +275,40 @@ const PostCard = forwardRef(({ post }, ref) => {
 
   const renderItems = (
     <div ref={ref}>
-      <Link to={`/WorkDetail/${work_id}`}
+      <Link
+        to={`/WorkDetail/${work_id}`}
         variant="subtitle2"
         underline="none"
-        className="link item-Link">
+        className="link item-Link"
+      >
         <Stack sx={{ display: "inline-block", width: "100%" }}>
           <div className="postCard item-stack" style={{ width: "100%" }}>
             {renderShape}
             {renderThumbnail}
             {renderTitle}
-            <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 0px 0px" }} />
+            <Divider
+              sx={{
+                borderStyle: "dashed",
+                display: "block",
+                margin: "10px 0px 0px 0px",
+              }}
+            />
             {renderGenre}
-            <Divider sx={{ borderStyle: "dashed", display: "block", margin: "0px 0px 5px 0px" }} />
+            <Divider
+              sx={{
+                borderStyle: "dashed",
+                display: "block",
+                margin: "0px 0px 5px 0px",
+              }}
+            />
             {renderIntro}
-            <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 5px 0px" }} />
+            <Divider
+              sx={{
+                borderStyle: "dashed",
+                display: "block",
+                margin: "10px 0px 5px 0px",
+              }}
+            />
             {renderInfo}
           </div>
         </Stack>
@@ -283,23 +316,42 @@ const PostCard = forwardRef(({ post }, ref) => {
     </div>
   );
 
-
   const renderEditItems = (
     <div ref={ref}>
       <Stack sx={{ display: "inline-block", width: "100%" }}>
         <div className="postCard item-stack" style={{ width: "100%" }}>
-          <Link to={`/WorkDetail/${work_id}`}
+          <Link
+            to={`/WorkDetail/${work_id}`}
             variant="subtitle2"
             underline="none"
-            className="link item-Link">
+            className="link item-Link"
+          >
             {renderShape}
             {renderThumbnail}
             {renderTitle}
-            <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 0px 0px" }} />
+            <Divider
+              sx={{
+                borderStyle: "dashed",
+                display: "block",
+                margin: "10px 0px 0px 0px",
+              }}
+            />
             {renderGenre}
-            <Divider sx={{ borderStyle: "dashed", display: "block", margin: "0px 0px 5px 0px" }} />
+            <Divider
+              sx={{
+                borderStyle: "dashed",
+                display: "block",
+                margin: "0px 0px 5px 0px",
+              }}
+            />
             {renderIntro}
-            <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 5px 0px" }} />
+            <Divider
+              sx={{
+                borderStyle: "dashed",
+                display: "block",
+                margin: "10px 0px 5px 0px",
+              }}
+            />
           </Link>
           {renderInfo}
         </div>
@@ -307,11 +359,7 @@ const PostCard = forwardRef(({ post }, ref) => {
     </div>
   );
 
-
-
-  return (
-    isNotMyProfile ? renderItems : renderEditItems
-  );
+  return isNotMyProfile ? renderItems : renderEditItems;
 });
 
 // `displayName` の追加

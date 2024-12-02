@@ -24,8 +24,6 @@ import GetTagList from "src/components/tag/GetTagList";
 import { AllItemsContext } from "src/layouts/dashboard/index";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
-import schoolList from "src/data/school_list.json";
-
 // ----------------------------------------------------------------------
 
 const useStyles = makeStyles(() => {
@@ -211,7 +209,14 @@ export default function Searchbar() {
 
   const getGraduationYearTag = async () => {
     let optionArray = [];
-    let result = ["2025年卒業", "2026年卒業", "2027年卒業", "2028年卒業", "2029年卒業", "2030年卒業"];
+    let result = [
+      "2025年卒業",
+      "2026年卒業",
+      "2027年卒業",
+      "2028年卒業",
+      "2029年卒業",
+      "2030年卒業",
+    ];
 
     // console.log("result: ", result);
     result.map((value) => {
@@ -272,7 +277,6 @@ export default function Searchbar() {
   // };
 
   const getSchoolNameTag = async () => {
-    // let optionArray = [];
     // let result = await fetchSchoolNameData();
 
     // console.log("result: ", result);
@@ -280,16 +284,31 @@ export default function Searchbar() {
     //   optionArray.push({ value: value.school_name, label: value.school_name });
     // });
     // console.log("optionArray", optionArray);
+    let optionArray = [];
+
+    // 学生アカウントで使用されている学校名のみを取得
+    const response = await axios.get(
+      `http://localhost:8000/get_student_school_name_tag`,
+      {}
+    );
+
+    response.data.map((value) => {
+      optionArray.push({ value: value, label: value });
+    });
+
     setOptions((prevOptions) => ({
       ...prevOptions,
-      school_name: schoolList,
+      school_name: optionArray,
     }));
   };
 
   const fetchCompanyNameData = async () => {
     try {
       // console.log("fetchCompanyNameData: OK");
-      const response = await axios.get(`http://localhost:8000/get_company_name_list`, {});
+      const response = await axios.get(
+        `http://localhost:8000/get_company_name_list`,
+        {}
+      );
 
       // console.log("fetchCompanyNameData response: ");
       // console.log(response.data);
@@ -481,7 +500,10 @@ export default function Searchbar() {
       getTag("student_programming_language", "student_programming_language");
 
       // 開発環境のタグ一覧を取得
-      getTag("student_development_environment", "student_development_environment");
+      getTag(
+        "student_development_environment",
+        "student_development_environment"
+      );
 
       // ソフトウェアのタグ一覧を取得
       getTag("student_software", "software");
@@ -576,7 +598,8 @@ export default function Searchbar() {
 
   // マイページ、Topページ、
   let RefineSearch =
-    location.pathname != "/Profile/" + location.pathname.split("/")[2] + "/mypage" &&
+    location.pathname !=
+      "/Profile/" + location.pathname.split("/")[2] + "/mypage" &&
     location.pathname != "/Top" &&
     location.pathname != "/Settings" &&
     location.pathname != "/Chat" &&
@@ -837,7 +860,10 @@ export default function Searchbar() {
         // StudentList-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
-      } else if (PathName.startsWith("/Profile/") && PathName.endsWith("/work")) {
+      } else if (
+        PathName.startsWith("/Profile/") &&
+        PathName.endsWith("/work")
+      ) {
         // 学生プロフィール内の作品一覧の場合
         const url = `http://localhost:8000/search_work?page=${Page}&sort=${sortOption}`;
 
@@ -875,7 +901,10 @@ export default function Searchbar() {
         // company-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
-      } else if (PathName.startsWith("/Profile/") && PathName.endsWith("/movie")) {
+      } else if (
+        PathName.startsWith("/Profile/") &&
+        PathName.endsWith("/movie")
+      ) {
         // 学生プロフィール内の作品一覧の場合
         const url = `http://localhost:8000/search_video?page=${Page}&sort=${sortOption}`;
 
@@ -958,7 +987,10 @@ export default function Searchbar() {
         // company-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
-      } else if (PathName.startsWith("/Profile/") && PathName.endsWith("/JobOffer")) {
+      } else if (
+        PathName.startsWith("/Profile/") &&
+        PathName.endsWith("/JobOffer")
+      ) {
         // 企業プロフィール内での求人の場合
         const url = `http://localhost:8000/search_internship_job_offer?page=${Page}`;
 
@@ -1023,7 +1055,10 @@ export default function Searchbar() {
         // company-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
-      } else if (PathName.startsWith("/Profile/") && PathName.endsWith("/Internship")) {
+      } else if (
+        PathName.startsWith("/Profile/") &&
+        PathName.endsWith("/Internship")
+      ) {
         // 企業プロフィール内での求人の場合
         const url = `http://localhost:8000/search_internship_job_offer?page=${Page}`;
 
@@ -1088,7 +1123,10 @@ export default function Searchbar() {
         // company-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
-      } else if (PathName.startsWith("/Profile/") && PathName.endsWith("/Session")) {
+      } else if (
+        PathName.startsWith("/Profile/") &&
+        PathName.endsWith("/Session")
+      ) {
         // 企業プロフィール内での求人の場合
         const url = `http://localhost:8000/search_internship_job_offer?page=${Page}`;
 
@@ -1153,7 +1191,10 @@ export default function Searchbar() {
         // company-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
-      } else if (PathName.startsWith("/Profile/") && PathName.endsWith("/Blog")) {
+      } else if (
+        PathName.startsWith("/Profile/") &&
+        PathName.endsWith("/Blog")
+      ) {
         // 企業プロフィール内での求人の場合
         const url = `http://localhost:8000/search_internship_job_offer?page=${Page}`;
 
@@ -1616,7 +1657,8 @@ export default function Searchbar() {
   // }, saveOptions);
 
   // 空だったらtrue
-  const isAllEmpty = (obj) => Object.values(obj).every((value) => value.length === 0);
+  const isAllEmpty = (obj) =>
+    Object.values(obj).every((value) => value.length === 0);
 
   // 検索ボタンを押したとき
   const handleSearch = () => {
@@ -1668,12 +1710,21 @@ export default function Searchbar() {
       let url = new URL(window.location.href);
       let urlPageParams = url.searchParams.get("page");
       let urlCategoryParams = url.searchParams.get("category");
-      console.log("searchSourceList:urlPageParams", "/Internship_JobOffer/" + urlPageParams);
-      console.log("searchSourceList:urlCategoryParams", "/Profile/" + urlCategoryParams);
+      console.log(
+        "searchSourceList:urlPageParams",
+        "/Internship_JobOffer/" + urlPageParams
+      );
+      console.log(
+        "searchSourceList:urlCategoryParams",
+        "/Profile/" + urlCategoryParams
+      );
       console.log("searchSourceList:PathName", PathName);
       if ("/Internship_JobOffer/" + urlPageParams == PathName) {
         console.log("searchSourceList:Page", Page);
-        console.log("IsSearch.Check, Page, IsSearch.searchToggle, sortOption", PathName);
+        console.log(
+          "IsSearch.Check, Page, IsSearch.searchToggle, sortOption",
+          PathName
+        );
         searchSourceList();
       } else if ("/Internship_JobOffer" != location.pathname) {
         searchSourceList();
@@ -1851,7 +1902,8 @@ export default function Searchbar() {
         <>
           {(PathName.startsWith("/Profile/") && PathName.endsWith("/mypage")) ||
           (PathName.startsWith("/WorkDetail/") && PathName.endsWith("")) ||
-          (PathName.startsWith("/VideoDetail/") && PathName.endsWith("")) ? null : (
+          (PathName.startsWith("/VideoDetail/") &&
+            PathName.endsWith("")) ? null : (
             <>
               <Box>
                 <OutlinedInput
@@ -1860,7 +1912,10 @@ export default function Searchbar() {
                   value={searchSource.searchText}
                   onChange={handleChangeText}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter" && searchSource.searchText.trim() !== "") {
+                    if (
+                      e.key === "Enter" &&
+                      searchSource.searchText.trim() !== ""
+                    ) {
                       handleSearch();
                     } else if (e.key === "Enter") {
                       e.preventDefault(); //入力が空の場合はEnterキーを無効化
@@ -1879,7 +1934,10 @@ export default function Searchbar() {
                         <IconSearch stroke={1.5} size="16px" />
                       </InputAdornment>
                     ) : (
-                      <InputAdornment position="start" sx={{ mr: 1, fontWeight: "fontWeightBold" }}>
+                      <InputAdornment
+                        position="start"
+                        sx={{ mr: 1, fontWeight: "fontWeightBold" }}
+                      >
                         <IconSearch stroke={1.5} size="16px" />
                       </InputAdornment>
                     )
@@ -1887,7 +1945,10 @@ export default function Searchbar() {
                   endAdornment={
                     // 絞り込みアイコン
 
-                    <InputAdornment position="end" style={{ display: Display.thisCompanyNews }}>
+                    <InputAdornment
+                      position="end"
+                      style={{ display: Display.thisCompanyNews }}
+                    >
                       <HeaderAvatar onClick={handleOpen}>
                         <IconAdjustmentsHorizontal stroke={1.5} size="18px" />
                       </HeaderAvatar>
@@ -1907,7 +1968,12 @@ export default function Searchbar() {
                   }}
                 />
               </Box>
-              <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+              <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+              >
                 <Box
                   sx={{
                     position: "absolute",
@@ -1957,7 +2023,9 @@ export default function Searchbar() {
                     >
                       <CloseIcon />
                     </IconButton>
-                    <Divider sx={{ borderStyle: "dashed", m: 0, display: "block" }} />
+                    <Divider
+                      sx={{ borderStyle: "dashed", m: 0, display: "block" }}
+                    />
                     {/* ---------------------------------------------------------- */}
                     <Stack
                       sx={{
@@ -1980,8 +2048,20 @@ export default function Searchbar() {
                             <Grid container spacing={2}>
                               {myId[0] === "C" && (
                                 <Grid item xs={12} sm={6} md={4}>
-                                  <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                    <div style={{ fontWeight: "Bold", color: "#666" }}>フォロー状況</div>
+                                  <Box
+                                    sx={{
+                                      marginTop: "20px",
+                                      marginBottom: "10px",
+                                    }}
+                                  >
+                                    <div
+                                      style={{
+                                        fontWeight: "Bold",
+                                        color: "#666",
+                                      }}
+                                    >
+                                      フォロー状況
+                                    </div>
                                     <div style={{ color: "#444" }}>
                                       <Select
                                         ref={areaRef}
@@ -1998,8 +2078,20 @@ export default function Searchbar() {
                               )}
 
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>学校名</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    学校名
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2014,8 +2106,20 @@ export default function Searchbar() {
                               </Grid>
 
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>学科名</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    学科名
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2030,8 +2134,20 @@ export default function Searchbar() {
                               </Grid>
 
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>学部名</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    学部名
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2046,8 +2162,20 @@ export default function Searchbar() {
                               </Grid>
 
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>専攻名</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    専攻名
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2062,8 +2190,20 @@ export default function Searchbar() {
                               </Grid>
 
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>コース名</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    コース名
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2078,8 +2218,20 @@ export default function Searchbar() {
                               </Grid>
 
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    ジャンル
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2095,8 +2247,20 @@ export default function Searchbar() {
                               </Grid>
 
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    プログラミング言語
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2112,17 +2276,33 @@ export default function Searchbar() {
                               </Grid>
 
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    開発環境
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
                                       placeholder="▼"
                                       options={options.development_environment}
-                                      value={searchSource.development_environment}
+                                      value={
+                                        searchSource.development_environment
+                                      }
                                       isClearable
                                       isMulti
-                                      onChange={handleChangeDevelopmentEnvironment}
+                                      onChange={
+                                        handleChangeDevelopmentEnvironment
+                                      }
                                     />
                                   </div>
                                 </Box>
@@ -2135,7 +2315,12 @@ export default function Searchbar() {
                               {myId[0] === "C" ? (
                                 <>
                                   <Grid item xs={12} sm={6} md={4}>
-                                    <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
+                                    <Box
+                                      sx={{
+                                        marginTop: "20px",
+                                        marginBottom: "10px",
+                                      }}
+                                    >
                                       <div
                                         style={{
                                           fontWeight: "Bold",
@@ -2162,8 +2347,20 @@ export default function Searchbar() {
                                 ""
                               )}
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>学校名</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    学校名
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2178,8 +2375,20 @@ export default function Searchbar() {
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>学科名</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    学科名
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2194,8 +2403,20 @@ export default function Searchbar() {
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>学部名</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    学部名
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2209,8 +2430,20 @@ export default function Searchbar() {
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>専攻名</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    専攻名
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2225,8 +2458,20 @@ export default function Searchbar() {
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>コース名</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    コース名
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2241,8 +2486,20 @@ export default function Searchbar() {
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    ジャンル
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2264,7 +2521,12 @@ export default function Searchbar() {
                               {myId[0] === "C" ? (
                                 <>
                                   <Grid item xs={12} sm={6} md={4}>
-                                    <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
+                                    <Box
+                                      sx={{
+                                        marginTop: "20px",
+                                        marginBottom: "10px",
+                                      }}
+                                    >
                                       <div
                                         style={{
                                           fontWeight: "Bold",
@@ -2291,8 +2553,20 @@ export default function Searchbar() {
                                 ""
                               )}
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>卒業年</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    卒業年
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2307,8 +2581,20 @@ export default function Searchbar() {
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>学校名</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    学校名
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2323,8 +2609,20 @@ export default function Searchbar() {
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>学科名</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    学科名
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2339,8 +2637,20 @@ export default function Searchbar() {
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>学部名</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    学部名
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2355,8 +2665,20 @@ export default function Searchbar() {
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>専攻名</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    専攻名
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2371,8 +2693,20 @@ export default function Searchbar() {
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>コース名</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    コース名
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2387,8 +2721,20 @@ export default function Searchbar() {
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>希望職種</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    希望職種
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2403,8 +2749,20 @@ export default function Searchbar() {
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>希望勤務地</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    希望勤務地
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2419,40 +2777,88 @@ export default function Searchbar() {
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    プログラミング言語
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
                                       placeholder="▼"
-                                      options={options.student_programming_language}
-                                      value={searchSource.student_programming_language}
+                                      options={
+                                        options.student_programming_language
+                                      }
+                                      value={
+                                        searchSource.student_programming_language
+                                      }
                                       isClearable
                                       isMulti
-                                      onChange={handleChangeStudentProgrammingLanguage}
+                                      onChange={
+                                        handleChangeStudentProgrammingLanguage
+                                      }
                                     />
                                   </div>
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    開発環境
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
                                       placeholder="▼"
-                                      options={options.student_development_environment}
-                                      value={searchSource.student_development_environment}
+                                      options={
+                                        options.student_development_environment
+                                      }
+                                      value={
+                                        searchSource.student_development_environment
+                                      }
                                       isClearable
                                       isMulti
-                                      onChange={handleChangeStudentDevelopmentEnvironment}
+                                      onChange={
+                                        handleChangeStudentDevelopmentEnvironment
+                                      }
                                     />
                                   </div>
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>ソフトウェア</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    ソフトウェア
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2467,24 +2873,54 @@ export default function Searchbar() {
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>取得資格</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    取得資格
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
                                       placeholder="▼"
-                                      options={options.acquisition_qualification}
-                                      value={searchSource.acquisition_qualification}
+                                      options={
+                                        options.acquisition_qualification
+                                      }
+                                      value={
+                                        searchSource.acquisition_qualification
+                                      }
                                       isClearable
                                       isMulti
-                                      onChange={handleChangeAcquisitionQualification}
+                                      onChange={
+                                        handleChangeAcquisitionQualification
+                                      }
                                     />
                                   </div>
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>趣味</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    趣味
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2504,8 +2940,20 @@ export default function Searchbar() {
                           <>
                             <Grid container spacing={2}>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    ジャンル
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2520,8 +2968,20 @@ export default function Searchbar() {
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    プログラミング言語
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2536,17 +2996,33 @@ export default function Searchbar() {
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    開発環境
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
                                       placeholder="▼"
                                       options={options.development_environment}
-                                      value={searchSource.development_environment}
+                                      value={
+                                        searchSource.development_environment
+                                      }
                                       isClearable
                                       isMulti
-                                      onChange={handleChangeDevelopmentEnvironment}
+                                      onChange={
+                                        handleChangeDevelopmentEnvironment
+                                      }
                                     />
                                   </div>
                                 </Box>
@@ -2557,8 +3033,20 @@ export default function Searchbar() {
                           <>
                             <Grid container spacing={2}>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>ジャンル</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    ジャンル
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2580,7 +3068,12 @@ export default function Searchbar() {
                               {myId[0] === "S" ? (
                                 <>
                                   <Grid item xs={12} sm={6} md={4}>
-                                    <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
+                                    <Box
+                                      sx={{
+                                        marginTop: "20px",
+                                        marginBottom: "10px",
+                                      }}
+                                    >
                                       <div
                                         style={{
                                           fontWeight: "Bold",
@@ -2607,8 +3100,20 @@ export default function Searchbar() {
                                 ""
                               )}
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>職種</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    職種
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2623,8 +3128,20 @@ export default function Searchbar() {
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>勤務地</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    勤務地
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2639,8 +3156,20 @@ export default function Searchbar() {
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>業界キーワード</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    業界キーワード
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2655,24 +3184,52 @@ export default function Searchbar() {
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    開発環境
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
                                       placeholder="▼"
                                       options={options.development_environment}
-                                      value={searchSource.development_environment}
+                                      value={
+                                        searchSource.development_environment
+                                      }
                                       isClearable
                                       isMulti
-                                      onChange={handleChangeDevelopmentEnvironment}
+                                      onChange={
+                                        handleChangeDevelopmentEnvironment
+                                      }
                                     />
                                   </div>
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    プログラミング言語
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2687,24 +3244,54 @@ export default function Searchbar() {
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>歓迎取得</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    歓迎取得
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
                                       placeholder="▼"
-                                      options={options.acquisition_qualification}
-                                      value={searchSource.acquisition_qualification}
+                                      options={
+                                        options.acquisition_qualification
+                                      }
+                                      value={
+                                        searchSource.acquisition_qualification
+                                      }
                                       isClearable
                                       isMulti
-                                      onChange={handleChangeAcquisitionQualification}
+                                      onChange={
+                                        handleChangeAcquisitionQualification
+                                      }
                                     />
                                   </div>
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>ソフトウェア</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    ソフトウェア
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2729,8 +3316,20 @@ export default function Searchbar() {
                               {myId[0] === "S" ? (
                                 <>
                                   <Grid item xs={12} sm={6} md={4}>
-                                    <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                      <div style={{ fontWeight: "Bold", color: "#666" }}>フォロー状況</div>
+                                    <Box
+                                      sx={{
+                                        marginTop: "20px",
+                                        marginBottom: "10px",
+                                      }}
+                                    >
+                                      <div
+                                        style={{
+                                          fontWeight: "Bold",
+                                          color: "#666",
+                                        }}
+                                      >
+                                        フォロー状況
+                                      </div>
                                       <div style={{ color: "#444" }}>
                                         {" "}
                                         <Select
@@ -2750,8 +3349,20 @@ export default function Searchbar() {
                                 ""
                               )}
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>企業名</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    企業名
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2766,8 +3377,20 @@ export default function Searchbar() {
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>職種</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    職種
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2782,8 +3405,20 @@ export default function Searchbar() {
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>勤務地</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    勤務地
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2798,8 +3433,20 @@ export default function Searchbar() {
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>業界キーワード</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    業界キーワード
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2814,24 +3461,52 @@ export default function Searchbar() {
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>開発環境</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    開発環境
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
                                       placeholder="▼"
                                       options={options.development_environment}
-                                      value={searchSource.development_environment}
+                                      value={
+                                        searchSource.development_environment
+                                      }
                                       isClearable
                                       isMulti
-                                      onChange={handleChangeDevelopmentEnvironment}
+                                      onChange={
+                                        handleChangeDevelopmentEnvironment
+                                      }
                                     />
                                   </div>
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>プログラミング言語</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    プログラミング言語
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2846,24 +3521,54 @@ export default function Searchbar() {
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>歓迎資格</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    歓迎資格
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
                                       placeholder="▼"
-                                      options={options.acquisition_qualification}
-                                      value={searchSource.acquisition_qualification}
+                                      options={
+                                        options.acquisition_qualification
+                                      }
+                                      value={
+                                        searchSource.acquisition_qualification
+                                      }
                                       isClearable
                                       isMulti
-                                      onChange={handleChangeAcquisitionQualification}
+                                      onChange={
+                                        handleChangeAcquisitionQualification
+                                      }
                                     />
                                   </div>
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
-                                  <div style={{ fontWeight: "Bold", color: "#666" }}>ソフトウェア</div>
+                                <Box
+                                  sx={{
+                                    marginTop: "20px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: "Bold",
+                                      color: "#666",
+                                    }}
+                                  >
+                                    ソフトウェア
+                                  </div>
                                   <div style={{ color: "#444" }}>
                                     <Select
                                       ref={areaRef}
@@ -2888,7 +3593,13 @@ export default function Searchbar() {
                     </Stack>
 
                     {/* ---------------------------------------------------------- */}
-                    <Divider sx={{ borderStyle: "dashed", marginTop: "10px", display: "block" }} />
+                    <Divider
+                      sx={{
+                        borderStyle: "dashed",
+                        marginTop: "10px",
+                        display: "block",
+                      }}
+                    />
                     <Stack
                       direction={{ xs: "column", md: "row" }} // xsでは縦並び、sm以上では横並び
                       sx={{
@@ -2932,13 +3643,25 @@ export default function Searchbar() {
                           },
                         }}
                       >
-                        <Button className={classes.textField} variant="outlined" onClick={handleTagReset}>
+                        <Button
+                          className={classes.textField}
+                          variant="outlined"
+                          onClick={handleTagReset}
+                        >
                           タグをリセット
                         </Button>
-                        <Button className={classes.textField} variant="outlined" onClick={handleCancel}>
+                        <Button
+                          className={classes.textField}
+                          variant="outlined"
+                          onClick={handleCancel}
+                        >
                           キャンセル
                         </Button>
-                        <Button className={classes.textField} variant="contained" onClick={handleSearch}>
+                        <Button
+                          className={classes.textField}
+                          variant="contained"
+                          onClick={handleSearch}
+                        >
                           検索
                         </Button>
                       </Stack>

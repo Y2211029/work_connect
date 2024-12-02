@@ -25,6 +25,8 @@ import { AllItemsContext } from "src/layouts/dashboard/index";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 import schoolList from "src/data/school_list.json";
+import DeadlineCalender from "src/components/search/DeadlineCalender";
+import EventCalender from "src/components/search/EventCalender";
 
 // ----------------------------------------------------------------------
 
@@ -577,11 +579,11 @@ export default function Searchbar() {
   // マイページ、Topページ、
   let RefineSearch =
     location.pathname != "/Profile/" + location.pathname.split("/")[2] + "/mypage" &&
-    location.pathname != "/Top" &&
-    location.pathname != "/Settings" &&
-    location.pathname != "/Chat" &&
-    location.pathname != "/WorkPosting" &&
-    location.pathname != "/VideoPosting"
+      location.pathname != "/Top" &&
+      location.pathname != "/Settings" &&
+      location.pathname != "/Chat" &&
+      location.pathname != "/WorkPosting" &&
+      location.pathname != "/VideoPosting"
       ? true
       : false;
   // console.log("let RefineSearch =", RefineSearch);
@@ -1850,8 +1852,8 @@ export default function Searchbar() {
       {RefineSearch && (
         <>
           {(PathName.startsWith("/Profile/") && PathName.endsWith("/mypage")) ||
-          (PathName.startsWith("/WorkDetail/") && PathName.endsWith("")) ||
-          (PathName.startsWith("/VideoDetail/") && PathName.endsWith("")) ? null : (
+            (PathName.startsWith("/WorkDetail/") && PathName.endsWith("")) ||
+            (PathName.startsWith("/VideoDetail/") && PathName.endsWith("")) ? null : (
             <>
               <Box>
                 <OutlinedInput
@@ -2725,7 +2727,12 @@ export default function Searchbar() {
                           PathName === "/Internship_JobOffer/Session" ||
                           PathName === "/Internship_JobOffer/Blog" ? (
                           <>
+
                             <Grid container spacing={2}>
+                              {/*  DeadlineCalender 応募締め切り */}
+                              <DeadlineCalender />
+                              {/* EventCalender 開催日 */}
+                              <EventCalender />
                               {myId[0] === "S" ? (
                                 <>
                                   <Grid item xs={12} sm={6} md={4}>
@@ -2750,6 +2757,7 @@ export default function Searchbar() {
                                 ""
                               )}
                               <Grid item xs={12} sm={6} md={4}>
+
                                 <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
                                   <div style={{ fontWeight: "Bold", color: "#666" }}>企業名</div>
                                   <div style={{ color: "#444" }}>

@@ -172,7 +172,7 @@ nav ul li a:hover {
   width: 70%;
   max-width: 600px;
   padding: 30px;
-  border-radius: 50px;
+  border-radius: 20px;
   border: 1px solid #dfdfdf;
   font-weight: 700;
 }
@@ -207,31 +207,8 @@ nav ul li a:hover {
   margin-bottom: 3px;
 }
 
-/* .loginUiForm button {
-  background-color: #f3f6fc;
-  width: 100%;
-  //margin-top: 10px;
-  border: none;
-  border-radius: 5px;
-  padding: 10px 30px;
-  color: black;
-  font-size: 15px;
-  cursor: pointer;
-  transition: all 0.2s;
-} */
 
-.submitButton {
-  background-color: #f3f6fc;
-  width: 100%;
-  margin-top: 10px;
-  border: none;
-  border-radius: 5px;
-  padding: 10px 30px;
-  color: black;
-  font-size: 15px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
+
 
 .preSignUpUiForm button {
   background-color: #f3f6fc;
@@ -986,6 +963,19 @@ textarea {
 }
 
 
+
+@media (max-width: 1700px) {
+
+  .column-container,
+  .gallery-container {
+    column-count: 4;
+  }
+
+  .column-container {
+    column-gap: 13px;
+  }
+
+}
 
 @media (max-width: 1200px) {
 

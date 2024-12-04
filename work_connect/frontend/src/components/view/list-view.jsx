@@ -297,7 +297,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       ItemName: "求人一覧",
       url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/JobOffer`,
       idKey: "id",
-      tags: ["company_name"],
+      tags: ["genre", "Occupation"],
       generatePosts: (WorkOfList) =>
         WorkOfList.map((company) => ({
           company_id: company.company_id,
@@ -313,13 +313,16 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           deadline: company.deadline,
           event_day: company.event_day,
           count: company.form_data_count,
+          Occupation: ["システムエンジニア", "セキュリティエンジニア"],
+          DeatLine: "2024-10-10",
+          EventDate: "2024-10-10",
         })),
     },
     Internship: {
       ItemName: "インターンシップ一覧",
       url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/Internship`,
       idKey: "id",
-      tags: ["genre"],
+      tags: ["genre", "Occupation"],
       generatePosts: (WorkOfList) =>
         WorkOfList.map((company) => ({
           company_id: company.company_id,
@@ -335,13 +338,16 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           deadline: company.deadline,
           event_day: company.event_day,
           count: company.form_data_count,
+          Occupation: ["システムエンジニア", "セキュリティエンジニア"],
+          DeatLine: "2024-10-10",
+          EventDate: "2024-10-10",
         })),
     },
     Session: {
       ItemName: "説明会一覧",
       url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/Session`,
       idKey: "id",
-      tags: ["genre"],
+      tags: ["genre", "Occupation"],
       generatePosts: (WorkOfList) =>
         WorkOfList.map((company) => ({
           company_id: company.company_id,
@@ -357,6 +363,9 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           deadline: company.deadline,
           event_day: company.event_day,
           count: company.form_data_count,
+          Occupation: ["システムエンジニア", "セキュリティエンジニア"],
+          DeatLine: "2024-10-10",
+          EventDate: "2024-10-10",
         })),
     },
     Blog: {
@@ -365,7 +374,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       idKey: "id",
       tags: ["genre"],
       generatePosts: (WorkOfList) =>
-        WorkOfList.map((company) => ({
+        WorkOfList.map((company, index) => ({
           company_id: company.company_id,
           news_id: company.news_id,
           user_name: company.user_name,
@@ -377,6 +386,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           icon: company.icon,
           followStatus: company.follow_status,
           count: company.form_data_count,
+          index: index, 
         })),
     },
     writeforms: {
@@ -417,7 +427,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       ItemName: `${ParamUserName}さんのインターンシップ一覧`,
       url: `http://localhost:8000/Internship_JobOffer/special_company_news/${ParamUserName}/${SessionAccountData.id}/Internship`,
       idKey: "id",
-      tags: ["genre"],
+      tags: ["genre", "Occupation"],
       generatePosts: (WorkOfList) => {
         return WorkOfList.map((company) => ({
           company_id: company.company_id,
@@ -430,6 +440,9 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           icon_id: company.icon_id,
           follow_status: company.follow_status,
           count: company.form_data_count,
+          Occupation: ["システムエンジニア", "セキュリティエンジニア"],
+          DeatLine: "2024-10-10",
+          EventDate: "2024-10-10",
         }));
       },
     },
@@ -437,7 +450,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       ItemName: `${ParamUserName}さんの説明会一覧`,
       url: `http://localhost:8000/Internship_JobOffer/special_company_news/${ParamUserName}/${SessionAccountData.id}/Session`,
       idKey: "id",
-      tags: ["genre"],
+      tags: ["genre", "Occupation"],
       generatePosts: (WorkOfList) => {
         return WorkOfList.map((company) => ({
           company_id: company.company_id,
@@ -450,6 +463,9 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           icon_id: company.icon_id,
           follow_status: company.follow_status,
           count: company.form_data_count,
+          Occupation: ["システムエンジニア", "セキュリティエンジニア"],
+          DeatLine: "2024-10-10",
+          EventDate: "2024-10-10",
         }));
       },
     },

@@ -8,7 +8,7 @@ export default function studentListPage() {
   return (
     <>
       <Helmet>
-        <title> User | Minimal UI </title>
+        <title> 学生一覧 | Work&Connect </title>
       </Helmet>
 
       <StudentListView />

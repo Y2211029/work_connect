@@ -11,6 +11,8 @@ import Tooltip from "@mui/material/Tooltip";
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import { follow } from "src/_mock/follow";
+import { TypographyItems } from "src/components/typography/ItemTypography";
+import NewsDisplayed from "src/components/search/NewsDisplayed";
 
 // ----------------------------------------------------------------------
 
@@ -28,19 +30,23 @@ const PostCard = forwardRef(({ post }, ref) => {
     icon,
     deadline,
     event_day,
-    count,
+    count,    
+    Occupation,
+    DeatLine,
+    EventDate,
   } = post;
 
   useEffect(() => {
     console.log("company_id", company_id);
     console.log("user_name", user_name);
-  }, [company_id])
+  }, [company_id]);
 
   console.log("締切日", deadline);
   console.log("開催日", event_day);
   const [followStatus, setFollowStatus] = useState(initialFollowStatus);
   const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData");
+  const isDisplayed = NewsDisplayed();
 
   const handleFollowClick = async () => {
     try {
@@ -121,7 +127,6 @@ const PostCard = forwardRef(({ post }, ref) => {
         padding: "5px",
       }}
     >
-
       {/* <div>
         {genre === "Internship"
           ? "インターンシップ"
@@ -138,40 +143,63 @@ const PostCard = forwardRef(({ post }, ref) => {
 
       {renderForm}
 
-      {formatDate(deadline)}<br></br>
-      {event_day && (
-  <div>開催日: {event_day}</div>
-    )}
+      {formatDate(deadline)}
+      <br></br>
+      {event_day && <div>開催日: {event_day}</div>}
     </Stack>
   ) : null;
 
-  // タイトル
-  const renderTitle = (
-    <Link
-      to={`/news_detail/${news_id}`}
-      className="link"
-      style={{
-        color: "common.black",
-        height: 30,
-        fontWeight: "Bold",
-      }}
-    >
-      {article_title}
-    </Link>
-  );
+  console.log("DeatLine", DeatLine);
+  if (isDisplayed) {
+    console.log("isDisplayed", isDisplayed);
+  }
+  let renderOccupation = "";
+  let renderDeatLine = "";
+  let renderEventDate = "";
 
+  // 職種
+  if (isDisplayed && (Occupation !== null || Occupation !== "" || Occupation !== undefined)) {
+    renderOccupation = <TypographyItems ItemName="職種 " ItemDetail={Occupation} />;
+  } else {
+    renderDeatLine = "";
+  }
+
+  // 応募締切 renderDeatLine
+  if (isDisplayed && (DeatLine !== null || DeatLine !== "" || DeatLine !== undefined)) {
+    renderDeatLine = <TypographyItems ItemName="応募締切" ItemDetail={DeatLine} />;
+  } else {
+    renderDeatLine = "";
+  }
+
+  // 開催日
+  if (isDisplayed && (EventDate !== null || EventDate !== "" || EventDate !== undefined)) {
+    renderEventDate = <TypographyItems ItemName="開催日" ItemDetail={EventDate} />;
+  } else {
+    renderEventDate = "";
+  }
+
+  // タイトル
+  const renderTitle = article_title !== null && article_title;
+
+  console.log("renderDeatLine", renderDeatLine);
+  console.log("renderEventDate", renderEventDate);
+  console.log("renderOccupation", renderOccupation);
+
+  const alternativeImage = "http://localhost:8000/storage/images/work/NoImage.png";
   // サムネイル
   const renderThumbnail = (
     <Box
       component="img"
       src={header_img}
+      onError={(e) => {
+        e.target.src = alternativeImage; // エラー時にサンプル画像をセット
+      }}
       sx={{
         aspectRatio: 16 / 9,
-        borderRadius: "10px",
+        borderRadius: "5px",
+        width: "100%",
+        objectFit: "cover",
         marginBottom: "10px",
-        width: "400px",
-        height: "250px",
-        borderColor: "blue",
       }}
     />
   );
@@ -249,18 +277,33 @@ const PostCard = forwardRef(({ post }, ref) => {
     </Stack>
   );
 
+  // const renderDay = {
+  //   <>
+  //   renderDeatLine
+  //            renderEventDate
+  //            renderOccupation
+  //   </>
+  // };
+
   return (
-    <div ref={ref}>
-      <Stack sx={{ display: "inline-block" }}>
-        <div className="postCard" style={{ width: "100%" }}>
-          {renderThumbnail}
-          {renderTitle}
-          {renderGenre}
-          {renderFollow}
-          {renderInfo}
-        </div>
-      </Stack>
-    </div>
+    <>
+      <div ref={ref}>
+        <Link to={`/news_detail/${news_id}`} variant="subtitle2" underline="none" className="link item-Link">
+          <Stack sx={{ display: "inline-block", width: "100%" }}>
+            <div className="postCard item-stack" style={{ width: "100%" }}>
+              {renderThumbnail}
+              {renderTitle}
+              {renderGenre}
+              {renderDeatLine}
+              {renderEventDate}
+              {renderOccupation}
+              {renderFollow}
+              {renderInfo}
+            </div>
+          </Stack>
+        </Link>
+      </div>
+    </>
   );
 });
 

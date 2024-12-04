@@ -514,7 +514,7 @@ const WorkDetailItem = () => {
                     }}
                     aria-label="..."
                   >
-                    <SplideTrack>
+                    <SplideTrack> 
                       {WorkSlide.map((slide) => (
                         <SplideSlide key={slide.work_id + slide.id}>
                           <Box

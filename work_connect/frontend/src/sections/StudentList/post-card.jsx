@@ -164,9 +164,6 @@ const PostCard = forwardRef(({ post }, ref) => {
             {/* フォロー状況 */}
             <Stack direction="row" alignItems="center" justifyContent="flex-start" sx={{ width: "100%" }} >
               {renderFollow}
-              {/* <Typography variant="body1" sx={{ padding: "3px 10px", borderRadius: "10px", backgroundColor: "#57ADFE", color: "white" }}>
-                フォロー中
-              </Typography> */}
             </Stack>
 
             {/* アバターとユーザー名 */}

@@ -8,7 +8,7 @@ export default function CompanyListPage() {
   return (
     <>
       <Helmet>
-        <title> Products | Minimal UI </title>
+        <title> 企業一覧 | Work&Connect </title>
       </Helmet>
 
       <CompanyListView />

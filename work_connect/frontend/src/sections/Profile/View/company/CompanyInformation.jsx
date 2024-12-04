@@ -13,7 +13,7 @@ console.log("企業の詳細情報:user_name",user_name);
   return (
     <>
       <Helmet>
-        <title> 企業の詳細情報 | Minimal UI </title>
+        <title> 企業の詳細情報 | Work&Connect </title>
       </Helmet>
 
       <ListView type="companyinformations" ParamUserName={user_name}/>

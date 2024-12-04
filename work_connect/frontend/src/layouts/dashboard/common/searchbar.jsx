@@ -27,6 +27,7 @@ import { useSessionStorage } from "src/hooks/use-sessionStorage";
 // import schoolList from "src/data/school_list.json";
 import DeadlineCalender from "src/components/search/DeadlineCalender";
 import EventCalender from "src/components/search/EventCalender";
+import NewsDisplayed from "src/components/search/NewsDisplayed";
 
 // ----------------------------------------------------------------------
 
@@ -135,6 +136,7 @@ export default function Searchbar() {
     conpany_prefecture: [],
     company_name: [],
     industry: [],
+    calender: [],
   });
 
   const [options, setOptions] = useState({
@@ -162,6 +164,7 @@ export default function Searchbar() {
     conpany_prefecture: [],
     company_name: [],
     industry: [],
+    calender: [], 
   });
 
   const [saveOptions, setSaveOptions] = useState({
@@ -189,6 +192,7 @@ export default function Searchbar() {
     conpany_prefecture: [],
     company_name: [],
     industry: [],
+    calender: [],
   });
 
   const { GetTagListFunction } = GetTagList();
@@ -213,14 +217,7 @@ export default function Searchbar() {
 
   const getGraduationYearTag = async () => {
     let optionArray = [];
-    let result = [
-      "2025年卒業",
-      "2026年卒業",
-      "2027年卒業",
-      "2028年卒業",
-      "2029年卒業",
-      "2030年卒業",
-    ];
+    let result = ["2025年卒業", "2026年卒業", "2027年卒業", "2028年卒業", "2029年卒業", "2030年卒業"];
 
     // console.log("result: ", result);
     result.map((value) => {
@@ -233,6 +230,9 @@ export default function Searchbar() {
     }));
   };
 
+  const isDisplayed = NewsDisplayed();
+
+  console.log("isDisplayed", isDisplayed);
   // const schoolTypeCodes = ["H1", "F1"]; // 複数のschool_type_codeを配列として定義
   // const fetchSchoolNameData = async () => {
   // let allSchools = [];
@@ -291,10 +291,7 @@ export default function Searchbar() {
     let optionArray = [];
 
     // 学生アカウントで使用されている学校名のみを取得
-    const response = await axios.get(
-      `http://localhost:8000/get_student_school_name_tag`,
-      {}
-    );
+    const response = await axios.get(`http://localhost:8000/get_student_school_name_tag`, {});
 
     response.data.map((value) => {
       optionArray.push({ value: value, label: value });
@@ -309,10 +306,7 @@ export default function Searchbar() {
   const fetchCompanyNameData = async () => {
     try {
       // console.log("fetchCompanyNameData: OK");
-      const response = await axios.get(
-        `http://localhost:8000/get_company_name_list`,
-        {}
-      );
+      const response = await axios.get(`http://localhost:8000/get_company_name_list`, {});
 
       // console.log("fetchCompanyNameData response: ");
       // console.log(response.data);
@@ -504,10 +498,7 @@ export default function Searchbar() {
       getTag("student_programming_language", "student_programming_language");
 
       // 開発環境のタグ一覧を取得
-      getTag(
-        "student_development_environment",
-        "student_development_environment"
-      );
+      getTag("student_development_environment", "student_development_environment");
 
       // ソフトウェアのタグ一覧を取得
       getTag("student_software", "software");
@@ -603,11 +594,11 @@ export default function Searchbar() {
   // マイページ、Topページ、
   let RefineSearch =
     location.pathname != "/Profile/" + location.pathname.split("/")[2] + "/mypage" &&
-      location.pathname != "/Top" &&
-      location.pathname != "/Settings" &&
-      location.pathname != "/Chat" &&
-      location.pathname != "/WorkPosting" &&
-      location.pathname != "/VideoPosting"
+    location.pathname != "/Top" &&
+    location.pathname != "/Settings" &&
+    location.pathname != "/Chat" &&
+    location.pathname != "/WorkPosting" &&
+    location.pathname != "/VideoPosting"
       ? true
       : false;
   // console.log("let RefineSearch =", RefineSearch);
@@ -863,10 +854,7 @@ export default function Searchbar() {
         // StudentList-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
-      } else if (
-        PathName.startsWith("/Profile/") &&
-        PathName.endsWith("/work")
-      ) {
+      } else if (PathName.startsWith("/Profile/") && PathName.endsWith("/work")) {
         // 学生プロフィール内の作品一覧の場合
         const url = `http://localhost:8000/search_work?page=${Page}&sort=${sortOption}`;
 
@@ -904,10 +892,7 @@ export default function Searchbar() {
         // company-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
-      } else if (
-        PathName.startsWith("/Profile/") &&
-        PathName.endsWith("/movie")
-      ) {
+      } else if (PathName.startsWith("/Profile/") && PathName.endsWith("/movie")) {
         // 学生プロフィール内の作品一覧の場合
         const url = `http://localhost:8000/search_video?page=${Page}&sort=${sortOption}`;
 
@@ -990,10 +975,7 @@ export default function Searchbar() {
         // company-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
-      } else if (
-        PathName.startsWith("/Profile/") &&
-        PathName.endsWith("/JobOffer")
-      ) {
+      } else if (PathName.startsWith("/Profile/") && PathName.endsWith("/JobOffer")) {
         // 企業プロフィール内での求人の場合
         const url = `http://localhost:8000/search_internship_job_offer?page=${Page}`;
 
@@ -1058,10 +1040,7 @@ export default function Searchbar() {
         // company-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
-      } else if (
-        PathName.startsWith("/Profile/") &&
-        PathName.endsWith("/Internship")
-      ) {
+      } else if (PathName.startsWith("/Profile/") && PathName.endsWith("/Internship")) {
         // 企業プロフィール内での求人の場合
         const url = `http://localhost:8000/search_internship_job_offer?page=${Page}`;
 
@@ -1126,10 +1105,7 @@ export default function Searchbar() {
         // company-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
-      } else if (
-        PathName.startsWith("/Profile/") &&
-        PathName.endsWith("/Session")
-      ) {
+      } else if (PathName.startsWith("/Profile/") && PathName.endsWith("/Session")) {
         // 企業プロフィール内での求人の場合
         const url = `http://localhost:8000/search_internship_job_offer?page=${Page}`;
 
@@ -1194,10 +1170,7 @@ export default function Searchbar() {
         // company-view.jsxにデータを渡す
         const responseData = response.data;
         responseItems(responseData);
-      } else if (
-        PathName.startsWith("/Profile/") &&
-        PathName.endsWith("/Blog")
-      ) {
+      } else if (PathName.startsWith("/Profile/") && PathName.endsWith("/Blog")) {
         // 企業プロフィール内での求人の場合
         const url = `http://localhost:8000/search_internship_job_offer?page=${Page}`;
 
@@ -1643,6 +1616,7 @@ export default function Searchbar() {
       prefecture: [],
       company_name: [],
       industry: [],
+      calender: [],
     }));
   };
 
@@ -1660,8 +1634,7 @@ export default function Searchbar() {
   // }, saveOptions);
 
   // 空だったらtrue
-  const isAllEmpty = (obj) =>
-    Object.values(obj).every((value) => value.length === 0);
+  const isAllEmpty = (obj) => Object.values(obj).every((value) => value.length === 0);
 
   // 検索ボタンを押したとき
   const handleSearch = () => {
@@ -1713,21 +1686,12 @@ export default function Searchbar() {
       let url = new URL(window.location.href);
       let urlPageParams = url.searchParams.get("page");
       let urlCategoryParams = url.searchParams.get("category");
-      console.log(
-        "searchSourceList:urlPageParams",
-        "/Internship_JobOffer/" + urlPageParams
-      );
-      console.log(
-        "searchSourceList:urlCategoryParams",
-        "/Profile/" + urlCategoryParams
-      );
+      console.log("searchSourceList:urlPageParams", "/Internship_JobOffer/" + urlPageParams);
+      console.log("searchSourceList:urlCategoryParams", "/Profile/" + urlCategoryParams);
       console.log("searchSourceList:PathName", PathName);
       if ("/Internship_JobOffer/" + urlPageParams == PathName) {
         console.log("searchSourceList:Page", Page);
-        console.log(
-          "IsSearch.Check, Page, IsSearch.searchToggle, sortOption",
-          PathName
-        );
+        console.log("IsSearch.Check, Page, IsSearch.searchToggle, sortOption", PathName);
         searchSourceList();
       } else if ("/Internship_JobOffer" != location.pathname) {
         searchSourceList();
@@ -1904,8 +1868,8 @@ export default function Searchbar() {
       {RefineSearch && (
         <>
           {(PathName.startsWith("/Profile/") && PathName.endsWith("/mypage")) ||
-            (PathName.startsWith("/WorkDetail/") && PathName.endsWith("")) ||
-            (PathName.startsWith("/VideoDetail/") && PathName.endsWith("")) ? null : (
+          (PathName.startsWith("/WorkDetail/") && PathName.endsWith("")) ||
+          (PathName.startsWith("/VideoDetail/") && PathName.endsWith("")) ? null : (
             <>
               <Box>
                 <OutlinedInput
@@ -1914,10 +1878,7 @@ export default function Searchbar() {
                   value={searchSource.searchText}
                   onChange={handleChangeText}
                   onKeyDown={(e) => {
-                    if (
-                      e.key === "Enter" &&
-                      searchSource.searchText.trim() !== ""
-                    ) {
+                    if (e.key === "Enter" && searchSource.searchText.trim() !== "") {
                       handleSearch();
                     } else if (e.key === "Enter") {
                       e.preventDefault(); //入力が空の場合はEnterキーを無効化
@@ -1936,10 +1897,7 @@ export default function Searchbar() {
                         <IconSearch stroke={1.5} size="16px" />
                       </InputAdornment>
                     ) : (
-                      <InputAdornment
-                        position="start"
-                        sx={{ mr: 1, fontWeight: "fontWeightBold" }}
-                      >
+                      <InputAdornment position="start" sx={{ mr: 1, fontWeight: "fontWeightBold" }}>
                         <IconSearch stroke={1.5} size="16px" />
                       </InputAdornment>
                     )
@@ -1947,10 +1905,7 @@ export default function Searchbar() {
                   endAdornment={
                     // 絞り込みアイコン
 
-                    <InputAdornment
-                      position="end"
-                      style={{ display: Display.thisCompanyNews }}
-                    >
+                    <InputAdornment position="end" style={{ display: Display.thisCompanyNews }}>
                       <HeaderAvatar onClick={handleOpen}>
                         <IconAdjustmentsHorizontal stroke={1.5} size="18px" />
                       </HeaderAvatar>
@@ -1970,12 +1925,7 @@ export default function Searchbar() {
                   }}
                 />
               </Box>
-              <Modal
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-              >
+              <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
                 <Box
                   sx={{
                     position: "absolute",
@@ -2025,9 +1975,7 @@ export default function Searchbar() {
                     >
                       <CloseIcon />
                     </IconButton>
-                    <Divider
-                      sx={{ borderStyle: "dashed", m: 0, display: "block" }}
-                    />
+                    <Divider sx={{ borderStyle: "dashed", m: 0, display: "block" }} />
                     {/* ---------------------------------------------------------- */}
                     <Stack
                       sx={{
@@ -2297,14 +2245,10 @@ export default function Searchbar() {
                                       ref={areaRef}
                                       placeholder="▼"
                                       options={options.development_environment}
-                                      value={
-                                        searchSource.development_environment
-                                      }
+                                      value={searchSource.development_environment}
                                       isClearable
                                       isMulti
-                                      onChange={
-                                        handleChangeDevelopmentEnvironment
-                                      }
+                                      onChange={handleChangeDevelopmentEnvironment}
                                     />
                                   </div>
                                 </Box>
@@ -2797,17 +2741,11 @@ export default function Searchbar() {
                                     <Select
                                       ref={areaRef}
                                       placeholder="▼"
-                                      options={
-                                        options.student_programming_language
-                                      }
-                                      value={
-                                        searchSource.student_programming_language
-                                      }
+                                      options={options.student_programming_language}
+                                      value={searchSource.student_programming_language}
                                       isClearable
                                       isMulti
-                                      onChange={
-                                        handleChangeStudentProgrammingLanguage
-                                      }
+                                      onChange={handleChangeStudentProgrammingLanguage}
                                     />
                                   </div>
                                 </Box>
@@ -2831,17 +2769,11 @@ export default function Searchbar() {
                                     <Select
                                       ref={areaRef}
                                       placeholder="▼"
-                                      options={
-                                        options.student_development_environment
-                                      }
-                                      value={
-                                        searchSource.student_development_environment
-                                      }
+                                      options={options.student_development_environment}
+                                      value={searchSource.student_development_environment}
                                       isClearable
                                       isMulti
-                                      onChange={
-                                        handleChangeStudentDevelopmentEnvironment
-                                      }
+                                      onChange={handleChangeStudentDevelopmentEnvironment}
                                     />
                                   </div>
                                 </Box>
@@ -2893,17 +2825,11 @@ export default function Searchbar() {
                                     <Select
                                       ref={areaRef}
                                       placeholder="▼"
-                                      options={
-                                        options.acquisition_qualification
-                                      }
-                                      value={
-                                        searchSource.acquisition_qualification
-                                      }
+                                      options={options.acquisition_qualification}
+                                      value={searchSource.acquisition_qualification}
                                       isClearable
                                       isMulti
-                                      onChange={
-                                        handleChangeAcquisitionQualification
-                                      }
+                                      onChange={handleChangeAcquisitionQualification}
                                     />
                                   </div>
                                 </Box>
@@ -3017,14 +2943,10 @@ export default function Searchbar() {
                                       ref={areaRef}
                                       placeholder="▼"
                                       options={options.development_environment}
-                                      value={
-                                        searchSource.development_environment
-                                      }
+                                      value={searchSource.development_environment}
                                       isClearable
                                       isMulti
-                                      onChange={
-                                        handleChangeDevelopmentEnvironment
-                                      }
+                                      onChange={handleChangeDevelopmentEnvironment}
                                     />
                                   </div>
                                 </Box>
@@ -3205,14 +3127,10 @@ export default function Searchbar() {
                                       ref={areaRef}
                                       placeholder="▼"
                                       options={options.development_environment}
-                                      value={
-                                        searchSource.development_environment
-                                      }
+                                      value={searchSource.development_environment}
                                       isClearable
                                       isMulti
-                                      onChange={
-                                        handleChangeDevelopmentEnvironment
-                                      }
+                                      onChange={handleChangeDevelopmentEnvironment}
                                     />
                                   </div>
                                 </Box>
@@ -3264,17 +3182,11 @@ export default function Searchbar() {
                                     <Select
                                       ref={areaRef}
                                       placeholder="▼"
-                                      options={
-                                        options.acquisition_qualification
-                                      }
-                                      value={
-                                        searchSource.acquisition_qualification
-                                      }
+                                      options={options.acquisition_qualification}
+                                      value={searchSource.acquisition_qualification}
                                       isClearable
                                       isMulti
-                                      onChange={
-                                        handleChangeAcquisitionQualification
-                                      }
+                                      onChange={handleChangeAcquisitionQualification}
                                     />
                                   </div>
                                 </Box>
@@ -3314,12 +3226,25 @@ export default function Searchbar() {
                           PathName === "/Internship_JobOffer/Session" ||
                           PathName === "/Internship_JobOffer/Blog" ? (
                           <>
-
                             <Grid container spacing={2}>
                               {/*  DeadlineCalender 応募締め切り */}
-                              <DeadlineCalender />
-                              {/* EventCalender 開催日 */}
-                              <EventCalender />
+                              {isDisplayed ? (
+                                <Grid item sx={{ width: "100%" }}>
+                                  <Stack
+                                    direction="row"
+                                    spacing={2}
+                                    sx={{
+                                      justifyContent: "center",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    <DeadlineCalender searchSource={searchSource.calender}   />
+                                    {/* EventCalender 開催日 */}
+                                    <EventCalender searchSource={searchSource.calender} />
+                                  </Stack>
+                                </Grid>
+                              ) : null}
+
                               {myId[0] === "S" ? (
                                 <>
                                   <Grid item xs={12} sm={6} md={4}>
@@ -3356,7 +3281,6 @@ export default function Searchbar() {
                                 ""
                               )}
                               <Grid item xs={12} sm={6} md={4}>
-
                                 <Box sx={{ marginTop: "20px", marginBottom: "10px" }}>
                                   <div style={{ fontWeight: "Bold", color: "#666" }}>企業名</div>
                                   <div style={{ color: "#444" }}>
@@ -3476,14 +3400,10 @@ export default function Searchbar() {
                                       ref={areaRef}
                                       placeholder="▼"
                                       options={options.development_environment}
-                                      value={
-                                        searchSource.development_environment
-                                      }
+                                      value={searchSource.development_environment}
                                       isClearable
                                       isMulti
-                                      onChange={
-                                        handleChangeDevelopmentEnvironment
-                                      }
+                                      onChange={handleChangeDevelopmentEnvironment}
                                     />
                                   </div>
                                 </Box>
@@ -3535,17 +3455,11 @@ export default function Searchbar() {
                                     <Select
                                       ref={areaRef}
                                       placeholder="▼"
-                                      options={
-                                        options.acquisition_qualification
-                                      }
-                                      value={
-                                        searchSource.acquisition_qualification
-                                      }
+                                      options={options.acquisition_qualification}
+                                      value={searchSource.acquisition_qualification}
                                       isClearable
                                       isMulti
-                                      onChange={
-                                        handleChangeAcquisitionQualification
-                                      }
+                                      onChange={handleChangeAcquisitionQualification}
                                     />
                                   </div>
                                 </Box>
@@ -3639,25 +3553,13 @@ export default function Searchbar() {
                           },
                         }}
                       >
-                        <Button
-                          className={classes.textField}
-                          variant="outlined"
-                          onClick={handleTagReset}
-                        >
+                        <Button className={classes.textField} variant="outlined" onClick={handleTagReset}>
                           タグをリセット
                         </Button>
-                        <Button
-                          className={classes.textField}
-                          variant="outlined"
-                          onClick={handleCancel}
-                        >
+                        <Button className={classes.textField} variant="outlined" onClick={handleCancel}>
                           キャンセル
                         </Button>
-                        <Button
-                          className={classes.textField}
-                          variant="contained"
-                          onClick={handleSearch}
-                        >
+                        <Button className={classes.textField} variant="contained" onClick={handleSearch}>
                           検索
                         </Button>
                       </Stack>

@@ -9,7 +9,7 @@ export default function WriteFormPage() {
   return (
     <>
       <Helmet>
-        <title> 応募する | Minimal UI </title>
+        <title> 応募する | Work&Connect </title>
       </Helmet>
 
       <WriteFormView />

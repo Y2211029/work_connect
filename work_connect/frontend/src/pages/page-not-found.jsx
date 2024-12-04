@@ -8,7 +8,7 @@ export default function NotFoundPage() {
   return (
     <>
       <Helmet>
-        <title> 404 Page Not Found </title>
+        <title> 404エラー | Work&Connect </title>
       </Helmet>
 
       <NotFoundView />

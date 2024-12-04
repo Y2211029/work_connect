@@ -297,6 +297,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       ItemName: "求人一覧",
       url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/JobOffer`,
       idKey: "id",
+<<<<<<< HEAD
       tags: ["company_name"],
       generatePosts: (WorkOfList) => {
         if (Array.isArray(WorkOfList)) {
@@ -325,11 +326,34 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           return [{ news_list }]; // 1つのオブジェクトにまとめた配列として返す
         }
       },
+=======
+      tags: ["genre", "Occupation"],
+      generatePosts: (WorkOfList) =>
+        WorkOfList.map((company) => ({
+          company_id: company.company_id,
+          news_id: company.news_id,
+          user_name: company.user_name,
+          company_name: company.company_name,
+          article_title: company.article_title,
+          genre: company.genre,
+          header_img: company.header_img,
+          news_created_at: company.news_created_at,
+          icon_id: company.icon_id,
+          followStatus: company.follow_status,
+          deadline: company.deadline,
+          event_day: company.event_day,
+          count: company.form_data_count,
+          Occupation: ["システムエンジニア", "セキュリティエンジニア"],
+          DeatLine: "2024-10-10",
+          EventDate: "2024-10-10",
+        })),
+>>>>>>> ecb4ac98d9b721722ea431797d90404cd8844edd
     },
     Internship: {
       ItemName: "インターンシップ一覧",
       url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/Internship`,
       idKey: "id",
+<<<<<<< HEAD
       tags: ["genre"],
       generatePosts: (WorkOfList) => {
         if (Array.isArray(WorkOfList)) {
@@ -359,11 +383,34 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           return [{ news_list }]; // 1つのオブジェクトにまとめた配列として返す
         }
       },
+=======
+      tags: ["genre", "Occupation"],
+      generatePosts: (WorkOfList) =>
+        WorkOfList.map((company) => ({
+          company_id: company.company_id,
+          news_id: company.news_id,
+          user_name: company.user_name,
+          company_name: company.company_name,
+          article_title: company.article_title,
+          genre: company.genre,
+          header_img: company.header_img,
+          news_created_at: company.news_created_at,
+          icon_id: company.icon_id,
+          followStatus: company.follow_status,
+          deadline: company.deadline,
+          event_day: company.event_day,
+          count: company.form_data_count,
+          Occupation: ["システムエンジニア", "セキュリティエンジニア"],
+          DeatLine: "2024-10-10",
+          EventDate: "2024-10-10",
+        })),
+>>>>>>> ecb4ac98d9b721722ea431797d90404cd8844edd
     },
     Session: {
       ItemName: "説明会一覧",
       url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/Session`,
       idKey: "id",
+<<<<<<< HEAD
       tags: ["genre"],
       generatePosts: (WorkOfList) => {
         if (Array.isArray(WorkOfList)) {
@@ -391,12 +438,35 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           return [{ news_list }]; // 1つのオブジェクトにまとめた配列として返す
         }
       },
+=======
+      tags: ["genre", "Occupation"],
+      generatePosts: (WorkOfList) =>
+        WorkOfList.map((company) => ({
+          company_id: company.company_id,
+          news_id: company.news_id,
+          user_name: company.user_name,
+          company_name: company.company_name,
+          article_title: company.article_title,
+          genre: company.genre,
+          header_img: company.header_img,
+          news_created_at: company.news_created_at,
+          icon_id: company.icon_id,
+          followStatus: company.follow_status,
+          deadline: company.deadline,
+          event_day: company.event_day,
+          count: company.form_data_count,
+          Occupation: ["システムエンジニア", "セキュリティエンジニア"],
+          DeatLine: "2024-10-10",
+          EventDate: "2024-10-10",
+        })),
+>>>>>>> ecb4ac98d9b721722ea431797d90404cd8844edd
     },
     Blog: {
       ItemName: "ブログ一覧",
       url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/Blog`,
       idKey: "id",
       tags: ["genre"],
+<<<<<<< HEAD
       generatePosts: (WorkOfList) => {
         if (Array.isArray(WorkOfList)) {
           if (WorkOfList.length === 0) {
@@ -422,6 +492,24 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           return [{ news_list }]; // 1つのオブジェクトにまとめた配列として返す
         }
       },    },
+=======
+      generatePosts: (WorkOfList) =>
+        WorkOfList.map((company, index) => ({
+          company_id: company.company_id,
+          news_id: company.news_id,
+          user_name: company.user_name,
+          company_name: company.company_name,
+          article_title: company.article_title,
+          genre: company.genre,
+          header_img: company.header_img,
+          news_created_at: company.news_created_at,
+          icon: company.icon,
+          followStatus: company.follow_status,
+          count: company.form_data_count,
+          index: index, 
+        })),
+    },
+>>>>>>> ecb4ac98d9b721722ea431797d90404cd8844edd
     writeforms: {
       ItemName: "応募用フォーム",
       url: `http://localhost:8000/write_form_get/${NewsDetailId}`,
@@ -474,8 +562,9 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       ItemName: `${ParamUserName}さんのインターンシップ一覧`,
       url: `http://localhost:8000/Internship_JobOffer/special_company_news/${ParamUserName}/${SessionAccountData.id}/Internship`,
       idKey: "id",
-      tags: ["genre"],
+      tags: ["genre", "Occupation"],
       generatePosts: (WorkOfList) => {
+<<<<<<< HEAD
         if (Array.isArray(WorkOfList)) {
           if (WorkOfList.length === 0) {
             // 空配列の場合に空配列を返す
@@ -502,14 +591,32 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
 
           return [{ news_list }]; // 1つのオブジェクトにまとめた配列として返す
         }
+=======
+        return WorkOfList.map((company) => ({
+          company_id: company.company_id,
+          news_id: company.news_id,
+          company_name: company.company_name,
+          article_title: company.article_title,
+          genre: company.genre,
+          header_img: company.header_img,
+          news_created_at: company.news_created_at,
+          icon_id: company.icon_id,
+          follow_status: company.follow_status,
+          count: company.form_data_count,
+          Occupation: ["システムエンジニア", "セキュリティエンジニア"],
+          DeatLine: "2024-10-10",
+          EventDate: "2024-10-10",
+        }));
+>>>>>>> ecb4ac98d9b721722ea431797d90404cd8844edd
       },
     },
     specialsessions: {
       ItemName: `${ParamUserName}さんの説明会一覧`,
       url: `http://localhost:8000/Internship_JobOffer/special_company_news/${ParamUserName}/${SessionAccountData.id}/Session`,
       idKey: "id",
-      tags: ["genre"],
+      tags: ["genre", "Occupation"],
       generatePosts: (WorkOfList) => {
+<<<<<<< HEAD
         if (Array.isArray(WorkOfList)) {
           if (WorkOfList.length === 0) {
             // 空配列の場合に空配列を返す
@@ -536,6 +643,23 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
 
           return [{ news_list }]; // 1つのオブジェクトにまとめた配列として返す
         }
+=======
+        return WorkOfList.map((company) => ({
+          company_id: company.company_id,
+          news_id: company.news_id,
+          company_name: company.company_name,
+          article_title: company.article_title,
+          genre: company.genre,
+          header_img: company.header_img,
+          news_created_at: company.news_created_at,
+          icon_id: company.icon_id,
+          follow_status: company.follow_status,
+          count: company.form_data_count,
+          Occupation: ["システムエンジニア", "セキュリティエンジニア"],
+          DeatLine: "2024-10-10",
+          EventDate: "2024-10-10",
+        }));
+>>>>>>> ecb4ac98d9b721722ea431797d90404cd8844edd
       },
     },
     specialblogs: {

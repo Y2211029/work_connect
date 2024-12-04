@@ -14,7 +14,7 @@ export default function SpecialFormsPage() {
   return (
     <>
       <Helmet>
-        <title>応募フォーム一覧 | Minimal UI</title>
+        <title>応募フォーム一覧 | Work&Connect</title>
       </Helmet>
 
       <ListView type="specialforms" ParamUserName={UserName} />

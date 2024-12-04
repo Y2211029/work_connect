@@ -11,11 +11,17 @@ import Tooltip from "@mui/material/Tooltip";
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import { follow } from "src/_mock/follow";
+<<<<<<< HEAD
 import axios from "axios";
+=======
+import { TypographyItems } from "src/components/typography/ItemTypography";
+import NewsDisplayed from "src/components/search/NewsDisplayed";
+>>>>>>> ecb4ac98d9b721722ea431797d90404cd8844edd
 
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef(({ post }, ref) => {
+<<<<<<< HEAD
   const { news_list } = post;
   // useEffect(() => {
   //   console.log("company_id", company_id);
@@ -33,6 +39,38 @@ const PostCard = forwardRef(({ post }, ref) => {
   const news_delete_url = `http://localhost:8000/news_delete`;
   console.log("締切日", newsList.deadline);
   console.log("開催日", newsList.event_day);
+=======
+  const {
+    company_id,
+    news_id,
+    company_name,
+    user_name,
+    article_title,
+    genre,
+    header_img,
+    news_created_at,
+    follow_status: initialFollowStatus,
+    icon,
+    deadline,
+    event_day,
+    count,    
+    Occupation,
+    DeatLine,
+    EventDate,
+  } = post;
+
+  useEffect(() => {
+    console.log("company_id", company_id);
+    console.log("user_name", user_name);
+  }, [company_id]);
+
+  console.log("締切日", deadline);
+  console.log("開催日", event_day);
+  const [followStatus, setFollowStatus] = useState(initialFollowStatus);
+  const { getSessionData } = useSessionStorage();
+  const accountData = getSessionData("accountData");
+  const isDisplayed = NewsDisplayed();
+>>>>>>> ecb4ac98d9b721722ea431797d90404cd8844edd
 
   console.log("ニュースリスト", newsList);
 
@@ -136,6 +174,7 @@ const PostCard = forwardRef(({ post }, ref) => {
     ) : null;
 
   // ジャンル
+<<<<<<< HEAD
   const renderGenre = (news) => {
     if (!news.genre) return null; // genreがnullまたはundefinedなら何も返さない
     const company_id = news.company_id;
@@ -159,6 +198,24 @@ const PostCard = forwardRef(({ post }, ref) => {
           {genre === "Internship"
             ? "インターンシップ"
             : genre === "Blog"
+=======
+  const renderGenre = genre ? (
+    <Stack
+      direction="row"
+      justifyContent="space-between"
+      alignItems="center"
+      spacing={1}
+      sx={{
+        mt: 3,
+        color: "common.black",
+        padding: "5px",
+      }}
+    >
+      {/* <div>
+        {genre === "Internship"
+          ? "インターンシップ"
+          : genre === "Blog"
+>>>>>>> ecb4ac98d9b721722ea431797d90404cd8844edd
             ? "ブログ"
             : genre === "JobOffer"
             ? "求人"
@@ -173,6 +230,7 @@ const PostCard = forwardRef(({ post }, ref) => {
         {/* 締切日をフォーマットして表示 */}
         {news.deadline && formatDate(news.deadline)}
 
+<<<<<<< HEAD
         {/* 開催日があれば表示 */}
         {news.event_day && <div>開催日: {news.event_day}</div>}
       </Stack>
@@ -193,10 +251,55 @@ const PostCard = forwardRef(({ post }, ref) => {
       {title}
     </Link>
   );
+=======
+      {formatDate(deadline)}
+      <br></br>
+      {event_day && <div>開催日: {event_day}</div>}
+    </Stack>
+  ) : null;
 
+  console.log("DeatLine", DeatLine);
+  if (isDisplayed) {
+    console.log("isDisplayed", isDisplayed);
+  }
+  let renderOccupation = "";
+  let renderDeatLine = "";
+  let renderEventDate = "";
+>>>>>>> ecb4ac98d9b721722ea431797d90404cd8844edd
+
+  // 職種
+  if (isDisplayed && (Occupation !== null || Occupation !== "" || Occupation !== undefined)) {
+    renderOccupation = <TypographyItems ItemName="職種 " ItemDetail={Occupation} />;
+  } else {
+    renderDeatLine = "";
+  }
+
+  // 応募締切 renderDeatLine
+  if (isDisplayed && (DeatLine !== null || DeatLine !== "" || DeatLine !== undefined)) {
+    renderDeatLine = <TypographyItems ItemName="応募締切" ItemDetail={DeatLine} />;
+  } else {
+    renderDeatLine = "";
+  }
+
+  // 開催日
+  if (isDisplayed && (EventDate !== null || EventDate !== "" || EventDate !== undefined)) {
+    renderEventDate = <TypographyItems ItemName="開催日" ItemDetail={EventDate} />;
+  } else {
+    renderEventDate = "";
+  }
+
+  // タイトル
+  const renderTitle = article_title !== null && article_title;
+
+  console.log("renderDeatLine", renderDeatLine);
+  console.log("renderEventDate", renderEventDate);
+  console.log("renderOccupation", renderOccupation);
+
+  const alternativeImage = "http://localhost:8000/storage/images/work/NoImage.png";
   // サムネイル
   const renderThumbnail = (header_img) => (
     <Box
+<<<<<<< HEAD
       sx={{
         position: "relative",
         width: "100%",
@@ -238,6 +341,21 @@ const PostCard = forwardRef(({ post }, ref) => {
         </Tooltip>
       )}
     </Box>
+=======
+      component="img"
+      src={header_img}
+      onError={(e) => {
+        e.target.src = alternativeImage; // エラー時にサンプル画像をセット
+      }}
+      sx={{
+        aspectRatio: 16 / 9,
+        borderRadius: "5px",
+        width: "100%",
+        objectFit: "cover",
+        marginBottom: "10px",
+      }}
+    />
+>>>>>>> ecb4ac98d9b721722ea431797d90404cd8844edd
   );
 
 
@@ -314,8 +432,17 @@ const PostCard = forwardRef(({ post }, ref) => {
     </Stack>
   );
 
+  // const renderDay = {
+  //   <>
+  //   renderDeatLine
+  //            renderEventDate
+  //            renderOccupation
+  //   </>
+  // };
+
   return (
     <>
+<<<<<<< HEAD
      {newsList.map((news, index) => (
       <div key={index} ref={ref}>
         <Stack sx={{ display: "inline-block" }}>
@@ -329,6 +456,24 @@ const PostCard = forwardRef(({ post }, ref) => {
         </Stack>
       </div>
      ))}
+=======
+      <div ref={ref}>
+        <Link to={`/news_detail/${news_id}`} variant="subtitle2" underline="none" className="link item-Link">
+          <Stack sx={{ display: "inline-block", width: "100%" }}>
+            <div className="postCard item-stack" style={{ width: "100%" }}>
+              {renderThumbnail}
+              {renderTitle}
+              {renderGenre}
+              {renderDeatLine}
+              {renderEventDate}
+              {renderOccupation}
+              {renderFollow}
+              {renderInfo}
+            </div>
+          </Stack>
+        </Link>
+      </div>
+>>>>>>> ecb4ac98d9b721722ea431797d90404cd8844edd
     </>
   );
 });

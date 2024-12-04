@@ -91,6 +91,7 @@ const Editor = () => {
   const [charCount, setCharCount] = useState(0);
   const [usedImages, setUsedImages] = useState(null);
   const [notificationMessage, setNotificationMessage] = useState("");
+  const [eventDay, setEventDay] = useState("");
   const [isSaved, setIsSaved] = useState(false);
   const [CreateFormOpen, setCreateFormOpen] = useState(false);
   const [formSummary, setFormSummary] = useState(null);
@@ -102,7 +103,7 @@ const Editor = () => {
   const thumbnail_image_save_url = "http://127.0.0.1:8000/thumbnail_image_save";
 
   const csrf_url = "http://localhost:8000/csrf-token";
-  const isContentReady = !!(title && imageUrl && charCount); // 必須データが揃っているか確認
+  const isContentReady = !!(title && imageUrl && charCount && eventDay); // 必須データが揃っているか確認
   const isFollowerValid = (followerCounter > 0 && notificationMessage) || (followerCounter === 0 || followerCounter === undefined);
 
   const navigate = useNavigate();
@@ -175,6 +176,12 @@ const Editor = () => {
   const notification_messagehandleChange = (e) => {
     const newValue = e.target.value;
     setNotificationMessage(newValue);
+    console.log("newValue", newValue);
+  }
+
+  const event_dayhandleChange = (e) => {
+    const newValue = e.target.value;
+    setEventDay(newValue);
     console.log("newValue", newValue);
   }
 
@@ -1531,6 +1538,12 @@ const Editor = () => {
         message={notificationMessage}
       />
     }] : []),
+    ...(genre !== "Blog" ? [{
+      key: "eventDay", text: "開催日を指定する", render:
+        <NewsMenu menuKey={'eventDay'}
+        EventDayHandleChange = {event_dayhandleChange}
+        />
+    }] : []),
     // 条件を満たした場合のみ追加
     ...(genre !== "Blog" ? [{
       key: "createForm", text: "応募フォームを作成する", render:
@@ -1539,6 +1552,7 @@ const Editor = () => {
           selected_draft={selected_draft}
         />
     }] : []),
+
     ...((isContentReady && isFollowerValid) ? [{
       key: "releaseNews", text: "ニュースを公開する", render: <NewsMenu menuKey={'releaseNews'}
         NewsUpLoad={news_upload}

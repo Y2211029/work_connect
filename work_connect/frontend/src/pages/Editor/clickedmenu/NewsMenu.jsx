@@ -21,6 +21,27 @@ import Button from "@mui/material/Button";
 //時間
 import moment from 'moment-timezone';
 
+// 応募締め切り日を設定:MUI
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+import "dayjs/locale/ja";
+
+const InputDateWithTime = ({ date, event_dayhandleChange, format = "YYYY/MM/DD HH:mm" }) => {
+  return (
+      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"ja"}>
+          <DateTimePicker
+              value={dayjs(date)}
+              format={format}
+              onChange={event_dayhandleChange}
+              slotProps={{ calendarHeader: { format: "YYYY/MM" } }}
+              ampm={false}
+              clearable
+          />
+      </LocalizationProvider>
+  );
+};
+
 const NewsMenu = ({
   menuKey,
   CreateFormJump,
@@ -39,6 +60,7 @@ const NewsMenu = ({
   followerCounter }) => {
 
   console.log("menuKey",menuKey);
+  dayjs.locale("ja");
 
   //関数
   const FormattedDate = (time) => {
@@ -161,6 +183,16 @@ const NewsMenu = ({
     />
   )
 
+  const eventDayrender = (
+    <InputDateWithTime
+        date={dayjs()} // 初期値を適宜設定
+        event_dayhandleChange={(newDate) => {
+            const formattedDate = dayjs(newDate.$d).format("YYYY-MM-DD HH:mm:ss");
+            console.log("新しい締切日", formattedDate);
+        }}
+    />
+  );
+
   console.log("ドラフトリスト", draftlist);
 
   const createFormrender = (
@@ -209,6 +241,8 @@ const NewsMenu = ({
         return createFormrender;
       case 'releaseNews':
         return releaseNewsrender;
+        case 'eventDay':
+          return eventDayrender;
       default:
         return null;
     }
@@ -243,6 +277,18 @@ NewsMenu.propTypes = {
   imageUrl: PropTypes.string.isRequired, //サムネイル画像
   selected_draft: PropTypes.array.isRequired, //現在下書き中のニュース＆フォームの情報
   followerCounter: PropTypes.number.isRequired,
+};
+
+// PropTypesの型定義
+InputDateWithTime.propTypes = {
+  date: PropTypes.object,
+  event_dayhandleChange: PropTypes.func.isRequired,
+  format: PropTypes.string,
+};
+
+// デフォルト値の設定（必要であれば）
+InputDateWithTime.defaultProps = {
+  format: "YYYY/MM/DD HH:mm",
 };
 
 export default NewsMenu;

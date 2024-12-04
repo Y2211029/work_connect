@@ -252,7 +252,7 @@ class NewsController extends Controller
 
     // 全ニュース取得
     public function all_news_get(Request $request, $id, $category)
-    {
+    {       //$idは${SessionAccountData.id}なので自分のid
         try {
             Log::info("all_news_get通ってます");
             $page = (int) $request->query('page', 1);
@@ -279,6 +279,7 @@ class NewsController extends Controller
             $posts = $postsQuery->skip($offset)
                 ->take($perPage)
                 ->get();
+
 
             foreach ($posts as $post) {
 
@@ -309,15 +310,20 @@ class NewsController extends Controller
                 // 取得したフォームデータの数をpostsに追加
                 $post->form_data_count = $formData->count();
 
+                Log::info('sender_id: ' . $id);
+                Log::info('recipient_id: ' . $post->company_id);
+
+
+
                 $isFollowing = w_follow::where('follow_sender_id', $id)
-                    ->where('follow_recipient_id', $post->id)
-                    ->exists();
+                ->where('follow_recipient_id', $post->company_id)
+                ->exists();
 
-                $isFollowedByUser = w_follow::where('follow_sender_id', $post->id)
-                    ->where('follow_recipient_id', $id)
-                    ->exists();
+            $isFollowedByUser = w_follow::where('follow_sender_id', $post->company_id)
+                ->where('follow_recipient_id', $id)
+                ->exists();
 
-                if ($isFollowing && $isFollowedByUser) {
+            if ($isFollowing && $isFollowedByUser) {
                     $post->follow_status = '相互フォローしています';
                 } elseif ($isFollowing) {
                     $post->follow_status = 'フォローしています';
@@ -406,5 +412,30 @@ class NewsController extends Controller
         }
 
         return response()->json($posts);
+    }
+
+    public function news_delete(Request $request){
+        $news_id = $request->input('news_id');
+        Log::info("news_id" . $news_id);
+
+        //$news_idでニュースがあるかチェック
+        $news_check =w_news::where('id', $news_id)
+            ->first();
+
+        if($news_check){
+            //ニュースがあれば削除
+            $news_check->delete();
+
+            //応募用フォームを作成しているかチェック
+            $create_form_check = w_create_form::where('news_id', $news_id)
+                ->first();
+
+            //応募用フォームがあれば削除(応募したフォームは削除しない)
+            if($create_form_check){
+                $create_form_check->delete();
+            }
+
+            return response()->json("成功");
+        }
     }
 }

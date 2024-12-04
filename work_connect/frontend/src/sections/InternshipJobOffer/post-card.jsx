@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useState } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -11,50 +11,77 @@ import Tooltip from "@mui/material/Tooltip";
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import { follow } from "src/_mock/follow";
+import axios from "axios";
 
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef(({ post }, ref) => {
-  const {
-    company_id,
-    news_id,
-    company_name,
-    user_name,
-    article_title,
-    genre,
-    header_img,
-    news_created_at,
-    follow_status: initialFollowStatus,
-    icon,
-    deadline,
-    event_day,
-    count,
-  } = post;
+  const { news_list } = post;
+  // useEffect(() => {
+  //   console.log("company_id", company_id);
+  //   console.log("company_name", company_name);
+  //   console.log("news_id", news_id);
+  //   console.log("user_name", user_name);
+  //   console.log("article_title", article_title);
+  //   console.log("genre", genre);
+  // }, [company_id])
+  console.log("all_news_list", news_list);
 
-  useEffect(() => {
-    console.log("company_id", company_id);
-    console.log("user_name", user_name);
-  }, [company_id])
-
-  console.log("締切日", deadline);
-  console.log("開催日", event_day);
-  const [followStatus, setFollowStatus] = useState(initialFollowStatus);
+  const [newsList, setNewsList] = useState(news_list);
   const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData");
+  const news_delete_url = `http://localhost:8000/news_delete`;
+  console.log("締切日", newsList.deadline);
+  console.log("開催日", newsList.event_day);
 
-  const handleFollowClick = async () => {
+  console.log("ニュースリスト", newsList);
+
+  const handleFollowClick = async (company_id, news_id) => {
+    console.log(news_id);
     try {
-      const updatedFollowStatus = await follow(accountData.id, company_id);
-      if (updatedFollowStatus) {
-        setFollowStatus(updatedFollowStatus);
+        // フォロー処理を実行し、更新後のフォローステータスを取得
+        const updatedFollowStatus = await follow(accountData.id, company_id);
+        if (updatedFollowStatus) {
+            console.log("更新後のフォローステータス", updatedFollowStatus);
+
+            // newsList 内の特定のデータを更新
+            setNewsList((prevList) =>
+                prevList.map((news) =>
+                    news.news_id === news_id
+                        ? { ...news, followStatus: updatedFollowStatus } // フォロー状況更新
+                        : news
+                )
+            );
+        } else {
+            console.log("じゃあないってこと?");
+        }
+    } catch (error) {
+        console.error("フォロー処理中にエラーが発生しました！", error);
+    }
+};
+
+  const handleNewsDelete = async (news_id) => {
+    try {
+      console.log("ニュースid", news_id);
+      const NewsDeleteCheck = confirm("本当に削除しますか?");
+      if (NewsDeleteCheck) {
+        console.log("通ってます");
+        console.log("ニュースid", news_id);
+        const response = await axios.post(news_delete_url, {
+          news_id: news_id,
+        });
+        if (response) {
+          setNewsList((prevList) => prevList.filter((news) => news.news_id !== news_id));
+          console.log("成功");
+        }
       }
     } catch (error) {
       console.error("フォロー処理中にエラーが発生しました！", error);
     }
-  };
+  }
 
-  console.log("アイコンID", icon);
-  console.log("ユーザーネーム", user_name);
+  console.log("アイコンID", newsList.icon);
+  console.log("ユーザーネーム", newsList.user_name);
 
   // 日付をYY/MM/DDに変換する
   const formatDate = (dateString) => {
@@ -81,7 +108,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   };
 
   // 企業アイコン
-  const renderAvatar = (
+  const renderAvatar = (company_name,icon) => (
     <Avatar
       alt={company_name}
       src={icon ? `http://localhost:8000/storage/images/userIcon/${icon}` : ""}
@@ -93,11 +120,11 @@ const PostCard = forwardRef(({ post }, ref) => {
     />
   );
 
-  console.log("ユーザネーム", user_name);
+  console.log("ユーザネーム", newsList.user_name);
 
   // フォームのレンダリング（企業の投稿の場合）
-  const renderForm =
-    company_id === accountData.id && count > 0 ? (
+  const renderForm = (company_id,count,user_name)  =>
+      company_id === accountData.id && count > 0 ? (
       <Typography
         sx={{ opacity: 0.48, cursor: "pointer" }}
         onClick={() => {
@@ -109,44 +136,51 @@ const PostCard = forwardRef(({ post }, ref) => {
     ) : null;
 
   // ジャンル
-  const renderGenre = genre ? (
-    <Stack
-      direction="row"
-      justifyContent="space-between"
-      alignItems="center"
-      spacing={1}
-      sx={{
-        mt: 3,
-        color: "common.black",
-        padding: "5px",
-      }}
-    >
+  const renderGenre = (news) => {
+    if (!news.genre) return null; // genreがnullまたはundefinedなら何も返さない
+    const company_id = news.company_id;
+    const count = news.count;
+    const user_name = news.user_name;
 
-      {/* <div>
-        {genre === "Internship"
-          ? "インターンシップ"
-          : genre === "Blog"
+    return (
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        spacing={1}
+        sx={{
+          mt: 3,
+          color: "common.black",
+          padding: "5px",
+        }}
+      >
+        {/* ジャンル表示 */}
+        {/* <div>
+          {genre === "Internship"
+            ? "インターンシップ"
+            : genre === "Blog"
             ? "ブログ"
             : genre === "JobOffer"
-              ? "求人"
-              : genre === "Session"
-                ? "説明会"
-                : genre}{" "}
-      </div> */}
+            ? "求人"
+            : genre === "Session"
+            ? "説明会"
+            : genre}
+        </div> */}
 
-      <div>{genre}</div>
+        {/* フォーム表示 */}
+        {renderForm(company_id,count,user_name)}
 
-      {renderForm}
+        {/* 締切日をフォーマットして表示 */}
+        {news.deadline && formatDate(news.deadline)}
 
-      {formatDate(deadline)}<br></br>
-      {event_day && (
-  <div>開催日: {event_day}</div>
-    )}
-    </Stack>
-  ) : null;
+        {/* 開催日があれば表示 */}
+        {news.event_day && <div>開催日: {news.event_day}</div>}
+      </Stack>
+    );
+  };
 
   // タイトル
-  const renderTitle = (
+  const renderTitle = (news_id,title) => (
     <Link
       to={`/news_detail/${news_id}`}
       className="link"
@@ -156,33 +190,64 @@ const PostCard = forwardRef(({ post }, ref) => {
         fontWeight: "Bold",
       }}
     >
-      {article_title}
+      {title}
     </Link>
   );
 
   // サムネイル
-  const renderThumbnail = (
+  const renderThumbnail = (header_img) => (
     <Box
-      component="img"
-      src={header_img}
       sx={{
-        aspectRatio: 16 / 9,
-        borderRadius: "10px",
+        position: "relative",
+        width: "100%",
         marginBottom: "10px",
-        width: "400px",
-        height: "250px",
-        borderColor: "blue",
-      }}
-    />
+        borderRadius: "10px",
+      }}>
+      {/* 画像 */}
+      <Box
+        component="img"
+        src={header_img}
+        sx={{
+          aspectRatio: "16 / 9",
+          width: "400px",
+          height: "250px",
+        }}
+      />
+
+      {/* ×ボタン */}
+      {newsList.company_id === accountData.id && (
+        <Tooltip title="このニュースを削除します">
+          <Typography
+            onClick={() => handleNewsDelete(newsList.news_id)} // 実際の削除処理を追加
+            sx={{
+              position: "absolute",
+              top: "10px",
+              right: "10px",
+              backgroundColor: "rgba(255, 255, 255, 0.7)",
+              padding: "5px 10px",
+              borderRadius: "5px",
+              cursor: "pointer",
+              opacity: 0.8,
+              "&:hover": {
+                opacity: 1,
+              },
+            }}
+          >
+            ×
+          </Typography>
+        </Tooltip>
+      )}
+    </Box>
   );
 
+
   //フォローステータス
-  const renderFollow = () => {
+  const renderFollow = (followStatus,company_id,news_id) => {
     if (followStatus === "フォローできません") {
       return <Typography opacity="0.48"></Typography>;
     } else {
       return (
-        <Typography opacity="0.48" onClick={handleFollowClick}>
+        <Typography opacity="0.48" onClick={() => handleFollowClick(company_id,news_id)} sx={{cursor:"pointer"}}>
           {followStatus}
         </Typography>
       );
@@ -190,7 +255,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   };
 
   // 投稿日
-  const renderDate = (
+  const renderDate = (news_created_at) => (
     <Typography
       variant="caption"
       component="div"
@@ -205,7 +270,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   );
 
   // 企業名
-  const renderCompanyName = (
+  const renderCompanyName = (company_name) => (
     <Typography
       variant="caption"
       component="div"
@@ -220,7 +285,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   );
 
   // 投稿情報
-  const renderInfo = (
+  const renderInfo = (news) => (
     <Stack
       direction="row"
       justifyContent="space-between"
@@ -232,7 +297,7 @@ const PostCard = forwardRef(({ post }, ref) => {
         padding: "5px",
       }}
     >
-      {renderDate}
+      {renderDate(news.news_created_at)}
       <Stack
         direction="row"
         justifyContent="flex-end"
@@ -243,24 +308,28 @@ const PostCard = forwardRef(({ post }, ref) => {
           color: "common.black",
         }}
       >
-        {renderAvatar}
-        {renderCompanyName}
+        {renderAvatar(news.company_name,news.icon)}
+        {renderCompanyName(news.company_name)}
       </Stack>
     </Stack>
   );
 
   return (
-    <div ref={ref}>
-      <Stack sx={{ display: "inline-block" }}>
-        <div className="postCard" style={{ width: "100%" }}>
-          {renderThumbnail}
-          {renderTitle}
-          {renderGenre}
-          {renderFollow}
-          {renderInfo}
-        </div>
-      </Stack>
-    </div>
+    <>
+     {newsList.map((news, index) => (
+      <div key={index} ref={ref}>
+        <Stack sx={{ display: "inline-block" }}>
+          <div className="postCard" style={{ width: "100%" }}>
+            {renderThumbnail(news.header_img)}
+            {renderTitle(news.news_id, news.article_title)}
+            {renderGenre(news)}
+            {renderFollow(news.followStatus,news.company_id,news.news_id)}
+            {renderInfo(news)}
+          </div>
+        </Stack>
+      </div>
+     ))}
+    </>
   );
 });
 

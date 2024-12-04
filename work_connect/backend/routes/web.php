@@ -286,6 +286,8 @@ Route::get('/thumbnail_img_delete/{id}', [EditorController::class, 'thumbnail_im
 Route::get('/createform_search', action: [EditorController::class, 'createform_search']);
 Route::get('/api/embed', action: [EditorController::class, 'embed']);
 Route::post('/rewrite_news_delete', [EditorController::class, 'rewrite_news_delete']);
+Route::post('/news_delete', [NewsController::class, 'news_delete']);
+
 //学生(自分)が応募した履歴を確認
 Route::post('/get_apply_history', action: [NewsController::class, 'get_apply_history']);
 

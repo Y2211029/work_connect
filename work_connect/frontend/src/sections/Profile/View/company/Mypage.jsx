@@ -335,17 +335,6 @@ const ProfileMypage = () => {
       const updatedFollowStatus = await follow(MyUserId[0], profile_id);
       setButtonDisable(false);
 
-      if (updatedFollowStatus == "成功") {
-        if (followStatus == "フォローする") {
-          setFollowStatus("フォローしています");
-        } else if (followStatus == "フォローされています") {
-          setFollowStatus("相互フォローしています");
-        } else if (followStatus == "フォローしています") {
-          setFollowStatus("フォローする");
-        } else if (followStatus == "相互フォローしています") {
-          setFollowStatus("フォローされています");
-        }
-      }
       const response = await axios.post("http://localhost:8000/followCheck", {
         sender_id: MyUserId[0],
         recipient_id: profile_id,

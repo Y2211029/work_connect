@@ -11,26 +11,14 @@ import Tooltip from "@mui/material/Tooltip";
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import { follow } from "src/_mock/follow";
-<<<<<<< HEAD
 import axios from "axios";
-=======
-import { TypographyItems } from "src/components/typography/ItemTypography";
-import NewsDisplayed from "src/components/search/NewsDisplayed";
->>>>>>> ecb4ac98d9b721722ea431797d90404cd8844edd
+// import { TypographyItems } from "src/components/typography/ItemTypography";
+// import NewsDisplayed from "src/components/search/NewsDisplayed";
 
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef(({ post }, ref) => {
-<<<<<<< HEAD
   const { news_list } = post;
-  // useEffect(() => {
-  //   console.log("company_id", company_id);
-  //   console.log("company_name", company_name);
-  //   console.log("news_id", news_id);
-  //   console.log("user_name", user_name);
-  //   console.log("article_title", article_title);
-  //   console.log("genre", genre);
-  // }, [company_id])
   console.log("all_news_list", news_list);
 
   const [newsList, setNewsList] = useState(news_list);
@@ -39,64 +27,31 @@ const PostCard = forwardRef(({ post }, ref) => {
   const news_delete_url = `http://localhost:8000/news_delete`;
   console.log("締切日", newsList.deadline);
   console.log("開催日", newsList.event_day);
-=======
-  const {
-    company_id,
-    news_id,
-    company_name,
-    user_name,
-    article_title,
-    genre,
-    header_img,
-    news_created_at,
-    follow_status: initialFollowStatus,
-    icon,
-    deadline,
-    event_day,
-    count,    
-    Occupation,
-    DeatLine,
-    EventDate,
-  } = post;
-
-  useEffect(() => {
-    console.log("company_id", company_id);
-    console.log("user_name", user_name);
-  }, [company_id]);
-
-  console.log("締切日", deadline);
-  console.log("開催日", event_day);
-  const [followStatus, setFollowStatus] = useState(initialFollowStatus);
-  const { getSessionData } = useSessionStorage();
-  const accountData = getSessionData("accountData");
-  const isDisplayed = NewsDisplayed();
->>>>>>> ecb4ac98d9b721722ea431797d90404cd8844edd
-
   console.log("ニュースリスト", newsList);
 
   const handleFollowClick = async (company_id, news_id) => {
     console.log(news_id);
     try {
-        // フォロー処理を実行し、更新後のフォローステータスを取得
-        const updatedFollowStatus = await follow(accountData.id, company_id);
-        if (updatedFollowStatus) {
-            console.log("更新後のフォローステータス", updatedFollowStatus);
+      // フォロー処理を実行し、更新後のフォローステータスを取得
+      const updatedFollowStatus = await follow(accountData.id, company_id);
+      if (updatedFollowStatus) {
+        console.log("更新後のフォローステータス", updatedFollowStatus);
 
-            // newsList 内の特定のデータを更新
-            setNewsList((prevList) =>
-                prevList.map((news) =>
-                    news.news_id === news_id
-                        ? { ...news, followStatus: updatedFollowStatus } // フォロー状況更新
-                        : news
-                )
-            );
-        } else {
-            console.log("じゃあないってこと?");
-        }
+        // newsList 内の特定のデータを更新
+        setNewsList((prevList) =>
+          prevList.map((news) =>
+            news.news_id === news_id
+              ? { ...news, followStatus: updatedFollowStatus } // フォロー状況更新
+              : news
+          )
+        );
+      } else {
+        console.log("じゃあないってこと?");
+      }
     } catch (error) {
-        console.error("フォロー処理中にエラーが発生しました！", error);
+      console.error("フォロー処理中にエラーが発生しました！", error);
     }
-};
+  };
 
   const handleNewsDelete = async (news_id) => {
     try {
@@ -146,7 +101,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   };
 
   // 企業アイコン
-  const renderAvatar = (company_name,icon) => (
+  const renderAvatar = (company_name, icon) => (
     <Avatar
       alt={company_name}
       src={icon ? `http://localhost:8000/storage/images/userIcon/${icon}` : ""}
@@ -161,8 +116,8 @@ const PostCard = forwardRef(({ post }, ref) => {
   console.log("ユーザネーム", newsList.user_name);
 
   // フォームのレンダリング（企業の投稿の場合）
-  const renderForm = (company_id,count,user_name)  =>
-      company_id === accountData.id && count > 0 ? (
+  const renderForm = (company_id, count, user_name) =>
+    company_id === accountData.id && count > 0 ? (
       <Typography
         sx={{ opacity: 0.48, cursor: "pointer" }}
         onClick={() => {
@@ -174,7 +129,6 @@ const PostCard = forwardRef(({ post }, ref) => {
     ) : null;
 
   // ジャンル
-<<<<<<< HEAD
   const renderGenre = (news) => {
     if (!news.genre) return null; // genreがnullまたはundefinedなら何も返さない
     const company_id = news.company_id;
@@ -198,24 +152,6 @@ const PostCard = forwardRef(({ post }, ref) => {
           {genre === "Internship"
             ? "インターンシップ"
             : genre === "Blog"
-=======
-  const renderGenre = genre ? (
-    <Stack
-      direction="row"
-      justifyContent="space-between"
-      alignItems="center"
-      spacing={1}
-      sx={{
-        mt: 3,
-        color: "common.black",
-        padding: "5px",
-      }}
-    >
-      {/* <div>
-        {genre === "Internship"
-          ? "インターンシップ"
-          : genre === "Blog"
->>>>>>> ecb4ac98d9b721722ea431797d90404cd8844edd
             ? "ブログ"
             : genre === "JobOffer"
             ? "求人"
@@ -225,12 +161,11 @@ const PostCard = forwardRef(({ post }, ref) => {
         </div> */}
 
         {/* フォーム表示 */}
-        {renderForm(company_id,count,user_name)}
+        {renderForm(company_id, count, user_name)}
 
         {/* 締切日をフォーマットして表示 */}
         {news.deadline && formatDate(news.deadline)}
 
-<<<<<<< HEAD
         {/* 開催日があれば表示 */}
         {news.event_day && <div>開催日: {news.event_day}</div>}
       </Stack>
@@ -238,7 +173,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   };
 
   // タイトル
-  const renderTitle = (news_id,title) => (
+  const renderTitle = (news_id, title) => (
     <Link
       to={`/news_detail/${news_id}`}
       className="link"
@@ -251,55 +186,39 @@ const PostCard = forwardRef(({ post }, ref) => {
       {title}
     </Link>
   );
-=======
-      {formatDate(deadline)}
-      <br></br>
-      {event_day && <div>開催日: {event_day}</div>}
-    </Stack>
-  ) : null;
-
-  console.log("DeatLine", DeatLine);
-  if (isDisplayed) {
-    console.log("isDisplayed", isDisplayed);
-  }
-  let renderOccupation = "";
-  let renderDeatLine = "";
-  let renderEventDate = "";
->>>>>>> ecb4ac98d9b721722ea431797d90404cd8844edd
 
   // 職種
-  if (isDisplayed && (Occupation !== null || Occupation !== "" || Occupation !== undefined)) {
-    renderOccupation = <TypographyItems ItemName="職種 " ItemDetail={Occupation} />;
-  } else {
-    renderDeatLine = "";
-  }
+  // if (isDisplayed && (Occupation !== null || Occupation !== "" || Occupation !== undefined)) {
+  //   renderOccupation = <TypographyItems ItemName="職種 " ItemDetail={Occupation} />;
+  // } else {
+  //   renderDeatLine = "";
+  // }
 
-  // 応募締切 renderDeatLine
-  if (isDisplayed && (DeatLine !== null || DeatLine !== "" || DeatLine !== undefined)) {
-    renderDeatLine = <TypographyItems ItemName="応募締切" ItemDetail={DeatLine} />;
-  } else {
-    renderDeatLine = "";
-  }
+  // // 応募締切 renderDeatLine
+  // if (isDisplayed && (DeatLine !== null || DeatLine !== "" || DeatLine !== undefined)) {
+  //   renderDeatLine = <TypographyItems ItemName="応募締切" ItemDetail={DeatLine} />;
+  // } else {
+  //   renderDeatLine = "";
+  // }
 
-  // 開催日
-  if (isDisplayed && (EventDate !== null || EventDate !== "" || EventDate !== undefined)) {
-    renderEventDate = <TypographyItems ItemName="開催日" ItemDetail={EventDate} />;
-  } else {
-    renderEventDate = "";
-  }
+  // // 開催日
+  // if (isDisplayed && (EventDate !== null || EventDate !== "" || EventDate !== undefined)) {
+  //   renderEventDate = <TypographyItems ItemName="開催日" ItemDetail={EventDate} />;
+  // } else {
+  //   renderEventDate = "";
+  // }
 
   // タイトル
-  const renderTitle = article_title !== null && article_title;
+  // const renderTitle = article_title !== null && article_title;
 
-  console.log("renderDeatLine", renderDeatLine);
-  console.log("renderEventDate", renderEventDate);
-  console.log("renderOccupation", renderOccupation);
+  // console.log("renderDeatLine", renderDeatLine);
+  // console.log("renderEventDate", renderEventDate);
+  // console.log("renderOccupation", renderOccupation);
 
-  const alternativeImage = "http://localhost:8000/storage/images/work/NoImage.png";
+  // const alternativeImage = "http://localhost:8000/storage/images/work/NoImage.png";
   // サムネイル
   const renderThumbnail = (header_img) => (
     <Box
-<<<<<<< HEAD
       sx={{
         position: "relative",
         width: "100%",
@@ -341,31 +260,16 @@ const PostCard = forwardRef(({ post }, ref) => {
         </Tooltip>
       )}
     </Box>
-=======
-      component="img"
-      src={header_img}
-      onError={(e) => {
-        e.target.src = alternativeImage; // エラー時にサンプル画像をセット
-      }}
-      sx={{
-        aspectRatio: 16 / 9,
-        borderRadius: "5px",
-        width: "100%",
-        objectFit: "cover",
-        marginBottom: "10px",
-      }}
-    />
->>>>>>> ecb4ac98d9b721722ea431797d90404cd8844edd
   );
 
 
   //フォローステータス
-  const renderFollow = (followStatus,company_id,news_id) => {
+  const renderFollow = (followStatus, company_id, news_id) => {
     if (followStatus === "フォローできません") {
       return <Typography opacity="0.48"></Typography>;
     } else {
       return (
-        <Typography opacity="0.48" onClick={() => handleFollowClick(company_id,news_id)} sx={{cursor:"pointer"}}>
+        <Typography opacity="0.48" onClick={() => handleFollowClick(company_id, news_id)} sx={{ cursor: "pointer" }}>
           {followStatus}
         </Typography>
       );
@@ -426,7 +330,7 @@ const PostCard = forwardRef(({ post }, ref) => {
           color: "common.black",
         }}
       >
-        {renderAvatar(news.company_name,news.icon)}
+        {renderAvatar(news.company_name, news.icon)}
         {renderCompanyName(news.company_name)}
       </Stack>
     </Stack>
@@ -442,38 +346,19 @@ const PostCard = forwardRef(({ post }, ref) => {
 
   return (
     <>
-<<<<<<< HEAD
-     {newsList.map((news, index) => (
-      <div key={index} ref={ref}>
-        <Stack sx={{ display: "inline-block" }}>
-          <div className="postCard" style={{ width: "100%" }}>
-            {renderThumbnail(news.header_img)}
-            {renderTitle(news.news_id, news.article_title)}
-            {renderGenre(news)}
-            {renderFollow(news.followStatus,news.company_id,news.news_id)}
-            {renderInfo(news)}
-          </div>
-        </Stack>
-      </div>
-     ))}
-=======
-      <div ref={ref}>
-        <Link to={`/news_detail/${news_id}`} variant="subtitle2" underline="none" className="link item-Link">
-          <Stack sx={{ display: "inline-block", width: "100%" }}>
-            <div className="postCard item-stack" style={{ width: "100%" }}>
-              {renderThumbnail}
-              {renderTitle}
-              {renderGenre}
-              {renderDeatLine}
-              {renderEventDate}
-              {renderOccupation}
-              {renderFollow}
-              {renderInfo}
+      {newsList.map((news, index) => (
+        <div key={index} ref={ref}>
+          <Stack sx={{ display: "inline-block" }}>
+            <div className="postCard" style={{ width: "100%" }}>
+              {renderThumbnail(news.header_img)}
+              {renderTitle(news.news_id, news.article_title)}
+              {renderGenre(news)}
+              {renderFollow(news.followStatus, news.company_id, news.news_id)}
+              {renderInfo(news)}
             </div>
           </Stack>
-        </Link>
-      </div>
->>>>>>> ecb4ac98d9b721722ea431797d90404cd8844edd
+        </div>
+      ))}
     </>
   );
 });

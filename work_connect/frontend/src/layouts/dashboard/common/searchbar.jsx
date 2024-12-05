@@ -1037,6 +1037,8 @@ export default function Searchbar() {
             acquisition_qualification: acquisition_qualification,
             software: software,
             genre: "Joboffer",
+            deadline_calender: searchSource.deadline_calender,
+            event_calender: searchSource.event_calender,
           },
         });
 
@@ -1102,6 +1104,8 @@ export default function Searchbar() {
             acquisition_qualification: acquisition_qualification,
             software: software,
             genre: "Internship",
+            deadline_calender: searchSource.deadline_calender,
+            event_calender: searchSource.event_calender,
           },
         });
 
@@ -1167,6 +1171,8 @@ export default function Searchbar() {
             acquisition_qualification: acquisition_qualification,
             software: software,
             genre: "Session",
+            deadline_calender: searchSource.deadline_calender,
+            event_calender: searchSource.event_calender,
           },
         });
 
@@ -1294,6 +1300,8 @@ export default function Searchbar() {
             acquisition_qualification: acquisition_qualification,
             software: software,
             genre: "Joboffer",
+            deadline_calender: searchSource.deadline_calender,
+            event_calender: searchSource.event_calender,
           },
         });
 
@@ -1356,6 +1364,8 @@ export default function Searchbar() {
             acquisition_qualification: acquisition_qualification,
             software: software,
             genre: "Internship",
+            deadline_calender: searchSource.deadline_calender,
+            event_calender: searchSource.event_calender,
           },
         });
         // console.log("response.data", response.data);
@@ -1421,6 +1431,8 @@ export default function Searchbar() {
             acquisition_qualification: acquisition_qualification,
             software: software,
             genre: "Session",
+            deadline_calender: searchSource.deadline_calender,
+            event_calender: searchSource.event_calender,
           },
         });
         // console.log("response.data", response.data);

@@ -136,7 +136,8 @@ export default function Searchbar() {
     conpany_prefecture: [],
     company_name: [],
     industry: [],
-    calender: [],
+    deadline_calender: "",
+    event_calender: "",
   });
 
   const [options, setOptions] = useState({
@@ -164,7 +165,8 @@ export default function Searchbar() {
     conpany_prefecture: [],
     company_name: [],
     industry: [],
-    calender: [], 
+    deadline_calender: "",
+    event_calender: ""
   });
 
   const [saveOptions, setSaveOptions] = useState({
@@ -192,7 +194,8 @@ export default function Searchbar() {
     conpany_prefecture: [],
     company_name: [],
     industry: [],
-    calender: [],
+    deadline_calender: "",
+    event_calender: "",
   });
 
   const { GetTagListFunction } = GetTagList();
@@ -594,11 +597,11 @@ export default function Searchbar() {
   // マイページ、Topページ、
   let RefineSearch =
     location.pathname != "/Profile/" + location.pathname.split("/")[2] + "/mypage" &&
-    location.pathname != "/Top" &&
-    location.pathname != "/Settings" &&
-    location.pathname != "/Chat" &&
-    location.pathname != "/WorkPosting" &&
-    location.pathname != "/VideoPosting"
+      location.pathname != "/Top" &&
+      location.pathname != "/Settings" &&
+      location.pathname != "/Chat" &&
+      location.pathname != "/WorkPosting" &&
+      location.pathname != "/VideoPosting"
       ? true
       : false;
   // console.log("let RefineSearch =", RefineSearch);
@@ -1034,6 +1037,8 @@ export default function Searchbar() {
             acquisition_qualification: acquisition_qualification,
             software: software,
             genre: "Joboffer",
+            deadline_calender: searchSource.deadline_calender,
+            event_calender: searchSource.event_calender,
           },
         });
 
@@ -1099,6 +1104,8 @@ export default function Searchbar() {
             acquisition_qualification: acquisition_qualification,
             software: software,
             genre: "Internship",
+            deadline_calender: searchSource.deadline_calender,
+            event_calender: searchSource.event_calender,
           },
         });
 
@@ -1164,6 +1171,8 @@ export default function Searchbar() {
             acquisition_qualification: acquisition_qualification,
             software: software,
             genre: "Session",
+            deadline_calender: searchSource.deadline_calender,
+            event_calender: searchSource.event_calender,
           },
         });
 
@@ -1291,6 +1300,8 @@ export default function Searchbar() {
             acquisition_qualification: acquisition_qualification,
             software: software,
             genre: "Joboffer",
+            deadline_calender: searchSource.deadline_calender,
+            event_calender: searchSource.event_calender,
           },
         });
 
@@ -1353,6 +1364,8 @@ export default function Searchbar() {
             acquisition_qualification: acquisition_qualification,
             software: software,
             genre: "Internship",
+            deadline_calender: searchSource.deadline_calender,
+            event_calender: searchSource.event_calender,
           },
         });
         // console.log("response.data", response.data);
@@ -1418,6 +1431,8 @@ export default function Searchbar() {
             acquisition_qualification: acquisition_qualification,
             software: software,
             genre: "Session",
+            deadline_calender: searchSource.deadline_calender,
+            event_calender: searchSource.event_calender,
           },
         });
         // console.log("response.data", response.data);
@@ -1579,6 +1594,8 @@ export default function Searchbar() {
         prefecture: [],
         company_name: [],
         industry: [],
+        deadline_calender: "",
+        event_calender: "",
       }));
     }
   }, [ResetItem]);
@@ -1616,7 +1633,8 @@ export default function Searchbar() {
       prefecture: [],
       company_name: [],
       industry: [],
-      calender: [],
+      deadline_calender: "",
+      event_calender: "",
     }));
   };
 
@@ -1677,6 +1695,9 @@ export default function Searchbar() {
       ...prevState,
       ...searchSource,
     }));
+
+
+
   };
 
   // ページが変更された時に次のデータを取得する
@@ -1746,6 +1767,19 @@ export default function Searchbar() {
         [optionName]: [],
       }));
     }
+  };
+
+  const handleDeadLineChange = (newValue) => {
+    setsearchSource((prevOptions) => ({
+      ...prevOptions,
+      deadline_calender: newValue,
+    }));
+  };
+  const handleEventChange = (newValue) => {
+    setsearchSource((prevOptions) => ({
+      ...prevOptions,
+      event_calender: newValue,
+    }));
   };
 
   // 作品ジャンルのタグを操作したとき
@@ -1854,9 +1888,9 @@ export default function Searchbar() {
     tagAction("follow_status", selectedOption);
   };
 
-  // useEffect(() => {
-  //   console.log("searchSource: ", searchSource);
-  // }, [searchSource]);
+  useEffect(() => {
+    console.log("searchSource: ", searchSource);
+  }, [searchSource]);
 
   // useEffect(() => {
   //   console.log("options: ", options);
@@ -1868,8 +1902,8 @@ export default function Searchbar() {
       {RefineSearch && (
         <>
           {(PathName.startsWith("/Profile/") && PathName.endsWith("/mypage")) ||
-          (PathName.startsWith("/WorkDetail/") && PathName.endsWith("")) ||
-          (PathName.startsWith("/VideoDetail/") && PathName.endsWith("")) ? null : (
+            (PathName.startsWith("/WorkDetail/") && PathName.endsWith("")) ||
+            (PathName.startsWith("/VideoDetail/") && PathName.endsWith("")) ? null : (
             <>
               <Box>
                 <OutlinedInput
@@ -1942,7 +1976,6 @@ export default function Searchbar() {
 
                     height: {
                       xs: "80%" /* 80% height on small screens */,
-                      sm: "fit-content" /* Adjusts to content size on larger screens */,
                     },
                     // overflowY: "auto",
                     bgcolor: "background.paper",
@@ -3231,16 +3264,16 @@ export default function Searchbar() {
                               {isDisplayed ? (
                                 <Grid item sx={{ width: "100%" }}>
                                   <Stack
-                                    direction="row"
+                                    direction="column"
                                     spacing={2}
                                     sx={{
                                       justifyContent: "center",
                                       alignItems: "center",
                                     }}
                                   >
-                                    <DeadlineCalender searchSource={searchSource.calender}   />
+                                    <DeadlineCalender searchSource={searchSource.deadline_calender} handleDeadLineChange={handleDeadLineChange} />
                                     {/* EventCalender 開催日 */}
-                                    <EventCalender searchSource={searchSource.calender} />
+                                    <EventCalender searchSource={searchSource.event_calender} handleEventChange={handleEventChange} />
                                   </Stack>
                                 </Grid>
                               ) : null}

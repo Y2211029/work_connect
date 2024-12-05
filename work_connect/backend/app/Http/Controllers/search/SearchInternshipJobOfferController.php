@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class SearchInternshipJobOfferController extends Controller
 {
-    /* 企業の検索処理 */
+    /* ニュースの検索処理 */
     public function SearchInternshipJobOfferController(Request $request)
     {
         try {
@@ -50,6 +50,9 @@ class SearchInternshipJobOfferController extends Controller
             $software_array = $request->input('software', []);
             // ジャンル取得
             $genre = $request->input('genre', "");
+
+            // 応募締め切り日をdate型で取得
+            
 
             \Log::info('SearchCompanyController:$company_name_array:');
             \Log::info($company_name_array);

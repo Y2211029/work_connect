@@ -48,23 +48,26 @@ export default function EventCalender(props) {
     setOpen(!open);
   };
 
+
+
   const handleDayClick = (newValue) => {
     if (!startDay || (startDay && endDay)) {
       setStartDay(newValue);
       setEndDay(null);
+      props.handleEventChange(newValue.format("YYYY年MM月DD日"));
     } else {
       // (startDayに値が入っている)かつ(startDayより前の日付を選択した)場合にstartDayから選びなおす処理
       if (newValue != null && startDay != null) {
         if (startDay.format("YYYY年MM月DD日") >= newValue.format("YYYY年MM月DD日")) {
           setStartDay(newValue);
           setEndDay(null);
+          props.handleEventChange(newValue.format("YYYY年MM月DD日"));
         } else {
           setEndDay(newValue);
+          props.handleEventChange(startDay.format("YYYY年MM月DD日") + "～" + newValue.format("YYYY年MM月DD日"));
         }
       }
     }
-
-    props.handleEventChange(newValue.format("YYYY年MM月DD日"));
   };
 
   const handleClickOutside = (event) => {
@@ -74,19 +77,29 @@ export default function EventCalender(props) {
   };
 
   useEffect(() => {
+
     document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
+
   }, []);
 
   // 型チェックと配列長のチェック
   useEffect(() => {
     console.log("props", props);
 
-    // searchSourceが空の配列かどうかを判定
-    if (Array.isArray(props.searchSource) && props.searchSource.length === 0) {
+    if (props.searchSource.includes("～")) {
+      const [splitStartDay, splitEndDay] = props.searchSource.split("～");
+      setStartDay(dayjs(splitStartDay.trim(), "YYYY年MM月DD日"));
+      setEndDay(dayjs(splitEndDay.trim(), "YYYY年MM月DD日"));
+    } else {
+      setStartDay(dayjs(props.searchSource, "YYYY年MM月DD日"));
+    }
+
+    if (props.searchSource === "") {
+      // searchSourceが空の配列かどうかを判定
       setStartDay(null);
       setEndDay(null);
     }
@@ -164,6 +177,6 @@ Day.propTypes = {
 };
 
 EventCalender.propTypes = {
-  searchSource: PropTypes.array,
+  searchSource: PropTypes.string,
   handleEventChange: PropTypes.func,
 };

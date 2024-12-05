@@ -55,7 +55,7 @@ function Day(props) {
 
 export default function DeadlineCalender(props) {
   const [hoveredDay, setHoveredDay] = useState(null);
-  const [value, setValue] = useState(dayjs());
+  const [value, setValue] = useState(null);
   const [open, setOpen] = useState(false);
 
   const calendarRef = useRef(null);
@@ -70,7 +70,7 @@ export default function DeadlineCalender(props) {
     setValue(newValue);
     setOpen(false); // Close the calendar when a date is selected
 
-    props.handleDeadLineChange(newValue.format("YYYY年MM月DD日") );
+    props.handleDeadLineChange(newValue.format("YYYY年MM月DD日"));
   };
 
   // Handle click outside the calendar and input field
@@ -93,11 +93,13 @@ export default function DeadlineCalender(props) {
   // 型チェックと配列長のチェック
   useEffect(() => {
     console.log("props", props);
-
+    
     // リセットボタンが押された時に
     // searchSourceが空の配列かどうかを判定
-    if (Array.isArray(props.searchSource) && props.searchSource.length === 0) {
+    if (props.searchSource === "") {
       setValue(null);
+    } else {
+      setValue(dayjs(props.searchSource, "YYYY年MM月DD日"));
     }
   }, [props.searchSource]);
 
@@ -178,6 +180,6 @@ Day.propTypes = {
 };
 
 DeadlineCalender.propTypes = {
-  searchSource: PropTypes.array,
+  searchSource: PropTypes.String,
   handleDeadLineChange: PropTypes.func,
 };

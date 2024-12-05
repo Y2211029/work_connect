@@ -1582,6 +1582,8 @@ export default function Searchbar() {
         prefecture: [],
         company_name: [],
         industry: [],
+        deadline_calender: "",
+        event_calender: "",
       }));
     }
   }, [ResetItem]);
@@ -1619,7 +1621,8 @@ export default function Searchbar() {
       prefecture: [],
       company_name: [],
       industry: [],
-      calender: [],
+      deadline_calender: "",
+      event_calender: "",
     }));
   };
 
@@ -1680,6 +1683,9 @@ export default function Searchbar() {
       ...prevState,
       ...searchSource,
     }));
+
+
+
   };
 
   // ページが変更された時に次のデータを取得する
@@ -3254,9 +3260,9 @@ export default function Searchbar() {
                                       alignItems: "center",
                                     }}
                                   >
-                                    <DeadlineCalender handleDeadLineChange={handleDeadLineChange} searchSource={searchSource.calender} />
+                                    <DeadlineCalender searchSource={searchSource.deadline_calender} handleDeadLineChange={handleDeadLineChange} />
                                     {/* EventCalender 開催日 */}
-                                    <EventCalender handleEventChange={handleEventChange} searchSource={searchSource.calender} />
+                                    <EventCalender searchSource={searchSource.event_calender} handleEventChange={handleEventChange} />
                                   </Stack>
                                 </Grid>
                               ) : null}

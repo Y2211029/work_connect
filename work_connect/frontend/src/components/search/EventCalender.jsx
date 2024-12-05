@@ -49,11 +49,19 @@ export default function EventCalender(props) {
   };
 
   const handleDayClick = (newValue) => {
-    if (!startDay || (startDay && endDay) || (startDay && endDay && startDay >= endDay)) {
+    if (!startDay || (startDay && endDay)) {
       setStartDay(newValue);
       setEndDay(null);
     } else {
-      setEndDay(newValue);
+      // (startDayに値が入っている)かつ(startDayより前の日付を選択した)場合にstartDayから選びなおす処理
+      if (newValue != null && startDay != null) {
+        if (startDay.format("YYYY年MM月DD日") >= newValue.format("YYYY年MM月DD日")) {
+          setStartDay(newValue);
+          setEndDay(null);
+        } else {
+          setEndDay(newValue);
+        }
+      }
     }
 
     props.handleEventChange(newValue.format("YYYY年MM月DD日"));

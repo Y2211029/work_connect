@@ -55,6 +55,8 @@ export default function EventCalender(props) {
     } else {
       setEndDay(newValue);
     }
+
+    props.handleEventChange(newValue.format("YYYY年MM月DD日"));
   };
 
   const handleClickOutside = (event) => {
@@ -115,17 +117,15 @@ export default function EventCalender(props) {
               value={
                 startDay
                   ? endDay
-                    ? `${startDay.format("YYYY年MM月DD日")} 〜 ${endDay.format("YYYY年MM月DD日")}`
+                    ? `${startDay.format("YYYY年MM月DD日")}〜${endDay.format("YYYY年MM月DD日")}`
                     : startDay.format("YYYY年MM月DD日")
                   : "日付を選択してください"
               }
               variant="outlined"
               sx={{
-                width: { xs: "95%", sm: "90%", md: "80%" },
-                "& .MuiInputLabel-root": {
-                  fontSize: { xs: "10px", sm: "14px", md: "16px" },
-                  whiteSpace: "nowrap", // ラベルが折り返さないようにする
-                  overflow: "visible", // ラベルが見切れないようにする
+                width: { xs: "100%", sm: "90%", md: "80%" },
+                "& .css-10cqtbj-MuiInputBase-input-MuiOutlinedInput-input": {
+                  fontSize: { xs: "12px", sm: "14px", md: "16px" },
                 },
                 minWidth: endDay ? "356px" : "200px",
               }}
@@ -157,4 +157,5 @@ Day.propTypes = {
 
 EventCalender.propTypes = {
   searchSource: PropTypes.array,
+  handleEventChange: PropTypes.func,
 };

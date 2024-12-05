@@ -61,6 +61,7 @@ export default function DeadlineCalender(props) {
   const calendarRef = useRef(null);
   const inputRef = useRef(null);
 
+
   const handleOpen = () => {
     setOpen(!open);
   };
@@ -68,6 +69,8 @@ export default function DeadlineCalender(props) {
   const handleDateChange = (newValue) => {
     setValue(newValue);
     setOpen(false); // Close the calendar when a date is selected
+
+    props.handleDeadLineChange(newValue.format("YYYY年MM月DD日") );
   };
 
   // Handle click outside the calendar and input field
@@ -137,11 +140,11 @@ export default function DeadlineCalender(props) {
               value={value ? value.format("YYYY年MM月DD日") : "日付を選択してください"}
               variant="outlined"
               sx={{
-                width: { xs: "95%", sm: "90%", md: "80%" },
-                "& .MuiInputLabel-root": {
-                  fontSize: { xs: "10px", sm: "14px", md: "16px" },
-                  whiteSpace: "nowrap", // ラベルが折り返さないようにする
-                  overflow: "visible", // ラベルが見切れないようにする
+                width: { xs: "100%", sm: "90%", md: "80%" },
+                "& .css-10cqtbj-MuiInputBase-input-MuiOutlinedInput-input": {
+                  fontSize: { xs: "12px", sm: "14px", md: "16px" },
+                  // whiteSpace: "nowrap", // ラベルが折り返さないようにする
+                  // overflow: "visible", // ラベルが見切れないようにする
                 },
               }}
               inputRef={inputRef} // Reference for input field
@@ -155,11 +158,12 @@ export default function DeadlineCalender(props) {
                 ),
               }}
             />
+            {open && renderCalender}
           </div>
         </Box>
       </Grid>
 
-      {open && renderCalender}
+
     </>
   );
 }
@@ -175,4 +179,5 @@ Day.propTypes = {
 
 DeadlineCalender.propTypes = {
   searchSource: PropTypes.array,
+  handleDeadLineChange: PropTypes.func,
 };

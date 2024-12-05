@@ -136,7 +136,8 @@ export default function Searchbar() {
     conpany_prefecture: [],
     company_name: [],
     industry: [],
-    calender: [],
+    deadline_calender: "",
+    event_calender: "",
   });
 
   const [options, setOptions] = useState({
@@ -164,7 +165,8 @@ export default function Searchbar() {
     conpany_prefecture: [],
     company_name: [],
     industry: [],
-    calender: [], 
+    deadline_calender: "",
+    event_calender: ""
   });
 
   const [saveOptions, setSaveOptions] = useState({
@@ -192,7 +194,8 @@ export default function Searchbar() {
     conpany_prefecture: [],
     company_name: [],
     industry: [],
-    calender: [],
+    deadline_calender: "",
+    event_calender: "",
   });
 
   const { GetTagListFunction } = GetTagList();
@@ -594,11 +597,11 @@ export default function Searchbar() {
   // マイページ、Topページ、
   let RefineSearch =
     location.pathname != "/Profile/" + location.pathname.split("/")[2] + "/mypage" &&
-    location.pathname != "/Top" &&
-    location.pathname != "/Settings" &&
-    location.pathname != "/Chat" &&
-    location.pathname != "/WorkPosting" &&
-    location.pathname != "/VideoPosting"
+      location.pathname != "/Top" &&
+      location.pathname != "/Settings" &&
+      location.pathname != "/Chat" &&
+      location.pathname != "/WorkPosting" &&
+      location.pathname != "/VideoPosting"
       ? true
       : false;
   // console.log("let RefineSearch =", RefineSearch);
@@ -1748,6 +1751,19 @@ export default function Searchbar() {
     }
   };
 
+  const handleDeadLineChange = (newValue) => {
+    setsearchSource((prevOptions) => ({
+      ...prevOptions,
+      deadline_calender: newValue,
+    }));
+  };
+  const handleEventChange = (newValue) => {
+    setsearchSource((prevOptions) => ({
+      ...prevOptions,
+      event_calender: newValue,
+    }));
+  };
+
   // 作品ジャンルのタグを操作したとき
   const handleChangeWorkGenre = (selectedOption) => {
     tagAction("work_genre", selectedOption);
@@ -1854,9 +1870,9 @@ export default function Searchbar() {
     tagAction("follow_status", selectedOption);
   };
 
-  // useEffect(() => {
-  //   console.log("searchSource: ", searchSource);
-  // }, [searchSource]);
+  useEffect(() => {
+    console.log("searchSource: ", searchSource);
+  }, [searchSource]);
 
   // useEffect(() => {
   //   console.log("options: ", options);
@@ -1868,8 +1884,8 @@ export default function Searchbar() {
       {RefineSearch && (
         <>
           {(PathName.startsWith("/Profile/") && PathName.endsWith("/mypage")) ||
-          (PathName.startsWith("/WorkDetail/") && PathName.endsWith("")) ||
-          (PathName.startsWith("/VideoDetail/") && PathName.endsWith("")) ? null : (
+            (PathName.startsWith("/WorkDetail/") && PathName.endsWith("")) ||
+            (PathName.startsWith("/VideoDetail/") && PathName.endsWith("")) ? null : (
             <>
               <Box>
                 <OutlinedInput
@@ -3231,16 +3247,16 @@ export default function Searchbar() {
                               {isDisplayed ? (
                                 <Grid item sx={{ width: "100%" }}>
                                   <Stack
-                                    direction="row"
+                                    direction="column"
                                     spacing={2}
                                     sx={{
                                       justifyContent: "center",
                                       alignItems: "center",
                                     }}
                                   >
-                                    <DeadlineCalender searchSource={searchSource.calender}   />
+                                    <DeadlineCalender handleDeadLineChange={handleDeadLineChange} searchSource={searchSource.calender} />
                                     {/* EventCalender 開催日 */}
-                                    <EventCalender searchSource={searchSource.calender} />
+                                    <EventCalender handleEventChange={handleEventChange} searchSource={searchSource.calender} />
                                   </Stack>
                                 </Grid>
                               ) : null}

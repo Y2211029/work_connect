@@ -12,8 +12,6 @@ import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import { follow } from "src/_mock/follow";
 import axios from "axios";
-// import { TypographyItems } from "src/components/typography/ItemTypography";
-// import NewsDisplayed from "src/components/search/NewsDisplayed";
 
 // ----------------------------------------------------------------------
 

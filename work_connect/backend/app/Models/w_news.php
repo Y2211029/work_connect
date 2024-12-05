@@ -19,6 +19,7 @@ class w_news extends Model
         'article_title',
         'genre',
         'header_img',
+        'open_jobs',
         'event_day',
         'summary',
         'public_status',
@@ -30,6 +31,7 @@ class w_news extends Model
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'event_day' => 'datetime',
     ];
 }
 

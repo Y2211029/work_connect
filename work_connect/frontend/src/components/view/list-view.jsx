@@ -317,6 +317,8 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
             icon_id: company.icon_id,
             followStatus: company.follow_status,
             deadline: company.deadline,
+            deadlineStatus: company.deadline_status,
+            open_jobs: company.open_jobs,
             event_day: company.event_day,
             count: company.form_data_count,
           }));
@@ -350,6 +352,8 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
             icon_id: company.icon_id,
             followStatus: company.follow_status,
             deadline: company.deadline,
+            deadlineStatus: company.deadline_status,
+            open_jobs: company.open_jobs,
             event_day: company.event_day,
             count: company.form_data_count,
           }));
@@ -384,6 +388,8 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
             icon_id: company.icon_id,
             followStatus: company.follow_status,
             deadline: company.deadline,
+            deadlineStatus: company.deadline_status,
+            open_jobs: company.open_jobs,
             event_day: company.event_day,
             count: company.form_data_count,
           }));
@@ -421,7 +427,8 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           }));
           return [{ news_list }]; // 1つのオブジェクトにまとめた配列として返す
         }
-      },    },
+      },
+    },
     writeforms: {
       ItemName: "応募用フォーム",
       url: `http://localhost:8000/write_form_get/${NewsDetailId}`,

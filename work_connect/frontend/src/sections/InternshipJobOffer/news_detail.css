@@ -28,7 +28,8 @@
     font-size: 20px; /* 既に指定されたサイズを使用 */
     height: 30px; /* 高さはそのままにしておく */
     overflow: hidden;
-    font-weight: 600;
+    font-weight: 300;
+    cursor: pointer;
 }
 
 .news_created_at{
@@ -138,7 +139,6 @@
 
 .StickyMenu_Divider {
     margin-top: 10px;
-    border-width: 1px; /* 線の太さを2pxに設定 */
     border-color: #000; /* 線の色を黒に設定 */
 }
 

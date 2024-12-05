@@ -96,6 +96,8 @@ const Editor = () => {
   const [CreateFormOpen, setCreateFormOpen] = useState(false);
   const [formSummary, setFormSummary] = useState(null);
   const [followerCounter, setFollowerCounter] = useState(0);
+  const [selectedOccupation, setSelectedOccupation] = useState([]);
+  const [openJobs, setOpenJobs] = useState("");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
@@ -118,6 +120,8 @@ const Editor = () => {
   const AccordionhandleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
+
+
 
 
   //ニュースを投稿した際の処理
@@ -203,12 +207,14 @@ const Editor = () => {
       console.log(news_id);
       console.log(notificationMessage);
       console.log(genre);
+      console.log(openJobs);
 
       const response = await axios.post(news_save_url, {
         value: formSummary,    // ニュース記事
         title: title,     // タイトル
         news_id: news_id,     // ID
         message: notificationMessage, //通知に添えるメッセージ
+        openJobs: openJobs, //募集職種
         company_id: sessionId, // 企業ID
         genre: genre //ジャンル
       }, {
@@ -1533,7 +1539,8 @@ const Editor = () => {
       />
     },
     ...(followerCounter > 0 ? [{
-      key: "notificationMessage", text: "通知に添えるメッセージ", render: <NewsMenu menuKey={'notificationMessage'}
+      key: "notificationMessage", text: "通知に添えるメッセージ", render:
+      <NewsMenu menuKey={'notificationMessage'}
         NotificationMessageHandleChange={notification_messagehandleChange}
         message={notificationMessage}
       />
@@ -1552,7 +1559,15 @@ const Editor = () => {
           selected_draft={selected_draft}
         />
     }] : []),
-
+    ...(genre !== "Blog" ? [{
+      key: "openJobs", text: "募集職種を設定する", render:
+        <NewsMenu menuKey={'openJobs'}
+          selected_draft={selected_draft}
+          setSelectedOccupation = {setSelectedOccupation}
+          selectedOccupation = {selectedOccupation}
+          setOpenJobs={setOpenJobs}
+        />
+    }] : []),
     ...((isContentReady && isFollowerValid) ? [{
       key: "releaseNews", text: "ニュースを公開する", render: <NewsMenu menuKey={'releaseNews'}
         NewsUpLoad={news_upload}

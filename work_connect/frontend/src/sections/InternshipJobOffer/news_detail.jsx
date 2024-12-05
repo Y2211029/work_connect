@@ -9,18 +9,15 @@ import "./news_detail.css"
 import { follow } from "src/_mock/follow";
 
 //MUIアイコン
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
+import Tooltip from "@mui/material/Tooltip";
 
 
 const InternshipJobOfferPage = () => {
     const [csrfToken, setCsrfToken] = useState("");
     const [NewsDetail, SetNewsDetail] = useState(null);
-    const [bookmarked, setBookmarked] = useState(false);
-    const [isHover, SetFavoriteIcon_hover] = useState(false);
     const [followStatus, setFollowStatus] = useState(null);
     const [writeformStatus, setWriteFormStatus] = useState(null);
     const [deadlinestatus, setDeadLineStatus] = useState(null);
@@ -29,7 +26,6 @@ const InternshipJobOfferPage = () => {
 
 
     const csrf_url = "http://localhost:8000/csrf-token";
-    const news_bookmark_url = "http://localhost:8000/news_bookmark";
     const { news_id } = useParams(); // パラメータから id を取得
     const newsdetail_id = String(news_id); // id を文字列に変換する
     const navigate = useNavigate();
@@ -114,32 +110,7 @@ const InternshipJobOfferPage = () => {
         return `${year}/${month}/${day}`;
     };
 
-    //ハートをクリックしたらブックマーク(ニュースを保存)し、ハートの中が赤色になる
-    const news_bookmark = async () => {
-        setBookmarked(!bookmarked); //usestateセット
-        //ajax処理
-        console.log(newsdetail_id);
-        console.log(NewsDetail.genre);
-        try {
-            const response = await axios.post(
-                news_bookmark_url,
-                {
-                    id: newsdetail_id,              //bookmark_idカラムに入れる
-                    category: NewsDetail.genre,   //categoryカラムに入れる
-                    sessionid: data.Id,         //企業or学生のid
-                },
-                {
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken,
-                    },
-                }
-            );
-            console.log(response.data);
-            // SetNewsDetail(response.data);
-        } catch (error) {
-            console.error("データの取得中にエラーが発生しました！", error);
-        }
-    };
+
 
     const handleProfileJump = () => {
         navigate(`/Profile/${NewsDetail.user_name}?page=mypage`);
@@ -191,17 +162,13 @@ const InternshipJobOfferPage = () => {
                         <h1 className="news_title">{NewsDetail.article_title}</h1>
 
                         <Stack direction="row" spacing={2} >
-                            <p className="news_company_name">{NewsDetail.company_name}</p>
+                            <Tooltip title="クリックするとプロフィールに行きます">
+                            <p className="news_company_name" onClick={handleProfileJump}>{NewsDetail.company_name}</p>
+                            </Tooltip>
                             <p className="news_created_at">{formatDate(NewsDetail.news_created_at)}</p>
                         </Stack>
 
                         <Stack direction="row" spacing={2} className="NewsDetail_Stack">
-                            <Button className="NewsDetail_Button"
-                                variant="contained"
-                                onClick={handleProfileJump}
-                            >
-                                プロフィール
-                            </Button>
                             {data?.id?.[0] === "S" && (
                                 <>
                                     <Button className="NewsDetail_Button"
@@ -228,7 +195,7 @@ const InternshipJobOfferPage = () => {
                                                             ? "linear-gradient(#b8b8b8, #9e9e9e)" // 応募済みの場合のホバー時の背景
                                                             : "linear-gradient(#c2c2c2, #e5ad91)", // 応募する場合のホバー時の背景
                                                 },
-                                                color: deadlinestatus ? "white" : "black", // 締切が過ぎた場合の文字色を白に変更
+                                                color: "white", // 締切が過ぎた場合の文字色を白に変更
                                             }}
                                             onClick={
                                                 deadlinestatus || writeformStatus
@@ -287,28 +254,6 @@ const InternshipJobOfferPage = () => {
                         />
                     </div>
 
-                    <div className="genre_update">
-
-                        {/* //ログインしていない場合非表示 */}
-                        {data.id && (
-                            bookmarked ? (
-                                <FavoriteIcon
-                                    style={{ fontSize: '24px' }}
-                                    onClick={news_bookmark}
-                                    onMouseEnter={() => SetFavoriteIcon_hover(true)}
-                                    onMouseLeave={() => SetFavoriteIcon_hover(false)}
-                                />
-                            ) : (
-                                <FavoriteBorderIcon
-                                    style={{ fontSize: '24px' }}
-                                    onClick={news_bookmark}
-                                    onMouseEnter={() => SetFavoriteIcon_hover(true)}
-                                    onMouseLeave={() => SetFavoriteIcon_hover(false)}
-                                />
-                            )
-                        )}
-                        {isHover && <div style={{ position: 'absolute', top: '30px', left: '10px', color: 'red' }}>クリックするとブックマークできます</div>}
-                    </div>
 
 
                     {/* Editor.jsのプラグインによって内容を１行ずつ解釈し、それぞれにあった形でreturn */}

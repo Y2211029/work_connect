@@ -7,7 +7,9 @@ import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
-
+import { styled } from "@mui/material/styles";
+import Paper from "@mui/material/Paper";
+import Button from "@mui/material/Button";
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import { follow } from "src/_mock/follow";
@@ -76,6 +78,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   console.log("アイコンID", newsList.icon);
   console.log("ユーザーネーム", newsList.user_name);
 
+
   // 日付をYY/MM/DDに変換する
   const formatDate = (dateString) => {
     if (!dateString) {
@@ -88,14 +91,20 @@ const PostCard = forwardRef(({ post }, ref) => {
       return null;
     }
 
+    console.log("dateObj", dateObj);
+
     const year = dateObj.getFullYear();
     const month = dateObj.getMonth() + 1;
     const day = dateObj.getDate();
+    const hours = dateObj.getHours();
+    const minutes = dateObj.getMinutes();
+
+    // 時間と分も2桁の形式で表示
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
     return (
       <>
-        <Tooltip title="締め切り間近!">
-          応募締切日:{year}/{month}/{day}
-        </Tooltip>
+        {year}/{month}/{day} {hours}:{formattedMinutes}
       </>
     );
   };
@@ -134,6 +143,8 @@ const PostCard = forwardRef(({ post }, ref) => {
     const company_id = news.company_id;
     const count = news.count;
     const user_name = news.user_name;
+    console.log("締切日:", news.deadline);
+    console.log("開催日", news.event_day);
 
     return (
       <Stack
@@ -163,11 +174,17 @@ const PostCard = forwardRef(({ post }, ref) => {
         {/* フォーム表示 */}
         {renderForm(company_id, count, user_name)}
 
-        {/* 締切日をフォーマットして表示 */}
-        {news.deadline && formatDate(news.deadline)}
+        <Stack direction={"column"}>
 
-        {/* 開催日があれば表示 */}
-        {news.event_day && <div>開催日: {news.event_day}</div>}
+          {/* 開催日があれば表示 */}
+          {news.event_day && <div>開催日: {formatDate(news.event_day)}~</div>}
+
+
+          {/* 締切日をフォーマットして表示 */}
+          {news.deadline && <div>応募締切日: {formatDate(news.deadline)}まで</div>}
+
+
+        </Stack>
       </Stack>
     );
   };
@@ -217,50 +234,107 @@ const PostCard = forwardRef(({ post }, ref) => {
 
   // const alternativeImage = "http://localhost:8000/storage/images/work/NoImage.png";
   // サムネイル
-  const renderThumbnail = (header_img) => (
-    <Box
-      sx={{
-        position: "relative",
-        width: "100%",
-        marginBottom: "10px",
-        borderRadius: "10px",
-      }}>
-      {/* 画像 */}
-      <Box
-        component="img"
-        src={header_img}
-        sx={{
-          aspectRatio: "16 / 9",
-          width: "400px",
-          height: "250px",
-        }}
-      />
 
-      {/* ×ボタン */}
-      {newsList.company_id === accountData.id && (
-        <Tooltip title="このニュースを削除します">
-          <Typography
-            onClick={() => handleNewsDelete(newsList.news_id)} // 実際の削除処理を追加
-            sx={{
-              position: "absolute",
-              top: "10px",
-              right: "10px",
-              backgroundColor: "rgba(255, 255, 255, 0.7)",
-              padding: "5px 10px",
-              borderRadius: "5px",
-              cursor: "pointer",
-              opacity: 0.8,
-              "&:hover": {
-                opacity: 1,
-              },
-            }}
-          >
-            ×
-          </Typography>
-        </Tooltip>
-      )}
-    </Box>
-  );
+  const renderThumbnail = (header_img, deadlineStatus, genre) => {
+    console.log("ジャンルの中身", genre);
+    // genreの最初の要素にアクセスし、childrenプロパティを掘り下げてInternshipを取得
+    const news_genre = genre[0]?.props?.children?.props?.children;
+    console.log("ジャンルは何?", news_genre);
+    console.log("締め切り状況", deadlineStatus);
+    return (
+      <Box
+        sx={{
+          position: "relative",
+          width: "100%",
+          marginBottom: "10px",
+          borderRadius: "10px",
+        }}
+      >
+        {/* 画像 */}
+        <Box
+          component="img"
+          src={header_img}
+          sx={{
+            aspectRatio: "16 / 9",
+            width: "400px",
+            height: "250px",
+          }}
+        />
+
+        {/* ×ボタン */}
+        {newsList.company_id === accountData.id && (
+          <Tooltip title="このニュースを削除します">
+            <Typography
+              onClick={() => handleNewsDelete(newsList.news_id)} // 実際の削除処理を追加
+              sx={{
+                position: "absolute",
+                top: "10px",
+                right: "10px",
+                backgroundColor: "rgba(255, 255, 255, 0.7)",
+                padding: "5px 10px",
+                borderRadius: "5px",
+                cursor: "pointer",
+                opacity: 0.8,
+                "&:hover": {
+                  opacity: 1,
+                },
+              }}
+            >
+              ×
+            </Typography>
+          </Tooltip>
+        )}
+
+        {/* 応募状態 */}
+        {news_genre !== "Blog" ? (
+          deadlineStatus ? (
+            <Tooltip title="応募できません">
+              <Typography
+                sx={{
+                  position: "absolute",
+                  top: "10px",
+                  left: "10px",
+                  fontWeight: "bold",
+                  backgroundColor: "red",
+                  padding: "5px 10px",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                  opacity: 0.8,
+                  "&:hover": {
+                    opacity: 1,
+                  },
+                }}
+              >
+                応募できません
+              </Typography>
+            </Tooltip>
+          ) : (
+            <Tooltip title="応募できます">
+              <Typography
+                sx={{
+                  position: "absolute",
+                  top: "10px",
+                  left: "10px",
+                  fontWeight: "bold",
+                  backgroundColor: "blue",
+                  padding: "5px 10px",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                  opacity: 0.8,
+                  "&:hover": {
+                    opacity: 1,
+                  },
+                }}
+              >
+                応募できます
+              </Typography>
+            </Tooltip>
+          )
+        ) : null}
+      </Box>
+    );
+  };
+
 
 
   //フォローステータス
@@ -336,13 +410,51 @@ const PostCard = forwardRef(({ post }, ref) => {
     </Stack>
   );
 
-  // const renderDay = {
-  //   <>
-  //   renderDeatLine
-  //            renderEventDate
-  //            renderOccupation
-  //   </>
-  // };
+  const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+    ...theme.typography.body2,
+    border: "#DAE2ED 2px solid",
+    padding: theme.spacing(1),
+    textAlign: "left",
+    color: theme.palette.text.secondary,
+    fontSize: "25px",
+  }));
+
+// データからタグを抽出する処理
+const ExtractTags = (data) => {
+  return data ? data.split(",").map((region) => region.trim()) : [];
+};
+
+// タグを表示する処理
+const ShowTags = (tags) => {
+  return tags.map((region, index) => (
+    <Button
+      key={index}
+      variant="outlined"
+      sx={{
+        borderColor: "#637381",
+        color: "#637381",
+        "&:hover": { borderColor: "#637381" },
+        cursor: "pointer",
+      }}
+    >
+      {region}
+    </Button>
+  ));
+};
+
+// 職種名のリストを表示する処理
+const renderOpenJobs = (open_jobs) => {
+  console.log("募集職種", open_jobs);
+  const openJobsTag = ExtractTags(open_jobs);
+
+  return (
+    <div>
+      <Item>
+        {ShowTags(openJobsTag)}</Item>
+    </div>
+  );
+};
 
   return (
     <>
@@ -350,9 +462,10 @@ const PostCard = forwardRef(({ post }, ref) => {
         <div key={index} ref={ref}>
           <Stack sx={{ display: "inline-block" }}>
             <div className="postCard" style={{ width: "100%" }}>
-              {renderThumbnail(news.header_img)}
+              {renderThumbnail(news.header_img, news.deadlineStatus, news.genre)}
               {renderTitle(news.news_id, news.article_title)}
               {renderGenre(news)}
+              {renderOpenJobs(news.open_jobs)}
               {renderFollow(news.followStatus, news.company_id, news.news_id)}
               {renderInfo(news)}
             </div>

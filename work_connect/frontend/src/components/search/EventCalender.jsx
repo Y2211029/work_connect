@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+import ReactDOM from "react-dom"; // ポータルを使用するためにインポート
+import { useState, useEffect, useRef, useMemo } from "react";
 import dayjs from "dayjs";
 import isBetweenPlugin from "dayjs/plugin/isBetween";
 import { styled } from "@mui/material/styles";
@@ -16,6 +17,10 @@ import IconButton from "@mui/material/IconButton";
 
 dayjs.extend(isBetweenPlugin);
 
+// 日付のフォーマットを定数化
+const DATE_FORMAT = "YYYY年MM月DD日";
+
+// カスタムスタイルの PickersDay コンポーネント
 const CustomPickersDay = styled(PickersDay, {
   shouldForwardProp: (prop) => prop !== "isInRange",
 })(({ theme, isInRange }) => ({
@@ -29,81 +34,149 @@ const CustomPickersDay = styled(PickersDay, {
   }),
 }));
 
+// カレンダーの各日のレンダリングロジック
 function Day(props) {
   const { day, selectedStartDay, selectedEndDay, ...other } = props;
 
-  const isInRange = selectedStartDay && selectedEndDay && day.isBetween(selectedStartDay, selectedEndDay, null, "[]");
+  const isInRange =
+    selectedStartDay &&
+    selectedEndDay &&
+    day.isBetween(selectedStartDay, selectedEndDay, null, "[]");
 
   return <CustomPickersDay {...other} day={day} disableMargin isInRange={isInRange} />;
 }
+
+Day.propTypes = {
+  day: PropTypes.instanceOf(dayjs),
+  selectedStartDay: PropTypes.instanceOf(dayjs),
+  selectedEndDay: PropTypes.instanceOf(dayjs),
+};
 
 export default function EventCalender(props) {
   const [startDay, setStartDay] = useState(null);
   const [endDay, setEndDay] = useState(null);
   const [open, setOpen] = useState(false);
+  const [calendarPosition, setCalendarPosition] = useState({ top: 0, left: 0 });
   const calendarRef = useRef(null);
   const inputRef = useRef(null);
 
+  // カレンダーの表示/非表示と位置の計算
   const handleOpen = () => {
+    if (inputRef.current) {
+      const rect = inputRef.current.getBoundingClientRect();
+      console.log("rectrect", rect);
+      setCalendarPosition({
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX,
+      });
+    }
     setOpen(!open);
   };
 
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
 
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
 
+      if (inputRef.current) {
+        const rect = inputRef.current.getBoundingClientRect();
+        setCalendarPosition({
+          top: rect.bottom + window.scrollY,
+          left: rect.left + window.scrollX,
+        });
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // クリーンアップ
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []); // 一度だけ実行されるように空の依存配列
+
+  useEffect(() => {
+    console.log("windowSize", windowSize)
+  }, [windowSize]);
+
+  // 日付をクリックしたときの処理
   const handleDayClick = (newValue) => {
     if (!startDay || (startDay && endDay)) {
       setStartDay(newValue);
       setEndDay(null);
-      props.handleEventChange(newValue.format("YYYY年MM月DD日"));
+      props.handleEventChange(newValue.format(DATE_FORMAT));
     } else {
-      // (startDayに値が入っている)かつ(startDayより前の日付を選択した)場合にstartDayから選びなおす処理
-      if (newValue != null && startDay != null) {
-        if (startDay.format("YYYY年MM月DD日") >= newValue.format("YYYY年MM月DD日")) {
-          setStartDay(newValue);
-          setEndDay(null);
-          props.handleEventChange(newValue.format("YYYY年MM月DD日"));
-        } else {
-          setEndDay(newValue);
-          props.handleEventChange(startDay.format("YYYY年MM月DD日") + "～" + newValue.format("YYYY年MM月DD日"));
-        }
+      if (newValue && startDay && startDay.isAfter(newValue, "day")) {
+        setStartDay(newValue);
+        setEndDay(null);
+        props.handleEventChange(newValue.format(DATE_FORMAT));
+      } else {
+        setEndDay(newValue);
+        props.handleEventChange(
+          `${startDay.format(DATE_FORMAT)}～${newValue.format(DATE_FORMAT)}`
+        );
       }
     }
   };
 
+  // カレンダー以外をクリックした際に閉じる処理
   const handleClickOutside = (event) => {
-    if (calendarRef.current && !calendarRef.current.contains(event.target) && inputRef.current && !inputRef.current.contains(event.target)) {
+    if (
+      calendarRef.current &&
+      !calendarRef.current.contains(event.target) &&
+      inputRef.current &&
+      !inputRef.current.contains(event.target)
+    ) {
+      setOpen(false);
+    }
+  };
+
+  // Escape キーでカレンダーを閉じる
+  const handleKeyDown = (event) => {
+    if (event.key === "Escape") {
       setOpen(false);
     }
   };
 
   useEffect(() => {
-
     document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
     };
-
   }, []);
 
-  // 型チェックと配列長のチェック
-  useEffect(() => {
-    console.log("props", props);
-
-    if (props.searchSource.includes("～")) {
-      const [splitStartDay, splitEndDay] = props.searchSource.split("～");
-      setStartDay(dayjs(splitStartDay.trim(), "YYYY年MM月DD日"));
-      setEndDay(dayjs(splitEndDay.trim(), "YYYY年MM月DD日"));
+  const parsedDates = useMemo(() => {
+    if (props.searchSource !== "") {
+      if (props.searchSource.includes("～")) {
+        const [splitStartDay, splitEndDay] = props.searchSource.split("～");
+        return {
+          startDay: dayjs(splitStartDay.trim(), DATE_FORMAT),
+          endDay: dayjs(splitEndDay.trim(), DATE_FORMAT),
+        };
+      }
     } else {
-      setStartDay(dayjs(props.searchSource, "YYYY年MM月DD日"));
+      return null;
     }
-
-    if (props.searchSource === "") {
-      // searchSourceが空の配列かどうかを判定
-      setStartDay(null);
-      setEndDay(null);
-    }
+    return { startDay: dayjs(props.searchSource, DATE_FORMAT), endDay: null };
   }, [props.searchSource]);
+
+  useEffect(() => {
+    if (parsedDates !== null) {
+      console.log("parsedDates", parsedDates.startDay);
+      setStartDay(parsedDates.startDay);
+      setEndDay(parsedDates.endDay);
+    }
+  }, [parsedDates]);
 
   const renderCalender = (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -120,10 +193,31 @@ export default function EventCalender(props) {
           },
         }}
         ref={calendarRef}
-        sx={{ position: "absolute", backgroundColor: "white", boxShadow: "0px 4px 18px -10px #777777", borderRadius: "10px", zIndex: "1300" }}
+        sx={{
+          backgroundColor: "white",
+          boxShadow: "0px 4px 18px -10px #777777",
+          borderRadius: "10px",
+          zIndex: "1300",
+        }}
       />
     </LocalizationProvider>
   );
+
+  const calendarPortal = open
+    ? ReactDOM.createPortal(
+      <div
+        style={{
+          position: "absolute",
+          zIndex: 2000,
+          top: `${calendarPosition.top}px`,
+          left: `${calendarPosition.left}px`,
+        }}
+      >
+        {renderCalender}
+      </div>,
+      document.body
+    )
+    : null;
 
   return (
     <>
@@ -138,38 +232,37 @@ export default function EventCalender(props) {
               value={
                 startDay
                   ? endDay
-                    ? `${startDay.format("YYYY年MM月DD日")}〜${endDay.format("YYYY年MM月DD日")}`
-                    : startDay.format("YYYY年MM月DD日")
+                    ? `${startDay.format(DATE_FORMAT)}〜${endDay.format(DATE_FORMAT)}`
+                    : startDay.format(DATE_FORMAT)
                   : "日付を選択してください"
               }
               variant="outlined"
               sx={{
-                width: { xs: "100%", sm: "90%", md: "80%" },
-                "& .css-10cqtbj-MuiInputBase-input-MuiOutlinedInput-input": {
-                  fontSize: { xs: "12px", sm: "14px", md: "16px" },
-                },
+                width: { xs: "100%", sm: "100%", md: "fit-content" },
                 minWidth: endDay ? "356px" : "200px",
               }}
               inputRef={inputRef}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton aria-label="toggle calendar visibility" onClick={handleOpen} edge="end">
+                    <IconButton
+                      aria-label="toggle calendar visibility"
+                      onClick={handleOpen}
+                      edge="end"
+                    >
                       <EventIcon />
                     </IconButton>
                   </InputAdornment>
                 ),
               }}
             />
-            {open && renderCalender}
           </div>
         </Box>
       </Grid>
+      {calendarPortal}
     </>
   );
 }
-
-// PropTypesの型定義
 Day.propTypes = {
   day: PropTypes.instanceOf(dayjs),
   selectedStartDay: PropTypes.instanceOf(dayjs),

@@ -93,7 +93,7 @@ export default function DeadlineCalender(props) {
   // 型チェックと配列長のチェック
   useEffect(() => {
     console.log("props", props);
-    
+
     // リセットボタンが押された時に
     // searchSourceが空の配列かどうかを判定
     if (props.searchSource === "") {
@@ -142,11 +142,9 @@ export default function DeadlineCalender(props) {
               value={value ? value.format("YYYY年MM月DD日") : "日付を選択してください"}
               variant="outlined"
               sx={{
-                width: { xs: "100%", sm: "90%", md: "80%" },
+                width: { xs: "100%", sm: "100%", md: "fit-content" },
                 "& .css-10cqtbj-MuiInputBase-input-MuiOutlinedInput-input": {
                   fontSize: { xs: "12px", sm: "14px", md: "16px" },
-                  // whiteSpace: "nowrap", // ラベルが折り返さないようにする
-                  // overflow: "visible", // ラベルが見切れないようにする
                 },
               }}
               inputRef={inputRef} // Reference for input field

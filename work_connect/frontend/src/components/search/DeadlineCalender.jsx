@@ -1,6 +1,8 @@
+import ReactDOM from "react-dom"; // ポータルを使用するためにインポート
 import { useState, useEffect, useRef } from "react";
 import dayjs from "dayjs";
 import isBetweenPlugin from "dayjs/plugin/isBetween";
+import "dayjs/locale/ja"; // 日本語ロケールをインポート
 import { styled } from "@mui/material/styles";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -13,12 +15,16 @@ import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import IconButton from "@mui/material/IconButton";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 
 dayjs.extend(isBetweenPlugin);
+dayjs.locale("ja"); // Day.jsで日本語を有効化
+// 日付のフォーマットを定数化
+const DATE_FORMAT = "YYYY年MM月DD日";
 
 const CustomPickersDay = styled(PickersDay, {
   shouldForwardProp: (prop) => prop !== "isSelected" && prop !== "isHovered",
-})(({ theme, isSelected, isHovered }) => ({
+})(({ theme, isSelected, isHovered, isSaturday, isSunday }) => ({
   borderRadius: 0,
   ...(isSelected && {
     backgroundColor: theme.palette.primary.main,
@@ -33,22 +39,34 @@ const CustomPickersDay = styled(PickersDay, {
       backgroundColor: theme.palette.primary.light,
     },
   }),
+  display: "flex", // フレックスボックスを有効化
+  flexDirection: "column", // 縦並びに変更
+  alignItems: "center", // 中央揃え
+  justifyContent: "center", // 縦方向も中央揃え
+  ...(isSaturday && {
+    color: theme.palette.info.main,
+  }),
+  ...(isSunday && {
+    color: theme.palette.error.main,
+  }),
 }));
 
 function Day(props) {
   const { day, selectedDay, hoveredDay, onPointerEnter, onPointerLeave, ...other } = props;
-
+  const isSaturday = day.day() === 6;
+  const isSunday = day.day() === 0;
   return (
     <CustomPickersDay
       {...other}
       day={day}
-      sx={{ px: 2.5 }}
       disableMargin
       selected={day.isSame(selectedDay, "day")}
       isSelected={day.isSame(selectedDay, "day")}
       isHovered={day.isSame(hoveredDay, "day")}
       onPointerEnter={() => onPointerEnter(day)}
       onPointerLeave={onPointerLeave}
+      isSaturday={isSaturday}
+      isSunday={isSunday}
     />
   );
 }
@@ -57,12 +75,27 @@ export default function DeadlineCalender(props) {
   const [hoveredDay, setHoveredDay] = useState(null);
   const [value, setValue] = useState(null);
   const [open, setOpen] = useState(false);
-
+  const [calendarPosition, setCalendarPosition] = useState({ top: 0, left: 0 });
   const calendarRef = useRef(null);
   const inputRef = useRef(null);
+  const CancelIconRef = useRef(null);
+  const CalendarIconlRef = useRef(null);
 
+  const handleClear = () => {
+    setValue(null);
+    console.log("handleClear");
+  };
 
+  // カレンダーの表示/非表示と位置の計算
   const handleOpen = () => {
+    console.log("inputRef.current", inputRef.current);
+    if (inputRef.current) {
+      const rect = inputRef.current.getBoundingClientRect();
+      setCalendarPosition({
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX,
+      });
+    }
     setOpen(!open);
   };
 
@@ -70,23 +103,57 @@ export default function DeadlineCalender(props) {
     setValue(newValue);
     setOpen(false); // Close the calendar when a date is selected
 
-    props.handleDeadLineChange(newValue.format("YYYY年MM月DD日"));
+    props.handleDeadLineChange(newValue.format(DATE_FORMAT));
   };
 
   // Handle click outside the calendar and input field
   const handleClickOutside = (event) => {
-    if (calendarRef.current && !calendarRef.current.contains(event.target) && inputRef.current && !inputRef.current.contains(event.target)) {
+    if (
+      calendarRef.current &&
+      !calendarRef.current.contains(event.target) &&
+      inputRef.current &&
+      !inputRef.current.contains(event.target) &&
+      CancelIconRef.current &&
+      !CancelIconRef.current.contains(event.target) &&
+      CalendarIconlRef.current &&
+      !CalendarIconlRef.current.contains(event.target)
+    ) {
+      setOpen(false);
+      console.log("handleClickOutside");
+    }
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Escape") {
       setOpen(false);
     }
   };
 
   useEffect(() => {
-    // Add event listener for clicks outside
-    document.addEventListener("mousedown", handleClickOutside);
+    const handleResize = () => {
+      if (inputRef.current) {
+        const rect = inputRef.current.getBoundingClientRect();
+        setCalendarPosition({
+          top: rect.bottom + window.scrollY,
+          left: rect.left + window.scrollX,
+        });
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      // Clean up event listener on unmount
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
 
@@ -99,17 +166,15 @@ export default function DeadlineCalender(props) {
     if (props.searchSource === "") {
       setValue(null);
     } else {
-      setValue(dayjs(props.searchSource, "YYYY年MM月DD日"));
+      setValue(dayjs(props.searchSource, DATE_FORMAT));
     }
   }, [props.searchSource]);
 
   const renderCalender = (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ja">
       <DateCalendar
         value={value}
         onChange={handleDateChange}
-        showDaysOutsideCurrentMonth
-        displayWeekNumber
         slots={{ day: Day }}
         slotProps={{
           day: {
@@ -123,10 +188,43 @@ export default function DeadlineCalender(props) {
           },
         }}
         ref={calendarRef}
-        sx={{ position: "absolute", backgroundColor: "white", boxShadow: "0px 4px 18px -10px #777777", borderRadius: "10px", zIndex: "1300" }}
+        sx={{
+          backgroundColor: "white",
+          boxShadow: "0px 4px 18px -10px #777777",
+          borderRadius: "10px",
+          zIndex: "1300",
+          "& .css-1n0erti-MuiTypography-root-MuiDayCalendar-weekDayLabel": {
+            margin: "0px", // 曜日要素のマージンをリセット
+          },
+          "& .MuiDayCalendar-weekDayLabel": {
+            // 曜日のスタイルを変更
+            "&:nth-of-type(1)": {
+              color: "#FF5630", // 日曜日を赤色
+            },
+            "&:nth-of-type(7)": {
+              color: "#00B8D9", // 土曜日を青色
+            },
+          },
+        }}
       />
     </LocalizationProvider>
   );
+
+  const calendarPortal = open
+    ? ReactDOM.createPortal(
+        <div
+          style={{
+            position: "absolute",
+            zIndex: 2000,
+            top: `${calendarPosition.top}px`,
+            left: `${calendarPosition.left}px`,
+          }}
+        >
+          {renderCalender}
+        </div>,
+        document.body
+      )
+    : null;
 
   return (
     <>
@@ -135,11 +233,11 @@ export default function DeadlineCalender(props) {
           <div style={{ fontWeight: "Bold", color: "#666" }}>応募締め切り</div>
           <div style={{ color: "#444" }}>
             <TextField
-              //   label="応募締切日"
               margin="normal"
               name="deadline"
               onClick={handleOpen}
-              value={value ? value.format("YYYY年MM月DD日") : "日付を選択してください"}
+              placeholder="****年**月**日"
+              value={value ? value.format(DATE_FORMAT) : ""}
               variant="outlined"
               sx={{
                 width: { xs: "100%", sm: "100%", md: "fit-content" },
@@ -149,21 +247,29 @@ export default function DeadlineCalender(props) {
               }}
               inputRef={inputRef} // Reference for input field
               InputProps={{
+                inputProps: {
+                  autoComplete: "off",
+                },
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton aria-label="toggle calendar visibility" onClick={handleOpen} edge="end">
+                    {open && value ? (
+                      <IconButton ref={CancelIconRef} aria-label="clear input" onClick={handleClear} edge="end">
+                        <HighlightOffIcon />
+                      </IconButton>
+                    ) : (
+                      ""
+                    )}
+                    <IconButton ref={CalendarIconlRef} aria-label="toggle calendar visibility" onClick={handleOpen} edge="end">
                       <CalendarMonthIcon />
                     </IconButton>
                   </InputAdornment>
                 ),
               }}
             />
-            {open && renderCalender}
+            {calendarPortal}
           </div>
         </Box>
       </Grid>
-
-
     </>
   );
 }

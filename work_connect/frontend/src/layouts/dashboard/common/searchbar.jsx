@@ -1976,7 +1976,6 @@ export default function Searchbar() {
 
                     height: {
                       xs: "80%" /* 80% height on small screens */,
-                      sm: "fit-content" /* Adjusts to content size on larger screens */,
                     },
                     // overflowY: "auto",
                     bgcolor: "background.paper",

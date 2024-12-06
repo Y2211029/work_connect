@@ -91,7 +91,7 @@ const Introduction = (props) => {
           maxRows={12}
           aria-label="maximum height"
           placeholder="500字以内"
-          value={inputValue}
+          value={props.workData}
           onChange={handleChange}
           maxLength={500}
           sx={{
@@ -123,5 +123,6 @@ const Introduction = (props) => {
 
 Introduction.propTypes = {
   callSetWorkData: PropTypes.func,
+  workData: PropTypes.string.isRequired,
 };
 export default Introduction;

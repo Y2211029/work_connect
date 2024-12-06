@@ -2,7 +2,8 @@ import { useEffect, useState, useRef } from "react";
 import "./Editor.css";
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
-
+import dayjs from "dayjs";
+import "dayjs/locale/ja";
 
 // プラグインのインポート
 import EditorJS from "@editorjs/editorjs";
@@ -91,7 +92,7 @@ const Editor = () => {
   const [charCount, setCharCount] = useState(0);
   const [usedImages, setUsedImages] = useState(null);
   const [notificationMessage, setNotificationMessage] = useState("");
-  const [eventDay, setEventDay] = useState("");
+  const [eventDay, setEventDay] = useState(dayjs());
   const [isSaved, setIsSaved] = useState(false);
   const [CreateFormOpen, setCreateFormOpen] = useState(false);
   const [formSummary, setFormSummary] = useState(null);
@@ -183,11 +184,11 @@ const Editor = () => {
     console.log("newValue", newValue);
   }
 
-  const event_dayhandleChange = (e) => {
-    const newValue = e.target.value;
-    setEventDay(newValue);
-    console.log("newValue", newValue);
-  }
+  const event_dayhandleChange = (newDate) => {
+    const formattedDate = dayjs(newDate).format("YYYY-MM-DD HH:mm:ss");
+    console.log("新しい締切日:", formattedDate);
+    setEventDay(newDate); // 状態を更新
+  };
 
 
 
@@ -208,6 +209,7 @@ const Editor = () => {
       console.log(notificationMessage);
       console.log(genre);
       console.log(openJobs);
+      console.log(eventDay);
 
       const response = await axios.post(news_save_url, {
         value: formSummary,    // ニュース記事
@@ -215,6 +217,7 @@ const Editor = () => {
         news_id: news_id,     // ID
         message: notificationMessage, //通知に添えるメッセージ
         openJobs: openJobs, //募集職種
+        eventDay: eventDay, //開催日
         company_id: sessionId, // 企業ID
         genre: genre //ジャンル
       }, {

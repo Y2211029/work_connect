@@ -77,7 +77,7 @@ const Obsession = (props) => {
           maxRows={12}
           aria-label="maximum height"
           placeholder="500字以内"
-          value={inputValue}
+          value={props.workData}
           onChange={handleChange}
           maxLength={500}
           sx={{
@@ -109,6 +109,7 @@ const Obsession = (props) => {
 
 Obsession.propTypes = {
   callSetWorkData: PropTypes.func,
+  workData: PropTypes.string.isRequired,
 };
 
 export default Obsession;

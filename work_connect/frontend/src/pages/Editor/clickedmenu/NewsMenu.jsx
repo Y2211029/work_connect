@@ -33,12 +33,17 @@ import dayjs from "dayjs";
 import "dayjs/locale/ja";
 
 const InputDateWithTime = ({ date, event_dayhandleChange, format = "YYYY/MM/DD HH:mm" }) => {
+  console.log("時間", date);
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"ja"}>
       <DateTimePicker
-        value={dayjs(date)}
+        value={date} // 親コンポーネントから渡された date を使用
+        onChange={(newDate) => {
+          if (newDate) {
+            event_dayhandleChange(newDate); // 親に通知
+          }
+        }}
         format={format}
-        onChange={event_dayhandleChange}
         slotProps={{ calendarHeader: { format: "YYYY/MM" } }}
         ampm={false}
         clearable
@@ -46,6 +51,7 @@ const InputDateWithTime = ({ date, event_dayhandleChange, format = "YYYY/MM/DD H
     </LocalizationProvider>
   );
 };
+
 
 const NewsMenu = ({
   menuKey,
@@ -60,8 +66,8 @@ const NewsMenu = ({
   RewriteNewsDelete,
   NotificationMessageHandleChange,
   NewsUpLoad,
-  // EventDayHandleChange,
-  // eventday,
+  EventDayHandleChange,
+  eventDay,
   setSelectedOccupation,
   selectedOccupation,
   setOpenJobs,
@@ -71,6 +77,7 @@ const NewsMenu = ({
 
   console.log("menuKey", menuKey);
   dayjs.locale("ja");
+  console.log("イベントデイ",eventDay);
 
   const [options, setOptions] = useState([]);
   const { GetTagAllListFunction } = GetTagAllList();
@@ -84,17 +91,6 @@ const NewsMenu = ({
     console.log("optionArrayPromise", optionArrayPromise);
   }, []);
 
-
-  // useEffect(() => {
-  //   let devTagArray = [];
-  //   console.log("selectedOccupation", selectedOccupation);
-  //   selectedOccupation.map((item) => {
-  //     devTagArray.push(item.label);
-  //   });
-  //   const devTag = devTagArray.join(",");
-  //   console.log("選んだ内容", devTag);
-
-  // }, [selectedOccupation]);
 
   const handleChange = (selectedOption) => {
     setSelectedOccupation(selectedOption);
@@ -231,11 +227,8 @@ const NewsMenu = ({
 
   const eventDayrender = (
     <InputDateWithTime
-      date={dayjs()} // 初期値を適宜設定
-      event_dayhandleChange={(newDate) => {
-        const formattedDate = dayjs(newDate.$d).format("YYYY-MM-DD HH:mm:ss");
-        console.log("新しい締切日", formattedDate);
-      }}
+      date={eventDay} // 親コンポーネントから渡された値を使用
+      event_dayhandleChange= {EventDayHandleChange}
     />
   );
 
@@ -336,6 +329,8 @@ NewsMenu.propTypes = {
   // EventDayHandleChange: PropTypes.func.isRequired,
   // eventday: PropTypes.func.isRequired,
   NotificationMessageHandleChange: PropTypes.func.isRequired,
+  EventDayHandleChange: PropTypes.func.isRequired,
+  eventDay: PropTypes.string.isRequired,
   draftlist: PropTypes.array.isRequired, //下書きリスト
   newsid: PropTypes.number.isRequired, //ニュースID
   title: PropTypes.string.isRequired,

@@ -81,11 +81,6 @@ export default function DeadlineCalender(props) {
   const CancelIconRef = useRef(null);
   const CalendarIconlRef = useRef(null);
 
-  const handleClear = () => {
-    setValue(null);
-    props.handleDeadLineChange("");
-    console.log("handleClear");
-  };
 
   // カレンダーの表示/非表示と位置の計算
   const handleOpen = () => {
@@ -100,36 +95,52 @@ export default function DeadlineCalender(props) {
     setOpen(!open);
   };
 
+  // 日付を入力欄から削除
+  const handleClear = () => {
+    setValue(null);
+    props.handleDeadLineChange("");
+    console.log("handleClear");
+  };
+
+  // 検索した後も日付が保存されるように親コンポーネントに値を渡す
   const handleDateChange = (newValue) => {
     setValue(newValue);
     setOpen(false); // Close the calendar when a date is selected
-
     props.handleDeadLineChange(newValue.format(DATE_FORMAT));
   };
 
-  // Handle click outside the calendar and input field
+  // 入力欄、✖ボタン、カレンダーアイコン、カレンダー以外をクリックされたらカレンダーを閉じる。
   const handleClickOutside = (event) => {
+    console.log("CancelIconRef.current", CancelIconRef.current);
+    // 日付入力に必要な要素が表示されているかつクリックされた要素がその要素でない場合にカレンダーを閉じる
+
+    // キャンセルアイコンが表示されているまたはクリックされた箇所が違い場合
+
+
     if (
-      calendarRef.current &&
-      !calendarRef.current.contains(event.target) &&
-      inputRef.current &&
-      !inputRef.current.contains(event.target) &&
-      CancelIconRef.current &&
-      !CancelIconRef.current.contains(event.target) &&
-      CalendarIconlRef.current &&
-      !CalendarIconlRef.current.contains(event.target)
+      open &&  (
+        !CancelIconRef.current.contains(event.target) &&
+        calendarRef.current &&
+        !calendarRef.current.contains(event.target) &&
+        inputRef.current &&
+        !inputRef.current.contains(event.target) &&
+        CalendarIconlRef.current &&
+        !CalendarIconlRef.current.contains(event.target)
+      )
     ) {
       setOpen(false);
       console.log("handleClickOutside");
     }
   };
 
+  // エンターキーで日付入力の後、カレンダーを閉じる
   const handleKeyDown = (event) => {
     if (event.key === "Escape") {
       setOpen(false);
     }
   };
 
+  // 日付入力欄の外側にカレンダーが張り付く形で見た目を調整
   useEffect(() => {
     const handleResize = () => {
       if (inputRef.current) {
@@ -211,20 +222,21 @@ export default function DeadlineCalender(props) {
     </LocalizationProvider>
   );
 
+  // 
   const calendarPortal = open
     ? ReactDOM.createPortal(
-        <div
-          style={{
-            position: "absolute",
-            zIndex: 2000,
-            top: `${calendarPosition.top}px`,
-            left: `${calendarPosition.left}px`,
-          }}
-        >
-          {renderCalender}
-        </div>,
-        document.body
-      )
+      <div
+        style={{
+          position: "absolute",
+          zIndex: 2000,
+          top: `${calendarPosition.top}px`,
+          left: `${calendarPosition.left}px`,
+        }}
+      >
+        {renderCalender}
+      </div>,
+      document.body
+    )
     : null;
 
   return (

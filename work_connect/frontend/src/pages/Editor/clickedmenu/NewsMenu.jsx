@@ -1,4 +1,4 @@
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "react-modal";
 import PropTypes from "prop-types";
 import "../Editor.css";
@@ -34,16 +34,16 @@ import "dayjs/locale/ja";
 
 const InputDateWithTime = ({ date, event_dayhandleChange, format = "YYYY/MM/DD HH:mm" }) => {
   return (
-      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"ja"}>
-          <DateTimePicker
-              value={dayjs(date)}
-              format={format}
-              onChange={event_dayhandleChange}
-              slotProps={{ calendarHeader: { format: "YYYY/MM" } }}
-              ampm={false}
-              clearable
-          />
-      </LocalizationProvider>
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"ja"}>
+      <DateTimePicker
+        value={dayjs(date)}
+        format={format}
+        onChange={event_dayhandleChange}
+        slotProps={{ calendarHeader: { format: "YYYY/MM" } }}
+        ampm={false}
+        clearable
+      />
+    </LocalizationProvider>
   );
 };
 
@@ -60,8 +60,8 @@ const NewsMenu = ({
   RewriteNewsDelete,
   NotificationMessageHandleChange,
   NewsUpLoad,
-  EventDayHandleChange,
-  eventday,
+  // EventDayHandleChange,
+  // eventday,
   setSelectedOccupation,
   selectedOccupation,
   setOpenJobs,
@@ -69,7 +69,7 @@ const NewsMenu = ({
   selected_draft,
   followerCounter }) => {
 
-  console.log("menuKey",menuKey);
+  console.log("menuKey", menuKey);
   dayjs.locale("ja");
 
   const [options, setOptions] = useState([]);
@@ -80,8 +80,8 @@ const NewsMenu = ({
     optionArrayPromise.then((result) => {
       setOptions(result);
     });
-  console.log("options",options);
-  console.log("optionArrayPromise",optionArrayPromise);
+    console.log("options", options);
+    console.log("optionArrayPromise", optionArrayPromise);
   }, []);
 
 
@@ -98,7 +98,7 @@ const NewsMenu = ({
 
   const handleChange = (selectedOption) => {
     setSelectedOccupation(selectedOption);
-    console.log("selectedOption",selectedOption);
+    console.log("selectedOption", selectedOption);
     let devTagArray = [];
     selectedOption.map((item) => {
       devTagArray.push(item.label);
@@ -231,23 +231,23 @@ const NewsMenu = ({
 
   const eventDayrender = (
     <InputDateWithTime
-        date={dayjs()} // 初期値を適宜設定
-        event_dayhandleChange={(newDate) => {
-            const formattedDate = dayjs(newDate.$d).format("YYYY-MM-DD HH:mm:ss");
-            console.log("新しい締切日", formattedDate);
-        }}
+      date={dayjs()} // 初期値を適宜設定
+      event_dayhandleChange={(newDate) => {
+        const formattedDate = dayjs(newDate.$d).format("YYYY-MM-DD HH:mm:ss");
+        console.log("新しい締切日", formattedDate);
+      }}
     />
   );
 
   const openJobsrender = (
     <Select
-    id="prefecturesDropdwon"
-    value={selectedOccupation}
-    onChange={handleChange}
-    options={options}
-    placeholder="▼"
-    isMulti
-  />
+      id="prefecturesDropdwon"
+      value={selectedOccupation}
+      onChange={handleChange}
+      options={options}
+      placeholder="▼"
+      isMulti
+    />
   );
 
 
@@ -300,9 +300,9 @@ const NewsMenu = ({
       case 'releaseNews':
         return releaseNewsrender;
       case 'eventDay':
-          return eventDayrender;
+        return eventDayrender;
       case 'openJobs':
-            return openJobsrender;
+        return openJobsrender;
       default:
         return null;
     }
@@ -329,10 +329,12 @@ NewsMenu.propTypes = {
   message: PropTypes.string.isRequired,
   NewsSave: PropTypes.func.isRequired,
   setSelectedOccupation: PropTypes.func.isRequired,
-  selectedOccupation:PropTypes.array.isRequired,
-  setOpenJobs:PropTypes.func.isRequired,
-  devTag:PropTypes.string.isRequired,
+  selectedOccupation: PropTypes.array.isRequired,
+  setOpenJobs: PropTypes.func.isRequired,
+  devTag: PropTypes.string.isRequired,
   NewsUpLoad: PropTypes.func.isRequired,
+  // EventDayHandleChange: PropTypes.func.isRequired,
+  // eventday: PropTypes.func.isRequired,
   NotificationMessageHandleChange: PropTypes.func.isRequired,
   draftlist: PropTypes.array.isRequired, //下書きリスト
   newsid: PropTypes.number.isRequired, //ニュースID

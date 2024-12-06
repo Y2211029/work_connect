@@ -4,8 +4,6 @@ import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-
-// import { AllItemsContext } from "src/layouts/dashboard/index";
 import ListView from "src/components/view/list-view";
 import { AllItemsContext } from "src/layouts/dashboard/index";
 import '../news_detail.css';
@@ -166,7 +164,7 @@ export default function NavTabs() {
   }, []);
 
   return (
-    <Box sx={{ width: '100%' }} >
+    <Box sx={{ width: '90%' }} >
       <Tabs
         value={value}
         aria-label="nav tabs example"

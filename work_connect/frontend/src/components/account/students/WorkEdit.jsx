@@ -30,7 +30,7 @@ const WorkEdit = () => {
   const [videoUrl, setVideoUrl] = useState("");
   const [videoId, setVideoId] = useState("");
   const [hasError, setHasError] = useState(false);
-  const [Image, setImage] = useState();
+  const [Image, setImage] = useState([]);
   const [Description, setDescription] = useState();
 
   // 作品データ
@@ -54,7 +54,8 @@ const WorkEdit = () => {
         const data = await response.data;
         console.log("data:", data);
 
-        setWorkData(data["作品"][0]); // 取得したデータを保存
+        setWorkData(Object.entries(data["作品"][0])); // 取得したデータを保存
+        setVideoUrl(workData[40][1]);
         setImage(data["作品"][0].images);
       } catch (error) {
         setError(error.message);
@@ -65,8 +66,12 @@ const WorkEdit = () => {
 
     fetchWorkDetails();
     console.log("work_id:", work_id);
-  }, [work_id]);
+  }, []);
 
+  useEffect(() => {
+    console.log(workData);
+    console.log("Image:", Image);
+  }, [Image]);
   const handleValueChange = (newValue) => {
     setDescription(newValue);
   };
@@ -308,6 +313,7 @@ const WorkEdit = () => {
                     onImagesUploaded={handleImageChange}
                     callSetImage={callSetImage}
                     handleValueChange={handleValueChange}
+                    workData={Image}
                   />
                 </div>
               </div>
@@ -315,7 +321,10 @@ const WorkEdit = () => {
             <div className="WorkInformation">
               {/* タイトル */}
               <div className="WorkPostingFormField">
-                <WorkTitle callSetWorkData={callSetWorkData} WorkTitle={workData.work_name}/>
+                <WorkTitle
+                  callSetWorkData={callSetWorkData}
+                  workData={workData[38][1]}
+                />
               </div>
               {/* ジャンル */}
               <div className="WorkPostingFormField">
@@ -328,26 +337,45 @@ const WorkEdit = () => {
                       タグを入れてください
                     </span> */}
                   </p>
-                  <WorkGenre callSetWorkData={callSetWorkData} />
+                  <WorkGenre
+                    callSetWorkData={callSetWorkData}
+                    workData={workData[39][1]}
+                  />
                 </div>
               </div>
               <br />
+              {/* 紹介文 */}
               <div className="WorkPostingFormField">
-                <Introduction callSetWorkData={callSetWorkData} />
+                <Introduction
+                  callSetWorkData={callSetWorkData}
+                  workData={workData[42][1]}
+                />
               </div>
+              {/* こだわりポイント */}
               <div className="WorkPostingFormField">
-                <Obsession callSetWorkData={callSetWorkData} />
+                <Obsession
+                  callSetWorkData={callSetWorkData}
+                  workData={workData[43][1]}
+                />
               </div>
+              {/* プログラミング言語 */}
               <div className="WorkPostingFormField">
                 <p>
                   プログラミング言語
-                  <Language callSetWorkData={callSetWorkData} />
+                  <Language
+                    callSetWorkData={callSetWorkData}
+                    workData={workData[18][1]}
+                  />
                 </p>
               </div>
+              {/* 開発環境 */}
               <div className="WorkPostingFormField">
                 <p>
                   開発環境
-                  <Environment callSetWorkData={callSetWorkData} />
+                  <Environment
+                    callSetWorkData={callSetWorkData}
+                    workData={workData[19][1]}
+                  />
                 </p>
               </div>
             </div>

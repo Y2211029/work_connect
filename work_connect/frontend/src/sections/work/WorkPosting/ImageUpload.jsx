@@ -165,7 +165,12 @@ SortableItem.propTypes = {
 };
 
 // 画像アップロード機能を提供するコンポーネント
-const ImageUpload = ({ handleValueChange, onImagesUploaded, callSetImage }) => {
+const ImageUpload = ({
+  handleValueChange,
+  onImagesUploaded,
+  callSetImage,
+  workData,
+}) => {
   const [activeId, setActiveId] = useState(null); // ドラッグ中のアイテムIDを管理
   const fileInputRef = useRef(null); // ファイルインプットの参照を保持
   // AllItemsContextから状態を取得
@@ -196,6 +201,10 @@ const ImageUpload = ({ handleValueChange, onImagesUploaded, callSetImage }) => {
 
   useEffect(() => {
     resetItems(); // 初回レンダリング時にリセット
+    if (workData) {
+      setWorkImage(workData);
+      console.log("workData:", workData);
+    }
   }, []);
 
   useEffect(() => {
@@ -360,7 +369,9 @@ const ImageUpload = ({ handleValueChange, onImagesUploaded, callSetImage }) => {
         console.log("activeId:", activeId);
         console.log("overId:", overId);
 
-        const oldIndex = workImage.findIndex((image) => image.name === activeId);
+        const oldIndex = workImage.findIndex(
+          (image) => image.name === activeId
+        );
         const newIndex = workImage.findIndex((image) => image.name === overId);
         const updatedWorkImage = arrayMove(workImage, oldIndex, newIndex);
 
@@ -369,12 +380,6 @@ const ImageUpload = ({ handleValueChange, onImagesUploaded, callSetImage }) => {
         console.log("updatedWorkImage:", updatedWorkImage);
 
         updatedWorkImage.forEach((file) => {
-          // itemがFileオブジェクトでない場合、Fileとして生成（例）
-          // const file =
-          //   item instanceof File
-          //     ? item
-          //     : new File([item.content], item.name, { type: item.type });
-
           dataTransfer.items.add(file);
         });
 
@@ -497,6 +502,7 @@ ImageUpload.propTypes = {
   callSetImage: PropTypes.func.isRequired,
   handleValueChange: PropTypes.func.isRequired,
   props: PropTypes.func.isRequired,
+  workData: PropTypes.string.isRequired,
 };
 
 export default ImageUpload;

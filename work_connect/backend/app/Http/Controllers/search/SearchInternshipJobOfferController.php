@@ -61,7 +61,7 @@ class SearchInternshipJobOfferController extends Controller
             $deadline_day = "";
             // 締切日を検索用データにセット
             if($deadline_calender != "") {
-                $deadline_day = Carbon::createFromFormat('Y年m月d日', $deadline_calender)->format('Y-m-d');
+                $deadline_day = Carbon::createFromFormat('Y年m月d日', $deadline_calender)->endOfDay()->format('Y-m-d H:i:s');
             }
 
             // 開催日(始め)
@@ -71,13 +71,20 @@ class SearchInternshipJobOfferController extends Controller
 
             // 開催日が範囲指定かどうか判定して検索用データにセット
             if($event_calender != "") {
-                if (strpos($event_calender, "~") == false) {
-                    $event_start_day = Carbon::createFromFormat('Y年m月d日', $event_calender)->format('Y-m-d');
+                if (strpos($event_calender, "～") == false) {
                     Log::info("event_calender_log");
+                    Log::info($event_calender);
+                    $event_start_day = Carbon::createFromFormat('Y年m月d日', $event_calender)->format('Y-m-d');
                     Log::info($event_start_day);
                 } else {
-                    $event_start_day = Carbon::createFromFormat('Y年m月d日', explode("~", $event_calender)[0])->format('Y-m-d');
-                    $event_end_day = Carbon::createFromFormat('Y年m月d日', explode("~", $event_calender)[1])->format('Y-m-d');
+                    $prev_event_start_day = explode("～", $event_calender)[0];
+                    $prev_event_end_day = explode("～", $event_calender)[1];
+                    \Log::info('SearchCompanyController:$prev_event_start_day:');
+                    \Log::info($prev_event_start_day);
+                    \Log::info('SearchCompanyController:$prev_event_end_day:');
+                    \Log::info($prev_event_end_day);
+                    $event_start_day = Carbon::createFromFormat('Y年m月d日', $prev_event_start_day)->startOfDay()->format('Y-m-d H:i:s');
+                    $event_end_day = Carbon::createFromFormat('Y年m月d日', $prev_event_end_day)->endOfDay()->format('Y-m-d H:i:s');
                 }
             }
 
@@ -92,6 +99,7 @@ class SearchInternshipJobOfferController extends Controller
             );
 
             $query->join('w_companies', 'w_news.company_id', '=', 'w_companies.id');
+            $query->join('w_create_forms', 'w_news.id', '=', 'w_create_forms.news_id');
 
             if (isset($genre)) {
                     $query->where('w_news.genre', $genre);
@@ -112,7 +120,7 @@ class SearchInternshipJobOfferController extends Controller
             // 職種で絞り込み
             if (isset($selected_occupation_array)) {
                 foreach ($selected_occupation_array as $selected_occupation) {
-                    $query->where('w_companies.selected_occupation', 'REGEXP', '(^|,)' . preg_quote($selected_occupation) . '($|,)');
+                    $query->where('w_news.open_jobs', 'REGEXP', '(^|,)' . preg_quote($selected_occupation) . '($|,)');
                 }
             }
             // 勤務地で絞り込み
@@ -193,18 +201,22 @@ class SearchInternshipJobOfferController extends Controller
             // 締切日で絞り込み
             if($deadline_day != "") {
                 // 今日の日付 (開始日) を取得
-                $today_str = Carbon::today()->format('Y-m-d');
-                $query->whereBetween('event_day', [$today_str, $deadline_day]);
+                $today_str = Carbon::today()->startOfDay()->format('Y-m-d H:i:s');
+                Log::info('SearchInternshipJobOffer.$tuday_str');
+                Log::info($today_str);
+                Log::info('SearchInternshipJobOffer.$deadline_day');
+                Log::info($deadline_day);
+                $query->whereBetween('w_create_forms.deadline', [$today_str, $deadline_day]);
             }
 
             // 開催日で絞り込み
             if($event_start_day != "") {
                 if($event_end_day == "") {
                     // $query->whereDate('event_day', $event_start_day);
-                    $query->whereDate('event_day', '2020-01-01');
+                    $query->whereDate('w_news.event_day', $event_start_day);
                     Log::info('SearchInternshipJobOfferLog');
                 } else {
-                    $query->whereBetween('event_day', [$event_start_day, $event_end_day]);
+                    $query->whereBetween('w_news.event_day', [$event_start_day, $event_end_day]);
                 }
             }
 

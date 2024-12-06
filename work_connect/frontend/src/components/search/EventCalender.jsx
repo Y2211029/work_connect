@@ -77,6 +77,7 @@ export default function EventCalender(props) {
   const handleClear = () => {
     setStartDay(null);
     setEndDay(null);
+    props.handleEventChange("");
     console.log("handleClear");
   };
 
@@ -171,6 +172,27 @@ export default function EventCalender(props) {
     };
   }, []);
 
+  // 型チェックと配列長のチェック
+  useEffect(() => {
+    console.log("props", props);
+
+    // リセットボタンが押された時に
+    // searchSourceが空の配列かどうかを判定
+    if (props.searchSource === "") {
+      setStartDay(null);
+      setEndDay(null);
+    } else {
+      if (props.searchSource.includes("～")) {
+        // 波線を基準に左右に分割
+        const [start, end] = props.searchSource.split("～").map((str) => str.trim()); // trim()で余分な空白を削除
+        setStartDay(dayjs(start, DATE_FORMAT));
+        setEndDay(dayjs(end, DATE_FORMAT));
+      } else {
+        setStartDay(dayjs(props.searchSource, DATE_FORMAT));
+      }
+    }
+  }, [props.searchSource]);
+
   const renderCalender = (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ja">
       <DateCalendar
@@ -210,18 +232,18 @@ export default function EventCalender(props) {
 
   const calendarPortal = open
     ? ReactDOM.createPortal(
-        <div
-          style={{
-            position: "absolute",
-            zIndex: 2000,
-            top: `${calendarPosition.top}px`,
-            left: `${calendarPosition.left}px`,
-          }}
-        >
-          {renderCalender}
-        </div>,
-        document.body
-      )
+      <div
+        style={{
+          position: "absolute",
+          zIndex: 2000,
+          top: `${calendarPosition.top}px`,
+          left: `${calendarPosition.left}px`,
+        }}
+      >
+        {renderCalender}
+      </div>,
+      document.body
+    )
     : null;
 
   return (

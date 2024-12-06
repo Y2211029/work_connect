@@ -62,7 +62,7 @@ class GetWorkListController extends Controller
                 ->take($perPage) //件数
                 ->get();
 
-            $workListArray = json_decode(json_encode($workList), true);
+                $workListArray = json_decode(json_encode($workList), true);
 
             \Log::info('GetWorkListController:$response:');
             \Log::info(json_encode($workListArray));

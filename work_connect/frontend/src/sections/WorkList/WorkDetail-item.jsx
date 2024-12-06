@@ -383,12 +383,15 @@ const WorkDetailItem = () => {
             e.target.src = "http://localhost:8000/storage/images/userIcon/subNinja.jpg"; // エラー時にサンプル画像をセット
           }}
           sx={{
-            width: AVATAR.A_WIDTH,
-            height: AVATAR.A_HEIGHT,
+            width: { xs: "44px", md: AVATAR.A_WIDTH },
+            height: { xs: "44px", md: AVATAR.A_HEIGHT },
             borderRadius: AVATAR.A_RADIUS,
           }}
         />
-        <Typography variant="h6">{workDetail.user_name}</Typography>
+        {/* 1rem = 16px 1.2rem = 19.2px 1.5rem = 24px */}
+        <Typography variant="h6" sx={{ fontSize: { xs: "1rem", sm: "1.2rem", md: "1.5rem" } }}>
+          {workDetail.user_name}
+        </Typography>
       </Stack>
     </Link>
   );
@@ -514,7 +517,7 @@ const WorkDetailItem = () => {
                     }}
                     aria-label="..."
                   >
-                    <SplideTrack> 
+                    <SplideTrack>
                       {WorkSlide.map((slide) => (
                         <SplideSlide key={slide.work_id + slide.id}>
                           <Box

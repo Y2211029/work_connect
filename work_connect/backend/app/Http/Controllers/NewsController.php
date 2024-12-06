@@ -79,17 +79,17 @@ class NewsController extends Controller
 
                     // 締め切りを確認する 締切日を設定していないもしくは締切日超過の場合はfalseを返す
                     if ($createForm->deadline !== null && $createForm->deadline->lt($now)) {
-                        $news_detail->deadline_status = true;
+                        $news_detail->deadlineStatus = true;
                     } else {
-                        $news_detail->deadline_status = false;
+                        $news_detail->deadlineStatus = false;
                     }
                 } else {
                     $news_detail->writeform_status = false;
-                    $news_detail->deadline_status = false;
+                    $news_detail->deadlineStatus = false;
                 }
             } else {
                 $news_detail->writeform_status = false;
-                $news_detail->deadline_status = false;
+                $news_detail->deadlineStatus = false;
                 $news_detail->createform_status = false;
             }
 
@@ -153,35 +153,6 @@ class NewsController extends Controller
     }
 
 
-    // ブックマーク機能
-    public function news_bookmark(Request $request)
-    {
-        $now = Carbon::now('Asia/Tokyo');
-        $session_id = $request->input('session_id');
-        $bookmark_id = $request->input('id');
-        $category = $request->input('category');
-
-        $news_bookmark = w_bookmark::where('position_id', $session_id)
-            ->where('bookmark_id', $bookmark_id)
-            ->exists();
-
-        if ($news_bookmark) {
-            w_bookmark::where('position_id', $session_id)
-                ->where('bookmark_id', $bookmark_id)
-                ->delete();
-
-            return response()->json(["message" => "削除成功しました"], 200);
-        } else {
-            w_bookmark::create([
-                'position_id' => $session_id,
-                'category' => $category,
-                'bookmark_id' => $bookmark_id,
-                'created_at' => $now,
-            ]);
-
-            return response()->json(["message" => "新規追加成功しました"], 201);
-        }
-    }
 
     //自社が投稿したニュースの中で応募フォームを作成したニュースを表示させる
     //応募フォームの回答(面談の日程とか?)とその人のプロフィールを確認することができる
@@ -264,7 +235,7 @@ class NewsController extends Controller
             $postsQuery = w_news::where('w_news.public_status', 1)
                 ->where('w_news.genre', $category)
                 ->join('w_companies', 'w_news.company_id', '=', 'w_companies.id')
-                ->select('w_news.*', 'w_companies.*', 'w_news.created_at as news_created_at', 'w_news.id as news_id');
+                ->select('w_news.*', 'w_companies.*', 'w_news.created_at as news_created_at','w_news.genre as genre', 'w_news.id as news_id');
 
             if ($userName !== null) {
                 $postsQuery->where('w_companies.user_name', $userName);
@@ -283,6 +254,8 @@ class NewsController extends Controller
 
             foreach ($posts as $post) {
 
+                Log::info("ジャンル", ['genre' => $post->genre]);
+
                 // w_create_formsテーブルから応募用フォームがあるかチェック
                 $createformData = w_create_form::where('news_id', $post->news_id)->first();
                 Log::info('$createformData'. $createformData);
@@ -294,12 +267,25 @@ class NewsController extends Controller
                     // デッドラインが指定されている場合のみ更新
                     if (!empty($Deadline)) {
                         Log::info('デッドライン: ' . $Deadline);
+                        $now = Carbon::now('Asia/Tokyo');
+                        Log::info('現在の時刻: ' . $now);
+                        info('データ型: ' . gettype($Deadline) . ', ' . gettype($now));
+
+                    // 締め切りを確認する 締切日を設定していないもしくは締切日超過の場合はfalseを返す
+                    if ($Deadline !== null && $Deadline->lt($now)) {
+                        $post->deadline_status = true;
+                    } else {
+                        $post->deadline_status = false;
+                    }
+
 
                         // デッドラインを更新
                         $post->deadline = $Deadline;
 
                     } else {
                         Log::info('新しいデッドラインが指定されていません。変更は行われません。');
+                        $post->deadline_status = false;
+
                     }
                 }
 

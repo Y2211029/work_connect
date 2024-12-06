@@ -1,7 +1,12 @@
-import { useEffect } from "react";
+import { useEffect,useState } from "react";
 import Modal from "react-modal";
 import PropTypes from "prop-types";
 import "../Editor.css";
+
+//募集職種のタグを設定
+import Select from "react-select";
+import GetTagAllList from "src/components/tag/GetTagAllList";
+
 
 //ニュースメニューをインポート
 import ReleaseNews from "./ReleaseNews"
@@ -55,12 +60,51 @@ const NewsMenu = ({
   RewriteNewsDelete,
   NotificationMessageHandleChange,
   NewsUpLoad,
+  setSelectedOccupation,
+  selectedOccupation,
+  setOpenJobs,
   message,
   selected_draft,
   followerCounter }) => {
 
   console.log("menuKey",menuKey);
   dayjs.locale("ja");
+
+  const [options, setOptions] = useState([]);
+  const { GetTagAllListFunction } = GetTagAllList();
+
+  useEffect(() => {
+    let optionArrayPromise = GetTagAllListFunction("student_desired_occupation");
+    optionArrayPromise.then((result) => {
+      setOptions(result);
+    });
+  console.log("options",options);
+  console.log("optionArrayPromise",optionArrayPromise);
+  }, []);
+
+
+  // useEffect(() => {
+  //   let devTagArray = [];
+  //   console.log("selectedOccupation", selectedOccupation);
+  //   selectedOccupation.map((item) => {
+  //     devTagArray.push(item.label);
+  //   });
+  //   const devTag = devTagArray.join(",");
+  //   console.log("選んだ内容", devTag);
+
+  // }, [selectedOccupation]);
+
+  const handleChange = (selectedOption) => {
+    setSelectedOccupation(selectedOption);
+    console.log("selectedOption",selectedOption);
+    let devTagArray = [];
+    selectedOption.map((item) => {
+      devTagArray.push(item.label);
+    });
+    const devTag = devTagArray.join(",");
+    console.log("選んだ内容", devTag);
+    setOpenJobs(devTag);
+  };
 
   //関数
   const FormattedDate = (time) => {
@@ -193,6 +237,18 @@ const NewsMenu = ({
     />
   );
 
+  const openJobsrender = (
+    <Select
+    id="prefecturesDropdwon"
+    value={selectedOccupation}
+    onChange={handleChange}
+    options={options}
+    placeholder="▼"
+    isMulti
+  />
+  );
+
+
   console.log("ドラフトリスト", draftlist);
 
   const createFormrender = (
@@ -241,8 +297,10 @@ const NewsMenu = ({
         return createFormrender;
       case 'releaseNews':
         return releaseNewsrender;
-        case 'eventDay':
+      case 'eventDay':
           return eventDayrender;
+      case 'openJobs':
+            return openJobsrender;
       default:
         return null;
     }
@@ -268,7 +326,10 @@ NewsMenu.propTypes = {
   EditorContentsStatusCheck: PropTypes.func.isRequired, //文字数や使用画像をチェック
   message: PropTypes.string.isRequired,
   NewsSave: PropTypes.func.isRequired,
-  HandleChange: PropTypes.func.isRequired,
+  setSelectedOccupation: PropTypes.func.isRequired,
+  selectedOccupation:PropTypes.array.isRequired,
+  setOpenJobs:PropTypes.func.isRequired,
+  devTag:PropTypes.string.isRequired,
   NewsUpLoad: PropTypes.func.isRequired,
   NotificationMessageHandleChange: PropTypes.func.isRequired,
   draftlist: PropTypes.array.isRequired, //下書きリスト

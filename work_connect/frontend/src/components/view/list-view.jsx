@@ -416,33 +416,21 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       idKey: "id",
       tags: ["genre"],
       generatePosts: (WorkOfList) => {
-        if (Array.isArray(WorkOfList)) {
-          if (WorkOfList.length === 0) {
-            // 空配列の場合に空配列を返す
-            return [{ news_list: [] }];
-          }
-          const news_list = WorkOfList.map((company, index) => ({
-            id: index + 1,
-            company_id: company.company_id,
-            news_id: company.news_id,
-            user_name: company.user_name,
-            company_name: company.company_name,
-            article_title: company.article_title,
-            genre: company.genre,
-            header_img: company.header_img,
-            news_created_at: company.news_created_at,
-            icon_id: company.icon_id,
-            followStatus: company.follow_status,
-            deadline: company.deadline,
-            event_day: company.event_day,
-            count: company.form_data_count,
-          }));
-
-          console.log("ニュースリストはちゃんと配列か?", news_list);
-
-          return [{ news_list }]; // 1つのオブジェクトにまとめた配列として返す
-        }
-      },
+        return WorkOfList.map((company) => ({
+           company_id: company.company_id,
+           news_id: company.news_id,
+           user_name: company.user_name,
+           company_name: company.company_name,
+           article_title: company.article_title,
+           genre: company.genre,
+           header_img: company.header_img,
+           news_created_at: company.news_created_at,
+           icon_id: company.icon_id,
+           followStatus: company.follow_status,
+           event_day: company.event_day,
+           count: company.form_data_count,
+         }));
+       },
     },
     specialinternships: {
       ItemName: `${ParamUserName}さんのインターンシップ一覧`,
@@ -450,33 +438,21 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       idKey: "id",
       tags: ["genre", "Occupation"],
       generatePosts: (WorkOfList) => {
-        if (Array.isArray(WorkOfList)) {
-          if (WorkOfList.length === 0) {
-            // 空配列の場合に空配列を返す
-            return [{ news_list: [] }];
-          }
-          const news_list = WorkOfList.map((company, index) => ({
-            id: index + 1,
-            company_id: company.company_id,
-            news_id: company.news_id,
-            user_name: company.user_name,
-            company_name: company.company_name,
-            article_title: company.article_title,
-            genre: company.genre,
-            header_img: company.header_img,
-            news_created_at: company.news_created_at,
-            icon_id: company.icon_id,
-            followStatus: company.follow_status,
-            deadline: company.deadline,
-            event_day: company.event_day,
-            count: company.form_data_count,
-          }));
-
-          console.log("ニュースリストはちゃんと配列か?", news_list);
-
-          return [{ news_list }]; // 1つのオブジェクトにまとめた配列として返す
-        }
-      },
+        return WorkOfList.map((company) => ({
+           company_id: company.company_id,
+           news_id: company.news_id,
+           user_name: company.user_name,
+           company_name: company.company_name,
+           article_title: company.article_title,
+           genre: company.genre,
+           header_img: company.header_img,
+           news_created_at: company.news_created_at,
+           icon_id: company.icon_id,
+           followStatus: company.follow_status,
+           event_day: company.event_day,
+           count: company.form_data_count,
+         }));
+       },
     },
     specialsessions: {
       ItemName: `${ParamUserName}さんの説明会一覧`,
@@ -484,33 +460,21 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       idKey: "id",
       tags: ["genre", "Occupation"],
       generatePosts: (WorkOfList) => {
-        if (Array.isArray(WorkOfList)) {
-          if (WorkOfList.length === 0) {
-            // 空配列の場合に空配列を返す
-            return [{ news_list: [] }];
-          }
-          const news_list = WorkOfList.map((company, index) => ({
-            id: index + 1,
-            company_id: company.company_id,
-            news_id: company.news_id,
-            user_name: company.user_name,
-            company_name: company.company_name,
-            article_title: company.article_title,
-            genre: company.genre,
-            header_img: company.header_img,
-            news_created_at: company.news_created_at,
-            icon_id: company.icon_id,
-            followStatus: company.follow_status,
-            deadline: company.deadline,
-            event_day: company.event_day,
-            count: company.form_data_count,
-          }));
-
-          console.log("ニュースリストはちゃんと配列か?", news_list);
-
-          return [{ news_list }]; // 1つのオブジェクトにまとめた配列として返す
-        }
-      },
+        return WorkOfList.map((company) => ({
+           company_id: company.company_id,
+           news_id: company.news_id,
+           user_name: company.user_name,
+           company_name: company.company_name,
+           article_title: company.article_title,
+           genre: company.genre,
+           header_img: company.header_img,
+           news_created_at: company.news_created_at,
+           icon_id: company.icon_id,
+           followStatus: company.follow_status,
+           event_day: company.event_day,
+           count: company.form_data_count,
+         }));
+       },
     },
     specialblogs: {
       ItemName: `${ParamUserName}さんのブログ一覧`,
@@ -518,33 +482,21 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       idKey: "id",
       tags: ["genre"],
       generatePosts: (WorkOfList) => {
-        if (Array.isArray(WorkOfList)) {
-          if (WorkOfList.length === 0) {
-            // 空配列の場合に空配列を返す
-            return [{ news_list: [] }];
-          }
-          const news_list = WorkOfList.map((company, index) => ({
-            id: index + 1,
-            company_id: company.company_id,
-            news_id: company.news_id,
-            user_name: company.user_name,
-            company_name: company.company_name,
-            article_title: company.article_title,
-            genre: company.genre,
-            header_img: company.header_img,
-            news_created_at: company.news_created_at,
-            icon_id: company.icon_id,
-            followStatus: company.follow_status,
-            deadline: company.deadline,
-            event_day: company.event_day,
-            count: company.form_data_count,
-          }));
-
-          console.log("ニュースリストはちゃんと配列か?", news_list);
-
-          return [{ news_list }]; // 1つのオブジェクトにまとめた配列として返す
-        }
-      },
+        return WorkOfList.map((company) => ({
+           company_id: company.company_id,
+           news_id: company.news_id,
+           user_name: company.user_name,
+           company_name: company.company_name,
+           article_title: company.article_title,
+           genre: company.genre,
+           header_img: company.header_img,
+           news_created_at: company.news_created_at,
+           icon_id: company.icon_id,
+           followStatus: company.follow_status,
+           event_day: company.event_day,
+           count: company.form_data_count,
+         }));
+       },
     },
     specialforms: {
       ItemName: `応募フォーム一覧`,

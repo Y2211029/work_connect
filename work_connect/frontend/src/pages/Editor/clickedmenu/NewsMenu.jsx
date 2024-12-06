@@ -60,6 +60,8 @@ const NewsMenu = ({
   RewriteNewsDelete,
   NotificationMessageHandleChange,
   NewsUpLoad,
+  EventDayHandleChange,
+  eventday,
   setSelectedOccupation,
   selectedOccupation,
   setOpenJobs,

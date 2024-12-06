@@ -1549,6 +1549,7 @@ const Editor = () => {
       key: "eventDay", text: "開催日を指定する", render:
         <NewsMenu menuKey={'eventDay'}
         EventDayHandleChange = {event_dayhandleChange}
+        eventDay = {eventDay}
         />
     }] : []),
     // 条件を満たした場合のみ追加

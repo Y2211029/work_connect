@@ -46,6 +46,7 @@ LinkTab.propTypes = {
 const CheckForm = ({ value }) => {
   return (
     <div>
+      
       <NavTabs initialTabValue={value} /> {/* value を initialTabValue として渡す */}
     </div>
   );

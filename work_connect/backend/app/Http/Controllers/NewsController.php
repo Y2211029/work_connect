@@ -251,77 +251,92 @@ class NewsController extends Controller
                 ->take($perPage)
                 ->get();
 
+            if($posts){
+                foreach ($posts as $post) {
 
-            foreach ($posts as $post) {
-
-                Log::info("ジャンル", ['genre' => $post->genre]);
-
-                // w_create_formsテーブルから応募用フォームがあるかチェック
-                $createformData = w_create_form::where('news_id', $post->news_id)->first();
-                Log::info('$createformData'. $createformData);
-
-                if ($createformData) {
-                    // 現在のデッドラインを取得
-                    $Deadline = $createformData->deadline;
-
-                    // デッドラインが指定されている場合のみ更新
-                    if (!empty($Deadline)) {
-                        Log::info('デッドライン: ' . $Deadline);
-                        $now = Carbon::now('Asia/Tokyo');
-                        Log::info('現在の時刻: ' . $now);
-                        info('データ型: ' . gettype($Deadline) . ', ' . gettype($now));
-
-                    // 締め切りを確認する 締切日を設定していないもしくは締切日超過の場合はfalseを返す
-                    if ($Deadline !== null && $Deadline->lt($now)) {
-                        $post->deadline_status = true;
-                    } else {
-                        $post->deadline_status = false;
+                    Log::info("ジャンル", ['genre' => $post->genre]);
+    
+                    // w_create_formsテーブルから応募用フォームがあるかチェック
+                    $createformData = w_create_form::where('news_id', $post->news_id)->first();
+                    Log::info('$createformData'. $createformData);
+    
+                    if ($createformData) {
+                        // 現在のデッドラインを取得
+                        $Deadline = $createformData->deadline;
+    
+                        // デッドラインが指定されている場合のみ更新
+                        if (!empty($Deadline)) {
+                            Log::info('デッドライン: ' . $Deadline);
+                            $now = Carbon::now('Asia/Tokyo');
+                            Log::info('現在の時刻: ' . $now);
+                            info('データ型: ' . gettype($Deadline) . ', ' . gettype($now));
+    
+                        // 締め切りを確認する 締切日を設定していないもしくは締切日超過の場合はfalseを返す
+                        if ($Deadline !== null && $Deadline->lt($now)) {
+                            $post->deadline_status = true;
+                        } else {
+                            $post->deadline_status = false;
+                        }
+    
+    
+                            // デッドラインを更新
+                            $post->deadline = $Deadline;
+    
+                        } else {
+                            Log::info('新しいデッドラインが指定されていません。変更は行われません。');
+                            $post->deadline_status = false;
+    
+                        }
                     }
-
-
-                        // デッドラインを更新
-                        $post->deadline = $Deadline;
-
+    
+                    // w_write_formsテーブルからすべてのフォームデータを取得
+                    $formData = w_write_form::where('news_id', $post->news_id)->get();
+    
+    
+                    // 取得したフォームデータの数をpostsに追加
+                    $post->form_data_count = $formData->count();
+    
+                    Log::info('sender_id: ' . $id);
+                    Log::info('recipient_id: ' . $post->company_id);
+    
+    
+    
+                    $isFollowing = w_follow::where('follow_sender_id', $id)
+                    ->where('follow_recipient_id', $post->company_id)
+                    ->exists();
+    
+                $isFollowedByUser = w_follow::where('follow_sender_id', $post->company_id)
+                    ->where('follow_recipient_id', $id)
+                    ->exists();
+    
+                if ($isFollowing && $isFollowedByUser) {
+                        $post->follow_status = '相互フォローしています';
+                    } elseif ($isFollowing) {
+                        $post->follow_status = 'フォローしています';
+                    } elseif ($isFollowedByUser) {
+                        $post->follow_status = 'フォローされています';
                     } else {
-                        Log::info('新しいデッドラインが指定されていません。変更は行われません。');
-                        $post->deadline_status = false;
-
+                        $post->follow_status = 'フォローする';
                     }
                 }
 
-                // w_write_formsテーブルからすべてのフォームデータを取得
-                $formData = w_write_form::where('news_id', $post->news_id)->get();
 
+                return json_encode($posts);
 
-                // 取得したフォームデータの数をpostsに追加
-                $post->form_data_count = $formData->count();
-
-                Log::info('sender_id: ' . $id);
-                Log::info('recipient_id: ' . $post->company_id);
-
-
-
-                $isFollowing = w_follow::where('follow_sender_id', $id)
-                ->where('follow_recipient_id', $post->company_id)
-                ->exists();
-
-            $isFollowedByUser = w_follow::where('follow_sender_id', $post->company_id)
-                ->where('follow_recipient_id', $id)
-                ->exists();
-
-            if ($isFollowing && $isFollowedByUser) {
-                    $post->follow_status = '相互フォローしています';
-                } elseif ($isFollowing) {
-                    $post->follow_status = 'フォローしています';
-                } elseif ($isFollowedByUser) {
-                    $post->follow_status = 'フォローされています';
-                } else {
-                    $post->follow_status = 'フォローする';
-                }
+            }else{
+                $posts = [];
+                return json_encode($posts);
             }
             Log::info("all_news_get:posts");
             Log::info($posts);
-            return response()->json($posts);
+
+            // $postArray = json_decode(json_encode($posts), true);
+
+            // Log::info("all_news_get:postArray");
+            // Log::info($postArray);
+
+            // return response()->json($posts);
+            // return json_encode($postArray);
         } catch (\Exception $e) {
             Log::error('all_news_get エラー: ' . $e->getMessage());
             return response()->json(['error' => 'データ取得中にエラーが発生しました。'], 500);

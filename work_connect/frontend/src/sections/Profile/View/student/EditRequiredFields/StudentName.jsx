@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'; // prop-types をインポート
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import Box from '@mui/material/Box';
 
-const StudentName = ({StudentSurnameData, StudentnameData}) => {
+const StudentName = ({ StudentSurnameData, StudentnameData }) => {
 
   const [StudentSurName, setStudentSurName] = useState(StudentSurnameData);
   const [StudentName, setStudentName] = useState(StudentnameData);
@@ -24,7 +24,7 @@ const StudentName = ({StudentSurnameData, StudentnameData}) => {
     /// 編集の途中ならセッションストレージからデータを取得する。
     /// (リロードした時も、データが残った状態にする。)
     if ((SessionData.StudentSurName !== undefined && SessionData.StudentSurName !== "") ||
-    SessionData.StudentSurNameEditing) {
+      SessionData.StudentSurNameEditing) {
       // セッションストレージから最新のデータを取得
       setStudentSurName(SessionData.StudentSurName);
     } else {
@@ -33,7 +33,7 @@ const StudentName = ({StudentSurnameData, StudentnameData}) => {
     }
 
     if ((SessionData.StudentName !== undefined && SessionData.StudentName !== "") ||
-    SessionData.StudentNameEditing) {
+      SessionData.StudentNameEditing) {
       // セッションストレージから最新のデータを取得
       setStudentName(SessionData.StudentName);
     } else {
@@ -66,22 +66,22 @@ const StudentName = ({StudentSurnameData, StudentnameData}) => {
     updateSessionData("accountData", "StudentName", StudentName);
 
     // バリデーション
-    if(StudentSurName === ""){
+    if (StudentSurName === "") {
       // 姓が空だったら、error表示
       setInputError((prev) => ({ ...prev, StudentSurNameError: true }));
-    } else if(StudentSurName !== ""){
+    } else if (StudentSurName !== "") {
       // 姓が空でないなら、error非表示
       setInputError((prev) => ({ ...prev, StudentSurNameError: false }));
     }
-    if(StudentName === ""){
+    if (StudentName === "") {
       // 名が空だったら、error表示
       setInputError((prev) => ({ ...prev, StudentNameError: true }));
-    } else if(StudentName !== ""){
+    } else if (StudentName !== "") {
       // 名が空でないなら、error非表示
       setInputError((prev) => ({ ...prev, StudentNameError: false }));
     }
 
-  }, [StudentSurName,StudentName]);
+  }, [StudentSurName, StudentName]);
 
 
   return (
@@ -94,62 +94,55 @@ const StudentName = ({StudentSurnameData, StudentnameData}) => {
       }}
     >
       <TextField
-          // error={NULL_validation1 == true || inputError.student_surname}
-          error={inputError.StudentSurNameError}
-          fullWidth
-          label="姓"
-          margin="normal"
-          name="StudentSurName"
-          onChange={handleChange}
-          // required
-          type="text"
-          value={StudentSurName}
-          variant="outlined"
-          sx={{
-              backgroundColor: '#fff', // 背景色を指定
-              borderRadius: '8px', // 角の丸みを設定
-              marginTop:'6px',
-              marginBottom:'0'
-          }}
-          InputProps={{
-            sx: {
-              fontSize: '20px', // 入力テキストのフォントサイズ
-            },
-          }}
-          InputLabelProps={{
-            sx: {
-              fontSize: '20px', // ラベルのフォントサイズ
-            },
-          }}
+        // error={NULL_validation1 == true || inputError.student_surname}
+        error={inputError.StudentSurNameError}
+        fullWidth
+        label="姓"
+        margin="normal"
+        name="StudentSurName"
+        onChange={handleChange}
+        // required
+        type="text"
+        value={StudentSurName}
+        variant="outlined"
+        sx={{
+          backgroundColor: '#fff', // 背景色を指定
+          borderRadius: '8px', // 角の丸みを設定
+          marginTop: '6px',
+          marginBottom: '0'
+        }}
+        InputProps={{
+          className: 'MyPageEditItems',
+        }}
+        InputLabelProps={{
+          className: 'MyPageEditItems',
+        }}
       />
       <TextField
-          // error={NULL_validation2 == true || inputError.student_name}
-          error={inputError.StudentNameError}
-          fullWidth
-          label="名"
-          margin="normal"
-          name="StudentName"
-          onChange={handleChange}
-          // required
-          type="text"
-          value={StudentName}
-          variant="outlined"
-          sx={{
-              backgroundColor: '#fff', // 背景色を指定
-              borderRadius: '8px', // 角の丸みを設定
-              marginTop:'6px',
-              marginBottom:'0'
-          }}
-          InputProps={{
-            sx: {
-              fontSize: '20px', // 入力テキストのフォントサイズ
-            },
-          }}
-          InputLabelProps={{
-            sx: {
-              fontSize: '20px', // ラベルのフォントサイズ
-            },
-          }}
+        className="MyPageEditItems"
+        // error={NULL_validation2 == true || inputError.student_name}
+        error={inputError.StudentNameError}
+        fullWidth
+        label="名"
+        margin="normal"
+        name="StudentName"
+        onChange={handleChange}
+        // required
+        type="text"
+        value={StudentName}
+        variant="outlined"
+        sx={{
+          backgroundColor: '#fff', // 背景色を指定
+          borderRadius: '8px', // 角の丸みを設定
+          marginTop: '6px',
+          marginBottom: '0'
+        }}
+        InputProps={{
+          className: 'MyPageEditItems',
+        }}
+        InputLabelProps={{
+          className: 'MyPageEditItems',
+        }}
       />
     </Box>
   );

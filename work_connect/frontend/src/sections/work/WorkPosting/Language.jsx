@@ -56,7 +56,10 @@ const Language = (props) => {
     props.callSetWorkData("Language", valueArray.join(","));
   };
 
-  return <CreatableSelect options={options} placeholder="▼" isClearable isMulti onChange={handleChange} />;
+  return <CreatableSelect
+        // プレフィックス＝接頭語
+        // CreatableSelect内のInput要素のClass名の頭にMyPageEditItemsをつけるという意味
+        classNamePrefix="MyPageEditItems" options={options} placeholder="▼" isClearable isMulti onChange={handleChange} />;
 };
 
 Language.propTypes = {

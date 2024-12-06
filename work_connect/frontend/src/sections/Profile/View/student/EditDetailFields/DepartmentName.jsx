@@ -75,6 +75,9 @@ const DepartmentNameDropdown = ({ DepartmentNameData }) => {
 return (
     <div>
         <CreatableSelect
+        // プレフィックス＝接頭語
+        // CreatableSelect内のInput要素のClass名の頭にMyPageEditItemsをつけるという意味
+        classNamePrefix="MyPageEditItems"
             id="departmentDropdown"
             value={selectedDepartment}
             onChange={handleChange}

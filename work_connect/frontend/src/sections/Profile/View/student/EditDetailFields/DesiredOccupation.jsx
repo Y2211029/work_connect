@@ -82,6 +82,9 @@ const DesiredOccupation = ({ DesiredOccupationData }) => {
 
   return (
     <CreatableSelect
+        // プレフィックス＝接頭語
+        // CreatableSelect内のInput要素のClass名の頭にMyPageEditItemsをつけるという意味
+        classNamePrefix="MyPageEditItems"
       name="selectedOccupation"
       id="prefecturesDropdwon"
       value={selectedOccupation}

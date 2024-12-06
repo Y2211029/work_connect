@@ -3,7 +3,7 @@ import { TextareaAutosize as BaseTextareaAutosize } from '@mui/base/TextareaAuto
 import PropTypes from 'prop-types'; // prop-types をインポート
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
-import { styled , useTheme } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 
 const blue = {
@@ -33,7 +33,6 @@ const Textarea = styled(BaseTextareaAutosize)(
   box-sizing: border-box;
   width: 100%;
   font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 1.2rem;
   font-weight: 400;
   line-height: 1.5;
   padding: 8px 12px;
@@ -59,7 +58,7 @@ const Textarea = styled(BaseTextareaAutosize)(
 `,
 );
 
-const IntroComponent = ({IntroData}) => {
+const IntroComponent = ({ IntroData }) => {
 
   const [Intro, setIntro] = useState(IntroData);
   const { getSessionData, updateSessionData } = useSessionStorage();
@@ -78,10 +77,10 @@ const IntroComponent = ({IntroData}) => {
     /// 編集の途中ならセッションストレージからデータを取得する。
     /// (リロードした時も、データが残った状態にする。)
     if ((SessionData.Intro !== undefined && SessionData.Intro !== "") ||
-    SessionData.IntroEditing) {
+      SessionData.IntroEditing) {
       // セッションストレージから最新のデータを取得
       setIntro(SessionData.Intro);
-    } else if(IntroData !== undefined){
+    } else if (IntroData !== undefined) {
       // DBから最新のデータを取得
       setIntro(IntroData);
     }
@@ -98,10 +97,10 @@ const IntroComponent = ({IntroData}) => {
   useEffect(() => {
     updateSessionData("accountData", "Intro", Intro);
     // バリデーション
-    if(Intro === ""){
+    if (Intro === "") {
       // 自己紹介が空だったら、error表示
       setInputError((prev) => ({ ...prev, IntroError: true }));
-    } else if(Intro !== ""){
+    } else if (Intro !== "") {
       // 自己紹介が空でないなら、error非表示
       setInputError((prev) => ({ ...prev, IntroError: false }));
     }
@@ -110,6 +109,7 @@ const IntroComponent = ({IntroData}) => {
   return (
     <div>
       <Textarea
+        className="MyPageEditItems"
         error={inputError.IntroError}
         name="Intro"
         maxRows={12}
@@ -123,9 +123,9 @@ const IntroComponent = ({IntroData}) => {
         }}
       />
 
-      <Typography variant="body2" color="textSecondary" align="right" sx={{ marginTop: 0,fontSize: '16px' }}>
+      <Typography variant="body2" color="textSecondary" align="right" sx={{ marginTop: 0, fontSize: '16px' }}>
         {/* 文字数カウント */}
-        {Intro ? Intro.length : <span style={{ color:'red',opacity:0.7 }}>0</span>} / 500
+        {Intro ? Intro.length : <span style={{ color: 'red', opacity: 0.7 }}>0</span>} / 500
       </Typography>
     </div>
   );

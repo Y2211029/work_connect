@@ -173,6 +173,7 @@ export default function NavTabs() {
         role="navigation"
       
       >
+        
         <Tab className="NewsSelect_Box" label="求人" onClick={(e) => handleTabClick(e, 0)} />
         <Tab className="NewsSelect_Box" label="インターンシップ" onClick={(e) => handleTabClick(e, 1)} />
         <Tab className="NewsSelect_Box" label="説明会" onClick={(e) => handleTabClick(e, 2)} />

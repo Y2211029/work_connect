@@ -963,6 +963,26 @@ textarea {
 }
 
 
+.MyPageEditItems {
+  font-size: 16px !important;
+}
+
+/* プレースホルダー */
+.MyPageEditItemTags__placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+/* メニュー全体 */
+.MyPageEditItemTags__menu {
+  background-color: #f9f9f9;
+}
+
+/* メニュー内のオプション */
+.MyPageEditItems__multi-value__label {
+  font-size: 16px !important;
+  color: #333;
+}
 
 @media (max-width: 1700px) {
 
@@ -974,6 +994,7 @@ textarea {
   .column-container {
     column-gap: 13px;
   }
+
 
 }
 
@@ -1000,6 +1021,7 @@ textarea {
   .column-container {
     column-gap: 7px;
   }
+
 }
 
 @media (max-width: 600px) {
@@ -1011,6 +1033,14 @@ textarea {
 
   .column-container {
     column-gap: 5px;
+  }
+
+  .MyPageEditItems {
+    font-size: 14px !important;
+  }
+
+  .MyPageEditItems__multi-value__label {
+    font-size: 14px !important;
   }
 }
 

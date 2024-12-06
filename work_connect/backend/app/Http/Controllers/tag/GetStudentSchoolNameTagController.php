@@ -17,8 +17,8 @@ class GetStudentSchoolNameTagController extends Controller
         // JSON文字列を配列に変換
         $schoolArray = json_decode($jsonData, true);
 
-        \Log::info('GetStudentSchoolNameTagController.php:$schoolArray:');
-        \Log::info($schoolArray);
+        // \Log::info('GetStudentSchoolNameTagController.php:$schoolArray:');
+        // \Log::info($schoolArray);
 
         // Eloquentを使って、w_usersテーブルに存在する学校名を取得
         $existingSchools = w_users::whereIn('school_name', $schoolArray)
@@ -30,9 +30,9 @@ class GetStudentSchoolNameTagController extends Controller
         $tag = array_intersect($schoolArray, $existingSchools);
 
         $tag = array_values($tag);
-        
-        \Log::info('GetStudentSchoolNameTagController.php:$tag:');
-        \Log::info($tag);
+
+        // \Log::info('GetStudentSchoolNameTagController.php:$tag:');
+        // \Log::info($tag);
         return json_encode($tag);
     }
 }

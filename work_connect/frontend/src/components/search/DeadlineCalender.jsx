@@ -83,6 +83,7 @@ export default function DeadlineCalender(props) {
 
   const handleClear = () => {
     setValue(null);
+    props.handleDeadLineChange("");
     console.log("handleClear");
   };
 

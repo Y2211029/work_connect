@@ -326,6 +326,8 @@ NewsMenu.propTypes = {
   setOpenJobs: PropTypes.func.isRequired,
   devTag: PropTypes.string.isRequired,
   NewsUpLoad: PropTypes.func.isRequired,
+  // EventDayHandleChange: PropTypes.func.isRequired,
+  // eventday: PropTypes.func.isRequired,
   NotificationMessageHandleChange: PropTypes.func.isRequired,
   EventDayHandleChange: PropTypes.func.isRequired,
   eventDay: PropTypes.string.isRequired,

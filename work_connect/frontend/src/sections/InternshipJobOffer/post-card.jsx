@@ -76,7 +76,7 @@ const PostCard = forwardRef(({ post }, ref) => {
     return (
       <>
         <Tooltip title="締め切り間近!">
-          応募締切日:{year}/{month}/{day}
+          {year}/{month}/{day}
         </Tooltip>
       </>
     );
@@ -101,7 +101,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   const renderForm =
     company_id === accountData.id && count > 0 ? (
       <Typography
-        sx={{ opacity: 0.48, cursor: "pointer" }}
+        sx={{ opacity: 0.48, cursor: "pointer" ,textAlign:"right"}}
         onClick={() => {
           window.location.href = `/Profile/${user_name}?page=checkform`;
         }}
@@ -112,19 +112,20 @@ const PostCard = forwardRef(({ post }, ref) => {
 
   // ジャンル
   const renderGenre = genre ? (
-    <Stack
-      direction="row"
-      justifyContent="space-between"
-      alignItems="center"
-      spacing={1}
-      sx={{
-        mt: 3,
-        color: "common.black",
-        padding: "5px",
-      }}
-    >
+    <>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        spacing={1}
+        sx={{
+          mt: 3,
+          color: "common.black",
+          padding: "5px",
+        }}
+      >
 
-      {/* <div>
+        {/* <div>
         {genre === "Internship"
           ? "インターンシップ"
           : genre === "Blog"
@@ -136,15 +137,25 @@ const PostCard = forwardRef(({ post }, ref) => {
                 : genre}{" "}
       </div> */}
 
-      <div>{genre}</div>
+        <div>{genre}</div>
+
+
+
+        {deadline && (
+          <div>締切日: {formatDate(deadline)}</div>
+        )}
+        <br></br>
+        {event_day && (
+          <div>開催日: {formatDate(event_day)}</div>
+        )}
+
+
+      </Stack>
 
       {renderForm}
+    </>
 
-      {formatDate(deadline)}<br></br>
-      {event_day && (
-  <div>開催日: {event_day}</div>
-    )}
-    </Stack>
+
   ) : null;
 
   // タイトル

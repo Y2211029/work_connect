@@ -108,17 +108,15 @@ const CreateForm = ({ newsid, HandleBack }) => {
     getcreateform();
   }, []); // 空の依存配列で最初のレンダリング時に実行
 
+  useEffect(() =>{
+    console.log("deadlineDateが更新されました", deadlineDate);
+  },[setDeadlineDate])
 
-
-  // const [survey, setSurvey] = useState(null); // Survey モデルを state に保存
   const [modalopen, setModalOpen] = useState(false);
   const [buttonOpen, setButtonOpen] = useState(true);
-
-
   const [selectmenu, setSelectMenu] = useState("");
   const { getSessionData } = useSessionStorage();
   const [questionData, setQuestionData] = useState(null);
-  const [formmenushow, setFormMenuShow] = useState(false);
   const accountData = getSessionData("accountData");
   const data = {
     id: accountData.id,
@@ -546,7 +544,10 @@ const CreateForm = ({ newsid, HandleBack }) => {
     {
       key: "settingdeadline",
       text: "応募締切日を設定する",
-      render: <FormMenu menuKey={'settingdeadline'} />
+      render: <FormMenu menuKey={'settingdeadline'}
+      SetDeadlineDate={setDeadlineDate}
+      deadlineDate={deadlineDate}
+    />
     },
     {
       key: "formInformation",
@@ -563,11 +564,6 @@ const CreateForm = ({ newsid, HandleBack }) => {
     },
   ];
 
-  const closeModal = () => {
-    setFormMenuShow(false);
-    console.log("閉じる");
-    document.body.style.overflow = 'auto';
-  };
 
 
   return (
@@ -575,14 +571,6 @@ const CreateForm = ({ newsid, HandleBack }) => {
 
 
       <Stack direction="row" spacing={2} >
-
-        <FormMenu
-          IsOpen={formmenushow}
-          CloseModal={closeModal}
-          questions={questions}
-          SetDeadlineDate={setDeadlineDate}
-          deadlineDate={deadlineDate}
-        />
 
         {buttonOpen && (
           <>

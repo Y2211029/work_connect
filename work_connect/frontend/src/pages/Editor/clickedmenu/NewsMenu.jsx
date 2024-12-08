@@ -31,16 +31,24 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 
-const InputDateWithTime = ({ date, event_dayhandleChange, format = "YYYY/MM/DD HH:mm" }) => {
-  console.log("時間", date);
+
+
+  const InputDateWithTime = ({ date, setEventDay,format = "YYYY/MM/DD HH:mm" }) => {
+    dayjs.locale("ja");
+    dayjs.extend(utc);
+    dayjs.extend(timezone);
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"ja"}>
       <DateTimePicker
-        value={date} // 親コンポーネントから渡された date を使用
+        value={dayjs(date)} // 親コンポーネントから渡された date を使用
         onChange={(newDate) => {
           if (newDate) {
-            event_dayhandleChange(newDate); // 親に通知
+            const formattedDate = dayjs(newDate).tz("Asia/Tokyo").format("YYYY-MM-DD HH:mm:ss");
+            console.log("更新後の時間", formattedDate);
+            setEventDay(formattedDate);
           }
         }}
         format={format}
@@ -66,21 +74,32 @@ const NewsMenu = ({
   RewriteNewsDelete,
   NotificationMessageHandleChange,
   NewsUpLoad,
-  EventDayHandleChange,
+  setEventDay,
   eventDay,
   setSelectedOccupation,
   selectedOccupation,
-  setOpenJobs,
   message,
   selected_draft,
   followerCounter }) => {
 
   console.log("menuKey", menuKey);
-  dayjs.locale("ja");
   console.log("イベントデイ",eventDay);
+  console.log("募集職種", selectedOccupation);
 
   const [options, setOptions] = useState([]);
   const { GetTagAllListFunction } = GetTagAllList();
+
+  let selectedOccupationArray = null;
+
+  if (selectedOccupation) {
+    selectedOccupationArray = selectedOccupation.split(',').map((occupation) => ({
+      label: occupation,
+      value: occupation,
+    }));
+  }
+
+
+  console.log("selectedOccupationArray配列", selectedOccupationArray);
 
   useEffect(() => {
     let optionArrayPromise = GetTagAllListFunction("student_desired_occupation");
@@ -93,7 +112,7 @@ const NewsMenu = ({
 
 
   const handleChange = (selectedOption) => {
-    setSelectedOccupation(selectedOption);
+    // setSelectedOccupation(selectedOption);
     console.log("selectedOption", selectedOption);
     let devTagArray = [];
     selectedOption.map((item) => {
@@ -101,7 +120,7 @@ const NewsMenu = ({
     });
     const devTag = devTagArray.join(",");
     console.log("選んだ内容", devTag);
-    setOpenJobs(devTag);
+    setSelectedOccupation(devTag);
   };
 
   //関数
@@ -228,20 +247,20 @@ const NewsMenu = ({
   const eventDayrender = (
     <InputDateWithTime
       date={eventDay} // 親コンポーネントから渡された値を使用
-      event_dayhandleChange= {EventDayHandleChange}
+      setEventDay= {setEventDay}
     />
   );
 
   const openJobsrender = (
     <Select
-      id="prefecturesDropdwon"
-      value={selectedOccupation}
-      onChange={handleChange}
-      options={options}
-      placeholder="▼"
-      isMulti
-    />
-  );
+    id="prefecturesDropdwon"
+    value={selectedOccupationArray}
+    onChange={handleChange}
+    options={options}
+    placeholder="▼"
+    isMulti
+  />
+  )
 
 
   console.log("ドラフトリスト", draftlist);
@@ -326,10 +345,8 @@ NewsMenu.propTypes = {
   setOpenJobs: PropTypes.func.isRequired,
   devTag: PropTypes.string.isRequired,
   NewsUpLoad: PropTypes.func.isRequired,
-  // EventDayHandleChange: PropTypes.func.isRequired,
-  // eventday: PropTypes.func.isRequired,
   NotificationMessageHandleChange: PropTypes.func.isRequired,
-  EventDayHandleChange: PropTypes.func.isRequired,
+  setEventDay: PropTypes.func.isRequired,
   eventDay: PropTypes.string.isRequired,
   draftlist: PropTypes.array.isRequired, //下書きリスト
   newsid: PropTypes.number.isRequired, //ニュースID
@@ -342,7 +359,7 @@ NewsMenu.propTypes = {
 // PropTypesの型定義
 InputDateWithTime.propTypes = {
   date: PropTypes.object,
-  event_dayhandleChange: PropTypes.func.isRequired,
+  setEventDay: PropTypes.func.isRequired,
   format: PropTypes.string,
 };
 

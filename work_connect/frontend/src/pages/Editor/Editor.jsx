@@ -97,8 +97,7 @@ const Editor = () => {
   const [CreateFormOpen, setCreateFormOpen] = useState(false);
   const [formSummary, setFormSummary] = useState(null);
   const [followerCounter, setFollowerCounter] = useState(0);
-  const [selectedOccupation, setSelectedOccupation] = useState([]);
-  const [openJobs, setOpenJobs] = useState("");
+  const [selectedOccupation, setSelectedOccupation] = useState("");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
@@ -184,12 +183,6 @@ const Editor = () => {
     console.log("newValue", newValue);
   }
 
-  const event_dayhandleChange = (newDate) => {
-    const formattedDate = dayjs(newDate).format("YYYY-MM-DD HH:mm:ss");
-    console.log("新しい締切日:", formattedDate);
-    setEventDay(newDate); // 状態を更新
-  };
-
 
 
 
@@ -208,7 +201,6 @@ const Editor = () => {
       console.log(news_id);
       console.log(notificationMessage);
       console.log(genre);
-      console.log(openJobs);
       console.log(eventDay);
 
       const response = await axios.post(news_save_url, {
@@ -216,7 +208,7 @@ const Editor = () => {
         title: title,     // タイトル
         news_id: news_id,     // ID
         message: notificationMessage, //通知に添えるメッセージ
-        openJobs: openJobs, //募集職種
+        selectedOccupation: selectedOccupation,
         eventDay: eventDay, //開催日
         company_id: sessionId, // 企業ID
         genre: genre //ジャンル
@@ -351,6 +343,9 @@ const Editor = () => {
     }
     // news_idをセット
     setNewsId(select_draft_list.id);
+    setEventDay(dayjs(select_draft_list.event_day));
+    setSelectedOccupation(select_draft_list.open_jobs);
+    toggleDrawer(false);
   };
 
   const rewrite_news_delete = async (id) => {
@@ -1106,6 +1101,8 @@ const Editor = () => {
   const handleBack = async () => {
     console.log("フォームサマリ", formSummary); // 確認用ログ
     setCreateFormOpen(false); // フォームのモーダルを閉じる
+    setExpanded(false);
+    toggleDrawer(false);
 
     if (editorInstance.current) {
       try {
@@ -1551,8 +1548,8 @@ const Editor = () => {
     ...(genre !== "Blog" ? [{
       key: "eventDay", text: "開催日を指定する", render:
         <NewsMenu menuKey={'eventDay'}
-        EventDayHandleChange = {event_dayhandleChange}
         eventDay = {eventDay}
+        setEventDay = {setEventDay}
         />
     }] : []),
     // 条件を満たした場合のみ追加
@@ -1569,7 +1566,6 @@ const Editor = () => {
           selected_draft={selected_draft}
           setSelectedOccupation = {setSelectedOccupation}
           selectedOccupation = {selectedOccupation}
-          setOpenJobs={setOpenJobs}
         />
     }] : []),
     ...((isContentReady && isFollowerValid) ? [{

@@ -49,9 +49,13 @@ const CustomPickersDay = styled(PickersDay, {
 
 // カレンダーの各日のレンダリングロジック
 function Day(props) {
+  // その月の日付1~31日、始めに選択した日付、後に選択した日付、あとなんか色々持ってきてる
   const { day, selectedStartDay, selectedEndDay, ...other } = props;
 
+  // ここからここまでの範囲に青色をつけるために必要
   const isInRange = selectedStartDay && selectedEndDay && day.isBetween(selectedStartDay, selectedEndDay, null, "[]");
+  console.log("isInRange", isInRange);
+  // 土日の色をそれぞれ青と赤にするために必要
   const isSaturday = day.day() === 6;
   const isSunday = day.day() === 0;
 
@@ -82,10 +86,18 @@ export default function EventCalender(props) {
   };
 
   // カレンダーの表示/非表示と位置の計算
-  const handleOpen = () => {
-    console.log("inputRef.current", inputRef.current);
+  const handleOpen = (event) => {
+    // キャンセルボタンが押された場合は処理をスキップ
+    if (CancelIconRef.current && CancelIconRef.current.contains(event.target)) {
+      return;
+    }
+
+    // 画面リロードされて初めてカレンダーが表示されたとき
+    // カレンダーを日付入力欄の下に配置するために必要
     if (inputRef.current) {
+      // 今見えてる画面の範囲を基準として日付入力欄の位置や幅高さを取得
       const rect = inputRef.current.getBoundingClientRect();
+      // 画面位置を保持
       setCalendarPosition({
         top: rect.bottom + window.scrollY,
         left: rect.left + window.scrollX,
@@ -99,6 +111,8 @@ export default function EventCalender(props) {
       // 新しい日付が選択された場合、startDayを設定
       setStartDay(newValue);
       setEndDay(null);
+
+      // 日付を検索後も保持るすために親要素に日付を渡す。
       props.handleEventChange(newValue.format(DATE_FORMAT));
     } else {
       // 既にstartDayが選択されていて、endDayがまだ選ばれていない場合
@@ -106,6 +120,7 @@ export default function EventCalender(props) {
         // startDayがendDayよりも後の日付の場合
         setStartDay(newValue);
         setEndDay(null);
+        // 日付を検索後も保持るすために親要素に日付を渡す。
         props.handleEventChange(newValue.format(DATE_FORMAT));
       } else {
         // endDayを設定する場合
@@ -113,8 +128,10 @@ export default function EventCalender(props) {
         // startDayとendDayが同じ場合はendDayをnullにしてstartDayのみを表示
         if (newValue.isSame(startDay, "day")) {
           setEndDay(null); // endDayをリセット
+          // 日付を検索後も保持るすために親要素に日付を渡す。
           props.handleEventChange(startDay.format(DATE_FORMAT)); // startDayのみ表示
         } else {
+          // 日付を検索後も保持るすために親要素に日付を渡す。
           props.handleEventChange(`${startDay.format(DATE_FORMAT)}～${newValue.format(DATE_FORMAT)}`);
         }
         setOpen(false);
@@ -122,6 +139,7 @@ export default function EventCalender(props) {
     }
   };
 
+  // 日付を表示するための要素以外をクリックしたらModalみたいに閉じる。
   const handleClickOutside = (event) => {
     if (
       calendarRef.current &&
@@ -134,15 +152,23 @@ export default function EventCalender(props) {
       !EventCalendarIconlRef.current.contains(event.target)
     ) {
       setOpen(false);
-      console.log("テスト");
     }
   };
 
-  const handleKeyDown = (event) => {
-    if (event.key === "Escape") {
-      setOpen(false);
-    }
-  };
+  useEffect(() => {
+    const handleEvents = (event) => {
+      if (event.type === "mousedown") handleClickOutside(event);
+      if (event.key === "Escape") setOpen(false);
+    };
+
+    document.addEventListener("mousedown", handleEvents);
+    document.addEventListener("keydown", handleEvents);
+
+    return () => {
+      document.removeEventListener("mousedown", handleEvents);
+      document.removeEventListener("keydown", handleEvents);
+    };
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -163,19 +189,6 @@ export default function EventCalender(props) {
   }, []);
 
   useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
-
-  // 型チェックと配列長のチェック
-  useEffect(() => {
-    console.log("props", props);
-
     // リセットボタンが押された時に
     // searchSourceが空の配列かどうかを判定
     if (props.searchSource === "") {
@@ -197,6 +210,8 @@ export default function EventCalender(props) {
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ja">
       <DateCalendar
         onChange={handleDayClick}
+        minDate={dayjs()} // 今日より前の日付を選択不可に設定
+        maxDate={dayjs().add(1, "year")} // 現在の日付から1年後まで選択可能
         slots={{ day: Day }}
         slotProps={{
           day: () => ({
@@ -232,18 +247,18 @@ export default function EventCalender(props) {
 
   const calendarPortal = open
     ? ReactDOM.createPortal(
-      <div
-        style={{
-          position: "absolute",
-          zIndex: 2000,
-          top: `${calendarPosition.top}px`,
-          left: `${calendarPosition.left}px`,
-        }}
-      >
-        {renderCalender}
-      </div>,
-      document.body
-    )
+        <div
+          style={{
+            position: "absolute",
+            zIndex: 2000,
+            top: `${calendarPosition.top}px`,
+            left: `${calendarPosition.left}px`,
+          }}
+        >
+          {renderCalender}
+        </div>,
+        document.body
+      )
     : null;
 
   return (
@@ -255,7 +270,7 @@ export default function EventCalender(props) {
             <TextField
               margin="normal"
               name="deadline"
-              onClick={handleOpen}
+              onClick={(e) => handleOpen(e)}
               placeholder="****年**月**日"
               value={startDay ? (endDay ? `${startDay.format(DATE_FORMAT)}〜${endDay.format(DATE_FORMAT)}` : startDay.format(DATE_FORMAT)) : ""}
               variant="outlined"
@@ -270,13 +285,15 @@ export default function EventCalender(props) {
                 },
                 endAdornment: (
                   <InputAdornment position="end">
-                    {open && startDay ? (
-                      <IconButton ref={CancelIconRef} aria-label="clear input" onClick={handleClear} edge="end">
-                        <HighlightOffIcon />
-                      </IconButton>
-                    ) : (
-                      ""
-                    )}
+                    <IconButton
+                      ref={CancelIconRef}
+                      sx={{ visibility: startDay ? "visible" : "hidden" }}
+                      aria-label="clear input"
+                      onClick={handleClear}
+                      edge="end"
+                    >
+                      <HighlightOffIcon />
+                    </IconButton>
                     <IconButton ref={EventCalendarIconlRef} aria-label="toggle calendar visibility" onClick={handleOpen} edge="end">
                       <EventIcon />
                     </IconButton>
@@ -294,5 +311,6 @@ export default function EventCalender(props) {
 
 EventCalender.propTypes = {
   searchSource: PropTypes.string,
+  // searchbar.jsx（親コンポーネント）からステートを持った関数のためプロップ型を関数にする。
   handleEventChange: PropTypes.func,
 };

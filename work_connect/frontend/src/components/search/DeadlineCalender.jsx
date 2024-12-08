@@ -79,14 +79,21 @@ export default function DeadlineCalender(props) {
   const calendarRef = useRef(null);
   const inputRef = useRef(null);
   const CancelIconRef = useRef(null);
-  const CalendarIconlRef = useRef(null);
-
+  const CalendarIconRef = useRef(null);
 
   // カレンダーの表示/非表示と位置の計算
-  const handleOpen = () => {
-    console.log("inputRef.current", inputRef.current);
+  const handleOpen = (event) => {
+    // キャンセルボタンが押された場合は処理をスキップ
+    if (CancelIconRef.current && CancelIconRef.current.contains(event.target)) {
+      return;
+    }
+
+    // 画面リロードされて初めてカレンダーが表示されたとき
+    // カレンダーを日付入力欄の下に配置するために必要
     if (inputRef.current) {
+      // 今見えてる画面の範囲を基準として日付入力欄の位置や幅高さを取得
       const rect = inputRef.current.getBoundingClientRect();
+      // 画面位置を保持
       setCalendarPosition({
         top: rect.bottom + window.scrollY,
         left: rect.left + window.scrollX,
@@ -98,8 +105,8 @@ export default function DeadlineCalender(props) {
   // 日付を入力欄から削除
   const handleClear = () => {
     setValue(null);
+    setOpen(false);
     props.handleDeadLineChange("");
-    console.log("handleClear");
   };
 
   // 検索した後も日付が保存されるように親コンポーネントに値を渡す
@@ -111,34 +118,34 @@ export default function DeadlineCalender(props) {
 
   // 入力欄、✖ボタン、カレンダーアイコン、カレンダー以外をクリックされたらカレンダーを閉じる。
   const handleClickOutside = (event) => {
-    console.log("CancelIconRef.current", CancelIconRef.current);
-    // 日付入力に必要な要素が表示されているかつクリックされた要素がその要素でない場合にカレンダーを閉じる
-
-    // キャンセルアイコンが表示されているまたはクリックされた箇所が違い場合
-
-
     if (
-      open &&  (
-        !CancelIconRef.current.contains(event.target) &&
-        calendarRef.current &&
-        !calendarRef.current.contains(event.target) &&
-        inputRef.current &&
-        !inputRef.current.contains(event.target) &&
-        CalendarIconlRef.current &&
-        !CalendarIconlRef.current.contains(event.target)
-      )
+      calendarRef.current &&
+      !calendarRef.current.contains(event.target) &&
+      inputRef.current &&
+      !inputRef.current.contains(event.target) &&
+      CancelIconRef.current &&
+      !CancelIconRef.current.contains(event.target) &&
+      CalendarIconRef.current &&
+      !CalendarIconRef.current.contains(event.target)
     ) {
       setOpen(false);
-      console.log("handleClickOutside");
     }
   };
 
-  // エンターキーで日付入力の後、カレンダーを閉じる
-  const handleKeyDown = (event) => {
-    if (event.key === "Escape") {
-      setOpen(false);
-    }
-  };
+  useEffect(() => {
+    const handleEvents = (event) => {
+      if (event.type === "mousedown") handleClickOutside(event);
+      if (event.key === "Escape") setOpen(false);
+    };
+
+    document.addEventListener("mousedown", handleEvents);
+    document.addEventListener("keydown", handleEvents);
+
+    return () => {
+      document.removeEventListener("mousedown", handleEvents);
+      document.removeEventListener("keydown", handleEvents);
+    };
+  }, []);
 
   // 日付入力欄の外側にカレンダーが張り付く形で見た目を調整
   useEffect(() => {
@@ -159,20 +166,8 @@ export default function DeadlineCalender(props) {
     };
   }, []);
 
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
-
   // 型チェックと配列長のチェック
   useEffect(() => {
-    console.log("props", props);
-
     // リセットボタンが押された時に
     // searchSourceが空の配列かどうかを判定
     if (props.searchSource === "") {
@@ -187,6 +182,8 @@ export default function DeadlineCalender(props) {
       <DateCalendar
         value={value}
         onChange={handleDateChange}
+        minDate={dayjs()} // 今日より前の日付を選択不可に設定
+        maxDate={dayjs().add(1, "year")} // 現在の日付から1年後まで選択可能
         slots={{ day: Day }}
         slotProps={{
           day: {
@@ -222,21 +219,21 @@ export default function DeadlineCalender(props) {
     </LocalizationProvider>
   );
 
-  // 
+  //
   const calendarPortal = open
     ? ReactDOM.createPortal(
-      <div
-        style={{
-          position: "absolute",
-          zIndex: 2000,
-          top: `${calendarPosition.top}px`,
-          left: `${calendarPosition.left}px`,
-        }}
-      >
-        {renderCalender}
-      </div>,
-      document.body
-    )
+        <div
+          style={{
+            position: "absolute",
+            zIndex: 2000,
+            top: `${calendarPosition.top}px`,
+            left: `${calendarPosition.left}px`,
+          }}
+        >
+          {renderCalender}
+        </div>,
+        document.body
+      )
     : null;
 
   return (
@@ -248,7 +245,7 @@ export default function DeadlineCalender(props) {
             <TextField
               margin="normal"
               name="deadline"
-              onClick={handleOpen}
+              onClick={(e) => handleOpen(e)}
               placeholder="****年**月**日"
               value={value ? value.format(DATE_FORMAT) : ""}
               variant="outlined"
@@ -265,14 +262,16 @@ export default function DeadlineCalender(props) {
                 },
                 endAdornment: (
                   <InputAdornment position="end">
-                    {open && value ? (
-                      <IconButton ref={CancelIconRef} aria-label="clear input" onClick={handleClear} edge="end">
-                        <HighlightOffIcon />
-                      </IconButton>
-                    ) : (
-                      ""
-                    )}
-                    <IconButton ref={CalendarIconlRef} aria-label="toggle calendar visibility" onClick={handleOpen} edge="end">
+                    <IconButton
+                      ref={CancelIconRef}
+                      sx={{ visibility: value ? "visible" : "hidden" }}
+                      aria-label="clear input"
+                      onClick={handleClear}
+                      edge="end"
+                    >
+                      <HighlightOffIcon />
+                    </IconButton>
+                    <IconButton ref={CalendarIconRef} aria-label="toggle calendar visibility" onClick={handleOpen} edge="end">
                       <CalendarMonthIcon />
                     </IconButton>
                   </InputAdornment>
@@ -297,6 +296,6 @@ Day.propTypes = {
 };
 
 DeadlineCalender.propTypes = {
-  searchSource: PropTypes.String,
-  handleDeadLineChange: PropTypes.func,
+  searchSource: PropTypes.string,
+  handleDeadLineChange: PropTypes.func.isRequired,
 };

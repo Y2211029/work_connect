@@ -198,7 +198,8 @@ input[type="number"]::-webkit-inner-spin-button {
 
 }
 
-@media (max-width: 650px) {
+@media (max-width: 600px),
+(max-width: 400px) {
   .SurveyModal {
     width: 100%;
   }
@@ -213,8 +214,8 @@ input[type="number"]::-webkit-inner-spin-button {
   }
 
   .SelectMenu_Hamburger{
-    margin-left:10% !important;
-    font-size:20px;
+    margin-left:5% !important;
+    width: 100%;
   }
 
   .back_news_draft {

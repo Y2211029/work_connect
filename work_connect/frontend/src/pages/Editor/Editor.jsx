@@ -1081,7 +1081,7 @@ const Editor = () => {
 
     return (
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4">{NewsTitle}</Typography>
+        <Typography variant="h4" className="News_Title">{NewsTitle}</Typography>
       </Stack>
     );
   };
@@ -1517,7 +1517,6 @@ const Editor = () => {
     }
   };
 
-
   const menuItems = [
     {
       key: "draftList", text: "下書きリスト", render:
@@ -1528,36 +1527,11 @@ const Editor = () => {
           NewsSave={news_save}
         />
     },
-    { key: "saveNews", text: "ニュースを保存する", render: <NewsMenu menuKey={'saveNews'} NewsSave={news_save} /> },
-    {
-      key: "editingStatus", text: "現在の編集状況", render: <NewsMenu menuKey={'editingStatus'}
-        EditorStatusCheck={EditorStatusCheck}
-        EditorContentsStatusCheck={EditorContentsStatusCheck}
-        imageUrl={imageUrl}
-        title={title}
-        followerCounter={followerCounter}
-      />
-    },
-    ...(followerCounter > 0 ? [{
-      key: "notificationMessage", text: "通知に添えるメッセージ", render:
-      <NewsMenu menuKey={'notificationMessage'}
-        NotificationMessageHandleChange={notification_messagehandleChange}
-        message={notificationMessage}
-      />
-    }] : []),
     ...(genre !== "Blog" ? [{
-      key: "eventDay", text: "開催日を指定する", render:
+      key: "eventDay", text: "開催日を設定する", render:
         <NewsMenu menuKey={'eventDay'}
         eventDay = {eventDay}
         setEventDay = {setEventDay}
-        />
-    }] : []),
-    // 条件を満たした場合のみ追加
-    ...(genre !== "Blog" ? [{
-      key: "createForm", text: "応募フォームを作成する", render:
-        <NewsMenu menuKey={'createForm'}
-          CreateFormJump={CreateFormJump}
-          selected_draft={selected_draft}
         />
     }] : []),
     ...(genre !== "Blog" ? [{
@@ -1568,11 +1542,36 @@ const Editor = () => {
           selectedOccupation = {selectedOccupation}
         />
     }] : []),
+    ...(followerCounter > 0 ? [{
+      key: "notificationMessage", text: "通知に添えるメッセージ", render:
+      <NewsMenu menuKey={'notificationMessage'}
+        NotificationMessageHandleChange={notification_messagehandleChange}
+        message={notificationMessage}
+      />
+    }] : []),
+    { key: "saveNews", text: "ニュースを保存する", render: <NewsMenu menuKey={'saveNews'} NewsSave={news_save} /> },
+    // 条件を満たした場合のみ追加
+    ...(genre !== "Blog" ? [{
+      key: "createForm", text: "応募フォームを作成する", render:
+        <NewsMenu menuKey={'createForm'}
+          CreateFormJump={CreateFormJump}
+          selected_draft={selected_draft}
+        />
+    }] : []),
     ...((isContentReady && isFollowerValid) ? [{
       key: "releaseNews", text: "ニュースを公開する", render: <NewsMenu menuKey={'releaseNews'}
         NewsUpLoad={news_upload}
       />
     }] : []),
+    {
+      key: "editingStatus", text: "現在の編集状況", render: <NewsMenu menuKey={'editingStatus'}
+        EditorStatusCheck={EditorStatusCheck}
+        EditorContentsStatusCheck={EditorContentsStatusCheck}
+        imageUrl={imageUrl}
+        title={title}
+        followerCounter={followerCounter}
+      />
+    },
   ];
 
 
@@ -1621,6 +1620,7 @@ const Editor = () => {
                 color="inherit"
                 aria-label="menu"
                 onClick={() => toggleDrawer(true)}
+                className="IconButton"
               >
                 <Typography className="FormMenu">
                   <MenuIcon className="FormMenuIcon" />
@@ -1664,13 +1664,12 @@ const Editor = () => {
                       </Accordion>
                     );
                   })}
+        
                 </List>
               </Drawer>
             </div>
-          </Stack>
-
-
-
+            
+            
           {/* カバー画像アップロード */}
           <ImageSearchIcon
             className="cover_img_upload"
@@ -1687,6 +1686,11 @@ const Editor = () => {
             value={title}
             onChange={titlechange}
           />
+
+          </Stack>
+
+
+
 
           {/* エディターコンポーネント */}
           <div className="editor-wrapper">

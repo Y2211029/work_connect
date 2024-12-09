@@ -159,7 +159,6 @@ const FormMenu = ({ menuKey, questions = [], addQuestion = () => { }, CreateForm
                         sx={{
                             width: "240px",
                             justifyContent: "flex-start",
-                            left:"10%",
                         }}
                     >
                         <Typography

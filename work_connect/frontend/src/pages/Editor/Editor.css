@@ -10,16 +10,14 @@ body {
 
 
 .editor_title {
-  position: relative;
   width: 50%;
-  height: 200px;
+  height: 10%;
   font-weight: bold;
   font-size: 30px;
   outline: none;
   border: none;
   left: 10%;
-  padding-top: 50px;
-  padding-bottom: 50px;
+  padding-bottom: 35px;
   overflow-x: hidden;
   overflow-y: hidden;
   background-color: #F9FAFB;
@@ -48,10 +46,25 @@ body {
 .uploaded-image {
   position: relative;
   display: inline-block;
+  left: 40%;
   align-items: center;
   justify-content: center;
-  width: 200px;
+  width: 300px;
   height: 200px;
+}
+
+.uploaded-image img {
+  width: 100%;
+  height: auto;
+  /* 高さは自動調整 */
+  aspect-ratio: 16 / 9;
+  /* 16:9の比率 */
+  max-width: 450px;
+  /* 最大幅350px */
+  max-height: 400px;
+  /* 最大高さ300px */
+  object-fit: cover;
+  /* 画像が枠に収まるようにトリミング */
 }
 
 
@@ -327,13 +340,17 @@ td {
   margin-bottom: 8px;
 }
 
+.css-d3ri6l-MuiStack-root {
+  margin: 0;
+}
+
 
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*スマホサイズ//////////////////////////////////////////////////////////////////////////////////////////////////////////// */
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /* スマホサイズの場合 */
-@media (max-width: 767px) {
+/* @media (max-width: 767px) {
 
   .editor_title::placeholder,
   .editor_title {
@@ -380,19 +397,19 @@ td {
     width: 100%;
     height: 100%;
     /* 高さを具体的に指定 */
-    overflow-y: scroll;
-    /* スクロールバーを必要に応じて表示 */
-    overflow-x: hidden;
-  }
+/* overflow-y: scroll; */
+/* スクロールバーを必要に応じて表示 */
+/* overflow-x: hidden; */
+/* } */
 
 
-  .editor_status_check_text {
+/* .editor_status_check_text {
     display: flex;
     align-items: center;
     /* アイコンとテキストを縦方向で中央揃えにする */
-  }
+/* } */
 
-  .add_draft_news {
+/* .add_draft_news {
     cursor: pointer;
     padding-bottom: 10px;
   }
@@ -408,7 +425,7 @@ td {
   .draftlisttable {
     width: auto;
     /* テーブルの幅を親要素に合わせる */
-    border: solid black;
+/* border: solid black;
     border-width: 1px;
   }
 
@@ -419,44 +436,143 @@ td {
 
   .selectmodal-content {
     width: 90%;
-  }
+  }  */
+
+/* @media (max-width: 1700px) {}
+  @media (max-width: 1200px) {} */
+
+/* @media (max-width: 900px) {
+    .editor_title::placeholder,
+    .editor_title {
+      font-size: 100%;
+      width: 30%;
+      align-items: center;
+      justify-content: center;
+      padding-top: 100%;
+      height:10%;
+    }
+  } */
 
 
-  @media (max-width: 650px) {
+
+/* @media (max-width: 600px) {
+
+    .editor_title::placeholder,
+    .editor_title {
+      font-size: 100%;
+      width: 30%;
+      align-items: center;
+      justify-content: center;
+      padding-top: 100%;
+      height:10%;
+    }
+  
+  
     .ce-popover {
       min-width: 250px !important;
       top: 15% !important;
       /* 必要なら調整 */
-      left: 5% !important;
+/* left: 5% !important;
       border-radius: 10px !important;
       z-index: 3 !important;
-      max-height: 300px;
-      /* 必要に応じて制限 */
-      overflow-y: auto;
-      /* スクロールを有効化 */
-    }
+      max-height: 300px; */
+/* 必要に応じて制限 */
+/* overflow-y: auto; */
+/* スクロールを有効化 */
+/* } */
 
-    .modal-content {
+/* .modal-content {
       height: auto;
       /* モーダルの高さ */
-      width: 100%;
-      /* モーダルの幅 */
-      left: 50%;
-    }
+/* width: 100%; */
+/* モーダルの幅 */
+/* left: 50%; */
+/* } */
 
-    .news_button {
+/* .news_button {
       width: 50%;
-    }
+    } */
 
-    .uploaded-image {
+/* .uploaded-image {
       align-items: center;
       justify-content: center;
       left: 7%;
       width: 50%;
       height: 10%;
+    } */
+/* } */
+
+/* @media (max-width: 600px) {
+    .editor-wrapper {
+      width: 90%;
+      height: auto;
+      margin-top:70%;
     }
+  } */
 
+@media (max-width: 600px),
+(max-width: 400px) {
+  .News_Title {
+    margin-left: 5%;
+  }
 
+  .editor-wrapper {
+    width: 90%;
+    height: auto;
+    margin-top: 40%;
+  }
+
+  .IconButton {
+    width: 70%;
+  }
+
+  .FormMenuIcon {
+    font-size: 10px;
+  }
+
+  .cover_img_upload {
+    width: 100px;
+    height: 100px;
+    box-sizing: border-box;
+    margin: 0;
+    border: none;
+    padding-bottom: 10%;
+  }
+
+  .editor_title::placeholder,
+  .editor_title {
+    font-size: 25px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 10%;
+    padding-left: 5%;
+  }
+
+  .ce-popover {
+    min-width: 250px !important;
+    top: 15% !important;
+    left: 15% !important;
+    border-radius: 10px !important;
+    z-index: 3 !important;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .uploaded-image {
+    padding-top:5%;
+    left: 15%;
+  }
+
+  .uploaded-image img {
+    width: 90%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    max-width: 450px;
+    max-height: 400px;
+    object-fit: cover;
 
   }
+
 }

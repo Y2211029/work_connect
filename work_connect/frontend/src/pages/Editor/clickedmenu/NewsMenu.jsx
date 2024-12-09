@@ -102,7 +102,7 @@ const NewsMenu = ({
   console.log("selectedOccupationArray配列", selectedOccupationArray);
 
   useEffect(() => {
-    let optionArrayPromise = GetTagAllListFunction("student_desired_occupation");
+    let optionArrayPromise = GetTagAllListFunction("company_selected_occupation");
     optionArrayPromise.then((result) => {
       setOptions(result);
     });

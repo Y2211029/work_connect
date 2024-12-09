@@ -1940,7 +1940,7 @@ export default function Searchbar() {
                   endAdornment={
                     // 絞り込みアイコン
 
-                    <InputAdornment position="end" style={{ display: Display.thisCompanyNews }}>
+                    <InputAdornment position="end" sx={{ display: Display.thisCompanyNews, "&:hover": {cursor: "pointer"}}}>
                       <HeaderAvatar onClick={handleOpen}>
                         <IconAdjustmentsHorizontal stroke={1.5} size="18px" />
                       </HeaderAvatar>

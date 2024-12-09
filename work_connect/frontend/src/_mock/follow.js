@@ -4,7 +4,7 @@ export async function follow(senderId, recipientId) {
     console.log("センダーID",senderId);
     console.log("レシピエントID",recipientId);
     // フォロー処理のためにPOSTリクエストを送信
-    const response = await fetch('http://localhost:8000/follow', {
+    const response = await fetch('http://localhost:3000/follow', {
       method: "POST",
       headers: {
           "Content-Type": "application/json",

@@ -97,8 +97,7 @@ const Editor = () => {
   const [CreateFormOpen, setCreateFormOpen] = useState(false);
   const [formSummary, setFormSummary] = useState(null);
   const [followerCounter, setFollowerCounter] = useState(0);
-  const [selectedOccupation, setSelectedOccupation] = useState([]);
-  const [openJobs, setOpenJobs] = useState("");
+  const [selectedOccupation, setSelectedOccupation] = useState("");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
@@ -184,12 +183,6 @@ const Editor = () => {
     console.log("newValue", newValue);
   }
 
-  const event_dayhandleChange = (newDate) => {
-    const formattedDate = dayjs(newDate).format("YYYY-MM-DD HH:mm:ss");
-    console.log("新しい締切日:", formattedDate);
-    setEventDay(newDate); // 状態を更新
-  };
-
 
 
 
@@ -208,7 +201,6 @@ const Editor = () => {
       console.log(news_id);
       console.log(notificationMessage);
       console.log(genre);
-      console.log(openJobs);
       console.log(eventDay);
 
       const response = await axios.post(news_save_url, {
@@ -216,7 +208,7 @@ const Editor = () => {
         title: title,     // タイトル
         news_id: news_id,     // ID
         message: notificationMessage, //通知に添えるメッセージ
-        openJobs: openJobs, //募集職種
+        selectedOccupation: selectedOccupation,
         eventDay: eventDay, //開催日
         company_id: sessionId, // 企業ID
         genre: genre //ジャンル
@@ -351,6 +343,9 @@ const Editor = () => {
     }
     // news_idをセット
     setNewsId(select_draft_list.id);
+    setEventDay(dayjs(select_draft_list.event_day));
+    setSelectedOccupation(select_draft_list.open_jobs);
+    toggleDrawer(false);
   };
 
   const rewrite_news_delete = async (id) => {
@@ -1086,7 +1081,7 @@ const Editor = () => {
 
     return (
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4">{NewsTitle}</Typography>
+        <Typography variant="h4" className="News_Title">{NewsTitle}</Typography>
       </Stack>
     );
   };
@@ -1106,6 +1101,8 @@ const Editor = () => {
   const handleBack = async () => {
     console.log("フォームサマリ", formSummary); // 確認用ログ
     setCreateFormOpen(false); // フォームのモーダルを閉じる
+    setExpanded(false);
+    toggleDrawer(false);
 
     if (editorInstance.current) {
       try {
@@ -1520,7 +1517,6 @@ const Editor = () => {
     }
   };
 
-
   const menuItems = [
     {
       key: "draftList", text: "下書きリスト", render:
@@ -1531,7 +1527,42 @@ const Editor = () => {
           NewsSave={news_save}
         />
     },
+    ...(genre !== "Blog" ? [{
+      key: "eventDay", text: "開催日を設定する", render:
+        <NewsMenu menuKey={'eventDay'}
+        eventDay = {eventDay}
+        setEventDay = {setEventDay}
+        />
+    }] : []),
+    ...(genre !== "Blog" ? [{
+      key: "openJobs", text: "募集職種を設定する", render:
+        <NewsMenu menuKey={'openJobs'}
+          selected_draft={selected_draft}
+          setSelectedOccupation = {setSelectedOccupation}
+          selectedOccupation = {selectedOccupation}
+        />
+    }] : []),
+    ...(followerCounter > 0 ? [{
+      key: "notificationMessage", text: "通知に添えるメッセージ", render:
+      <NewsMenu menuKey={'notificationMessage'}
+        NotificationMessageHandleChange={notification_messagehandleChange}
+        message={notificationMessage}
+      />
+    }] : []),
     { key: "saveNews", text: "ニュースを保存する", render: <NewsMenu menuKey={'saveNews'} NewsSave={news_save} /> },
+    // 条件を満たした場合のみ追加
+    ...(genre !== "Blog" ? [{
+      key: "createForm", text: "応募フォームを作成する", render:
+        <NewsMenu menuKey={'createForm'}
+          CreateFormJump={CreateFormJump}
+          selected_draft={selected_draft}
+        />
+    }] : []),
+    ...((isContentReady && isFollowerValid) ? [{
+      key: "releaseNews", text: "ニュースを公開する", render: <NewsMenu menuKey={'releaseNews'}
+        NewsUpLoad={news_upload}
+      />
+    }] : []),
     {
       key: "editingStatus", text: "現在の編集状況", render: <NewsMenu menuKey={'editingStatus'}
         EditorStatusCheck={EditorStatusCheck}
@@ -1541,42 +1572,6 @@ const Editor = () => {
         followerCounter={followerCounter}
       />
     },
-    ...(followerCounter > 0 ? [{
-      key: "notificationMessage", text: "通知に添えるメッセージ", render:
-      <NewsMenu menuKey={'notificationMessage'}
-        NotificationMessageHandleChange={notification_messagehandleChange}
-        message={notificationMessage}
-      />
-    }] : []),
-    ...(genre !== "Blog" ? [{
-      key: "eventDay", text: "開催日を指定する", render:
-        <NewsMenu menuKey={'eventDay'}
-        EventDayHandleChange = {event_dayhandleChange}
-        eventDay = {eventDay}
-        />
-    }] : []),
-    // 条件を満たした場合のみ追加
-    ...(genre !== "Blog" ? [{
-      key: "createForm", text: "応募フォームを作成する", render:
-        <NewsMenu menuKey={'createForm'}
-          CreateFormJump={CreateFormJump}
-          selected_draft={selected_draft}
-        />
-    }] : []),
-    ...(genre !== "Blog" ? [{
-      key: "openJobs", text: "募集職種を設定する", render:
-        <NewsMenu menuKey={'openJobs'}
-          selected_draft={selected_draft}
-          setSelectedOccupation = {setSelectedOccupation}
-          selectedOccupation = {selectedOccupation}
-          setOpenJobs={setOpenJobs}
-        />
-    }] : []),
-    ...((isContentReady && isFollowerValid) ? [{
-      key: "releaseNews", text: "ニュースを公開する", render: <NewsMenu menuKey={'releaseNews'}
-        NewsUpLoad={news_upload}
-      />
-    }] : []),
   ];
 
 
@@ -1625,6 +1620,7 @@ const Editor = () => {
                 color="inherit"
                 aria-label="menu"
                 onClick={() => toggleDrawer(true)}
+                className="IconButton"
               >
                 <Typography className="FormMenu">
                   <MenuIcon className="FormMenuIcon" />
@@ -1668,13 +1664,12 @@ const Editor = () => {
                       </Accordion>
                     );
                   })}
+        
                 </List>
               </Drawer>
             </div>
-          </Stack>
-
-
-
+            
+            
           {/* カバー画像アップロード */}
           <ImageSearchIcon
             className="cover_img_upload"
@@ -1691,6 +1686,11 @@ const Editor = () => {
             value={title}
             onChange={titlechange}
           />
+
+          </Stack>
+
+
+
 
           {/* エディターコンポーネント */}
           <div className="editor-wrapper">

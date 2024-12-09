@@ -29,6 +29,8 @@ import DeadlineCalender from "src/components/search/DeadlineCalender";
 import EventCalender from "src/components/search/EventCalender";
 import NewsDisplayed from "src/components/search/NewsDisplayed";
 
+import schoolList from 'src/data/school_list.json';
+
 // ----------------------------------------------------------------------
 
 const useStyles = makeStyles(() => {
@@ -291,18 +293,18 @@ export default function Searchbar() {
     //   optionArray.push({ value: value.school_name, label: value.school_name });
     // });
     // console.log("optionArray", optionArray);
-    let optionArray = [];
+    // let optionArray = [];
 
     // 学生アカウントで使用されている学校名のみを取得
-    const response = await axios.get(`http://localhost:8000/get_student_school_name_tag`, {});
+    // const response = await axios.get(`http://localhost:8000/get_student_school_name_tag`, {});
 
-    response.data.map((value) => {
-      optionArray.push({ value: value, label: value });
-    });
+    // response.data.map((value) => {
+    //   optionArray.push({ value: value, label: value });
+    // });
 
     setOptions((prevOptions) => ({
       ...prevOptions,
-      school_name: optionArray,
+      school_name: schoolList,
     }));
   };
 
@@ -1903,7 +1905,8 @@ export default function Searchbar() {
         <>
           {(PathName.startsWith("/Profile/") && PathName.endsWith("/mypage")) ||
             (PathName.startsWith("/WorkDetail/") && PathName.endsWith("")) ||
-            (PathName.startsWith("/VideoDetail/") && PathName.endsWith("")) ? null : (
+            (PathName.startsWith("/VideoDetail/") && PathName.endsWith("")) ||
+            (PathName.startsWith("/news_detail/") && PathName.endsWith("")) ? null : (
             <>
               <Box>
                 <OutlinedInput
@@ -1939,7 +1942,7 @@ export default function Searchbar() {
                   endAdornment={
                     // 絞り込みアイコン
 
-                    <InputAdornment position="end" style={{ display: Display.thisCompanyNews }}>
+                    <InputAdornment position="end" sx={{ display: Display.thisCompanyNews, "&:hover": {cursor: "pointer"}}}>
                       <HeaderAvatar onClick={handleOpen}>
                         <IconAdjustmentsHorizontal stroke={1.5} size="18px" />
                       </HeaderAvatar>

@@ -27,7 +27,7 @@ class EditorController extends Controller
         $news_id = $request->input('news_id');
         $Company_id = $request->input('company_id');
         $message = $request->input('message');
-        $openJobs = $request->input('openJobs');
+        $openJobs = $request->input('selectedOccupation');
         $eventDay = $request->input('eventDay');
         $genre = $request->input('genre');
 

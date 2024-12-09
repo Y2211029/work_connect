@@ -42,8 +42,8 @@ app.post("/follow", async (req, res) => {
   // laravelにフォロー情報を送信。
   try {
     const response = await axios.post("http://localhost:8000/follow", {
-      sender_id: followerId,
-      recipient_id: followedId,
+      followerId: followerId,
+      followedId: followedId,
     });
 
 

@@ -74,7 +74,7 @@ const PostCard = forwardRef(({ post }, ref) => {
     return (
       <>
         <Tooltip title="締め切り間近!">
-          応募締切日:{year}/{month}/{day}
+          締切日:{year}/{month}/{day}
         </Tooltip>
       </>
     );

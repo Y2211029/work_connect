@@ -53,6 +53,9 @@ class SearchInternshipJobOfferController extends Controller
             // ジャンル取得
             $genre = $request->input('genre', "");
 
+            Log::info("news_genre");
+            Log::info($genre);
+
             // 締切日を文字列型で取得
             $deadline_calender = $request->input('deadline_calender', "");
             // 開催日を文字列型で取得
@@ -95,11 +98,13 @@ class SearchInternshipJobOfferController extends Controller
 
             $query->select(
                 'w_companies.*',
-                'w_news.*'
+                'w_create_forms.deadline',
+                'w_news.*',
+                'w_news.created_at as news_created_at'
             );
 
             $query->join('w_companies', 'w_news.company_id', '=', 'w_companies.id');
-            $query->join('w_create_forms', 'w_news.id', '=', 'w_create_forms.news_id');
+            $query->leftJoin('w_create_forms', 'w_news.id', '=', 'w_create_forms.news_id');
 
             if (isset($genre)) {
                     $query->where('w_news.genre', $genre);
@@ -219,6 +224,9 @@ class SearchInternshipJobOfferController extends Controller
                     $query->whereBetween('w_news.event_day', [$event_start_day, $event_end_day]);
                 }
             }
+
+            // 公開されているニュースのみ取得
+            $query->where('w_news.public_status', '1');
 
             $results = $query->skip($offset)
                 ->take($perPage) //件数

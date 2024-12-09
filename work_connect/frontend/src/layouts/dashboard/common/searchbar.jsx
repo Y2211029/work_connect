@@ -1903,7 +1903,8 @@ export default function Searchbar() {
         <>
           {(PathName.startsWith("/Profile/") && PathName.endsWith("/mypage")) ||
             (PathName.startsWith("/WorkDetail/") && PathName.endsWith("")) ||
-            (PathName.startsWith("/VideoDetail/") && PathName.endsWith("")) ? null : (
+            (PathName.startsWith("/VideoDetail/") && PathName.endsWith("")) ||
+            (PathName.startsWith("/news_detail/") && PathName.endsWith("")) ? null : (
             <>
               <Box>
                 <OutlinedInput

@@ -220,6 +220,9 @@ class SearchInternshipJobOfferController extends Controller
                 }
             }
 
+            // 公開されているニュースのみ取得
+            $query->where('public_status', '1');
+
             $results = $query->skip($offset)
                 ->take($perPage) //件数
                 ->get();

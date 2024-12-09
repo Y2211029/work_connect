@@ -17,7 +17,7 @@ const HeaderAvatar = forwardRef(({ children, ...others }, ref) => {
         color: "white",
         "&:hover": {
           bgcolor: "#a9a9a9",
-          color: "white",
+          color: "white", 
         },
 
         width: 35,

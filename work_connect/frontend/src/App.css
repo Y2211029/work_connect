@@ -24,6 +24,7 @@ header .logo {
   font-size: 30px;
 }
 
+
 .toolbar {
   position: fixed;
   bottom: 0px;
@@ -53,6 +54,17 @@ nav ul li a:hover {
   color: rgb(45, 214, 158);
 }
 
+.searchbar {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 24;
+  padding: 32px;
+}
+
 .TypographyWidth {
   width: 100%;
 }
@@ -65,6 +77,8 @@ nav ul li a:hover {
 .Login_Sign_select_C_or_S {
   cursor: pointer;
 }
+
+
 
 /* トップページここから */
 .top_page_app_name {
@@ -146,6 +160,15 @@ nav ul li a:hover {
   justify-content: center;
 }
 
+.Login_modal_Button {
+  margin-top: 16px !important;
+  margin-bottom: 8px !important;
+}
+
+.login_modal_items {
+  font-size: 1rem !important;
+}
+
 .custom-overlay {
   background-color: rgba(0, 0, 0, 0.5);
   /* 背景色を設定 */
@@ -181,8 +204,8 @@ nav ul li a:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-evenly;
-  height: 500px;
+  justify-content: space-between;
+  height: calc(100% - 90px);
 }
 
 .loginFormField {
@@ -985,6 +1008,10 @@ textarea {
 }
 
 @media (max-width: 1700px) {
+  .searchbar {
+    width: 40% !important;
+    height: 80% !important;
+  }
 
   .column-container,
   .gallery-container {
@@ -999,6 +1026,10 @@ textarea {
 }
 
 @media (max-width: 1200px) {
+  .searchbar {
+    width: 50% !important;
+    height: 80% !important;
+  }
 
   .column-container,
   .gallery-container {
@@ -1012,6 +1043,19 @@ textarea {
 }
 
 @media (max-width: 900px) {
+  .searchbar {
+    width: 60% !important;
+    height: 80% !important;
+  }
+
+  .Modal form {
+    width: 80%;
+    height: fit-content;
+  }
+
+  .login_modal_items {
+    font-size: 1rem;
+  }
 
   .column-container,
   .gallery-container {
@@ -1025,6 +1069,19 @@ textarea {
 }
 
 @media (max-width: 600px) {
+  .searchbar {
+    width: 70% !important;
+    height: 80% !important;
+  }
+
+  .Modal form {
+    width: 90% !important;
+    height: fit-content !important;
+  }
+
+  .login_modal_items {
+    font-size: 0.9375rem !important;
+  }
 
   .column-container,
   .gallery-container {
@@ -1045,6 +1102,20 @@ textarea {
 }
 
 @media (max-width: 400px) {
+  .searchbar {
+    width: 80% !important;
+    height: 80% !important;
+  }
+
+  .Modal form {
+    width: 100% !important;
+    height: fit-content !important;
+  }
+
+  .login_modal_items {
+    font-size: 0.875rem !important;
+  }
+
   .column-container {
     column-gap: 2px;
   }

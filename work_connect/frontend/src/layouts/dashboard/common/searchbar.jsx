@@ -1960,31 +1960,7 @@ export default function Searchbar() {
                 />
               </Box>
               <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
-                <Box
-                  sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    width: {
-                      xs: "80%",
-                      sm: "70%",
-                      md: "60%",
-                      lg: "50%",
-                      xl: "40%",
-                    },
-
-                    height: {
-                      xs: "80%" /* 80% height on small screens */,
-                    },
-                    // overflowY: "auto",
-                    bgcolor: "background.paper",
-                    // border: "2px solid #000",
-                    borderRadius: "10px",
-                    boxShadow: 24,
-                    p: 4,
-                  }}
-                >
+                <Box className="searchbar">
                   <Stack
                     direction="column"
                     spacing={2}

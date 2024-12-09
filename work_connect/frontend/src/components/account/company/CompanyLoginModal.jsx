@@ -276,7 +276,17 @@ const CompanyLoginModal = (props) => {
                 alignItems: "align-items: center",
               }}
             >
-              <Typography variant="h5">Work&Connect ログイン（企業）</Typography>
+              <Stack
+                direction={{ xs: 'column', sm: 'column', md: 'row' }}
+                spacing={2}
+                sx={{
+                  justifyContent: "space-between",
+                  alignItems: "align-items: center",
+                }}>
+
+                <Typography variant="h5" className="login_modal_items">Work&Connect</Typography>
+                <Typography variant="h" className="login_modal_items">ログイン（企業）</Typography>
+              </Stack>
               {/* モーダル右上の❌ボタン */}
               <IconButton onClick={handleCloseModal}>
                 <CloseIcon />
@@ -333,10 +343,10 @@ const CompanyLoginModal = (props) => {
                   ),
                 }}
               />
-              <Button variant="outlined" type="button" onClick={fillDemoCredentials} sx={{ width: { xs: "95%", sm: "90%", md: "80%" } }}>
+              <Button variant="outlined" type="button" className="Login_modal_Button" onClick={fillDemoCredentials} sx={{ width: { xs: "95%", sm: "90%", md: "80%" } }}>
                 ユーザーネーム:株式会社アーキテクト パスワード:ArchitectPassword
               </Button>
-              <Button variant="outlined" type="submit" sx={{ width: { xs: "95%", sm: "90%", md: "80%" } }}>
+              <Button variant="outlined" type="submit" className="Login_modal_Button" sx={{ width: { xs: "95%", sm: "90%", md: "80%" } }}>
                 ログイン
               </Button>
               {Object.keys(formErrors).length === 0 && isSubmit && handleCloseModal}
@@ -345,7 +355,6 @@ const CompanyLoginModal = (props) => {
                 <Link href="" onClick={handleOpenStudentModal} id="loginStudentModalLink" className="Login_Sign_select_C_or_S">
                   ログイン
                 </Link>
-                してください
               </div>
             </div>
           </form>

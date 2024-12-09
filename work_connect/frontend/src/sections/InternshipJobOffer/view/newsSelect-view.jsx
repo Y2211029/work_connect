@@ -164,7 +164,7 @@ export default function NavTabs() {
   }, []);
 
   return (
-    <Box sx={{ width: '90%' }} >
+    <Box className="tabBox">
       <Tabs
         value={value}
         aria-label="nav tabs example"

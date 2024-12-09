@@ -112,7 +112,7 @@ export default function TopPageListView() {
             </div>
           </div>
           <div style={{ height: "100%" }}>
-            <DeviceFrameset device="iPhone X" /*landscape*/>
+            <DeviceFrameset style={{width: "100%", heihgt: "100%"}} device="iPhone X" /*landscape*/>
               <img className="top_page_app_image"  src="/assets/images/covers/phoneAppImage.png" alt="" />
             </DeviceFrameset>
           </div>

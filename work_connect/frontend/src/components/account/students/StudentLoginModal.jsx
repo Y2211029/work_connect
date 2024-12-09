@@ -296,13 +296,23 @@ const StudentLoginModal = (props) => {
                 alignItems: "align-items: center",
               }}
             >
-              <Typography variant="h5">Work&Connect ログイン（学生）</Typography>
+              <Stack
+                direction={{ xs: 'column', sm: 'column', md: 'row' }}
+                spacing={2}
+                sx={{
+                  justifyContent: "space-between",
+                  alignItems: "align-items: center",
+                }}>
+
+                <Typography variant="h5" className="login_modal_items">Work&Connect</Typography>
+                <Typography variant="h" className="login_modal_items">ログイン（学生）</Typography>
+              </Stack>
               {/* モーダル右上の❌ボタン */}
               <IconButton onClick={handleCloseModal}>
                 <CloseIcon />
               </IconButton>
             </Stack>
-            <Divider sx={{ borderStyle: "solid", my: 2, display: "block" }} />
+            <Divider sx={{ borderStyle: "solid", my: { xs: 1, sm: 2 }, display: "block" }} />
             <div className="loginUiForm">
               <TextField
                 label="ユーザー名またはメールアドレス"
@@ -353,22 +363,21 @@ const StudentLoginModal = (props) => {
                   ),
                 }}
               />
-              
-              <Button variant="outlined" type="button" onClick={fillDemoCredentials} sx={{ width: { xs: "95%", sm: "90%", md: "80%" } }}>
+
+              <Button variant="outlined" className="Login_modal_Button" type="button" onClick={fillDemoCredentials} sx={{ width: { xs: "95%", sm: "90%", md: "80%" } }}>
                 ユーザーネーム:yoshioka パスワード:2023gakusei
               </Button>
-              <Button variant="outlined" type="submit" sx={{ width: { xs: "95%", sm: "90%", md: "80%" } }}>
+              <Button variant="outlined" className="Login_modal_Button" type="submit" sx={{ width: { xs: "95%", sm: "90%", md: "80%" } }}>
                 ログイン
               </Button>
               {Object.keys(formErrors).length === 0 && isSubmit && handleCloseModal}
 
-              <div>
+              <Typography variant="h5" className="login_modal_items">
                 企業の方はこちらから
                 <Link href="" onClick={handleOpenCompanyModal} id="loginCompanyModalLink" className="Login_Sign_select_C_or_S">
                   ログイン
                 </Link>
-                してください
-              </div>
+              </Typography>
             </div>
           </form>
         </div>

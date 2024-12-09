@@ -98,7 +98,9 @@ class SearchInternshipJobOfferController extends Controller
 
             $query->select(
                 'w_companies.*',
-                'w_news.*'
+                'w_create_forms.deadline',
+                'w_news.*',
+                'w_news.created_at as news_created_at'
             );
 
             $query->join('w_companies', 'w_news.company_id', '=', 'w_companies.id');

@@ -29,6 +29,8 @@ import DeadlineCalender from "src/components/search/DeadlineCalender";
 import EventCalender from "src/components/search/EventCalender";
 import NewsDisplayed from "src/components/search/NewsDisplayed";
 
+import schoolList from 'src/data/school_list.json';
+
 // ----------------------------------------------------------------------
 
 const useStyles = makeStyles(() => {
@@ -291,18 +293,18 @@ export default function Searchbar() {
     //   optionArray.push({ value: value.school_name, label: value.school_name });
     // });
     // console.log("optionArray", optionArray);
-    let optionArray = [];
+    // let optionArray = [];
 
     // 学生アカウントで使用されている学校名のみを取得
-    const response = await axios.get(`http://localhost:8000/get_student_school_name_tag`, {});
+    // const response = await axios.get(`http://localhost:8000/get_student_school_name_tag`, {});
 
-    response.data.map((value) => {
-      optionArray.push({ value: value, label: value });
-    });
+    // response.data.map((value) => {
+    //   optionArray.push({ value: value, label: value });
+    // });
 
     setOptions((prevOptions) => ({
       ...prevOptions,
-      school_name: optionArray,
+      school_name: schoolList,
     }));
   };
 

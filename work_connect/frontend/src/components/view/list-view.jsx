@@ -297,7 +297,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       ItemName: "求人一覧",
       url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/JobOffer`,
       idKey: "id",
-      tags: ["genre", "company_name"],
+      tags: ["genre", "open_jobs"],
       generatePosts: (WorkOfList) => {
         return WorkOfList.map((company) => ({
           // id: index + 1,
@@ -323,7 +323,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       ItemName: "インターンシップ一覧",
       url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/Internship`,
       idKey: "id",
-      tags: ["genre","open_jobs"],
+      tags: ["genre", "open_jobs"],
       generatePosts: (WorkOfList) => {
         console.log("WorkOfListの中身:", WorkOfList); // WorkOfListの中身を確認
         return WorkOfList.map((company, index) => ({
@@ -350,7 +350,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       ItemName: "説明会一覧",
       url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/Session`,
       idKey: "id",
-      tags: ["genre"],
+      tags: ["genre", "open_jobs"],
       generatePosts: (WorkOfList) => {
         console.log("WorkOfListの中身:", WorkOfList); // WorkOfListの中身を確認
         return WorkOfList.map((company, index) => ({

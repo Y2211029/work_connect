@@ -1,18 +1,40 @@
-import { forwardRef, useEffect } from "react";
+import { forwardRef, useEffect, useLayoutEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
-
+import Divider from "@mui/material/Divider";
+import Popover from "@mui/material/Popover";
+import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
-// import { follow } from "src/_mock/follow";
 
 // ----------------------------------------------------------------------
+const getDeadlineMessage = (deadline) => {
+  const today = new Date();
+  const deadlineDate = new Date(deadline);
+
+  // 日付の差分を計算 (ミリ秒 -> 日)
+  const diffInDays = Math.ceil((deadlineDate - today) / (1000 * 60 * 60 * 24));
+
+  // 残り1週間以内は1日単位で表示
+  if (diffInDays > 0 && diffInDays <= 7) {
+    return `締め切りまで残り${diffInDays}日`;
+  }
+
+  // 残り2週間以内なら週数単位で表示
+  if (diffInDays > 7 && diffInDays <= 14) {
+    const weeksLeft = Math.ceil(diffInDays / 7); // 残りの週数を計算
+    return `締め切りまで残り${weeksLeft}週間`;
+  }
+
+  // それ以外は何も返さない
+  return null;
+};
 
 const PostCard = forwardRef(({ post }, ref) => {
   const {
@@ -21,43 +43,47 @@ const PostCard = forwardRef(({ post }, ref) => {
     company_name,
     user_name,
     article_title,
-    genre,
     header_img,
     news_created_at,
     icon,
     followStatus: initialFollowStatus,
+    open_jobs,
     deadline,
-    // deadlineStatus,
     event_day,
     count,
   } = post;
 
-  useEffect(() => {
-    console.log("company_id", company_id);
-    console.log("user_name", user_name);
-  }, [company_id]);
-
-  console.log("post内容", post);
-  console.log("締切日", deadline);
-  console.log("開催日", event_day);
-  // const [followStatus, setFollowStatus] = useState(initialFollowStatus);
+  const [open, setOpen] = useState(null);
+  const [expanded, setExpanded] = useState(false);
   const followStatus = initialFollowStatus;
   const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData");
+  const [PathName, setPathName] = useState("");
 
-  // const handleFollowClick = async () => {
-  //   try {
-  //     const updatedFollowStatus = await follow(accountData.id, company_id);
-  //     if (updatedFollowStatus) {
-  //       setFollowStatus(updatedFollowStatus);
-  //     }
-  //   } catch (error) {
-  //     console.error("フォロー処理中にエラーが発生しました！", error);
-  //   }
-  // };
+  useLayoutEffect(() => {
+    let url = new URL(window.location.href);
+    let urlPageParams = url.searchParams.get("page");
+    if (urlPageParams != null) {
+      setPathName(location.pathname + "/" + urlPageParams);
+    } else {
+      setPathName(location.pathname);
+    }
+  }, [window.location.href]);
 
-  console.log("アイコンID", icon);
-  console.log("ユーザーネーム", user_name);
+  useEffect(() => {
+    console.log("pageParam", PathName);
+  }, [PathName]); // location に依存するように変更
+
+  const deadlineMessage = getDeadlineMessage(deadline);
+
+  const handleOpen = (event) => {
+    setOpen(event.currentTarget);
+    setExpanded(!expanded);
+  };
+  const handleClose = () => {
+    setOpen(null);
+    setExpanded(false);
+  };
 
   // 日付をYY/MM/DDに変換する
   const formatDate = (dateString) => {
@@ -96,62 +122,6 @@ const PostCard = forwardRef(({ post }, ref) => {
     />
   );
 
-  console.log("ユーザネーム", user_name);
-
-  // フォームのレンダリング（企業の投稿の場合）
-  const renderForm =
-    company_id === accountData.id && count > 0 ? (
-      <Typography
-        sx={{ opacity: 0.48, cursor: "pointer", textAlign: "right" }}
-        onClick={() => {
-          window.location.href = `/Profile/${user_name}?page=checkform`;
-        }}
-      >
-        {count}件のフォーム回答
-      </Typography>
-    ) : null;
-
-  // ジャンル
-  const renderGenre = genre ? (
-    <>
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        spacing={1}
-        sx={{
-          mt: 3,
-          color: "common.black",
-          padding: "5px",
-        }}
-      >
-
-        <div>{genre}</div>
-
-        {deadline && <div>締切日: {formatDate(deadline)}</div>}
-        <br></br>
-        {event_day && <div>開催日: {formatDate(event_day)}</div>}
-      </Stack>
-
-      {renderForm}
-    </>
-  ) : null;
-
-  // タイトル
-  const renderTitle = (
-    <Link
-      to={`/news_detail/${news_id}`}
-      className="link"
-      style={{
-        color: "common.black",
-        height: 30,
-        fontWeight: "Bold",
-      }}
-    >
-      {article_title}
-    </Link>
-  );
-
   // サムネイル
   const renderThumbnail = (
     <Box
@@ -168,20 +138,40 @@ const PostCard = forwardRef(({ post }, ref) => {
     />
   );
 
+  // タイトル
+  const renderTitle = (
+    <>
+      <Link
+        to={`/news_detail/${news_id}`}
+        className="link"
+        style={{
+          color: "common.black",
+          height: 30,
+          fontWeight: "Bold",
+        }}
+      >
+        {article_title}
+      </Link>
+    </>
+  );
+  // フォームのレンダリング（企業の投稿の場合）
+  const renderForm =
+    company_id === accountData.id && count > 0 ? (
+      <Typography
+        sx={{ opacity: 0.48, cursor: "pointer", textAlign: "right" }}
+        onClick={() => {
+          window.location.href = `/Profile/${user_name}?page=checkform`;
+        }}
+      >
+        {count}件のフォーム回答
+      </Typography>
+    ) : null;
+
   //フォローステータス
   const renderFollow = followStatus !== "フォローできません" && followStatus !== "フォローする" && (
     <Typography opacity="0.48" sx={{ width: "100%" }} className="follow_status">
       {followStatus}
     </Typography>
-    // if (followStatus === "フォローできません") {
-    //   return <Typography opacity="0.48"></Typography>;
-    // } else {
-    //   return (
-    // <Typography opacity="0.48" onClick={handleFollowClick}>
-    //   {followStatus}
-    // </Typography>
-    //   );
-    // }
   );
 
   // 投稿日
@@ -197,6 +187,79 @@ const PostCard = forwardRef(({ post }, ref) => {
     >
       {postDateTimeDisplay(news_created_at)}
     </Typography>
+  );
+
+  // ジャンル
+  const renderGenre = open_jobs ? (
+    <Box sx={{ justifyContent: "center ", alignItems: "center" }}>
+      <Divider
+        sx={{
+          borderStyle: "dashed",
+          m: 1,
+          display: PathName === "/Internship_JobOffer/Blog" ? "none" : "block",
+        }}
+      />
+      <Button
+        onClick={handleOpen}
+        startIcon={
+          <PlayCircleIcon
+            style={{
+              transform: expanded ? "rotate(90deg)" : "rotate(0)",
+              transition: "0.5s",
+            }}
+          />
+        }
+        className="news_list_view_items news_acordion_button"
+      >
+        職種
+      </Button>
+      <Popover
+        open={open}
+        anchorEl={open}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        transformOrigin={{
+          vertical: "center",
+          horizontal: "left",
+        }}
+        PaperProps={{
+          sx: {
+            mt: 1.5,
+            ml: 0.75,
+            width: "fit-content",
+            maxWidth: "300px",
+            maxHeight: "50vh",
+          },
+        }}
+      >
+        <Box className="news_job_acordion_menu">{open_jobs}</Box>
+      </Popover>
+
+      {renderForm}
+    </Box>
+  ) : null;
+
+  const renderDay = (
+    <>
+      {deadlineMessage !== null ? <Box className="news_list_view_items">{deadlineMessage}</Box> : ""}
+      {event_day !== null ? (
+        <>
+          <Box className="news_list_view_items">開催日: {formatDate(event_day)}</Box>
+          <Divider
+            sx={{
+              borderStyle: "dashed",
+              m: 1,
+              display: PathName === "/Internship_JobOffer/Blog" ? "none" : "block",
+            }}
+          />
+        </>
+      ) : (
+        ""
+      )}
+    </>
   );
 
   // 企業名
@@ -250,8 +313,11 @@ const PostCard = forwardRef(({ post }, ref) => {
         <div className="postCard" style={{ width: "100%" }}>
           {renderThumbnail}
           {renderTitle}
+
           {renderGenre}
-          <div className="stack_follow_status">{renderFollow}</div>
+          {renderDay}
+          {renderFollow}
+
           {renderInfo}
         </div>
       </Stack>
@@ -259,7 +325,9 @@ const PostCard = forwardRef(({ post }, ref) => {
   );
 });
 
-PostCard.displayName = "PostCard";
+// displayName は、React コンポーネントに名前を設定するプロパティです。特に、開発ツール（例えば、React DevTools）
+// でコンポーネントを確認したり、コンポーネントのスタックトレースを見たりするときに役立ちます.
+PostCard.displayName = "PostCard"; // displayName を設定
 
 PostCard.propTypes = {
   post: PropTypes.object.isRequired,

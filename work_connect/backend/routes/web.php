@@ -302,7 +302,7 @@ Route::post('/all_company_informations_pull', action: [CompanyInformationControl
 //応募用フォーム作成機能
 Route::post('/create_form_save', [FormController::class, 'create_form_save']);
 Route::get('/create_form_get/{NewsDetailId}', [FormController::class, 'create_form_get']);
-Route::get('/write_form_get/{NewsDetailId}', [FormController::class, 'write_form_get']);
+Route::get('/write_form_get', [FormController::class, 'write_form_get']);
 Route::post('/write_form_save', [FormController::class, 'write_form_save']);
 
 

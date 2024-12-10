@@ -109,7 +109,7 @@ export default function Router() {
 
 
         //20240704
-        { path: "news_detail/:news_id", element: <NewsDetailPage /> },
+        { path: "NewsDetail/:news_id", element: <NewsDetailPage /> },
 
         // トップ画面追加
         { path: "Top", element: <TopPage /> },

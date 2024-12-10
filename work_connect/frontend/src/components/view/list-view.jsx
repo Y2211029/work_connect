@@ -153,13 +153,6 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           break;
         }
 
-        case path === `/WriteForm/${NewsDetailId}` || options.DecodeURL === `/Profile/${ParamUserName}/News/Forms`: {
-          const { default: WriteFormPostCard } = await import("src/sections/WriteForm/post-card");
-          setPostCard(() => WriteFormPostCard);
-          console.log("WriteFormPostCard");
-          break;
-        }
-
         case options.DecodeURL === `/Profile/${ParamUserName}` && options.page === "checkform": {
           const { default: CheckFormPostCard } = await import("src/sections/Profile/View/company/CheckForm/post-card");
           setPostCard(() => CheckFormPostCard);
@@ -388,20 +381,20 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
         }));
       },
     },
-    writeforms: {
-      ItemName: "応募用フォーム",
-      url: `http://localhost:8000/write_form_get/${NewsDetailId}`,
-      idKey: "id",
-      tags: ["genre"],
-      generatePosts: (WorkOfList) => {
-        return WorkOfList.map((company) => ({
-          company_id: company.company_id,
-          create_form: company.create_form,
-          news_id: company.news_id,
-          article_title: company.article_title,
-        }));
-      },
-    },
+    // writeforms: {
+    //   ItemName: "応募用フォーム",
+    //   url: `http://localhost:8000/write_form_get/${NewsDetailId}`,
+    //   idKey: "id",
+    //   tags: ["genre"],
+    //   generatePosts: (WorkOfList) => {
+    //     return WorkOfList.map((company) => ({
+    //       company_id: company.company_id,
+    //       create_form: company.create_form,
+    //       news_id: company.news_id,
+    //       article_title: company.article_title,
+    //     }));
+    //   },
+    // },
     specialjoboffers: {
       ItemName: `${ParamUserName}の求人一覧`,
       url: `http://localhost:8000/Internship_JobOffer/special_company_news/${ParamUserName}/${SessionAccountData.id}/JobOffer`,
@@ -535,7 +528,7 @@ ItemObjectAndPostCard.propTypes = {
 };
 
 // ------------------------------------------------ListView------------------------------------------------
-const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort, ParamUserName, NewsDetailId, DecodeURL, page, category }) => {
+const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort, ParamUserName, DecodeURL, page, category }) => {
   // ログインチェック
   const { loginStatusCheckFunction } = LoginStatusCheck();
   // 作品アイテム格納
@@ -599,7 +592,6 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
       PathName === "/StudentList" ||
       PathName === "/CompanyList" ||
       PathName === "/Internship_JobOffer" ||
-      PathName === `/WriteForm/${NewsDetailId}` ||
       PathName === "/Internship_JobOffer?page=JobOffer" ||
       PathName === "/Internship_JobOffer?page=Internship" ||
       PathName === "/Internship_JobOffer?page=Session" ||

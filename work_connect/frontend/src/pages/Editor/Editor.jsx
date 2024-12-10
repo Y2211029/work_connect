@@ -167,7 +167,7 @@ const Editor = () => {
       console.log(response.data.id);
       console.log(response.data);
       console.log("成功");
-      navigate(`/news_detail/${news_id}`);
+      navigate(`/NewsDetail/${news_id}`);
     } catch (error) {
       console.log("Error:", error);
     }
@@ -1664,12 +1664,12 @@ const Editor = () => {
                       </Accordion>
                     );
                   })}
-        
+
                 </List>
               </Drawer>
             </div>
-            
-            
+
+
           {/* カバー画像アップロード */}
           <ImageSearchIcon
             className="cover_img_upload"

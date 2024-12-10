@@ -3566,10 +3566,10 @@ export default function Searchbar() {
                         }}
                       >
                         <Button className={classes.textField} variant="outlined" onClick={handleTagReset}>
-                          タグをリセット
+                          タグを削除する
                         </Button>
                         <Button className={classes.textField} variant="outlined" onClick={handleCancel}>
-                          キャンセル
+                        直前のタグを復元
                         </Button>
                         <Button className={classes.textField} variant="contained" onClick={handleSearch}>
                           検索

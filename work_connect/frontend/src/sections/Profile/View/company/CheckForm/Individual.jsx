@@ -12,6 +12,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { Model } from 'survey-core';
 import { Survey } from 'survey-react-ui';
 import 'survey-core/defaultV2.min.css';
+import { ColorRing } from "react-loader-spinner";
 
 const Individual = ({
     application_form,
@@ -173,7 +174,16 @@ const Individual = ({
     return (
         <>
             {loading ? ( // ローディング中はサーベイを表示しない
-                <div>Loading...</div>
+                <ColorRing
+                visible={true}
+                height="100"
+                width="100"
+                ariaLabel="color-ring-loading"
+                wrapperStyle={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
+                wrapperClass="custom-color-ring-wrapper" // カスタムクラスを指定
+                colors={["#41a4ff", "#FFFFFF", "#41a4ff", "#41a4ff", "#FFFFFF"]}
+                style={{ flexDirection: "column" }}
+              />
             ) : (
                 <>
                     <Select value={selectedUserName} onChange={handleUserNameChange} displayEmpty className="title-dropdown">

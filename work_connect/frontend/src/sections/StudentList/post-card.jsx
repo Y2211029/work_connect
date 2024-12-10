@@ -1,5 +1,4 @@
-
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -8,9 +7,8 @@ import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 
-
-import { follow } from "src/_mock/follow";
-import { useSessionStorage } from "src/hooks/use-sessionStorage";
+// import { follow } from "src/_mock/follow";
+// import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 import { TypographyItems } from "src/components/typography/ItemTypography";
 
@@ -34,30 +32,30 @@ const PostCard = forwardRef(({ post }, ref) => {
     author,
   } = post;
 
-  const [followStatus, setFollowStatus] = useState(initialFollowStatus);
+  // const [followStatus, setFollowStatus] = useState(initialFollowStatus);
+  const followStatus = initialFollowStatus;
+  // const { getSessionData } = useSessionStorage();
+  // const accountData = getSessionData("accountData");
 
-  const { getSessionData } = useSessionStorage();
-  const accountData = getSessionData("accountData");
-
-  const data = {
-    account_id: accountData.id,
-  };
+  // const data = {
+  //   account_id: accountData.id,
+  // };
 
   useEffect(() => {
     console.log("student_id", student_id);
     console.log("followStatus", followStatus);
   }, [student_id, followStatus]);
 
-  const handleFollowClick = async () => {
-    try {
-      const updatedFollowStatus = await follow(data.account_id, student_id);
-      if (updatedFollowStatus) {
-        setFollowStatus(updatedFollowStatus);
-      }
-    } catch (error) {
-      console.error("フォロー処理中にエラーが発生しました！", error);
-    }
-  };
+  // const handleFollowClick = async () => {
+  //   try {
+  //     const updatedFollowStatus = await follow(data.account_id, student_id);
+  //     if (updatedFollowStatus) {
+  //       setFollowStatus(updatedFollowStatus);
+  //     }
+  //   } catch (error) {
+  //     console.error("フォロー処理中にエラーが発生しました！", error);
+  //   }
+  // };
 
   const renderAvatar = (
     <Avatar
@@ -68,7 +66,7 @@ const PostCard = forwardRef(({ post }, ref) => {
         height: 100,
         zIndex: 9,
         border: "1px solid #dcdcdc",
-        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)" // グレーのボックスシャドウ
+        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)", // グレーのボックスシャドウ
       }}
     />
   );
@@ -89,80 +87,40 @@ const PostCard = forwardRef(({ post }, ref) => {
       >
         {userName}
       </Typography>
-      <Typography
-        variant="caption"
-        component="div"
-        sx={(theme) => ({
-          mb: 0,
-          fontSize: "0.8rem",
-          color: "common.black",
-          [theme.breakpoints.up("sm")]: { fontSize: "1rem" }, // スモールスクリーン以上で変更
-          [theme.breakpoints.up("md")]: { fontSize: "1.2rem" }, // 中サイズスクリーン以上で変更
-        })}
-      >
+      <Typography variant="caption" component="div" className="userName_items">
         {studentName}
       </Typography>
     </div>
   );
 
-  const renderFollow = followStatus !== "フォローできません" && (
-    <Typography opacity="0.48" sx={{ width: "100%" }} onClick={handleFollowClick}>
+  const renderFollow = followStatus !== "フォローできません" && followStatus !== "フォローする" && (
+    <Typography opacity="0.48" sx={{ width: "100%" }} className="follow_status">
       {followStatus}
     </Typography>
   );
 
+  const renderGraduationYear = graduationYear !== null ? <TypographyItems ItemName="卒業年度" ItemDetail={graduationYear} /> : null;
 
+  const renderdepartmentName = departmentName !== null ? <TypographyItems ItemName="学部" ItemDetail={departmentName} /> : null;
 
-  const renderGraduationYear = graduationYear !== null ? (
-    <TypographyItems ItemName="卒業年度" ItemDetail={graduationYear} />
-  ) : null;
+  const renderfacultyName = facultyName !== null ? <TypographyItems ItemName="学科" ItemDetail={facultyName} /> : null;
+  const rendermajorName = majorName !== null ? <TypographyItems ItemName="専攻" ItemDetail={majorName} /> : null;
 
-  const renderdepartmentName = departmentName !== null ? (
-    <TypographyItems ItemName="学部" ItemDetail={departmentName} />
-  ) : null;
+  const rendercourseName = courseName !== null ? <TypographyItems ItemName="コース" ItemDetail={courseName} /> : null;
 
-  const renderfacultyName = facultyName !== null ? (
-    <TypographyItems ItemName="学科" ItemDetail={facultyName} />
-  ) : null;
-  const rendermajorName = majorName !== null ? (
-    <TypographyItems ItemName="専攻" ItemDetail={majorName} />
-  ) : null;
+  const renderDesiredWorkRegion = desiredWorkRegion !== null ? <TypographyItems ItemName="希望勤務地" ItemDetail={desiredWorkRegion} /> : null;
 
-  const rendercourseName = courseName !== null ? (
-    <TypographyItems ItemName="コース" ItemDetail={courseName} />
-  ) : null;
+  const renderDesiredOccupation = desiredOccupation !== null ? <TypographyItems ItemName="希望職種" ItemDetail={desiredOccupation} /> : null;
 
-  const renderDesiredWorkRegion = desiredWorkRegion !== null ? (
-    <TypographyItems ItemName="希望勤務地" ItemDetail={desiredWorkRegion} />
-  ) : null;
-
-  const renderDesiredOccupation = desiredOccupation !== null ? (
-    <TypographyItems ItemName="希望職種" ItemDetail={desiredOccupation} />
-  ) : null;
-
-  const renderIntro =
-    intro !== null ? (
-      <div>
-        {intro}
-      </div>
-    ) : null;
-
+  const renderIntro = intro !== null ? <div>{intro}</div> : null;
 
   return (
-    <div ref={ref} >
-      <Link
-        to={`/Profile/${userName}?page=mypage`}
-        color="inherit"
-        variant="subtitle2"
-        underline="none"
-        className="link item-Link"
-      >
-        <Stack sx={{ display: "inline-block", width: "100%" }} >
-
-          <div className="postCard item-stack" style={{ width: "100%", padding: "10px" }} >
-
+    <div ref={ref}>
+      <Link to={`/Profile/${userName}?page=mypage`} color="inherit" variant="subtitle2" underline="none" className="link item-Link">
+        <Stack sx={{ display: "inline-block", width: "100%" }}>
+          <div className="postCard item-stack" style={{ width: "100%", padding: "10px" }}>
             {/* フォロー状況 */}
-            <Stack direction="row" alignItems="center" justifyContent="flex-start" sx={{ width: "100%" }} >
+            <Stack direction="row" alignItems="center" justifyContent="flex-start" className="stack_follow_status">
               {renderFollow}
             </Stack>
 
@@ -182,7 +140,7 @@ const PostCard = forwardRef(({ post }, ref) => {
             </Stack>
 
             {/* 学生情報 */}
-            <Stack direction="column" alignItems="center" justifyContent="flex-start" sx={{ width: "90%" }} spacing={1} >
+            <Stack direction="column" alignItems="center" justifyContent="flex-start" sx={{ width: "90%" }} spacing={1}>
               {renderGraduationYear}
               {renderdepartmentName}
               {renderfacultyName}

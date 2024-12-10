@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { ColorRing } from "react-loader-spinner";
+import { useLocation, useParams } from "react-router-dom";
 import useSWR from "swr";
 import PropTypes from "prop-types";
 import { faker } from "@faker-js/faker";
@@ -15,8 +16,7 @@ import { AllItemsContext } from "src/layouts/dashboard";
 import { useIntersection } from "src/routes/hooks/use-intersection";
 
 import { UseCreateTagbutton } from "src/hooks/use-createTagbutton";
-
-import { useParams } from "react-router-dom";
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 const setting = {
   rootMargin: "40px",
@@ -121,13 +121,13 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
         case path === "/VideoList" ||
           path === `/Profile/${SessionAccountData.user_name}?page=movie` ||
           path === `/Profile/${ParamUserName}?page=movie`: {
-            const { default: VideoListPostCard } = await import("src/sections/VideoList/post-card");
-            const { default: VideoListPostSort } = await import("src/sections/VideoList/post-sort");
-            setPostCard(() => VideoListPostCard);
-            setPostSort(() => VideoListPostSort);
-            console.log("VideoListPostCard");
-            break;
-          }
+          const { default: VideoListPostCard } = await import("src/sections/VideoList/post-card");
+          const { default: VideoListPostSort } = await import("src/sections/VideoList/post-sort");
+          setPostCard(() => VideoListPostCard);
+          setPostSort(() => VideoListPostSort);
+          console.log("VideoListPostCard");
+          break;
+        }
 
         case path === "/StudentList": {
           const { default: StudentListPostCard } = await import("src/sections/StudentList/post-card");
@@ -147,11 +147,11 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           (options.DecodeURL === `/Profile/${ParamUserName}` &&
             options.page === "news" &&
             ["JobOffer", "Internship", "Blog", "Session"].includes(options.category)): {
-            const { default: Internship_JobOfferPostCard } = await import("src/sections/InternshipJobOffer/post-card");
-            setPostCard(() => Internship_JobOfferPostCard);
-            console.log("Internship_JobOfferPostCard");
-            break;
-          }
+          const { default: Internship_JobOfferPostCard } = await import("src/sections/InternshipJobOffer/post-card");
+          setPostCard(() => Internship_JobOfferPostCard);
+          console.log("Internship_JobOfferPostCard");
+          break;
+        }
 
         case path === `/WriteForm/${NewsDetailId}` || options.DecodeURL === `/Profile/${ParamUserName}/News/Forms`: {
           const { default: WriteFormPostCard } = await import("src/sections/WriteForm/post-card");
@@ -297,7 +297,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       ItemName: "求人一覧",
       url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/JobOffer`,
       idKey: "id",
-      tags: ["genre","company_name"],
+      tags: ["genre", "company_name"],
       generatePosts: (WorkOfList) => {
         return WorkOfList.map((company) => ({
           // id: index + 1,
@@ -323,9 +323,9 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       ItemName: "インターンシップ一覧",
       url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/Internship`,
       idKey: "id",
-      tags: ["genre"],
+      tags: ["genre","open_jobs"],
       generatePosts: (WorkOfList) => {
-        console.log("WorkOfListの中身:", WorkOfList);  // WorkOfListの中身を確認
+        console.log("WorkOfListの中身:", WorkOfList); // WorkOfListの中身を確認
         return WorkOfList.map((company, index) => ({
           id: index + 1,
           company_id: company.company_id,
@@ -345,14 +345,14 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           count: company.form_data_count,
         }));
       },
-    },        
+    },
     Session: {
       ItemName: "説明会一覧",
       url: `http://localhost:8000/Internship_JobOffer/${SessionAccountData.id}/Session`,
       idKey: "id",
       tags: ["genre"],
       generatePosts: (WorkOfList) => {
-        console.log("WorkOfListの中身:", WorkOfList);  // WorkOfListの中身を確認
+        console.log("WorkOfListの中身:", WorkOfList); // WorkOfListの中身を確認
         return WorkOfList.map((company, index) => ({
           id: index + 1,
           company_id: company.company_id,
@@ -379,7 +379,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       idKey: "id",
       tags: ["genre"],
       generatePosts: (WorkOfList) => {
-       return WorkOfList.map((company) => ({
+        return WorkOfList.map((company) => ({
           company_id: company.company_id,
           news_id: company.news_id,
           user_name: company.user_name,
@@ -394,7 +394,6 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           count: company.form_data_count,
         }));
       },
-
     },
     writeforms: {
       ItemName: "応募用フォーム",
@@ -411,92 +410,92 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       },
     },
     specialjoboffers: {
-      ItemName: `${ParamUserName}さんの求人一覧`,
+      ItemName: `${ParamUserName}の求人一覧`,
       url: `http://localhost:8000/Internship_JobOffer/special_company_news/${ParamUserName}/${SessionAccountData.id}/JobOffer`,
       idKey: "id",
       tags: ["genre"],
       generatePosts: (WorkOfList) => {
         return WorkOfList.map((company) => ({
-           company_id: company.company_id,
-           news_id: company.news_id,
-           user_name: company.user_name,
-           company_name: company.company_name,
-           article_title: company.article_title,
-           genre: company.genre,
-           header_img: company.header_img,
-           news_created_at: company.news_created_at,
-           icon_id: company.icon_id,
-           followStatus: company.follow_status,
-           event_day: company.event_day,
-           count: company.form_data_count,
-         }));
-       },
+          company_id: company.company_id,
+          news_id: company.news_id,
+          user_name: company.user_name,
+          company_name: company.company_name,
+          article_title: company.article_title,
+          genre: company.genre,
+          header_img: company.header_img,
+          news_created_at: company.news_created_at,
+          icon_id: company.icon_id,
+          followStatus: company.follow_status,
+          event_day: company.event_day,
+          count: company.form_data_count,
+        }));
+      },
     },
     specialinternships: {
-      ItemName: `${ParamUserName}さんのインターンシップ一覧`,
+      ItemName: `${ParamUserName}のインターンシップ一覧`,
       url: `http://localhost:8000/Internship_JobOffer/special_company_news/${ParamUserName}/${SessionAccountData.id}/Internship`,
       idKey: "id",
       tags: ["genre", "Occupation"],
       generatePosts: (WorkOfList) => {
         return WorkOfList.map((company) => ({
-           company_id: company.company_id,
-           news_id: company.news_id,
-           user_name: company.user_name,
-           company_name: company.company_name,
-           article_title: company.article_title,
-           genre: company.genre,
-           header_img: company.header_img,
-           news_created_at: company.news_created_at,
-           icon_id: company.icon_id,
-           followStatus: company.follow_status,
-           event_day: company.event_day,
-           count: company.form_data_count,
-         }));
-       },
+          company_id: company.company_id,
+          news_id: company.news_id,
+          user_name: company.user_name,
+          company_name: company.company_name,
+          article_title: company.article_title,
+          genre: company.genre,
+          header_img: company.header_img,
+          news_created_at: company.news_created_at,
+          icon_id: company.icon_id,
+          followStatus: company.follow_status,
+          event_day: company.event_day,
+          count: company.form_data_count,
+        }));
+      },
     },
     specialsessions: {
-      ItemName: `${ParamUserName}さんの説明会一覧`,
+      ItemName: `${ParamUserName}の説明会一覧`,
       url: `http://localhost:8000/Internship_JobOffer/special_company_news/${ParamUserName}/${SessionAccountData.id}/Session`,
       idKey: "id",
       tags: ["genre", "Occupation"],
       generatePosts: (WorkOfList) => {
         return WorkOfList.map((company) => ({
-           company_id: company.company_id,
-           news_id: company.news_id,
-           user_name: company.user_name,
-           company_name: company.company_name,
-           article_title: company.article_title,
-           genre: company.genre,
-           header_img: company.header_img,
-           news_created_at: company.news_created_at,
-           icon_id: company.icon_id,
-           followStatus: company.follow_status,
-           event_day: company.event_day,
-           count: company.form_data_count,
-         }));
-       },
+          company_id: company.company_id,
+          news_id: company.news_id,
+          user_name: company.user_name,
+          company_name: company.company_name,
+          article_title: company.article_title,
+          genre: company.genre,
+          header_img: company.header_img,
+          news_created_at: company.news_created_at,
+          icon_id: company.icon_id,
+          followStatus: company.follow_status,
+          event_day: company.event_day,
+          count: company.form_data_count,
+        }));
+      },
     },
     specialblogs: {
-      ItemName: `${ParamUserName}さんのブログ一覧`,
+      ItemName: `${ParamUserName}のブログ一覧`,
       url: `http://localhost:8000/Internship_JobOffer/special_company_news/${ParamUserName}/${SessionAccountData.id}/Blog`,
       idKey: "id",
       tags: ["genre"],
       generatePosts: (WorkOfList) => {
         return WorkOfList.map((company) => ({
-           company_id: company.company_id,
-           news_id: company.news_id,
-           user_name: company.user_name,
-           company_name: company.company_name,
-           article_title: company.article_title,
-           genre: company.genre,
-           header_img: company.header_img,
-           news_created_at: company.news_created_at,
-           icon_id: company.icon_id,
-           followStatus: company.follow_status,
-           event_day: company.event_day,
-           count: company.form_data_count,
-         }));
-       },
+          company_id: company.company_id,
+          news_id: company.news_id,
+          user_name: company.user_name,
+          company_name: company.company_name,
+          article_title: company.article_title,
+          genre: company.genre,
+          header_img: company.header_img,
+          news_created_at: company.news_created_at,
+          icon_id: company.icon_id,
+          followStatus: company.follow_status,
+          event_day: company.event_day,
+          count: company.form_data_count,
+        }));
+      },
     },
     specialforms: {
       ItemName: `応募フォーム一覧`,
@@ -515,7 +514,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
     },
 
     companyinformations: {
-      ItemName: `${ParamUserName}さんの詳細な企業情報`,
+      ItemName: `${ParamUserName}の詳細な企業情報`,
       url: `http://localhost:8000/company_informations/${ParamUserName}`,
       idKey: "id",
       tags: ["genre"],
@@ -586,7 +585,12 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   // 初回ロード完了のフラグ
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
 
-  useEffect(() => { }, [IsLoading]);
+  const location = useLocation();
+  const { user_name } = useParams();
+  const { getSessionData } = useSessionStorage();
+  const accountData = getSessionData("accountData");
+
+  useEffect(() => {}, [IsLoading]);
   useEffect(() => {
     loginStatusCheckFunction();
   }, []);
@@ -788,18 +792,12 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     }
   }, [LaravelResponse, lastUrl]);
 
-  // const renderWorkItems = WorkOfList.length !== 0 && PostCard ?
-  //   WorkOfList.map((post, index) => (
-  //     <PostCard className="mediaCard" ref={index === WorkOfList.length - 1 ? ref : null}
-  //       key={`${post}-${index}`} post={post} index={index} />
-  //   ))
-  //   : WorkOfList.length === 0 && IsLoading === false && LaravelResponse === false ? "0件です" : null;
   // WorkOfList の表示ロジック
   const renderWorkItems =
     WorkOfList.length !== 0 && PostCard
       ? WorkOfList.map((post, index) => (
-        <PostCard className="mediaCard" ref={index === WorkOfList.length - 1 ? ref : null} key={`${post}-${index}`} post={post} index={index} />
-      ))
+          <PostCard className="mediaCard" ref={index === WorkOfList.length - 1 ? ref : null} key={`${post}-${index}`} post={post} index={index} />
+        ))
       : WorkOfList.length === 0 && !IsLoading && !LaravelResponse && hasLoadedOnce
         ? "0件です"
         : null;
@@ -821,11 +819,15 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
       {/* <Container  style={{ width: "100%" }}> */}
       <div className="list-view-Container">
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          {typeof ItemName === "string" ? (
+          {location.pathname == `/Profile/${accountData.user_name && accountData.id[0] !== "C"}` ? (
+            <>
+              <Typography variant="h4">{user_name + "の" + ItemName}</Typography>
+            </>
+          ) : (
             <>
               <Typography variant="h4">{ItemName}</Typography>
             </>
-          ) : null}
+          )}
         </Stack>
         <Stack mb={5} direction="row" alignItems="center" justifyContent="flex-end">
           {/*

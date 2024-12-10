@@ -1007,6 +1007,22 @@ textarea {
   color: #333;
 }
 
+.stack_follow_status {
+  width: fit-content !important;
+}
+
+.follow_status {
+  background-color: #328BFF;
+  padding: 2px 4px;
+  color: white;
+  border-radius: 10px;
+}
+
+
+.userName_items {
+  font-size: 1rem !important;
+}
+
 @media (max-width: 1700px) {
   .searchbar {
     width: 40% !important;
@@ -1021,8 +1037,6 @@ textarea {
   .column-container {
     column-gap: 13px;
   }
-
-
 }
 
 @media (max-width: 1200px) {
@@ -1039,7 +1053,6 @@ textarea {
   .column-container {
     column-gap: 10px;
   }
-
 }
 
 @media (max-width: 900px) {
@@ -1065,6 +1078,8 @@ textarea {
   .column-container {
     column-gap: 7px;
   }
+
+
 
 }
 

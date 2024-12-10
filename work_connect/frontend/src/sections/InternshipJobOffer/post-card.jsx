@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -10,7 +10,7 @@ import Tooltip from "@mui/material/Tooltip";
 
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
-import { follow } from "src/_mock/follow";
+// import { follow } from "src/_mock/follow";
 
 // ----------------------------------------------------------------------
 
@@ -35,25 +35,26 @@ const PostCard = forwardRef(({ post }, ref) => {
   useEffect(() => {
     console.log("company_id", company_id);
     console.log("user_name", user_name);
-  }, [company_id])
+  }, [company_id]);
 
   console.log("post内容", post);
   console.log("締切日", deadline);
   console.log("開催日", event_day);
-  const [followStatus, setFollowStatus] = useState(initialFollowStatus);
+  // const [followStatus, setFollowStatus] = useState(initialFollowStatus);
+  const followStatus = initialFollowStatus;
   const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData");
 
-  const handleFollowClick = async () => {
-    try {
-      const updatedFollowStatus = await follow(accountData.id, company_id);
-      if (updatedFollowStatus) {
-        setFollowStatus(updatedFollowStatus);
-      }
-    } catch (error) {
-      console.error("フォロー処理中にエラーが発生しました！", error);
-    }
-  };
+  // const handleFollowClick = async () => {
+  //   try {
+  //     const updatedFollowStatus = await follow(accountData.id, company_id);
+  //     if (updatedFollowStatus) {
+  //       setFollowStatus(updatedFollowStatus);
+  //     }
+  //   } catch (error) {
+  //     console.error("フォロー処理中にエラーが発生しました！", error);
+  //   }
+  // };
 
   console.log("アイコンID", icon);
   console.log("ユーザーネーム", user_name);
@@ -101,7 +102,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   const renderForm =
     company_id === accountData.id && count > 0 ? (
       <Typography
-        sx={{ opacity: 0.48, cursor: "pointer" ,textAlign:"right"}}
+        sx={{ opacity: 0.48, cursor: "pointer", textAlign: "right" }}
         onClick={() => {
           window.location.href = `/Profile/${user_name}?page=checkform`;
         }}
@@ -125,37 +126,15 @@ const PostCard = forwardRef(({ post }, ref) => {
         }}
       >
 
-        {/* <div>
-        {genre === "Internship"
-          ? "インターンシップ"
-          : genre === "Blog"
-            ? "ブログ"
-            : genre === "JobOffer"
-              ? "求人"
-              : genre === "Session"
-                ? "説明会"
-                : genre}{" "}
-      </div> */}
-
         <div>{genre}</div>
 
-
-
-        {deadline && (
-          <div>締切日: {formatDate(deadline)}</div>
-        )}
+        {deadline && <div>締切日: {formatDate(deadline)}</div>}
         <br></br>
-        {event_day && (
-          <div>開催日: {formatDate(event_day)}</div>
-        )}
-
-
+        {event_day && <div>開催日: {formatDate(event_day)}</div>}
       </Stack>
 
       {renderForm}
     </>
-
-
   ) : null;
 
   // タイトル
@@ -190,17 +169,20 @@ const PostCard = forwardRef(({ post }, ref) => {
   );
 
   //フォローステータス
-  const renderFollow = () => {
-    if (followStatus === "フォローできません") {
-      return <Typography opacity="0.48"></Typography>;
-    } else {
-      return (
-        <Typography opacity="0.48" onClick={handleFollowClick}>
-          {followStatus}
-        </Typography>
-      );
-    }
-  };
+  const renderFollow = followStatus !== "フォローできません" && followStatus !== "フォローする" && (
+    <Typography opacity="0.48" sx={{ width: "100%" }} className="follow_status">
+      {followStatus}
+    </Typography>
+    // if (followStatus === "フォローできません") {
+    //   return <Typography opacity="0.48"></Typography>;
+    // } else {
+    //   return (
+    // <Typography opacity="0.48" onClick={handleFollowClick}>
+    //   {followStatus}
+    // </Typography>
+    //   );
+    // }
+  );
 
   // 投稿日
   const renderDate = (
@@ -269,7 +251,7 @@ const PostCard = forwardRef(({ post }, ref) => {
           {renderThumbnail}
           {renderTitle}
           {renderGenre}
-          {renderFollow}
+          <div className="stack_follow_status">{renderFollow}</div>
           {renderInfo}
         </div>
       </Stack>

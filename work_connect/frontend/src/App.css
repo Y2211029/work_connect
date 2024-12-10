@@ -1023,6 +1023,32 @@ textarea {
   font-size: 1rem !important;
 }
 
+.news_list_view_items {
+  width: 100%;
+  padding: 10px !important;
+}
+
+.news_acordion_button {
+  color: #3F4551 !important;
+  justify-content: left !important;
+  border-radius: 0px !important;
+}
+
+.news_job_acordion_menu {
+  /*  横並び */
+  display: flex !important;
+  /* 必要に応じて折り返す */
+  flex-wrap: wrap !important;
+  /* 要素間の間隔 */
+  gap: 1 !important;
+  /* 垂直方向の整列 */
+  align-items: center !important;
+  padding: 16px 20px !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
 @media (max-width: 1700px) {
   .searchbar {
     width: 40% !important;

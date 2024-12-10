@@ -167,13 +167,6 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           break;
         }
 
-        case options.DecodeURL === `/Profile/${ParamUserName}` && options.page === "companyinformation": {
-          const { default: CompanyInformationPostCard } = await import("src/sections/CompanyInformation/post-card");
-          setPostCard(() => CompanyInformationPostCard);
-          console.log("CompanyInformationPostCard");
-          break;
-        }
-
         default:
           console.log("No matching path found.");
           break;
@@ -513,31 +506,6 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       },
     },
 
-    companyinformations: {
-      ItemName: `${ParamUserName}の詳細な企業情報`,
-      url: `http://localhost:8000/company_informations/${ParamUserName}`,
-      idKey: "id",
-      tags: ["genre"],
-      generatePosts: (WorkOfList) => {
-        if (Array.isArray(WorkOfList)) {
-          if (WorkOfList.length === 0) {
-            // 空配列の場合に空配列を返す
-            return [{ title_contents: [] }];
-          }
-
-          const title_contents = WorkOfList.map((company) => ({
-            title: company.title,
-            contents: company.contents,
-            company_id: company.company_id,
-            id: company.id,
-            public_status: company.public_status,
-            row_number: company.row_number,
-          }));
-
-          return [{ title_contents }]; // 1つのオブジェクトにまとめた配列として返す
-        }
-      },
-    },
   };
 
   return (
@@ -639,7 +607,6 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
       (DecodeURL === `/Profile/${ParamUserName}` &&
         page === "news" &&
         (category === "JobOffer" || category === "Internship" || category === "Blog" || category === "Session")) ||
-      (DecodeURL === `/Profile/${ParamUserName}` && page === "companyinformation") ||
       (PathName === `/Profile/${ParamUserName}` && page === "checkform"))
   ) {
     // console.log(" URLとPathNameが有効かつ、現在のPathNameがProfileページでない場合");

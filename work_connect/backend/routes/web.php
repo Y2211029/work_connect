@@ -294,7 +294,7 @@ Route::post('/get_apply_history', action: [NewsController::class, 'get_apply_his
 
 
 //企業の詳細情報を取得
-Route::get('/company_informations/{CompanyName}', action: [CompanyInformationController::class, 'company_informations']);
+Route::get('/company_informations', action: [CompanyInformationController::class, 'company_informations']);
 Route::post('/company_informations_save', action: [CompanyInformationController::class, 'company_informations_save']);
 Route::post('/all_company_informations_pull', action: [CompanyInformationController::class, 'all_company_informations_pull']);
 

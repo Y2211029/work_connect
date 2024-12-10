@@ -60,6 +60,7 @@ export const Page404 = lazy(() => import("src/pages/page-not-found"));
 export const ProfilePage = lazy(() => import("src/pages/Profile"));
 export const ProfileNewsPage = lazy(() => import("src/sections/Profile/View/company/News"));
 export const SpecialCompanyNewsPage = lazy(() => import("src/sections/Profile/View/company/SpecialCompanyNews/specialCompanyNews-view"));
+
 export const CheckFormPage = lazy(() => import("src/sections/Profile/View/company/CheckForm/View/checkFormListView"));
 // C:\xampp\apps\work_connect\work_connect\frontend\src\sections\Profile\View\company\CheckForm\View\checkFormListView.jsx
 // チャット

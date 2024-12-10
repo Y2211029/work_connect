@@ -11,24 +11,50 @@ use Illuminate\Http\Request;
 class CompanyInformationController extends Controller
 {
 
-    public function company_informations($CompanyName)
+    public function company_informations(Request $request)
     {
-        $title_contents_array = $this->getCompanyInformationData($CompanyName);
+        try {
+            $CompanyName = $request->input("CompanyName");
 
-        if ($title_contents_array === null) {
-            Log::info("会社情報が見つかりません: " . $CompanyName);
-            return response()->json(['error' => '会社が見つかりません'], 404);
+            // 入力のログ
+            Log::info("企業名: " . $CompanyName);
+
+            // データ取得
+            $title_contents_array = $this->getCompanyInformationData($CompanyName);
+            $all_company_information_array = $this->all_company_informations_pull($CompanyName);
+
+            // データが見つからない場合
+            if (empty($title_contents_array)) {
+                Log::info("会社情報が見つかりません: " . $CompanyName);
+                return response()->json([
+                    'success' => false,
+                    'message' => '会社情報が見つかりません',
+                    'data' => [
+                        'title_contents' => [],
+                        'all_company_information' => []
+                    ]
+                ], 404);
+            }
+
+            // 正常レスポンス
+            Log::info("title_contents_array: " . json_encode($title_contents_array));
+            Log::info("all_company_information_array: " . json_encode($all_company_information_array));
+
+            return response()->json([
+                'success' => true,
+                'message' => '会社情報を取得しました',
+                'title_contents' => $title_contents_array,
+                'all_company_information' => $all_company_information_array
+            ], 200);
+        } catch (\Exception $e) {
+            // 例外処理
+            Log::error("データ取得中にエラーが発生しました: " . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'サーバーエラーが発生しました',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        // 配列が空の場合もエラー回避
-        if (empty($title_contents_array)) {
-            Log::info("会社情報が空の配列です: " . $CompanyName);
-            return response()->json(['title_contents' => []]);
-        }
-
-        Log::info("title_contents_array: " . json_encode($title_contents_array));
-
-        return response()->json(['title_contents' => $title_contents_array]);
     }
 
     public function company_informations_save(Request $request)
@@ -92,9 +118,9 @@ class CompanyInformationController extends Controller
         $Company_Id = $company->id;
         Log::info("会社ID: {$Company_Id}");
 
-        $test = w_company_information::where('company_id', $Company_Id)
-        ->get();
-        Log::info($test);
+        $all_company_information = w_company_information::where('company_id', $Company_Id)
+            ->get();
+        Log::info($all_company_information);
 
         $company_information = w_company_information::where('company_id', $Company_Id)
             ->where('public_status', 1)
@@ -127,16 +153,15 @@ class CompanyInformationController extends Controller
     }
 
 
-    public function all_company_informations_pull(Request $request)
+    public function all_company_informations_pull($CompanyName)
     {
 
         Log::info("all_company_informations_pull通ってます");
 
         // リクエストから名前を取得し、w_compinesテーブルからidを取得
-        $InformationUserName = $request->input("InformationUserName");
-        Log::info("InformationUserName: {$InformationUserName}");
+        Log::info("CompanyName: {$CompanyName}");
 
-        $company = w_company::where('user_name', $InformationUserName)->first();
+        $company = w_company::where('user_name', $CompanyName)->first();
 
         $CompanyId = $company->id;
         Log::info("CompanyId: {$CompanyId}");
@@ -156,28 +181,27 @@ class CompanyInformationController extends Controller
 
         // 企業情報が存在するかチェック
         if ($company_information->isNotEmpty()) {
-            // title と contents を配列にまとめる
-            $title_contents_array = $company_information->map(function ($item) {
+            Log::info("企業情報が見つかりました: 件数 " . $company_information->count());
+            return $company_information->map(function ($item) {
                 return [
                     'title' => $item->title,
                     'contents' => $item->contents,
-                    'company_name' => $item->company_name,  // 直接アクセス
-                    'id' => $item->company_information_id,  // 直接アクセス
-                    'company_id' => $item->company_id,       // 直接アクセス
-                    'public_status' => $item->public_status, // 直接アクセス
-                    'row_number' => $item->row_number // 直接アクセス
+                    'company_name' => $item->company_name,
+                    'id' => $item->company_information_id,
+                    'company_id' => $item->company_id,
+                    'public_status' => $item->public_status,
                 ];
-            });
+            })->toArray();
         } else {
             // 企業情報がない場合は未保存のままの配列をデフォルトとして入れる
             $title_contents_array = $this->CompanyInformationDefaultInsert($company);
             Log::info("企業情報が見つかりませんでした");
-        }
 
-        return response()->json([
-            'title_contents' => $title_contents_array,
-            'id' => $CompanyId
-        ]);
+
+            return response()->json([
+                $title_contents_array
+            ]);
+        }
     }
 
     //企業情報が0件の場合に、テンプレートの情報を保存する

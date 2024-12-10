@@ -1,6 +1,5 @@
-import { forwardRef, useState, useEffect } from "react";
+import { forwardRef, useState } from "react";
 import PropTypes from "prop-types";
-import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 import ListSubheader from '@mui/material/ListSubheader';
 import List from '@mui/material/List';
@@ -24,16 +23,6 @@ const PostCard = forwardRef(({ post }) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(0);
   const [viewingStudentName, setViewStudentName] = useState("");
-  const [isLoading, setIsLoading] = useState(true); // ローディング状態
-
-  useEffect(() => {
-    // データのロードが終わるまでに遅延をシミュレーション（API呼び出しの場合はここに記述）
-    const timer = setTimeout(() => {
-      setIsLoading(false); // ローディング状態を解除
-    }, 1000); // ローディング表示時間を調整
-
-    return () => clearTimeout(timer); // クリーンアップ
-  }, []);
 
   const handleClick = (index) => {
     setOpen(!open);
@@ -55,14 +44,6 @@ const PostCard = forwardRef(({ post }) => {
     });
     return acc;
   }, {});
-
-  if (isLoading) {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <CircularProgress /> {/* ローディングスピナー */}
-      </div>
-    );
-  }
 
   return (
     <>
@@ -142,7 +123,7 @@ const PostCard = forwardRef(({ post }) => {
                 <Tab label="個別" onClick={(e) => handleTabClick(e, 2)} />
               </Tabs>
             </Box>
- 
+
           {value === 0 && (
             <Summary
               application_form={application_form}

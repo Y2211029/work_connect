@@ -294,7 +294,7 @@ Route::post('/get_apply_history', action: [NewsController::class, 'get_apply_his
 
 
 //企業の詳細情報を取得
-Route::get('/company_informations/{CompanyName}', action: [CompanyInformationController::class, 'company_informations']);
+Route::get('/company_informations', action: [CompanyInformationController::class, 'company_informations']);
 Route::post('/company_informations_save', action: [CompanyInformationController::class, 'company_informations_save']);
 Route::post('/all_company_informations_pull', action: [CompanyInformationController::class, 'all_company_informations_pull']);
 
@@ -302,7 +302,7 @@ Route::post('/all_company_informations_pull', action: [CompanyInformationControl
 //応募用フォーム作成機能
 Route::post('/create_form_save', [FormController::class, 'create_form_save']);
 Route::get('/create_form_get/{NewsDetailId}', [FormController::class, 'create_form_get']);
-Route::get('/write_form_get/{NewsDetailId}', [FormController::class, 'write_form_get']);
+Route::get('/write_form_get', [FormController::class, 'write_form_get']);
 Route::post('/write_form_save', [FormController::class, 'write_form_save']);
 
 

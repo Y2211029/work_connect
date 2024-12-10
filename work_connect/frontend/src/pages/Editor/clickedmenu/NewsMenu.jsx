@@ -65,12 +65,7 @@ const NewsMenu = ({
   menuKey,
   CreateFormJump,
   RewriteNewsEnter,
-  EditorStatusCheck = () => { },
-  EditorContentsStatusCheck = () => { },
-  NewsSave,
   draftlist = [],
-  imageUrl,
-  title,
   RewriteNewsDelete,
   NotificationMessageHandleChange,
   NewsUpLoad,
@@ -79,8 +74,7 @@ const NewsMenu = ({
   setSelectedOccupation,
   selectedOccupation,
   message,
-  selected_draft,
-  followerCounter }) => {
+  selected_draft, }) => {
 
   console.log("menuKey", menuKey);
   console.log("イベントデイ",eventDay);
@@ -143,11 +137,6 @@ const NewsMenu = ({
   console.log("選んだ内容", selected_draft);
 
   const AddDraftNews = () => {
-    if (window.confirm("編集したニュースを保存しますか?")) {
-      NewsSave()
-      console.log("保存しました");
-    }
-    console.log("保存しませんでした");
     window.location.reload(false);
   }
 
@@ -211,31 +200,6 @@ const NewsMenu = ({
     </div>
   )
 
-  const saveNewsrender = (
-    <div className="news_button">
-      <button id="save" className="save" onClick={NewsSave}>下書きを保存する</button>
-    </div>
-  )
-
-
-
-  const editingStatusrender = (
-    <div className="editingstatusscroll">
-      <p>現在の編集状況</p>
-      <p>タイトル</p>
-      {EditorStatusCheck(title)}
-      <p>サムネイル</p>
-      {EditorStatusCheck(imageUrl)}
-      {followerCounter > 0 && (
-        <>
-          <p>通知に添えるメッセージ</p>
-          {EditorStatusCheck(message)}
-        </>
-      )}
-      <p>コンテンツ</p>
-      {EditorContentsStatusCheck()}
-    </div>
-  )
 
   const notificationMessagerender = (
     <ReleaseNews
@@ -301,10 +265,6 @@ const NewsMenu = ({
     switch (key) {
       case 'draftList':
         return draftListrender;
-      case 'saveNews':
-        return saveNewsrender;
-      case 'editingStatus':
-        return editingStatusrender;
       case 'notificationMessage':
         return notificationMessagerender;
       case 'createForm':
@@ -336,9 +296,6 @@ NewsMenu.propTypes = {
   CreateFormJump: PropTypes.func.isRequired, //ニュース保存後に応募フォーム作成画面に遷移する
   RewriteNewsDelete: PropTypes.func.isRequired, //下書きニュースを削除する
   RewriteNewsEnter: PropTypes.func.isRequired, //下書き中で編集するニュースを選択して、遷移する
-  EditorStatusCheck: PropTypes.func.isRequired, //サムネイル・タイトルの編集状況をチェック
-  EditorContentsStatusCheck: PropTypes.func.isRequired, //文字数や使用画像をチェック
-  message: PropTypes.string.isRequired,
   NewsSave: PropTypes.func.isRequired,
   setSelectedOccupation: PropTypes.func.isRequired,
   selectedOccupation: PropTypes.array.isRequired,
@@ -347,6 +304,7 @@ NewsMenu.propTypes = {
   NewsUpLoad: PropTypes.func.isRequired,
   NotificationMessageHandleChange: PropTypes.func.isRequired,
   setEventDay: PropTypes.func.isRequired,
+  message: PropTypes.string.isRequired,
   eventDay: PropTypes.string.isRequired,
   draftlist: PropTypes.array.isRequired, //下書きリスト
   newsid: PropTypes.number.isRequired, //ニュースID

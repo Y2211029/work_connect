@@ -142,7 +142,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   const renderTitle = (
     <>
       <Link
-        to={`/news_detail/${news_id}`}
+        to={`/NewsDetail/${news_id}`}
         className="link"
         style={{
           color: "common.black",

@@ -53,6 +53,7 @@ import TableRow from '@mui/material/TableRow';
 import { Helmet } from 'react-helmet-async';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import IconButton from "@mui/material/IconButton";
+import MUIButton from "@mui/material/Button";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import MenuIcon from '@mui/icons-material/Menu';
@@ -60,7 +61,7 @@ import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-
+import MUITooltip from "@mui/material/Tooltip";
 
 //データ保存
 import axios from "axios";
@@ -167,7 +168,7 @@ const Editor = () => {
       console.log(response.data.id);
       console.log(response.data);
       console.log("成功");
-      navigate(`/news_detail/${news_id}`);
+      navigate(`/NewsDetail/${news_id}`);
     } catch (error) {
       console.log("Error:", error);
     }
@@ -188,6 +189,8 @@ const Editor = () => {
 
   // 下書きを新規保存・更新する処理
   const news_save = async () => {
+    console.log("通りました");
+
     try {
       console.log(title);
 
@@ -413,7 +416,7 @@ const Editor = () => {
               {charCount ? (
                 <p>現在の文字数: {charCount}文字</p>
               ) : (
-                <p>テキストが打ち込まれていません</p>
+                <p>テキストが<br></br>打ち込まれていません</p>
               )}
             </TableCell>
           </TableRow>
@@ -440,6 +443,24 @@ const Editor = () => {
       </NewsMenuTable>
     );
   };
+
+  const editingStatusrender = (
+    <div className="editingstatus">
+      <p>現在の編集状況</p>
+      <p>タイトル</p>
+      {EditorStatusCheck(title)}
+      <p>サムネイル</p>
+      {EditorStatusCheck(imageUrl)}
+      {followerCounter > 0 && (
+        <>
+          <p>通知に添えるメッセージ</p>
+          {EditorStatusCheck(notificationMessage)}
+        </>
+      )}
+      <p>コンテンツ</p>
+      {EditorContentsStatusCheck()}
+    </div>
+  )
 
 
   const ShowUsedImages = ({ usedImages }) => {
@@ -1530,26 +1551,25 @@ const Editor = () => {
     ...(genre !== "Blog" ? [{
       key: "eventDay", text: "開催日を設定する", render:
         <NewsMenu menuKey={'eventDay'}
-        eventDay = {eventDay}
-        setEventDay = {setEventDay}
+          eventDay={eventDay}
+          setEventDay={setEventDay}
         />
     }] : []),
     ...(genre !== "Blog" ? [{
       key: "openJobs", text: "募集職種を設定する", render:
         <NewsMenu menuKey={'openJobs'}
           selected_draft={selected_draft}
-          setSelectedOccupation = {setSelectedOccupation}
-          selectedOccupation = {selectedOccupation}
+          setSelectedOccupation={setSelectedOccupation}
+          selectedOccupation={selectedOccupation}
         />
     }] : []),
     ...(followerCounter > 0 ? [{
       key: "notificationMessage", text: "通知に添えるメッセージ", render:
-      <NewsMenu menuKey={'notificationMessage'}
-        NotificationMessageHandleChange={notification_messagehandleChange}
-        message={notificationMessage}
-      />
+        <NewsMenu menuKey={'notificationMessage'}
+          NotificationMessageHandleChange={notification_messagehandleChange}
+          message={notificationMessage}
+        />
     }] : []),
-    { key: "saveNews", text: "ニュースを保存する", render: <NewsMenu menuKey={'saveNews'} NewsSave={news_save} /> },
     // 条件を満たした場合のみ追加
     ...(genre !== "Blog" ? [{
       key: "createForm", text: "応募フォームを作成する", render:
@@ -1558,20 +1578,6 @@ const Editor = () => {
           selected_draft={selected_draft}
         />
     }] : []),
-    ...((isContentReady && isFollowerValid) ? [{
-      key: "releaseNews", text: "ニュースを公開する", render: <NewsMenu menuKey={'releaseNews'}
-        NewsUpLoad={news_upload}
-      />
-    }] : []),
-    {
-      key: "editingStatus", text: "現在の編集状況", render: <NewsMenu menuKey={'editingStatus'}
-        EditorStatusCheck={EditorStatusCheck}
-        EditorContentsStatusCheck={EditorContentsStatusCheck}
-        imageUrl={imageUrl}
-        title={title}
-        followerCounter={followerCounter}
-      />
-    },
   ];
 
 
@@ -1628,6 +1634,35 @@ const Editor = () => {
                 </Typography>
               </IconButton>
 
+              <MUIButton variant="outlined" onClick={news_save}
+                sx={{ position: 'relative', left: '100px', width: "120px", borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
+                下書き保存
+              </MUIButton>
+
+
+
+              {(isContentReady && isFollowerValid) ? (
+                <MUIButton variant="outlined" onClick={news_upload}
+                  sx={{ position: 'relative', left: '120px', width: "160px", borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
+                  ニュースを公開する
+                </MUIButton>
+              ) : (
+                <MUITooltip title="まだ公開できません">
+                  <MUIButton variant="outlined" sx={{
+                    position: 'relative', left: '120px', width: '160px', borderColor: '#A9A9A9', color: '#A9A9A9', backgroundColor: '#F5F5F5', // 背景色を薄いグレーに設定
+                    '&:hover': { borderColor: '#A9A9A9', backgroundColor: '#F5F5F5', },
+                    cursor: 'not-allowed', // マウスカーソルを無効状態に変更
+                  }}
+                  >
+                    ニュースを公開する
+                  </MUIButton>
+                </MUITooltip>
+
+              )}
+
+
+
+
               {/* ドロワーメニュー */}
               <Drawer
                 anchor="right"
@@ -1636,8 +1671,11 @@ const Editor = () => {
                   setExpanded(false);
                   toggleDrawer(false);
                 }}
-
               >
+
+                                  {/* 現在の編集状況 */}
+                                  {editingStatusrender}
+
                 <List sx={{ width: "300px" }}>
                   {menuItems.map(({ key, text, render }) => {
                     // デバッグ: 各アイテムを確認
@@ -1664,28 +1702,31 @@ const Editor = () => {
                       </Accordion>
                     );
                   })}
-        
+
+
+
+
                 </List>
               </Drawer>
             </div>
-            
-            
-          {/* カバー画像アップロード */}
-          <ImageSearchIcon
-            className="cover_img_upload"
-            style={{ display: displayInput ? 'block' : 'none' }}
-            onClick={() => document.getElementById('fileInput').click()}
-          />
 
-          {/* 記事タイトルの入力エリア */}
-          <textarea
-            className="editor_title"
-            id="editor_title"
-            wrap="soft"
-            placeholder="記事タイトル"
-            value={title}
-            onChange={titlechange}
-          />
+
+            {/* カバー画像アップロード */}
+            <ImageSearchIcon
+              className="cover_img_upload"
+              style={{ display: displayInput ? 'block' : 'none' }}
+              onClick={() => document.getElementById('fileInput').click()}
+            />
+
+            {/* 記事タイトルの入力エリア */}
+            <textarea
+              className="editor_title"
+              id="editor_title"
+              wrap="soft"
+              placeholder="記事タイトル"
+              value={title}
+              onChange={titlechange}
+            />
 
           </Stack>
 

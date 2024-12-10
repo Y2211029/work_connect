@@ -67,7 +67,6 @@ const NewsMenu = ({
   RewriteNewsEnter,
   EditorStatusCheck = () => { },
   EditorContentsStatusCheck = () => { },
-  NewsSave,
   draftlist = [],
   imageUrl,
   title,
@@ -143,11 +142,6 @@ const NewsMenu = ({
   console.log("選んだ内容", selected_draft);
 
   const AddDraftNews = () => {
-    if (window.confirm("編集したニュースを保存しますか?")) {
-      NewsSave()
-      console.log("保存しました");
-    }
-    console.log("保存しませんでした");
     window.location.reload(false);
   }
 
@@ -211,11 +205,6 @@ const NewsMenu = ({
     </div>
   )
 
-  const saveNewsrender = (
-    <div className="news_button">
-      <button id="save" className="save" onClick={NewsSave}>下書きを保存する</button>
-    </div>
-  )
 
 
 
@@ -301,8 +290,6 @@ const NewsMenu = ({
     switch (key) {
       case 'draftList':
         return draftListrender;
-      case 'saveNews':
-        return saveNewsrender;
       case 'editingStatus':
         return editingStatusrender;
       case 'notificationMessage':

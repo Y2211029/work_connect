@@ -169,9 +169,11 @@ const PostCard = forwardRef(({ post }, ref) => {
 
   //フォローステータス
   const renderFollow = followStatus !== "フォローできません" && followStatus !== "フォローする" && (
-    <Typography opacity="0.48" sx={{ width: "100%" }} className="follow_status">
-      {followStatus}
-    </Typography>
+    <div className="stack_follow_status">
+      <Typography opacity="0.48" sx={{ width: "100%" }} className="follow_status">
+        {followStatus}
+      </Typography>
+    </div>
   );
 
   // 投稿日

@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
+import { ColorRing } from "react-loader-spinner";
 import Iframe from "react-iframe";
 import axios from "axios";
-import { ColorRing } from "react-loader-spinner";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -20,23 +20,18 @@ const VideoDetailItem = () => {
   const { getSessionData } = useSessionStorage();
   // 動画IDの取得
   const { id } = useParams();
+  // -----タグ-----
+  const { tagCreate } = UseCreateTagbutton();
+
   // -----動画データ-----
   const [VideoDetail, setVideoDetail] = useState([]);
-  const [CommentPost, setCommentPost] = useState({
-    // display: "none",
-    text: "",
-  });
+  const [CommentPost, setCommentPost] = useState({ text: "" });
   const [videoComment, setVideoComment] = useState([]);
   const [AccountData, setAccountData] = useState({});
   const [Comment, setComment] = useState({});
   const [CommentCancel, setCommentCancel] = useState("");
-
-  // -----タグ-----
-  const { tagCreate } = UseCreateTagbutton();
-  // ジャンル
   const [VideoGenre, setVideoGenre] = useState("");
-
-  // ローディング
+  // ローディングサークル
   const [isLoadItem, setIsLoadItem] = useState(true);
 
   // 動画データ

@@ -94,9 +94,11 @@ const PostCard = forwardRef(({ post }, ref) => {
   );
 
   const renderFollow = followStatus !== "フォローできません" && followStatus !== "フォローする" && (
-    <Typography opacity="0.48" sx={{ width: "100%" }} className="follow_status">
-      {followStatus}
-    </Typography>
+    <div className="stack_follow_status">
+      <Typography opacity="0.48" sx={{ width: "100%" }} className="follow_status">
+        {followStatus}
+      </Typography>
+    </div>
   );
 
   const renderGraduationYear = graduationYear !== null ? <TypographyItems ItemName="卒業年度" ItemDetail={graduationYear} /> : null;
@@ -120,9 +122,8 @@ const PostCard = forwardRef(({ post }, ref) => {
         <Stack sx={{ display: "inline-block", width: "100%" }}>
           <div className="postCard item-stack" style={{ width: "100%", padding: "10px" }}>
             {/* フォロー状況 */}
-            <Stack direction="row" alignItems="center" justifyContent="flex-start" className="stack_follow_status">
-              {renderFollow}
-            </Stack>
+
+            {renderFollow}
 
             {/* アバターとユーザー名 */}
             <Stack direction="column" alignItems="center" justifyContent="space-between" spacing={1} sx={{ marginTop: "10px" }}>

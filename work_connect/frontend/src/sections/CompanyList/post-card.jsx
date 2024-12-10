@@ -54,9 +54,11 @@ const PostCard = forwardRef(({ post }, ref) => {
   // };
 
   const renderFollow = followStatus !== "フォローできません" && followStatus !== "フォローする" && (
-    <Typography opacity="0.48" sx={{ width: "100%" }} className="follow_status">
-      {followStatus}
-    </Typography>
+    <div className="stack_follow_status">
+      <Typography opacity="0.48" sx={{ width: "100%" }} className="follow_status">
+        {followStatus}
+      </Typography>
+    </div> 
   );
 
   const renderAvatar = (
@@ -75,11 +77,7 @@ const PostCard = forwardRef(({ post }, ref) => {
 
   // 企業名
   const renderUserName = (
-    <Typography
-      variant="caption"
-      component="div"
-      className="userName_items"
-    >
+    <Typography variant="caption" component="div" className="userName_items">
       {companyName}
     </Typography>
   );
@@ -101,13 +99,7 @@ const PostCard = forwardRef(({ post }, ref) => {
         <Stack sx={{ display: "inline-block", width: "100%" }}>
           <div className="postCard item-stack" style={{ width: "100%", padding: "10px" }}>
             {/* フォロー状況 */}
-            <Stack direction="row" alignItems="center" justifyContent="flex-start" className="stack_follow_status">
-              {renderFollow}
-              {/* <Typography variant="body1" sx={{ padding: "3px 10px", borderRadius: "10px", backgroundColor: "#57ADFE", color: "white" }}>
-                フォロー中
-              </Typography> */}
-            </Stack>
-
+            {renderFollow}
             {/* アバターとユーザー名 */}
             <Stack direction="column" alignItems="center" justifyContent="space-between" spacing={1} sx={{ marginTop: "10px" }}>
               {renderAvatar}

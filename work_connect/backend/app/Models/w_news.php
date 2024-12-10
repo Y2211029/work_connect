@@ -21,6 +21,7 @@ class w_news extends Model
         'header_img',
         'open_jobs',
         'event_day',
+        'deadline',
         'summary',
         'public_status',
         'created_at',
@@ -32,6 +33,7 @@ class w_news extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'event_day' => 'datetime',
+        'deadline' => 'datetime',
     ];
 }
 

@@ -416,7 +416,7 @@ const Editor = () => {
               {charCount ? (
                 <p>現在の文字数: {charCount}文字</p>
               ) : (
-                <p>テキストが打ち込まれていません</p>
+                <p>テキストが<br></br>打ち込まれていません</p>
               )}
             </TableCell>
           </TableRow>
@@ -443,6 +443,24 @@ const Editor = () => {
       </NewsMenuTable>
     );
   };
+
+  const editingStatusrender = (
+    <div className="editingstatus">
+      <p>現在の編集状況</p>
+      <p>タイトル</p>
+      {EditorStatusCheck(title)}
+      <p>サムネイル</p>
+      {EditorStatusCheck(imageUrl)}
+      {followerCounter > 0 && (
+        <>
+          <p>通知に添えるメッセージ</p>
+          {EditorStatusCheck(notificationMessage)}
+        </>
+      )}
+      <p>コンテンツ</p>
+      {EditorContentsStatusCheck()}
+    </div>
+  )
 
 
   const ShowUsedImages = ({ usedImages }) => {
@@ -1560,15 +1578,6 @@ const Editor = () => {
           selected_draft={selected_draft}
         />
     }] : []),
-    {
-      key: "editingStatus", text: "現在の編集状況", render: <NewsMenu menuKey={'editingStatus'}
-        EditorStatusCheck={EditorStatusCheck}
-        EditorContentsStatusCheck={EditorContentsStatusCheck}
-        imageUrl={imageUrl}
-        title={title}
-        followerCounter={followerCounter}
-      />
-    },
   ];
 
 
@@ -1663,6 +1672,10 @@ const Editor = () => {
                   toggleDrawer(false);
                 }}
               >
+
+                                  {/* 現在の編集状況 */}
+                                  {editingStatusrender}
+
                 <List sx={{ width: "300px" }}>
                   {menuItems.map(({ key, text, render }) => {
                     // デバッグ: 各アイテムを確認
@@ -1689,6 +1702,9 @@ const Editor = () => {
                       </Accordion>
                     );
                   })}
+
+
+
 
                 </List>
               </Drawer>

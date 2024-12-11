@@ -44,13 +44,11 @@ const SortableRow = ({ id, children , expanded}) => {
     return (
         <div ref={setNodeRef} style={style} className="DragSortContainer" {...attributes}>
             {/* ドラッグ用のアイコンを個別のコンテナに */}
-            {!expanded ? (
                             <div className="DragIcon" {...listeners}>
                             <Tooltip title={"ドラッグすることで並び替えができます"}>
                                 <SwapVertIcon style={{ cursor: 'grab' }} />
                             </Tooltip>
                         </div>
-            ) : null}
 
             {/* 子要素（Accordion）が別スタイルとして表示されるようにする */}
             <div className="AccordionWrapper">

@@ -32,7 +32,7 @@ Modal.setAppElement('#root');
 
 
 
-const SortableRow = ({ id, children }) => {
+const SortableRow = ({ id, children , expanded}) => {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
 
     const style = {
@@ -44,11 +44,14 @@ const SortableRow = ({ id, children }) => {
     return (
         <div ref={setNodeRef} style={style} className="DragSortContainer" {...attributes}>
             {/* ドラッグ用のアイコンを個別のコンテナに */}
-            <div className="DragIcon" {...listeners}>
-                <Tooltip title={"ドラッグすることで並び替えができます"}>
-                    <SwapVertIcon style={{ cursor: 'grab' }} />
-                </Tooltip>
-            </div>
+            {!expanded ? (
+                            <div className="DragIcon" {...listeners}>
+                            <Tooltip title={"ドラッグすることで並び替えができます"}>
+                                <SwapVertIcon style={{ cursor: 'grab' }} />
+                            </Tooltip>
+                        </div>
+            ) : null}
+
             {/* 子要素（Accordion）が別スタイルとして表示されるようにする */}
             <div className="AccordionWrapper">
                 {children}
@@ -60,6 +63,7 @@ const SortableRow = ({ id, children }) => {
 SortableRow.propTypes = {
     id: PropTypes.number.isRequired,
     children: PropTypes.node.isRequired,
+    expanded:PropTypes.bool.isRequired,
 };
 
 
@@ -89,7 +93,7 @@ const EditCompanyInformation = ({
             shouldCloseOnOverlayClick={true} // オーバーレイクリックでモーダルを閉じる
             contentLabel="Example Modal"
             overlayClassName="modal_overlay" /* オーバーレイに適用 */
-            className="modal-content" /* コンテンツに適用 */
+            className="modal_content" /* コンテンツに適用 */
         >
             <div>
                     <div className="modal_window">

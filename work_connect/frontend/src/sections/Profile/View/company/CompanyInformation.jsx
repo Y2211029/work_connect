@@ -209,7 +209,7 @@ export default function CompanyNewsPage() {
           width="100"
           ariaLabel="color-ring-loading"
           wrapperStyle={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
-          wrapperClass="custom-color-ring-wrapper" // カスタムクラスを指定
+          wrapperClass="custom-color-ring-wrapper"
           colors={["#41a4ff", "#FFFFFF", "#41a4ff", "#41a4ff", "#FFFFFF"]}
           style={{ flexDirection: "column" }}
         />

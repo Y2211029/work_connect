@@ -39,10 +39,10 @@
 }
 
 
-.modal-content {
+.modal_content {
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 55%;
+    left: 60%;
     transform: translate(-50%, -50%);
     border: none;
     border-radius: 0;
@@ -101,18 +101,18 @@
 }
 
 .Modal_Table {
-    max-width: 120%;
+    max-width: 100%;
     /* 親要素の幅に合わせる */
     table-layout: auto;
     /* 列幅を自動調整 */
 }
 
 .Modal_tableContainer {
-    height: 400px;
+    height: 750px;
     /* TableContainer全体の高さを設定 */
     overflow-y: auto;
     /* 縦方向にスクロール可能にする */
-
+    width:60%;
 }
 
 .FixedTableHead {
@@ -162,19 +162,12 @@
     margin-left: 1%;
 }
 
-.CancelButton {
-    background: none;
-    border: none;
-    font-size: 1004px;
-    cursor: pointer;
-    padding: 0;
-}
-
 
 /* ドラッグアイコンとアコーディオン全体を囲むコンテナ */
 .DragSortContainer {
     display: flex;
     align-items: center;
+    margin-left:10%;
 }
 
 /* ドラッグアイコン専用のスタイル */
@@ -224,7 +217,7 @@
     }
 
 
-    .modal-content {
+    .modal_content {
         position: absolute;
         top: 50%;
         left: 50%;
@@ -239,4 +232,12 @@
     }
 
 
+}
+
+@media(max-width: 400px){
+    .Modal_tableContainer{
+        width:100%;
+        height: 400px;
+        overflow: scroll;
+    }
 }

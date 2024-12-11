@@ -169,11 +169,11 @@ export default function NavTabs() {
         value={value}
         aria-label="nav tabs example"
         role="navigation"
-      
+        className="News_Tabs"
       >
-        
+
         <Tab className="NewsSelect_Box" label="求人" onClick={(e) => handleTabClick(e, 0)} />
-        <Tab className="NewsSelect_Box" label="インターンシップ" onClick={(e) => handleTabClick(e, 1)} />
+        <Tab className="NewsSelect_Box"   label={<span>インターン<br />シップ</span>} onClick={(e) => handleTabClick(e, 1)} />
         <Tab className="NewsSelect_Box" label="説明会" onClick={(e) => handleTabClick(e, 2)} />
         <Tab className="NewsSelect_Box" label="ブログ" onClick={(e) => handleTabClick(e, 3)} />
 

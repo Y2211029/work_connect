@@ -91,7 +91,7 @@ const Editor = () => {
   const [draft_list, setDraftList] = useState([]); // ニュースの下書きリストを保持するステート
   const [selected_draft, setSelectedDraft] = useState(null); // 選択された下書きを保持するステート
   const [charCount, setCharCount] = useState(0);
-  const [usedImages, setUsedImages] = useState(null);
+  const [usedImages, setUsedImages] = useState([]);
   const [notificationMessage, setNotificationMessage] = useState("");
   const [eventDay, setEventDay] = useState(dayjs());
   const [isSaved, setIsSaved] = useState(false);
@@ -102,7 +102,7 @@ const Editor = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
-  const news_save_url = "http://127.0.0.1:8000/news_save";
+  const news_save_url = "http://locelhost:8000/news_save";
   const thumbnail_image_save_url = "http://127.0.0.1:8000/thumbnail_image_save";
 
   const csrf_url = "http://localhost:8000/csrf-token";
@@ -373,6 +373,50 @@ const Editor = () => {
     }
   };
 
+  const ShowUsedImages = ({ usedImages }) => {
+    if (!Array.isArray(usedImages)) {
+      console.error('usedImagesは配列ではありません:', usedImages);
+      return <p>画像のデータにエラーがあります</p>;
+    }
+
+    // 画像を2枚ずつのグループに分ける
+    const rows = [];
+    for (let i = 0; i < usedImages.length; i += 2) {
+      rows.push(usedImages.slice(i, i + 2));
+    }
+
+    return (
+      <>
+        {usedImages.length > 0 ? (
+          <NewsMenuTable>
+            <TableBody>
+              {rows.map((row, rowIndex) => (
+                <TableRow key={rowIndex}>
+                  {row.map((imageObj, index) => (
+                    <TableCell key={index} align="center">
+                      <img
+                        src={imageObj}
+                        alt={`使用された画像 ${index + 1}`}
+                        style={{ maxWidth: '100px', height: 'auto' }}
+                      />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </NewsMenuTable>
+        ) : (
+          <p>画像が使用されていません</p>
+        )}
+      </>
+    );
+  };
+
+  ShowUsedImages.propTypes = {
+    usedImages: PropTypes.arrayOf(PropTypes.string).isRequired
+  };
+
+
   //エディタの編集状況を見て、チェックボックスで表示する
   const EditorStatusCheck = (check_element) => {
     return (
@@ -463,48 +507,6 @@ const Editor = () => {
   )
 
 
-  const ShowUsedImages = ({ usedImages }) => {
-    if (!Array.isArray(usedImages)) {
-      console.error('usedImagesは配列ではありません:', usedImages);
-      return <p>画像のデータにエラーがあります</p>;
-    }
-
-    // 画像を2枚ずつのグループに分ける
-    const rows = [];
-    for (let i = 0; i < usedImages.length; i += 2) {
-      rows.push(usedImages.slice(i, i + 2));
-    }
-
-    return (
-      <>
-        {usedImages.length > 0 ? (
-          <NewsMenuTable>
-            <TableBody>
-              {rows.map((row, rowIndex) => (
-                <TableRow key={rowIndex}>
-                  {row.map((imageObj, index) => (
-                    <TableCell key={index} align="center">
-                      <img
-                        src={imageObj}
-                        alt={`使用された画像 ${index + 1}`}
-                        style={{ maxWidth: '100px', height: 'auto' }}
-                      />
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </NewsMenuTable>
-        ) : (
-          <p>画像が使用されていません</p>
-        )}
-      </>
-    );
-  };
-
-  ShowUsedImages.propTypes = {
-    usedImages: PropTypes.arrayOf(PropTypes.string).isRequired
-  };
 
   //テキストの文字数(テーブルやリスト・コードなど)使用したプラグインの名前を格納
   const countChars = async () => {

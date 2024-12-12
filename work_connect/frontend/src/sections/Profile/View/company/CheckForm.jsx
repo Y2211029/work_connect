@@ -10,7 +10,7 @@ export default function SpecialFormsPage() {
   const accountData = getSessionData("accountData") || {};
   const UserName = accountData.user_name; // 直接取得する
   console.log("UserName",UserName);
-
+  
   return (
     <>
       <Helmet>

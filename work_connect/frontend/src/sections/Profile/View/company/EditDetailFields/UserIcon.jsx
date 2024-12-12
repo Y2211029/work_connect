@@ -131,7 +131,7 @@ const ImageCard = ({IconData}) => {
           image={selectedImage ?
             `http://localhost:8000/storage/images/userIcon/${selectedImage}` :
             ""}
-          alt="Loading..."
+          alt=""
         />
         ):(
           <DefaultIcon sx={{

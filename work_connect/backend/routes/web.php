@@ -4,6 +4,7 @@
 use App\Http\Controllers\movie\PostMovieCommentDeleteController;
 use App\Http\Controllers\movie\PostMovieCommentPostController;
 use App\Http\Controllers\movie\PostMovieCommentSaveController;
+use App\Http\Controllers\tag\GetStudentSchoolNameTagController;
 use App\Http\Controllers\tag\GetStudentCourseNameTagController;
 use App\Http\Controllers\tag\GetStudentDepartmentNameTagController;
 use App\Http\Controllers\tag\GetStudentFacultyNameTagController;
@@ -53,6 +54,7 @@ use App\Http\Controllers\tag\GetGenreTagController;
 use App\Http\Controllers\tag\GetLanguageTagController;
 use App\Http\Controllers\tag\GetEnvironmentTagController;
 use App\Http\Controllers\movie\VideoPostingController;
+use App\Http\Controllers\movie\VideoEditController;
 use App\Http\Controllers\tag\GetVideoGenreTagController;
 use App\Http\Controllers\tag\GetStudentProgrammingLanguageTagController;
 use App\Http\Controllers\tag\GetStudentDevelopmentEnvironmentTagController;
@@ -70,6 +72,7 @@ use App\Http\Controllers\tag\GetCompanyAcquisitionQualificationTagController;
 use App\Http\Controllers\tag\GetCompanySoftwareTagController;
 use App\Http\Controllers\tag\GetCompanyNameListController;
 use App\Http\Controllers\work\WorkPostingController;
+use App\Http\Controllers\work\WorkEditController;
 use App\Http\Controllers\search\SearchWorkController;
 use App\Http\Controllers\search\SearchVideoController;
 use App\Http\Controllers\search\SearchStudentController;
@@ -119,6 +122,10 @@ Route::get('/search_internship_job_offer', [SearchInternshipJobOfferController::
 /* タグ関係 */
 // タグ作成
 Route::post('/insert_tag', [InsertTagController::class, 'InsertTagController']);
+// 作品投稿
+Route::post('/work_posting', [WorkPostingController::class, 'store']);
+// 作品編集
+Route::post('/work_edit', [WorkEditController::class, 'store']);
 // 作品ジャンルタグ取得
 Route::get('/get_work_genre_tag', [GetGenreTagController::class, 'GetGenreTagController']);
 // 作品のプログラミング言語タグ取得
@@ -127,9 +134,13 @@ Route::get('/get_work_language_tag', [GetLanguageTagController::class, 'GetLangu
 Route::get('/get_work_environment_tag', [GetEnvironmentTagController::class, 'GetEnvironmentTagController']);
 // 動画投稿
 Route::post('/video_posting', [VideoPostingController::class, 'VideoPostingController']);
+// 動画編集
+Route::post('/video_edit', [VideoEditController::class, 'VideoEditController']);
 // 動画ジャンルタグ取得
 Route::get('/get_video_genre_tag', [GetVideoGenreTagController::class, 'GetVideoGenreTagController']);
 
+// 学生の学校名タグ取得
+Route::get('/get_student_school_name_tag', [GetStudentSchoolNameTagController::class, 'GetStudentSchoolNameTagController']);
 // 学生の学部名タグ取得
 Route::get('/get_student_faculty_name_tag', [GetStudentFacultyNameTagController::class, 'GetStudentFacultyNameTagController']);
 // 学生の学科名タグ取得
@@ -171,8 +182,6 @@ Route::get('/get_company_software_tag', [GetCompanySoftwareTagController::class,
 // 企業名一覧を取得
 Route::get('/get_company_name_list', [GetCompanyNameListController::class, 'GetCompanyNameListController']);
 
-// 作品投稿
-Route::post('/work_posting', [WorkPostingController::class, 'store']);
 // ログイン状態のチェック
 Route::post('/login_status_check', [LoginStatusCheckController::class, 'LoginStatusCheckController']);
 
@@ -277,13 +286,15 @@ Route::get('/thumbnail_img_delete/{id}', [EditorController::class, 'thumbnail_im
 Route::get('/createform_search', action: [EditorController::class, 'createform_search']);
 Route::get('/api/embed', action: [EditorController::class, 'embed']);
 Route::post('/rewrite_news_delete', [EditorController::class, 'rewrite_news_delete']);
+Route::post('/news_delete', [NewsController::class, 'news_delete']);
+
 //学生(自分)が応募した履歴を確認
 Route::post('/get_apply_history', action: [NewsController::class, 'get_apply_history']);
 
 
 
 //企業の詳細情報を取得
-Route::get('/company_informations/{CompanyName}', action: [CompanyInformationController::class, 'company_informations']);
+Route::get('/company_informations', action: [CompanyInformationController::class, 'company_informations']);
 Route::post('/company_informations_save', action: [CompanyInformationController::class, 'company_informations_save']);
 Route::post('/all_company_informations_pull', action: [CompanyInformationController::class, 'all_company_informations_pull']);
 
@@ -291,7 +302,7 @@ Route::post('/all_company_informations_pull', action: [CompanyInformationControl
 //応募用フォーム作成機能
 Route::post('/create_form_save', [FormController::class, 'create_form_save']);
 Route::get('/create_form_get/{NewsDetailId}', [FormController::class, 'create_form_get']);
-Route::get('/write_form_get/{NewsDetailId}', [FormController::class, 'write_form_get']);
+Route::get('/write_form_get', [FormController::class, 'write_form_get']);
 Route::post('/write_form_save', [FormController::class, 'write_form_save']);
 
 

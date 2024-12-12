@@ -9,7 +9,7 @@ export default function InternshipJobOfferPage() {
   return (
     <>
       <Helmet>
-        <title> InternshipJobOffer | Minimal UI </title>
+        <title> ニュース一覧 | Work&Connect </title>
       </Helmet>
 
       <InternshipJobOfferView />

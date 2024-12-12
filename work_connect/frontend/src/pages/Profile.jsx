@@ -48,6 +48,8 @@ export default function Profile() {
     // DBからデータを取得
     GetData(ProfileUserName);
     console.log("GetData!!!!!: ", ProfileUserName)
+    console.log("GetData!!!!!: ", location.pathname)
+    console.log("GetData!!!!!: ", location.search)
   }, [ProfileUserName,  location.pathname, location.search]);
 
   useEffect(() => {

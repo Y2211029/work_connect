@@ -1,0 +1,27 @@
+/* @media (max-width: 767px) {
+    .NewsSelect_Box {
+        font-size: 100%;
+        align-items: center;
+        justify-content: center;
+    }
+} */
+
+@media (max-width: 400px){
+
+    .tabBox{
+        padding-top:10px;
+    }
+
+    .News_Tabs{
+        margin-left:2%;
+    }
+
+    .NewsSelect_Box{
+        font-size:12px;
+        text-align: center;
+        justify-content: center;
+        padding:0px;
+        width:10%;
+    }
+
+}

@@ -252,7 +252,7 @@ export default function NotificationsPopover() {
               newsId = value.detail;
             });
 
-            navigate(`/news_detail/${newsId}`);
+            navigate(`/NewsDetail/${newsId}`);
             setOpen(null);
           }
         }

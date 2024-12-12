@@ -8,27 +8,27 @@ const CompanyName = ({ CompanyNameData }) => {
   const [CompanyName, setCompanyName] = useState(CompanyNameData);
   const { getSessionData, updateSessionData } = useSessionStorage();
 
-    // 入力エラーの状態管理
-    const [inputError, setInputError] = useState({
-      CompanyNameError: false
-    });
-    // valueの初期値をセット
-    useEffect(() => {
-      // セッションデータ取得
-      const SessionData = getSessionData("accountData");
+  // 入力エラーの状態管理
+  const [inputError, setInputError] = useState({
+    CompanyNameError: false
+  });
+  // valueの初期値をセット
+  useEffect(() => {
+    // セッションデータ取得
+    const SessionData = getSessionData("accountData");
 
-      /// 編集の途中ならセッションストレージからデータを取得する。
-      /// (リロードした時も、データが残った状態にする。)
-      if ((SessionData.CompanyName !== undefined && SessionData.CompanyName !== "") ||
+    /// 編集の途中ならセッションストレージからデータを取得する。
+    /// (リロードした時も、データが残った状態にする。)
+    if ((SessionData.CompanyName !== undefined && SessionData.CompanyName !== "") ||
       SessionData.CompanyNameEditing) {
-        // セッションストレージから最新のデータを取得
-        setCompanyName(SessionData.CompanyName);
-      } else {
-        // DBから最新のデータを取得
-        setCompanyName(CompanyNameData);
-      }
+      // セッションストレージから最新のデータを取得
+      setCompanyName(SessionData.CompanyName);
+    } else {
+      // DBから最新のデータを取得
+      setCompanyName(CompanyNameData);
+    }
 
-    }, [CompanyNameData]);
+  }, [CompanyNameData]);
 
   const handleChange = (e) => {
     const newValue = e.target.value;
@@ -43,10 +43,10 @@ const CompanyName = ({ CompanyNameData }) => {
     updateSessionData("accountData", "CompanyName", CompanyName);
 
     // バリデーション
-    if(CompanyName === ""){
+    if (CompanyName === "") {
       // 姓が空だったら、error表示
       setInputError((prev) => ({ ...prev, CompanyNameError: true }));
-    } else if(CompanyName !== ""){
+    } else if (CompanyName !== "") {
       // 姓が空でないなら、error非表示
       setInputError((prev) => ({ ...prev, CompanyNameError: false }));
     }
@@ -56,28 +56,27 @@ const CompanyName = ({ CompanyNameData }) => {
 
   return (
     <div style={{ display: "flex" }}>
-        <TextField
-            error={inputError.CompanyNameError}
-            fullWidth
-            margin="normal"
-            name="CompanyName"
-            onChange={handleChange}
-            // required
-            type="text"
-            value={CompanyName}
-            variant="outlined"
-            sx={{
-                backgroundColor: '#fff',
-                borderRadius: '8px',
-                marginTop: '6px',
-                marginBottom: '0'
-            }}
-            InputProps={{
-              sx: {
-                fontSize: '20px', // 入力テキストのフォントサイズ
-              },
-            }}
-        />
+      <TextField
+
+        error={inputError.CompanyNameError}
+        fullWidth
+        margin="normal"
+        name="CompanyName"
+        onChange={handleChange}
+        // required
+        type="text"
+        value={CompanyName}
+        variant="outlined"
+        sx={{
+          backgroundColor: '#fff',
+          borderRadius: '8px',
+          marginTop: '6px',
+          marginBottom: '0'
+        }}
+        InputProps={{
+          className: 'MyPageEditItems',
+        }}
+      />
 
     </div>
   );

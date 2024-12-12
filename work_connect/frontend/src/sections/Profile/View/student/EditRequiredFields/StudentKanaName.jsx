@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'; // prop-types をインポート
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import Box from '@mui/material/Box';
 
-const StudentKanaName = ({StudentKanaSurnameData, StudentKananameData}) => {
+const StudentKanaName = ({ StudentKanaSurnameData, StudentKananameData }) => {
 
   const [StudentKanaSurName, setStudentKanaSurName] = useState(StudentKanaSurnameData);
   const [StudentKanaName, setStudentKanaName] = useState(StudentKananameData);
@@ -26,7 +26,7 @@ const StudentKanaName = ({StudentKanaSurnameData, StudentKananameData}) => {
     /// 編集の途中ならセッションストレージからデータを取得する。
     /// (リロードした時も、データが残った状態にする。)
     if ((SessionData.StudentKanaSurName !== undefined && SessionData.StudentKanaSurName !== "") ||
-    SessionData.StudentKanaSurNameEditing) {
+      SessionData.StudentKanaSurNameEditing) {
       // セッションストレージから最新のデータを取得
       setStudentKanaSurName(SessionData.StudentKanaSurName);
     } else {
@@ -35,7 +35,7 @@ const StudentKanaName = ({StudentKanaSurnameData, StudentKananameData}) => {
     }
 
     if ((SessionData.StudentKanaName !== undefined && SessionData.StudentKanaName !== "") ||
-    SessionData.StudentKanaNameEditing) {
+      SessionData.StudentKanaNameEditing) {
       // セッションストレージから最新のデータを取得
       setStudentKanaName(SessionData.StudentKanaName);
     } else {
@@ -46,12 +46,12 @@ const StudentKanaName = ({StudentKanaSurnameData, StudentKananameData}) => {
 
   const handleChange = (e) => {
     const newValue = e.target.value;
-    if(e.target.name === "StudentKanaSurName"){
+    if (e.target.name === "StudentKanaSurName") {
       // newValueをセット
       setStudentKanaSurName(newValue);
       // 編集中状態をオン(保存もしくはログアウトされるまで保持)
       updateSessionData("accountData", "StudentKanaSurNameEditing", true);
-    } else if(e.target.name === "StudentKanaName"){
+    } else if (e.target.name === "StudentKanaName") {
       // newValueをセット
       setStudentKanaName(newValue);
       // 編集中状態をオン(保存もしくはログアウトされるまで保持)
@@ -67,21 +67,21 @@ const StudentKanaName = ({StudentKanaSurnameData, StudentKananameData}) => {
     updateSessionData("accountData", "StudentKanaSurName", StudentKanaSurName);
     updateSessionData("accountData", "StudentKanaName", StudentKanaName);
     // バリデーション
-    if(StudentKanaSurName === "" || !Kana.test(StudentKanaSurName)){
+    if (StudentKanaSurName === "" || !Kana.test(StudentKanaSurName)) {
       // セイが空、もしくはカタカナ以外だったら、error表示
       setInputError((prev) => ({ ...prev, StudentKanaSurNameError: true }));
-    } else if(StudentKanaSurName !== ""){
+    } else if (StudentKanaSurName !== "") {
       // セイが空でないなら、error非表示
       setInputError((prev) => ({ ...prev, StudentKanaSurNameError: false }));
     }
-    if(StudentKanaName === "" || !Kana.test(StudentKanaName)){
+    if (StudentKanaName === "" || !Kana.test(StudentKanaName)) {
       // メイが空だったら、error表示
       setInputError((prev) => ({ ...prev, StudentKanaNameError: true }));
-    } else if(StudentKanaName !== ""){
+    } else if (StudentKanaName !== "") {
       // メイが空でないなら、error非表示
       setInputError((prev) => ({ ...prev, StudentKanaNameError: false }));
     }
-  }, [StudentKanaSurName,StudentKanaName]);
+  }, [StudentKanaSurName, StudentKanaName]);
 
 
   return (
@@ -94,72 +94,64 @@ const StudentKanaName = ({StudentKanaSurnameData, StudentKananameData}) => {
       }}
     >
       <TextField
-          error={inputError.StudentKanaSurNameError}
-          fullWidth
-          // カタカナ以外ならhelperText表示
-          helperText={StudentKanaSurName !== "" && inputError.StudentKanaSurNameError ? "カタカナで入力してください" : ""}
-          label="セイ"
-          margin="normal"
-          name="StudentKanaSurName"
-          onChange={handleChange}
-          // required
-          type="text"
-          value={StudentKanaSurName}
-          variant="outlined"
-          sx={{
-              backgroundColor: '#fff', // 背景色を指定
-              borderRadius: '8px', // 角の丸みを設定
-              marginTop:'6px',
-              marginBottom:'0'
-          }}
-          InputProps={{
-            sx: {
-              fontSize: '20px', // 入力テキストのフォントサイズ
-            },
-          }}
-          InputLabelProps={{
-            sx: {
-              fontSize: '20px', // ラベルのフォントサイズ
-            },
-          }}
-          // helperTextを赤色にする
-          FormHelperTextProps={{
-            sx: { color: 'red' },
-          }}
+        error={inputError.StudentKanaSurNameError}
+        fullWidth
+        // カタカナ以外ならhelperText表示
+        helperText={StudentKanaSurName !== "" && inputError.StudentKanaSurNameError ? "カタカナで入力してください" : ""}
+        label="セイ"
+        margin="normal"
+        name="StudentKanaSurName"
+        onChange={handleChange}
+        // required
+        type="text"
+        value={StudentKanaSurName}
+        variant="outlined"
+        sx={{
+          backgroundColor: '#fff', // 背景色を指定
+          borderRadius: '8px', // 角の丸みを設定
+          marginTop: '6px',
+          marginBottom: '0'
+        }}
+        InputProps={{
+          className: 'MyPageEditItems',
+        }}
+        InputLabelProps={{
+          className: 'MyPageEditItems',
+        }}
+        // helperTextを赤色にする
+        FormHelperTextProps={{
+          sx: { color: 'red' },
+        }}
       />
       <TextField
-          error={inputError.StudentKanaNameError}
-          fullWidth
-          // カタカナ以外ならhelperText表示
-          helperText={StudentKanaName !== "" && inputError.StudentKanaNameError ? "カタカナで入力してください" : ""}
-          label="メイ"
-          margin="normal"
-          name="StudentKanaName"
-          onChange={handleChange}
-          // required
-          type="text"
-          value={StudentKanaName}
-          variant="outlined"
-          sx={{
-              backgroundColor: '#fff', // 背景色を指定
-              borderRadius: '8px', // 角の丸みを設定
-              marginTop:'6px',
-              marginBottom:'0'
-          }}
-          InputProps={{
-            sx: {
-              fontSize: '20px', // 入力テキストのフォントサイズ
-            },
-          }}
-          InputLabelProps={{
-            sx: {
-              fontSize: '20px', // ラベルのフォントサイズ
-            },
-          }}
-          // helperTextを赤色にする
-          FormHelperTextProps={{
-            sx: { color: 'red' },
-          }}
+        error={inputError.StudentKanaNameError}
+        fullWidth
+        // カタカナ以外ならhelperText表示
+        helperText={StudentKanaName !== "" && inputError.StudentKanaNameError ? "カタカナで入力してください" : ""}
+        label="メイ"
+        margin="normal"
+        name="StudentKanaName"
+        onChange={handleChange}
+        // required
+        type="text"
+        value={StudentKanaName}
+        variant="outlined"
+        sx={{
+          backgroundColor: '#fff', // 背景色を指定
+          borderRadius: '8px', // 角の丸みを設定
+          marginTop: '6px',
+          marginBottom: '0'
+        }}
+        InputProps={{
+          className: 'MyPageEditItems',
+        }}
+        InputLabelProps={{
+          className: 'MyPageEditItems',
+        }}
+        // helperTextを赤色にする
+        FormHelperTextProps={{
+          sx: { color: 'red' },
+        }}
       />
     </Box>
   );

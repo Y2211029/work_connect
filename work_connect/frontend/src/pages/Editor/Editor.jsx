@@ -2,7 +2,8 @@ import { useEffect, useState, useRef } from "react";
 import "./Editor.css";
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
-
+import dayjs from "dayjs";
+import "dayjs/locale/ja";
 
 // プラグインのインポート
 import EditorJS from "@editorjs/editorjs";
@@ -52,6 +53,7 @@ import TableRow from '@mui/material/TableRow';
 import { Helmet } from 'react-helmet-async';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import IconButton from "@mui/material/IconButton";
+import MUIButton from "@mui/material/Button";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import MenuIcon from '@mui/icons-material/Menu';
@@ -59,7 +61,7 @@ import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-
+import MUITooltip from "@mui/material/Tooltip";
 
 //データ保存
 import axios from "axios";
@@ -89,20 +91,22 @@ const Editor = () => {
   const [draft_list, setDraftList] = useState([]); // ニュースの下書きリストを保持するステート
   const [selected_draft, setSelectedDraft] = useState(null); // 選択された下書きを保持するステート
   const [charCount, setCharCount] = useState(0);
-  const [usedImages, setUsedImages] = useState(null);
+  const [usedImages, setUsedImages] = useState([]);
   const [notificationMessage, setNotificationMessage] = useState("");
+  const [eventDay, setEventDay] = useState(dayjs());
   const [isSaved, setIsSaved] = useState(false);
   const [CreateFormOpen, setCreateFormOpen] = useState(false);
   const [formSummary, setFormSummary] = useState(null);
   const [followerCounter, setFollowerCounter] = useState(0);
+  const [selectedOccupation, setSelectedOccupation] = useState("");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
-  const news_save_url = "http://127.0.0.1:8000/news_save";
+  const news_save_url = "http://locelhost:8000/news_save";
   const thumbnail_image_save_url = "http://127.0.0.1:8000/thumbnail_image_save";
 
   const csrf_url = "http://localhost:8000/csrf-token";
-  const isContentReady = !!(title && imageUrl && charCount); // 必須データが揃っているか確認
+  const isContentReady = !!(title && imageUrl && charCount && eventDay); // 必須データが揃っているか確認
   const isFollowerValid = (followerCounter > 0 && notificationMessage) || (followerCounter === 0 || followerCounter === undefined);
 
   const navigate = useNavigate();
@@ -117,6 +121,8 @@ const Editor = () => {
   const AccordionhandleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
+
+
 
 
   //ニュースを投稿した際の処理
@@ -162,7 +168,7 @@ const Editor = () => {
       console.log(response.data.id);
       console.log(response.data);
       console.log("成功");
-      navigate(`/news_detail/${news_id}`);
+      navigate(`/NewsDetail/${news_id}`);
     } catch (error) {
       console.log("Error:", error);
     }
@@ -183,6 +189,8 @@ const Editor = () => {
 
   // 下書きを新規保存・更新する処理
   const news_save = async () => {
+    console.log("通りました");
+
     try {
       console.log(title);
 
@@ -196,12 +204,15 @@ const Editor = () => {
       console.log(news_id);
       console.log(notificationMessage);
       console.log(genre);
+      console.log(eventDay);
 
       const response = await axios.post(news_save_url, {
         value: formSummary,    // ニュース記事
         title: title,     // タイトル
         news_id: news_id,     // ID
         message: notificationMessage, //通知に添えるメッセージ
+        selectedOccupation: selectedOccupation,
+        eventDay: eventDay, //開催日
         company_id: sessionId, // 企業ID
         genre: genre //ジャンル
       }, {
@@ -335,6 +346,9 @@ const Editor = () => {
     }
     // news_idをセット
     setNewsId(select_draft_list.id);
+    setEventDay(dayjs(select_draft_list.event_day));
+    setSelectedOccupation(select_draft_list.open_jobs);
+    toggleDrawer(false);
   };
 
   const rewrite_news_delete = async (id) => {
@@ -358,6 +372,50 @@ const Editor = () => {
       }
     }
   };
+
+  const ShowUsedImages = ({ usedImages }) => {
+    if (!Array.isArray(usedImages)) {
+      console.error('usedImagesは配列ではありません:', usedImages);
+      return <p>画像のデータにエラーがあります</p>;
+    }
+
+    // 画像を2枚ずつのグループに分ける
+    const rows = [];
+    for (let i = 0; i < usedImages.length; i += 2) {
+      rows.push(usedImages.slice(i, i + 2));
+    }
+
+    return (
+      <>
+        {usedImages.length > 0 ? (
+          <NewsMenuTable>
+            <TableBody>
+              {rows.map((row, rowIndex) => (
+                <TableRow key={rowIndex}>
+                  {row.map((imageObj, index) => (
+                    <TableCell key={index} align="center">
+                      <img
+                        src={imageObj}
+                        alt={`使用された画像 ${index + 1}`}
+                        style={{ maxWidth: '100px', height: 'auto' }}
+                      />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </NewsMenuTable>
+        ) : (
+          <p>画像が使用されていません</p>
+        )}
+      </>
+    );
+  };
+
+  ShowUsedImages.propTypes = {
+    usedImages: PropTypes.arrayOf(PropTypes.string).isRequired
+  };
+
 
   //エディタの編集状況を見て、チェックボックスで表示する
   const EditorStatusCheck = (check_element) => {
@@ -402,7 +460,7 @@ const Editor = () => {
               {charCount ? (
                 <p>現在の文字数: {charCount}文字</p>
               ) : (
-                <p>テキストが打ち込まれていません</p>
+                <p>テキストが<br></br>打ち込まれていません</p>
               )}
             </TableCell>
           </TableRow>
@@ -430,49 +488,25 @@ const Editor = () => {
     );
   };
 
+  const editingStatusrender = (
+    <div className="editingstatus">
+      <p>現在の編集状況</p>
+      <p>タイトル</p>
+      {EditorStatusCheck(title)}
+      <p>サムネイル</p>
+      {EditorStatusCheck(imageUrl)}
+      {followerCounter > 0 && (
+        <>
+          <p>通知に添えるメッセージ</p>
+          {EditorStatusCheck(notificationMessage)}
+        </>
+      )}
+      <p>コンテンツ</p>
+      {EditorContentsStatusCheck()}
+    </div>
+  )
 
-  const ShowUsedImages = ({ usedImages }) => {
-    if (!Array.isArray(usedImages)) {
-      console.error('usedImagesは配列ではありません:', usedImages);
-      return <p>画像のデータにエラーがあります</p>;
-    }
 
-    // 画像を2枚ずつのグループに分ける
-    const rows = [];
-    for (let i = 0; i < usedImages.length; i += 2) {
-      rows.push(usedImages.slice(i, i + 2));
-    }
-
-    return (
-      <>
-        {usedImages.length > 0 ? (
-          <NewsMenuTable>
-            <TableBody>
-              {rows.map((row, rowIndex) => (
-                <TableRow key={rowIndex}>
-                  {row.map((imageObj, index) => (
-                    <TableCell key={index} align="center">
-                      <img
-                        src={imageObj}
-                        alt={`使用された画像 ${index + 1}`}
-                        style={{ maxWidth: '100px', height: 'auto' }}
-                      />
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </NewsMenuTable>
-        ) : (
-          <p>画像が使用されていません</p>
-        )}
-      </>
-    );
-  };
-
-  ShowUsedImages.propTypes = {
-    usedImages: PropTypes.arrayOf(PropTypes.string).isRequired
-  };
 
   //テキストの文字数(テーブルやリスト・コードなど)使用したプラグインの名前を格納
   const countChars = async () => {
@@ -1070,7 +1104,7 @@ const Editor = () => {
 
     return (
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4">{NewsTitle}</Typography>
+        <Typography variant="h4" className="News_Title">{NewsTitle}</Typography>
       </Stack>
     );
   };
@@ -1090,6 +1124,8 @@ const Editor = () => {
   const handleBack = async () => {
     console.log("フォームサマリ", formSummary); // 確認用ログ
     setCreateFormOpen(false); // フォームのモーダルを閉じる
+    setExpanded(false);
+    toggleDrawer(false);
 
     if (editorInstance.current) {
       try {
@@ -1504,7 +1540,6 @@ const Editor = () => {
     }
   };
 
-
   const menuItems = [
     {
       key: "draftList", text: "下書きリスト", render:
@@ -1515,21 +1550,27 @@ const Editor = () => {
           NewsSave={news_save}
         />
     },
-    { key: "saveNews", text: "ニュースを保存する", render: <NewsMenu menuKey={'saveNews'} NewsSave={news_save} /> },
-    {
-      key: "editingStatus", text: "現在の編集状況", render: <NewsMenu menuKey={'editingStatus'}
-        EditorStatusCheck={EditorStatusCheck}
-        EditorContentsStatusCheck={EditorContentsStatusCheck}
-        imageUrl={imageUrl}
-        title={title}
-        followerCounter={followerCounter}
-      />
-    },
+    ...(genre !== "Blog" ? [{
+      key: "eventDay", text: "開催日を設定する", render:
+        <NewsMenu menuKey={'eventDay'}
+          eventDay={eventDay}
+          setEventDay={setEventDay}
+        />
+    }] : []),
+    ...(genre !== "Blog" ? [{
+      key: "openJobs", text: "募集職種を設定する", render:
+        <NewsMenu menuKey={'openJobs'}
+          selected_draft={selected_draft}
+          setSelectedOccupation={setSelectedOccupation}
+          selectedOccupation={selectedOccupation}
+        />
+    }] : []),
     ...(followerCounter > 0 ? [{
-      key: "notificationMessage", text: "通知に添えるメッセージ", render: <NewsMenu menuKey={'notificationMessage'}
-        NotificationMessageHandleChange={notification_messagehandleChange}
-        message={notificationMessage}
-      />
+      key: "notificationMessage", text: "通知に添えるメッセージ", render:
+        <NewsMenu menuKey={'notificationMessage'}
+          NotificationMessageHandleChange={notification_messagehandleChange}
+          message={notificationMessage}
+        />
     }] : []),
     // 条件を満たした場合のみ追加
     ...(genre !== "Blog" ? [{
@@ -1538,11 +1579,6 @@ const Editor = () => {
           CreateFormJump={CreateFormJump}
           selected_draft={selected_draft}
         />
-    }] : []),
-    ...((isContentReady && isFollowerValid) ? [{
-      key: "releaseNews", text: "ニュースを公開する", render: <NewsMenu menuKey={'releaseNews'}
-        NewsUpLoad={news_upload}
-      />
     }] : []),
   ];
 
@@ -1592,12 +1628,42 @@ const Editor = () => {
                 color="inherit"
                 aria-label="menu"
                 onClick={() => toggleDrawer(true)}
+                className="IconButton"
               >
                 <Typography className="FormMenu">
                   <MenuIcon className="FormMenuIcon" />
                   ニュースメニューを開く
                 </Typography>
               </IconButton>
+
+              <MUIButton variant="outlined" onClick={news_save}
+                sx={{ position: 'relative', left: '100px', width: "120px", borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
+                下書き保存
+              </MUIButton>
+
+
+
+              {(isContentReady && isFollowerValid) ? (
+                <MUIButton variant="outlined" onClick={news_upload}
+                  sx={{ position: 'relative', left: '120px', width: "160px", borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
+                  ニュースを公開する
+                </MUIButton>
+              ) : (
+                <MUITooltip title="まだ公開できません">
+                  <MUIButton variant="outlined" sx={{
+                    position: 'relative', left: '120px', width: '160px', borderColor: '#A9A9A9', color: '#A9A9A9', backgroundColor: '#F5F5F5', // 背景色を薄いグレーに設定
+                    '&:hover': { borderColor: '#A9A9A9', backgroundColor: '#F5F5F5', },
+                    cursor: 'not-allowed', // マウスカーソルを無効状態に変更
+                  }}
+                  >
+                    ニュースを公開する
+                  </MUIButton>
+                </MUITooltip>
+
+              )}
+
+
+
 
               {/* ドロワーメニュー */}
               <Drawer
@@ -1607,8 +1673,11 @@ const Editor = () => {
                   setExpanded(false);
                   toggleDrawer(false);
                 }}
-
               >
+
+                                  {/* 現在の編集状況 */}
+                                  {editingStatusrender}
+
                 <List sx={{ width: "300px" }}>
                   {menuItems.map(({ key, text, render }) => {
                     // デバッグ: 各アイテムを確認
@@ -1635,29 +1704,36 @@ const Editor = () => {
                       </Accordion>
                     );
                   })}
+
+
+
+
                 </List>
               </Drawer>
             </div>
+
+
+            {/* カバー画像アップロード */}
+            <ImageSearchIcon
+              className="cover_img_upload"
+              style={{ display: displayInput ? 'block' : 'none' }}
+              onClick={() => document.getElementById('fileInput').click()}
+            />
+
+            {/* 記事タイトルの入力エリア */}
+            <textarea
+              className="editor_title"
+              id="editor_title"
+              wrap="soft"
+              placeholder="記事タイトル"
+              value={title}
+              onChange={titlechange}
+            />
+
           </Stack>
 
 
 
-          {/* カバー画像アップロード */}
-          <ImageSearchIcon
-            className="cover_img_upload"
-            style={{ display: displayInput ? 'block' : 'none' }}
-            onClick={() => document.getElementById('fileInput').click()}
-          />
-
-          {/* 記事タイトルの入力エリア */}
-          <textarea
-            className="editor_title"
-            id="editor_title"
-            wrap="soft"
-            placeholder="記事タイトル"
-            value={title}
-            onChange={titlechange}
-          />
 
           {/* エディターコンポーネント */}
           <div className="editor-wrapper">

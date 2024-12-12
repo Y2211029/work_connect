@@ -5,8 +5,8 @@ import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import GetTagAllList from "src/components/tag/GetTagAllList";
 import InsertTag from 'src/components/tag/InsertTag';
 
-const PrefectureDropdown = ({PrefectureData}) => {
-  const {InsertTagFunction} = InsertTag();
+const PrefectureDropdown = ({ PrefectureData }) => {
+  const { InsertTagFunction } = InsertTag();
 
   const [selectedPrefecture, setSelectedPrefecture] = useState([]);
   const { getSessionData, updateSessionData } = useSessionStorage();
@@ -26,17 +26,17 @@ const PrefectureDropdown = ({PrefectureData}) => {
   useEffect(() => {
     if (getSessionData("accountData") !== undefined) {
       const SessionData = getSessionData("accountData");
-      if(SessionData.CompanyPrefectureEditing && SessionData.CompanyPrefecture){
+      if (SessionData.CompanyPrefectureEditing && SessionData.CompanyPrefecture) {
         // セッションストレージから最新のデータを取得
         const devtagArray = SessionData.CompanyPrefecture.split(",").map(item => ({
           value: item,
           label: item,
         }));
         setSelectedPrefecture(devtagArray);
-      } else if(
-        (SessionData.CompanyPrefectureEditing && SessionData.CompanyPrefecture && PrefectureData)||
+      } else if (
+        (SessionData.CompanyPrefectureEditing && SessionData.CompanyPrefecture && PrefectureData) ||
         (!SessionData.CompanyPrefectureEditing && PrefectureData)
-      ){ // DBから最新のデータを取得
+      ) { // DBから最新のデータを取得
         const devtagArray = PrefectureData.split(",").map(item => ({
           value: item,
           label: item,
@@ -82,6 +82,9 @@ const PrefectureDropdown = ({PrefectureData}) => {
     <div>
       <>
         <CreatableSelect
+          // プレフィックス＝接頭語
+          // CreatableSelect内のInput要素のClass名の頭にMyPageEditItemsをつけるという意味
+          classNamePrefix="MyPageEditItems"
           id="prefecturesDropdwon"
           value={selectedPrefecture}
           onChange={handleChange}
@@ -89,18 +92,25 @@ const PrefectureDropdown = ({PrefectureData}) => {
           placeholder="▼"
           isMulti
           styles={{
-            control: (base) => ({
-              ...base,
-              fontSize: '20px', // テキストサイズを調整
-            }),
-            placeholder: (base) => ({
-              ...base,
-              fontSize: '20px', // プレースホルダーのサイズを調整
-            }),
-            menu: (base) => ({
-              ...base,
-              fontSize: '20px', // ドロップダウンメニューの文字サイズ
-            }),
+            // 12/5 
+            // App.cssにそれぞれ
+            // MyPageEditItems_control
+            // MyPageEditItems_placeholder、
+            // MyPageEditItems_menu
+            // と移動し書き換えました。
+
+            // control: (base) => ({
+            //   ...base,
+            //   fontSize: '20px', // テキストサイズを調整
+            // }),
+            // placeholder: (base) => ({
+            //   ...base,
+            //   fontSize: '20px', // プレースホルダーのサイズを調整
+            // }),
+            // menu: (base) => ({
+            //   ...base,
+            //   fontSize: '20px', // ドロップダウンメニューの文字サイズ
+            // }),
           }}
         />
       </>
@@ -109,7 +119,7 @@ const PrefectureDropdown = ({PrefectureData}) => {
 };
 
 PrefectureDropdown.propTypes = {
-  PrefectureData: PropTypes.string ,
+  PrefectureData: PropTypes.string,
 };
 
 export default PrefectureDropdown;

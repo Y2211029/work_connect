@@ -1,19 +1,20 @@
-import { useEffect, useState } from 'react';
-import CreatableSelect from 'react-select/creatable';
-import InsertTag from 'src/components/tag/InsertTag';
-import axios from 'axios';
+import { useEffect, useState } from "react";
+import CreatableSelect from "react-select/creatable";
+import InsertTag from "src/components/tag/InsertTag";
+import axios from "axios";
 import PropTypes from "prop-types";
 
 const Environment = (props) => {
-  const {InsertTagFunction} = InsertTag();
-  const url = 'http://localhost:8000/get_work_environment_tag'
+  const { InsertTagFunction } = InsertTag();
+  const url = "http://localhost:8000/get_work_environment_tag";
   const [options, setOptions] = useState([]);
-  useEffect(()=>{
+  const [selectedOption, setSelectedOption] = useState([]);
+  useEffect(() => {
     async function EnvironmentFunction() {
       try {
         // Laravel側から企業一覧データを取得
         const response = await axios.get(url, {
-          params: {All:"tags"},
+          params: { All: "tags" },
         });
 
         // 希望職業、希望勤務地、取得資格、プログラミング言語、開発環境、ソフトウェア、趣味、その他
@@ -22,7 +23,7 @@ const Environment = (props) => {
         const responseData = response.data;
         const EnvironmentArray = [];
         responseData.map((value) => {
-          EnvironmentArray.push({value:value.name,label:value.name});
+          EnvironmentArray.push({ value: value.name, label: value.name });
         });
         setOptions(EnvironmentArray);
       } catch (err) {
@@ -30,32 +31,51 @@ const Environment = (props) => {
       }
     }
     EnvironmentFunction();
-    axios.get(url)
-  },[])
+    if(props.workData){
+      props.workData.map((value) => {
+        selectedOption.push({ value: value.name, label: value.name });
+      });
+      setSelectedOption(selectedOption);
+    }
+    axios.get(url);
+  }, []);
 
   const handleChange = (selectedOption, actionMeta) => {
-    if (actionMeta && actionMeta.action === 'create-option') {
-
+    if (actionMeta && actionMeta.action === "create-option") {
       const inputValue = actionMeta;
-      const newOption = { value: inputValue.option.value, label: inputValue.option.label };
+      const newOption = {
+        value: inputValue.option.value,
+        label: inputValue.option.label,
+      };
       setOptions([...options, newOption]);
       // 13は作品投稿の開発環境です。
       InsertTagFunction(inputValue.option.value, 13);
     }
     let valueArray = [];
     selectedOption.map((value) => {
-      valueArray.push(value.value)
-    })
+      valueArray.push(value.value);
+    });
     props.callSetWorkData("Environment", valueArray.join(","));
   };
 
-  return(
-    <CreatableSelect options={options} placeholder="▼"  isClearable isMulti onChange={handleChange}/>
+  return (
+    <CreatableSelect
+      // プレフィックス＝接頭語
+      // CreatableSelect内のInput要素のClass名の頭にMyPageEditItemsをつけるという意味
+      classNamePrefix="MyPageEditItems"
+      options={options}
+      value={selectedOption}
+      placeholder="▼"
+      isClearable
+      isMulti
+      onChange={handleChange}
+    />
   );
 };
 
 Environment.propTypes = {
   callSetWorkData: PropTypes.func,
+  workData: PropTypes.string.isRequired,
 };
 
 export default Environment;

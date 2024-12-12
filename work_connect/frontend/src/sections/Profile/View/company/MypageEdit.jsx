@@ -53,7 +53,10 @@ const Showmore = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   padding: theme.spacing(1),
   textAlign: 'center',
-  fontSize: '20px',
+  fontSize: "14px",
+  [theme.breakpoints.up("sm")]: {
+    fontSize: "16px", // 画面幅が"sm"以上の場合
+  },
 }));
 
 // Saveのスタイルを定義
@@ -61,7 +64,10 @@ const Save = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   padding: theme.spacing(1),
   textAlign: 'right',
-  fontSize: '20px',
+  fontSize: "14px",
+  [theme.breakpoints.up("sm")]: {
+    fontSize: "16px", // 画面幅が"sm"以上の場合
+  },
 }));
 
 const ProfileMypageEdit = forwardRef((props, ref) => {
@@ -89,7 +95,7 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
   const CompanyAddressBox = useRef(null);
   const CompanyAddressMapBox = useRef(null);
   // 編集状態のチェック
-  const { getSessionData , updateSessionData } = useSessionStorage();
+  const { getSessionData, updateSessionData } = useSessionStorage();
 
   // Laravelとの通信用URL
   const Get_url = "http://localhost:8000/get_profile_mypage";
@@ -98,7 +104,7 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
   // ログイン中のuser_nameではない
   // ＊＊＊他ルートからアクセスしたときに表示したいユーザのuser_nameをここで指定＊＊＊
   const { user_name } = useParams();
-  const UserName = useState({user_name});
+  const UserName = useState({ user_name });
   const ProfileUserName = UserName[0].user_name;
 
   // DBからのレスポンスが入る変数
@@ -221,7 +227,7 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
           // ホームページURL
           CompanyHPMap: SessionData.CompanyHPMap
         });
-        console.log("レスポンス",response);
+        console.log("レスポンス", response);
         if (response.data === true) {
 
           console.log("保存成功");
@@ -330,7 +336,7 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
               '&:hover': { backgroundColor: '#f0f0f0' },
             }}
           >
-            <ArrowBackOutlinedIcon sx={{ fontSize: 55 }} />
+            <ArrowBackOutlinedIcon sx={{ fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" } }} />
           </IconButton>
         </Tooltip>
       </Box>

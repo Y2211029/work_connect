@@ -60,6 +60,7 @@ const CompanyAddress = ({ CompanyAddressData }) => {
   return (
     <div style={{ display: "flex" }}>
         <TextField
+            
             error={inputError.CompanyAddressError}
             fullWidth
             margin="normal"
@@ -76,6 +77,7 @@ const CompanyAddress = ({ CompanyAddressData }) => {
                 marginBottom: '0'
             }}
             InputProps={{
+              className: 'MyPageEditItems',
               sx: {
                 fontSize: '20px', // 入力テキストのフォントサイズ
               },

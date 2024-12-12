@@ -1,6 +1,5 @@
-import { forwardRef, useState, useEffect } from "react";
+import { forwardRef, useState } from "react";
 import PropTypes from "prop-types";
-import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 import ListSubheader from '@mui/material/ListSubheader';
 import List from '@mui/material/List';
@@ -17,23 +16,13 @@ import './checkform.css';
 
 const PostCard = forwardRef(({ post }) => {
   const { application_form } = post;
-  console.log("application_form",application_form);
+  console.log("application_form", application_form);
 
   const [writeformshow, setWriteFormShow] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(0);
   const [viewingStudentName, setViewStudentName] = useState("");
-  const [isLoading, setIsLoading] = useState(true); // ローディング状態
-
-  useEffect(() => {
-    // データのロードが終わるまでに遅延をシミュレーション（API呼び出しの場合はここに記述）
-    const timer = setTimeout(() => {
-      setIsLoading(false); // ローディング状態を解除
-    }, 1000); // ローディング表示時間を調整
-
-    return () => clearTimeout(timer); // クリーンアップ
-  }, []);
 
   const handleClick = (index) => {
     setOpen(!open);
@@ -55,14 +44,6 @@ const PostCard = forwardRef(({ post }) => {
     });
     return acc;
   }, {});
-
-  if (isLoading) {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <CircularProgress /> {/* ローディングスピナー */}
-      </div>
-    );
-  }
 
   return (
     <>
@@ -128,46 +109,47 @@ const PostCard = forwardRef(({ post }) => {
         </div>
 
       ) : (
-        <>
-          応募はありません
-        </>
+        null
       )}
 
       {writeformshow && selectedIndex !== null && (
         <div style={{ flexGrow: 1 }}>
+
           <div className="write-form">
-            <Box sx={{ width: '100%', paddingBottom: '10%' }}>
+            <Box className="FormSelect-Box">
               <Tabs value={value} aria-label="nav tabs example" role="navigation">
                 <Tab label="要約" onClick={(e) => handleTabClick(e, 0)} />
                 <Tab label="回答別" onClick={(e) => handleTabClick(e, 1)} />
                 <Tab label="個別" onClick={(e) => handleTabClick(e, 2)} />
               </Tabs>
-              {value === 0 && (
-                <Summary
-                  application_form={application_form}
-                  selectedIndex={selectedIndex}
-                  GroupedResponses={groupedResponses}
-                  HandleTabClick={handleTabClick}
-                  setViewStudentName={setViewStudentName}
-                />
-              )}
-              {value === 1 && (
-                <Question
-                  application_form={application_form}
-                  selectedIndex={selectedIndex}
-                  GroupedResponses={groupedResponses}
-                />
-              )}
-              {value === 2 && (
-                <Individual
-                  application_form={application_form}
-                  selectedIndex={selectedIndex}
-                  GroupedResponses={groupedResponses}
-                  viewingStudentName={viewingStudentName}
-                />
-              )}
             </Box>
-          </div>
+
+          {value === 0 && (
+            <Summary
+              application_form={application_form}
+              selectedIndex={selectedIndex}
+              GroupedResponses={groupedResponses}
+              HandleTabClick={handleTabClick}
+              setViewStudentName={setViewStudentName}
+            />
+          )}
+          {value === 1 && (
+            <Question
+              application_form={application_form}
+              selectedIndex={selectedIndex}
+              GroupedResponses={groupedResponses}
+            />
+          )}
+          {value === 2 && (
+            <Individual
+              application_form={application_form}
+              selectedIndex={selectedIndex}
+              GroupedResponses={groupedResponses}
+              viewingStudentName={viewingStudentName}
+            />
+          )}
+        </div>
+
         </div>
       )}
     </>

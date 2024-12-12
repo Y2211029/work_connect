@@ -3,13 +3,12 @@ import PropTypes from "prop-types";
 import TextField from "@mui/material/TextField";
 
 const WorkTitle = (props) => {
-  const [inputValue, setInputValue] = useState(null);
+  // const [workTitle, setWorkTitle] = useState(null);
   const [hasError, setHasError] = useState(false);
 
   const handleChange = (e) => {
-    setInputValue(e.target.value);
+    // setWorkTitle(e.target.value);
     setHasError(e.target.value === ""); // 空の場合にエラーを表示
-
     props.callSetWorkData("WorkTitle", e.target.value);
   };
 
@@ -21,7 +20,7 @@ const WorkTitle = (props) => {
           fullWidth
           margin="normal"
           name="Title"
-          value={inputValue}
+          value={props.workData}
           onChange={handleChange}
           // required
           type="text"
@@ -38,6 +37,7 @@ const WorkTitle = (props) => {
 
 WorkTitle.propTypes = {
   callSetWorkData: PropTypes.func,
+  workData: PropTypes.string.isRequired,
 };
 
 export default WorkTitle;

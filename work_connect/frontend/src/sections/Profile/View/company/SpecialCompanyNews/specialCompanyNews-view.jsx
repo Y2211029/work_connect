@@ -8,6 +8,7 @@ import { AllItemsContext } from "src/layouts/dashboard/index";
 import { useParams } from "react-router-dom";
 import ListView from "src/components/view/list-view";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import './SpecialCompanyNews.css';
 
 function samePageLinkNavigation(event) {
   return !(
@@ -160,16 +161,17 @@ function pageCheck(pageStr) {
   }
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box className="tabBox">
       <Tabs
         value={value}
         aria-label="nav tabs example"
         role="navigation"
+        className="News_Tabs"
       >
-        <LinkTab label="求人" onClick={(e) => handleTabClick(e, 0)} />
-        <LinkTab label="インターンシップ" onClick={(e) => handleTabClick(e, 1)} />
-        <LinkTab label="説明会" onClick={(e) => handleTabClick(e, 2)} />
-        <LinkTab label="ブログ" onClick={(e) => handleTabClick(e, 3)} />
+        <Tab className="NewsSelect_Box" label="求人" onClick={(e) => handleTabClick(e, 0)} />
+        <Tab className="NewsSelect_Box" label={<span>インターン<br />シップ</span>} onClick={(e) => handleTabClick(e, 1)} />
+        <Tab className="NewsSelect_Box" label="説明会" onClick={(e) => handleTabClick(e, 2)} />
+        <Tab className="NewsSelect_Box" label="ブログ" onClick={(e) => handleTabClick(e, 3)} />
       </Tabs>
       {value === 0 && <ListView type="specialjoboffers" ParamUserName={user_name} />}
       {value === 1 && <ListView type="specialinternships" ParamUserName={user_name} />}

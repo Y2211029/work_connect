@@ -37,7 +37,10 @@ const Item = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(1),
   textAlign: "left",
   color: theme.palette.text.secondary,
-  fontSize: "25px",
+  fontSize: "14px",
+  [theme.breakpoints.up("sm")]: {
+    fontSize: "16px", // 画面幅が"sm"以上の場合
+  },
 }));
 
 // Showmoreのスタイルを定義
@@ -45,12 +48,15 @@ const Showmore = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   padding: theme.spacing(1),
   textAlign: "center",
-  fontSize: "20px",
+  fontSize: "14px",
+  [theme.breakpoints.up("sm")]: {
+    fontSize: "16px", // 画面幅が"sm"以上の場合
+  },
 }));
 
 // ローディングのコンポーネント
 const ColorRingStyle = () => {
-  return(
+  return (
     <Box
       sx={{
         marginTop: '20%',
@@ -68,7 +74,7 @@ const ColorRingStyle = () => {
           ariaLabel: "color-ring-loading",
           wrapperClass: "custom-color-ring-wrapper",
           colors:
-          ["#41a4ff", "#FFFFFF", "#41a4ff", "#41a4ff", "#FFFFFF"]
+            ["#41a4ff", "#FFFFFF", "#41a4ff", "#41a4ff", "#FFFFFF"]
         }}
       />
     </Box>
@@ -335,17 +341,6 @@ const ProfileMypage = () => {
       const updatedFollowStatus = await follow(MyUserId[0], profile_id);
       setButtonDisable(false);
 
-      if (updatedFollowStatus == "成功") {
-        if (followStatus == "フォローする") {
-          setFollowStatus("フォローしています");
-        } else if (followStatus == "フォローされています") {
-          setFollowStatus("相互フォローしています");
-        } else if (followStatus == "フォローしています") {
-          setFollowStatus("フォローする");
-        } else if (followStatus == "相互フォローしています") {
-          setFollowStatus("フォローされています");
-        }
-      }
       const response = await axios.post("http://localhost:8000/followCheck", {
         sender_id: MyUserId[0],
         recipient_id: profile_id,
@@ -374,7 +369,7 @@ const ProfileMypage = () => {
   };
 
   return (
-    <Box sx={{ marginLeft: "18%", width: "64%", marginTop: "30px" }}>
+    <Box sx={{ margin: "30px 0px 50px 18%", width: "64%"}}>
       {/* 編集のコンポーネントをここで呼び出し */}
       <ProfileMypageEdit ref={childRef} />
       <Stack spacing={3} ref={Profile}>
@@ -391,7 +386,7 @@ const ProfileMypage = () => {
                   "&:hover": { backgroundColor: "#f0f0f0", title: "a" },
                 }}
               >
-                <ModeEditIcon sx={{ fontSize: 55 }} />
+                <ModeEditIcon sx={{ fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" } }} />
               </IconButton>
             </Tooltip>
             {/* {showEdit ? <ProfileMypageEdit /> : <ProfileMypage />} */}
@@ -426,7 +421,7 @@ const ProfileMypage = () => {
             boxShadow: "none",
           }}
         >
-           {responseIcon ? (
+          {responseIcon ? (
             <Box sx={{ height: "calc(100vw * 0.58)", width: "calc(100vw * 0.58)", maxHeight: 350, maxWidth: 350 }}>
               <ColorRingStyle />
             </Box>
@@ -468,7 +463,7 @@ const ProfileMypage = () => {
 
         <Box>
           <Typography variant="h6">企業名</Typography>
-          <Item>{ResponseData.company_name ? ResponseData.company_name : <PulseLoader color="#DAE2ED" />}</Item>
+          <Item >{ResponseData.company_name ? ResponseData.company_name : <PulseLoader color="#DAE2ED" />}</Item>
         </Box>
         <Box>
           <Typography variant="h6">企業名(カタカナ)</Typography>
@@ -509,19 +504,19 @@ const ProfileMypage = () => {
           ResponseData.acquisition_qualification ||
           ResponseData.hp_url ||
           ResponseData.video_url) && (
-          <Box>
-            <Showmore>
-              <Button
-                variant="outlined"
-                ref={showmore}
-                onClick={ShowmoreClick}
-                sx={{ borderColor: "#5956FF", color: "#5956FF", "&:hover": { borderColor: "#5956FF" }, cursor: "pointer" }}
-              >
-                {showMoreText}
-              </Button>
-            </Showmore>
-          </Box>
-        )}
+            <Box>
+              <Showmore>
+                <Button
+                  variant="outlined"
+                  ref={showmore}
+                  onClick={ShowmoreClick}
+                  sx={{ borderColor: "#5956FF", color: "#5956FF", "&:hover": { borderColor: "#5956FF" }, cursor: "pointer" }}
+                >
+                  {showMoreText}
+                </Button>
+              </Showmore>
+            </Box>
+          )}
         {/* ResponseData.prefectureがあるときのみ表示 */}
         {ResponseData.prefecture && !close && (
           <Box ref={(el) => (detail.current[0] = el)} id="detail">

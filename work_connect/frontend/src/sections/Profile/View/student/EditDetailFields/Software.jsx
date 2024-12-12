@@ -81,25 +81,36 @@ const Software = ({ SoftwareData }) => {
   return (
     <>
       <CreatableSelect
+        // プレフィックス＝接頭語
+        // CreatableSelect内のInput要素のClass名の頭にMyPageEditItemsをつけるという意味
+        classNamePrefix="MyPageEditItems"
         id="Software"
         value={selectedSoftware}
         onChange={handleChange}
         options={options}
         placeholder="▼"
         isMulti
+        className="MyPageEditItems"
         styles={{
-          control: (base) => ({
-            ...base,
-            fontSize: '20px', // テキストサイズを調整
-          }),
-          placeholder: (base) => ({
-            ...base,
-            fontSize: '20px', // プレースホルダーのサイズを調整
-          }),
-          menu: (base) => ({
-            ...base,
-            fontSize: '20px', // ドロップダウンメニューの文字サイズ
-          }),
+           // 12/5 
+          // App.cssにそれぞれ
+          // MyPageEditItems_control
+          // MyPageEditItems_placeholder、
+          // MyPageEditItems_menu
+          // と移動し書き換えました。
+
+          // control: (base) => ({
+          //   ...base,
+          //   fontSize: '20px', // テキストサイズを調整
+          // }),
+          // placeholder: (base) => ({
+          //   ...base,
+          //   fontSize: '20px', // プレースホルダーのサイズを調整
+          // }),
+          // menu: (base) => ({
+          //   ...base,
+          //   fontSize: '20px', // ドロップダウンメニューの文字サイズ
+          // }),
         }}
       />
     </>

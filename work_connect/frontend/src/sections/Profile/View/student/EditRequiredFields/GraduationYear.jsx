@@ -10,10 +10,10 @@ for (let i = currentYear; i <= currentYear + 5; i++) {
   options.push({ value: `${i}年卒業`, label: `${i}年卒業` });
 }
 
-const GraduationYearDropdown = ({GraduationData}) => {
+const GraduationYearDropdown = ({ GraduationData }) => {
   // 卒業年度を表示する範囲を設定(引数が5なら現在~5年後まで)
   //const yearOptions = generateYearOptions(5);
-  const [ Graduation, setGraduation ] = useState(GraduationData);
+  const [Graduation, setGraduation] = useState(GraduationData);
   const { getSessionData, updateSessionData } = useSessionStorage();
 
   // valueの初期値をセット
@@ -29,7 +29,7 @@ const GraduationYearDropdown = ({GraduationData}) => {
           value: SessionData.Graduation,
           label: SessionData.Graduation,
         });
-      } else if(GraduationData !== undefined){
+      } else if (GraduationData !== undefined) {
         // DBから最新のデータを取得
         setGraduation({
           value: GraduationData,
@@ -50,34 +50,42 @@ const GraduationYearDropdown = ({GraduationData}) => {
 
 
   return (
-      <Select
-        name="yearOptions"
-        options={options}
-        value={Graduation}
-        onChange={handleChange}
-        placeholder="▼"
-        required
-        styles={{
-          control: (base) => ({
-            ...base,
-            fontSize: '20px', // テキストサイズを調整
-          }),
-          placeholder: (base) => ({
-            ...base,
-            fontSize: '20px', // プレースホルダーのサイズを調整
-          }),
-          menu: (base) => ({
-            ...base,
-            fontSize: '20px', // ドロップダウンメニューの文字サイズ
-          }),
-        }}
-      />
+    <Select
+      className="MyPageEditItems"
+      name="yearOptions"
+      options={options}
+      value={Graduation}
+      onChange={handleChange}
+      placeholder="▼"
+      required
+      styles={{
+        // 12/5 
+        // App.cssにそれぞれ
+        // MyPageEditItems_control
+        // MyPageEditItems_placeholder、
+        // MyPageEditItems_menu
+        // と移動し書き換えました。
+
+        // control: (base) => ({
+        //   ...base,
+        //   fontSize: '20px', // テキストサイズを調整
+        // }),
+        // placeholder: (base) => ({
+        //   ...base,
+        //   fontSize: '20px', // プレースホルダーのサイズを調整
+        // }),
+        // menu: (base) => ({
+        //   ...base,
+        //   fontSize: '20px', // ドロップダウンメニューの文字サイズ
+        // }),
+      }}
+    />
 
   );
 };
 
 GraduationYearDropdown.propTypes = {
-  GraduationData: PropTypes.string ,
+  GraduationData: PropTypes.string,
 };
 
 export default GraduationYearDropdown;

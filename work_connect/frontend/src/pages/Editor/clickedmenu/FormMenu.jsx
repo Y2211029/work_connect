@@ -6,6 +6,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 
 //フォーム情報 MUI
 import Table from '@mui/material/Table';
@@ -34,21 +36,32 @@ import StarIcon from '@mui/icons-material/Star';
 import BurstModeIcon from '@mui/icons-material/BurstMode';
 
 
-const InputDateWithTime = ({ date, deadlineChange, format = "YYYY/MM/DD HH:mm" }) => {
-    return (
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"ja"}>
-            <DateTimePicker
-                value={dayjs(date)}
-                format={format}
-                onChange={deadlineChange}
-                slotProps={{ calendarHeader: { format: "YYYY/MM" } }}
-                ampm={false}
-            />        </LocalizationProvider>
-    );
+const InputDateWithTime = ({ date, SetDeadlineDate, format = "YYYY/MM/DD HH:mm" }) => {
+    dayjs.locale("ja");
+    dayjs.extend(utc);
+    dayjs.extend(timezone);
+  return (
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"ja"}>
+      <DateTimePicker
+        value={dayjs(date)} // 親コンポーネントから渡された date を使用
+        onChange={(newDate) => {
+          if (newDate) {
+            const formattedDate = dayjs(newDate).tz("Asia/Tokyo").format("YYYY-MM-DD HH:mm:ss");
+            console.log("更新後の時間", formattedDate);
+            SetDeadlineDate(formattedDate);
+          }
+        }}
+        format={format}
+        slotProps={{ calendarHeader: { format: "YYYY/MM" } }}
+        ampm={false}
+        clearable
+      />
+    </LocalizationProvider>
+  );
 };
 
-const FormMenu = ({ menuKey, questions = [], addQuestion = () => { }, CreateFormSave = () => { } }) => {
-    dayjs.locale("ja");
+const FormMenu = ({ menuKey, questions = [], addQuestion = () => { }, CreateFormSave = () => { } , SetDeadlineDate, deadlineDate }) => {
+
     console.log("addQuestion関数", addQuestion);
 
     // 入力タイプに基づくラベルの配列
@@ -86,11 +99,8 @@ const FormMenu = ({ menuKey, questions = [], addQuestion = () => { }, CreateForm
     // 締切日を設定するコンポーネント
     const settingdeadlinerender = (
         <InputDateWithTime
-            date={dayjs()} // 初期値を適宜設定
-            deadlineChange={(newDate) => {
-                const formattedDate = dayjs(newDate.$d).format("YYYY-MM-DD HH:mm:ss");
-                console.log("新しい締切日", formattedDate);
-            }}
+            date={deadlineDate}
+            SetDeadlineDate = {SetDeadlineDate}
         />
     );
 
@@ -149,7 +159,6 @@ const FormMenu = ({ menuKey, questions = [], addQuestion = () => { }, CreateForm
                         sx={{
                             width: "240px",
                             justifyContent: "flex-start",
-                            left:"10%",
                         }}
                     >
                         <Typography
@@ -192,6 +201,8 @@ FormMenu.propTypes = {
     questions: PropTypes.array,
     addQuestion: PropTypes.func,
     CreateFormSave: PropTypes.func,
+    SetDeadlineDate: PropTypes.func.isRequired,
+    deadlineDate: PropTypes.string.isRequired,
 };
 
 FormMenu.defaultProps = {
@@ -199,10 +210,11 @@ FormMenu.defaultProps = {
     addQuestion: () => { },
     CreateFormSave: () => { },
 };
+
 // PropTypesの型定義
 InputDateWithTime.propTypes = {
     date: PropTypes.object,
-    deadlineChange: PropTypes.func.isRequired,
+    SetDeadlineDate: PropTypes.func.isRequired,
     format: PropTypes.string,
 };
 

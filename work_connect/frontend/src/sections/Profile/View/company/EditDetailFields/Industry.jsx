@@ -6,8 +6,8 @@ import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import GetTagAllList from "src/components/tag/GetTagAllList";
 import InsertTag from 'src/components/tag/InsertTag';
 
-const Industry = ({IndustryData}) => {
-  const {InsertTagFunction} = InsertTag();
+const Industry = ({ IndustryData }) => {
+  const { InsertTagFunction } = InsertTag();
   const { getSessionData, updateSessionData } = useSessionStorage();
 
   const [selectedIndustry, setSelectedIndustry] = useState([]);
@@ -23,29 +23,29 @@ const Industry = ({IndustryData}) => {
   }, []);
 
 
-// valueの初期値をセット
-useEffect(() => {
-  if (getSessionData("accountData") !== undefined){
-    const SessionData = getSessionData("accountData");
-    if(SessionData.CompanyIndustryEditing && SessionData.CompanyIndustry){
-      // セッションストレージから最新のデータを取得
-      const devtagArray = SessionData.CompanyIndustry.split(",").map(item => ({
-        value: item,
-        label: item,
-      }));
-      setSelectedIndustry(devtagArray);
-    } else if(
-      (SessionData.CompanyIndustryEditing && SessionData.CompanyIndustry && IndustryData)||
-      (!SessionData.CompanyIndustryEditing && IndustryData)
-    ){ // DBから最新のデータを取得
-      const devtagArray = IndustryData.split(",").map(item => ({
-        value: item,
-        label: item,
-      }));
-      setSelectedIndustry(devtagArray);
+  // valueの初期値をセット
+  useEffect(() => {
+    if (getSessionData("accountData") !== undefined) {
+      const SessionData = getSessionData("accountData");
+      if (SessionData.CompanyIndustryEditing && SessionData.CompanyIndustry) {
+        // セッションストレージから最新のデータを取得
+        const devtagArray = SessionData.CompanyIndustry.split(",").map(item => ({
+          value: item,
+          label: item,
+        }));
+        setSelectedIndustry(devtagArray);
+      } else if (
+        (SessionData.CompanyIndustryEditing && SessionData.CompanyIndustry && IndustryData) ||
+        (!SessionData.CompanyIndustryEditing && IndustryData)
+      ) { // DBから最新のデータを取得
+        const devtagArray = IndustryData.split(",").map(item => ({
+          value: item,
+          label: item,
+        }));
+        setSelectedIndustry(devtagArray);
+      }
     }
-  }
-}, [IndustryData]);
+  }, [IndustryData]);
 
   useEffect(() => {
     let devTag = "";
@@ -82,6 +82,9 @@ useEffect(() => {
   return (
     <>
       <CreatableSelect
+        // プレフィックス＝接頭語
+        // CreatableSelect内のInput要素のClass名の頭にMyPageEditItemsをつけるという意味
+        classNamePrefix="MyPageEditItems"
         id="acquisitionIndustry"
         value={selectedIndustry}
         onChange={handleChange}
@@ -89,18 +92,25 @@ useEffect(() => {
         placeholder="▼"
         isMulti
         styles={{
-          control: (base) => ({
-            ...base,
-            fontSize: '20px', // テキストサイズを調整
-          }),
-          placeholder: (base) => ({
-            ...base,
-            fontSize: '20px', // プレースホルダーのサイズを調整
-          }),
-          menu: (base) => ({
-            ...base,
-            fontSize: '20px', // ドロップダウンメニューの文字サイズ
-          }),
+          // 12/5 
+          // App.cssにそれぞれ
+          // MyPageEditItems_control
+          // MyPageEditItems_placeholder、
+          // MyPageEditItems_menu
+          // と移動し書き換えました。
+
+          // control: (base) => ({
+          //   ...base,
+          //   fontSize: '20px', // テキストサイズを調整
+          // }),
+          // placeholder: (base) => ({
+          //   ...base,
+          //   fontSize: '20px', // プレースホルダーのサイズを調整
+          // }),
+          // menu: (base) => ({
+          //   ...base,
+          //   fontSize: '20px', // ドロップダウンメニューの文字サイズ
+          // }),
         }}
       />
     </>
@@ -108,7 +118,7 @@ useEffect(() => {
 };
 
 Industry.propTypes = {
-  IndustryData: PropTypes.string ,
+  IndustryData: PropTypes.string,
 };
 
 export default Industry;

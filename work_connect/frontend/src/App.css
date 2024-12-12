@@ -24,6 +24,7 @@ header .logo {
   font-size: 30px;
 }
 
+
 .toolbar {
   position: fixed;
   bottom: 0px;
@@ -53,6 +54,17 @@ nav ul li a:hover {
   color: rgb(45, 214, 158);
 }
 
+.searchbar {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 24;
+  padding: 32px;
+}
+
 .TypographyWidth {
   width: 100%;
 }
@@ -65,6 +77,8 @@ nav ul li a:hover {
 .Login_Sign_select_C_or_S {
   cursor: pointer;
 }
+
+
 
 /* トップページここから */
 .top_page_app_name {
@@ -146,6 +160,15 @@ nav ul li a:hover {
   justify-content: center;
 }
 
+.Login_modal_Button {
+  margin-top: 16px !important;
+  margin-bottom: 8px !important;
+}
+
+.login_modal_items {
+  font-size: 1rem !important;
+}
+
 .custom-overlay {
   background-color: rgba(0, 0, 0, 0.5);
   /* 背景色を設定 */
@@ -172,7 +195,7 @@ nav ul li a:hover {
   width: 70%;
   max-width: 600px;
   padding: 30px;
-  border-radius: 50px;
+  border-radius: 20px;
   border: 1px solid #dfdfdf;
   font-weight: 700;
 }
@@ -181,8 +204,8 @@ nav ul li a:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-evenly;
-  height: 500px;
+  justify-content: space-between;
+  height: calc(100% - 90px);
 }
 
 .loginFormField {
@@ -207,31 +230,8 @@ nav ul li a:hover {
   margin-bottom: 3px;
 }
 
-/* .loginUiForm button {
-  background-color: #f3f6fc;
-  width: 100%;
-  //margin-top: 10px;
-  border: none;
-  border-radius: 5px;
-  padding: 10px 30px;
-  color: black;
-  font-size: 15px;
-  cursor: pointer;
-  transition: all 0.2s;
-} */
 
-.submitButton {
-  background-color: #f3f6fc;
-  width: 100%;
-  margin-top: 10px;
-  border: none;
-  border-radius: 5px;
-  padding: 10px 30px;
-  color: black;
-  font-size: 15px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
+
 
 .preSignUpUiForm button {
   background-color: #f3f6fc;
@@ -986,8 +986,90 @@ textarea {
 }
 
 
+.MyPageEditItems {
+  font-size: 16px !important;
+}
+
+/* プレースホルダー */
+.MyPageEditItemTags__placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+/* メニュー全体 */
+.MyPageEditItemTags__menu {
+  background-color: #f9f9f9;
+}
+
+/* メニュー内のオプション */
+.MyPageEditItems__multi-value__label {
+  font-size: 16px !important;
+  color: #333;
+}
+
+.stack_follow_status {
+  width: fit-content !important;
+}
+
+.follow_status {
+  background-color: #328BFF;
+  padding: 2px 4px;
+  color: white;
+  border-radius: 10px;
+}
+
+
+.userName_items {
+  font-size: 1rem !important;
+}
+
+.news_list_view_items {
+  width: 100%;
+  padding: 10px !important;
+}
+
+.news_acordion_button {
+  color: #3F4551 !important;
+  justify-content: left !important;
+  border-radius: 0px !important;
+}
+
+.news_job_acordion_menu {
+  /*  横並び */
+  display: flex !important;
+  /* 必要に応じて折り返す */
+  flex-wrap: wrap !important;
+  /* 要素間の間隔 */
+  gap: 1 !important;
+  /* 垂直方向の整列 */
+  align-items: center !important;
+  padding: 16px 20px !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+@media (max-width: 1700px) {
+  .searchbar {
+    width: 40% !important;
+    height: 80% !important;
+  }
+
+  .column-container,
+  .gallery-container {
+    column-count: 4;
+  }
+
+  .column-container {
+    column-gap: 13px;
+  }
+}
 
 @media (max-width: 1200px) {
+  .searchbar {
+    width: 50% !important;
+    height: 80% !important;
+  }
 
   .column-container,
   .gallery-container {
@@ -997,10 +1079,22 @@ textarea {
   .column-container {
     column-gap: 10px;
   }
-
 }
 
 @media (max-width: 900px) {
+  .searchbar {
+    width: 60% !important;
+    height: 80% !important;
+  }
+
+  .Modal form {
+    width: 80%;
+    height: fit-content;
+  }
+
+  .login_modal_items {
+    font-size: 1rem;
+  }
 
   .column-container,
   .gallery-container {
@@ -1010,9 +1104,25 @@ textarea {
   .column-container {
     column-gap: 7px;
   }
+
+
+
 }
 
 @media (max-width: 600px) {
+  .searchbar {
+    width: 70% !important;
+    height: 80% !important;
+  }
+
+  .Modal form {
+    width: 90% !important;
+    height: fit-content !important;
+  }
+
+  .login_modal_items {
+    font-size: 0.9375rem !important;
+  }
 
   .column-container,
   .gallery-container {
@@ -1022,9 +1132,31 @@ textarea {
   .column-container {
     column-gap: 5px;
   }
+
+  .MyPageEditItems {
+    font-size: 14px !important;
+  }
+
+  .MyPageEditItems__multi-value__label {
+    font-size: 14px !important;
+  }
 }
 
 @media (max-width: 400px) {
+  .searchbar {
+    width: 80% !important;
+    height: 80% !important;
+  }
+
+  .Modal form {
+    width: 100% !important;
+    height: fit-content !important;
+  }
+
+  .login_modal_items {
+    font-size: 0.875rem !important;
+  }
+
   .column-container {
     column-gap: 2px;
   }

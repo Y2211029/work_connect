@@ -12,6 +12,10 @@ export const TopPage = lazy(() => import("../pages/topPage"));
 export const WorkPosting = lazy(() => import("src/components/account/students/WorkPosting"));
 // 動画投稿画面
 export const VideoPosting = lazy(() => import("src/components/account/students/VideoPosting"));
+// 作品投稿画面
+export const WorkEdit = lazy(() => import("src/components/account/students/WorkEdit"));
+// 動画投稿画面
+export const VideoEdit = lazy(() => import("src/components/account/students/VideoEdit"));
 // 作品選択画面
 export const WorkSelect = lazy(() => import("src/sections/work/WorkPosting/WorkSelect"));
 // 動画選択画面
@@ -56,6 +60,7 @@ export const Page404 = lazy(() => import("src/pages/page-not-found"));
 export const ProfilePage = lazy(() => import("src/pages/Profile"));
 export const ProfileNewsPage = lazy(() => import("src/sections/Profile/View/company/News"));
 export const SpecialCompanyNewsPage = lazy(() => import("src/sections/Profile/View/company/SpecialCompanyNews/specialCompanyNews-view"));
+
 export const CheckFormPage = lazy(() => import("src/sections/Profile/View/company/CheckForm/View/checkFormListView"));
 // C:\xampp\apps\work_connect\work_connect\frontend\src\sections\Profile\View\company\CheckForm\View\checkFormListView.jsx
 // チャット
@@ -104,7 +109,7 @@ export default function Router() {
 
 
         //20240704
-        { path: "news_detail/:news_id", element: <NewsDetailPage /> },
+        { path: "NewsDetail/:news_id", element: <NewsDetailPage /> },
 
         // トップ画面追加
         { path: "Top", element: <TopPage /> },
@@ -112,6 +117,10 @@ export default function Router() {
         { path: "WorkPosting", element: <WorkPosting /> },
         // 動画投稿画面
         { path: "VideoPosting", element: <VideoPosting /> },
+        // 作品編集画面
+        { path: "WorkEdit/:work_id", element: <WorkEdit /> },
+        // 動画編集画面
+        { path: "VideoEdit/:id", element: <VideoEdit /> },
         // 作品選択画面
         { path: "WorkSelect", element: <WorkSelect /> },
         // 動画選択画面

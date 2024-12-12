@@ -1,7 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Modal from "react-modal";
 import PropTypes from "prop-types";
 import "../Editor.css";
+
+//募集職種のタグを設定
+import Select from "react-select";
+import GetTagAllList from "src/components/tag/GetTagAllList";
+
 
 //ニュースメニューをインポート
 import ReleaseNews from "./ReleaseNews"
@@ -21,24 +26,96 @@ import Button from "@mui/material/Button";
 //時間
 import moment from 'moment-timezone';
 
+// 応募締め切り日を設定:MUI
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+import "dayjs/locale/ja";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+
+
+
+  const InputDateWithTime = ({ date, setEventDay,format = "YYYY/MM/DD HH:mm" }) => {
+    dayjs.locale("ja");
+    dayjs.extend(utc);
+    dayjs.extend(timezone);
+  return (
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"ja"}>
+      <DateTimePicker
+        value={dayjs(date)} // 親コンポーネントから渡された date を使用
+        onChange={(newDate) => {
+          if (newDate) {
+            const formattedDate = dayjs(newDate).tz("Asia/Tokyo").format("YYYY-MM-DD HH:mm:ss");
+            console.log("更新後の時間", formattedDate);
+            setEventDay(formattedDate);
+          }
+        }}
+        format={format}
+        slotProps={{ calendarHeader: { format: "YYYY/MM" } }}
+        ampm={false}
+        clearable
+      />
+    </LocalizationProvider>
+  );
+};
+
+
 const NewsMenu = ({
   menuKey,
   CreateFormJump,
   RewriteNewsEnter,
-  EditorStatusCheck = () => { },
-  EditorContentsStatusCheck = () => { },
-  NewsSave,
   draftlist = [],
-  imageUrl,
-  title,
   RewriteNewsDelete,
   NotificationMessageHandleChange,
   NewsUpLoad,
+  setEventDay,
+  eventDay,
+  setSelectedOccupation,
+  selectedOccupation,
   message,
-  selected_draft,
-  followerCounter }) => {
+  selected_draft, }) => {
 
-  console.log("menuKey",menuKey);
+  console.log("menuKey", menuKey);
+  console.log("イベントデイ",eventDay);
+  console.log("募集職種", selectedOccupation);
+
+  const [options, setOptions] = useState([]);
+  const { GetTagAllListFunction } = GetTagAllList();
+
+  let selectedOccupationArray = null;
+
+  if (selectedOccupation) {
+    selectedOccupationArray = selectedOccupation.split(',').map((occupation) => ({
+      label: occupation,
+      value: occupation,
+    }));
+  }
+
+
+  console.log("selectedOccupationArray配列", selectedOccupationArray);
+
+  useEffect(() => {
+    let optionArrayPromise = GetTagAllListFunction("company_selected_occupation");
+    optionArrayPromise.then((result) => {
+      setOptions(result);
+    });
+    console.log("options", options);
+    console.log("optionArrayPromise", optionArrayPromise);
+  }, []);
+
+
+  const handleChange = (selectedOption) => {
+    // setSelectedOccupation(selectedOption);
+    console.log("selectedOption", selectedOption);
+    let devTagArray = [];
+    selectedOption.map((item) => {
+      devTagArray.push(item.label);
+    });
+    const devTag = devTagArray.join(",");
+    console.log("選んだ内容", devTag);
+    setSelectedOccupation(devTag);
+  };
 
   //関数
   const FormattedDate = (time) => {
@@ -60,11 +137,6 @@ const NewsMenu = ({
   console.log("選んだ内容", selected_draft);
 
   const AddDraftNews = () => {
-    if (window.confirm("編集したニュースを保存しますか?")) {
-      NewsSave()
-      console.log("保存しました");
-    }
-    console.log("保存しませんでした");
     window.location.reload(false);
   }
 
@@ -128,31 +200,6 @@ const NewsMenu = ({
     </div>
   )
 
-  const saveNewsrender = (
-    <div className="news_button">
-      <button id="save" className="save" onClick={NewsSave}>下書きを保存する</button>
-    </div>
-  )
-
-
-
-  const editingStatusrender = (
-    <div className="editingstatusscroll">
-      <p>現在の編集状況</p>
-      <p>タイトル</p>
-      {EditorStatusCheck(title)}
-      <p>サムネイル</p>
-      {EditorStatusCheck(imageUrl)}
-      {followerCounter > 0 && (
-        <>
-          <p>通知に添えるメッセージ</p>
-          {EditorStatusCheck(message)}
-        </>
-      )}
-      <p>コンテンツ</p>
-      {EditorContentsStatusCheck()}
-    </div>
-  )
 
   const notificationMessagerender = (
     <ReleaseNews
@@ -160,6 +207,25 @@ const NewsMenu = ({
       NotificationMessageHandleChange={NotificationMessageHandleChange}
     />
   )
+
+  const eventDayrender = (
+    <InputDateWithTime
+      date={eventDay} // 親コンポーネントから渡された値を使用
+      setEventDay= {setEventDay}
+    />
+  );
+
+  const openJobsrender = (
+    <Select
+    id="prefecturesDropdwon"
+    value={selectedOccupationArray}
+    onChange={handleChange}
+    options={options}
+    placeholder="▼"
+    isMulti
+  />
+  )
+
 
   console.log("ドラフトリスト", draftlist);
 
@@ -199,16 +265,16 @@ const NewsMenu = ({
     switch (key) {
       case 'draftList':
         return draftListrender;
-      case 'saveNews':
-        return saveNewsrender;
-      case 'editingStatus':
-        return editingStatusrender;
       case 'notificationMessage':
         return notificationMessagerender;
       case 'createForm':
         return createFormrender;
       case 'releaseNews':
         return releaseNewsrender;
+      case 'eventDay':
+        return eventDayrender;
+      case 'openJobs':
+        return openJobsrender;
       default:
         return null;
     }
@@ -230,19 +296,34 @@ NewsMenu.propTypes = {
   CreateFormJump: PropTypes.func.isRequired, //ニュース保存後に応募フォーム作成画面に遷移する
   RewriteNewsDelete: PropTypes.func.isRequired, //下書きニュースを削除する
   RewriteNewsEnter: PropTypes.func.isRequired, //下書き中で編集するニュースを選択して、遷移する
-  EditorStatusCheck: PropTypes.func.isRequired, //サムネイル・タイトルの編集状況をチェック
-  EditorContentsStatusCheck: PropTypes.func.isRequired, //文字数や使用画像をチェック
-  message: PropTypes.string.isRequired,
   NewsSave: PropTypes.func.isRequired,
-  HandleChange: PropTypes.func.isRequired,
+  setSelectedOccupation: PropTypes.func.isRequired,
+  selectedOccupation: PropTypes.array.isRequired,
+  setOpenJobs: PropTypes.func.isRequired,
+  devTag: PropTypes.string.isRequired,
   NewsUpLoad: PropTypes.func.isRequired,
   NotificationMessageHandleChange: PropTypes.func.isRequired,
+  setEventDay: PropTypes.func.isRequired,
+  message: PropTypes.string.isRequired,
+  eventDay: PropTypes.string.isRequired,
   draftlist: PropTypes.array.isRequired, //下書きリスト
   newsid: PropTypes.number.isRequired, //ニュースID
   title: PropTypes.string.isRequired,
   imageUrl: PropTypes.string.isRequired, //サムネイル画像
   selected_draft: PropTypes.array.isRequired, //現在下書き中のニュース＆フォームの情報
   followerCounter: PropTypes.number.isRequired,
+};
+
+// PropTypesの型定義
+InputDateWithTime.propTypes = {
+  date: PropTypes.object,
+  setEventDay: PropTypes.func.isRequired,
+  format: PropTypes.string,
+};
+
+// デフォルト値の設定（必要であれば）
+InputDateWithTime.defaultProps = {
+  format: "YYYY/MM/DD HH:mm",
 };
 
 export default NewsMenu;

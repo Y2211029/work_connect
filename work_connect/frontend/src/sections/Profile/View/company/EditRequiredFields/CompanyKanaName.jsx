@@ -80,6 +80,7 @@ const CompanyKanaName = ({CompanyKanaNameData}) => {
                 marginBottom:'0'
             }}
             InputProps={{
+              className: 'MyPageEditItems',
               sx: {
                 fontSize: '20px', // 入力テキストのフォントサイズ
               },

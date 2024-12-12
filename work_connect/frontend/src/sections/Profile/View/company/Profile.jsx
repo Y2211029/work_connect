@@ -1,17 +1,17 @@
-import { useState, useEffect, useContext } from 'react';
-import PropTypes from 'prop-types';
-import Box from '@mui/material/Box';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import ProfileMypage from './Mypage';
-import ProfileNews from './News';
-import ProfileCompanyInformation from './CompanyInformation';
-import ProfileCheckForm from './CheckForm';
+import { useState, useEffect, useContext } from "react";
+import { useParams } from "react-router-dom";
+import PropTypes from "prop-types";
+import Box from "@mui/material/Box";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import ProfileMypage from "./Mypage";
+import ProfileNews from "./News";
+import ProfileCompanyInformation from "./CompanyInformation";
+import ProfileCheckForm from "./CheckForm";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import { AllItemsContext } from "src/layouts/dashboard/index";
 import { useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
-
 
 // 同一ページ内リンク用のナビゲーション制御
 function samePageLinkNavigation(event) {
@@ -38,7 +38,7 @@ function LinkTab(props) {
           event.preventDefault(); // ナビゲーションを防止
         }
       }}
-      aria-current={props.selected ? 'page' : undefined}
+      aria-current={props.selected ? "page" : undefined}
       {...props}
     />
   );
@@ -48,8 +48,6 @@ LinkTab.propTypes = {
   selected: PropTypes.bool,
 };
 
-
-
 //応募フォームタブを表示させるか否かの判断
 const Profile = ({ value, companyname: initialCompanyname }) => {
   const [companyname, setCompanyname] = useState(initialCompanyname);
@@ -57,12 +55,11 @@ const Profile = ({ value, companyname: initialCompanyname }) => {
   useEffect(() => {
     if (!initialCompanyname) {
       const url = new URL(window.location.href);
-      const urlCompanyname = decodeURIComponent(url.pathname.split('/')[2]); // 2番目の「/」の隣に企業名を取得
+      const urlCompanyname = decodeURIComponent(url.pathname.split("/")[2]); // 2番目の「/」の隣に企業名を取得
       setCompanyname(urlCompanyname);
       console.log("urlCompanyname", urlCompanyname);
     }
   }, [initialCompanyname]);
-
 
   return (
     <div>
@@ -80,12 +77,24 @@ export function NavTabs({ initialTabValue, companyname }) {
   const { setAllItems } = useContext(AllItemsContext);
   const [value, setValue] = useState(initialTabValue ?? getInitialProfileTabState());
   const [checkformboolean, setCheckFormBoolean] = useState(false);
+  const { user_name } = useParams();
   const [searchParams] = useSearchParams();
+  const accountData = getSessionData("accountData");
+
+  const [myPageFlag, setMyPageFlag] = useState(false);
   console.log(companyname);
+
   console.log(checkformboolean);
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (user_name == accountData.user_name) {
+      setMyPageFlag(true);
+    } else {
+      setMyPageFlag(false);
+    }
+  }, [user_name, accountData.user_name]);
 
   useEffect(() => {
     updateSessionData("accountData", "ProfileTabState", ProfileTabState);
@@ -103,32 +112,31 @@ export function NavTabs({ initialTabValue, companyname }) {
   //URLによってタブを変更する
   useEffect(() => {
     const page = searchParams.get("page");
-    console.log("page",page);
+    console.log("page", page);
 
     switch (page) {
       case null:
         setProfileTabState(0);
-        pageCheck('?page=mypage');
+        pageCheck("?page=mypage");
         break;
-      case 'news':
+      case "news":
         setProfileTabState(1);
-        pageCheck('?page=news&category=JobOffer');
+        pageCheck("?page=news&category=JobOffer");
         break;
-      case 'companyinformation':
+      case "companyinformation":
         setProfileTabState(2);
-        pageCheck('?page=companyinformation');
+        pageCheck("?page=companyinformation");
         break;
-      case 'checkform':
+      case "checkform":
         setProfileTabState(3);
-        pageCheck('?page=checkform');
+        pageCheck("?page=checkform");
         break;
       default:
         setProfileTabState(0); // デフォルトで 'mypage' を選択
-        pageCheck('?page=mypage');
+        pageCheck("?page=mypage");
         break;
     }
   }, [searchParams]);
-
 
   // useEffect(() => {
   //   if (value === 0) {
@@ -150,8 +158,6 @@ export function NavTabs({ initialTabValue, companyname }) {
   //   }
   // }, [value]);
 
-
-
   useEffect(() => {
     function getInitialCheckFormBoolean() {
       const accountData = getSessionData("accountData");
@@ -172,33 +178,28 @@ export function NavTabs({ initialTabValue, companyname }) {
     console.log("valueの内容", value);
   }, [value]);
 
-
   const handleTabClick = (event, newValue) => {
-
     // event.type can be equal to focus with selectionFollowsFocus.
-    if (
-      event.type !== 'click' ||
-      (event.type === 'click' && samePageLinkNavigation(event))
-    ) {
+    if (event.type !== "click" || (event.type === "click" && samePageLinkNavigation(event))) {
       setValue(newValue);
     }
     if (newValue === 0) {
       // マイページが押されたとき
       setProfileTabState(0);
-      pageCheck('?page=mypage');
+      pageCheck("?page=mypage");
       // 検索アイコン非表示にする
     } else if (newValue === 1) {
       // ニュースが押されたとき
       setProfileTabState(1);
-      pageCheck('?page=news&category=JobOffer');
+      pageCheck("?page=news&category=JobOffer");
     } else if (newValue === 2) {
       // 企業情報が押されたとき
       setProfileTabState(2);
-      pageCheck('?page=companyinformation');
+      pageCheck("?page=companyinformation");
     } else if (newValue === 3) {
       // 応募フォームが押されたとき
       setProfileTabState(3);
-      pageCheck('?page=checkform');
+      pageCheck("?page=checkform");
     }
     setAllItems((prevItems) => ({
       ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
@@ -212,28 +213,22 @@ export function NavTabs({ initialTabValue, companyname }) {
 
   function pageCheck(pageStr) {
     const url = new URL(window.location.href);
-    const urlStr = url.pathname.split('?')[0]; // クエリパラメータを取り除く
+    const urlStr = url.pathname.split("?")[0]; // クエリパラメータを取り除く
     navigate(`${urlStr}${pageStr}`);
   }
   return (
-    <Box sx={{ width: '100%' }}>
-      <Tabs
-        value={value ?? 0}
-        aria-label="nav tabs example"
-        role="navigation"
-      >
-        <Tab label="マイページ" onClick={(e) => handleTabClick(e, 0)} />
+    <Box sx={{ width: "100%" }}>
+      <Tabs value={value ?? 0} aria-label="nav tabs example" role="navigation">
+        <Tab label={myPageFlag ? "マイページ" : "プロフィール"} onClick={(e) => handleTabClick(e, 0)} />
         <Tab label="ニュース" onClick={(e) => handleTabClick(e, 1)} />
         <Tab label="企業情報" onClick={(e) => handleTabClick(e, 2)} />
         {/* 今ログインしている企業だけに出るタブ */}
-        {checkformboolean &&
-          <Tab label="応募フォーム" onClick={(e) => handleTabClick(e, 3)} />
-        }
+        {checkformboolean && <Tab label="応募フォーム" onClick={(e) => handleTabClick(e, 3)} />}
       </Tabs>
       {value === 0 && <ProfileMypage />} {/* value が 0 の場合マイページ */}
-      {value === 1 && <ProfileNews />}   {/* value が 1 の場合ニュース */}
-      {value === 2 && <ProfileCompanyInformation />}   {/* value が 2 の場合企業情報 */}
-      {value === 3 && <ProfileCheckForm />}   {/* value が 3 の場合応募フォーム一覧 */}
+      {value === 1 && <ProfileNews />} {/* value が 1 の場合ニュース */}
+      {value === 2 && <ProfileCompanyInformation />} {/* value が 2 の場合企業情報 */}
+      {value === 3 && <ProfileCheckForm />} {/* value が 3 の場合応募フォーム一覧 */}
     </Box>
   );
 }

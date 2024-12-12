@@ -136,6 +136,7 @@ const CompanyAddressMap = ({ CompanyAddressMapData }) => {
           marginBottom: '0'
         }}
         InputProps={{
+          className: 'MyPageEditItemTags',
           sx: {
             fontSize: '20px', // 入力テキストのフォントサイズ
           },

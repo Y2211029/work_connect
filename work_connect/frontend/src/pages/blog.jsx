@@ -8,7 +8,7 @@ export default function VideoList() {
   return (
     <>
       <Helmet>
-        <title> 動画一覧 | Minimal UI </title>
+        <title> 動画一覧 | Work&Connect </title>
       </Helmet>
 
       <VideoListView />

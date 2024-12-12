@@ -5,8 +5,8 @@ import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import GetTagAllList from "src/components/tag/GetTagAllList";
 import InsertTag from 'src/components/tag/InsertTag';
 
-const Environment = ({EnvironmentData}) => {
-  const {InsertTagFunction} = InsertTag();
+const Environment = ({ EnvironmentData }) => {
+  const { InsertTagFunction } = InsertTag();
   const [selectedDevEnvironment, setSelectedDevEnvironment] = useState([]);
 
   const { getSessionData, updateSessionData } = useSessionStorage();
@@ -25,17 +25,17 @@ const Environment = ({EnvironmentData}) => {
   useEffect(() => {
     if (getSessionData("accountData") !== undefined) {
       const SessionData = getSessionData("accountData");
-      if(SessionData.CompanyEnvironmentEditing && SessionData.CompanyEnvironment){
+      if (SessionData.CompanyEnvironmentEditing && SessionData.CompanyEnvironment) {
         // セッションストレージから最新のデータを取得
         const devtagArray = SessionData.CompanyEnvironment.split(",").map(item => ({
           value: item,
           label: item,
         }));
         setSelectedDevEnvironment(devtagArray);
-      } else if(
-        (SessionData.CompanyEnvironmentEditing && SessionData.CompanyEnvironment && EnvironmentData)||
+      } else if (
+        (SessionData.CompanyEnvironmentEditing && SessionData.CompanyEnvironment && EnvironmentData) ||
         (!SessionData.CompanyEnvironmentEditing && EnvironmentData)
-      ){ // DBから最新のデータを取得
+      ) { // DBから最新のデータを取得
         const devtagArray = EnvironmentData.split(",").map(item => ({
           value: item,
           label: item,
@@ -79,6 +79,9 @@ const Environment = ({EnvironmentData}) => {
   return (
     <div>
       <CreatableSelect
+        // プレフィックス＝接頭語
+        // CreatableSelect内のInput要素のClass名の頭にMyPageEditItemsをつけるという意味
+        classNamePrefix="MyPageEditItems"
         id="devEnvironment"
         value={selectedDevEnvironment}
         onChange={handleChange}
@@ -86,18 +89,25 @@ const Environment = ({EnvironmentData}) => {
         placeholder="▼"
         isMulti
         styles={{
-          control: (base) => ({
-            ...base,
-            fontSize: '20px', // テキストサイズを調整
-          }),
-          placeholder: (base) => ({
-            ...base,
-            fontSize: '20px', // プレースホルダーのサイズを調整
-          }),
-          menu: (base) => ({
-            ...base,
-            fontSize: '20px', // ドロップダウンメニューの文字サイズ
-          }),
+          // 12/5 
+          // App.cssにそれぞれ
+          // MyPageEditItems_control
+          // MyPageEditItems_placeholder、
+          // MyPageEditItems_menu
+          // と移動し書き換えました。
+
+          // control: (base) => ({
+          //   ...base,
+          //   fontSize: '20px', // テキストサイズを調整
+          // }),
+          // placeholder: (base) => ({
+          //   ...base,
+          //   fontSize: '20px', // プレースホルダーのサイズを調整
+          // }),
+          // menu: (base) => ({
+          //   ...base,
+          //   fontSize: '20px', // ドロップダウンメニューの文字サイズ
+          // }),
         }}
       />
     </div>
@@ -105,7 +115,7 @@ const Environment = ({EnvironmentData}) => {
 };
 
 Environment.propTypes = {
-  EnvironmentData: PropTypes.string ,
+  EnvironmentData: PropTypes.string,
 };
 
 export default Environment;

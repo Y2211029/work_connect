@@ -17,8 +17,8 @@ class FollowController extends Controller
         $now = Carbon::now('Asia/Tokyo');
 
         // react側からのリクエスト
-        $sender_id = $request->input('sender_id');
-        $recipient_id = $request->input('recipient_id');
+        $sender_id = $request->input('followerId');
+        $recipient_id = $request->input('followedId');
 
         // フォロー情報の存在を確認
         $follow_check = w_follow::where('follow_sender_id', $sender_id)

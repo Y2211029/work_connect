@@ -6,8 +6,8 @@ import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import GetTagAllList from "src/components/tag/GetTagAllList";
 import InsertTag from 'src/components/tag/InsertTag';
 
-const SelectedOccupation = ({SelectedOccupationData}) => {
-  const {InsertTagFunction} = InsertTag();
+const SelectedOccupation = ({ SelectedOccupationData }) => {
+  const { InsertTagFunction } = InsertTag();
   const { getSessionData, updateSessionData } = useSessionStorage();
 
   const [selectedOccupation, setSelectedOccupation] = useState([]);
@@ -26,17 +26,17 @@ const SelectedOccupation = ({SelectedOccupationData}) => {
   useEffect(() => {
     if (getSessionData("accountData") !== undefined) {
       const SessionData = getSessionData("accountData");
-      if(SessionData.CompanySelectedOccupationEditing && SessionData.CompanySelectedOccupation){
+      if (SessionData.CompanySelectedOccupationEditing && SessionData.CompanySelectedOccupation) {
         // セッションストレージから最新のデータを取得
         const devtagArray = SessionData.CompanySelectedOccupation.split(",").map(item => ({
           value: item,
           label: item,
         }));
         setSelectedOccupation(devtagArray);
-      } else if(
-        (SessionData.CompanySelectedOccupationEditing && SessionData.CompanySelectedOccupation && SelectedOccupationData)||
+      } else if (
+        (SessionData.CompanySelectedOccupationEditing && SessionData.CompanySelectedOccupation && SelectedOccupationData) ||
         (!SessionData.CompanySelectedOccupationEditing && SelectedOccupationData)
-      ){ // DBから最新のデータを取得
+      ) { // DBから最新のデータを取得
         const devtagArray = SelectedOccupationData.split(",").map(item => ({
           value: item,
           label: item,
@@ -81,33 +81,43 @@ const SelectedOccupation = ({SelectedOccupationData}) => {
 
   return (
     <CreatableSelect
-        name="selectedOccupation"
-        id="prefecturesDropdwon"
-        value={selectedOccupation}
-        onChange={handleChange}
-        options={options}
-        placeholder="▼"
-        isMulti
-        styles={{
-          control: (base) => ({
-            ...base,
-            fontSize: '20px', // テキストサイズを調整
-          }),
-          placeholder: (base) => ({
-            ...base,
-            fontSize: '20px', // プレースホルダーのサイズを調整
-          }),
-          menu: (base) => ({
-            ...base,
-            fontSize: '20px', // ドロップダウンメニューの文字サイズ
-          }),
-        }}
+      // プレフィックス＝接頭語
+      // CreatableSelect内のInput要素のClass名の頭にMyPageEditItemsをつけるという意味
+      classNamePrefix="MyPageEditItems"
+      name="selectedOccupation"
+      id="prefecturesDropdwon"
+      value={selectedOccupation}
+      onChange={handleChange}
+      options={options}
+      placeholder="▼"
+      isMulti
+      styles={{
+        // 12/5 
+        // App.cssにそれぞれ
+        // MyPageEditItems_control
+        // MyPageEditItems_placeholder、
+        // MyPageEditItems_menu
+        // と移動し書き換えました。
+
+        // control: (base) => ({
+        //   ...base,
+        //   fontSize: '20px', // テキストサイズを調整
+        // }),
+        // placeholder: (base) => ({
+        //   ...base,
+        //   fontSize: '20px', // プレースホルダーのサイズを調整
+        // }),
+        // menu: (base) => ({
+        //   ...base,
+        //   fontSize: '20px', // ドロップダウンメニューの文字サイズ
+        // }),
+      }}
     />
   );
 };
 
 SelectedOccupation.propTypes = {
-  SelectedOccupationData: PropTypes.string ,
+  SelectedOccupationData: PropTypes.string,
 };
 
 export default SelectedOccupation;

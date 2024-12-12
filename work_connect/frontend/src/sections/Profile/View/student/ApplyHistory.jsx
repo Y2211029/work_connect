@@ -5,6 +5,7 @@ import axios from "axios";
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 import Stack from '@mui/material/Stack';
 import Button from "@mui/material/Button";
+import { ColorRing } from "react-loader-spinner";
 
 
 const Apply_history = forwardRef(({ id }, ref) => {
@@ -118,18 +119,38 @@ const Apply_history = forwardRef(({ id }, ref) => {
 
   return (
     <>
-      {applyHistories.length === 0 ? (
-        <p>応募履歴がありません。</p>
+      {Array.isArray(applyHistories) ? (
+        applyHistories.length > 0 ? (
+          applyHistories.map((posts, index) => (
+            <div className="post_card" ref={ref} key={index}>
+              {/* ヘッダー部分 */}
+              {renderHeader(posts)}
+              {/* コンテンツ部分 */}
+              {renderDetails(posts)}
+            </div>
+          ))
+        ) : (
+          <p>応募履歴がありません。</p>
+        )
       ) : (
-        applyHistories.map((posts, index) => (
-          <div className="post_card" ref={ref} key={index}>
-            {/* ヘッダー部分 */}
-            {renderHeader(posts)}
-            {/* コンテンツ部分 */}
-            {renderDetails(posts)}
-          </div>
-        ))
+        <ColorRing
+          visible={true}
+          height="100"
+          width="100"
+          ariaLabel="color-ring-loading"
+          wrapperStyle={{
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+          wrapperClass="custom-color-ring-wrapper"
+          colors={["#41a4ff", "#FFFFFF", "#41a4ff", "#41a4ff", "#FFFFFF"]}
+        />
       )}
+
+
+
     </>
   );
 });

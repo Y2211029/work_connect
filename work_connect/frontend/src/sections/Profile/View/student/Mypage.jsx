@@ -34,7 +34,10 @@ const Item = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(1),
   textAlign: "left",
   color: theme.palette.text.secondary,
-  fontSize: "25px",
+  fontSize: "14px",
+  [theme.breakpoints.up("sm")]: {
+    fontSize: "16px", // 画面幅が"sm"以上の場合
+  },
 }));
 
 // Showmoreのスタイルを定義
@@ -42,12 +45,15 @@ const Showmore = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   padding: theme.spacing(1),
   textAlign: "center",
-  fontSize: "20px",
+  fontSize: "14px",
+  [theme.breakpoints.up("sm")]: {
+    fontSize: "16px", // 画面幅が"sm"以上の場合
+  },
 }));
 
 // ローディングのコンポーネント
 const ColorRingStyle = () => {
-  return(
+  return (
     <Box
       sx={{
         marginTop: '20%',
@@ -64,7 +70,7 @@ const ColorRingStyle = () => {
           width: "10",
           ariaLabel: "color-ring-loading",
           wrapperClass: "custom-color-ring-wrapper",
-          colors:["#41a4ff", "#FFFFFF", "#41a4ff", "#41a4ff", "#FFFFFF"]
+          colors: ["#41a4ff", "#FFFFFF", "#41a4ff", "#41a4ff", "#FFFFFF"]
         }}
       />
     </Box>
@@ -334,7 +340,7 @@ const ProfileMypage = () => {
   };
 
   return (
-    <Box sx={{ marginLeft: "18%", width: "64%", marginTop: "30px" }}>
+    <Box sx={{ margin: "30px 0px 50px 18%", width: "64%" }}>
       {/* 編集のコンポーネントをここで呼び出し */}
       <ProfileMypageEdit ref={childRef} />
       <Stack spacing={3} ref={Profile}>
@@ -352,7 +358,7 @@ const ProfileMypage = () => {
                   // height: "30px",
                 }}
               >
-                <ModeEditIcon sx={{ fontSize: 55 }} />
+                <ModeEditIcon sx={{ fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" } }} />
               </IconButton>
             </Tooltip>
           ) : ResponseData.id && MyUserId[0] && ResponseData.id.charAt(0) !== MyUserId[0].charAt(0) ? (
@@ -463,19 +469,19 @@ const ProfileMypage = () => {
           ResponseData.programming_language ||
           ResponseData.acquisition_qualification ||
           ResponseData.software) && (
-          <Box>
-            <Showmore>
-              <Button
-                variant="outlined"
-                ref={showmore}
-                onClick={ShowmoreClick}
-                sx={{ borderColor: "#5956FF", color: "#5956FF", "&:hover": { borderColor: "#5956FF" }, cursor: "pointer" }}
-              >
-                {showMoreText}
-              </Button>
-            </Showmore>
-          </Box>
-        )}
+            <Box>
+              <Showmore>
+                <Button
+                  variant="outlined"
+                  ref={showmore}
+                  onClick={ShowmoreClick}
+                  sx={{ borderColor: "#5956FF", color: "#5956FF", "&:hover": { borderColor: "#5956FF" }, cursor: "pointer" }}
+                >
+                  {showMoreText}
+                </Button>
+              </Showmore>
+            </Box>
+          )}
         {/* ResponseData.faculty_nameがあるときのみ表示 */}
         {ResponseData.faculty_name && !close && (
           <Box ref={(el) => (detail.current[0] = el)} id="detail">

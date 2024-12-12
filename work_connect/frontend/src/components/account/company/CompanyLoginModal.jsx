@@ -3,19 +3,23 @@ import PropTypes from "prop-types";
 import Modal from "react-modal";
 import axios from "axios";
 import $ from "jquery";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import LoginStatusCheck from "src/components/account/loginStatusCheck/loginStatusCheck";
 
 import "src/App.css";
 
-import TextField from "@mui/material/TextField";
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import TextField from "@mui/material/TextField";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import CloseIcon from "@mui/icons-material/Close";
+import InputAdornment from "@mui/material/InputAdornment";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import ModalStyle from "../ModalStyle";
 
@@ -263,11 +267,34 @@ const CompanyLoginModal = (props) => {
       <Modal isOpen={showModal} contentLabel="Example Modal" style={ModalStyle}>
         <div className="Modal">
           <form onSubmit={handleSubmit} className="formInModal">
-            <h3>Work&Connect ログイン</h3>
-            <hr />
+            <Stack
+              direction="row"
+              spacing={2}
+              sx={{
+                // height: "100%",
+                justifyContent: "space-between",
+                alignItems: "align-items: center",
+              }}
+            >
+              <Stack
+                direction={{ xs: 'column', sm: 'column', md: 'row' }}
+                spacing={2}
+                sx={{
+                  justifyContent: "space-between",
+                  alignItems: "align-items: center",
+                }}>
+
+                <Typography variant="h5" className="login_modal_items">Work&Connect</Typography>
+                <Typography variant="h" className="login_modal_items">ログイン（企業）</Typography>
+              </Stack>
+              {/* モーダル右上の❌ボタン */}
+              <IconButton onClick={handleCloseModal}>
+                <CloseIcon />
+              </IconButton>
+            </Stack>
+            <Divider sx={{ borderStyle: "solid", my: 2, display: "block" }} />
             <div className="loginUiForm">
               <TextField
-                fullWidth
                 label="企業名またはメールアドレス"
                 margin="normal"
                 name="user_name"
@@ -276,9 +303,14 @@ const CompanyLoginModal = (props) => {
                 type="text"
                 value={formValues.user_name}
                 variant="outlined"
+                sx={{
+                  width: { xs: "95%", sm: "90%", md: "80%" },
+                  "& .MuiInputLabel-root": {
+                    fontSize: { xs: "10px", sm: "14px", md: "16px" }, // レスポンシブなフォントサイズ
+                  },
+                }}
               />
               <TextField
-                fullWidth
                 label="パスワード"
                 margin="normal"
                 name="password"
@@ -287,6 +319,12 @@ const CompanyLoginModal = (props) => {
                 type={showPassword ? "text" : "password"}
                 value={formValues.password}
                 variant="outlined"
+                sx={{
+                  width: { xs: "95%", sm: "90%", md: "80%" },
+                  "& .MuiInputLabel-root": {
+                    fontSize: { xs: "10px", sm: "14px", md: "16px" }, // レスポンシブなフォントサイズ
+                  },
+                }}
                 // パスワード表示/非表示の切り替え
                 InputProps={{
                   endAdornment: (
@@ -296,9 +334,7 @@ const CompanyLoginModal = (props) => {
                         onClick={handleClickShowPassword}
                         onMouseDown={handleMouseDownPassword}
                         edge="end"
-                        sx={{
-
-                        }}
+                        sx={{ width: { xs: "95%", sm: "90%", md: "80%" } }}
                         variant="outlined"
                       >
                         {showPassword ? <VisibilityOff /> : <Visibility />}
@@ -307,21 +343,18 @@ const CompanyLoginModal = (props) => {
                   ),
                 }}
               />
-
-
-
-              <Button type="button" onClick={fillDemoCredentials} className="submitButton">
+              <Button variant="outlined" type="button" className="Login_modal_Button" onClick={fillDemoCredentials} sx={{ width: { xs: "95%", sm: "90%", md: "80%" } }}>
                 ユーザーネーム:株式会社アーキテクト パスワード:ArchitectPassword
               </Button>
-              <button type="submit" className="submitButton">
+              <Button variant="outlined" type="submit" className="Login_modal_Button" sx={{ width: { xs: "95%", sm: "90%", md: "80%" } }}>
                 ログイン
-              </button>
+              </Button>
               {Object.keys(formErrors).length === 0 && isSubmit && handleCloseModal}
-              <button onClick={handleCloseModal} id="CompanyshutButton" className="submitButton">
-                閉じる
-              </button>
-              <div onClick={handleOpenStudentModal} id="loginStudentModalLink" className="Login_Sign_select_C_or_S">
-                学生の方はこちら
+              <div>
+                学生の方はこちらから
+                <Link href="" onClick={handleOpenStudentModal} id="loginStudentModalLink" className="Login_Sign_select_C_or_S">
+                  ログイン
+                </Link>
               </div>
             </div>
           </form>

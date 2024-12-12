@@ -57,7 +57,10 @@ const VideoGenre = (props) => {
     props.callSetVideoData("VideoGenre", valueArray.join(","));
   };
 
-  return <CreatableSelect options={options} placeholder="▼" isClearable isMulti onChange={handleChange} />;
+  return <CreatableSelect
+        // プレフィックス＝接頭語
+        // CreatableSelect内のInput要素のClass名の頭にMyPageEditItemsをつけるという意味
+        classNamePrefix="MyPageEditItems" options={options} placeholder="▼" isClearable isMulti onChange={handleChange} />;
 };
 
 VideoGenre.propTypes = {

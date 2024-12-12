@@ -65,6 +65,7 @@ class GetWorkDetailController extends Controller
 
             $workListArray = [];
             $workListArray["作品"] = json_decode(json_encode($workList), true);
+            $workListArray["画像"] = json_decode(json_encode($workImageList), true);
             $workListArray["作品コメント"] = json_decode(json_encode($comments), true);
 
 

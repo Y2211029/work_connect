@@ -79,17 +79,17 @@ class NewsController extends Controller
 
                     // 締め切りを確認する 締切日を設定していないもしくは締切日超過の場合はfalseを返す
                     if ($createForm->deadline !== null && $createForm->deadline->lt($now)) {
-                        $news_detail->deadline_status = true;
+                        $news_detail->deadlineStatus = true;
                     } else {
-                        $news_detail->deadline_status = false;
+                        $news_detail->deadlineStatus = false;
                     }
                 } else {
                     $news_detail->writeform_status = false;
-                    $news_detail->deadline_status = false;
+                    $news_detail->deadlineStatus = false;
                 }
             } else {
                 $news_detail->writeform_status = false;
-                $news_detail->deadline_status = false;
+                $news_detail->deadlineStatus = false;
                 $news_detail->createform_status = false;
             }
 
@@ -153,35 +153,6 @@ class NewsController extends Controller
     }
 
 
-    // ブックマーク機能
-    public function news_bookmark(Request $request)
-    {
-        $now = Carbon::now('Asia/Tokyo');
-        $session_id = $request->input('session_id');
-        $bookmark_id = $request->input('id');
-        $category = $request->input('category');
-
-        $news_bookmark = w_bookmark::where('position_id', $session_id)
-            ->where('bookmark_id', $bookmark_id)
-            ->exists();
-
-        if ($news_bookmark) {
-            w_bookmark::where('position_id', $session_id)
-                ->where('bookmark_id', $bookmark_id)
-                ->delete();
-
-            return response()->json(["message" => "削除成功しました"], 200);
-        } else {
-            w_bookmark::create([
-                'position_id' => $session_id,
-                'category' => $category,
-                'bookmark_id' => $bookmark_id,
-                'created_at' => $now,
-            ]);
-
-            return response()->json(["message" => "新規追加成功しました"], 201);
-        }
-    }
 
     //自社が投稿したニュースの中で応募フォームを作成したニュースを表示させる
     //応募フォームの回答(面談の日程とか?)とその人のプロフィールを確認することができる
@@ -252,7 +223,7 @@ class NewsController extends Controller
 
     // 全ニュース取得
     public function all_news_get(Request $request, $id, $category)
-    {
+    {       //$idは${SessionAccountData.id}なので自分のid
         try {
             Log::info("all_news_get通ってます");
             $page = (int) $request->query('page', 1);
@@ -264,14 +235,15 @@ class NewsController extends Controller
             $postsQuery = w_news::where('w_news.public_status', 1)
                 ->where('w_news.genre', $category)
                 ->join('w_companies', 'w_news.company_id', '=', 'w_companies.id')
-                ->select('w_news.*', 'w_companies.*', 'w_news.created_at as news_created_at', 'w_news.id as news_id');
+                ->select('w_news.*', 'w_companies.*', 'w_news.created_at as news_created_at','w_news.genre as genre', 'w_news.id as news_id');
 
             if ($userName !== null) {
                 $postsQuery->where('w_companies.user_name', $userName);
             }
 
             if ($sortOption === 'orderNewPostsDate') {
-                $postsQuery->orderBy('w_news.created_at', 'desc');
+                $postsQuery->orderBy('w_news.event_day', 'asc')
+                ->orderBy('w_news.deadline', 'desc');
             } elseif ($sortOption === 'orderOldPostsDate') {
                 $postsQuery->orderBy('w_news.created_at', 'asc');
             }
@@ -280,56 +252,92 @@ class NewsController extends Controller
                 ->take($perPage)
                 ->get();
 
-            foreach ($posts as $post) {
+            if($posts){
+                foreach ($posts as $post) {
 
-                // w_create_formsテーブルから応募用フォームがあるかチェック
-                $createformData = w_create_form::where('news_id', $post->news_id)->first();
-                Log::info('$createformData'. $createformData);
+                    Log::info("ジャンル", ['genre' => $post->genre]);
 
-                if ($createformData) {
-                    // 現在のデッドラインを取得
-                    $Deadline = $createformData->deadline;
+                    // w_create_formsテーブルから応募用フォームがあるかチェック
+                    $createformData = w_create_form::where('news_id', $post->news_id)->first();
+                    Log::info('$createformData'. $createformData);
 
-                    // デッドラインが指定されている場合のみ更新
-                    if (!empty($Deadline)) {
-                        Log::info('デッドライン: ' . $Deadline);
+                    if ($createformData) {
+                        // 現在のデッドラインを取得
+                        $Deadline = $createformData->deadline;
 
-                        // デッドラインを更新
-                        $post->deadline = $Deadline;
+                        // デッドラインが指定されている場合のみ更新
+                        if (!empty($Deadline)) {
+                            Log::info('デッドライン: ' . $Deadline);
+                            $now = Carbon::now('Asia/Tokyo');
+                            Log::info('現在の時刻: ' . $now);
+                            info('データ型: ' . gettype($Deadline) . ', ' . gettype($now));
 
-                    } else {
-                        Log::info('新しいデッドラインが指定されていません。変更は行われません。');
+                        // 締め切りを確認する 締切日を設定していないもしくは締切日超過の場合はfalseを返す
+                        if ($Deadline !== null && $Deadline->lt($now)) {
+                            $post->deadline_status = true;
+                        } else {
+                            $post->deadline_status = false;
+                        }
+
+
+                            // デッドラインを更新
+                            $post->deadline = $Deadline;
+
+                        } else {
+                            Log::info('新しいデッドラインが指定されていません。変更は行われません。');
+                            $post->deadline_status = false;
+
+                        }
                     }
-                }
 
-                // w_write_formsテーブルからすべてのフォームデータを取得
-                $formData = w_write_form::where('news_id', $post->news_id)->get();
+                    // w_write_formsテーブルからすべてのフォームデータを取得
+                    $formData = w_write_form::where('news_id', $post->news_id)->get();
 
 
-                // 取得したフォームデータの数をpostsに追加
-                $post->form_data_count = $formData->count();
+                    // 取得したフォームデータの数をpostsに追加
+                    $post->form_data_count = $formData->count();
 
-                $isFollowing = w_follow::where('follow_sender_id', $id)
-                    ->where('follow_recipient_id', $post->id)
+                    Log::info('sender_id: ' . $id);
+                    Log::info('recipient_id: ' . $post->company_id);
+
+
+
+                    $isFollowing = w_follow::where('follow_sender_id', $id)
+                    ->where('follow_recipient_id', $post->company_id)
                     ->exists();
 
-                $isFollowedByUser = w_follow::where('follow_sender_id', $post->id)
+                $isFollowedByUser = w_follow::where('follow_sender_id', $post->company_id)
                     ->where('follow_recipient_id', $id)
                     ->exists();
 
                 if ($isFollowing && $isFollowedByUser) {
-                    $post->follow_status = '相互フォローしています';
-                } elseif ($isFollowing) {
-                    $post->follow_status = 'フォローしています';
-                } elseif ($isFollowedByUser) {
-                    $post->follow_status = 'フォローされています';
-                } else {
-                    $post->follow_status = 'フォローする';
+                        $post->follow_status = '相互フォローしています';
+                    } elseif ($isFollowing) {
+                        $post->follow_status = 'フォローしています';
+                    } elseif ($isFollowedByUser) {
+                        $post->follow_status = 'フォローされています';
+                    } else {
+                        $post->follow_status = 'フォローする';
+                    }
                 }
+
+
+                return json_encode($posts);
+
+            }else{
+                $posts = [];
+                return json_encode($posts);
             }
             Log::info("all_news_get:posts");
             Log::info($posts);
-            return response()->json($posts);
+
+            // $postArray = json_decode(json_encode($posts), true);
+
+            // Log::info("all_news_get:postArray");
+            // Log::info($postArray);
+
+            // return response()->json($posts);
+            // return json_encode($postArray);
         } catch (\Exception $e) {
             Log::error('all_news_get エラー: ' . $e->getMessage());
             return response()->json(['error' => 'データ取得中にエラーが発生しました。'], 500);
@@ -406,5 +414,30 @@ class NewsController extends Controller
         }
 
         return response()->json($posts);
+    }
+
+    public function news_delete(Request $request){
+        $news_id = $request->input('news_id');
+        Log::info("news_id" . $news_id);
+
+        //$news_idでニュースがあるかチェック
+        $news_check =w_news::where('id', $news_id)
+            ->first();
+
+        if($news_check){
+            //ニュースがあれば削除
+            $news_check->delete();
+
+            //応募用フォームを作成しているかチェック
+            $create_form_check = w_create_form::where('news_id', $news_id)
+                ->first();
+
+            //応募用フォームがあれば削除(応募したフォームは削除しない)
+            if($create_form_check){
+                $create_form_check->delete();
+            }
+
+            return response()->json("成功");
+        }
     }
 }

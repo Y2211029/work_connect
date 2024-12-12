@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\w_company;
 use App\Models\w_news;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Log;
 
 class SearchInternshipJobOfferController extends Controller
 {
-    /* 企業の検索処理 */
+    /* ニュースの検索処理 */
     public function SearchInternshipJobOfferController(Request $request)
     {
         try {
@@ -51,6 +53,44 @@ class SearchInternshipJobOfferController extends Controller
             // ジャンル取得
             $genre = $request->input('genre', "");
 
+            Log::info("news_genre");
+            Log::info($genre);
+
+            // 締切日を文字列型で取得
+            $deadline_calender = $request->input('deadline_calender', "");
+            // 開催日を文字列型で取得
+            $event_calender = $request->input('event_calender', "");
+
+            $deadline_day = "";
+            // 締切日を検索用データにセット
+            if($deadline_calender != "") {
+                $deadline_day = Carbon::createFromFormat('Y年m月d日', $deadline_calender)->endOfDay()->format('Y-m-d H:i:s');
+            }
+
+            // 開催日(始め)
+            $event_start_day = "";
+            // 開催日(終わり)
+            $event_end_day = "";
+
+            // 開催日が範囲指定かどうか判定して検索用データにセット
+            if($event_calender != "") {
+                if (strpos($event_calender, "～") == false) {
+                    Log::info("event_calender_log");
+                    Log::info($event_calender);
+                    $event_start_day = Carbon::createFromFormat('Y年m月d日', $event_calender)->format('Y-m-d');
+                    Log::info($event_start_day);
+                } else {
+                    $prev_event_start_day = explode("～", $event_calender)[0];
+                    $prev_event_end_day = explode("～", $event_calender)[1];
+                    \Log::info('SearchCompanyController:$prev_event_start_day:');
+                    \Log::info($prev_event_start_day);
+                    \Log::info('SearchCompanyController:$prev_event_end_day:');
+                    \Log::info($prev_event_end_day);
+                    $event_start_day = Carbon::createFromFormat('Y年m月d日', $prev_event_start_day)->startOfDay()->format('Y-m-d H:i:s');
+                    $event_end_day = Carbon::createFromFormat('Y年m月d日', $prev_event_end_day)->endOfDay()->format('Y-m-d H:i:s');
+                }
+            }
+
             \Log::info('SearchCompanyController:$company_name_array:');
             \Log::info($company_name_array);
 
@@ -58,10 +98,13 @@ class SearchInternshipJobOfferController extends Controller
 
             $query->select(
                 'w_companies.*',
-                'w_news.*'
+                'w_create_forms.deadline',
+                'w_news.*',
+                'w_news.created_at as news_created_at'
             );
 
             $query->join('w_companies', 'w_news.company_id', '=', 'w_companies.id');
+            $query->leftJoin('w_create_forms', 'w_news.id', '=', 'w_create_forms.news_id');
 
             if (isset($genre)) {
                     $query->where('w_news.genre', $genre);
@@ -74,15 +117,15 @@ class SearchInternshipJobOfferController extends Controller
 
             // 企業名で絞り込み
             if (isset($company_name_array)) {
-                foreach ($company_name_array as $company_name_array) {
-                    $query->where('w_companies.company_name', 'REGEXP', '(^|,)' . preg_quote($company_name_array) . '($|,)');
+                foreach ($company_name_array as $company_name) {
+                    $query->where('w_companies.company_name', 'REGEXP', '(^|,)' . preg_quote($company_name) . '($|,)');
                 }
             }
 
             // 職種で絞り込み
             if (isset($selected_occupation_array)) {
                 foreach ($selected_occupation_array as $selected_occupation) {
-                    $query->where('w_companies.selected_occupation', 'REGEXP', '(^|,)' . preg_quote($selected_occupation) . '($|,)');
+                    $query->where('w_news.open_jobs', 'REGEXP', '(^|,)' . preg_quote($selected_occupation) . '($|,)');
                 }
             }
             // 勤務地で絞り込み
@@ -159,6 +202,31 @@ class SearchInternshipJobOfferController extends Controller
                 $query->join('w_follow', 'w_companies.id', '=', 'w_follow.follow_sender_id');
                 $query->where('w_follow.follow_recipient_id', $myId);
             }
+
+            // 締切日で絞り込み
+            if($deadline_day != "") {
+                // 今日の日付 (開始日) を取得
+                $today_str = Carbon::today()->startOfDay()->format('Y-m-d H:i:s');
+                Log::info('SearchInternshipJobOffer.$tuday_str');
+                Log::info($today_str);
+                Log::info('SearchInternshipJobOffer.$deadline_day');
+                Log::info($deadline_day);
+                $query->whereBetween('w_create_forms.deadline', [$today_str, $deadline_day]);
+            }
+
+            // 開催日で絞り込み
+            if($event_start_day != "") {
+                if($event_end_day == "") {
+                    // $query->whereDate('event_day', $event_start_day);
+                    $query->whereDate('w_news.event_day', $event_start_day);
+                    Log::info('SearchInternshipJobOfferLog');
+                } else {
+                    $query->whereBetween('w_news.event_day', [$event_start_day, $event_end_day]);
+                }
+            }
+
+            // 公開されているニュースのみ取得
+            $query->where('w_news.public_status', '1');
 
             $results = $query->skip($offset)
                 ->take($perPage) //件数

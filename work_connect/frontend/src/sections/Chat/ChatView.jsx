@@ -29,7 +29,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Tooltip from '@mui/material/Tooltip';
 import Modal from '@mui/material/Modal';
 import CircleIcon from '@mui/icons-material/Circle';
-import EditIcon from '@mui/icons-material/Edit';
+import EditNoteIcon from "@mui/icons-material/EditNote";
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
 import { green } from '@mui/material/colors';
@@ -563,8 +563,12 @@ const ChatView = () => {
     // フォローリスト、チャット取得
     GetChannelList();
     GetChat(chatViewId);
-    //alert("GET CHAT");
-    AlreadyReadChat(chatViewId);
+
+    // 既読は遅延させて実行
+    setTimeout(() => {
+      AlreadyReadChat(chatViewId);
+    }, 1000);
+
 
   }, [chatContext.WebSocketState.Chat, chatViewId]);
 
@@ -677,7 +681,7 @@ const ChatView = () => {
           },
         });
         if (response.data !== "null") {
-          //console.log("チャットのレスポンスは"+JSON.stringify(response.data, null, 2));
+          console.log("チャットのレスポンスは"+JSON.stringify(response.data, null, 2));
           setResponseData(response.data);
 
         } else {
@@ -865,7 +869,7 @@ const ChatView = () => {
       updateSessionData("accountData", "GetStartUnread", unreadid);
     }
     // 「ここから未読」を表示
-    if (unreadid === id) {
+    if (getSessionData("accountData").GetStartUnread === id) {
       // コンポーネント呼び出し
       return <UnreadStart />;
     }
@@ -1292,7 +1296,7 @@ const ChatView = () => {
                             bgcolor: element.send_user_id === MyUserId ? '#dbdbff' : '#dbdbdb',
                             // 背景色(ホバー時)
                             '&:hover': {
-                              bgcolor: element.send_user_id === MyUserId ? 'rgba(199, 199, 255)' : 'rgba(199, 199, 199)',
+                              bgcolor: element.send_user_id === MyUserId ? '#c7c7ff' : '#dbdbdb',
                             },
                           }}
                         >
@@ -1342,9 +1346,20 @@ const ChatView = () => {
                             horizontal: 'right',
                           }}
                         >
-                          <MenuItem onClick={() => popMenuEdit(popMenuId, popMenuMessage)} ><EditIcon />&nbsp;編集</MenuItem>
-                          <MenuItem onClick={() => popMenuDelete(popMenuId)} sx={{ color: 'red' }}><DeleteIcon color="error" />&nbsp;削除</MenuItem>
+                         <Box display="flex" flexDirection="row" gap={2}>
+                            <Tooltip title="編集">
+                              <MenuItem onClick={() => popMenuEdit(popMenuId, popMenuMessage)}>
+                                <EditNoteIcon />
+                              </MenuItem>
+                            </Tooltip>
+                            <Tooltip title="削除">
+                              <MenuItem onClick={() => popMenuDelete(popMenuId)} sx={{ color: 'red' }}>
+                                <DeleteIcon color="error" />
+                              </MenuItem>
+                            </Tooltip>
+                          </Box>
                         </Menu>
+
                       ) : (null)}
 
 

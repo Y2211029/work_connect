@@ -59,6 +59,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData");
   const [PathName, setPathName] = useState("");
+  // const navigate = useNavigate();
 
   useLayoutEffect(() => {
     let url = new URL(window.location.href);
@@ -155,17 +156,35 @@ const PostCard = forwardRef(({ post }, ref) => {
     </>
   );
   // フォームのレンダリング（企業の投稿の場合）
-  const renderForm =
-    company_id === accountData.id && count > 0 ? (
-      <Typography
-        sx={{ opacity: 0.48, cursor: "pointer", textAlign: "right" }}
-        onClick={() => {
-          window.location.href = `/Profile/${user_name}?page=checkform`;
-        }}
-      >
-        {count}件のフォーム回答
-      </Typography>
-    ) : null;
+  // const renderForm =
+  //   company_id === accountData.id && count > 0 ? (
+      
+  //     <Typography
+  //       sx={{ opacity: 0.48, cursor: "pointer", textAlign: "right" }}
+  //       onClick={() => {
+  //         navigate(`/Profile/${user_name}?page=checkform`);
+  //       }}
+  //     >
+  //       {count}件のフォーム回答
+  //     </Typography>
+  //   ) : null;
+
+    const renderForm =
+  company_id === accountData.id && count > 0 ? (
+    <Link
+      to={`/Profile/${user_name}?page=checkform`}
+      style={{
+        opacity: 0.48,
+        cursor: "pointer",
+        textAlign: "right",
+        textDecoration: "none", // デフォルトの下線を消す場合
+        color: "inherit", // 見た目を他のテキストと統一したい場合
+      }}
+    >
+      {count}件のフォーム回答
+    </Link>
+  ) : null;
+
 
   //フォローステータス
   const renderFollow = followStatus !== "フォローできません" && followStatus !== "フォローする" && (
@@ -315,11 +334,9 @@ const PostCard = forwardRef(({ post }, ref) => {
         <div className="postCard" style={{ width: "100%" }}>
           {renderThumbnail}
           {renderTitle}
-
           {renderGenre}
           {renderDay}
           {renderFollow}
-
           {renderInfo}
         </div>
       </Stack>

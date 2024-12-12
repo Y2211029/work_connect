@@ -11,7 +11,11 @@ import ProfileCheckForm from "./CheckForm";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import { AllItemsContext } from "src/layouts/dashboard/index";
 import { useNavigate } from "react-router-dom";
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { useSearchParams } from "react-router-dom";
+import "./Profile.css";
+import { ColorRing } from "react-loader-spinner";
+
 
 // 同一ページ内リンク用のナビゲーション制御
 function samePageLinkNavigation(event) {
@@ -80,9 +84,10 @@ export function NavTabs({ initialTabValue, companyname }) {
   const { user_name } = useParams();
   const [searchParams] = useSearchParams();
   const accountData = getSessionData("accountData");
+  const Screen = useMediaQuery("(max-width:600px) and (min-width:401px)");
+  const [isReady, setIsReady] = useState(false);
 
   const [myPageFlag, setMyPageFlag] = useState(false);
-  console.log(companyname);
 
   console.log(checkformboolean);
 
@@ -106,36 +111,44 @@ export function NavTabs({ initialTabValue, companyname }) {
   }
 
   // useEffect(() => {
-  //   setValue(0);
-  // }, []);
+  //   if (pageName !== 'checkform') {
+  //     setValue(0);
+  //   }
+  //   console.log("サーチパラムス", pageName);
+  // }, [pageName]);
 
   //URLによってタブを変更する
   useEffect(() => {
     const page = searchParams.get("page");
-    console.log("page", page);
-
+    console.log("ページ名", page);
     switch (page) {
       case null:
         setProfileTabState(0);
+        setValue(0);
         pageCheck("?page=mypage");
         break;
       case "news":
         setProfileTabState(1);
+        setValue(1);
         pageCheck("?page=news&category=JobOffer");
         break;
       case "companyinformation":
         setProfileTabState(2);
+        setValue(2);
         pageCheck("?page=companyinformation");
         break;
       case "checkform":
         setProfileTabState(3);
+        setValue(3);
         pageCheck("?page=checkform");
         break;
       default:
-        setProfileTabState(0); // デフォルトで 'mypage' を選択
+        setProfileTabState(0);
+        setValue(0);
         pageCheck("?page=mypage");
         break;
     }
+    setIsReady(true);
   }, [searchParams]);
 
   // useEffect(() => {
@@ -170,6 +183,7 @@ export function NavTabs({ initialTabValue, companyname }) {
   }, [companyname, getSessionData]);
 
   useEffect(() => {
+    console.log("ここでのvalueの内容", value);
     if (value === undefined) {
       setValue(getInitialProfileTabState());
     } else {
@@ -218,17 +232,36 @@ export function NavTabs({ initialTabValue, companyname }) {
   }
   return (
     <Box sx={{ width: "100%" }}>
-      <Tabs value={value ?? 0} aria-label="nav tabs example" role="navigation">
-        <Tab label={myPageFlag ? "マイページ" : "プロフィール"} onClick={(e) => handleTabClick(e, 0)} />
-        <Tab label="ニュース" onClick={(e) => handleTabClick(e, 1)} />
-        <Tab label="企業情報" onClick={(e) => handleTabClick(e, 2)} />
-        {/* 今ログインしている企業だけに出るタブ */}
-        {checkformboolean && <Tab label="応募フォーム" onClick={(e) => handleTabClick(e, 3)} />}
-      </Tabs>
-      {value === 0 && <ProfileMypage />} {/* value が 0 の場合マイページ */}
-      {value === 1 && <ProfileNews />} {/* value が 1 の場合ニュース */}
-      {value === 2 && <ProfileCompanyInformation />} {/* value が 2 の場合企業情報 */}
-      {value === 3 && <ProfileCheckForm />} {/* value が 3 の場合応募フォーム一覧 */}
+
+      {!isReady ? (
+
+        <ColorRing
+          visible={true}
+          height="100"
+          width="100"
+          ariaLabel="color-ring-loading"
+          wrapperStyle={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
+          wrapperClass="custom-color-ring-wrapper"
+          colors={["#41a4ff", "#FFFFFF", "#41a4ff", "#41a4ff", "#FFFFFF"]}
+          style={{ flexDirection: "column" }}
+        />
+      ) : (
+
+        <>
+          <Tabs className="ProfileTabs" value={value ?? 0} aria-label="nav tabs example" role="navigation" centered={Screen}>
+            <Tab className="ProfileTabsBox" label={myPageFlag ? "マイページ" : "プロフィール"} onClick={(e) => handleTabClick(e, 0)} />
+            <Tab className="ProfileTabsBox" label="ニュース" onClick={(e) => handleTabClick(e, 1)} />
+            <Tab className="ProfileTabsBox" label="企業情報" onClick={(e) => handleTabClick(e, 2)} />
+            {/* 今ログインしている企業だけに出るタブ */}
+            {checkformboolean && <Tab className="ProfileTabsBox" label={<span>応募<br />フォーム</span>} onClick={(e) => handleTabClick(e, 3)} />}
+          </Tabs>
+          {value === 0 && <ProfileMypage />} {/* value が 0 の場合マイページ */}
+          {value === 1 && <ProfileNews />} {/* value が 1 の場合ニュース */}
+          {value === 2 && <ProfileCompanyInformation />} {/* value が 2 の場合企業情報 */}
+          {value === 3 && <ProfileCheckForm />} {/* value が 3 の場合応募フォーム一覧 */}
+        </>
+
+      )}
     </Box>
   );
 }

@@ -11,6 +11,17 @@
     margin: auto;
   }
 
+  @media(max-width:600px){
+    .ProfileTabs{
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  @media(max-width:400px){
+
+  }
+
 
 
 

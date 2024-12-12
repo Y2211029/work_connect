@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { AllItemsContext } from "src/layouts/dashboard/index";
 import { useParams } from "react-router-dom";
 import ListView from "src/components/view/list-view";
@@ -47,6 +47,7 @@ export default function NavTabs() {
   const { getSessionData, updateSessionData } = useSessionStorage();
   const [value, setValue] = useState(0);
   const [ProfileTabState, setProfileTabState] = useState(getInitialProfileTabState());
+  const Screen = useMediaQuery("(max-width:600px) and (min-width:401px)");
 
   useEffect(() => {
     updateSessionData("accountData", "ProfileTabState", ProfileTabState);
@@ -167,6 +168,7 @@ function pageCheck(pageStr) {
         aria-label="nav tabs example"
         role="navigation"
         className="News_Tabs"
+        centered={Screen}
       >
         <Tab className="NewsSelect_Box" label="求人" onClick={(e) => handleTabClick(e, 0)} />
         <Tab className="NewsSelect_Box" label={<span>インターン<br />シップ</span>} onClick={(e) => handleTabClick(e, 1)} />

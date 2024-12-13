@@ -52,16 +52,15 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import { Helmet } from 'react-helmet-async';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
-import IconButton from "@mui/material/IconButton";
 import MUIButton from "@mui/material/Button";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
-import MenuIcon from '@mui/icons-material/Menu';
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MUITooltip from "@mui/material/Tooltip";
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 //データ保存
 import axios from "axios";
@@ -101,12 +100,13 @@ const Editor = () => {
   const [selectedOccupation, setSelectedOccupation] = useState("");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [newsTitle, setNewsTitle] = useState("ブログ");
 
-  const news_save_url = "http://locelhost:8000/news_save";
+  const news_save_url = "http://localhost:8000/news_save";
   const thumbnail_image_save_url = "http://127.0.0.1:8000/thumbnail_image_save";
 
   const csrf_url = "http://localhost:8000/csrf-token";
-  const isContentReady = !!(title && imageUrl && charCount && eventDay); // 必須データが揃っているか確認
+  const isContentReady = !!(title && imageUrl && charCount && eventDay && selectedOccupation); // 必須データが揃っているか確認
   const isFollowerValid = (followerCounter > 0 && notificationMessage) || (followerCounter === 0 || followerCounter === undefined);
 
   const navigate = useNavigate();
@@ -198,13 +198,15 @@ const Editor = () => {
         console.error("Editor instance or save function not available");
         return;
       }
-
       console.log("保存するときのニュース内容", formSummary);
-      console.log(sessionId);
-      console.log(news_id);
-      console.log(notificationMessage);
-      console.log(genre);
-      console.log(eventDay);
+      console.log("タイトル", title);
+      console.log("ニュースID", news_id);
+      console.log("通知メッセージ", notificationMessage);
+      console.log("応募職種", selectedOccupation);
+      console.log("開催日", eventDay);
+      console.log("企業ID", sessionId);
+      console.log("ジャンル", genre);
+
 
       const response = await axios.post(news_save_url, {
         value: formSummary,    // ニュース記事
@@ -501,7 +503,7 @@ const Editor = () => {
           {EditorStatusCheck(notificationMessage)}
         </>
       )}
-      <p>コンテンツ</p>
+      <p>記事内容</p>
       {EditorContentsStatusCheck()}
     </div>
   )
@@ -1088,26 +1090,24 @@ const Editor = () => {
 
 
 
-  const getNewsTitle = () => {
+  useEffect(() => {
     let NewsTitle;
-    console.log(genre);
 
     if (genre === "Blog") {
-      NewsTitle = "ブログニュースの編集";
+      NewsTitle = "ブログ";
     } else if (genre === "Internship") {
-      NewsTitle = "インターンニュースの編集";
+      NewsTitle = "インターンシップ";
     } else if (genre === "JobOffer") {
-      NewsTitle = "求人ニュースの編集";
+      NewsTitle = "求人";
     } else if (genre === "Session") {
-      NewsTitle = "説明会ニュースの編集";
+      NewsTitle = "説明会";
     }
 
-    return (
-      <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4" className="News_Title">{NewsTitle}</Typography>
-      </Stack>
-    );
-  };
+    setNewsTitle(NewsTitle);
+  }, [genre]);
+
+
+
 
   const CreateFormJump = async () => {
     setCreateFormOpen(true);
@@ -1542,7 +1542,7 @@ const Editor = () => {
 
   const menuItems = [
     {
-      key: "draftList", text: "下書きリスト", render:
+      key: "draftList", text: "下書きリスト", tooltiptitle: `${newsTitle}ニュースの下書きを確認できます`, render:
         <NewsMenu menuKey={'draftList'}
           draftlist={draft_list}
           RewriteNewsDelete={rewrite_news_delete}
@@ -1551,14 +1551,26 @@ const Editor = () => {
         />
     },
     ...(genre !== "Blog" ? [{
-      key: "eventDay", text: "開催日を設定する", render:
+      key: "eventDay", text: "開催日を設定する",
+      tooltiptitle:
+        <>
+          {newsTitle}の開催日を指定して、<br />
+          学生に周知できます
+        </>,
+      render:
         <NewsMenu menuKey={'eventDay'}
           eventDay={eventDay}
           setEventDay={setEventDay}
         />
     }] : []),
     ...(genre !== "Blog" ? [{
-      key: "openJobs", text: "募集職種を設定する", render:
+      key: "openJobs", text: "募集職種を設定する",
+      tooltiptitle:
+        <>
+          応募している職種を設定することで、 <br />
+          同じ職種を志望する学生に周知しやすくなります
+        </>,
+      render:
         <NewsMenu menuKey={'openJobs'}
           selected_draft={selected_draft}
           setSelectedOccupation={setSelectedOccupation}
@@ -1566,7 +1578,13 @@ const Editor = () => {
         />
     }] : []),
     ...(followerCounter > 0 ? [{
-      key: "notificationMessage", text: "通知に添えるメッセージ", render:
+      key: "notificationMessage", text: "通知に添えるメッセージ",
+      tooltiptitle:
+        <>
+          フォローしている学生に通知が行く際、 <br />
+          メッセージを送ることができます
+        </>
+      , render:
         <NewsMenu menuKey={'notificationMessage'}
           NotificationMessageHandleChange={notification_messagehandleChange}
           message={notificationMessage}
@@ -1574,7 +1592,13 @@ const Editor = () => {
     }] : []),
     // 条件を満たした場合のみ追加
     ...(genre !== "Blog" ? [{
-      key: "createForm", text: "応募フォームを作成する", render:
+      key: "createForm", text: "応募フォームを作成する",
+      tooltiptitle:
+        <>
+          インターンシップや求人・説明会のニュースでは、 <br />
+          応募フォームを作成することができます
+        </>
+      , render:
         <NewsMenu menuKey={'createForm'}
           CreateFormJump={CreateFormJump}
           selected_draft={selected_draft}
@@ -1592,7 +1616,11 @@ const Editor = () => {
 
 
       {/* ニュースタイトルを表示 */}
-      {getNewsTitle()}
+      <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+        <Typography variant="h4" className="News_Title">
+          {newsTitle ? `${newsTitle}ニュースの編集` : "ニュースの編集"}
+        </Typography>
+      </Stack>
 
       {/* CreateForm の表示 */}
       {CreateFormOpen && <CreateForm newsid={news_id} HandleBack={handleBack} />}
@@ -1623,44 +1651,41 @@ const Editor = () => {
           <Stack spacing={2} className="SelectMenu">
             <div className="SelectMenu_Hamburger">
               {/* ハンバーガーメニュー用のボタン */}
-              <IconButton
-                edge="start"
-                color="inherit"
-                aria-label="menu"
-                onClick={() => toggleDrawer(true)}
-                className="IconButton"
-              >
-                <Typography className="FormMenu">
-                  <MenuIcon className="FormMenuIcon" />
-                  ニュースメニューを開く
-                </Typography>
-              </IconButton>
 
-              <MUIButton variant="outlined" onClick={news_save}
-                sx={{ position: 'relative', left: '100px', width: "120px", borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
-                下書き保存
-              </MUIButton>
+              <Stack direction={"row"}>
 
+                <MUITooltip title ="その他のニュースメニュー">
+                  <MoreVertIcon onClick={() => toggleDrawer(true)} className="FormMenuIcon" 
+                  sx={{ position: 'relative', top:'7px', left: '30px', width: "120px", '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
+                </MoreVertIcon>  
+                </ MUITooltip>
 
-
-              {(isContentReady && isFollowerValid) ? (
-                <MUIButton variant="outlined" onClick={news_upload}
-                  sx={{ position: 'relative', left: '120px', width: "160px", borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
-                  ニュースを公開する
+                <MUIButton variant="outlined" onClick={news_save}
+                  sx={{ position: 'relative', left: '50px', width: "120px", borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
+                  下書き保存
                 </MUIButton>
-              ) : (
-                <MUITooltip title="まだ公開できません">
-                  <MUIButton variant="outlined" sx={{
-                    position: 'relative', left: '120px', width: '160px', borderColor: '#A9A9A9', color: '#A9A9A9', backgroundColor: '#F5F5F5', // 背景色を薄いグレーに設定
-                    '&:hover': { borderColor: '#A9A9A9', backgroundColor: '#F5F5F5', },
-                    cursor: 'not-allowed', // マウスカーソルを無効状態に変更
-                  }}
-                  >
+
+
+
+                {(isContentReady && isFollowerValid) ? (
+                  <MUIButton variant="outlined" onClick={news_upload}
+                    sx={{ position: 'relative', left: '70px', width: "160px", borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
                     ニュースを公開する
                   </MUIButton>
-                </MUITooltip>
+                ) : (
+                  <MUITooltip title="まだ公開できません">
+                    <MUIButton variant="outlined" sx={{
+                      position: 'relative', left: '70px', width: '160px', borderColor: '#A9A9A9', color: '#A9A9A9', backgroundColor: '#F5F5F5', // 背景色を薄いグレーに設定
+                      '&:hover': { borderColor: '#A9A9A9', backgroundColor: '#F5F5F5', },
+                      cursor: 'not-allowed', // マウスカーソルを無効状態に変更
+                    }}
+                    >
+                      ニュースを公開する
+                    </MUIButton>
+                  </MUITooltip>
+                )}
 
-              )}
+              </Stack>
 
 
 
@@ -1675,11 +1700,11 @@ const Editor = () => {
                 }}
               >
 
-                                  {/* 現在の編集状況 */}
-                                  {editingStatusrender}
+                {/* 現在の編集状況 */}
+                {editingStatusrender}
 
                 <List sx={{ width: "300px" }}>
-                  {menuItems.map(({ key, text, render }) => {
+                  {menuItems.map(({ key, text, tooltiptitle, render }) => {
                     // デバッグ: 各アイテムを確認
                     console.log({ key, text, render });
                     return (
@@ -1694,9 +1719,11 @@ const Editor = () => {
                           aria-controls={`${key}-content`}
                           id={`${key}-header`}
                         >
-                          <Typography sx={{ fontSize: "15px", width: "80%", flexShrink: 0 }}>
-                            {text}
-                          </Typography>
+                          <MUITooltip title={tooltiptitle} placement="left">
+                            <Typography sx={{ fontSize: "15px", width: "80%", flexShrink: 0 }}>
+                              {text}
+                            </Typography>
+                          </MUITooltip>
                         </AccordionSummary>
                         <AccordionDetails>
                           {render || <Typography>コンテンツが見つかりません</Typography>}

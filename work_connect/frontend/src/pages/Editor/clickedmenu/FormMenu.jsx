@@ -96,6 +96,8 @@ const FormMenu = ({ menuKey, questions = [], addQuestion = () => { }, CreateForm
         return matched ? matched.text : "不明なタイプ";
     };
 
+    console.log("応募締め切り日",deadlineDate);
+
     // 締切日を設定するコンポーネント
     const settingdeadlinerender = (
         <InputDateWithTime

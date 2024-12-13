@@ -439,10 +439,11 @@ class EditorController extends Controller
         try {
 
             $newsid = $request->input('newsid');
-
             // 条件に一致するニュースドラフトリストを取得
             $createForm = w_create_form::where('news_id', $newsid)
-                ->get();
+            ->join('w_news', 'w_create_forms.news_id', '=', 'w_news.id') // news_idでw_newsと結合
+            ->get();
+
             return response()->json(['create_form' => $createForm]);
         } catch (\Exception $e) {
             // エラーレスポンスを返す

@@ -97,6 +97,11 @@ input[type="number"]::-webkit-inner-spin-button {
 
 }
 
+.SelectMenu_Hamburger{
+  margin-left:10%;
+  width: 40%;
+}
+
 .QuestionMenu_Hamburger{
   padding-bottom: 20px;
 }
@@ -154,8 +159,7 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 .FormMenuIcon{
-  font-size: 40px;
-  margin-right: 8px;
+  font-size: 25px;
 }
 
 .modal-overlay {

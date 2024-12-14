@@ -186,6 +186,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
         WorkOfList.map((work /*, key*/) => ({
           work_id: work.work_id,
           thumbnail: `http://localhost:8000/storage/images/work/${work.thumbnail}`,
+          youtubeURL: work.youtube_url,
           icon: work.icon,
           title: work.work_name,
           genre: work.work_genre,

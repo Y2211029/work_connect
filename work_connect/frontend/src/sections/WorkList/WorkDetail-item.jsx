@@ -16,7 +16,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import Divider from "@mui/material/Divider";
 
 // youtubeコンポーネントは外部CSS（例：MUI(sx={{}})）はセキュリティ上効かない、真のCSSを使う
-import YouTubeIcon from '@mui/icons-material/YouTube'
+import YouTubeIcon from "@mui/icons-material/YouTube";
 
 import { SLIDER, AVATAR } from "src/layouts/dashboard/config-layout";
 import { UseCreateTagbutton } from "src/hooks/use-createTagbutton";
@@ -61,7 +61,6 @@ const thumbsOptions = {
   aspectRatio: "16 / 9",
 };
 
-
 const opts = {
   width: "100%",
   height: "100%",
@@ -73,8 +72,6 @@ const opts = {
     iv_load_policy: 3,
   },
 };
-
-
 
 const WorkDetailItem = () => {
   // ログイン情報の取得
@@ -127,7 +124,6 @@ const WorkDetailItem = () => {
 
   const [isYoutubeURL, setIsYoutubeURL] = useState(false);
 
-
   // 作品データ
   const workDetailUrl = "http://localhost:8000/get_work_detail";
   // 作品コメント投稿
@@ -161,16 +157,13 @@ const WorkDetailItem = () => {
 
         console.log("response.data[作品コメント]", response.data["作品"]);
         if (response.data["作品"][0].youtube_url !== null) {
-
           // setThumbnailJudgement(value);
           workImagesArray.unshift(response.data["作品"][0].youtube_url); //unshift 配列の先頭に追加
           response.data["作品"][0].images.forEach((value) => {
             workImagesArray.push(value); // push 配列の末尾に追加
           });
-          setIsYoutubeURL(true)
+          setIsYoutubeURL(true);
           console.log("workImagesArray", workImagesArray);
-
-
         } else {
           response.data["作品"][0].images.forEach((value) => {
             if (value.thumbnail_judgement === 1) {
@@ -184,11 +177,8 @@ const WorkDetailItem = () => {
               workImagesArray.push(value); // push 配列の末尾に追加
               workImagesArray[workImagesArray.length - 1].image = workImagesArray[workImagesArray.length - 1].imageSrc;
             }
-
           });
-
         }
-
 
         setWorkSlide(workImagesArray);
         console.log("workImagesArray", workImagesArray);
@@ -387,6 +377,7 @@ const WorkDetailItem = () => {
   }, [workDetail.icon]);
 
   // -----------------------------------------------
+
   // 作品タイトル
   const renderTitle = workDetail.work_name && (
     <Typography
@@ -428,64 +419,78 @@ const WorkDetailItem = () => {
     </Link>
   );
 
+  // let ImageSet = workDetail.image
+
+  const renderMoreImageCount = WorkSlideCheck &&  Object.keys(WorkSlide).length > 1 && (
+    // console.log("ImageSet", ImageSet),
+    <>
+      <Box component="div" className="render_More_Image_Count">
+        {/* メインスライドの今見えている一枚（youtube動画または画像）をのぞいて残り何枚画像があるのか。 */}
+        <Typography variant="h6" className="render_More_Image_Count_Int" onClick={() => openModal(1)}>+{Object.keys(WorkSlide).length - 1}枚の画像</Typography>
+      </Box>
+    </>
+  );
+
   // メインスライド
   const renderMainSlider = WorkSlideCheck && (
-    <Splide
-      ref={mainSplideRef}
-      options={options}
-      aria-labelledby="autoplay-example-heading"
-      hasTrack={false}
-      onMoved={(splide, newIndex) => setCurrentSlideIndex(newIndex)}
-      style={{ width: "100%", height: "100%", margin: "0 auto", marginBottom: "80px" }}
-    >
-      <div style={{ position: "relative" }}>
-        <SplideTrack>
-          {WorkSlide.map((slide, index) => (
-            <SplideSlide key={slide.work_id + slide.id} onClick={() => openModal(index)}>
-
-
-              {
-                index == 0 && isYoutubeURL ?
-                  <Box
-                    sx={{
-                      position: "relative",
-                      width: "100%",
-                      height: "100%",
-                      aspectRatio: "16 / 9",
-
-                    }}
-                  >
-                    <YouTube
-                      videoId={slide}
-                      opts={opts}
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
+    <Stack direction="column">
+      <Stack>
+        <Splide
+          ref={mainSplideRef}
+          options={options}
+          aria-labelledby="autoplay-example-heading"
+          hasTrack={false}
+          onMoved={(splide, newIndex) => setCurrentSlideIndex(newIndex)}
+          style={{ width: "100%", height: "100%", margin: "0 auto" }}
+        >
+          <div style={{ position: "relative" }}>
+            <SplideTrack>
+              {WorkSlide.map((slide, index) => (
+                <SplideSlide key={slide.work_id + slide.id} onClick={() => openModal(index)}>
+                  {index == 0 && isYoutubeURL ? (
+                    <Box
+                      sx={{
+                        position: "relative",
+                        width: "100%",
+                        height: "100%",
+                        aspectRatio: "16 / 9",
+                      }}
+                    >
+                      <YouTube
+                        videoId={slide}
+                        opts={opts}
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          width: "100%",
+                          height: "100%",
+                        }}
+                      />
+                    </Box>
+                  ) : (
+                    <Box
+                      component="img"
+                      src={slide.image}
+                      // alt={slide.image}
+                      onError={(e) => {
+                        e.target.src = alternativeImage; // エラー時にサンプル画像をセット
+                      }}
+                      sx={{
+                        aspectRatio: "16 / 9",
                         width: "100%",
                         height: "100%",
                       }}
                     />
-                  </Box>
-                  : <Box
-                    component="img"
-                    src={slide.image}
-                    // alt={slide.image}
-                    onError={(e) => {
-                      e.target.src = alternativeImage; // エラー時にサンプル画像をセット
-                    }}
-                    sx={{
-                      aspectRatio: "16 / 9",
-                      width: "100%",
-                      height: "100%",
-                    }}
-                  />
-              }
-            </SplideSlide>
-          ))}
-        </SplideTrack>
-      </div>
-    </Splide >
+                  )}
+                </SplideSlide>
+              ))}
+            </SplideTrack>
+          </div>
+        </Splide>
+      </Stack>
+      <Stack sx={{ marginBottom: "80px" }}>{renderMoreImageCount}</Stack>
+    </Stack>
   );
 
   // モーダルスライド
@@ -527,7 +532,7 @@ const WorkDetailItem = () => {
                     aria-labelledby="modal-autoplay-example-heading"
                     hasTrack={false}
                     className="modal-custom-splide" // クラス名を追加
-                  // style={{ height: "100%" }}
+                    // style={{ height: "100%" }}
                   >
                     <SplideTrack className="modal-custom-splide-track">
                       {WorkSlide.map((slide, index) => (
@@ -540,47 +545,42 @@ const WorkDetailItem = () => {
                             justifyContent: "center",
                           }}
                         >
-                          {
-                            index == 0 && isYoutubeURL ?
-                              <Box
-                                sx={{
-                                  position: "relative",
+                          {index == 0 && isYoutubeURL ? (
+                            <Box
+                              sx={{
+                                position: "relative",
+                                width: "100%",
+                                height: "100%",
+                              }}
+                            >
+                              <YouTube
+                                videoId={slide}
+                                opts={opts}
+                                style={{
+                                  position: "absolute",
+                                  top: 0,
+                                  left: 0,
                                   width: "100%",
                                   height: "100%",
-
-
-                                }}
-                              >
-                                <YouTube
-                                  videoId={slide}
-                                  opts={opts}
-                                  style={{
-                                    position: "absolute",
-                                    top: 0,
-                                    left: 0,
-                                    width: "100%",
-                                    height: "100%",
-
-                                  }}
-                                />
-                              </Box>
-                              :
-                              <Box
-                                component="img"
-                                src={slide.image}
-                                // alt={slide.image}
-                                onError={(e) => {
-                                  e.target.src = alternativeImage; // エラー時にサンプル画像をセット
-                                }}
-                                sx={{
-                                  aspectRatio: "16 / 9",
-                                  width: "100%",
-                                  height: "100%",
-                                  objectFit: "contain",
                                 }}
                               />
-
-                          }
+                            </Box>
+                          ) : (
+                            <Box
+                              component="img"
+                              src={slide.image}
+                              // alt={slide.image}
+                              onError={(e) => {
+                                e.target.src = alternativeImage; // エラー時にサンプル画像をセット
+                              }}
+                              sx={{
+                                aspectRatio: "16 / 9",
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "contain",
+                              }}
+                            />
+                          )}
                         </SplideSlide>
                       ))}
                     </SplideTrack>
@@ -605,41 +605,37 @@ const WorkDetailItem = () => {
                     <SplideTrack>
                       {WorkSlide.map((slide, index) => (
                         <SplideSlide key={slide.work_id + slide.id}>
-                          {
-                            index == 0 && isYoutubeURL ?
-                              <YouTubeIcon
-                                sx={{
-                                  position: 'absolute',
-                                  top: '50%',
-                                  left: '50%',
-                                  transform: 'translate(-50%, -50%)',
-                                  fontSize: '4rem',
-                                  color: 'rgba(255, 0, 0, 0.8)',
-                                  backgroundColor: 'rgba(255, 255, 255, 0.5)',
-                                  borderRadius: '50%',
-                                  padding: '0.5rem',
-                                }}
-                              />
-                              :
-                              <Box
-                                component="img"
-                                src={slide.image}
-
-                                alt={slide.image}
-
-                                onError={(e) => {
-                                  e.target.src = alternativeImage; // エラー時にサンプル画像をセット
-                                }}
-
-                                sx={{
-                                  aspectRatio: "16 / 9",
-                                  objectFit: "contain",
-                                  width: "100%",
-                                  height: "100%",
-                                  display: "block !important"
-                                }}
-                              />
-                          }
+                          {index == 0 && isYoutubeURL ? (
+                            <YouTubeIcon
+                              sx={{
+                                position: "absolute",
+                                top: "50%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
+                                fontSize: "4rem",
+                                color: "rgba(255, 0, 0, 0.8)",
+                                backgroundColor: "rgba(255, 255, 255, 0.5)",
+                                borderRadius: "50%",
+                                padding: "0.5rem",
+                              }}
+                            />
+                          ) : (
+                            <Box
+                              component="img"
+                              src={slide.image}
+                              alt={slide.image}
+                              onError={(e) => {
+                                e.target.src = alternativeImage; // エラー時にサンプル画像をセット
+                              }}
+                              sx={{
+                                aspectRatio: "16 / 9",
+                                objectFit: "contain",
+                                width: "100%",
+                                height: "100%",
+                                display: "block !important",
+                              }}
+                            />
+                          )}
                         </SplideSlide>
                       ))}
                     </SplideTrack>
@@ -713,63 +709,62 @@ const WorkDetailItem = () => {
             <div className="gallery-container">
               {WorkSlide.map((slide, index) => (
                 <div key={`${slide}-${index}`} className="GalleryPostCard" style={{ width: "100%" }}>
-                  {
-                    index == 0 && isYoutubeURL ?
+                  {index == 0 && isYoutubeURL ? (
+                    <Box
+                      className="gallery_img"
+                      component="div"
+                      key={slide.work_id + slide.id}
+                      alt={slide.image}
+                      onClick={() => openModal(index)}
+                      onError={(e) => {
+                        e.target.src = alternativeImage; // エラー時にサンプル画像をセット
+                      }}
+                      sx={{
+                        position: "relative",
+                        width: "100%",
+                        aspectRatio: "16 / 9",
+                        overflow: "hidden",
+                        cursor: "pointer",
+                      }}
+                    >
                       <Box
-                        className="gallery_img"
-                        component="div"
-                        key={slide.work_id + slide.id}
-                        alt={slide.image}
-                        onClick={() => openModal(index)}
-                        onError={(e) => {
-                          e.target.src = alternativeImage; // エラー時にサンプル画像をセット
-                        }}
-                        sx={{
-                          position: 'relative',
-                          width: '100%',
-                          aspectRatio: '16 / 9',
-                          overflow: 'hidden',
-                          cursor: 'pointer',
-                        }}
-                      >
-                        <Box
-                          component="img"
-                          src={`https://img.youtube.com/vi/${slide}/hqdefault.jpg`} //サムネイル画像                        >
-                          alt="youTube Thumbnail"
-                          sx={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
-                          }}
-                        />
-                        {/* 中央のアイコン */}
-                        <YouTubeIcon
-                          sx={{
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            transform: 'translate(-50%, -50%)',
-                            fontSize: '4rem',
-                            color: 'rgba(255, 0, 0, 0.8)',
-                            backgroundColor: 'rgba(255, 255, 255, 0.5)',
-                            borderRadius: '50%',
-                            padding: '0.5rem',
-                          }}
-                        />
-                      </Box>
-                      :
-                      <Box
-                        className="gallery_img"
                         component="img"
-                        key={slide.work_id + slide.id}
-                        src={slide.image}
-                        alt={slide.image}
-                        onClick={() => openModal(index)}
-                        onError={(e) => {
-                          e.target.src = alternativeImage;
+                        src={`https://img.youtube.com/vi/${slide}/hqdefault.jpg`} //サムネイル画像                        >
+                        alt="youTube Thumbnail"
+                        sx={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
                         }}
                       />
-                  }
+                      {/* 中央のアイコン */}
+                      <YouTubeIcon
+                        sx={{
+                          position: "absolute",
+                          top: "50%",
+                          left: "50%",
+                          transform: "translate(-50%, -50%)",
+                          fontSize: "4rem",
+                          color: "rgba(255, 0, 0, 0.8)",
+                          backgroundColor: "rgba(255, 255, 255, 0.5)",
+                          borderRadius: "50%",
+                          padding: "0.5rem",
+                        }}
+                      />
+                    </Box>
+                  ) : (
+                    <Box
+                      className="gallery_img"
+                      component="img"
+                      key={slide.work_id + slide.id}
+                      src={slide.image}
+                      alt={slide.image}
+                      onClick={() => openModal(index)}
+                      onError={(e) => {
+                        e.target.src = alternativeImage;
+                      }}
+                    />
+                  )}
                 </div>
               ))}
             </div>
@@ -778,20 +773,6 @@ const WorkDetailItem = () => {
       </Modal>
     </>
   );
-
-  // let ImageSet = workDetail.image
-
-  const renderMoreImageCount = WorkSlideCheck && WorkSlide.image && Object.keys(WorkSlide.image).length !== 0 && (
-    // console.log("ImageSet", ImageSet),
-    <>
-      <Box
-        component="div"
-        className="render_More_Image_Count"
-      >
-        {Object.keys(WorkSlide.image).length}
-      </Box>
-    </>
-  )
 
   // 作品紹介文
   const renderIntro = workDetail.work_intro && (
@@ -854,7 +835,7 @@ const WorkDetailItem = () => {
       {workComment && Object.keys(Comment).length > 0 && <h3>コメント一覧</h3>}
       {workComment.map((item, index) =>
         (item.commenter_id === AccountData.id && item.commenter_user_name === AccountData.user_name) ||
-          (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
+        (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
           <div key={index}>
             {/* {console.log("comment", Comment)} */}
             <Divider sx={{ borderStyle: "dashed", margin: "5px 0px 20px 0px", width: "90%" }} />
@@ -993,7 +974,6 @@ const WorkDetailItem = () => {
         {renderMainSlider}
         {renderModalSlider}
         {renderGallery}
-        {renderMoreImageCount}
 
         {renderIntro}
         {renderGenre}

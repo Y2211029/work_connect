@@ -729,6 +729,11 @@ textarea {
 .item-Link {
   font-size: 16px;
   font-weight: Bold;
+  text-decoration: none;
+}
+
+.item-Link:hover {
+  text-decoration: none;
 }
 
 .custom-color-ring-wrapper {

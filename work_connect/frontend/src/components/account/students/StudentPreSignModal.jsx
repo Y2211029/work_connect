@@ -1,11 +1,18 @@
 import { useState, useEffect } from "react";
 import Modal from "react-modal";
 import PropTypes from "prop-types";
-import TextField from "@mui/material/TextField";
-
 import axios from "axios";
-
 import $ from "jquery";
+import { Link } from "react-router-dom";
+
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import TextField from "@mui/material/TextField";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import CloseIcon from "@mui/icons-material/Close";
+
 
 import "src/App.css";
 
@@ -158,17 +165,38 @@ const StudentPreSignModal = (props) => {
       {/* 条件付きレンダリングを使用 */}
 
       <Modal isOpen={showModal} contentLabel="Example Modal" style={ModalStyle}>
-        <div className="preSignUpFormContainer">
+        <div className="Modal">
           <form onSubmit={handleSubmit} className="formInModal">
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
+            <Stack
+              direction="row"
+              spacing={2}
+              sx={{
+                // height: "100%",
+                justifyContent: "space-between",
+                alignItems: "align-items: center",
               }}
             >
-              <span style={{ color: "black" }}>Work&Connect</span>
-            </div>
-            <hr />
+              <Stack
+                direction={{ xs: "column", sm: "column", md: "row" }}
+                spacing={2}
+                sx={{
+                  justifyContent: "space-between",
+                  alignItems: "align-items: center",
+                }}
+              >
+                <Typography variant="h5" className="login_modal_items">
+                  Work&Connect
+                </Typography>
+                <Typography variant="h" className="login_modal_items">
+                  新規登録（学生）
+                </Typography>
+              </Stack>
+              {/* モーダル右上の❌ボタン */}
+              <IconButton onClick={handleCloseModal}>
+                <CloseIcon />
+              </IconButton>
+            </Stack>
+            <Divider sx={{ borderStyle: "solid", my: { xs: 1, sm: 2 }, display: "block" }} />
             <div className="preSignUpUiForm">
               <TextField
                 fullWidth
@@ -181,14 +209,17 @@ const StudentPreSignModal = (props) => {
                 variant="outlined"
               />
               <p className="errorMsg">{formErrors.mail}</p>
-              <button type="submit" className="submitButton" disabled={isSubmitting.setIsSubmitting}>
+              <Button variant="outlined" className="Login_modal_Button" type="submit" disabled={isSubmitting.setIsSubmitting} sx={{ width: { xs: "95%", sm: "90%", md: "80%" } }}>
                 {isSubmitting.setIsSubmitting == true ? "送信中..." : isSubmitting.retransmissionFlag == true ? "再送信" : "仮登録"}
-              </button>
+              </Button>
+
               {Object.keys(formErrors).length === 0 && isSubmit && handleCloseModal}
-              <button onClick={handleCloseModal}>閉じる</button>
-              <div onClick={handleOpenCompanyPreModal} id="PreSignCompanyModalLink">
-                企業の方はこちら
-              </div>
+              <Typography variant="h5" className="login_modal_items">
+                企業の方はこちらから
+                <Link href="" onClick={handleOpenCompanyPreModal} id="PreSignCompanyModalLink" className="Login_Sign_select_C_or_S">
+                  仮登録
+                </Link>
+              </Typography>
             </div>
           </form>
         </div>

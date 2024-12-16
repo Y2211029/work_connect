@@ -138,9 +138,14 @@ const InternshipJobOfferPage = () => {
       {NewsDetail ? (
         <div className="NewsDetailContainer">
           <div className="StickyMenu">
+            <Stack direction={"row"} >
             <Button className="NewsDetail_Button" variant="contained">
               {Genre}
             </Button>
+            開催日:{formatDate(NewsDetail.event_day)}
+            締切日:{formatDate(NewsDetail.deadline)}
+            </Stack>
+
             <h1 className="news_title">{NewsDetail.article_title}</h1>
 
             <Stack direction="row" spacing={2}>

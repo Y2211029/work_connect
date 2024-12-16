@@ -1652,7 +1652,7 @@ const Editor = () => {
             <div className="SelectMenu_Hamburger">
               {/* ハンバーガーメニュー用のボタン */}
 
-              <Stack direction={"row"}>
+              <Stack direction={"row"} >
 
                 <MUITooltip title ="その他のニュースメニュー">
                   <MoreVertIcon onClick={() => toggleDrawer(true)} className="FormMenuIcon" 
@@ -1660,26 +1660,17 @@ const Editor = () => {
                 </MoreVertIcon>  
                 </ MUITooltip>
 
-                <MUIButton variant="outlined" onClick={news_save}
-                  sx={{ position: 'relative', left: '50px', width: "120px", borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
+                <MUIButton variant="outlined" onClick={news_save} className="Editor_Mui_Button">
                   下書き保存
                 </MUIButton>
 
-
-
                 {(isContentReady && isFollowerValid) ? (
-                  <MUIButton variant="outlined" onClick={news_upload}
-                    sx={{ position: 'relative', left: '70px', width: "160px", borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
+                  <MUIButton variant="outlined" onClick={news_upload} className="Editor_Mui_Button">
                     ニュースを公開する
                   </MUIButton>
                 ) : (
                   <MUITooltip title="まだ公開できません">
-                    <MUIButton variant="outlined" sx={{
-                      position: 'relative', left: '70px', width: '160px', borderColor: '#A9A9A9', color: '#A9A9A9', backgroundColor: '#F5F5F5', // 背景色を薄いグレーに設定
-                      '&:hover': { borderColor: '#A9A9A9', backgroundColor: '#F5F5F5', },
-                      cursor: 'not-allowed', // マウスカーソルを無効状態に変更
-                    }}
-                    >
+                    <MUIButton variant="outlined" className="Not_Upload_Button">
                       ニュースを公開する
                     </MUIButton>
                   </MUITooltip>

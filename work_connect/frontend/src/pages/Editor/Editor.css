@@ -349,6 +349,44 @@ td {
 }
 
 
+
+
+.Editor_Mui_Button{
+  position:relative;
+  width:auto;
+  border-color: #5956ff;
+  color:#5956FF;
+}
+
+.Editor_Mui_Button:hover{
+  border-color: #5956ff;
+  cursor: pointer;
+}
+
+
+/* sx={{
+  position: 'relative', width: '160px', borderColor: '#A9A9A9', color: '#A9A9A9', backgroundColor: '#F5F5F5', // 背景色を薄いグレーに設定
+  '&:hover': { borderColor: '#A9A9A9', backgroundColor: '#F5F5F5', }, */
+.Not_Upload_Button{
+  position: relative;
+  width:auto;
+  border-color: #A9A9A9;
+  color: #A9A9A9;
+}
+
+.Not_Upload_Button:hover{
+  cursor: not-allowed;
+}
+
+.NewsMenu_Tabs{
+  width:100%;  
+}
+
+.css-15u176q-MuiPaper-root-MuiAppBar-root{
+  box-shadow: none;
+}
+
+
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*スマホサイズ//////////////////////////////////////////////////////////////////////////////////////////////////////////// */
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -523,7 +561,7 @@ td {
   .editor-wrapper {
     width: 90%;
     height: auto;
-    margin-top: 40%;
+    margin-top: 70%;
   }
 
   .IconButton {

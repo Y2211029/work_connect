@@ -285,11 +285,21 @@ export default function Header({ onOpenNav }) {
           </>
         ) : null}
 
-        <Button id="LoginButton" onClick={handleChange} variant="contained" style={{ display: Display.HomePage === "" ? "none" : "block" }}>
+        <Button
+          id="LoginButton"
+          onClick={handleChange}
+          variant="contained"
+          sx={{ display: Display.HomePage == "none" ?  { xs: "none", md: "none", lg: "flex" } : "none" }}
+        >
           ログイン
         </Button>
 
-        <Button id="PreSignButton" onClick={handleChange} variant="outlined" style={{ display: Display.HomePage === "" ? "none" : "block" }}>
+        <Button
+          id="PreSignButton"
+          onClick={handleChange}
+          variant="outlined"
+          sx={{ display: Display.HomePage == "none" ?  { xs: "none", md: "none", lg: "flex" } : "none" }}
+        >
           新規登録
         </Button>
 
@@ -489,6 +499,31 @@ export default function Header({ onOpenNav }) {
   useEffect(() => {
     console.log("theme.zIndex", theme.zIndex);
   }, [theme]);
+  const renderPhoneSizeLogin = (
+    <>
+      <Box className="top_page_phone_size_box" sx={{ display: Display.HomePage == "none" ?  { xs: "flex", md: "flex", lg: "none" } : "none" }}>
+        <Button
+          id="LoginButton"
+          onClick={handleChange}
+          className="top_page_phone_size_button"
+          variant="contained"
+          // sx={{ display: Display.HomePage === "none" ? "flex" : "none" }}
+        >
+          ログイン
+        </Button>
+
+        <Button
+          id="PreSignButton"
+          onClick={handleChange}
+          className="top_page_phone_size_button"
+          variant="outlined"
+          // sx={{ display: Display.HomePage === "none" ? "flex" : "none" }}
+        >
+          新規登録
+        </Button>
+      </Box>
+    </>
+  );
 
   return (
     <>
@@ -536,6 +571,7 @@ export default function Header({ onOpenNav }) {
       </AppBar>
 
       {renderToolBar}
+      {renderPhoneSizeLogin}
     </>
   );
 }

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\w_news;
 use App\Models\w_follow;
 use App\Models\w_company;
-use App\Models\w_bookmark;
 use App\Models\w_write_form;
 use App\Models\w_create_form;
 use Illuminate\Http\Request;
@@ -242,8 +241,7 @@ class NewsController extends Controller
             }
 
             if ($sortOption === 'orderNewPostsDate') {
-                $postsQuery->orderBy('w_news.event_day', 'asc')
-                ->orderBy('w_news.deadline', 'desc');
+                $postsQuery->orderBy('w_news.event_day', 'asc');
             } elseif ($sortOption === 'orderOldPostsDate') {
                 $postsQuery->orderBy('w_news.created_at', 'asc');
             }
@@ -264,29 +262,35 @@ class NewsController extends Controller
                     if ($createformData) {
                         // 現在のデッドラインを取得
                         $Deadline = $createformData->deadline;
-
+                    
                         // デッドラインが指定されている場合のみ更新
                         if (!empty($Deadline)) {
                             Log::info('デッドライン: ' . $Deadline);
                             $now = Carbon::now('Asia/Tokyo');
                             Log::info('現在の時刻: ' . $now);
                             info('データ型: ' . gettype($Deadline) . ', ' . gettype($now));
-
-                        // 締め切りを確認する 締切日を設定していないもしくは締切日超過の場合はfalseを返す
-                        if ($Deadline !== null && $Deadline->lt($now)) {
-                            $post->deadline_status = true;
-                        } else {
-                            $post->deadline_status = false;
-                        }
-
-
-                            // デッドラインを更新
-                            $post->deadline = $Deadline;
-
+                    
+                            // デッドラインを Carbon オブジェクトに変換
+                            try {
+                                $DeadlineObject = Carbon::parse($Deadline);
+                    
+                                // 締め切りを確認する 締切日を設定していないもしくは締切日超過の場合はfalseを返す
+                                if ($DeadlineObject->lt($now)) {
+                                    $post->deadline_status = true;
+                                } else {
+                                    $post->deadline_status = false;
+                                }
+                    
+                                // デッドラインを更新
+                                $post->deadline = $DeadlineObject;
+                    
+                            } catch (\Exception $e) {
+                                Log::error('デッドラインの変換に失敗しました: ' . $e->getMessage());
+                                $post->deadline_status = false; // 変換失敗時はデフォルト値にする
+                            }
                         } else {
                             Log::info('新しいデッドラインが指定されていません。変更は行われません。');
                             $post->deadline_status = false;
-
                         }
                     }
 

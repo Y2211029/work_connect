@@ -10,33 +10,78 @@ import Typography from "@mui/material/Typography";
 import SvgColor from "src/components/svg-color";
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 import Divider from "@mui/material/Divider";
+// import YouTubeIcon from '@mui/icons-material/YouTube'
 
 import EditButtons from "src/components/Edit/EditButtons";
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef(({ post }, ref) => {
-  const { work_id, genre, thumbnail, icon, title, intro, author, userName, createdAt } = post;
+  const { work_id, genre, thumbnail, youtubeURL, icon, title, intro, author, userName, createdAt } = post;
   const myProfileURL = useLocation();
   const isNotMyProfile = myProfileURL.pathname != "/Profile/" + userName;
 
   const alternativeImage = "http://localhost:8000/storage/images/work/NoImage.png";
 
-  const renderThumbnail = (
-    <Box
-      component="img"
-      src={thumbnail}
-      onError={(e) => {
-        e.target.src = alternativeImage; // エラー時にサンプル画像をセット
-      }}
-      sx={{
-        aspectRatio: 16 / 9,
-        borderRadius: "5px",
-        width: "100%",
-        objectFit: "cover",
-        marginBottom: "10px",
-      }}
-    />
-  );
+  const renderThumbnail =
+  // Youtube動画がある場合
+    youtubeURL !== null ? (
+      <Box
+        component="div"
+        onError={(e) => {
+          e.target.src = alternativeImage; // エラー時にサンプル画像をセット
+        }}
+        sx={{
+          position: "relative",
+          width: "100%",
+          aspectRatio: "16 / 9",
+          overflow: "hidden",
+          cursor: "pointer",
+        }}
+      >
+        <Box
+          component="img"
+          src={`https://img.youtube.com/vi/${youtubeURL}/hqdefault.jpg`} //サムネイル画像                        >
+          alt="youTube Thumbnail"
+          sx={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+          }}
+        />
+        {/* 中央のアイコン */}
+        {/* <YouTubeIcon
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            fontSize: "4rem",
+            color: "rgba(255, 0, 0, 0.8)",
+            backgroundColor: "rgba(255, 255, 255, 0.5)",
+            borderRadius: "50%",
+            padding: "0.5rem",
+          }}
+        /> */}
+      </Box>
+    ) : (
+      // 画像だけ
+      <>
+        <Box
+          component="img"
+          src={thumbnail}
+          onError={(e) => {
+            e.target.src = alternativeImage; // エラー時にサンプル画像をセット
+          }}
+          sx={{
+            aspectRatio: 16 / 9,
+            borderRadius: "5px",
+            width: "100%",
+            objectFit: "cover",
+            marginBottom: "10px",
+          }}
+        />
+      </>
+    );
 
   // アイコン
   const renderAvatar = (
@@ -112,7 +157,7 @@ const PostCard = forwardRef(({ post }, ref) => {
           color: "common.black",
         }}
       >
-        {isNotMyProfile ? renderAvatar : <EditButtons workId={work_id}/>}
+        {isNotMyProfile ? renderAvatar : <EditButtons workId={work_id} />}
         {isNotMyProfile ? renderUserName : null}
       </Stack>
     </Stack>
@@ -193,7 +238,6 @@ const PostCard = forwardRef(({ post }, ref) => {
 
   return isNotMyProfile ? renderItems : renderEditItems;
 });
-
 
 PostCard.displayName = "PostCard";
 PostCard.propTypes = {

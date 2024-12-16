@@ -22,6 +22,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Tooltip from '@mui/material/Tooltip';
 import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 
 //時間
 import moment from 'moment-timezone';
@@ -36,10 +37,10 @@ import utc from "dayjs/plugin/utc";
 
 
 
-  const InputDateWithTime = ({ date, setEventDay,format = "YYYY/MM/DD HH:mm" }) => {
-    dayjs.locale("ja");
-    dayjs.extend(utc);
-    dayjs.extend(timezone);
+const InputDateWithTime = ({ date, setEventDay, format = "YYYY/MM/DD HH:mm" }) => {
+  dayjs.locale("ja");
+  dayjs.extend(utc);
+  dayjs.extend(timezone);
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"ja"}>
       <DateTimePicker
@@ -77,7 +78,7 @@ const NewsMenu = ({
   selected_draft, }) => {
 
   console.log("menuKey", menuKey);
-  console.log("イベントデイ",eventDay);
+  console.log("イベントデイ", eventDay);
   console.log("募集職種", selectedOccupation);
 
   const [options, setOptions] = useState([]);
@@ -157,6 +158,9 @@ const NewsMenu = ({
             <TableHead>
               <TableRow>
                 <TableCell style={{ backgroundColor: "#fff", border: "none" }}>
+                  <div className="Last_updated_date">
+                    最終更新日: {FormattedDate(draft.updated_at)}
+                  </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     {/* 画像を左側に配置 */}
                     <div className="news_img">
@@ -164,9 +168,6 @@ const NewsMenu = ({
                     </div>
                     {/* テキストと削除ボタンを右側に配置 */}
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                      <div className="Last_updated_date">
-                        最終更新日: {FormattedDate(draft.updated_at)}
-                      </div>
                       <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
                         <DeleteIcon />
                         <p style={{ margin: 0, marginLeft: '4px' }} onClick={() => RewriteNewsDelete(draft.id)}>削除</p>
@@ -211,19 +212,19 @@ const NewsMenu = ({
   const eventDayrender = (
     <InputDateWithTime
       date={eventDay} // 親コンポーネントから渡された値を使用
-      setEventDay= {setEventDay}
+      setEventDay={setEventDay}
     />
   );
 
   const openJobsrender = (
     <Select
-    id="prefecturesDropdwon"
-    value={selectedOccupationArray}
-    onChange={handleChange}
-    options={options}
-    placeholder="▼"
-    isMulti
-  />
+      id="prefecturesDropdwon"
+      value={selectedOccupationArray}
+      onChange={handleChange}
+      options={options}
+      placeholder="▼"
+      isMulti
+    />
   )
 
 
@@ -231,28 +232,87 @@ const NewsMenu = ({
 
   const createFormrender = (
     <div className="create_form">
-      <p>インターンシップや求人・説明会のニュースでは、<br></br>
-        応募フォームを作成することができます。
-      </p>
-
       {/* selected_draftが存在し、create_form配列が空でない場合に表示 */}
-      {selected_draft?.create_form.length > 0 ? (
-        <p>編集中のフォームがあります</p>
+      {selected_draft?.create_form?.length > 0 ? (
+        (() => {
+          // データを取得・処理
+          const DateTime = selected_draft.create_form[0].createformDateTime;
+          const createFormArray = JSON.parse(selected_draft.create_form[0].create_form || "[]");
+          const question_count = createFormArray.length;
+
+          return (
+            <>
+              <NewsMenuTable className="draftlisttable">
+                <TableBody>
+                  <TableRow>
+                    <TableCell style={{ backgroundColor: "#fff", border: "none" }}>
+                      <div className="Last_updated_date">
+                        最終更新日: {FormattedDate(DateTime)}
+                      </div>
+
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        {/* テキストと削除ボタンを右側に配置 */}
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+
+                        </div>
+                      </div>
+
+                      <p className="draftlist">
+                        質問数: {question_count}
+                      </p>
+
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>
+                      <Tooltip title="クリックすると応募フォーム作成画面へ行きます" placement="left">
+                        <Typography id="createFormJump"
+                          onClick={() => {
+                            CreateFormJump();
+                          }}>
+                          応募フォームを作成する
+                        </Typography>
+                      </Tooltip>
+                    </TableCell>
+                    <TableCell>
+                      <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+                        <DeleteIcon />
+                        <p style={{ margin: 0, marginLeft: '4px' }}>削除</p>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </NewsMenuTable>
+            </>
+          );
+        })()
       ) : (
-        <p>編集中のフォームはありません</p>
+        <>
+          <p>編集中のフォームはありません</p>
+
+          <Typography id="createFormJump"
+            onClick={() => {
+              CreateFormJump();
+            }}>
+            応募フォームを作成する
+          </Typography>
+
+        </>
+
       )}
 
-      <button id="createFormJump" className="save" onClick={() => {
-        CreateFormJump();
-      }}>
+      {/* ボタン */}
+      <button
+        id="createFormJump"
+        className="save"
+        onClick={() => {
+          CreateFormJump();
+        }}
+      >
         応募フォームを作成する
       </button>
-
     </div>
-
-  )
-
-
+  );
 
   const releaseNewsrender = (
     <p><button onClick={NewsUpLoad}>投稿</button></p>

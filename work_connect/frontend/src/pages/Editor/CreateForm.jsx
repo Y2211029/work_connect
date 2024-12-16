@@ -5,7 +5,7 @@ import { Survey } from 'survey-react-ui';
 import "./CreateForm.css";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import Modal from "react-modal";
-
+import { ColorRing } from "react-loader-spinner";
 
 // フォームメニュー
 import Text from "./SelectOptionMenu/Text";
@@ -26,16 +26,16 @@ import Stack from "@mui/material/Stack";
 import PropTypes from 'prop-types';
 import Typography from "@mui/material/Typography";
 
-import IconButton from "@mui/material/IconButton";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
-import MenuIcon from '@mui/icons-material/Menu';
 
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-
+import MUITooltip from "@mui/material/Tooltip";
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import MUIButton from "@mui/material/Button";
 
 
 // データ保存
@@ -73,10 +73,11 @@ const CreateForm = ({ newsid, HandleBack }) => {
         });
 
         if (Array.isArray(response.data.create_form) && response.data.create_form.length > 0) {
+          console.log("持ってきた内容", response.data.create_form[0]);
+          console.log("締切日", response.data.create_form[0].deadline);
+          setDeadlineDate(response.data.create_form[0].deadline);
           createform = JSON.parse(response.data.create_form[0].create_form);
-          const log = response.data.create_form[0].company_id;
           console.log("クリエイトフォーム", createform);
-          console.log("なんかみるログ", log);
         } else {
           createform = [
             {
@@ -108,9 +109,9 @@ const CreateForm = ({ newsid, HandleBack }) => {
     getcreateform();
   }, []); // 空の依存配列で最初のレンダリング時に実行
 
-  useEffect(() =>{
+  useEffect(() => {
     console.log("deadlineDateが更新されました", deadlineDate);
-  },[setDeadlineDate])
+  }, [setDeadlineDate])
 
   const [modalopen, setModalOpen] = useState(false);
   const [buttonOpen, setButtonOpen] = useState(true);
@@ -545,9 +546,9 @@ const CreateForm = ({ newsid, HandleBack }) => {
       key: "settingdeadline",
       text: "応募締切日を設定する",
       render: <FormMenu menuKey={'settingdeadline'}
-      SetDeadlineDate={setDeadlineDate}
-      deadlineDate={deadlineDate}
-    />
+        SetDeadlineDate={setDeadlineDate}
+        deadlineDate={deadlineDate}
+      />
     },
     {
       key: "formInformation",
@@ -572,12 +573,36 @@ const CreateForm = ({ newsid, HandleBack }) => {
 
       <Stack direction="row" spacing={2} >
 
+        <div className="SelectMenu_Hamburger">
+          <Stack direction={"row"}>
+
+            <MUITooltip title="その他のニュースメニュー">
+              <MoreVertIcon onClick={() => toggleDrawer(true)} className="FormMenuIcon"
+                sx={{ position: 'relative', top: '7px', left: '30px', width: "120px", '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
+              </MoreVertIcon>
+            </ MUITooltip>
+
+            <MUIButton variant="outlined"
+              sx={{ position: 'relative', left: '50px', width: "150px", borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
+              フォームの下書きを保存する
+            </MUIButton>
+
+            <MUIButton variant="outlined"
+              sx={{ position: 'relative', left: '100px', width: "150px", borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
+              フォームを追加する
+            </MUIButton>
+
+
+          </Stack>
+
+        </div>
+
         {buttonOpen && (
           <>
             <Stack spacing={2} className="SelectMenu">
               <div className="SelectMenu_Hamburger">
                 {/* ハンバーガーメニュー用のボタン */}
-                <IconButton
+                {/* <IconButton
                   edge="start"
                   color="inherit"
                   aria-label="menu"
@@ -587,7 +612,7 @@ const CreateForm = ({ newsid, HandleBack }) => {
                     <MenuIcon className="FormMenuIcon" />
                     フォームメニューを開く
                   </Typography>
-                </IconButton>
+                </IconButton> */}
 
                 {/* ドロワーメニュー */}
                 <Drawer
@@ -657,13 +682,21 @@ const CreateForm = ({ newsid, HandleBack }) => {
 
 
         {!questions || questions.length === 0 ? (
-          <p>フォームがありません</p>
+          <ColorRing
+            visible={true}
+            height="100"
+            width="100"
+            ariaLabel="color-ring-loading"
+            wrapperStyle={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
+            wrapperClass="custom-color-ring-wrapper" // カスタムクラスを指定
+            colors={["#41a4ff", "#FFFFFF", "#41a4ff", "#41a4ff", "#FFFFFF"]}
+            style={{ flexDirection: "column" }}
+          />
         ) : (
           <>
             <div className="SurveyModal">
               <Survey model={survey} />
             </div>
-
           </>
         )}
       </div>

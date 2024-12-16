@@ -24,8 +24,6 @@ class FormController extends Controller
         $company_id = $request->input('company_id'); //企業のID
         $deadline = $request->input('deadline'); //締切日
 
-
-
         Log::info('create_form: ' . $create_form); // JSONエンコードしてログに出力
         Log::info('news_id: ' . $news_id);
         Log::info('company_id: ' . $company_id); //企業のID
@@ -40,12 +38,21 @@ class FormController extends Controller
         // レコードが見つかれば更新、なければ新規作成
         $w_create_form->create_form = $create_form;
         $w_create_form->createformDateTime = $now;
-        $w_create_form->deadline = $deadline;
         $w_create_form->save();
 
         // 作成または更新されたレコードのIDを取得する
         $id = $w_create_form->id;
 
+        // w_newsテーブルの更新または新規作成
+        $w_news = w_news::firstOrNew([
+            'id' => $news_id,
+            'company_id' => $company_id,
+        ]);
+
+        // w_newsテーブルにdeadlineを保存
+        $w_news->deadline = $deadline;
+        $w_news->save();
+        
         // IDを返す
         return response()->json([
             'create_form_id' => $id,
@@ -125,10 +132,11 @@ class FormController extends Controller
                 ->join('w_news', 'w_create_forms.news_id', '=', 'w_news.id')
                 ->join('w_companies', 'w_news.company_id', '=', 'w_companies.id')
                 ->select(
-            'w_create_forms.create_form as create_form',
-                        'w_create_forms.news_id as news_id',
-                        'w_create_forms.company_id as company_id',
-                        'w_news.article_title as title')
+                    'w_create_forms.create_form as create_form',
+                    'w_create_forms.news_id as news_id',
+                    'w_create_forms.company_id as company_id',
+                    'w_news.article_title as title'
+                )
                 ->first();
 
             if ($post) {

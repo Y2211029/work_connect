@@ -27,9 +27,6 @@ const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, s
   // const [WorkGenre, setWorkGenre] = useState("");
 
   const { tagCreate } = UseCreateTagbutton();
-  // useEffect(() => {
-  //   setWorkGenre(tagCreate(genre));
-  // }, [newWorks])
 
   if (newWorks) {
     console.log("newWorks", newWorks);
@@ -58,6 +55,7 @@ const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, s
     });
 
     setWorkList((prev) => [...prev, ...generatePosts(filteredNewWorks)]);
+    setLoading(false);
     setItemLoading(false);
   }
 
@@ -153,7 +151,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           break;
         }
 
-        case options.DecodeURL === `/Profile/${ParamUserName}` && options.page === "checkform": {
+        case path === `/Profile/${ParamUserName}` && options.page === "checkform": {
           const { default: CheckFormPostCard } = await import("src/sections/Profile/View/company/CheckForm/post-card");
           setPostCard(() => CheckFormPostCard);
           console.log("CheckFormPostCard");
@@ -186,6 +184,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
         WorkOfList.map((work /*, key*/) => ({
           work_id: work.work_id,
           thumbnail: `http://localhost:8000/storage/images/work/${work.thumbnail}`,
+          youtubeURL: work.youtube_url,
           icon: work.icon,
           title: work.work_name,
           genre: work.work_genre,
@@ -498,7 +497,6 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
         }
       },
     },
-
   };
 
   return (
@@ -548,10 +546,12 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
 
   const location = useLocation();
   const { user_name } = useParams();
+  const searchParams = new URLSearchParams(window.location.search); // クエリパラメータを取得
+  const pageParam = searchParams.get("page");
+
   const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData");
 
-  useEffect(() => {}, [IsLoading]);
   useEffect(() => {
     loginStatusCheckFunction();
   }, []);
@@ -632,8 +632,6 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
 
   const { data, error, isLoading } = useSWR(lastUrl, fetcher);
 
-  // const [SWRLoadFlg, setSWRLoadFlg] = useState(false);
-
   let LaravelResponse = isLoading;
 
   // 検索時にsetWorkOfListをリセット
@@ -695,13 +693,13 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
         setIsLoadItem(false);
         console.log("data:setIsLoadItem:false");
       }
-      if (data.length !== 0 || Page !== 1) {
-        console.log("ローディング削除:2");
+      // if (data.length !== 0 || Page !== 1) {
+      //   console.log("ローディング削除:2");
         setAllItems((prev) => ({
           ...prev,
           IsLoading: false, // データが空のときはtrueにしてローディングを維持
         }));
-      }
+      // }
     }
   }, [data, error, ResetItem, IsSearch.Check, IsSearch.searchResultEmpty]);
 
@@ -738,6 +736,12 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   }, [WorkOfList]);
 
   useEffect(() => {
+    console.log("accountData : /Profile/${accountData.user_name}", accountData.user_name);
+    console.log("accountData : accountData.id[0]", accountData.id[0]);
+    console.log("accountData : location.pathname", location.pathname);
+  }, [accountData.user_name]);
+
+  useEffect(() => {
     console.log("useSWR:lastUrl:", lastUrl);
     console.log("useSWR:LaravelResponse:", LaravelResponse);
     console.log("useSWR:page:", Page);
@@ -751,6 +755,12 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     }
   }, [LaravelResponse, lastUrl]);
 
+  useEffect(() => {
+    console.log("renderWorkItems:IsLoading:", !IsLoading);
+    console.log("renderWorkItems:LaravelResponse:", !LaravelResponse);
+    console.log("renderWorkItems:hasLoadedOnce:", hasLoadedOnce);
+  }, [IsLoading, LaravelResponse, hasLoadedOnce]);
+
   // WorkOfList の表示ロジック
   const renderWorkItems =
     WorkOfList.length !== 0 && PostCard
@@ -759,7 +769,8 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
         ))
       : WorkOfList.length === 0 && !IsLoading && !LaravelResponse && hasLoadedOnce
         ? "0件です"
-        : null;
+        : "";
+
   return (
     <>
       {isLoadItem && (
@@ -778,7 +789,15 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
       {/* <Container  style={{ width: "100%" }}> */}
       <div className="list-view-Container">
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          {location.pathname == `/Profile/${accountData.user_name && accountData.id[0] !== "C"}` ? (
+          {location.pathname == `/Profile/${accountData.user_name}` && accountData.id[0] == "S" ? (
+            <>
+              <Typography variant="h4">{user_name + "の" + ItemName}</Typography>
+            </>
+          ) : location.pathname == `/Profile/${user_name}` && accountData.id[0] == "S" ? (
+            <>
+              <Typography variant="h4">{user_name + "の" + ItemName}</Typography>
+            </>
+          ) : location.pathname == `/Profile/${user_name}` && pageParam !== "news" && accountData.id[0] == "C" ? (
             <>
               <Typography variant="h4">{user_name + "の" + ItemName}</Typography>
             </>

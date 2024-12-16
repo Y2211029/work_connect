@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import ListView from "src/components/view/list-view";
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { AllItemsContext } from "src/layouts/dashboard/index";
 import '../news_detail.css';
 
@@ -45,6 +46,7 @@ export default function NavTabs() {
   const { getSessionData } = useSessionStorage();
   const { AllItems, setAllItems } = useContext(AllItemsContext);
   const { /*DataList,*/ IsSearch, Page, sortOption } = AllItems;
+  const Screen = useMediaQuery("(max-width:600px) and (min-width:401px)");
 
   // const { setAllItems } = useContext(AllItemsContext);
   // const { IsSearch, Page, sortOption } = AllItems;
@@ -170,10 +172,11 @@ export default function NavTabs() {
         aria-label="nav tabs example"
         role="navigation"
         className="News_Tabs"
+        centered={Screen}
       >
 
         <Tab className="NewsSelect_Box" label="求人" onClick={(e) => handleTabClick(e, 0)} />
-        <Tab className="NewsSelect_Box"   label={<span>インターン<br />シップ</span>} onClick={(e) => handleTabClick(e, 1)} />
+        <Tab className="NewsSelect_Box" label={<span>インターン<br />シップ</span>} onClick={(e) => handleTabClick(e, 1)} />
         <Tab className="NewsSelect_Box" label="説明会" onClick={(e) => handleTabClick(e, 2)} />
         <Tab className="NewsSelect_Box" label="ブログ" onClick={(e) => handleTabClick(e, 3)} />
 

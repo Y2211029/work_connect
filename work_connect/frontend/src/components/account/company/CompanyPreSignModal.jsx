@@ -1,11 +1,17 @@
 import { useState, useEffect, useRef } from "react";
 import Modal from "react-modal";
 import PropTypes from "prop-types";
-import TextField from "@mui/material/TextField";
-
 import axios from "axios";
-
 import $ from "jquery";
+import { Link } from "react-router-dom";
+
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import TextField from "@mui/material/TextField";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import CloseIcon from "@mui/icons-material/Close";
 
 import "src/App.css";
 import ModalStyle from "../ModalStyle";
@@ -17,7 +23,13 @@ const CompanyPreSignModal = (props) => {
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [csrfToken, setCsrfToken] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState({
+    // 二回目仮登録メール送ろうとした際にボタンの文字を”再送信”に変える
+    retransmissionFlag: false,
+    setIsSubmitting: false,
+  });
 
+  
   const clickOneTimes = useRef(false); // 一度だけ処理させたい処理を管理するuseRefを作成する
 
   const url = "http://localhost:8000/s_pre_register";
@@ -88,7 +100,14 @@ const CompanyPreSignModal = (props) => {
   }, []); // 空の依存配列を渡して、初回のみ実行するようにする
 
   const handleSubmit = async (e) => {
+    setIsSubmitting({
+      ...setIsSubmitting,
+      retransmissionFlag: true, // 二回目仮登録メール送ろうとした際にボタンの文字を”再送信”に変える
+      setIsSubmitting: true, //  "仮登録"から"送信中..."にボタンの文字を変える
+    });
+
     e.preventDefault();
+    
 
     // フォームの送信処理
     const errors = validate(formValues, true);
@@ -120,7 +139,11 @@ const CompanyPreSignModal = (props) => {
     })
       .done(function (data) {
         // ajax成功時の処理
-
+setIsSubmitting({
+          ...setIsSubmitting,
+          retransmissionFlag: true,
+          setIsSubmitting: false, //  "仮登録"から"送信中..."にボタンの文字を変える
+        });
         if (data != null) {
           // すでに入力されたメールアドレスが存在している場合に警告文を表示
           if (data == "true") {
@@ -179,10 +202,38 @@ const CompanyPreSignModal = (props) => {
       {/* 条件付きレンダリングを使用 */}
       {/* <button onClick={handleOpenModal}>新規登録</button> */}
       <Modal isOpen={showModal} contentLabel="Example Modal" style={ModalStyle}>
-        <div className="preSignUpFormContainer">
+        <div className="Modal">
           <form onSubmit={handleSubmit} className="formInModal">
-            <h3>Work&Connect 仮登録</h3>
-            <hr />
+            <Stack
+              direction="row"
+              spacing={2}
+              sx={{
+                // height: "100%",
+                justifyContent: "space-between",
+                alignItems: "align-items: center",
+              }}
+            >
+              <Stack
+                direction={{ xs: "column", sm: "column", md: "row" }}
+                spacing={2}
+                sx={{
+                  justifyContent: "space-between",
+                  alignItems: "align-items: center",
+                }}
+              >
+                <Typography variant="h5" className="login_modal_items">
+                  Work&Connect
+                </Typography>
+                <Typography variant="h" className="login_modal_items">
+                  新規登録（企業）
+                </Typography>
+              </Stack>
+              {/* モーダル右上の❌ボタン */}
+              <IconButton onClick={handleCloseModal}>
+                <CloseIcon />
+              </IconButton>
+            </Stack>
+            <Divider sx={{ borderStyle: "solid", my: { xs: 1, sm: 2 }, display: "block" }} />
             <div className="preSignUpUiForm">
               <TextField
                 fullWidth
@@ -195,14 +246,22 @@ const CompanyPreSignModal = (props) => {
                 variant="outlined"
               />
               <p className="errorMsg">{formErrors.mail}</p>
-              <button type="submit" className="submitButton">
-                仮登録
-              </button>
+              <Button
+                variant="outlined"
+                className="Login_modal_Button"
+                type="submit"
+                disabled={isSubmitting.setIsSubmitting}
+                sx={{ width: { xs: "95%", sm: "90%", md: "80%" } }}
+              >
+                {isSubmitting.setIsSubmitting == true ? "送信中..." : isSubmitting.retransmissionFlag == true ? "再送信" : "仮登録"}
+              </Button>
               {Object.keys(formErrors).length === 0 && isSubmit && handleCloseModal}
-              <button onClick={handleCloseModal}>閉じる</button>
-              <div onClick={handleOpenStudentPreModal} id="PreSignStudentModalLink" className="Login_Sign_select_C_or_S">
-                学生の方はこちら
-              </div>
+              <Typography variant="h5" className="login_modal_items">
+                学生の方はこちらから
+                <Link href="" onClick={handleOpenStudentPreModal} id="PreSignStudentModalLink" className="Login_Sign_select_C_or_S">
+                  仮登録
+                </Link>
+              </Typography>
             </div>
           </form>
         </div>

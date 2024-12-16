@@ -8,6 +8,8 @@ const VideoGenre = (props) => {
   const { InsertTagFunction } = InsertTag();
   const url = "http://localhost:8000/get_video_genre_tag";
   const [options, setOptions] = useState([]);
+  const [selectedOption, setSelectedOption] = useState([]);
+
   useEffect(() => {
     async function VideoGenreFunction() {
       try {
@@ -39,13 +41,34 @@ const VideoGenre = (props) => {
     axios.get(url);
   }, []);
 
+    useEffect(() => {
+      console.log("movieData:", props.movieData);
+
+      if (props.movieData != undefined) {
+        const option = [];
+        console.log(true);
+        const genreArray = props.movieData.split(",");
+
+        genreArray.map((value) => {
+          option.push({ value: value, label: value });
+          // setSelectedOption((prevOptions) => [...prevOptions, { value: value, label: value }]);
+        });
+        console.log("selectedOption", option);
+
+        setSelectedOption(option);
+      }
+    }, [props.movieData]);
+
   const handleChange = (selectedOption, actionMeta) => {
     console.log(actionMeta);
     console.log(selectedOption);
     if (actionMeta && actionMeta.action === "create-option") {
       const inputValue = actionMeta;
       console.log(inputValue);
-      const newOption = { value: inputValue.option.value, label: inputValue.option.label };
+      const newOption = {
+        value: inputValue.option.value,
+        label: inputValue.option.label,
+      };
       setOptions([...options, newOption]);
       // 10は動画投稿の作品ジャンルです。
       InsertTagFunction(inputValue.option.value, 10);
@@ -57,14 +80,24 @@ const VideoGenre = (props) => {
     props.callSetVideoData("VideoGenre", valueArray.join(","));
   };
 
-  return <CreatableSelect
-        // プレフィックス＝接頭語
-        // CreatableSelect内のInput要素のClass名の頭にMyPageEditItemsをつけるという意味
-        classNamePrefix="MyPageEditItems" options={options} placeholder="▼" isClearable isMulti onChange={handleChange} />;
+  return (
+    <CreatableSelect
+      // プレフィックス＝接頭語
+      // CreatableSelect内のInput要素のClass名の頭にMyPageEditItemsをつけるという意味
+      classNamePrefix="MyPageEditItems"
+      options={options}
+      value={selectedOption}
+      placeholder="▼"
+      isClearable
+      isMulti
+      onChange={handleChange}
+    />
+  );
 };
 
 VideoGenre.propTypes = {
   callSetVideoData: PropTypes.func,
+  movieData: PropTypes.string.isRequired,
 };
 
 export default VideoGenre;

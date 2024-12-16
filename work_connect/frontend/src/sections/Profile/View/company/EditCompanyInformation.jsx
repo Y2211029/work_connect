@@ -32,7 +32,7 @@ Modal.setAppElement('#root');
 
 
 
-const SortableRow = ({ id, children , expanded}) => {
+const SortableRow = ({ id, children /*, expanded*/}) => {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
 
     const style = {

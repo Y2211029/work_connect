@@ -305,6 +305,26 @@ Route::get('/create_form_get/{NewsDetailId}', [FormController::class, 'create_fo
 Route::get('/write_form_get', [FormController::class, 'write_form_get']);
 Route::post('/write_form_save', [FormController::class, 'write_form_save']);
 
+//画像読み込み
+Route::get('/images/work/{filename}', function ($filename) {
+    $path = storage_path('app\public\images\work\\' . $filename);
+    if (!file_exists($path)) {
+        \Log::info('gazou:'. $path);
+        abort(404);
+
+    } else {
+        \Log::info('gazou2:'.$path);
+    }
+
+    $file = file_get_contents($path);
+    $type = mime_content_type($path);
+
+    return Response::make($file, 200, [
+        'Content-Type' => $type,
+        'Access-Control-Allow-Origin' => '*',
+    ]);
+});
+
 
 //設定機能
 Route::get('/color_save', [SettingController::class, 'color_save']);

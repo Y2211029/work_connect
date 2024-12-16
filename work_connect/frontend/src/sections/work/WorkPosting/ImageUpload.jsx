@@ -170,6 +170,7 @@ const ImageUpload = ({
   onImagesUploaded,
   callSetImage,
   workData,
+  workDetailData,
 }) => {
   const [activeId, setActiveId] = useState(null); // ドラッグ中のアイテムIDを管理
   const fileInputRef = useRef(null); // ファイルインプットの参照を保持
@@ -180,7 +181,7 @@ const ImageUpload = ({
 
   // 10/21追加
   const [items, setItems] = useState([]); // 画像アイテムの状態管理
-  console.log("items", items);
+  console.log("items", workData);
 
   useEffect(() => {
     if (items) {
@@ -203,16 +204,18 @@ const ImageUpload = ({
     resetItems(); // 初回レンダリング時にリセット
     if (workData) {
       setWorkImage(workData);
+      console.log("workDetailData:", workDetailData);
+      handleGetImageUpload(workDetailData);
       console.log("workData:", workData);
     }
-  }, []);
+  }, [workData, workDetailData]);
 
   useEffect(() => {
+    console.log("workImage", workImage);
     if (!hasRun) {
       resetItems();
       setHasRun(true);
     }
-    console.log("workImage", workImage);
     callSetImage(workImage); // アップロードしたファイルを処理
   }, [workImage, hasRun]);
 
@@ -239,8 +242,35 @@ const ImageUpload = ({
       // 配列型
       const updatedItems = [...prevItems, ...newItems];
       onImagesUploaded(updatedItems); // 親コンポーネントに通知
+      console.log("updatedItems:", updatedItems);
       return updatedItems;
     });
+  };
+
+  // 画像アップロードの処理
+  const handleGetImageUpload = (workDetailData) => {
+    console.log("aaaaaa", workDetailData);
+
+    if (workDetailData != undefined && workData.length >= 1) {
+      console.log(workData);
+      const newItems = workDetailData.map((file, index) => {
+        console.log("workData[index]", workData[index]);
+        // URL.revokeObjectURL(URL.createObjectURL(workData[index]));
+        return({
+        id: `${file.image}-${index}-${Date.now()}`, // 一意のIDを生成
+        // image: URL.createObjectURL(workData[index]), // ローカルURLを作成
+        image: file.imageSrc,
+        name: file.image,
+        description: file.annotation, // 初期状態は空の説明
+      })});
+      setItems((prevItems) => {
+        // 配列型
+        const updatedItems = [...prevItems, ...newItems];
+        onImagesUploaded(updatedItems); // 親コンポーネントに通知
+        console.log("updatedItems:", updatedItems);
+        return updatedItems;
+      });
+    }
   };
 
   // アイテム削除の処理
@@ -266,6 +296,7 @@ const ImageUpload = ({
 
       if (dt.files.length == 0) {
         // 選択ファイル数が0のとき配列とinput内をリセットする
+
         setHasRun(false);
       }
 
@@ -503,6 +534,7 @@ ImageUpload.propTypes = {
   handleValueChange: PropTypes.func.isRequired,
   props: PropTypes.func.isRequired,
   workData: PropTypes.string.isRequired,
+  workDetailData: PropTypes.array.isRequired,
 };
 
 export default ImageUpload;

@@ -1,0 +1,48 @@
+
+
+.draftlistScroll {
+    overflow-y: auto;
+    /* 必要に応じてスクロールバーを表示 */
+    overflow-x: hidden;
+    height: auto;
+    margin-left: 10%;
+}
+
+.draftlist{
+    width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+.add_draft_news {
+    padding-top: 10px;
+    padding-left: 10px;
+    cursor: pointer;
+    padding-bottom: 10px;
+}
+
+.draftlisttable {
+    width: 60%;
+    /* テーブルの幅を親要素に合わせる */
+    border: 1px solid black;
+    margin-bottom: 20px;
+    border-collapse: separate;
+    /* テーブルの境界線を一貫して表示 */
+}
+
+.draftlisttable thead {
+    background-color: #338DC9;
+    padding: 5px;
+}
+
+.Last_updated_date {
+    margin-bottom: 8px;
+    font-size:10px;
+}
+
+.news_img img {
+    width: 100px;
+    height: 70px;
+}

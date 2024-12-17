@@ -1,9 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import "./Editor.css";
-import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
-import dayjs from "dayjs";
-import "dayjs/locale/ja";
+
 
 // プラグインのインポート
 import EditorJS from "@editorjs/editorjs";
@@ -43,24 +41,8 @@ import ImageSearchIcon from '@mui/icons-material/ImageSearch';
 import CancelIcon from '@mui/icons-material/Cancel';
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import ErrorIcon from '@mui/icons-material/Error';
-import NewsMenuTable from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
 // import TableContainer from '@mui/material/TableContainer';
-import TableRow from '@mui/material/TableRow';
 import { Helmet } from 'react-helmet-async';
-import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
-import MUIButton from "@mui/material/Button";
-import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import Accordion from "@mui/material/Accordion";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import MUITooltip from "@mui/material/Tooltip";
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 //データ保存
 import axios from "axios";
@@ -70,10 +52,13 @@ import { useNavigate } from 'react-router-dom';
 
 //過去に投稿したニュースを取得
 import specialCompanyNewsItem from "src/_mock/specialCompanyNewsItem";
-import NewsMenu from "./clickedmenu/NewsMenu"
+
+//時間
+import moment from 'moment-timezone';
 
 //クリエイトフォーム
 import CreateForm from "./CreateForm";
+import NewsSelectMenu from "./NewsSelectMenu"
 
 
 const Editor = () => {
@@ -91,15 +76,13 @@ const Editor = () => {
   const [selected_draft, setSelectedDraft] = useState(null); // 選択された下書きを保持するステート
   const [charCount, setCharCount] = useState(0);
   const [usedImages, setUsedImages] = useState([]);
-  const [notificationMessage, setNotificationMessage] = useState("");
-  const [eventDay, setEventDay] = useState(dayjs());
+  const [notificationMessage, setNotificationMessage] = useState(null);
+  const [eventDay, setEventDay] = useState(moment());
   const [isSaved, setIsSaved] = useState(false);
   const [CreateFormOpen, setCreateFormOpen] = useState(false);
   const [formSummary, setFormSummary] = useState(null);
   const [followerCounter, setFollowerCounter] = useState(0);
   const [selectedOccupation, setSelectedOccupation] = useState("");
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [expanded, setExpanded] = useState(false);
   const [newsTitle, setNewsTitle] = useState("ブログ");
 
   const news_save_url = "http://localhost:8000/news_save";
@@ -113,14 +96,6 @@ const Editor = () => {
   const { genre } = useParams();
   console.log(genre);
 
-
-  const toggleDrawer = (open) => {
-    setDrawerOpen(open);
-  };
-
-  const AccordionhandleChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
-  };
 
 
 
@@ -178,11 +153,6 @@ const Editor = () => {
     setTitle(event.target.value); // テキストエリアの値をstateに反映
   };
 
-  const notification_messagehandleChange = (e) => {
-    const newValue = e.target.value;
-    setNotificationMessage(newValue);
-    console.log("newValue", newValue);
-  }
 
 
 
@@ -348,9 +318,8 @@ const Editor = () => {
     }
     // news_idをセット
     setNewsId(select_draft_list.id);
-    setEventDay(dayjs(select_draft_list.event_day));
+    setEventDay(moment(select_draft_list.event_day));
     setSelectedOccupation(select_draft_list.open_jobs);
-    toggleDrawer(false);
   };
 
   const rewrite_news_delete = async (id) => {
@@ -375,138 +344,7 @@ const Editor = () => {
     }
   };
 
-  const ShowUsedImages = ({ usedImages }) => {
-    if (!Array.isArray(usedImages)) {
-      console.error('usedImagesは配列ではありません:', usedImages);
-      return <p>画像のデータにエラーがあります</p>;
-    }
 
-    // 画像を2枚ずつのグループに分ける
-    const rows = [];
-    for (let i = 0; i < usedImages.length; i += 2) {
-      rows.push(usedImages.slice(i, i + 2));
-    }
-
-    return (
-      <>
-        {usedImages.length > 0 ? (
-          <NewsMenuTable>
-            <TableBody>
-              {rows.map((row, rowIndex) => (
-                <TableRow key={rowIndex}>
-                  {row.map((imageObj, index) => (
-                    <TableCell key={index} align="center">
-                      <img
-                        src={imageObj}
-                        alt={`使用された画像 ${index + 1}`}
-                        style={{ maxWidth: '100px', height: 'auto' }}
-                      />
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </NewsMenuTable>
-        ) : (
-          <p>画像が使用されていません</p>
-        )}
-      </>
-    );
-  };
-
-  ShowUsedImages.propTypes = {
-    usedImages: PropTypes.arrayOf(PropTypes.string).isRequired
-  };
-
-
-  //エディタの編集状況を見て、チェックボックスで表示する
-  const EditorStatusCheck = (check_element) => {
-    return (
-      <NewsMenuTable>
-        <TableBody>
-          <TableRow>
-            <TableCell>
-              {check_element ? (
-                <CheckBoxIcon color="primary" aria-label="設定完了しています" />
-              ) : (
-                <ErrorIcon color="error" aria-label="設定完了していません" />
-              )}
-            </TableCell>
-            <TableCell>
-              {check_element ? (
-                <p>設定完了しています</p>
-              ) : (
-                <p>設定完了していません</p>
-              )}
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </NewsMenuTable>
-    );
-  };
-
-  //エディタのコンテンツを見て、チェックボックスで表示する
-  const EditorContentsStatusCheck = () => {
-    return (
-      <NewsMenuTable>
-        <TableBody>
-          <TableRow>
-            <TableCell>
-              {charCount ? (
-                <CheckBoxIcon color="primary" aria-label="設定完了しています" />
-              ) : (
-                <ErrorIcon color="error" aria-label="設定完了していません" />
-              )}
-            </TableCell>
-            <TableCell>
-              {charCount ? (
-                <p>現在の文字数: {charCount}文字</p>
-              ) : (
-                <p>テキストが<br></br>打ち込まれていません</p>
-              )}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>
-              {usedImages && usedImages.length > 0 ? (
-                <CheckBoxIcon color="primary" aria-label="設定完了しています" />
-              ) : (
-                <QuestionMarkIcon color="error" aria-label="設定完了していません" />
-              )}
-            </TableCell>
-            <TableCell>
-              {usedImages && usedImages.length > 0 ? (
-                <>
-                  <p>使用画像</p>
-                  <ShowUsedImages usedImages={usedImages} />
-                </>
-              ) : (
-                <p>画像を使用していません</p>
-              )}
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </NewsMenuTable>
-    );
-  };
-
-  const editingStatusrender = (
-    <div className="editingstatus">
-      <p>現在の編集状況</p>
-      <p>タイトル</p>
-      {EditorStatusCheck(title)}
-      <p>サムネイル</p>
-      {EditorStatusCheck(imageUrl)}
-      {followerCounter > 0 && (
-        <>
-          <p>通知に添えるメッセージ</p>
-          {EditorStatusCheck(notificationMessage)}
-        </>
-      )}
-      <p>記事内容</p>
-      {EditorContentsStatusCheck()}
-    </div>
-  )
 
 
 
@@ -1124,8 +962,7 @@ const Editor = () => {
   const handleBack = async () => {
     console.log("フォームサマリ", formSummary); // 確認用ログ
     setCreateFormOpen(false); // フォームのモーダルを閉じる
-    setExpanded(false);
-    toggleDrawer(false);
+
 
     if (editorInstance.current) {
       try {
@@ -1540,79 +1377,12 @@ const Editor = () => {
     }
   };
 
-  const menuItems = [
-    {
-      key: "draftList", text: "下書きリスト", tooltiptitle: `${newsTitle}ニュースの下書きを確認できます`, render:
-        <NewsMenu menuKey={'draftList'}
-          draftlist={draft_list}
-          RewriteNewsDelete={rewrite_news_delete}
-          RewriteNewsEnter={rewrite_news}
-          NewsSave={news_save}
-        />
-    },
-    ...(genre !== "Blog" ? [{
-      key: "eventDay", text: "開催日を設定する",
-      tooltiptitle:
-        <>
-          {newsTitle}の開催日を指定して、<br />
-          学生に周知できます
-        </>,
-      render:
-        <NewsMenu menuKey={'eventDay'}
-          eventDay={eventDay}
-          setEventDay={setEventDay}
-        />
-    }] : []),
-    ...(genre !== "Blog" ? [{
-      key: "openJobs", text: "募集職種を設定する",
-      tooltiptitle:
-        <>
-          応募している職種を設定することで、 <br />
-          同じ職種を志望する学生に周知しやすくなります
-        </>,
-      render:
-        <NewsMenu menuKey={'openJobs'}
-          selected_draft={selected_draft}
-          setSelectedOccupation={setSelectedOccupation}
-          selectedOccupation={selectedOccupation}
-        />
-    }] : []),
-    ...(followerCounter > 0 ? [{
-      key: "notificationMessage", text: "通知に添えるメッセージ",
-      tooltiptitle:
-        <>
-          フォローしている学生に通知が行く際、 <br />
-          メッセージを送ることができます
-        </>
-      , render:
-        <NewsMenu menuKey={'notificationMessage'}
-          NotificationMessageHandleChange={notification_messagehandleChange}
-          message={notificationMessage}
-        />
-    }] : []),
-    // 条件を満たした場合のみ追加
-    ...(genre !== "Blog" ? [{
-      key: "createForm", text: "応募フォームを作成する",
-      tooltiptitle:
-        <>
-          インターンシップや求人・説明会のニュースでは、 <br />
-          応募フォームを作成することができます
-        </>
-      , render:
-        <NewsMenu menuKey={'createForm'}
-          CreateFormJump={CreateFormJump}
-          selected_draft={selected_draft}
-        />
-    }] : []),
-  ];
-
-
-
   return (
     <div>
       <Helmet>
         <title>ニュースの投稿 | Work&Connect</title>
       </Helmet>
+
 
 
       {/* ニュースタイトルを表示 */}
@@ -1647,88 +1417,36 @@ const Editor = () => {
             />
           </form>
 
+          <div>
+
+            <NewsSelectMenu
+              setEventDay={setEventDay}
+              eventDay={eventDay}
+              selected_draft={selected_draft}
+              setSelectedOccupation={setSelectedOccupation}
+              selectedOccupation={selectedOccupation}
+              notificationMessage={notificationMessage}
+              setNotificationMessage={setNotificationMessage}
+              title={title}
+              imageUrl={imageUrl}
+              charCount={charCount}
+              followerCounter={followerCounter}
+              usedImages={usedImages}
+              news_save={news_save}
+              news_upload={news_upload}
+              isContentReady={isContentReady}
+              isFollowerValid={isFollowerValid}
+              draftlist={draft_list}
+              RewriteNewsDelete={rewrite_news_delete}
+              RewriteNewsEnter={rewrite_news}
+              CreateFormJump={CreateFormJump}
+            />
+          </div>
+
+
+
 
           <Stack spacing={2} className="SelectMenu">
-            <div className="SelectMenu_Hamburger">
-              {/* ハンバーガーメニュー用のボタン */}
-
-              <Stack direction={"row"} >
-
-                <MUITooltip title ="その他のニュースメニュー">
-                  <MoreVertIcon onClick={() => toggleDrawer(true)} className="FormMenuIcon" 
-                  sx={{ position: 'relative', top:'7px', left: '30px', width: "120px", '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
-                </MoreVertIcon>  
-                </ MUITooltip>
-
-                <MUIButton variant="outlined" onClick={news_save} className="Editor_Mui_Button">
-                  下書き保存
-                </MUIButton>
-
-                {(isContentReady && isFollowerValid) ? (
-                  <MUIButton variant="outlined" onClick={news_upload} className="Editor_Mui_Button">
-                    ニュースを公開する
-                  </MUIButton>
-                ) : (
-                  <MUITooltip title="まだ公開できません">
-                    <MUIButton variant="outlined" className="Not_Upload_Button">
-                      ニュースを公開する
-                    </MUIButton>
-                  </MUITooltip>
-                )}
-
-              </Stack>
-
-
-
-
-              {/* ドロワーメニュー */}
-              <Drawer
-                anchor="right"
-                open={drawerOpen}
-                onClose={() => {
-                  setExpanded(false);
-                  toggleDrawer(false);
-                }}
-              >
-
-                {/* 現在の編集状況 */}
-                {editingStatusrender}
-
-                <List sx={{ width: "300px" }}>
-                  {menuItems.map(({ key, text, tooltiptitle, render }) => {
-                    // デバッグ: 各アイテムを確認
-                    console.log({ key, text, render });
-                    return (
-                      <Accordion
-                        key={key}
-                        expanded={expanded === key}
-                        onChange={AccordionhandleChange(key)}
-                        className="Accordion"
-                      >
-                        <AccordionSummary
-                          expandIcon={<ExpandMoreIcon />}
-                          aria-controls={`${key}-content`}
-                          id={`${key}-header`}
-                        >
-                          <MUITooltip title={tooltiptitle} placement="left">
-                            <Typography sx={{ fontSize: "15px", width: "80%", flexShrink: 0 }}>
-                              {text}
-                            </Typography>
-                          </MUITooltip>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                          {render || <Typography>コンテンツが見つかりません</Typography>}
-                        </AccordionDetails>
-                      </Accordion>
-                    );
-                  })}
-
-
-
-
-                </List>
-              </Drawer>
-            </div>
 
 
             {/* カバー画像アップロード */}

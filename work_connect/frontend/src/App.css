@@ -1069,6 +1069,78 @@ textarea {
   overflow-wrap: break-word !important;
 }
 
+/* コンテナ全体 */
+.handshake-container {
+  position: relative;
+  width: 300px;
+  height: 150px;
+  margin: 50px auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* 上腕（固定部分） */
+.arm {
+  position: relative;
+  width: 80px;
+  height: 20px;
+  background-color: #f4a261;
+  /* 肌色 */
+  border-radius: 10px;
+  /* 丸みをつける */
+  display: flex;
+  justify-content: flex-end;
+  /* 前腕を右端に配置 */
+}
+
+/* 左腕 */
+.left-arm {
+  transform: rotate(20deg);
+  transform-origin: left center;
+  /* 左側の軸を基準に回転 */
+}
+
+/* 右腕 */
+.right-arm {
+  transform: rotate(-20deg);
+  transform-origin: right center;
+  /* 右側の軸を基準に回転 */
+}
+
+/* 前腕（動く部分） */
+.forearm {
+  width: 60px;
+  height: 20px;
+  background-color: #2a9d8f;
+  /* 緑色 */
+  border-radius: 10px;
+  /* 丸みをつける */
+  position: relative;
+  transform-origin: left center;
+  /* 左側を基準に揺れる */
+  animation: forearm-swing 1.5s infinite ease-in-out;
+  /* 揺れるアニメーション */
+  top: -10px;
+  /* 上腕と自然につながるように調整 */
+}
+
+/* 前腕の揺れアニメーション */
+@keyframes forearm-swing {
+
+  0%,
+  100% {
+    transform: rotate(0);
+    /* 元の位置 */
+  }
+
+  50% {
+    transform: rotate(-10deg);
+    /* 下に振れる */
+  }
+}
+
+
 @media (max-width: 1700px) {
   .searchbar {
     width: 40% !important;
@@ -1122,7 +1194,8 @@ textarea {
     color: white;
   }
 
-  .top_page_messege_span,.top_page_messege_span_second {
+  .top_page_messege_span,
+  .top_page_messege_span_second {
     color: white;
     font-size: 4.5rem;
   }
@@ -1173,14 +1246,15 @@ textarea {
     column-gap: 7px;
   }
 
-  
+
 
   .top_page_message {
     font-size: 2.5rem;
     color: white;
   }
 
-  .top_page_messege_span,.top_page_messege_span_second {
+  .top_page_messege_span,
+  .top_page_messege_span_second {
     color: white;
     font-size: 3.0rem;
   }
@@ -1244,7 +1318,8 @@ textarea {
     color: white;
   }
 
-  .top_page_messege_span,.top_page_messege_span_second {
+  .top_page_messege_span,
+  .top_page_messege_span_second {
     color: white;
     font-size: 2.0rem;
   }
@@ -1275,12 +1350,14 @@ textarea {
     border-radius: 50px !important;
 
   }
+
   .top_page_message {
     font-size: 1.2rem;
     color: white;
   }
 
-  .top_page_messege_span,.top_page_messege_span_second {
+  .top_page_messege_span,
+  .top_page_messege_span_second {
     color: white;
     font-size: 1.4rem;
   }

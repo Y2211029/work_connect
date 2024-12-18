@@ -162,6 +162,8 @@ return (
                 </Typography>
               ))}
               {type === 'checkbox' || type === 'radiogroup' && <Graph title={title} responses={responses} />}
+              <Graph title={title} responses={responses} />
+
             </div>
           ))}
       </Stack>

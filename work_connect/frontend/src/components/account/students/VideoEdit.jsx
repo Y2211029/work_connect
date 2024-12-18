@@ -4,12 +4,11 @@ import VideoGenre from "../../../sections/video/VideoGenre";
 import VideoIntroduction from "../../../sections/video/VideoIntroduction";
 import YouTube from "react-youtube";
 // import Modal from "react-modal";
-// import { useNavigate } from "react-router-dom";
 
 import "../../../App.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 const VideoEdit = () => {
@@ -17,21 +16,76 @@ const VideoEdit = () => {
   const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData");
 
-  const [workData, setVideoData] = useState({
+  const movie_id = useParams();
+  const [videoData, setVideoData] = useState({
     creatorId: "",
     YoutubeURL: "",
     VideoTitle: "",
     VideoGenre: "",
-    Introduction: "",
+    VideoIntroduction: "",
   });
+  const [getMovieData, setGetMovieData] = useState("");
+  // const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const [message, setMessage] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [videoId, setVideoId] = useState("");
   const [hasError, setHasError] = useState(false);
 
+  // 動画データ
+  const movieDetailUrl = "http://localhost:8000/get_movie_detail";
+
   useEffect(() => {
-    console.log("workData: ", workData);
-  }, [workData]);
+    const fetchWorkDetails = async () => {
+      try {
+        // Laravel側から作品詳細データを取得
+        const response = await axios.get(movieDetailUrl, {
+          params: { id: movie_id },
+          headers: {
+            "Content-Type": "json",
+          },
+        });
+
+        if (response.status !== 200) {
+          throw new Error("サーバーからのデータ取得に失敗しました。");
+        }
+
+        const data = await response.data;
+        console.log("data:", data);
+
+        setGetMovieData(data["動画"][0]); // 取得したデータを保存
+        setVideoData((prevData) => ({
+          ...prevData,
+          VideoTitle: data["動画"][0].title,
+          VideoGenre: data["動画"][0].genre,
+          VideoIntroduction: data["動画"][0].intro,
+        }));
+        setVideoUrl(getMovieData.youtube_url);
+        console.log(getMovieData.youtube_url);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        // setLoading(false); // ローディングを終了
+      }
+    };
+
+    fetchWorkDetails();
+    console.log("movie_id:", movie_id);
+  }, []);
+
+  useEffect(() => {
+    console.log("videoData: ", videoData);
+  }, [videoData]);
+
+  // ロード時のyoutubeURL取得
+  useEffect(() => {
+    if (videoUrl) {
+      setVideoId(videoUrl); // videoIdを設定
+      callSetVideoData("YoutubeURL", videoUrl); // 最新のvideoIdを反映
+      console.log(videoUrl);
+    }
+  }, [videoUrl]);
 
   const callSetVideoData = (key, value) => {
     setVideoData((prev) => ({
@@ -103,12 +157,12 @@ const VideoEdit = () => {
   const VideoSubmit = async (e) => {
     e.preventDefault();
     console.log("e", e.target);
-    console.log("workData[key]", workData);
+    console.log("videoData[key]", videoData);
     async function PostData() {
       const formData = new FormData();
 
-      for (const key in workData) {
-        formData.append(key, workData[key]);
+      for (const key in videoData) {
+        formData.append(key, videoData[key]);
       }
       try {
         const response = await axios.post(
@@ -135,10 +189,10 @@ const VideoEdit = () => {
     }
 
     if (
-      !workData.YoutubeURL ||
-      !workData.VideoTitle ||
-      !workData.VideoGenre ||
-      !workData.Introduction
+      !videoData.YoutubeURL ||
+      !videoData.VideoTitle ||
+      !videoData.VideoGenre ||
+      !videoData.Introduction
     ) {
       alert("エラー：未入力項目があります。");
     } else {
@@ -164,14 +218,21 @@ const VideoEdit = () => {
               </div>
               <br />
               {videoId ? (
-                <YouTube videoId={videoId} opts={opts} />
+                <YouTube
+                  videoId={videoId}
+                  opts={opts}
+                  movieData={getMovieData.youtube_url}
+                />
               ) : (
                 <p>YouTubeのURL、ID、またはiframeコードを入力してください。</p>
               )}
             </div>
             <div className="VideoInformation">
               <div className="VideoPostingFormField">
-                <VideoTitle callSetVideoData={callSetVideoData} />
+                <VideoTitle
+                  callSetVideoData={callSetVideoData}
+                  movieData={getMovieData.title}
+                />
               </div>
               {/* ジャンル */}
               <div className="VideoPostingFormField">
@@ -184,18 +245,25 @@ const VideoEdit = () => {
                       タグを入れてください
                     </span> */}
                   </p>
-                  <VideoGenre callSetVideoData={callSetVideoData} />
+                  <VideoGenre
+                    callSetVideoData={callSetVideoData}
+                    movieData={getMovieData.genre}
+                  />
                 </div>
               </div>
               <br />
               <div className="VideoPostingFormField">
-                <VideoIntroduction callSetVideoData={callSetVideoData} />
+                <VideoIntroduction
+                  callSetVideoData={callSetVideoData}
+                  movieData={getMovieData.intro}
+                />
               </div>
             </div>
           </div>
           <input type="submit" value="送信" className="VideoSubmit" />
         </form>
         {message && <p>{message}</p>}
+        {error && <p>{error}</p>}
       </div>
       {/* </Modal> */}
     </div>

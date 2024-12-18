@@ -92,10 +92,6 @@ body {
   border-radius: 4px;
 }
 
-.news_img img {
-  width: 70px;
-  height: 70px;
-}
 
 figure {
   border: thin #c0c0c0 solid;
@@ -264,34 +260,10 @@ input[type="radio"]:checked+.label {
   margin-left: 1%;
 }
 
-.draftlist {
-  color: black;
-  height: 100%;
-
-}
-
-.draftlistScroll {
-  overflow-y: auto;
-  /* 必要に応じてスクロールバーを表示 */
-  overflow-x: hidden;
-  height: auto;
-}
 
 
-.draftlisttable {
-  width: auto;
-  /* テーブルの幅を親要素に合わせる */
-  border: solid black;
-  border-width: 1px;
-  margin-bottom: 20px;
-  border-collapse: separate;
-  /* テーブルの境界線を一貫して表示 */
-}
 
-.draftlisttable thead {
-  background-color: #338DC9;
-  padding: 5px;
-}
+
 
 td {
   border: none;
@@ -340,12 +312,35 @@ td {
   /* コンテンツの背景色 (必要に応じて追加) */
 }
 
-.Last_updated_date {
-  margin-bottom: 8px;
-}
 
 .css-d3ri6l-MuiStack-root {
   margin: 0;
+}
+
+
+
+
+
+/* sx={{
+  position: 'relative', width: '160px', borderColor: '#A9A9A9', color: '#A9A9A9', backgroundColor: '#F5F5F5', // 背景色を薄いグレーに設定
+  '&:hover': { borderColor: '#A9A9A9', backgroundColor: '#F5F5F5', }, */
+.Not_Upload_Button{
+  position: relative;
+  width:auto;
+  border-color: #A9A9A9;
+  color: #A9A9A9;
+}
+
+.Not_Upload_Button:hover{
+  cursor: not-allowed;
+}
+
+.NewsMenu_Tabs{
+  width:100%;  
+}
+
+.css-15u176q-MuiPaper-root-MuiAppBar-root{
+  box-shadow: none;
 }
 
 
@@ -523,7 +518,7 @@ td {
   .editor-wrapper {
     width: 90%;
     height: auto;
-    margin-top: 40%;
+    margin-top: 70%;
   }
 
   .IconButton {

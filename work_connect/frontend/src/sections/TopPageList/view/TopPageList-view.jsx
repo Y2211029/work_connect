@@ -92,7 +92,7 @@ export default function TopPageListView() {
                   variant="contained"
                   className="top_page_button login"
                   onClick={handleChange}
-                  sx={{ display: Display.HomePage == "none" ?  { xs: "none", md: "none", lg: "flex" } : "none" }}
+                  sx={{ display: Display.HomePage == "none" ? { xs: "none", md: "none", lg: "flex" } : "none" }}
                 >
                   始めよう
                 </Button>

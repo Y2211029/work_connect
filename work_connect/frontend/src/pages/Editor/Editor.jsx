@@ -1392,31 +1392,14 @@ const Editor = () => {
         </Typography>
       </Stack>
 
+
+
       {/* CreateForm の表示 */}
       {CreateFormOpen && <CreateForm newsid={news_id} HandleBack={handleBack} />}
 
+
       {!CreateFormOpen &&
         <>
-          {/* アップロードされた画像の表示 */}
-          {imageUrl && (
-            <div className="uploaded-image" id="uploaded-image">
-              <img src={`${imageUrl}`} alt="Uploaded" />
-              <CancelIcon onClick={thumbnail_img_delete} />
-            </div>
-          )}
-
-          {/* 画像選択のフォーム */}
-          <form>
-            <input
-              id="fileInput"
-              type="file"
-              accept="image/*"
-              style={{ display: 'none' }}
-              ref={fileInputRef}
-              onChange={handleFileSelect}
-            />
-          </form>
-
           <div>
 
             <NewsSelectMenu
@@ -1442,6 +1425,28 @@ const Editor = () => {
               CreateFormJump={CreateFormJump}
             />
           </div>
+
+          {/* アップロードされた画像の表示 */}
+          {imageUrl && (
+            <div className="uploaded-image" id="uploaded-image">
+              <img src={`${imageUrl}`} alt="Uploaded" />
+              <CancelIcon onClick={thumbnail_img_delete} />
+            </div>
+          )}
+
+          {/* 画像選択のフォーム */}
+          <form>
+            <input
+              id="fileInput"
+              type="file"
+              accept="image/*"
+              style={{ display: 'none' }}
+              ref={fileInputRef}
+              onChange={handleFileSelect}
+            />
+          </form>
+
+
 
 
 

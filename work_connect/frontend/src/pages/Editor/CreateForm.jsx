@@ -24,25 +24,14 @@ import ImagePicker from "./SelectOptionMenu/ImagePicker";
 // MUI
 import Stack from "@mui/material/Stack";
 import PropTypes from 'prop-types';
-import Typography from "@mui/material/Typography";
-
-import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-
-import Accordion from "@mui/material/Accordion";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import MUITooltip from "@mui/material/Tooltip";
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import MUIButton from "@mui/material/Button";
 
 
 // データ保存
 import axios from "axios";
-import FormMenu from './clickedmenu/FormMenu';
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
+
+import FormSelectMenu from "./clickedmenu/FormSelectMenu";
 
 const CreateForm = ({ newsid, HandleBack }) => {
   console.log("ニュースid", newsid);
@@ -50,18 +39,6 @@ const CreateForm = ({ newsid, HandleBack }) => {
   const createform_search_url = "http://127.0.0.1:8000/createform_search";
   const [questions, setQuestions] = useState([]);
   const [deadlineDate, setDeadlineDate] = useState(dayjs());
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [expanded, setExpanded] = useState(false);
-
-  const toggleDrawer = (open) => {
-    setDrawerOpen(open);
-  };
-
-
-  const AccordionhandleChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
-  };
-
 
   useEffect(() => {
     const getcreateform = async () => {
@@ -114,7 +91,6 @@ const CreateForm = ({ newsid, HandleBack }) => {
   }, [setDeadlineDate])
 
   const [modalopen, setModalOpen] = useState(false);
-  const [buttonOpen, setButtonOpen] = useState(true);
   const [selectmenu, setSelectMenu] = useState("");
   const { getSessionData } = useSessionStorage();
   const [questionData, setQuestionData] = useState(null);
@@ -147,8 +123,6 @@ const CreateForm = ({ newsid, HandleBack }) => {
     // 新しい質問を追加
     setQuestions([...questions, newQuestion]);
 
-    // モーダルを開く
-    setButtonOpen(false);
     openModal(Questions_Genre);
   };
 
@@ -161,7 +135,6 @@ const CreateForm = ({ newsid, HandleBack }) => {
   const EditopenModal = (Questions_Genre, questionData) => {
     setSelectMenu(Questions_Genre);
     setQuestionData(questionData);
-    setButtonOpen(false);
     setModalOpen(true);
   };
 
@@ -277,7 +250,6 @@ const CreateForm = ({ newsid, HandleBack }) => {
     console.log("modalopen", modalopen);
 
     setModalOpen(false);
-    setButtonOpen(true);
   };
 
 
@@ -387,6 +359,9 @@ const CreateForm = ({ newsid, HandleBack }) => {
     deleteButton.textContent = "削除";
     editButton.textContent = "編集";
 
+    deleteButton.className = 'Delete_Button';
+    editButton.className = 'Edit_Button';
+
     // 削除ボタンのクリックイベント
     deleteButton.onclick = function () {
       // 削除する質問の ID を取得
@@ -493,7 +468,6 @@ const CreateForm = ({ newsid, HandleBack }) => {
     setQuestions(questions.filter(q => q !== questionData));  // キャンセル時に追加した質問を削除
     setQuestionData(null);  // `questionData` をクリア
     setModalOpen(false);
-    setButtonOpen(true);
   };
 
   const WriteNewsHandleBack = async (event) => {
@@ -541,29 +515,7 @@ const CreateForm = ({ newsid, HandleBack }) => {
 
   ];
 
-  const menuItems = [
-    {
-      key: "settingdeadline",
-      text: "応募締切日を設定する",
-      render: <FormMenu menuKey={'settingdeadline'}
-        SetDeadlineDate={setDeadlineDate}
-        deadlineDate={deadlineDate}
-      />
-    },
-    {
-      key: "formInformation",
-      text: "フォーム情報",
-      render: <FormMenu menuKey={'formInformation'} questions={questions} />
-    },
-    {
-      key: "addForm",
-      text: "フォームを追加する",
-      render: <FormMenu
-        menuKey={'addForm'}
-        addQuestion={addQuestion}
-        CreateFormSave={CreateFormSave} />
-    },
-  ];
+
 
 
 
@@ -572,82 +524,14 @@ const CreateForm = ({ newsid, HandleBack }) => {
 
 
       <Stack direction="row" spacing={2} >
-
-        <div className="SelectMenu_Hamburger">
-          <Stack direction={"row"}>
-
-            <MUITooltip title="その他のニュースメニュー">
-              <MoreVertIcon onClick={() => toggleDrawer(true)} className="FormMenuIcon"
-                sx={{ position: 'relative', top: '7px', left: '30px', width: "120px", '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
-              </MoreVertIcon>
-            </ MUITooltip>
-
-            <MUIButton variant="outlined"
-              sx={{ position: 'relative', left: '50px', width: "150px", borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
-              フォームの下書きを保存する
-            </MUIButton>
-
-            <MUIButton variant="outlined"
-              sx={{ position: 'relative', left: '100px', width: "150px", borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
-              フォームを追加する
-            </MUIButton>
-
-
-          </Stack>
-
-        </div>
-
-        {buttonOpen && (
-          <>
-            <Stack spacing={2} className="SelectMenu">
-              <div className="SelectMenu_Hamburger">
-                {/* ハンバーガーメニュー用のボタン */}
-                {/* <IconButton
-                  edge="start"
-                  color="inherit"
-                  aria-label="menu"
-                  onClick={() => toggleDrawer(true)}
-                >
-                  <Typography className="FormMenu">
-                    <MenuIcon className="FormMenuIcon" />
-                    フォームメニューを開く
-                  </Typography>
-                </IconButton> */}
-
-                {/* ドロワーメニュー */}
-                <Drawer
-                  anchor="right"
-                  open={drawerOpen}
-                  onClose={() => {
-                    setExpanded(false);
-                    toggleDrawer(false);
-                  }}
-                >
-                  <List>
-                    {menuItems.map(({ key, text, render }) => (
-                      <Accordion
-                        key={key}
-                        expanded={expanded === key}
-                        onChange={AccordionhandleChange(key)}
-                        className="Accordion"
-                      >
-                        <AccordionSummary
-                          expandIcon={<ExpandMoreIcon />}
-                          aria-controls={`${key}-content`}
-                          id={`${key}-header`}
-                        >
-                          <Typography sx={{ fontSize: "15px", width: "80%", flexShrink: 0 }}>{text}</Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>{render}</AccordionDetails>
-                      </Accordion>
-                    ))}
-                    <Typography className="back_news_draft" sx={{ fontSize: "15px", width: "80%", flexShrink: 0 }} onClick={WriteNewsHandleBack}>ニュースの下書きに戻る</Typography>
-                  </List>
-                </Drawer>
-              </div>
-            </Stack>
-          </>
-        )}
+        <FormSelectMenu 
+                  SetDeadlineDate={setDeadlineDate}
+                  deadlineDate={deadlineDate}
+                  CreateFormSave = {CreateFormSave}
+                  addQuestion={addQuestion}
+                  questions={questions}
+                  WriteNewsHandleBack = {WriteNewsHandleBack}
+        />
 
 
 

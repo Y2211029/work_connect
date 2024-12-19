@@ -1378,7 +1378,7 @@ const Editor = () => {
   };
 
   return (
-    <div>
+    <div className="newsPosting">
       <Helmet>
         <title>ニュースの投稿 | Work&Connect</title>
       </Helmet>

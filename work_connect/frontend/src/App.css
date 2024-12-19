@@ -565,6 +565,8 @@ textarea {
   width: 100%;
   left: 150px;
   padding-right: 10px;
+
+  transition: all 0.5s ease-in-out;
 }
 
 .VideoPostingUiForm::-webkit-scrollbar {
@@ -1268,6 +1270,66 @@ textarea {
     width: 60%;
     border-radius: 50px !important;
 
+  }
+
+  /* 作品投稿 */
+  .WorkPostingFormContainer {
+    height: fit-content;
+    width: 100%;
+    display: flex;
+    overflow: scroll;
+  }
+  .WorkPostingFormContainer form {
+    max-width: 600px;
+  }
+
+  .WorkPostingUiForm {
+    /* position: relativeを無効にする */
+    position: static;
+
+    flex-direction: column;
+    height: fit-content;
+  }
+
+  .ImageUpload {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    max-width: 600px;
+  }
+
+  .WorkSubmit,.VideoPostingUiForm {
+    /* position: relativeを無効にする */
+    position: static;
+  }
+
+  .WorkInformation, .VideoInformation {
+    padding: 0;
+    margin: 0;
+    overflow: unset;
+  }
+
+  .VideoPostingFormContainer {
+    height: fit-content;
+    width: 100%;
+    display: flex;
+    overflow: scroll;
+  }
+  .VideoPostingFormContainer form { 
+    max-width: 600px;
+  }
+  .VideoPostingUiForm {
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
+
+  .VideoInformation {
+    width: 100%;
+    position: static;
+  }
+
+  .VideoSubmit {
+    position: static;
   }
 }
 

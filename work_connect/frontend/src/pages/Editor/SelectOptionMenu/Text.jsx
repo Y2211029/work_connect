@@ -14,7 +14,7 @@ export default function Text({ onSave, onCancel, questionData }) {
     const [selectedType, setSelectedType] = useState(null);
     const [placeholder, setPlaceholder] = useState("");
     const [autocomplete, setAutoComplete] = useState(false);
-    const [isrequired, setIsRequired ] = useState(false);
+    const [isrequired, setIsRequired] = useState(false);
     const [description, setDescription] = useState("");
     const [validatorsMinLength, setValidatorsMinLength] = useState("");
     const [validatorsMaxLength, setValidatorsMaxLength] = useState("");
@@ -36,7 +36,7 @@ export default function Text({ onSave, onCancel, questionData }) {
             setSelectedType(inputtype.find(type => type.name === questionData.inputType) || null);
             setPlaceholder(questionData.placeholder || "");
             setAutoComplete(questionData.autocomplete || false);
-            setIsRequired (questionData.isrequired || false);
+            setIsRequired(questionData.isrequired || false);
             setDescription(questionData.description || "");
 
             if (questionData.validators && questionData.validators[0]) {
@@ -75,10 +75,10 @@ export default function Text({ onSave, onCancel, questionData }) {
         console.log("設定", settings);
     };
 
-        //編集をキャンセルして追加したフォームを削除
-        const handleCancel = () =>{
-            onCancel();
-        }
+    //編集をキャンセルして追加したフォームを削除
+    const handleCancel = () => {
+        onCancel();
+    }
 
     return (
         <div className="TextSetting">
@@ -92,8 +92,13 @@ export default function Text({ onSave, onCancel, questionData }) {
                     onChange={(event, newValue) => setSelectedType(newValue)}
                     isOptionEqualToValue={(option, value) => option.name === value.name}
                     fullWidth
-                    renderInput={(params) => <TextField {...params} label="種類" />}
-                    sx={{width: "90%",}}
+                    renderInput={(params) => <TextField {...params} label="種類"
+                    InputProps={{
+                        ...params.InputProps,
+                        className: 'autocomplete_component_text',
+                    }}
+                    />}
+                // sx={{width: "90%",}}
                 />
 
                 <TextField
@@ -101,20 +106,20 @@ export default function Text({ onSave, onCancel, questionData }) {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     fullWidth
-                    sx={{width: "90%",}}
+                // sx={{width: "90%",}}
                 />
 
 
-                        <Stack direction="row" alignItems="center" spacing={1}>
-                            <Checkbox
-                                checked={isrequired}
-                                onChange={(e) => setIsRequired(e.target.checked)}
-                            />
-                            <Typography>フォームを必須にする</Typography>
-                        </Stack>
+                <Stack direction="row" alignItems="center" spacing={1}>
+                    <Checkbox
+                        checked={isrequired}
+                        onChange={(e) => setIsRequired(e.target.checked)}
+                    />
+                    <Typography>フォームを必須にする</Typography>
+                </Stack>
 
 
-                <Button variant="contained" color="primary" onClick={handleSave}  className="FormButton">
+                <Button variant="contained" color="primary" onClick={handleSave} className="FormButton">
                     保存
                 </Button>
 

@@ -50,11 +50,6 @@
     font-weight: 600;
 }
 
-.news_title {
-
-    text-align: left;
-    font-size: 1.500rem;
-}
 
 .news_font {
     padding: 0;
@@ -247,12 +242,6 @@
 
     .tabBox {
         width: 100%;
-    }
-
-
-
-    .news_title {
-        font-size: 1rem;
     }
 
     .news_company_name {

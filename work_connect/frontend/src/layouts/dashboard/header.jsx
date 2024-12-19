@@ -265,6 +265,7 @@ export default function Header({ onOpenNav }) {
                 onClose={handleClose}
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 transformOrigin={{ vertical: "top", horizontal: "right" }}
+                
                 PaperProps={{
                   sx: {
                     p: 0,
@@ -273,6 +274,7 @@ export default function Header({ onOpenNav }) {
                     width: 250,
                   },
                 }}
+                disableScrollLock 
               >
                 {NEWS_MENU_OPTIONS.map((option) => (
                   <MenuItem key={option.label} onClick={() => handleMenuItemClick(option.path)} sx={{ display: login_state ? "block" : "none" }}>
@@ -289,7 +291,7 @@ export default function Header({ onOpenNav }) {
           id="LoginButton"
           onClick={handleChange}
           variant="contained"
-          sx={{ display: Display.HomePage == "none" ?  { xs: "none", md: "none", lg: "flex" } : "none" }}
+          sx={{ display: Display.HomePage == "none" ? { xs: "none", md: "none", lg: "flex" } : "none" }}
         >
           ログイン
         </Button>
@@ -298,7 +300,7 @@ export default function Header({ onOpenNav }) {
           id="PreSignButton"
           onClick={handleChange}
           variant="outlined"
-          sx={{ display: Display.HomePage == "none" ?  { xs: "none", md: "none", lg: "flex" } : "none" }}
+          sx={{ display: Display.HomePage == "none" ? { xs: "none", md: "none", lg: "flex" } : "none" }}
         >
           新規登録
         </Button>
@@ -330,7 +332,7 @@ export default function Header({ onOpenNav }) {
 
         <NotificationsPopover />
 
-        <Tooltip title="アカウント" sx={{ display: Display.HomePage ? "none" : "flex" }}>
+        <Tooltip title="アカウント" sx={{ display: Display.HomePage === "none" ? "none" : "flex" }}>
           <IconButton
             sx={{
               marginLeft: "auto", // 右揃え
@@ -409,6 +411,9 @@ export default function Header({ onOpenNav }) {
               anchorOrigin={{ vertical: "top", horizontal: "center" }}
               transformOrigin={{ vertical: "bottom", horizontal: "center" }}
               // popover全体ではなく、ボタンを囲っている一つ階層が上の要素のスタイリングをする。
+              sx={{
+                p: 0,
+              }}
               PaperProps={{
                 sx: {
                   p: 0, // 内側の余白（padding）を0に設定
@@ -417,6 +422,7 @@ export default function Header({ onOpenNav }) {
                   width: "fit-contents", // 幅を250pxに設定
                 },
               }}
+              disableScrollLock 
             >
               <Button onClick={handleOpenModal} variant="contained" sx={buttonStyle}>
                 作品投稿
@@ -459,6 +465,7 @@ export default function Header({ onOpenNav }) {
                 anchorOrigin={{ vertical: "top", horizontal: "center" }}
                 transformOrigin={{ vertical: "bottom", horizontal: "center" }}
                 // popover全体ではなく、ボタンを囲っている一つ階層が上の要素のスタイリングをする。
+                
                 PaperProps={{
                   sx: {
                     p: 0, // 内側の余白（padding）を0に設定
@@ -467,6 +474,7 @@ export default function Header({ onOpenNav }) {
                     width: "fit-contents", // 幅を250pxに設定
                   },
                 }}
+                disableScrollLock 
               >
                 {NEWS_MENU_OPTIONS.map((option) => (
                   <MenuItem key={option.label} onClick={() => handleMenuItemClick(option.path)} sx={{ display: login_state ? "block" : "none" }}>
@@ -501,13 +509,13 @@ export default function Header({ onOpenNav }) {
   }, [theme]);
   const renderPhoneSizeLogin = (
     <>
-      <Box className="top_page_phone_size_box" sx={{ display: Display.HomePage == "none" ?  { xs: "flex", md: "flex", lg: "none" } : "none" }}>
+      <Box className="top_page_phone_size_box" sx={{ display: Display.HomePage == "none" ? { xs: "flex", md: "flex", lg: "none" } : "none" }}>
         <Button
           id="LoginButton"
           onClick={handleChange}
           className="top_page_phone_size_button"
           variant="contained"
-          // sx={{ display: Display.HomePage === "none" ? "flex" : "none" }}
+        // sx={{ display: Display.HomePage === "none" ? "flex" : "none" }}
         >
           ログイン
         </Button>
@@ -517,7 +525,7 @@ export default function Header({ onOpenNav }) {
           onClick={handleChange}
           className="top_page_phone_size_button"
           variant="outlined"
-          // sx={{ display: Display.HomePage === "none" ? "flex" : "none" }}
+        // sx={{ display: Display.HomePage === "none" ? "flex" : "none" }}
         >
           新規登録
         </Button>
@@ -540,9 +548,9 @@ export default function Header({ onOpenNav }) {
           }),
           ...(lgUp &&
             !Display.HomePage && {
-              width: `calc(100% - ${NAV.WIDTH + 1}px)`,
-              height: HEADER.H_DESKTOP,
-            }),
+            width: `calc(100% - ${NAV.WIDTH + 1}px)`,
+            height: HEADER.H_DESKTOP,
+          }),
         }}
       >
         <Toolbar

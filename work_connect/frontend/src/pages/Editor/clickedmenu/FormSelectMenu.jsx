@@ -173,10 +173,11 @@ const NewsSelectMenu = ({
                     aria-haspopup="true"
                     aria-expanded={openAddFormMenu ? 'true' : undefined}
                     onClick={handleClickAddFormMenu}
-                    sx={{ border: '1px solid', mx: 1 }}
+                    sx={{ border: '1px solid', }}
+                    className="newsEditMenuButton"
                 >
                     <Typography className='FormSelectMenu_Text'>
-                    フォームを追加する
+                        フォームを追加する
                     </Typography>
                 </Button>
                 <Menu
@@ -188,6 +189,14 @@ const NewsSelectMenu = ({
                         'aria-labelledby': 'addform-button',
                     }}
                     className='Menu_Addform'
+                    anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'left', // 必要に応じて 'center' に変更
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'left', // 必要に応じて 'center' に変更
+                    }}
                 >
                     <div className='QuestionMenu'>
                         <Stack
@@ -197,7 +206,7 @@ const NewsSelectMenu = ({
                             sx={{
                                 display: 'flex',
                                 flexWrap: 'wrap',
-                                overflowX: 'auto',  // 横スクロールを有効化
+                                // overflowX: 'auto',  // 横スクロールを有効化
                                 paddingBottom: '20px',
                             }}
                         >
@@ -239,11 +248,12 @@ const NewsSelectMenu = ({
                         aria-haspopup="true"
                         aria-expanded={openInputMenu ? 'true' : undefined}
                         onClick={handleClickInputMenu}
-                        sx={{ border: '1px solid', mx: 1 }}
+                        sx={{ border: '1px solid', }}
+                        className="newsEditMenuButton"
                     >
-                                            <Typography className='FormSelectMenu_Text'>
-                    応募締切日
-                    </Typography>
+                        <Typography className='FormSelectMenu_Text'>
+                            応募締切日
+                        </Typography>
                     </Button>
                 </Tooltip>
                 <Menu
@@ -320,12 +330,13 @@ const NewsSelectMenu = ({
                     sx={{
                         border: '1px solid',
                         zIndex: '5',
-                        mx: 1,
+
                         backgroundColor: 'rgba(255, 255, 255, 1)',
                     }}
+                    className="newsEditMenuButton"
                 >
-                                        <Typography className='FormSelectMenu_Text'>
-                    下書き保存
+                    <Typography className='FormSelectMenu_Text'>
+                        下書き保存
                     </Typography>
                 </Button>
             </div>

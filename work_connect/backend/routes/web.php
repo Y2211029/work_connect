@@ -318,10 +318,17 @@ Route::get('/images/work/{filename}', function ($filename) {
 
     $file = file_get_contents($path);
     $type = mime_content_type($path);
+    \Log::info('gazoutype:'.$type);
+
+    $fileSize = filesize($path);
+    \Log::info("File size on server: " . $fileSize);
+
+    // バッファをクリア
+    ob_clean();
 
     return Response::make($file, 200, [
         'Content-Type' => $type,
-        'Access-Control-Allow-Origin' => '*',
+        'Content-Disposition' => 'inline',
     ]);
 });
 

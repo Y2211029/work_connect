@@ -46,3 +46,22 @@
     width: 100px;
     height: 70px;
 }
+
+.createFormJump{
+    cursor: pointer;
+}
+
+.news_job_acordion_menu {
+    /*  横並び */
+    display: flex !important;
+    /* 必要に応じて折り返す */
+    flex-wrap: wrap !important;
+    /* 要素間の間隔 */
+    gap: 1 !important;
+    /* 垂直方向の整列 */
+    align-items: center !important;
+    padding: 16px 20px !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+}

@@ -37,6 +37,7 @@ import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 //下書きリスト
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { Stack } from '@mui/system';
 
 const blue = {
     100: '#DAECFF',
@@ -180,7 +181,7 @@ const NewsSelectMenu = ({
     const [anchorElInput, setAnchorElInput] = useState(null); // 入力メニューのアンカー要素
     const [anchorElConfirmation, setAnchorElConfirmation] = useState(null); // 確認メニューのアンカー要素
     const [popoverAnchorEl, setPopoverAnchorEl] = useState(null); // ポップオーバーのアンカー要素
-    const [selectedMenu, setSelectedMenu] = useState('input'); // 'input' or 'confirmation'
+    const [selectedMenu, setSelectedMenu] = useState('input');
     const [menuState, setMenuState] = useState(null);
     const openInputMenu = Boolean(anchorElInput);
     const openConfirmationMenu = Boolean(anchorElConfirmation);
@@ -253,24 +254,60 @@ const NewsSelectMenu = ({
     }
 
     //エディタの編集状況を見て、チェックボックスで表示する
-    const EditorStatusCheck = (check_element) => {
+    const EditorStatusCheck = (check_element, key) => {
+        console.log("check_element内容", check_element);
+
+        let labels = [];
+        if (key === 'selectedOccupation' && Array.isArray(check_element)) {
+            labels = check_element.map(item => item.label);
+            console.log("labels", labels);
+        }
+
+        const ShowTags = (tags) => {
+            return tags.map((region, index) => (
+                <div key={index} style={{ paddingLeft: '3px' }}>
+                    <Button
+                        variant="outlined"
+                        sx={{ width: "100%", fontSize: "10px", borderColor: "#637381", color: "#637381", "&:hover": { borderColor: "#637381" }, cursor: "pointer" }}
+                    >
+                        {region}
+                    </Button>
+                </div>
+            ));
+        };
+
+
         return (
             <NewsMenuTable>
                 <TableBody>
                     <TableRow>
                         <TableCell>
-                            {check_element ? (
+                            {check_element !== null ? (
                                 <CheckBoxIcon color="primary" aria-label="設定完了しています" />
                             ) : (
                                 <ErrorIcon color="error" aria-label="設定完了していません" />
                             )}
                         </TableCell>
                         <TableCell>
-                            {check_element ? (
-                                <p>設定完了しています</p>
-                            ) : (
-                                <p>設定完了していません</p>
-                            )}
+                            {
+                                check_element !== null ? (
+                                    key === 'title' || key === 'notificationMessage' ? (
+                                        <p>{check_element}</p>
+                                    ) : key === 'eventDay' ? (
+                                        <p>{moment(check_element).format('YYYY/MM/DD HH時mm分~')}</p>
+                                    ) : key === 'selectedOccupation' ? (
+                                        <Box className="news_job_acordion_menu">
+                                            {ShowTags(labels)}
+                                        </Box> // labelsが空でない場合に表示
+                                    ) : check_element ? (
+                                        <p>設定完了しています</p>
+                                    ) : (
+                                        <p>設定完了していません</p>
+                                    )
+                                ) : (
+                                    <p>設定完了していません</p>
+                                )
+                            }
                         </TableCell>
                     </TableRow>
                 </TableBody>
@@ -322,9 +359,30 @@ const NewsSelectMenu = ({
             </NewsMenuTable>
         );
     };
+    
+    //menustateによってPopOverのサイズを変更する
+    const getPopoverSize = (menuState) => {
+        switch (menuState) {
+            case 'eventday':
+                return { width: '300px', minHeight: '100px' }; 
+            case 'jobtype':
+                return { width: '400px', minHeight: '300px' }; 
+            case 'message':
+                return { width: '350px', minHeight: '100px' }; 
+            case 'createform':
+                return { width: '300px', minHeight: '100px' }; 
+            case 'editing_status':
+                    return { width: '350px', minHeight: '100px' }; 
+            default:
+                return { width: '300px', minHeight: '200px' }; 
+        }
+    };
+    
 
 
     const renderPopoverContent = () => {
+
+
         if (selectedMenu === 'input') {
             switch (menuState) {
                 case 'eventday':
@@ -340,9 +398,11 @@ const NewsSelectMenu = ({
                             value={selectedOccupation}
                             onChange={setSelectedOccupation}
                             options={options}
+                            closeMenuOnSelect={false}
                             placeholder="▼"
                             isMulti
                             menuPortalTarget={document.body}
+                            isSearchable={true}
                             styles={{
                                 menuPortal: (base) => ({
                                     ...base,
@@ -376,91 +436,72 @@ const NewsSelectMenu = ({
                         </Box>
                     );
                 case 'createform':
-                return(
-                    <Box sx={{ p: 2, minWidth: 300 }}>
-     <div className="create_form">
-      {/* selected_draftが存在し、create_form配列が空でない場合に表示 */}
-      {selected_draft?.create_form?.length > 0 ? (
-        (() => {
-          // データを取得・処理
-          const DateTime = selected_draft.create_form[0].createformDateTime;
-          const createFormArray = JSON.parse(selected_draft.create_form[0].create_form || "[]");
-          const question_count = createFormArray.length;
+                    return (
+                        <Box sx={{ p: 2, minWidth: 300 }}>
+                            <div className="create_form">
+                                {/* selected_draftが存在し、create_form配列が空でない場合に表示 */}
+                                {selected_draft?.create_form?.length > 0 ? (
+                                    (() => {
+                                        // データを取得・処理
+                                        const DateTime = selected_draft.create_form[0].createformDateTime;
+                                        const createFormArray = JSON.parse(selected_draft.create_form[0].create_form || "[]");
+                                        const question_count = createFormArray.length;
 
-          return (
-            <>
-              <NewsMenuTable className="draftlisttable">
-                <TableBody>
-                  <TableRow>
-                    <TableCell style={{ backgroundColor: "#fff", border: "none" }}>
-                      <div className="Last_updated_date">
-                        最終更新日: {FormattedDate(DateTime)}
-                      </div>
+                                        return (
+                                            <>
+                                                <NewsMenuTable className="draftlisttable">
+                                                    <TableBody>
+                                                        <TableRow>
+                                                            <TableCell style={{ backgroundColor: "#fff", border: "none" }}>
+                                                                <div className="Last_updated_date">
+                                                                    最終更新日: {FormattedDate(DateTime)}
+                                                                </div>
 
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        {/* テキストと削除ボタンを右側に配置 */}
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                                                                
+                                                                <Stack direction={'row'}>
+                                                                <p className="draftlist">
+                                                                    質問数: {question_count}
+                                                                </p>
 
-                        </div>
-                      </div>
+                                                                <div style={{ alignItems: 'center', cursor: 'pointer' }}>
+                                                                    <DeleteIcon />
+                                                                    <p style={{ margin: 0}}>削除</p>
+                                                                </div>
+                                                                </Stack>
 
-                      <p className="draftlist">
-                        質問数: {question_count}
-                      </p>
+                                                                <Tooltip title="クリックすると応募フォーム作成画面へ行きます" placement="left">
+                                                                    <Typography id="createFormJump" className="createFormJump"
+                                                                        onClick={() => {
+                                                                            CreateFormJump();
+                                                                        }}>
+                                                                        応募フォームを作成する
+                                                                    </Typography>
+                                                                </Tooltip>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    </TableBody>
+                                                </NewsMenuTable>
+                                            </>
+                                        );
+                                    })()
+                                ) : (
+                                    <>
+                                        <p>編集中のフォームはありません</p>
 
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Tooltip title="クリックすると応募フォーム作成画面へ行きます" placement="left">
-                        <Typography id="createFormJump"
-                          onClick={() => {
-                            CreateFormJump();
-                          }}>
-                          応募フォームを作成する
-                        </Typography>
-                      </Tooltip>
-                    </TableCell>
-                    <TableCell>
-                      <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
-                        <DeleteIcon />
-                        <p style={{ margin: 0, marginLeft: '4px' }}>削除</p>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </NewsMenuTable>
-            </>
-          );
-        })()
-      ) : (
-        <>
-          <p>編集中のフォームはありません</p>
+                                        <Typography id="createFormJump" className='createFormJump'
+                                            onClick={() => {
+                                                CreateFormJump();
+                                            }}>
+                                            応募フォームを作成する
+                                        </Typography>
 
-          <Typography id="createFormJump"
-            onClick={() => {
-              CreateFormJump();
-            }}>
-            応募フォームを作成する
-          </Typography>
+                                    </>
 
-        </>
+                                )}
 
-      )}
-
-      {/* ボタン */}
-      <button
-        id="createFormJump"
-        className="save"
-        onClick={() => {
-          CreateFormJump();
-        }}
-      >
-        応募フォームを作成する
-      </button>
-    </div>
-                </Box>
-                )
+                            </div>
+                        </Box>
+                    )
                 default:
                     return null;
             }
@@ -472,15 +513,19 @@ const NewsSelectMenu = ({
                             <div className="editingstatus">
                                 <p>現在の編集状況</p>
                                 <p>タイトル</p>
-                                {EditorStatusCheck(title)}
+                                {EditorStatusCheck(title, 'title')}
                                 <p>サムネイル</p>
-                                {EditorStatusCheck(imageUrl)}
+                                {EditorStatusCheck(imageUrl, 'imageurl')}
                                 {followerCounter > 0 && (
                                     <>
                                         <p>通知に添えるメッセージ</p>
-                                        {EditorStatusCheck(notificationMessage)}
+                                        {EditorStatusCheck(notificationMessage, 'notificationMessage')}
                                     </>
                                 )}
+                                <p>開催日</p>
+                                {EditorStatusCheck(eventDay, 'eventDay')}
+                                <p>募集職種</p>
+                                {EditorStatusCheck(selectedOccupation, 'selectedOccupation')}
                                 <p>記事内容</p>
                                 {EditorContentsStatusCheck()}
                             </div>
@@ -645,7 +690,9 @@ const NewsSelectMenu = ({
                 }}
                 PaperProps={{
                     sx: {
-                        width: '25%',
+                        position: 'absolute',
+                        width: getPopoverSize(menuState).width,
+                        minHeight: getPopoverSize(menuState).minHeight,
                         top: 0,
                         marginLeft: '9%',
                     },
@@ -662,7 +709,7 @@ const NewsSelectMenu = ({
 
 NewsSelectMenu.propTypes = {
     setEventDay: PropTypes.func.isRequired,
-    eventDay: PropTypes.string.isRequired,
+    eventDay: PropTypes.object.isRequired,
     setSelectedOccupation: PropTypes.func.isRequired,
     selectedOccupation: PropTypes.array.isRequired,
     notificationMessage: PropTypes.string.isRequired,

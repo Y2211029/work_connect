@@ -92,9 +92,14 @@ const WorkEdit = () => {
         await Promise.all(
           getWorkData.images.map(async (value) => {
             // 1. サーバーから画像データを取得
-            const imageResponse = await fetch(
-              "http://localhost:8000/images/work/" + value.image
-            );
+            // const imageResponse = await fetch(
+            //   "http://localhost:8000/images/work/" + value.image
+            // );
+
+            const imageResponse = await fetch("http://localhost:8000/images/work/" + value.image, {
+              method: "GET",
+              mode: "cors", // 必要に応じてCORSモードを設定
+          });
 
             if (!imageResponse.ok) {
               throw new Error("Failed to fetch the image.");
@@ -102,11 +107,15 @@ const WorkEdit = () => {
 
             // 2. Blob形式でデータを取得
             const blob = await imageResponse.blob();
+            console.log("Blob content:", blob);
+            console.log("Blob size:", blob.size); // サイズが0ならデータが空
+            console.log("Blob type:", blob.type); // MIMEタイプを確認
 
             // 3. BlobをFile型に変換
             const file = new File([blob], value.image, { type: blob.type });
             console.log("filename:", value.image);
 
+            console.log("blob:", blob);
             console.log("file:", file);
 
             dt.items.add(file);

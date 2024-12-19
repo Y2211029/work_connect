@@ -48,11 +48,11 @@ const EditButtons = ({ workId, videoId }) => {
     if (action === "edit") {
       if (page === "work") {
         navigate(`/WorkEdit/${workId}`); // 作品編集
-      } else if(page === "movie") {
+      } else if (page === "movie") {
         navigate(`/VideoEdit/${videoId}`); // 作品編集
       }
     } else if (action === "delete") {
-      navigate("/VideoList"); // 削除
+      navigate(`/VideoEdit/${videoId}`); // 作品編集
     }
   };
 

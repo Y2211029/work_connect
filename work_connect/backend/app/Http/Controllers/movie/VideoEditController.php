@@ -2,20 +2,17 @@
 
 namespace App\Http\Controllers\movie;
 
-use App\Models\w_movies;
 use App\Http\Controllers\Controller;
-use App\Models\w_follow;
-use App\Models\w_notice;
 use Illuminate\Http\Request;
 
-class VideoPostingController extends Controller
+class VideoEditController extends Controller
 {
-  public function VideoPostingController(Request $request)
+  public function VideoEditController(Request $request, $id)
   {
     $userId = $request->input('creatorId');
     \Log::info($userId);
-    \Log::info($userId);
 
+    $VideoId = $request->workId;
     $VideoTitle = $request->input('VideoTitle');
     $VideoGenre = $request->input('VideoGenre');
     $YoutubeURL = $request->input('YoutubeURL');

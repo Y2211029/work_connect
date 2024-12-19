@@ -61,8 +61,8 @@ const VideoEdit = () => {
           VideoGenre: data["動画"][0].genre,
           VideoIntroduction: data["動画"][0].intro,
         }));
-        setVideoUrl(getMovieData.youtube_url);
-        console.log(getMovieData.youtube_url);
+        setVideoUrl(data["動画"][0].youtube_url);
+        console.log(data["動画"][0].youtube_url);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -80,10 +80,10 @@ const VideoEdit = () => {
 
   // ロード時のyoutubeURL取得
   useEffect(() => {
+    console.log("videoUrl:", videoUrl);
     if (videoUrl) {
       setVideoId(videoUrl); // videoIdを設定
       callSetVideoData("YoutubeURL", videoUrl); // 最新のvideoIdを反映
-      console.log(videoUrl);
     }
   }, [videoUrl]);
 
@@ -166,7 +166,7 @@ const VideoEdit = () => {
       }
       try {
         const response = await axios.post(
-          "http://localhost:8000/video_posting",
+          "http://localhost:8000/video_edit",
           formData,
           {
             headers: {

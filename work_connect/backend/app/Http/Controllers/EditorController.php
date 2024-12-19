@@ -32,7 +32,6 @@ class EditorController extends Controller
         $genre = $request->input('genre');
 
 
-
         if ($title === NULL) {
             $title = "タイトル未設定";
         }

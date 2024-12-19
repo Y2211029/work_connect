@@ -57,6 +57,7 @@ const GraduationYearDropdown = ({ GraduationData }) => {
       value={Graduation}
       onChange={handleChange}
       placeholder="▼"
+      closeMenuOnSelect={false}
       required
       styles={{
         // 12/5 

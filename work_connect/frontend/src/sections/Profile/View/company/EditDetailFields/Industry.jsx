@@ -89,6 +89,7 @@ const Industry = ({ IndustryData }) => {
         value={selectedIndustry}
         onChange={handleChange}
         options={options}
+        closeMenuOnSelect={false}
         placeholder="▼"
         isMulti
         styles={{

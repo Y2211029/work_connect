@@ -89,6 +89,7 @@ const Software = ({ SoftwareData }) => {
         onChange={handleChange}
         options={options}
         placeholder="▼"
+        closeMenuOnSelect={false}
         isMulti
         className="MyPageEditItems"
         styles={{

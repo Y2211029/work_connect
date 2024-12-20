@@ -68,7 +68,7 @@ const Editor = () => {
   const editorHolder = useRef(null);
   const [imageUrl, setImageUrl] = useState(null); // 画像のURLを保持するステート
   const [displayInput, setDisplayInput] = useState(true); // input要素の表示状態を管理するステート
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState(null);
   const [csrfToken, setCsrfToken] = useState("");
   const [sessionId, setSessionId] = useState(null);
   const [news_id, setNewsId] = useState(0); // ニュースの情報が格納されているDBのidを格納する
@@ -82,7 +82,7 @@ const Editor = () => {
   const [CreateFormOpen, setCreateFormOpen] = useState(false);
   const [formSummary, setFormSummary] = useState(null);
   const [followerCounter, setFollowerCounter] = useState(0);
-  const [selectedOccupation, setSelectedOccupation] = useState("");
+  const [selectedOccupation, setSelectedOccupation] = useState([]);
   const [newsTitle, setNewsTitle] = useState("ブログ");
 
   const news_save_url = "http://localhost:8000/news_save";
@@ -168,11 +168,16 @@ const Editor = () => {
         console.error("Editor instance or save function not available");
         return;
       }
+
+      const labels = selectedOccupation.map(item => item.label);
+      const OpenJobs = labels.join(', ');
+
+
       console.log("保存するときのニュース内容", formSummary);
       console.log("タイトル", title);
       console.log("ニュースID", news_id);
       console.log("通知メッセージ", notificationMessage);
-      console.log("応募職種", selectedOccupation);
+      console.log("応募職種", OpenJobs);
       console.log("開催日", eventDay);
       console.log("企業ID", sessionId);
       console.log("ジャンル", genre);
@@ -183,7 +188,7 @@ const Editor = () => {
         title: title,     // タイトル
         news_id: news_id,     // ID
         message: notificationMessage, //通知に添えるメッセージ
-        selectedOccupation: selectedOccupation,
+        selectedOccupation: OpenJobs,
         eventDay: eventDay, //開催日
         company_id: sessionId, // 企業ID
         genre: genre //ジャンル
@@ -319,7 +324,20 @@ const Editor = () => {
     // news_idをセット
     setNewsId(select_draft_list.id);
     setEventDay(moment(select_draft_list.event_day));
-    setSelectedOccupation(select_draft_list.open_jobs);
+
+    // まず変換関数を定義
+    const transformOpenJobs = (openJobsString) => {
+      return openJobsString.split(',').map(job => ({
+        value: job,
+        label: job
+      }));
+    };
+
+    // 変換関数を使用して、stateにセットする
+    const OpenJobs = select_draft_list.open_jobs; 
+    setSelectedOccupation(transformOpenJobs(OpenJobs));
+    console.log("応募職種配列",transformOpenJobs(OpenJobs));
+
   };
 
   const rewrite_news_delete = async (id) => {
@@ -1378,7 +1396,7 @@ const Editor = () => {
   };
 
   return (
-    <div>
+    <div className="newsPosting">
       <Helmet>
         <title>ニュースの投稿 | Work&Connect</title>
       </Helmet>
@@ -1445,10 +1463,6 @@ const Editor = () => {
               onChange={handleFileSelect}
             />
           </form>
-
-
-
-
 
 
           <Stack spacing={2} className="SelectMenu">

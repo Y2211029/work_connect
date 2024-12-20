@@ -89,6 +89,7 @@ const SelectedOccupation = ({ SelectedOccupationData }) => {
       value={selectedOccupation}
       onChange={handleChange}
       options={options}
+      closeMenuOnSelect={false}
       placeholder="▼"
       isMulti
       styles={{

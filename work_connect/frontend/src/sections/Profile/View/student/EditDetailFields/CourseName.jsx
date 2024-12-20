@@ -79,6 +79,7 @@ const CourseNameDropdown = ({ CourseNameData }) => {
         onChange={handleChange}
         options={options}
         placeholder="▼"
+        closeMenuOnSelect={false}
         isClearable
         styles={{
            // 12/5 

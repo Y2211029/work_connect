@@ -101,7 +101,7 @@ const PostCard = forwardRef(({ post }, ref) => {
     </div>
   );
 
-  const renderGraduationYear = graduationYear !== null ? <TypographyItems ItemName="卒業年度" ItemDetail={graduationYear} /> : null;
+  const renderGraduationYear = graduationYear !== null ? <TypographyItems ItemName="卒業年" ItemDetail={graduationYear} /> : null;
 
   const renderdepartmentName = departmentName !== null ? <TypographyItems ItemName="学部" ItemDetail={departmentName} /> : null;
 

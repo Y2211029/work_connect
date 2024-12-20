@@ -39,7 +39,7 @@ body {
   height: 100px;
   left: 40%;
   box-sizing: border-box;
-  padding: 0;
+
   margin: 0;
   border: none;
 }
@@ -531,12 +531,8 @@ td {
   }
 
   .cover_img_upload {
-    width: 100px;
-    height: 100px;
-    box-sizing: border-box;
-    margin: 0;
-    border: none;
-    padding-bottom: 10%;
+    width:100px;
+    height:200px;
   }
 
   .editor_title::placeholder,

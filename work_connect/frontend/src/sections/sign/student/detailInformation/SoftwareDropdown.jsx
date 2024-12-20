@@ -56,6 +56,7 @@ const Software = () => {
         onChange={handleChange}
         options={options}
         placeholder="▼"
+        closeMenuOnSelect={false}
         isMulti
       />
     </>

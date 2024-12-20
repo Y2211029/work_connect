@@ -61,6 +61,7 @@ const ProgrammingLanguage = () => {
         onChange={handleChange}
         options={options}
         placeholder="▼"
+        closeMenuOnSelect={false}
         isMulti
       />
     </div>

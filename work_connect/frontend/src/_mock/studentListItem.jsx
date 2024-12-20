@@ -44,7 +44,7 @@ const accountData = getSessionData("accountData");
         // response.dataは配列の中にオブジェクトがある形になっています
         // console.log("response.data:", response.data);
 
-        // 卒業年度、学校名、希望職業、希望勤務地、はタグのため、カンマ区切りの文字列を配列に変換する
+        // 卒業年、学校名、希望職業、希望勤務地、はタグのため、カンマ区切りの文字列を配列に変換する
         response.data.forEach((element) => {
           element.desired_work_region !== null
             ? (element.desired_work_region = element.desired_work_region

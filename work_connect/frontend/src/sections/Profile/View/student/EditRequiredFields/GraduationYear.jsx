@@ -11,7 +11,7 @@ for (let i = currentYear; i <= currentYear + 5; i++) {
 }
 
 const GraduationYearDropdown = ({ GraduationData }) => {
-  // 卒業年度を表示する範囲を設定(引数が5なら現在~5年後まで)
+  // 卒業年を表示する範囲を設定(引数が5なら現在~5年後まで)
   //const yearOptions = generateYearOptions(5);
   const [Graduation, setGraduation] = useState(GraduationData);
   const { getSessionData, updateSessionData } = useSessionStorage();
@@ -57,7 +57,6 @@ const GraduationYearDropdown = ({ GraduationData }) => {
       value={Graduation}
       onChange={handleChange}
       placeholder="▼"
-      closeMenuOnSelect={false}
       required
       styles={{
         // 12/5 

@@ -78,6 +78,7 @@ const OccupationNameDropdown = () => {
         options={options}
         required
         placeholder="▼"
+        closeMenuOnSelect={false}
         isMulti
       />
     </div>

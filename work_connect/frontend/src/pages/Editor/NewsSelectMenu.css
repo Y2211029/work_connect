@@ -65,3 +65,114 @@
     word-break: break-word !important;
     overflow-wrap: break-word !important;
 }
+
+.NewsSelectButton{
+    padding-top: 1%;
+}
+
+.News_Upload_Button,
+.Not_Upload_Button{
+    position: relative;
+    top:25px;
+}
+
+/* .popover_eventday{
+    background-color: #338DC9;
+} */
+
+.popover_jobtype{
+    width: 400px; 
+    min-height: 300px;
+}
+
+
+
+/* const getPopoverSize = (menuState) => {
+    switch (menuState) {
+        case 'eventday':
+            return { width: '300px', minHeight: '100px' };
+        case 'jobtype':
+            return { width: '400px', minHeight: '300px' };
+        case 'message':
+            return { width: '350px', minHeight: '100px' };
+        case 'createform':
+            return { width: '300px', minHeight: '100px' };
+        case 'editing_status':
+            return { width: '350px', minHeight: '100px' };
+        default:
+            return { width: '300px', minHeight: '200px' };
+    }
+}; */
+
+
+
+@media(max-width:1600px){
+    .NewsSelectButton{
+        padding-top: 3%;
+    }
+}
+
+@media(max-width:1200px){
+    .NewsSelectButton{
+        padding-top: 3%;
+    }
+
+    .NewsUploadButton_Text,
+    .NewsSelectButton_Text{
+        font-size:25px;
+    }
+}
+
+@media(max-width: 900px){
+    .NewsSelectButton{
+        padding-top: 5%;
+    }
+
+    .NewsUploadButton_Text,
+    .NewsSelectButton_Text{
+        font-size:20px;
+    }
+}
+
+
+@media(max-width:600px){
+    .NewsSelectButton{
+        padding-top: 5%;
+        width:350px;
+    }
+
+    .NewsUploadButton_Text,
+    .NewsSelectButton_Text{
+        font-size:12px;
+    }
+}
+
+@media(max-width:400px){
+    .NewsSelectButton{
+        padding-top: 5%;
+        width:300px;
+    }
+
+    .NewsUploadButton_Text,
+    .NewsSelectButton_Text{
+        font-size:10px;
+    }
+
+
+    .MuiInputBase-input {
+        font-size: 12px; /* スマホでフォントサイズを小さくする */
+    }
+
+    .popover_eventday{
+    position: relative;
+    width: 200px;
+    margin-left:35%;
+    }
+
+    .popover_jobtype{
+        position: relative;
+        width: 200px;
+        margin-left:140px;
+        }
+
+}

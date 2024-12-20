@@ -68,6 +68,7 @@ const DesiredOccupation = () => {
           onChange={handleChange}
           options={options}
           placeholder="▼"
+          closeMenuOnSelect={false}
           isMulti
         />
       </>

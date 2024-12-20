@@ -449,7 +449,7 @@ const ProfileMypage = () => {
           <Item>{ResponseData.intro ? ResponseData.intro : <PulseLoader color="#DAE2ED" />}</Item>
         </Box>
         <Box>
-          <Typography variant="h6">卒業年度</Typography>
+          <Typography variant="h6">卒業年</Typography>
           <Item>{ResponseData.graduation_year ? ResponseData.graduation_year : <PulseLoader color="#DAE2ED" />}</Item>
         </Box>
 

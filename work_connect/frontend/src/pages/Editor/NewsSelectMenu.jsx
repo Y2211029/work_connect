@@ -243,7 +243,7 @@ const NewsSelectMenu = ({
         console.log("サムネイル画像", draft.header_img);
         if (draft.header_img === null) {
             return (
-                <ImageNotSupportedIcon fontSize="large" />
+                <ImageNotSupportedIcon/>
             );
         } else {
             return <img src={`${draft.header_img}`} alt="Draft Image" />;
@@ -277,13 +277,13 @@ const NewsSelectMenu = ({
             ));
         };
 
-
         return (
             <NewsMenuTable>
                 <TableBody>
                     <TableRow>
                         <TableCell>
-                            {check_element !== null ? (
+                            {check_element !== null &&
+                                (key !== 'selectedOccupation' || (Array.isArray(labels) && labels.length > 0)) ? (
                                 <CheckBoxIcon color="primary" aria-label="設定完了しています" />
                             ) : (
                                 <ErrorIcon color="error" aria-label="設定完了していません" />
@@ -295,13 +295,15 @@ const NewsSelectMenu = ({
                                     key === 'title' || key === 'notificationMessage' ? (
                                         <p>{check_element}</p>
                                     ) : key === 'eventDay' ? (
-                                        <p>{moment(check_element).format('YYYY/MM/DD HH時mm分~')}</p>
-                                    ) : key === 'selectedOccupation' ? (
+                                        <p>
+                                            {moment(check_element).format('YYYY/MM/DD')}
+                                            <br />
+                                            {moment(check_element).format('HH時mm分~')}
+                                        </p>
+                                    ) : key === 'selectedOccupation' && labels.length > 0 ? (
                                         <Box className="news_job_acordion_menu">
                                             {ShowTags(labels)}
                                         </Box> // labelsが空でない場合に表示
-                                    ) : check_element ? (
-                                        <p>設定完了しています</p>
                                     ) : (
                                         <p>設定完了していません</p>
                                     )
@@ -374,6 +376,8 @@ const NewsSelectMenu = ({
                 return 'popover_createform';
             case 'editing_status':
                 return 'popover_editing_status';
+            case 'draft_list':
+                return 'popover_draft_list'
             default:
                 return 'popover_default';
         }
@@ -388,7 +392,7 @@ const NewsSelectMenu = ({
             switch (menuState) {
                 case 'eventday':
                     return (
-                        <Box sx={{ p: 2}}>
+                        <Box sx={{ p: 2 }}>
                             <InputDateWithTime date={eventDay} setEventDay={setEventDay} />
                         </Box>
                     );
@@ -411,15 +415,16 @@ const NewsSelectMenu = ({
                                 }),
                                 menu: (base) => ({
                                     ...base,
-                                    maxHeight: '500px',
-                                    fontSize:'12px',
+                                    className: 'select_jobtype',
+                                    maxHeight: '200px',
+                                    overflow: 'hidden',
                                 }),
                             }}
                         />
                     );
                 case 'message':
                     return (
-                        <Box sx={{ p: 2, minWidth: 300,  }}>
+                        <Box sx={{ p: 2, minWidth: 300, }}>
                             <Textarea
                                 name="NotificationMessage"
                                 maxRows={12}
@@ -430,10 +435,10 @@ const NewsSelectMenu = ({
                                 maxLength={100}
                                 sx={{
                                     border: Message === "" ? "1px red solid" : `1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]}`,
-                                    width:'70%'
+                                    width: '60%'
                                 }}
                             />
-                            <Typography variant="body2" color="textSecondary" align="right" sx={{ marginTop: 0 }}>
+                            <Typography variant="body2" color="textSecondary" className="Message_Length">
                                 {Message ? Message.length : <span style={{ color: 'red', opacity: 0.7 }}>0</span>} / 100
                             </Typography>
                         </Box>
@@ -489,14 +494,17 @@ const NewsSelectMenu = ({
                                     })()
                                 ) : (
                                     <>
-                                        <p>編集中のフォームはありません</p>
-
-                                        <Typography id="createFormJump" className='createFormJump'
+                                        <Button
+                                            className='createFormJump'
                                             onClick={() => {
                                                 CreateFormJump();
-                                            }}>
-                                            応募フォームを作成する
-                                        </Typography>
+                                            }}
+
+                                            sx={{ border: '1px solid', mx: 1 }}
+                                        >
+                                            <Typography className="NewsSelectButton_Text">応募フォームを作成する</Typography>
+
+                                        </Button>
 
                                     </>
 
@@ -512,7 +520,7 @@ const NewsSelectMenu = ({
             switch (menuState) {
                 case 'editing_status':
                     return (
-                        <Box sx={{ p: 2, minWidth: 300 }}>
+                        <Box sx={{ p: 0, minWidth: 300 }}>
                             <div className="editingstatus">
                                 <p>現在の編集状況</p>
                                 <p>タイトル</p>
@@ -540,7 +548,7 @@ const NewsSelectMenu = ({
                         <div className="draftlistScroll">
                             <div className="add_draft_news">
                                 <Button variant="outlined" onClick={AddDraftNews} >
-                                    新たな下書き
+                                    <Typography className='add_draft_news_text'>新たな下書き</Typography>
                                 </Button>
                             </div>
                             {draftlist.length > 0 ? (
@@ -575,6 +583,7 @@ const NewsSelectMenu = ({
                                                         <p
                                                             className="draftlist"
                                                             onClick={() => {
+                                                                handleCloseConfirmationMenu();
                                                                 RewriteNewsEnter(draft.id);
                                                             }}
                                                         >
@@ -620,6 +629,7 @@ const NewsSelectMenu = ({
                     MenuListProps={{
                         'aria-labelledby': 'input-button',
                     }}
+                    className='menu_input'
                 >
                     <MenuItem onClick={(e) => handleMenuItemClick(e, 'input', 'eventday')}>開催日</MenuItem>
                     <MenuItem onClick={(e) => handleMenuItemClick(e, 'input', 'jobtype')}>募集職種</MenuItem>
@@ -647,6 +657,7 @@ const NewsSelectMenu = ({
                     MenuListProps={{
                         'aria-labelledby': 'confirmation-button',
                     }}
+                    className="menu_confirmation"
                 >
                     <MenuItem onClick={(e) => handleMenuItemClick(e, 'confirmation', 'editing_status')}>編集状況</MenuItem>
                     <MenuItem onClick={(e) => handleMenuItemClick(e, 'confirmation', 'draft_list')}>下書きリスト</MenuItem>
@@ -660,7 +671,6 @@ const NewsSelectMenu = ({
                     onClick={news_save}
                     sx={{
                         border: '1px solid',
-                        zIndex: '5',
                         mx: 1,
                         backgroundColor: 'rgba(255, 255, 255, 1)',
                     }}

@@ -1,11 +1,10 @@
 body {
-  overflow: scroll;
+  overflow: auto;
   /* 縦のスクロールバーを自動で表示 */
   height: 100%;
   /* 高さを100%に設定して、親要素の高さに合わせる */
   margin: 0;
   /* マージンをリセットして、余白が生じないようにする */
-
 }
 
 
@@ -94,7 +93,6 @@ body {
   border-radius: 4px;
 }
 
-
 figure {
   border: thin #c0c0c0 solid;
   display: flex;
@@ -110,10 +108,6 @@ figcaption {
   padding: 3px;
   text-align: center;
 }
-
-
-
-
 
 /* エディター　公開設定　ラジオボタン */
 input[type=radio] {
@@ -230,18 +224,7 @@ input[type="radio"]:checked+.label {
 }
 
 
-.editingstatus {
-  margin-left: 20px;
-  padding-top:20px;
-  width: 90%;
-  overflow-x: auto;
-  height: 400px;
-  /* 固定の高さを設定 */
-}
 
-.editingstatus p{
-  font-size:12px;
-}
 
 
 .news_genre_select {
@@ -320,12 +303,6 @@ td {
 }
 
 
-
-
-
-/* sx={{
-  position: 'relative', width: '160px', borderColor: '#A9A9A9', color: '#A9A9A9', backgroundColor: '#F5F5F5', // 背景色を薄いグレーに設定
-  '&:hover': { borderColor: '#A9A9A9', backgroundColor: '#F5F5F5', }, */
 .Not_Upload_Button{
   position: relative;
   width:auto;
@@ -513,13 +490,26 @@ td {
     }
   } */
 
-@media (max-width: 600px),
-(max-width: 400px) {
+@media(max-width:900px){
+/* 
+  .ce-paragraph{
+    font-size: 25px;
+  } */
+}
+
+
+@media (max-width: 600px) {
+
+  body {
+    overflow: scroll;
+  }
+
+
+  
 
   .editor-wrapper {
     width: 90%;
     height: auto;
-    margin-top: 70%;
   }
 
   .IconButton {
@@ -546,19 +536,10 @@ td {
     padding-left: 5%;
   }
 
-  .ce-popover {
-    min-width: 250px !important;
-    top: 15% !important;
-    left: 15% !important;
-    border-radius: 10px !important;
-    z-index: 3 !important;
-    max-height: 400px;
-    overflow-y: auto;
-  }
-
   .uploaded-image {
     padding-top:5%;
-    left: 15%;
+    margin-top:10%;
+    left: 10%;
   }
 
   .uploaded-image img {
@@ -568,7 +549,24 @@ td {
     max-width: 450px;
     max-height: 400px;
     object-fit: cover;
-
   }
 
+  .ce-popover--opened>.ce-popover__container {
+    top:40%;
+  }
+
+  .ce-popover__container{
+    width: 50%;
+  }
+}
+
+@media(max-width:400px){
+  .ce-popover--opened>.ce-popover__container {
+    top:40%;
+  }
+
+  .ce-popover__container{
+    width: 50%;
+  }
+  
 }

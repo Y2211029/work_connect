@@ -402,17 +402,6 @@ td {
     width: 100% !important;
   }
 
-  .draftlisttable {
-    width: auto;
-    /* テーブルの幅を親要素に合わせる */
-/* border: solid black;
-    border-width: 1px;
-  }
-
-  .Last_updated_date {
-    margin-bottom: 8px;
-    font-size: 10px;
-  }
 
   .selectmodal-content {
     width: 90%;

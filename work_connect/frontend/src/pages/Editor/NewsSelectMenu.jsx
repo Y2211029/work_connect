@@ -236,7 +236,7 @@ const NewsSelectMenu = ({
 
     const FormattedDate = (time) => {
         console.log("時間", time);
-        return moment(time).tz('Asia/Tokyo').format('YYYY/MM/DD HH:mm:ss');
+        return moment(time).tz('Asia/Tokyo').format('YYYY/MM/DD HH:mm');
     };
 
     const header_img_show = (draft) => {
@@ -408,6 +408,7 @@ const NewsSelectMenu = ({
                             isMulti
                             menuPortalTarget={document.body}
                             isSearchable={true}
+                            classNamePrefix="select_jobtype"
                             styles={{
                                 menuPortal: (base) => ({
                                     ...base,
@@ -415,7 +416,6 @@ const NewsSelectMenu = ({
                                 }),
                                 menu: (base) => ({
                                     ...base,
-                                    className: 'select_jobtype',
                                     maxHeight: '200px',
                                     overflow: 'hidden',
                                 }),
@@ -471,9 +471,9 @@ const NewsSelectMenu = ({
                                                                         質問数: {question_count}
                                                                     </p>
 
-                                                                    <div style={{ alignItems: 'center', cursor: 'pointer' }}>
-                                                                        <DeleteIcon />
-                                                                        <p style={{ margin: 0 }}>削除</p>
+                                                                    <div>
+                                                                        <DeleteIcon className='delete_icon'/>
+                                                                        <p className='delete_text'>削除</p>
                                                                     </div>
                                                                 </Stack>
 

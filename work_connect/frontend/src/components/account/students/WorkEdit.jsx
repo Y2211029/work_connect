@@ -20,7 +20,7 @@ const WorkEdit = () => {
   const accountData = getSessionData("accountData");
 
   const work_id = useParams();
-  const [workData, setWorkData] = useState("");
+  const [workData, setWorkData] = useState({});
   const [getWorkData, setGetWorkData] = useState("");
   // const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -52,22 +52,27 @@ const WorkEdit = () => {
         if (response.status !== 200) {
           throw new Error("サーバーからのデータ取得に失敗しました。");
         }
-
         const data = await response.data;
         console.log("data:", data);
 
-        // setWorkData(Object.entries(data["作品"][0])); // 取得したデータを保存
+        if (data["作品"][0].programming_language == "null")
+          data["作品"][0].programming_language = null;
+        if (data["作品"][0].development_environment == "null")
+          data["作品"][0].development_environment = null;
+        data["作品"][0].images.map((value) => {
+          if (value.annotation == "null") value.annotation = "";
+        });
         setGetWorkData(data["作品"][0]); // 取得したデータを保存
-        setWorkData((prevData) => ({
-          ...prevData,
-          WorkTitle:data["作品"][0].work_name,
-          WorkGenre:data["作品"][0].work_genre,
-          Introduction:data["作品"][0].work_intro,
-          Obsession:data["作品"][0].obsession,
-          Language:data["作品"][0].programming_language,
-          Environment:data["作品"][0].development_environment,
-        }));
-        setVideoUrl(setGetWorkData.youtube_url);
+        setWorkData({
+          Images: data["作品"][0].images,
+          WorkTitle: data["作品"][0].work_name,
+          WorkGenre: data["作品"][0].work_genre,
+          Introduction: data["作品"][0].work_intro,
+          Obsession: data["作品"][0].obsession,
+          Language: data["作品"][0].programming_language,
+          Environment: data["作品"][0].development_environment,
+        });
+        setVideoUrl(data["作品"][0].youtube_url);
         // setImage(data["作品"][0].images);
       } catch (error) {
         setError(error.message);
@@ -81,9 +86,14 @@ const WorkEdit = () => {
   }, []);
 
   useEffect(() => {
-    console.log(getWorkData);
+    console.log(workData);
     console.log("Image:", Image);
   }, [Image]);
+
+  useEffect(() => {
+    console.log(workData);
+    // console.log("Image:", Image);
+  }, [workData]);
 
   useEffect(() => {
     const image = async () => {
@@ -96,10 +106,13 @@ const WorkEdit = () => {
             //   "http://localhost:8000/images/work/" + value.image
             // );
 
-            const imageResponse = await fetch("http://localhost:8000/images/work/" + value.image, {
-              method: "GET",
-              mode: "cors", // 必要に応じてCORSモードを設定
-          });
+            const imageResponse = await fetch(
+              "http://localhost:8000/images/work/" + value.image,
+              {
+                method: "GET",
+                mode: "cors", // 必要に応じてCORSモードを設定
+              }
+            );
 
             if (!imageResponse.ok) {
               throw new Error("Failed to fetch the image.");
@@ -253,7 +266,6 @@ const WorkEdit = () => {
     console.log(imageFiles.length);
     console.log("Image", Image);
 
-
     async function PostData() {
       if (
         !workData.WorkTitle ||
@@ -272,7 +284,11 @@ const WorkEdit = () => {
       // imageFilesが配列として扱える場合
       for (let i = 0; i < imageFiles.length; i++) {
         formData.append("images[]", Image[i]);
-        formData.append("annotation[]", Description[i].description);
+        if (Description[i].description == null) {
+          formData.append("annotation[]", "");
+        } else {
+          formData.append("annotation[]", Description[i].description);
+        }
       }
 
       for (const key in workData) {
@@ -298,7 +314,7 @@ const WorkEdit = () => {
 
       try {
         const response = await axios.post(
-          "http://localhost:8000/work_posting",
+          `http://localhost:8000/work_edit/${work_id.work_id}`,
           formData,
           {
             headers: {
@@ -346,7 +362,7 @@ const WorkEdit = () => {
                 <div className="WorkPostingFormField">
                   <YoutubeURL
                     onChange={handleChange}
-                    workData={getWorkData.youtube_url}
+                    workData={videoUrl}
                     value={videoUrl}
                     error={hasError}
                   />
@@ -366,7 +382,7 @@ const WorkEdit = () => {
                     callSetImage={callSetImage}
                     handleValueChange={handleValueChange}
                     workData={getImage}
-                    workDetailData={getWorkData.images}
+                    workDetailData={workData.Images}
                   />
                 </div>
               </div>
@@ -376,7 +392,7 @@ const WorkEdit = () => {
               <div className="WorkPostingFormField">
                 <WorkTitle
                   callSetWorkData={callSetWorkData}
-                  workData={getWorkData.work_name}
+                  workData={workData.WorkTitle}
                 />
               </div>
               {/* ジャンル */}
@@ -392,7 +408,7 @@ const WorkEdit = () => {
                   </p>
                   <WorkGenre
                     callSetWorkData={callSetWorkData}
-                    workData={getWorkData.work_genre}
+                    workData={workData.WorkGenre}
                   />
                 </div>
               </div>
@@ -401,14 +417,14 @@ const WorkEdit = () => {
               <div className="WorkPostingFormField">
                 <Introduction
                   callSetWorkData={callSetWorkData}
-                  workData={getWorkData.work_intro}
+                  workData={workData.Introduction}
                 />
               </div>
               {/* こだわりポイント */}
               <div className="WorkPostingFormField">
                 <Obsession
                   callSetWorkData={callSetWorkData}
-                  workData={getWorkData.obsession}
+                  workData={workData.Obsession}
                 />
               </div>
               {/* プログラミング言語 */}
@@ -417,7 +433,7 @@ const WorkEdit = () => {
                   プログラミング言語
                   <Language
                     callSetWorkData={callSetWorkData}
-                    workData={getWorkData.programming_language}
+                    workData={workData.Language}
                   />
                 </p>
               </div>
@@ -427,7 +443,7 @@ const WorkEdit = () => {
                   開発環境
                   <Environment
                     callSetWorkData={callSetWorkData}
-                    workData={getWorkData.development_environment}
+                    workData={workData.Environment}
                   />
                 </p>
               </div>

@@ -38,26 +38,26 @@ const VideoGenre = (props) => {
       }
     }
     VideoGenreFunction();
-    axios.get(url);
   }, []);
 
-    useEffect(() => {
-      console.log("movieData:", props.movieData);
+  useEffect(() => {
+    console.log("movieData:", props.movieData);
 
-      if (props.movieData != undefined) {
-        const option = [];
-        console.log(true);
-        const genreArray = props.movieData.split(",");
-
+    if (props.movieData != undefined) {
+      const option = [];
+      console.log(true);
+      const genreArray = props.movieData.split(",");
+      if (genreArray[0] != "") {
         genreArray.map((value) => {
           option.push({ value: value, label: value });
           // setSelectedOption((prevOptions) => [...prevOptions, { value: value, label: value }]);
         });
-        console.log("selectedOption", option);
-
-        setSelectedOption(option);
       }
-    }, [props.movieData]);
+      console.log("selectedOption", option);
+
+      setSelectedOption(option);
+    }
+  }, [props.movieData]);
 
   const handleChange = (selectedOption, actionMeta) => {
     console.log(actionMeta);

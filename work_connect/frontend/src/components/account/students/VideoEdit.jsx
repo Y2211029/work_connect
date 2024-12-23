@@ -24,7 +24,7 @@ const VideoEdit = () => {
     VideoGenre: "",
     VideoIntroduction: "",
   });
-  const [getMovieData, setGetMovieData] = useState("");
+  // const [getMovieData, setGetMovieData] = useState("");
   // const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -54,13 +54,13 @@ const VideoEdit = () => {
         const data = await response.data;
         console.log("data:", data);
 
-        setGetMovieData(data["動画"][0]); // 取得したデータを保存
-        setVideoData((prevData) => ({
-          ...prevData,
+        // setGetMovieData(data["動画"][0]); // 取得したデータを保存
+        setVideoData({
+          YoutubeURL: data["動画"][0].youtube_url,
           VideoTitle: data["動画"][0].title,
           VideoGenre: data["動画"][0].genre,
           VideoIntroduction: data["動画"][0].intro,
-        }));
+        });
         setVideoUrl(data["動画"][0].youtube_url);
         console.log(data["動画"][0].youtube_url);
       } catch (error) {
@@ -88,6 +88,8 @@ const VideoEdit = () => {
   }, [videoUrl]);
 
   const callSetVideoData = (key, value) => {
+    console.log("key.value", key,value);
+
     setVideoData((prev) => ({
       ...prev,
       [key]: value,
@@ -163,10 +165,13 @@ const VideoEdit = () => {
 
       for (const key in videoData) {
         formData.append(key, videoData[key]);
+        console.log(formData.get(key));
+        console.log(key);
+        console.log(videoData[key]);
       }
       try {
         const response = await axios.post(
-          "http://localhost:8000/video_edit",
+          `http://localhost:8000/video_edit/${movie_id.id}`,
           formData,
           {
             headers: {
@@ -192,7 +197,7 @@ const VideoEdit = () => {
       !videoData.YoutubeURL ||
       !videoData.VideoTitle ||
       !videoData.VideoGenre ||
-      !videoData.Introduction
+      !videoData.VideoIntroduction
     ) {
       alert("エラー：未入力項目があります。");
     } else {
@@ -221,7 +226,7 @@ const VideoEdit = () => {
                 <YouTube
                   videoId={videoId}
                   opts={opts}
-                  movieData={getMovieData.youtube_url}
+                  movieData={videoData.YoutubeURL}
                 />
               ) : (
                 <p>YouTubeのURL、ID、またはiframeコードを入力してください。</p>
@@ -231,7 +236,7 @@ const VideoEdit = () => {
               <div className="VideoPostingFormField">
                 <VideoTitle
                   callSetVideoData={callSetVideoData}
-                  movieData={getMovieData.title}
+                  movieData={videoData.VideoTitle}
                 />
               </div>
               {/* ジャンル */}
@@ -247,7 +252,7 @@ const VideoEdit = () => {
                   </p>
                   <VideoGenre
                     callSetVideoData={callSetVideoData}
-                    movieData={getMovieData.genre}
+                    movieData={videoData.VideoGenre}
                   />
                 </div>
               </div>
@@ -255,7 +260,7 @@ const VideoEdit = () => {
               <div className="VideoPostingFormField">
                 <VideoIntroduction
                   callSetVideoData={callSetVideoData}
-                  movieData={getMovieData.intro}
+                  movieData={videoData.VideoIntroduction}
                 />
               </div>
             </div>

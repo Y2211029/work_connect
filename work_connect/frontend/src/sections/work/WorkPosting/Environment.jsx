@@ -31,7 +31,7 @@ const Environment = (props) => {
       }
     }
     EnvironmentFunction();
-    if(props.workData){
+    if (props.workData) {
       props.workData.map((value) => {
         selectedOption.push({ value: value.name, label: value.name });
       });
@@ -47,11 +47,12 @@ const Environment = (props) => {
       const option = [];
       console.log(true);
       const genreArray = props.workData.split(",");
-
-      genreArray.map((value) => {
-        option.push({ value: value, label: value });
-        // setSelectedOption((prevOptions) => [...prevOptions, { value: value, label: value }]);
-      });
+      if (genreArray[0] != "") {
+        genreArray.map((value) => {
+          option.push({ value: value, label: value });
+          // setSelectedOption((prevOptions) => [...prevOptions, { value: value, label: value }]);
+        });
+      }
       console.log("selectedOption", option);
 
       setSelectedOption(option);

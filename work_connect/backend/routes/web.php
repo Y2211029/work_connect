@@ -55,6 +55,7 @@ use App\Http\Controllers\tag\GetLanguageTagController;
 use App\Http\Controllers\tag\GetEnvironmentTagController;
 use App\Http\Controllers\movie\VideoPostingController;
 use App\Http\Controllers\movie\VideoEditController;
+use App\Http\Controllers\movie\VideoDeleteController;
 use App\Http\Controllers\tag\GetVideoGenreTagController;
 use App\Http\Controllers\tag\GetStudentProgrammingLanguageTagController;
 use App\Http\Controllers\tag\GetStudentDevelopmentEnvironmentTagController;
@@ -73,6 +74,7 @@ use App\Http\Controllers\tag\GetCompanySoftwareTagController;
 use App\Http\Controllers\tag\GetCompanyNameListController;
 use App\Http\Controllers\work\WorkPostingController;
 use App\Http\Controllers\work\WorkEditController;
+use App\Http\Controllers\work\WorkDeleteController;
 use App\Http\Controllers\search\SearchWorkController;
 use App\Http\Controllers\search\SearchVideoController;
 use App\Http\Controllers\search\SearchStudentController;
@@ -127,7 +129,7 @@ Route::post('/work_posting', [WorkPostingController::class, 'store']);
 // 作品編集
 Route::post('/work_edit/{id}', [WorkEditController::class, 'store']);
 // 作品削除
-// Route::post('/work_delete', [WorkDeleteController::class, 'store']);
+Route::post('/work_delete/{id}', [WorkDeleteController::class, 'store']);
 // 作品ジャンルタグ取得
 Route::get('/get_work_genre_tag', [GetGenreTagController::class, 'GetGenreTagController']);
 // 作品のプログラミング言語タグ取得
@@ -139,7 +141,7 @@ Route::post('/video_posting', [VideoPostingController::class, 'VideoPostingContr
 // 動画編集
 Route::post('/video_edit/{id}', [VideoEditController::class, 'VideoEditController']);
 // 動画削除
-// Route::post('/video_delete', [VideoDeleteController::class, 'VideoDeleteController']);
+Route::post('/video_delete/{id}', [VideoDeleteController::class, 'VideoDeleteController']);
 // 動画ジャンルタグ取得
 Route::get('/get_video_genre_tag', [GetVideoGenreTagController::class, 'GetVideoGenreTagController']);
 

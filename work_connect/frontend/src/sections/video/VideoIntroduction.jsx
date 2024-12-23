@@ -64,7 +64,7 @@ const VideoIntroduction = (props) => {
   const [hasError, setHasError] = useState(false);
 
   const handleChange = (e) => {
-    props.callSetVideoData("Introduction", e.target.value);
+    props.callSetVideoData("VideoIntroduction", e.target.value);
     setInputValue(e.target.value);
     setHasError(e.target.value === ''); // 空の場合にエラーを表示
   };

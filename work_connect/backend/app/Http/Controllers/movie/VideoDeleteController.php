@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\work;
+namespace App\Http\Controllers\movie;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -8,7 +8,7 @@ use App\Models\w_movies;
 
 class VideoDeleteController extends Controller
 {
-    public function VideoEditController(Request $id)
+    public function VideoDeleteController(Request $request, $id)
     {
       $query = w_movies::query();
       $query->where("movie_id", $id);

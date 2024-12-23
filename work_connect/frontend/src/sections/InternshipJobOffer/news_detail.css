@@ -26,23 +26,24 @@
 }
 
 .news_company_name {
+    padding-top: 5px;
     display: inline-block;
     /* テキストの幅に合わせるための設定 */
     color: inherit;
-    font-size: 20px;
+    font-size: 15px;
     /* 既に指定されたサイズを使用 */
     height: 30px;
     /* 高さはそのままにしておく */
-    overflow: hidden;
-    font-weight: 300;
+    font-weight: 200;
     cursor: pointer;
 }
 
 .news_created_at {
+    padding-top: 5px;
     display: inline-block;
     /* テキストの幅に合わせるための設定 */
     color: inherit;
-    font-size: 20px;
+    font-size: 15px;
     /* 既に指定されたサイズを使用 */
     height: 30px;
     /* 高さはそのままにしておく */
@@ -144,6 +145,11 @@
     padding: 0px;
 }
 
+.news_title{
+    padding-top: 10px;
+    font-size:20px;
+}
+
 .StickyMenu {
     position: sticky;
     top: 80px;
@@ -185,6 +191,70 @@
 .css-1szdb53-MuiButtonBase-root-MuiButton-root.Mui-disabled {
     color: white;
 }
+
+.PreviousNews {
+    display: flex;
+    width: 300px;
+    position: relative;
+    align-items: center; 
+    gap: 8px; 
+  }
+  
+  .PreviousNews_content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px; 
+    width: 100%;
+  }
+  
+  .PreviousNews_span {
+    font-size: 12px;
+    cursor: pointer;
+  }
+  
+  .PreviousNews_text {
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .PreviousNews_icon {
+    font-size: 16px;
+  }
+
+
+
+  .NextNews {
+    display: flex;
+    justify-content: flex-end; /* 全体を右寄せ */
+    width: 300px;    
+    position: relative;
+    align-items: center; 
+    gap: 8px;
+    margin-left: auto; /* 親要素内で右寄せ */
+  }
+  
+  .NextNews_content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .NextNews_span {
+    cursor: pointer;
+    font-size: 12px;
+  }
+  
+  .NextNews_text {
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .NextNews_icon {
+    font-size: 16px;
+  }
+  
 
 @media(max-width:1700px){
     .NewsSelect_Box{

@@ -1,6 +1,4 @@
 body {
-  overflow-y: auto !important;
-  /* 縦のスクロールバーを自動で表示 */
   height: 100%;
   /* 高さを100%に設定して、親要素の高さに合わせる */
   margin: 0;
@@ -373,6 +371,12 @@ input[type="number"]::-webkit-inner-spin-button {
     width: 370px;
     left: 100%;
     padding-top: 5px;
+  }
+
+  .menu_deadline{
+    width:55%;
+    height:40%;
+
   }
 
 }

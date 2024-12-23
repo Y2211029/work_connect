@@ -83,7 +83,7 @@ return (
             onChange={handleChange}
             options={options}
             placeholder="▼"
-            closeMenuOnSelect={false}
+
             isClearable
             styles={{
               control: (base) => ({

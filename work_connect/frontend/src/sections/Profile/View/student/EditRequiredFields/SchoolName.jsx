@@ -103,7 +103,6 @@ const SchoolNameDropdown = ({ SchoolNameData }) => {
         onChange={handleChange}
         options={options}
         placeholder="▼"
-        closeMenuOnSelect={false}
         required
         styles={{
            // 12/5 

@@ -264,6 +264,7 @@ const NewsSelectMenu = ({
                     MenuListProps={{
                         'aria-labelledby': 'input-button',
                     }}
+                    className='menu_deadline'
                 >
                     <Box sx={{ p: 2, minWidth: 300 }}>
                         <InputDateWithTime date={deadlineDate} setDeadline={setDeadlineDate} />

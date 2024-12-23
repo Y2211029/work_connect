@@ -1487,9 +1487,6 @@ const Editor = () => {
 
           </Stack>
 
-
-
-
           {/* エディターコンポーネント */}
           <div className="editor-wrapper">
             <div ref={editorHolder} id="editor" />

@@ -199,16 +199,30 @@ const NewsSelectMenu = ({
         });
     }, []);
 
+    useEffect(() => {
+        if (anchorElConfirmation) {
+            document.body.style.overflow = 'hidden'; // メニューが開いている時はスクロール無効
+        } else {
+            document.body.style.overflow = 'scroll'; // メニューが閉じられた時にスクロール有効
+        }
+    }, [anchorElConfirmation]);
+
+    useEffect(() => {
+        if (anchorElInput) {
+            document.body.style.overflow = 'hidden'; // メニューが開いている時はスクロール無効
+        } else {
+            document.body.style.overflow = 'scroll'; // メニューが閉じられた時にスクロール有効
+        }
+    }, [anchorElInput]);
+
     // 入力メニューのクリックイベント
     const handleClickInputMenu = (event) => {
         setAnchorElInput(event.currentTarget);
-        document.body.style.overflow = 'hidden';
     };
 
     const handleCloseInputMenu = () => {
         setAnchorElInput(null);
         setPopoverAnchorEl(null); // 閉じたとき右側の表示も閉じる
-        document.body.style.overflow = '';
     };
 
     // 確認メニューのクリックイベント

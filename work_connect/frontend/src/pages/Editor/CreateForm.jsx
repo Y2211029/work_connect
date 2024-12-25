@@ -1,11 +1,14 @@
 import 'survey-core/defaultV2.min.css';
 import { useState, useEffect } from "react";
-import { Model } from 'survey-core';
+import { Model} from 'survey-core';
 import { Survey } from 'survey-react-ui';
 import "./CreateForm.css";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import Modal from "react-modal";
 import { ColorRing } from "react-loader-spinner";
+
+//Survey.js スタイル
+import * as themes from "survey-core/themes";
 
 // フォームメニュー
 import Text from "./SelectOptionMenu/Text";
@@ -20,10 +23,18 @@ import Comment from "./SelectOptionMenu/Comment";
 import Rating from "./SelectOptionMenu/Rating";
 import Ranking from "./SelectOptionMenu/Ranking";
 import ImagePicker from "./SelectOptionMenu/ImagePicker";
+import Theme_Color_Setting from "./SelectOptionMenu/Theme_Color_Setting";
+
 
 // MUI
 import Stack from "@mui/material/Stack";
 import PropTypes from 'prop-types';
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
+
+
+
 
 
 // データ保存
@@ -33,12 +44,60 @@ import "dayjs/locale/ja";
 
 import FormSelectMenu from "./clickedmenu/FormSelectMenu";
 
-const CreateForm = ({ newsid, HandleBack }) => {
+Modal.setAppElement('#root');
+
+const CreateForm = ({ newsid, HandleBack, title }) => {
+
   console.log("ニュースid", newsid);
   console.log("HandleBack関数", HandleBack);
+  const selectedTheme = themes.DefaultLight;
   const createform_search_url = "http://127.0.0.1:8000/createform_search";
   const [questions, setQuestions] = useState([]);
   const [deadlineDate, setDeadlineDate] = useState(dayjs());
+  const [backGroundColor, setBackGroundColor] = useState('white')
+  const [theme, setTheme] = useState(selectedTheme)
+  console.log(theme);
+
+  const backGroundColorChange = (newValue) => {
+    setBackGroundColor(newValue)
+  }
+
+  const customCss = {}; // 初期値は空オブジェクト
+
+  // スタイルを動的に追加する関数
+  const applyCustomCss = (key, value) => {
+    customCss[key] = value; // カスタムCSS変数を更新
+    const rootElement = document.documentElement; // HTMLのルート要素
+    rootElement.style.setProperty(key, value); // CSS変数を適用
+  };
+
+  useEffect(() => {
+    // 背景色のスタイルを更新
+    if (backGroundColor) {
+      applyCustomCss("--sjs-general-backcolor-dim", backGroundColor); //初期値がグレーの背景色
+      applyCustomCss("--sjs-font-surveytitle-color", backGroundColor); //タイトルの背景色
+      applyCustomCss("--sjs-font-questiontitle-color", backGroundColor); //質問のタイトルの背景色
+    }
+  }, [backGroundColor]);
+
+  console.log("利用可能なテーマ:", Object.keys(themes));
+  console.log("利用可能なテーマ:", themes); 
+
+
+  useEffect(() => {
+    if (theme) {
+      console.log("選択されたテーマ", theme); // 選択されたテーマ名
+      console.log("テーマの型", typeof theme); // 型の確認
+  
+      // themesオブジェクトからテーマオブジェクトを取得
+      const themeObject = themes[theme];
+      if (themeObject) {
+        survey.applyTheme(themeObject); // テーマオブジェクトを適用
+      } else {
+        console.error(`テーマ '${theme}' が見つかりません`);
+      }
+    }
+  }, [theme]);
 
   useEffect(() => {
     const getcreateform = async () => {
@@ -91,6 +150,7 @@ const CreateForm = ({ newsid, HandleBack }) => {
   }, [setDeadlineDate])
 
   const [modalopen, setModalOpen] = useState(false);
+  const [themeColorModalOpen, setThemeColorModalOpen] = useState(false);
   const [selectmenu, setSelectMenu] = useState("");
   const { getSessionData } = useSessionStorage();
   const [questionData, setQuestionData] = useState(null);
@@ -255,38 +315,9 @@ const CreateForm = ({ newsid, HandleBack }) => {
 
 
   const surveyJson = {
+    title: title || 'タイトル未設定',
     elements: questions && questions.length > 0 ? questions.map((q) => {
       // 各質問のデータをログに出力
-      console.log("質問データ:", {
-        name: q.name,
-        title: q.title,
-        type: q.type,
-        inputType: q.inputType,
-        maxLength: q.maxLength || undefined,
-        minLength: q.minLength || undefined,
-        placeholder: q.placeholder || undefined,
-        autocomplete: q.autocomplete || undefined,
-        isRequired: q.isrequired || false,
-        description: q.description || undefined,
-        validators: q.validators || undefined,
-        defaultValueExpression: q.defaultValueExpression || undefined,
-        minValueExpression: q.minValueExpression || undefined,
-        min: q.min || undefined,
-        max: q.max || undefined,
-        defaultValue: q.defaultValue || undefined,
-        step: q.step || undefined,
-        showNoneItem: q.showNoneItem || undefined,
-        showOtherItem: q.showOtherItem || undefined,
-        choices: q.choices || undefined,
-        colCount: q.colCount || undefined,
-        noneText: q.noneText || undefined,
-        otherText: q.otherText || undefined,
-        clearText: q.clearText || undefined,
-        separateSpecialChoices: q.separateSpecialChoices || undefined,
-        showClearButton: q.showClearButton || undefined,
-        fitToContainer: q.fitToContainer || undefined,
-      });
-
       return {
         name: q.name,
         title: q.title,
@@ -338,16 +369,17 @@ const CreateForm = ({ newsid, HandleBack }) => {
     }) : [], // questionsがnullまたは空の場合は空の配列を返す
   };
 
-
   // surveyJsonの内容をログに出力
   console.log("Survey JSON:", surveyJson);
 
 
   console.table(surveyJson.elements);
   const survey = new Model(surveyJson);
+
+
+
+
   survey.locale = "jp";  // 日本語に設定
-
-
 
 
   survey.onAfterRenderQuestion.add(function (survey, options) {
@@ -440,6 +472,7 @@ const CreateForm = ({ newsid, HandleBack }) => {
 
 
 
+
   // フォームの編集データを保存
   const CreateFormSave = async () => {
     console.log("フォーム内容", questions);
@@ -469,6 +502,19 @@ const CreateForm = ({ newsid, HandleBack }) => {
     setQuestionData(null);  // `questionData` をクリア
     setModalOpen(false);
   };
+
+  const ThemeColorSave = (selectedOption) => {
+    if (selectedOption) {
+        console.log("更新後のテーマ", selectedOption.value);
+        setTheme(selectedOption.value); // 選択されたテーマを更新
+        setThemeColorModalOpen(false);
+    }
+  };
+
+
+  const ThemeColorCancel = () =>{
+    setThemeColorModalOpen(false);
+  }
 
   const WriteNewsHandleBack = async (event) => {
     event.preventDefault(); // デフォルトの挙動を防ぐ
@@ -512,26 +558,24 @@ const CreateForm = ({ newsid, HandleBack }) => {
     { menu: "imagepicker", component: ImagePicker },
     //デザインを変更する
     { menu: "FormDesign", component: FormDesign },
-
   ];
-
-
-
 
 
   return (
     <>
 
 
+
       <Stack direction="row" spacing={2} >
-        <FormSelectMenu 
-                  SetDeadlineDate={setDeadlineDate}
-                  deadlineDate={deadlineDate}
-                  CreateFormSave = {CreateFormSave}
-                  addQuestion={addQuestion}
-                  questions={questions}
-                  WriteNewsHandleBack = {WriteNewsHandleBack}
+        <FormSelectMenu
+          SetDeadlineDate={setDeadlineDate}
+          deadlineDate={deadlineDate}
+          CreateFormSave={CreateFormSave}
+          addQuestion={addQuestion}
+          questions={questions}
+          WriteNewsHandleBack={WriteNewsHandleBack}
         />
+
 
 
 
@@ -560,9 +604,40 @@ const CreateForm = ({ newsid, HandleBack }) => {
             })}
           </Stack>
         </Modal>
+
+        <Modal
+          isOpen={themeColorModalOpen}
+          onRequestClose={ThemeColorCancel} // モーダルを閉じるコールバック
+          shouldCloseOnOverlayClick={true} // オーバーレイクリックでモーダルを閉じる
+          contentLabel="Example Modal"
+          overlayClassName="modal-overlay" /* オーバーレイに適用 */
+          className="modal-content" /* コンテンツに適用 */
+        >
+          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+          <Theme_Color_Setting 
+          onSave={ThemeColorSave}
+          onClose={ThemeColorCancel}
+          backGroundColor={backGroundColor}
+          backGroundColorChange = {backGroundColorChange} 
+          setTheme ={setTheme}
+          />
+            
+          </Stack>
+        </Modal>
       </Stack>
 
       <div className="FormDemo"> {/* フォーム部分 */}
+
+
+
+
+        <div>
+        <Tooltip title="編集する">
+            <IconButton onClick={() => setThemeColorModalOpen(true)}>
+              <ModeEditIcon />
+            </IconButton>
+          </Tooltip>
+        </div>
 
 
         {!questions || questions.length === 0 ? (
@@ -601,9 +676,9 @@ Text.propTypes = {
 CreateForm.propTypes = {
   newsid: PropTypes.number,
   HandleBack: PropTypes.func.isRequired,
+  title: PropTypes.string
 };
 
 
 
 export default CreateForm;
-

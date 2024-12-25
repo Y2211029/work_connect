@@ -28,10 +28,6 @@ import Divider from '@mui/material/Divider';
 import "./CompanyInformation.css"
 
 
-Modal.setAppElement('#root');
-
-
-
 const SortableRow = ({ id, children }) => {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
 

@@ -64,6 +64,13 @@ class CompanyInformationController extends Controller
         $companyInformationArray = $request->input("CompanyInformation");
         $CompanyName = $request->input("CompanyName");
 
+
+
+        $company = w_company::where('user_name',$CompanyName)
+            ->first();
+
+        $companyId = $company->id;
+
         Log::info("companyInformationArray" . json_encode($companyInformationArray));
         Log::info("CompanyName" . $CompanyName);
 
@@ -77,7 +84,7 @@ class CompanyInformationController extends Controller
                     'contents' => $companyInformation['contents'],
                     'company_id' => $companyInformation['company_id'],
                     'public_status' => $companyInformation['public_status'],
-                    'row_number' => $companyInformation['row_number'],
+                    'row_number' => $companyInformation['id'],
                 ]);
 
             if ($updated === 0) {
@@ -92,7 +99,7 @@ class CompanyInformationController extends Controller
                         'contents' => $companyInformation['contents'],
                         'company_id' => $companyInformation['company_id'],
                         'public_status' => $companyInformation['public_status'],
-                        'row_number' => $companyInformation['row_number'],
+                        'row_number' => $companyInformation['id'],
                     ]);
                 } else {
                     Log::info("Duplicate entry found, not creating a new record for ID: {$companyInformation['id']}");
@@ -101,8 +108,14 @@ class CompanyInformationController extends Controller
         }
 
         $title_contents_array = $this->getCompanyInformationData($CompanyName);
+        $all_company_information_array = $this->all_company_informations_pull($CompanyName);
 
-        return response()->json(['message' => '処理が完了しました', 'title_contents' => $title_contents_array]);
+
+        return response()->json(['message' => '処理が完了しました', 
+        'title_contents' => $title_contents_array ,
+        'all_company_information' => $all_company_information_array,
+        'company_id' => $companyId
+        ]);
     }
 
     private function getCompanyInformationData($CompanyName)

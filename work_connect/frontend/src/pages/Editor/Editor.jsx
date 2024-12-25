@@ -1413,7 +1413,7 @@ const Editor = () => {
 
 
       {/* CreateForm の表示 */}
-      {CreateFormOpen && <CreateForm newsid={news_id} HandleBack={handleBack} />}
+      {CreateFormOpen && <CreateForm newsid={news_id} HandleBack={handleBack} title={title}/>}
 
 
       {!CreateFormOpen &&

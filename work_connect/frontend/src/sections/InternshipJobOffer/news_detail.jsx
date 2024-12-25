@@ -110,7 +110,7 @@ const InternshipJobOfferPage = () => {
     const year = dateObj.getFullYear();
     const month = dateObj.getMonth() + 1;
     const day = dateObj.getDate();
-    return `${year}/${month}/${day}`;
+    return `${year}年${month}月${day}日`;
   };
 
   const handleProfileJump = () => {
@@ -154,31 +154,48 @@ const InternshipJobOfferPage = () => {
 
       {NewsDetail ? (
         <div className="NewsDetailContainer">
-          <div className="StickyMenu">
+          <div className="Menu">
             <Stack direction={"row"} spacing={2}>
               <Button className="NewsDetail_Button" variant="contained">
                 {Genre}
               </Button>
 
-              {/* {Genre !== 'ブログ' ? (
-                <>
+              {Genre !== 'ブログ' ? (
+                <div className='day_information'>
                   開催日:{formatDate(NewsDetail.event_day)}
                   締切日:{formatDate(NewsDetail.deadline)}
-                </>
-              ) : null} */}
+                </div>
+              ) : null}
 
-              <Tooltip title="クリックするとプロフィールに行きます">
-                <p className="news_company_name" onClick={handleProfileJump}>
-                  {NewsDetail.company_name}
-                </p>
-              </Tooltip>
-              <p className="news_created_at">{formatDate(NewsDetail.news_created_at)}</p>
+
 
             </Stack>
 
             <h1 className="news_title">{NewsDetail.article_title}</h1>
 
-
+            <div style={{display:'flex'}}>
+              <Stack direction={'row'} sx={{alignItems: 'center' }}>
+                <img
+                  className="Company_News_img"
+                  src={`http://localhost:8000/storage/images/userIcon/${NewsDetail.icon}`}
+                  alt="Company Icon"
+                />
+                <div className="news_company_profile">
+                  <Tooltip title="クリックするとプロフィールに行きます">
+                    <p
+                      className="news_company_name"
+                      onClick={handleProfileJump}
+                      style={{ margin: 0 }}
+                    >
+                      {NewsDetail.company_name}
+                    </p>
+                  </Tooltip>
+                  <p className="news_created_at" style={{ margin: 0 }}>
+                    {formatDate(NewsDetail.news_created_at)}
+                  </p>
+                </div>
+              </Stack>
+            </div>
 
             <Stack direction="row" spacing={2} className="NewsDetail_Stack">
               {data?.id?.[0] === "S" && (
@@ -246,7 +263,7 @@ const InternshipJobOfferPage = () => {
               )}
             </Stack>
 
-            <Divider className="StickyMenu_Divider"></Divider>
+            <Divider className="Menu_Divider"></Divider>
           </div>
 
           {/* NewsDetailHeader要素 サムネイルと会社名・お気に入りボタンを一括りにする */}
@@ -338,12 +355,12 @@ const InternshipJobOfferPage = () => {
             })}
           </div>
 
-          <Stack direction={'row'} >
+          <Stack direction={'row'} className="previous_back_article_stack">
             {previousNews ? (
               <div className="PreviousNews">
                 <ArrowBackIosIcon className="PreviousNews_icon" />
                 <div className="PreviousNews_content">
-                  <span className="PreviousNews_span">前の投稿</span>
+                  <span className="PreviousNews_span">前の記事</span>
                   <Typography
                     className="PreviousNews_text"
                     onClick={() => handleNewsJump(previousNews.id)}
@@ -353,14 +370,13 @@ const InternshipJobOfferPage = () => {
                   </Typography>
                 </div>
               </div>
-            ) : null}
-
-
+            ) : (<div className="PreviousNews">
+          </div>)}
 
             {nextNews ? (
               <div className="NextNews">
                 <div className="NextNews_content">
-                  <span className="NextNews_span">次の投稿</span>
+                  <span className="NextNews_span">次の記事</span>
                   <Typography
                     className="NextNews_text"
                     onClick={() => handleNewsJump(nextNews.id)}
@@ -371,7 +387,8 @@ const InternshipJobOfferPage = () => {
                 </div>
                 <ArrowForwardIosIcon className="NextNews_icon" />
               </div>
-            ) : null}
+            ) : (<div className="NextNews">
+          </div>)}
           </Stack>
 
 

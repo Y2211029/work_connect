@@ -1,9 +1,8 @@
 body {
-  overflow-y: auto !important;
-  /* 縦のスクロールバーを自動で表示 */
   height: 100%;
   /* 高さを100%に設定して、親要素の高さに合わせる */
   margin: 0;
+  overflow: auto !important;
   /* マージンをリセットして、余白が生じないようにする */
 }
 
@@ -31,6 +30,7 @@ body {
 
 .SurveyModal {
   margin-top: 5%;
+  width:50%;
   /* width: 500px;
   height:550px; */
   overflow-x: auto;
@@ -47,16 +47,15 @@ input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: auto;
 }
 
+.sd-header__text .sd-title {
+  font-size:20px;
+}
 
 .sd-root-modern {
   margin: 0 auto;
   /* 自動で左右のマージンを設定し、中央揃えにします */
 }
 
-.ReactModal__Content {
-  background-color: transparent !important;
-  /* 背景色を透明に設定 */
-}
 
 .back_news_draft {
   cursor: pointer;
@@ -91,9 +90,7 @@ input[type="number"]::-webkit-inner-spin-button {
   scrollbar-width: thin;
 }
 
-/* .FormButton {
-  width: 50%;
-} */
+
 
 .MuiStack-root  .css-1sazv7p-MuiStack-root {
   left: 10%;
@@ -164,9 +161,6 @@ input[type="number"]::-webkit-inner-spin-button {
   text-align: center;
 }
 
-.sd-root-modern {
-  background-color: #F9FAFB !important;
-}
 
 .FormMenu {
   display: flex;
@@ -245,10 +239,12 @@ input[type="number"]::-webkit-inner-spin-button {
   width: 700px;
 }
 
-
-
 .newsEditMenuButton {
   margin: 0px 2px;
+}
+
+.Theme_Select{
+  width:35%;
 }
 
 @media (max-width: 1200px) {
@@ -374,6 +370,12 @@ input[type="number"]::-webkit-inner-spin-button {
     width: 370px;
     left: 100%;
     padding-top: 5px;
+  }
+
+  .menu_deadline{
+    width:55%;
+    height:40%;
+
   }
 
 }

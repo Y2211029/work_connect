@@ -88,6 +88,7 @@ const PrefectureDropdown = ({ PrefectureData }) => {
           id="prefecturesDropdwon"
           value={selectedPrefecture}
           onChange={handleChange}
+          closeMenuOnSelect={false}
           options={options}
           placeholder="▼"
           isMulti

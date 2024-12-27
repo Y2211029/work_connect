@@ -1,8 +1,10 @@
 .Table {
+    position: relative;
     max-width: 100%;
     /* 親要素の幅に合わせる */
     table-layout: auto;
     /* 列幅を自動調整 */
+    margin-left: 50%;
 }
 
 .Table td,
@@ -13,6 +15,7 @@
 }
 
 .tableContainer {
+    margin-left: 50%;
     width: 100%;
     /* 親要素の幅に合わせる */
     max-width: 1000px;

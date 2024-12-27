@@ -30,7 +30,7 @@ const SchoolInformation = (props) => {
   };
   
   useEffect(() => {
-    // 卒業年度と学校名の両方に入力されている場合に次へを押せるようにする
+    // 卒業年と学校名の両方に入力されている場合に次へを押せるようにする
     if (requiredCheck.graduation_year == false && requiredCheck.school_name == false) {
       props.coleSetUserNameCheck("required", false);
     } else {

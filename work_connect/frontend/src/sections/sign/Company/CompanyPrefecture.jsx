@@ -77,6 +77,7 @@ const PrefectureSelect = () => {
           options={Prefectures}
           required
           placeholder="▼"
+          closeMenuOnSelect={false}
           isMulti
         />
       </>

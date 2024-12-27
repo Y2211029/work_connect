@@ -91,6 +91,7 @@ const PrefectureDropdown = ({PrefectureData}) => {
           onChange={handleChange}
           options={options}
           placeholder="▼"
+          closeMenuOnSelect={false}
           isMulti
           styles={{
             control: (base) => ({

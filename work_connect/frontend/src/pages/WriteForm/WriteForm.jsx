@@ -8,8 +8,14 @@ import 'survey-core/defaultV2.min.css';
 import Button from '@mui/material/Button';
 import Stack from "@mui/material/Stack";
 import PropTypes from "prop-types";
+import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import Box from '@mui/material/Box';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import './writeform.css';
+
+import { Plain } from "survey-core/themes";
 
 // ----------------------------------------------------------------------
 
@@ -120,6 +126,8 @@ export default function WriteFormPage() {
   // Survey モデルの生成
   const survey = new Model(surveyData);
 
+  survey.applyTheme(Plain);
+
   const WriteFormSave = () => {
     // Surveyモデルのバリデーション実行
     const isValid = survey.validate();
@@ -188,21 +196,18 @@ export default function WriteFormPage() {
         <title> 応募する | Work&Connect </title>
       </Helmet>
 
-      <Button
-        variant="outlined"
-        onClick={() => NewsDetailBack()}
-        sx={{
-          position: 'sticky',
-          top: '100px',
-          width: '150px',
-          borderColor: '#5956FF',
-          color: '#5956FF',
-          '&:hover': { borderColor: '#5956FF' },
-          cursor: 'pointer',
-        }}
-      >
-        ニュースに戻る
-      </Button>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+      <Tooltip title="戻る">
+          <IconButton
+            onClick={() => NewsDetailBack()}
+            sx={{
+              '&:hover': { backgroundColor: '#f0f0f0' },
+            }}
+          >
+            <ArrowBackOutlinedIcon sx={{ fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" } }}/>
+          </IconButton>
+      </Tooltip>
+      </Box>
 
       <div className="WriteForm_Container">
         <Stack sx={{ display: "inline-block" }}>

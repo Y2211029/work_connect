@@ -40,6 +40,10 @@ export default function CompanyNewsPage() {
     console.log("MyUserName:", accountData.user_name);
   }, []);
 
+  useEffect(() =>{
+    console.log(("企業情報が更新されました", editedContents));
+  },[editedContents])
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -71,6 +75,27 @@ export default function CompanyNewsPage() {
       document.body.style.overflow = 'auto';
     };
   }, [showEdit]);
+
+  const companyInformationSave = async() =>{
+      console.log("企業名", MyUserName);
+      console.log("企業情報の配列", editedContents);
+
+      try {
+        const response = await axios.post(`http://localhost:8000/company_informations_save`, {
+          CompanyName: MyUserName,
+          CompanyInformations: editedContents,
+        });
+        console.log("レスポンス", response);
+        console.log("企業情報", response.data.title_contents);
+        console.log("すべての企業情報", response.data.all_company_information);
+        const companyId = response.data.company_id;
+        setCompanyId(companyId);
+        setTitleContents(response.data.title_contents);
+        setEditedContents(response.data.all_company_information);
+      } catch (error) {
+        console.error("データの取得中にエラーが発生しました！", error);
+      }
+  }
 
   const handleEditClick = (postId) => {
     console.log("編集ボタンがクリックされました", postId);
@@ -153,6 +178,8 @@ export default function CompanyNewsPage() {
   //閉じるボタンを押したら更新後のtitle_contentsを取得しに行って渡す
   const modalclose = () => {
     setShowEdit(false)
+    console.log("更新するデータ",editedContents);
+    companyInformationSave();
   }
 
   const renderEditButton = (

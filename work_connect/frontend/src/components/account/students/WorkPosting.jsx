@@ -45,7 +45,7 @@ const WorkPosting = () => {
 
   const callSetImage = (e) => {
     setImage(e);
-    console.log("e:",e);
+    console.log("e:", e);
 
     if (e.length > 0) {
       // Fileオブジェクトのプロパティをログに表示
@@ -107,7 +107,7 @@ const WorkPosting = () => {
     console.log("imageFiles updated: ", imageFiles);
     console.log(Array.isArray(imageFiles)); // trueなら配列です
     let dt = new DataTransfer();
-    console.log("dt: ",dt);
+    console.log("dt: ", dt);
 
     // 既存のimageFilesをDataTransferに追加
     imageFiles.forEach((file) => {
@@ -188,7 +188,11 @@ const WorkPosting = () => {
       // imageFilesが配列として扱える場合
       for (let i = 0; i < imageFiles.length; i++) {
         formData.append("images[]", Image[i]);
-        formData.append("annotation[]", Description[i].description);
+        if (Description[i].description == null) {
+          formData.append("annotation[]", "");
+        } else {
+          formData.append("annotation[]", Description[i].description);
+        }
       }
 
       for (const key in workData) {

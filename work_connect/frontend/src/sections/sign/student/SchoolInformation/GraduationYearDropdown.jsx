@@ -35,7 +35,7 @@ const GraduationYearDropdown = (props) => {
   }, []);
 
   useEffect(() => {
-    // 卒業年度必須項目チェック
+    // 卒業年必須項目チェック
     if(selectedGraduation == "") {
       props.coleSetRequiredCheck("graduation_year", true);
     } else {
@@ -54,7 +54,7 @@ const GraduationYearDropdown = (props) => {
 
   return (
     <div>
-      <label htmlFor="yearOptions">卒業年度*</label>
+      <label htmlFor="yearOptions">卒業年*</label>
       <Select
         name="yearOptions"
         options={yearOptions}

@@ -46,11 +46,12 @@ const WorkGenre = (props) => {
       const option = [];
       console.log(true);
       const genreArray = props.workData.split(",");
-
-      genreArray.map((value) => {
-        option.push({ value: value, label: value });
-        // setSelectedOption((prevOptions) => [...prevOptions, { value: value, label: value }]);
-      });
+      if (genreArray[0] != "") {
+        genreArray.map((value) => {
+          option.push({ value: value, label: value });
+          // setSelectedOption((prevOptions) => [...prevOptions, { value: value, label: value }]);
+        });
+      }
       console.log("selectedOption", option);
 
       setSelectedOption(option);

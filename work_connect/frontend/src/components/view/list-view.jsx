@@ -813,6 +813,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
           IsSearch.searchResultEmpty = true 作品データなし
 
           IsSearch.searchResultEmpty !== true
+          IsSearch.searchResultEmpty !== true
           「検索結果が0件でない場合に表示」
 
           // 学生・企業一覧の場合は並び替え必要ないので非表示にする。

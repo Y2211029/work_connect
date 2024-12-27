@@ -95,13 +95,14 @@ input[type="number"]::-webkit-inner-spin-button {
   width: 50%;
 } */
 
-.MuiStack-root .SelectMenu .css-1sazv7p-MuiStack-root {
+.MuiStack-root  .css-1sazv7p-MuiStack-root {
   left: 10%;
 }
 
 .SelectMenu {
   margin-top: 10px;
-
+  justify-content: center;
+  align-items: center;
 }
 
 

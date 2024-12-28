@@ -26,6 +26,7 @@ const Individual = ({
     const [responses, setResponses] = useState({ usernames: "", id: "", writeforms: [] });
     const [idNumber, setIdNumber] = useState("");
     const [loading, setLoading] = useState(true);
+    console.log("アプリケーションフォーム", application_form[selectedIndex].user_name);
 
     useEffect(() => {
         let userIdCounter = 1;
@@ -41,7 +42,7 @@ const Individual = ({
                     userIdCounter++;
                 }
 
-                acc[userKey].write_forms.push(...user.write_form);
+                acc[userKey].write_forms.push(...user.write_form.elements);
 
                 return acc;
             }, {});

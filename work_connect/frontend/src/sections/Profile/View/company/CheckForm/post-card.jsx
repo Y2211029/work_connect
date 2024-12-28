@@ -36,7 +36,7 @@ const PostCard = forwardRef(({ post }) => {
   };
 
   const groupedResponses = application_form[selectedIndex]?.user_name.reduce((acc, user) => {
-    user.write_form.forEach((response) => {
+    user.write_form.elements.forEach((response) => {
       if (!acc[response.title]) {
         acc[response.title] = { responses: [], type: response.type, contents: response.contents };
       }

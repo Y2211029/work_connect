@@ -89,17 +89,6 @@ const NewsSelectMenu = ({
         document.body.style.overflow = '';
     };
 
-    // 確認メニューのクリックイベント
-    // const handleClickFormInformatiionMenu = (event) => {
-    //     setAnchorElFormInformatiion(event.currentTarget);
-    // };
-
-    // const handleCloseFormInformatiionMenu = () => {
-    //     setAnchorElFormInformatiion(null);
-    // };
-
-
-
     //フォーム追加ボタン
     const handleClickAddFormMenu = (event) => {
         setAnchorElAddForm(event.currentTarget);
@@ -356,7 +345,7 @@ NewsSelectMenu.propTypes = {
     deadlineDate: PropTypes.string.isRequired,
     CreateFormSave: PropTypes.func.isRequired,
     addQuestion: PropTypes.func.isRequired,
-    questions: PropTypes.array,
+    questions: PropTypes.string,
     WriteNewsHandleBack: PropTypes.func.isRequired,
 };
 

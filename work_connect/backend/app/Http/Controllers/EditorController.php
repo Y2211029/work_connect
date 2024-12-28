@@ -435,14 +435,23 @@ class EditorController extends Controller
 
     public function createform_search(Request $request)
     {
+        Log::info("createform_search通ってます");
         try {
-
             $newsid = $request->input('newsid');
+    
             // 条件に一致するニュースドラフトリストを取得
             $createForm = w_create_form::where('news_id', $newsid)
-            ->join('w_news', 'w_create_forms.news_id', '=', 'w_news.id') // news_idでw_newsと結合
-            ->get();
-
+                ->join('w_news', 'w_create_forms.news_id', '=', 'w_news.id') // news_idでw_newsと結合
+                ->get();
+    
+            // create_form カラムをデコードして返す
+            $createForm = $createForm->map(function ($form) {
+                $form->create_form = json_decode($form->create_form); // JSONをデコード
+                return $form;
+            });
+    
+            Log::info("クリエイトフォーム", [$createForm]);
+    
             return response()->json(['create_form' => $createForm]);
         } catch (\Exception $e) {
             // エラーレスポンスを返す
@@ -452,7 +461,6 @@ class EditorController extends Controller
             ], 500);
         }
     }
-
 
 
     public function embed(Request $request)

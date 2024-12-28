@@ -51,19 +51,19 @@ const CreateForm = ({ newsid, HandleBack, title }) => {
   console.log("ニュースid", newsid);
   console.log("HandleBack関数", HandleBack);
   const createform_search_url = "http://127.0.0.1:8000/createform_search";
-  const [questions, setQuestions] = useState({});
+  const [questions, setQuestions] = useState([]);
   const [deadlineDate, setDeadlineDate] = useState(dayjs());
-  const [backGroundColor, setBackGroundColor] = useState('#cccccc')
-  const [titleColor, setTitleColor] = useState('#000000');
-  const [barColor, setBarColor] = useState('#000000');
-  const [questionColor, setQuestionColor] = useState('#000000');
+  const [backGroundColor, setBackGroundColor] = useState('skyblue')
   const [theme, setTheme] = useState('default');
   const [applyTheme, setApplyTheme] = useState('DefaultLight');
   const [alignment, setAlignment] = useState('Light');
-  const [editingStatus,setEditingStatus] = useState('New'); //編集中のフォームデータが新規なのか再編集なのかチェック
 
 
   console.log(theme);
+
+  const backGroundColorChange = (newValue) => {
+    setBackGroundColor(newValue)
+  }
 
   const customCss = {}; // 初期値は空オブジェクト
 
@@ -76,37 +76,34 @@ const CreateForm = ({ newsid, HandleBack, title }) => {
 
   useEffect(() => {
     // 背景色のスタイルを更新
-    applyCustomCss('--sjs-general-backcolor-dim', backGroundColor); //背景色 //テーマによる
-    applyCustomCss('--sjs-font-surveytitle-color', titleColor); //タイトルカラー
-    applyCustomCss('--sjs-font-questiontitle-color', questionColor); //質問のタイトルカラー
-    applyCustomCss('--sjs-primary-backcolor', barColor); //テーマによる //タイトルと質問の間の線のカラー
-    console.log("更新されました");
-  }, [backGroundColor,titleColor,barColor,questionColor]);
+    if (backGroundColor) {
+      applyCustomCss("--sjs-general-backcolor-dim", backGroundColor); //初期値がグレーの背景色
+      applyCustomCss("--sjs-font-surveytitle-color", backGroundColor); //タイトルの背景色
+      applyCustomCss("--sjs-font-questiontitle-color", backGroundColor); //質問のタイトルの背景色
+    }
+  }, [backGroundColor]);
 
 
 
   useEffect(() => {
     const getcreateform = async () => {
       let createform = {};  // オブジェクト型で初期化
-      console.log("news_id", newsid);
-
+    
       try {
-        const response = await axios.post(createform_search_url, {
-          newsid: newsid, // POST ボディに含める
-      });
-        
-        console.log("レスポンスのクリエイトフォーム",response.data.create_form);
-        if (Array.isArray(response.data.create_form) && response.data.create_form.length > 0) {
+        const response = await axios.get(createform_search_url, {
+          params: { newsid: newsid },
+        });
+    
+        if (response.data.create_form && typeof response.data.create_form === "object") {
           console.log("持ってきた内容", response.data.create_form);
           setDeadlineDate(response.data.create_form.deadline);
-          createform = typeof response.data.create_form[0].create_form === "string"
-            ? JSON.parse(response.data.create_form[0].create_form)
-            : response.data.create_form[0].create_form;
+          createform = typeof response.data.create_form.create_form === "string"
+            ? JSON.parse(response.data.create_form.create_form)
+            : response.data.create_form.create_form;
           console.log("クリエイトフォーム", createform);
         } else {
-          console.warn("create_form が空か存在しません。デフォルト値を設定します。");
           createform = {
-            title: title,
+            title: "タイトル未設定",
             elements: [
               {
                 id: "1",
@@ -118,16 +115,15 @@ const CreateForm = ({ newsid, HandleBack, title }) => {
               }
             ],
             themeSettings: {
-              themeName: theme,
-              colorPalette: alignment,
-              backgroundColor: backGroundColor || "#FFFFFF",
+              themeName: "default",
+              colorPalette: "light",
             },
           };
         }
       } catch (error) {
         console.error("Error fetching create form data:", error);
         createform = {
-          title: 'タイトル未設定',
+          title: "タイトル未設定",
           elements: [
             {
               id: "1",
@@ -144,12 +140,12 @@ const CreateForm = ({ newsid, HandleBack, title }) => {
           },
         };
       }
-
+    
       setQuestions(createform); // 質問データをステートにセット
     };
-
-    getcreateform();
-  }, []); // 空の依存配列で最初のレンダリング時に実行
+    
+      getcreateform();
+    }, []); // 空の依存配列で最初のレンダリング時に実行
 
   useEffect(() => {
     console.log("deadlineDateが更新されました", deadlineDate);
@@ -167,60 +163,30 @@ const CreateForm = ({ newsid, HandleBack, title }) => {
   const [create_news_id] = useState(newsid);
 
   // 質問を追加する関数 //dropdown
-// 質問を追加する関数 // dropdown
-const addQuestion = (Questions_Genre) => {
-  console.log("クリックしたジャンル", Questions_Genre);
+  const addQuestion = (Questions_Genre) => {
+    console.log("クリックしたジャンル", Questions_Genre);
+    const { type, inputType } = getQuestionType(Questions_Genre);
 
-  // ジャンルからタイプ情報を取得
-  const { type, inputType } = getQuestionType(Questions_Genre);
+    // 新しい質問データを作成
+    const newQuestion = {
+      id: `${questions.length + 1}`,
+      name: `Question${questions.length + 1}`,
+      title: `設定中`,
+      type: type,  // 質問のタイプを決定
+      inputType: inputType,  // 質問のタイプを決定
+    };
 
-  // `questions` が文字列の場合はパース
-  let currentQuestions = questions;
-  console.log("currentQuestions", currentQuestions);
-  console.log("currentQuestions 型:", typeof currentQuestions);
+    console.log(type);
+    console.log(inputType);
 
-  // questionsが文字列型ならパースする
-  if (typeof currentQuestions === "string") {
-    try {
-      currentQuestions = JSON.parse(currentQuestions);  // パースしてオブジェクトに変換
-    } catch (error) {
-      console.error("questions のパースに失敗しました:", error);
-      currentQuestions = { elements: [] };  // パース失敗時に空の配列を初期化
-    }
-  }
+    // 新規追加なので `questionData` を初期化
+    setQuestionData(newQuestion);
 
-  // `elements` に追加する新しい質問データ
-  const newQuestion = {
-    name: `Question${currentQuestions.elements.length + 1}`,  // 修正: 正しいインデックスを使用
-    title: `新しい質問 ${currentQuestions.elements.length + 1}`,
-    type: type,  // 質問のタイプ
-    inputType: inputType,  // 入力タイプ
-    isRequired: false,  // 必要に応じてデフォルト値を設定
+    // 新しい質問を追加
+    setQuestions([...questions, newQuestion]);
+
+    openModal(Questions_Genre);
   };
-
-  console.log("新しい質問のタイプ:", type);
-  console.log("新しい質問の入力タイプ:", inputType);
-
-  // 質問を更新
-  const updatedQuestions = {
-    ...currentQuestions,
-    elements: [...currentQuestions.elements, newQuestion],
-  };
-  console.log("更新された質問リスト:", updatedQuestions);
-
-  // ステートを更新
-  setQuestions(JSON.parse(updatedQuestions));  // 文字列としてステートを更新
-
-  // `newQuestion` をモーダル用に設定
-  setQuestionData(newQuestion);
-
-  //新規作成の状況
-  setEditingStatus('New');
-
-  // モーダルを開く
-  openModal(Questions_Genre);
-};
-
 
 
   const openModal = (Questions_Genre) => {
@@ -231,7 +197,6 @@ const addQuestion = (Questions_Genre) => {
   const EditopenModal = (Questions_Genre, questionData) => {
     setSelectMenu(Questions_Genre);
     setQuestionData(questionData);
-    setEditingStatus('ReEdit');
     setModalOpen(true);
   };
 
@@ -270,8 +235,6 @@ const addQuestion = (Questions_Genre) => {
       switch (Questions_Genre) {
         case "number":
           return "number";
-        default:
-          return "text";
       }
     })();
 
@@ -281,85 +244,143 @@ const addQuestion = (Questions_Genre) => {
 
   const handleSaveSettings = (settings) => {
     console.log("受け取った設定", settings);
-    console.log("inputType 確認: ", settings.inputType);
-    console.log("質問の長さ", questions.length);
-  
-    // questionsが文字列型ならパースする
-    let currentQuestions = questions;
-    if (typeof currentQuestions === "string") {
-      try {
-        currentQuestions = JSON.parse(currentQuestions);
-      } catch (error) {
-        console.error("questions のパースに失敗しました:", error);
-        currentQuestions = { elements: [] };  // パース失敗時に空の配列を初期化
-      }
-    }
-  
-    // 最後の質問に設定を適用
-    const updatedQuestions = {
-      ...currentQuestions,
-      elements: currentQuestions.elements.map((q, index) =>
-        index === currentQuestions.elements.length - 1 // 最後の質問に設定を適用
-          ? {
-              ...q,
-              title: settings.title || q.title,
-              type: settings.type || q.type,
-              inputType: settings.inputType || q.inputType,
-              maxLength: settings.maxLength || q.maxLength,
-              minLength: settings.minLength || q.minLength,
-              placeholder: settings.placeholder || q.placeholder,
-              autocomplete: settings.autocomplete || q.autocomplete,
-              isRequired: settings.isRequired || q.isRequired,
-              description: settings.description || q.description,
-              validators: settings.validators || q.validators,
-              defaultValueExpression: settings.defaultValueExpression || q.defaultValueExpression,
-              minValueExpression: settings.minValueExpression || q.minValueExpression,
-              min: settings.min || q.min,
-              max: settings.max || q.max,
-              defaultValue: settings.defaultValue || q.defaultValue,
-              step: settings.step || q.step,
-              showNoneItem: settings.showNoneItem || q.showNoneItem,
-              showOtherItem: settings.showOtherItem || q.showOtherItem,
-              choices: settings.choices || q.choices,
-              colCount: settings.colCount || q.colCount,
-              noneText: settings.noneText || q.noneText,
-              otherText: settings.otherText || q.otherText,
-              clearText: settings.clearText || q.clearText,
-              separateSpecialChoices: settings.separateSpecialChoices || q.separateSpecialChoices,
-              showClearButton: settings.showClearButton || q.showClearButton,
-              fitToContainer: settings.fitToContainer || q.fitToContainer,
-              showSelectAllItem: settings.showSelectAllItem || q.showSelectAllItem,
-              selectallText: settings.selectallText || q.selectallText,
-              rows: settings.rows || q.rows,
-              autoGrow: settings.autoGrow || q.autoGrow,
-              allowResize: settings.allowResize || q.allowResize,
-              renderAs: settings.renderAs || q.renderAs,
-              titleLocation: settings.titleLocation || q.titleLocation,
-              rateType: settings.rateType || q.rateType,
-              displayMode: settings.displayMode || q.displayMode,
-              scaleColorMode: settings.scaleColorMode || q.scaleColorMode,
-              rateCount: settings.rateCount || q.rateCount,
-              rateValues: settings.rateValues || q.rateValues,
-              rateMax: settings.rateMax || q.rateMax,
-              multiSelect: settings.multiSelect || q.multiSelect,
-              showLabel: settings.showLabel || q.showLabel,
-            }
-          : q
-      ),
-    };
-  
+    console.log("inputType 確認: ", settings.inputType); // 追加
+    const updatedQuestions = questions.element.map((q, index) =>
+      index === questions.element.length - 1
+        ? {
+          ...q,
+          title: settings.title || q.title,
+          type: settings.type || q.type,
+          inputType: settings.inputType || q.inputType,
+          maxLength: settings.maxLength || q.maxLength,
+          minLength: settings.minLength || q.minLength,
+          placeholder: settings.placeholder || q.placeholder,
+          autocomplete: settings.autocomplete || q.autocomplete,
+          isrequired: settings.isrequired || q.isrequired,
+          description: settings.description || q.description,
+          validators: settings.validators || q.validators,
+          defaultValueExpression: settings.defaultValueExpression || q.defaultValueExpression,
+          minValueExpression: settings.minValueExpression || q.minValueExpression,
+          min: settings.min || q.min,
+          max: settings.max || q.max,
+          defaultValue: settings.defaultValue || q.defaultValue,
+          step: settings.step || q.step,
+          showNoneItem: settings.showNoneItem || q.showNoneItem,
+          showOtherItem: settings.showOtherItem || q.showOtherItem,
+          choices: settings.choices || q.choices,
+          colCount: settings.colCount || q.colCount,
+          noneText: settings.noneText || q.noneText,
+          otherText: settings.otherText || q.otherText,
+          clearText: settings.clearText || q.clearText,
+          separateSpecialChoices: settings.separateSpecialChoices || q.separateSpecialChoices,
+          showClearButton: settings.showClearButton || q.showClearButton,
+          fitToContainer: settings.fitToContainer || q.fitToContainer,
+
+          showSelectAllItem: settings.showSelectAllItem || q.showSelectAllItem,
+          selectallText: settings.selectallText || q.selectallText,
+
+          rows: settings.rows || q.rows,
+          autoGrow: settings.autoGrow || q.autoGrow,
+          allowResize: settings.allowResize || q.allowResize,
+          renderAs: settings.renderAs || q.renderAs,
+          titleLocation: settings.titleLocation || q.titleLocation,
+
+          rateType: settings.rateType || q.rateType,
+          displayMode: settings.displayMode || q.displayMode,
+          scaleColorMode: settings.scaleColorMode || q.scaleColorMode,
+          rateCount: settings.rateCount || q.rateCount,
+          rateValues: settings.rateValues || q.rateValues,
+          rateMax: settings.rateMax || q.rateMax,
+
+          multiSelect: settings.multiSelect || q.multiSelect,
+          showLabel: settings.showLabel || q.showLabel,
+
+        }
+        : q
+    );
+
     console.log("更新した質問", updatedQuestions);
-    // 更新したquestionsをJSON形式に変換してセット
-    setQuestions(updatedQuestions); 
-  
+    setQuestions(updatedQuestions);
     setQuestionData(null);
-    setModalOpen(false); // モーダルを閉じる
+
+    survey.applyTheme({
+      themeName: settings.themeName,
+      colorPalette: settings.colorPalette,
+    });
+
+    console.log("handleSaveSettings通ってます");
+    console.log("modalopen", modalopen);
+
+    setModalOpen(false);
   };
-  
 
 
-  console.table(questions);
-  const survey = new Model(questions);
+
+  const surveyJson = {
+    title: title || 'タイトル未設定',
+    elements: questions && questions.length > 0 ? questions.map((q) => {
+      // 各質問のデータをログに出力
+      return {
+        name: q.name,
+        title: q.title,
+        type: q.type || undefined,
+        inputType: q.inputType || undefined,
+        maxLength: q.maxLength || undefined,
+        minLength: q.minLength || undefined,
+        placeholder: q.placeholder || undefined,
+        autocomplete: q.autocomplete || undefined,
+        isRequired: q.isrequired || false,
+        description: q.description || undefined,
+        validators: q.validators || undefined,
+        defaultValueExpression: q.defaultValueExpression || undefined,
+        minValueExpression: q.minValueExpression || undefined,
+        min: q.min || undefined,
+        max: q.max || undefined,
+        defaultValue: q.defaultValue || undefined,
+        step: q.step || undefined,
+        showNoneItem: q.showNoneItem || undefined,
+        showOtherItem: q.showOtherItem || undefined,
+        choices: q.choices || undefined,
+        colCount: q.colCount || undefined,
+        noneText: q.noneText || undefined,
+        otherText: q.otherText || undefined,
+        clearText: q.clearText || undefined,
+        separateSpecialChoices: q.separateSpecialChoices || undefined,
+        showClearButton: q.showClearButton || undefined,
+        fitToContainer: q.fitToContainer || undefined,
+        showSelectAllItem: q.showSelectAllItem || undefined,
+        selectallText: q.selectallText || undefined,
+        rows: q.rows || undefined,
+        autoGrow: q.autoGrow || undefined,
+        allowResize: q.allowResize || undefined,
+        renderAs: q.renderAs || undefined,
+        titleLocation: q.titleLocation || undefined,
+        rateType: q.rateType || undefined,
+        displayMode: q.displayMode || undefined,
+        scaleColorMode: q.scaleColorMode || undefined,
+        rateCount: q.rateCount || undefined,
+        rateValues: q.rateValues || undefined,
+        rateMax: q.rateMax || undefined,
+        multiSelect: q.multiSelect || undefined,
+        showLabel: q.showLabel || undefined,
+        themeSettings: {
+          themeName: q.themeName || theme, // デフォルト値を設定
+          colorPalette: q.colorPalette || "light",
+        },
+      };
+    }) : [],// questionsがnullまたは空の場合は空の配列を返す
+    themeSettings: {
+      themeName: theme || 'default', // 初期テーマを設定
+      colorPalette: alignment.toLowerCase() || "light",
+    },
+  };
+
+  // surveyJsonの内容をログに出力
+  console.log("Survey JSON:", surveyJson);
+
+
+  console.table(surveyJson.elements);
+  const survey = new Model(surveyJson);
   survey.locale = "jp";  // 日本語に設定
 
   survey.onAfterRenderQuestion.add(function (survey, options) {
@@ -378,7 +399,7 @@ const addQuestion = (Questions_Genre) => {
     deleteButton.onclick = function () {
       // 削除する質問の ID を取得
       const questionId = options.question.name;
-      console.log("questionId",questionId);
+      console.log(questionId);
 
       // `questions` ステートから削除対象の質問を除外
       const updatedQuestions = questions.filter(q => q.name !== questionId);
@@ -391,7 +412,7 @@ const addQuestion = (Questions_Genre) => {
       }));
 
       // ステートを更新して再描画
-      setQuestions(JSON.parse(reassignedQuestions));
+      setQuestions(reassignedQuestions);
 
       // SurveyJS 内でも削除
       const page = options.question.page;
@@ -464,11 +485,12 @@ const addQuestion = (Questions_Genre) => {
     console.log("締切日", deadlineDate);
     console.log("背景色", backGroundColor);
     console.log("テーマ", theme);
+    console.log("サーベイジェイソン", surveyJson);
     const create_form_save_url = `http://localhost:8000/create_form_save`;
 
     try {
       const response = await axios.post(create_form_save_url, {
-        create_form: questions,
+        create_form: surveyJson,
         company_id: data.id,
         create_news_id: create_news_id,
         deadline: deadlineDate,
@@ -485,64 +507,25 @@ const addQuestion = (Questions_Genre) => {
 
   // キャンセル時の処理
   const CreateFormCancel = () => {
-    console.log("編集中のデータ", questionData);
-  
-    // questionsが文字列ならパースしてオブジェクトにする
-    let currentQuestions = questions;
-    if (typeof currentQuestions === "string") {
-      try {
-        currentQuestions = JSON.parse(currentQuestions);
-      } catch (error) {
-        console.error("questions のパースに失敗しました:", error);
-        currentQuestions = { elements: [] }; // パース失敗時に空の配列を初期化
-      }
-    }
-  
-    // 新規作成の場合のみ質問を削除
-    if (editingStatus === "New") {
-      const updatedQuestions = {
-        ...currentQuestions,
-        elements: currentQuestions.elements.filter(
-          (q) => q.name !== questionData.name
-        ),
-      };
-  
-      // 更新した質問リストをステートに反映
-      setQuestions(JSON.parse(updatedQuestions));
-    }
-  
-    // `questionData` をクリア
-    setQuestionData(null);
-  
-    // モーダルを閉じる
+    setQuestions(questions.filter(q => q !== questionData));  // キャンセル時に追加した質問を削除
+    setQuestionData(null);  // `questionData` をクリア
     setModalOpen(false);
-  };  
-  // titleColor,barColor,questionColor
-  const ThemeColorSave = (selectedOption, alignment,backgroundColor,titleColor,questionColor,barColor) => {
+  };
+
+  const ThemeColorSave = (selectedOption, alignment) => {
     if (selectedOption && alignment) {
       console.log("更新後のテーマ", selectedOption.value);
       console.log("alignment", alignment);
       console.log("alignment小文字か", alignment.toLowerCase());
-      console.log("backgroundColor",backgroundColor);
-      console.log("titleColor",titleColor);
-      console.log("questionColor",questionColor);
-      console.log("barColor",barColor);
 
       // ThemeNameとColorPaletteをsurveyJsonに設定
-      questions.themeSettings.themeName = selectedOption.value;
-      questions.themeSettings.colorPalette = alignment.toLowerCase();
-      questions.themeSettings.backgroundColor = backgroundColor;
-      console.log("更新後のthemeSettings", questions.themeSettings);
+      surveyJson.themeSettings.themeName = selectedOption.value;
+      surveyJson.themeSettings.colorPalette = alignment.toLowerCase();
+      console.log("更新後のColorPalette:", surveyJson.themeSettings.colorPalette);
 
       // 結合されたテーマ名を生成
       const themeKey = `${selectedOption.theme}${alignment}`; // キャメルケースを維持
       console.log("生成されたテーマキー", themeKey);
-
-      //背景色設定
-      applyCustomCss('--sjs-general-backcolor-dim', backgroundColor); //テーマによる
-      applyCustomCss('--sjs-font-surveytitle-color', titleColor);
-      applyCustomCss('--sjs-font-questiontitle-color', questionColor);
-      applyCustomCss('--sjs-primary-backcolor', barColor); //テーマによる
 
       if (themes[themeKey]) {
         const themeObject = themes[themeKey]; // 現在のテーマを取得
@@ -553,11 +536,6 @@ const addQuestion = (Questions_Genre) => {
       }
 
       // 状態更新
-      setBackGroundColor(backgroundColor);
-      setTitleColor(titleColor);
-      setBarColor(barColor);
-      setQuestionColor(questionColor);
-
       setTheme(selectedOption.value);
       setApplyTheme(themeKey); // 見た目の更新用
       setAlignment(alignment); // ライト or ダークの更新
@@ -574,13 +552,14 @@ const addQuestion = (Questions_Genre) => {
       // themesオブジェクトからテーマオブジェクトを取得
       const themeObject = themes[applyTheme];
       if (themeObject) {
+        // テーマ名を surveyJson に反映
         console.log('themeobjectがありました', themeObject);
         survey.applyTheme(themeObject); // テーマを再適用
       } else {
-        console.error(`テーマ '${applyTheme}' が見つかりません`);
+        console.error(`テーマ '${theme}' が見つかりません`);
       }
     }
-  }, [themeColorModalOpen]);
+  }, [applyTheme]);
 
   const ThemeColorCancel = () => {
     setThemeColorModalOpen(false);
@@ -592,13 +571,13 @@ const addQuestion = (Questions_Genre) => {
   };
 
   const handleOpenThemeModal = () => {
-    if (applyTheme) {
-      console.log("applythemeがあります", applyTheme);
-      const themeObject = themes[applyTheme]; // 現在のテーマを取得
+    if (theme) {
+      console.log("themeがあります", theme);
+      const themeObject = themes[theme]; // 現在のテーマを取得
       if (themeObject) {
         survey.applyTheme(themeObject); // テーマを再適用
       } else {
-        console.error(`テーマ '${applyTheme}' が見つかりません`);
+        console.error(`テーマ '${theme}' が見つかりません`);
       }
     }
     setThemeColorModalOpen(true); // モーダルを開く
@@ -700,10 +679,8 @@ const addQuestion = (Questions_Genre) => {
             <Theme_Color_Setting
               onSave={ThemeColorSave}
               onClose={ThemeColorCancel}
-              BackGroundColor={backGroundColor}
-              TitleColor={titleColor}
-              BarColor={barColor}
-              QuestionColor={questionColor}
+              backGroundColor={backGroundColor}
+              backGroundColorChange={backGroundColorChange}
               setTheme={setTheme}
               theme={theme}
               light_dark={alignment}
@@ -726,8 +703,6 @@ const addQuestion = (Questions_Genre) => {
             </IconButton>
           </Tooltip>
         </div>
-
-        {applyTheme}
 
 
         {!questions || questions.length === 0 ? (

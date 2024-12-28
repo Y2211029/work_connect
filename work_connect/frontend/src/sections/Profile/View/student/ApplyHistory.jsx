@@ -82,7 +82,7 @@ const Apply_history = forwardRef(({ id }, ref) => {
         genre = '求人';
         break;
     }
-    console.log("posts", posts);
+    console.log("posts", posts.write_form.elements);
     return (
       <div className="post_card_content">
         <h2 className="post_card_title">{posts.news_title}</h2>
@@ -106,7 +106,7 @@ const Apply_history = forwardRef(({ id }, ref) => {
         <div className="post_card_form">
           <h3>応募内容:</h3>
           <ul>
-            {posts.write_form.map((form, idx) => (
+            {posts.write_form.elements.map((form, idx) => (
               <li key={idx}>
                 <strong>{form.title}:</strong> {form.response || "なし"}
               </li>

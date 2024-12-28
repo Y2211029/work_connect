@@ -466,9 +466,13 @@ const NewsSelectMenu = ({
                                     (() => {
                                         // データを取得・処理
                                         const DateTime = selected_draft.create_form[0].createformDateTime;
-                                        const createFormArray = JSON.parse(selected_draft.create_form[0].create_form || "[]");
-                                        const question_count = createFormArray.length;
-
+                                        const createFormArray = selected_draft.create_form[0].create_form;
+                                        console.log("createFormArray", JSON.parse(createFormArray).elements?.length);
+                                        // console.log("createFormArray", JSON.parse(createFormArray.elements));
+                                          // elementsが正しく出力されるか確認
+                                        // const question_count = createFormArray.elements ? createFormArray.elements.length : 0;
+                                        const question_count = JSON.parse(createFormArray).elements?.length;
+                                        console.log("質問数:", question_count);                                  
                                         return (
                                             <>
                                                 <NewsMenuTable className="draftlisttable">

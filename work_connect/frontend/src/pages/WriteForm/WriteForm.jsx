@@ -22,7 +22,6 @@ import { Plain } from "survey-core/themes";
 export default function WriteFormPage() {
 
   const { newsdetail_id } = useParams()
-  const [title, SetTitle] = useState(null);
   const [companyId, SetCompanyId] = useState(null);
   const [newsId, SetNewsId] = useState(null);
   const [createForm, SetCreateForm] = useState([]);
@@ -44,12 +43,11 @@ export default function WriteFormPage() {
       try {
         const response = await axios.get(`http://localhost:8000/write_form_get`, {
           params: {
-            NewsId: newsdetail_id, //今ログインしている人のid
+            NewsId: newsdetail_id, //今ログインしているニュースのid
           },
         });
         console.log("レスポンスデータ", response.data);
         const WriteForm = response.data;
-        SetTitle(WriteForm.title);
         SetCompanyId(WriteForm.company_id);
         SetCreateForm(WriteForm.create_form);
         SetNewsId(WriteForm.news_id);
@@ -73,85 +71,43 @@ export default function WriteFormPage() {
     document.head.appendChild(styleSheet);
   }, []);
 
-  // フォームフィールドをSurveyの形式に変換する
-  const transformFormFields = (fields) => {
-    // fieldsが存在するかチェック
-    console.error("バリデーション", fields.validators);
-
-    if (!fields || !Array.isArray(fields)) {
-      console.error("フォームフィールドがありません。fields:", fields);
-
-      return {
-        title: { title },
-        pages: [],
-      };
-    }
-
-    return {
-      title: title,
-      pages: [
-        {
-          name: "page1",
-          elements: fields.map(field => ({
-            type: field.type,
-            name: field.name,
-            title: field.title,
-            ...(field.inputType && { inputType: field.inputType }), // inputType を確認
-            ...(field.validators && { validators: field.validators }), // validators を確認
-            ...(field.response && { defaultValue: field.response }),  // response を defaultValue に設定
-            ...(field.choices && { choices: field.choices }), // choices を追加
-            ...(field.placeholder && { placeholder: field.placeholder }), // placeholder を追加
-            ...(field.description && { description: field.description }), //descriptionを追加
-            ...(field.autocomplete && { autocomplete: field.autocomplete }),
-            ...(field.autoGrow && { autoGrow: field.autoGrow }),
-            ...(field.otherText && { otherText: field.otherText }),
-            ...(field.showOtherItem && { showOtherItem: field.showOtherItem }),
-            ...(field.clearText && { clearText: field.clearText }),
-            ...(field.showClearButton && { showClearButton: field.showClearButton }),
-            ...(field.colCount && { colCount: field.colCount }),
-            ...(field.maxLength && { maxLength: field.maxLength }),
-            ...(field.rows && { rows: field.rows }),
-            ...(field.isrequired && { isrequired: field.isrequired }),
-          })),
-        }
-      ]
-    };
-  };
-
-
-
-  // フォームフィールドデータをSurvey形式に変換
-  const surveyData = transformFormFields(createForm);
-
   // Survey モデルの生成
-  const survey = new Model(surveyData);
+  const survey = new Model(createForm);
 
   survey.applyTheme(Plain);
 
   const WriteFormSave = () => {
-    // Surveyモデルのバリデーション実行
     const isValid = survey.validate();
-
+  
     if (isValid) {
       console.log("フォームは有効です。保存処理を実行します。");
-
+  
       // フォームのデータを取得
       const formData = survey.data;
       console.log("保存するデータ:", formData);
-
+      console.log("サーベイ:", survey);
+      console.log("フォームデータ:", createForm);
+  
       // フォーム定義とユーザーの回答を統合する
       const transformFormFieldsWithResponses = (fields, responses) => {
-        return fields.map(field => ({
-          ...field,
-          response: responses[field.name] || null // ユーザーの回答をフォーム定義に追加
-        }));
+        return fields.map(field => {
+          // ユーザーの回答を取得
+          const response = responses[field.name] || null; // 回答がなければ null
+          return {
+            ...field,
+            response // フィールドに対応する回答を追加
+          };
+        });
       };
-
+  
       // フォーム定義とユーザーの回答を統合
-      const formDefinitionWithResponses = transformFormFieldsWithResponses(createForm, formData);
-
+      const formDefinitionWithResponses = {
+        title: createForm.title, // タイトルをそのまま保持
+        elements: transformFormFieldsWithResponses(createForm.elements, formData) // フィールドと回答を統合
+      };
+  
       // 統合データを表示（確認用）
-      console.log("フォーム定義と回答を統合したデータ:", formDefinitionWithResponses);
+      console.log("Survey.js形式のデータ:", formDefinitionWithResponses);
 
       // Axiosを使用してデータを保存する
       axios.post(writeformsaveurl, {
@@ -189,60 +145,59 @@ export default function WriteFormPage() {
     window.location.href = `/NewsDetail/${newsdetail_id}`;
   };
 
+    return (
+      <>
+        <Helmet>
+          <title> 応募する | Work&Connect </title>
+        </Helmet>
 
-  return (
-    <>
-      <Helmet>
-        <title> 応募する | Work&Connect </title>
-      </Helmet>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+          <Tooltip title="戻る">
+            <IconButton
+              onClick={() => NewsDetailBack()}
+              sx={{
+                '&:hover': { backgroundColor: '#f0f0f0' },
+              }}
+            >
+              <ArrowBackOutlinedIcon sx={{ fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" } }} />
+            </IconButton>
+          </Tooltip>
+        </Box>
 
-      <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
-      <Tooltip title="戻る">
-          <IconButton
-            onClick={() => NewsDetailBack()}
-            sx={{
-              '&:hover': { backgroundColor: '#f0f0f0' },
-            }}
-          >
-            <ArrowBackOutlinedIcon sx={{ fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" } }}/>
-          </IconButton>
-      </Tooltip>
-      </Box>
-
-      <div className="WriteForm_Container">
-        <Stack sx={{ display: "inline-block" }}>
-          <div className="WriteForm">
-            <Survey model={survey} />
-          </div>
-        </Stack>
-        <Button variant="outlined" onClick={WriteFormSave}
-        sx={{ position: 'relative', left:'300px', width: "100px", borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
-        応募する
-      </Button>
-      </div>
-
+        <div className="WriteForm_Container">
+          <Stack sx={{ display: "inline-block" }}>
+            <div className="WriteForm">
+              <Survey model={survey} />
+            </div>
+          </Stack>
+          <Button variant="outlined" onClick={WriteFormSave}
+            sx={{ position: 'relative', left: '300px', width: "100px", borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
+            応募する
+          </Button>
+        </div>
 
 
-    </>
-  );
 
-}
+      </>
+    );
 
-// displayName を設定
-WriteFormPage.displayName = 'WriteFormPage';
+  }
 
-WriteFormPage.propTypes = {
-  post: PropTypes.shape({
-    company_id: PropTypes.string,
-    news_id: PropTypes.string,
-    article_title: PropTypes.string,
-    create_form: PropTypes.arrayOf(PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      type: PropTypes.string.isRequired,
-      inputtype: PropTypes.string,
-      validators: PropTypes.array,
-    })).isRequired,
-  }).isRequired,
-};
+  // displayName を設定
+  WriteFormPage.displayName = 'WriteFormPage';
+
+  WriteFormPage.propTypes = {
+    post: PropTypes.shape({
+      company_id: PropTypes.string,
+      news_id: PropTypes.string,
+      article_title: PropTypes.string,
+      create_form: PropTypes.arrayOf(PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        title: PropTypes.string.isRequired,
+        type: PropTypes.string.isRequired,
+        inputtype: PropTypes.string,
+        validators: PropTypes.array,
+      })).isRequired,
+    }).isRequired,
+  };
 

@@ -7,6 +7,9 @@ body {
   /* マージンをリセットして、余白が生じないようにする */
 }
 
+.codex-editor--empty .ce-block:first-child .ce-paragraph[data-placeholder]:empty::before {
+  margin-left: 10px;
+}
 
 .editor_title {
   width: 50%;
@@ -23,26 +26,42 @@ body {
 }
 
 .editor-wrapper {
-  position: relative;
+  /* position: relative;
   margin-left: 5%;
   padding: 4px;
-  margin-bottom: 0;
+  margin-bottom: 0; */
   height: auto;
 }
 
 
 
 .cover_img_upload {
-  position: relative;
-  width: 100px;
+  width: 100%;
   height: 100px;
-  left: 40%;
   box-sizing: border-box;
 
   margin: 0;
   border: none;
+  transition: 0.5s;
 }
 
+.image_serach_icon_button_icon {
+  width: 50% !important;
+  height: 100%;
+  min-height: 200px;
+  min-width: 300px;
+  border-radius: 5px !important;
+  border: 2px dashed rgb(88, 99, 248);
+}
+
+.image_serach_icon_button_icon:hover {
+  cursor: pointer;
+}
+
+.image_serach_icon_button_icon:active {
+  border-radius: 5px !important;
+  width: 50% !important;
+}
 
 .uploaded-image {
   position: relative;
@@ -224,7 +243,18 @@ input[type="radio"]:checked+.label {
 }
 
 
+.editingstatus {
+  margin-left: 20px;
+  padding-top: 20px;
+  width: 90%;
+  overflow-x: auto;
+  height: 400px;
+  /* 固定の高さを設定 */
+}
 
+.editingstatus p {
+  font-size: 12px;
+}
 
 
 .news_genre_select {
@@ -303,28 +333,35 @@ td {
 }
 
 
-.Not_Upload_Button{
+
+
+
+/* sx={{
+  position: 'relative', width: '160px', borderColor: '#A9A9A9', color: '#A9A9A9', backgroundColor: '#F5F5F5', // 背景色を薄いグレーに設定
+  '&:hover': { borderColor: '#A9A9A9', backgroundColor: '#F5F5F5', }, */
+.Not_Upload_Button {
   position: relative;
-  width:auto;
+  width: auto;
   border-color: #A9A9A9;
   color: #A9A9A9;
 }
 
-.Not_Upload_Button:hover{
+.Not_Upload_Button:hover {
   cursor: not-allowed;
 }
 
-.NewsMenu_Tabs{
-  width:100%;  
+.NewsMenu_Tabs {
+  width: 100%;
 }
 
-.css-15u176q-MuiPaper-root-MuiAppBar-root{
+.css-15u176q-MuiPaper-root-MuiAppBar-root {
   box-shadow: none;
 }
 
 .newsPosting {
   margin: 20px;
 }
+
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*スマホサイズ//////////////////////////////////////////////////////////////////////////////////////////////////////////// */
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -479,22 +516,30 @@ td {
     }
   } */
 
-@media(max-width:900px){
-/* 
-  .ce-paragraph{
-    font-size: 25px;
-  } */
+.image_search_icon_main {
+  width: 100%;
+  height: fit-content;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
+.image_search_icon_first {
+  width: 50%;
+  min-width: 250px;
+  max-width: 350px;
+  min-height: 250px;
+  max-height: 350px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px dashed rgb(88, 99, 248);
+  border-radius: 5px;
+}
 
-@media (max-width: 600px) {
-
-  body {
-    overflow: scroll;
-  }
-
-
-  
+@media (max-width: 600px),
+(max-width: 400px) {
 
   .editor-wrapper {
     width: 90%;
@@ -526,9 +571,8 @@ td {
   }
 
   .uploaded-image {
-    padding-top:5%;
-    margin-top:10%;
-    left: 10%;
+    padding-top: 5%;
+    left: 15%;
   }
 
   .uploaded-image img {

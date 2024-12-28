@@ -25,6 +25,20 @@ header .logo {
 }
 
 
+.arrow_up_ward_icon {
+  display: block !important;
+  cursor: pointer !important;
+  width: 50px !important;
+  height: 50px !important;
+  position: fixed !important;
+  right: 1.5vw !important;
+  bottom: 20px !important;
+  color: black !important;
+  border-radius: 50% !important;
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 10px !important;
+  z-index: 1400 !important;
+}
+
 .toolbar {
   position: fixed;
   bottom: 0px;
@@ -1225,6 +1239,10 @@ textarea {
 }
 
 @media (max-width: 900px) {
+  .arrow_up_ward_icon {
+    bottom: 110px !important;
+  }
+  
   .searchbar {
     width: 60% !important;
     height: 80% !important;
@@ -1279,6 +1297,7 @@ textarea {
     display: flex;
     overflow: scroll;
   }
+
   .WorkPostingFormContainer form {
     max-width: 600px;
   }
@@ -1298,12 +1317,14 @@ textarea {
     max-width: 600px;
   }
 
-  .WorkSubmit,.VideoPostingUiForm {
+  .WorkSubmit,
+  .VideoPostingUiForm {
     /* position: relativeを無効にする */
     position: static;
   }
 
-  .WorkInformation, .VideoInformation {
+  .WorkInformation,
+  .VideoInformation {
     padding: 0;
     margin: 0;
     overflow: unset;
@@ -1315,9 +1336,11 @@ textarea {
     display: flex;
     overflow: scroll;
   }
-  .VideoPostingFormContainer form { 
+
+  .VideoPostingFormContainer form {
     max-width: 600px;
   }
+
   .VideoPostingUiForm {
     flex-direction: column;
     margin-bottom: 10px;

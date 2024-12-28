@@ -265,7 +265,6 @@ export default function Header({ onOpenNav }) {
                 onClose={handleClose}
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 transformOrigin={{ vertical: "top", horizontal: "right" }}
-                
                 PaperProps={{
                   sx: {
                     p: 0,
@@ -274,7 +273,7 @@ export default function Header({ onOpenNav }) {
                     width: 250,
                   },
                 }}
-                disableScrollLock 
+                disableScrollLock
               >
                 {NEWS_MENU_OPTIONS.map((option) => (
                   <MenuItem key={option.label} onClick={() => handleMenuItemClick(option.path)} sx={{ display: login_state ? "block" : "none" }}>
@@ -347,6 +346,13 @@ export default function Header({ onOpenNav }) {
         </Tooltip>
       </Stack>
     </>
+  );
+
+  const renderArrowTopButton = (
+    <ArrowUpwardIcon
+      onClick={handleScrollToTop}
+      className="arrow_up_ward_icon"
+    />
   );
 
   const renderToolBar = (
@@ -422,7 +428,7 @@ export default function Header({ onOpenNav }) {
                   width: "fit-contents", // 幅を250pxに設定
                 },
               }}
-              disableScrollLock 
+              disableScrollLock
             >
               <Button onClick={handleOpenModal} variant="contained" sx={buttonStyle}>
                 作品投稿
@@ -465,7 +471,7 @@ export default function Header({ onOpenNav }) {
                 anchorOrigin={{ vertical: "top", horizontal: "center" }}
                 transformOrigin={{ vertical: "bottom", horizontal: "center" }}
                 // popover全体ではなく、ボタンを囲っている一つ階層が上の要素のスタイリングをする。
-                
+
                 PaperProps={{
                   sx: {
                     p: 0, // 内側の余白（padding）を0に設定
@@ -474,7 +480,7 @@ export default function Header({ onOpenNav }) {
                     width: "fit-contents", // 幅を250pxに設定
                   },
                 }}
-                disableScrollLock 
+                disableScrollLock
               >
                 {NEWS_MENU_OPTIONS.map((option) => (
                   <MenuItem key={option.label} onClick={() => handleMenuItemClick(option.path)} sx={{ display: login_state ? "block" : "none" }}>
@@ -515,7 +521,7 @@ export default function Header({ onOpenNav }) {
           onClick={handleChange}
           className="top_page_phone_size_button"
           variant="contained"
-        // sx={{ display: Display.HomePage === "none" ? "flex" : "none" }}
+          // sx={{ display: Display.HomePage === "none" ? "flex" : "none" }}
         >
           ログイン
         </Button>
@@ -525,7 +531,7 @@ export default function Header({ onOpenNav }) {
           onClick={handleChange}
           className="top_page_phone_size_button"
           variant="outlined"
-        // sx={{ display: Display.HomePage === "none" ? "flex" : "none" }}
+          // sx={{ display: Display.HomePage === "none" ? "flex" : "none" }}
         >
           新規登録
         </Button>
@@ -548,9 +554,9 @@ export default function Header({ onOpenNav }) {
           }),
           ...(lgUp &&
             !Display.HomePage && {
-            width: `calc(100% - ${NAV.WIDTH + 1}px)`,
-            height: HEADER.H_DESKTOP,
-          }),
+              width: `calc(100% - ${NAV.WIDTH + 1}px)`,
+              height: HEADER.H_DESKTOP,
+            }),
         }}
       >
         <Toolbar
@@ -561,23 +567,8 @@ export default function Header({ onOpenNav }) {
         >
           {renderContent}
         </Toolbar>
-        <ArrowUpwardIcon
-          onClick={handleScrollToTop}
-          style={{
-            display: Display.HomePage ? "none" : "block",
-            cursor: "pointer",
-            width: "50px",
-            height: "50px",
-            position: "fixed",
-            top: "52vw",
-            right: "1.5vw",
-            color: "black",
-            borderRadius: "50%",
-            boxShadow: "rgba(0, 0, 0, 0.5) 0px 0px 10px",
-          }}
-        />
       </AppBar>
-
+      {renderArrowTopButton}
       {renderToolBar}
       {renderPhoneSizeLogin}
     </>

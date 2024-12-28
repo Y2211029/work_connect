@@ -7,7 +7,7 @@ import { faker } from "@faker-js/faker";
 
 import Stack from "@mui/material/Stack";
 
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 
 import LoginStatusCheck from "src/components/account/loginStatusCheck/loginStatusCheck";
@@ -24,8 +24,6 @@ const setting = {
 
 const funcSetWorksItem = (idKey, tags, currentWorkList, setWorkList, newWorks, setLoading, setItemLoading, error, generatePosts) => {
   // ジャンル
-  // const [WorkGenre, setWorkGenre] = useState("");
-
   const { tagCreate } = UseCreateTagbutton();
 
   if (newWorks) {
@@ -301,6 +299,9 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           // open_jobs: company.open_jobs,
           event_day: company.event_day,
           count: company.form_data_count,
+          author: {
+            avatarUrl: `/assets/images/avatars/avatar_${company.icon}.jpg`,
+          },
         }));
       },
     },
@@ -321,13 +322,16 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           genre: company.genre,
           header_img: company.header_img,
           news_created_at: company.news_created_at,
-          icon_id: company.icon_id,
+          icon_id: company.icon,
           followStatus: company.follow_status,
           deadline: company.deadline,
           deadlineStatus: company.deadline_status,
           open_jobs: company.open_jobs,
           event_day: company.event_day,
           count: company.form_data_count,
+          author: {
+            avatarUrl: `/assets/images/avatars/avatar_${company.icon}.jpg`,
+          },
         }));
       },
     },
@@ -348,13 +352,16 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           genre: company.genre,
           header_img: company.header_img,
           news_created_at: company.news_created_at,
-          icon_id: company.icon_id,
+          icon_id: company.icon,
           followStatus: company.follow_status,
           deadline: company.deadline,
           deadlineStatus: company.deadline_status,
           open_jobs: company.open_jobs,
           event_day: company.event_day,
           count: company.form_data_count,
+          author: {
+            avatarUrl: `/assets/images/avatars/avatar_${company.icon}.jpg`,
+          },
         }));
       },
     },
@@ -373,10 +380,13 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           genre: company.genre,
           header_img: company.header_img,
           news_created_at: company.news_created_at,
-          icon_id: company.icon_id,
+          icon_id: company.icon,
           followStatus: company.follow_status,
           event_day: company.event_day,
           count: company.form_data_count,
+          author: {
+            avatarUrl: `/assets/images/avatars/avatar_${company.icon}.jpg`,
+          },
         }));
       },
     },
@@ -409,10 +419,13 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           genre: company.genre,
           header_img: company.header_img,
           news_created_at: company.news_created_at,
-          icon_id: company.icon_id,
+          icon_id: company.icon,
           followStatus: company.follow_status,
           event_day: company.event_day,
           count: company.form_data_count,
+          author: {
+            avatarUrl: `/assets/images/avatars/avatar_${company.icon}.jpg`,
+          },
         }));
       },
     },
@@ -431,10 +444,13 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           genre: company.genre,
           header_img: company.header_img,
           news_created_at: company.news_created_at,
-          icon_id: company.icon_id,
+          icon_id: company.icon,
           followStatus: company.follow_status,
           event_day: company.event_day,
           count: company.form_data_count,
+          author: {
+            avatarUrl: `/assets/images/avatars/avatar_${company.icon}.jpg`,
+          },
         }));
       },
     },
@@ -453,10 +469,13 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           genre: company.genre,
           header_img: company.header_img,
           news_created_at: company.news_created_at,
-          icon_id: company.icon_id,
+          icon_id: company.icon,
           followStatus: company.follow_status,
           event_day: company.event_day,
           count: company.form_data_count,
+          author: {
+            avatarUrl: `/assets/images/avatars/avatar_${company.icon}.jpg`,
+          },
         }));
       },
     },
@@ -475,10 +494,13 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           genre: company.genre,
           header_img: company.header_img,
           news_created_at: company.news_created_at,
-          icon_id: company.icon_id,
+          icon_id: company.icon,
           followStatus: company.follow_status,
           event_day: company.event_day,
           count: company.form_data_count,
+          author: {
+            avatarUrl: `/assets/images/avatars/avatar_${company.icon}.jpg`,
+          },
         }));
       },
     },
@@ -615,6 +637,10 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     console.log("lastUrllastUrl:PathName", PathName);
   }
 
+
+
+  
+
   const fetcher = (lastUrl) =>
     fetch(lastUrl).then((res) => {
       return res.json().then((data) => {
@@ -676,6 +702,15 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
       }));
     }
   }, [isIntersecting]);
+
+  // ブラウザバックなどでPageが更新されたままにならないようにする。
+  useEffect(() => {
+    setAllItems((prevItems) => ({
+      ...prevItems,
+      Page: 1,
+    }));
+    setIsLoadItem(true);
+  }, [PathName]);
 
   /*----- 検索されていないかつ作品データがあるとき -----*/
   useEffect(() => {
@@ -812,6 +847,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
           IsSearch.searchResultEmpty = false 作品データあり
           IsSearch.searchResultEmpty = true 作品データなし
 
+          IsSearch.searchResultEmpty !== true
           IsSearch.searchResultEmpty !== true
           「検索結果が0件でない場合に表示」
 

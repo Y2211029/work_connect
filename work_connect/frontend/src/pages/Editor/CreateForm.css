@@ -346,8 +346,6 @@ input[type="number"]::-webkit-inner-spin-button {
 
 @media (max-width: 400px) {
 
-
-
   .FormSelectMenu {
     /* margin-left: 3%; */
     width: fit-content;

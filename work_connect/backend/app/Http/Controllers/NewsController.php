@@ -135,8 +135,10 @@ class NewsController extends Controller
             ->select(
                 'w_companies.company_name as companies_name',
                 'w_companies.icon as icon',
+                'w_companies.user_name as companies_user_name',
                 'w_news.id as news_id',
                 'w_news.article_title as news_title',
+                'w_news.event_day as event_day',
                 'w_news.genre as news_genre',
                 'w_news.header_img as img',
                 'w_write_forms.id as write_form_id',
@@ -153,9 +155,11 @@ class NewsController extends Controller
             $posts[] = [
                 'id' => $id,
                 'companies_name' => $app->companies_name,
+                'companies_user_name' => $app->companies_user_name,
                 'news_id' => $app->news_id,
                 'news_title' => $app->news_title,
                 'news_genre' => $app->news_genre,
+                'event_day' => $app->event_day,
                 'img' => $app->img,
                 'write_form_id' => $app->write_form_id,
                 'write_form' => json_decode($app->write_form, true), // 配列としてデコード

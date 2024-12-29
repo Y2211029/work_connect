@@ -158,8 +158,9 @@ export default function WriteFormPage() {
               sx={{
                 '&:hover': { backgroundColor: '#f0f0f0' },
               }}
+
             >
-              <ArrowBackOutlinedIcon sx={{ fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" } }} />
+              <ArrowBackOutlinedIcon className="NewsDetailBackButton" sx={{ fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" } }} />
             </IconButton>
           </Tooltip>
         </Box>
@@ -170,11 +171,11 @@ export default function WriteFormPage() {
               <Survey model={survey} />
             </div>
           </Stack>
-          <Button variant="outlined" onClick={WriteFormSave}
-            sx={{ position: 'relative', left: '300px', width: "100px", borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
+        </div>
+
+        <Button variant="outlined" onClick={WriteFormSave} className="FormApplyButton">
             応募する
           </Button>
-        </div>
 
 
 

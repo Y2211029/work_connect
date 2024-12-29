@@ -4,12 +4,33 @@ import "./ApplyHistory.css"; // デザイン用のCSSファイル
 import axios from "axios";
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 import Stack from '@mui/material/Stack';
-import Button from "@mui/material/Button";
 import { ColorRing } from "react-loader-spinner";
-
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Typography from '@mui/material/Typography';
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import Tooltip from "@mui/material/Tooltip";
+import { Link } from "react-router-dom";
 
 const Apply_history = forwardRef(({ id }, ref) => {
   const [applyHistories, setApplyHistories] = useState([]);
+  const [expanded, setExpanded] = useState(false);
+  const [elementExpanded, setElementExpanded] = useState(false);
+  const { getSessionData } = useSessionStorage();
+
+  const accountData = getSessionData("accountData");
+  console.log("accountData", accountData.user_name);
+
+  const handleChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
+
+  const handleElementChange = (panel) => (event, isElementExpanded) => {
+    setElementExpanded(isElementExpanded ? panel : false);
+  };
+
   console.log("ApplyHistoryのid", id);
 
   useEffect(() => {
@@ -40,10 +61,85 @@ const Apply_history = forwardRef(({ id }, ref) => {
     return `${year}/${month}/${day}`;
   };
 
+  const getEventDayMessage = (event_day) => {
+    const today = new Date();
+    const eventDayDate = new Date(event_day);
+
+    // 日付の差分を計算 (ミリ秒 -> 日)
+    const diffInDays = Math.ceil((eventDayDate - today) / (1000 * 60 * 60 * 24));
+
+    // 日付の差分を月単位で計算
+    const diffInMonths =
+      (eventDayDate.getFullYear() - today.getFullYear()) * 12 +
+      (eventDayDate.getMonth() - today.getMonth());
+
+    // 残り1週間以内は1日単位で表示
+    if (diffInDays > 0 && diffInDays <= 7) {
+      return (
+        <Typography className="EventDayAlert" variant="body1" color="error">
+          開催日まで残り{diffInDays}日!
+        </Typography>
+      );
+    }
+
+    // 残り2週間以内なら週数単位で表示
+    if (diffInDays > 7 && diffInDays <= 14) {
+      const weeksLeft = Math.ceil(diffInDays / 7); // 残りの週数を計算
+      return (
+        <Typography className="EventDayAlert" variant="body1" color="primary">
+          開催日まで残り{weeksLeft}週間!
+        </Typography>
+      );
+    }
+
+    // 残り1ヶ月以上の場合は月数を表示
+    if (diffInMonths >= 1) {
+      return (
+        <Typography className="EventDayAlert" variant="body1" color="info.dark">
+          開催日まで残り{diffInMonths}ヶ月!
+        </Typography>
+      );
+    }
+
+    // マイナスだった場合すでに開催されていると判断し、開催済みと表示
+    if (diffInDays < 0) {
+      return (
+        <Typography className="EventDayAlert" variant="body1" color="success">
+          開催されました!
+        </Typography>
+      );
+    }
+
+    // それ以外は何も返さない
+    return null;
+  };
+
   // ヘッダー部分の表示
   const renderHeader = (posts) => {
-    return (
+    let Apply_genre = null;
+    switch (posts.news_genre) {
+      case 'Internship':
+        Apply_genre = 'インターンシップへの応募日';
+        break;
+      case 'Session':
+        Apply_genre = '説明会への応募日';
+        break;
+      case 'JobOffer':
+        Apply_genre = '求人への応募日';
+        break;
+    }
+    console.log("ユーザーネーム",posts.user_name);
+    return (  
       <>
+        {getEventDayMessage(posts.event_day)}
+        <Tooltip title={`クリックすると${posts.companies_name}さんのプロフィールにリンクします`}>
+        <Link to={`/Profile/${posts.companies_user_name}`}
+                    style={{
+                      textDecoration: "none",
+                      color: "common.black",
+                      height: 30,
+                      fontWeight: "Bold",
+                    }}>
         <Stack direction={"row"}>
           <div className="post_card_header">
             <img
@@ -57,12 +153,17 @@ const Apply_history = forwardRef(({ id }, ref) => {
               className="post_card_img"
             />
           </div>
-          <p>会社名: {posts.companies_name}</p>
+          <div className="ApplyFormCompaniesName">
+          <Typography className="CompaniesName">{posts.companies_name}</Typography>
+          </div>
         </Stack>
+        </Link>
+        </Tooltip>
         <Stack direction={"row"}>
-          <p className="form_writed_at">応募日: {formatDate(posts.form_writed_at)}</p>
-          <p>({postDateTimeDisplay(posts.form_writed_at)})</p>
+          <p className="form_writed_at">{Apply_genre}</p>
+          <p className="postDateTimeDisplay">{formatDate(posts.form_writed_at)}({postDateTimeDisplay(posts.form_writed_at)})</p>
         </Stack>
+
       </>
 
     );
@@ -70,48 +171,61 @@ const Apply_history = forwardRef(({ id }, ref) => {
 
   // コンテンツ部分の表示
   const renderDetails = (posts) => {
-    let genre = null;
-    switch (posts.news_genre) {
-      case 'Internship':
-        genre = 'インターンシップ';
-        break;
-      case 'Session':
-        genre = '説明会';
-        break;
-      case 'JobOffer':
-        genre = '求人';
-        break;
-    }
+    console.log("posts",posts.news_id);
     console.log("posts", posts.write_form.elements);
     return (
       <div className="post_card_content">
-        <h2 className="post_card_title">{posts.news_title}</h2>
-        <Button
-          variant="contained"
-          sx={{
-            fontSize: "10px",
-            padding: "8px 16px",
-            margin: "4px",
-            background: "linear-gradient(#41A4FF, #9198e5)",
-            "&:hover": {
-              background: "linear-gradient(#c2c2c2, #e5ad91)",
-            },
-          }}
-        >
+        <Tooltip title="クリックするとニュース詳細にリンクします" placement="top">
+          <Link
+            to={`/NewsDetail/${posts.news_id}`}
+            className="link"
+            style={{
+              color: "common.black",
+              height: 30,
+              fontWeight: "Bold",
+            }}
+          >
+            <Typography className="post_card_title">
+              {posts.news_title}
+            </Typography>
+          </Link>
+        </Tooltip>
 
-          {genre}
-
-        </Button>
 
         <div className="post_card_form">
-          <h3>応募内容:</h3>
-          <ul>
-            {posts.write_form.elements.map((form, idx) => (
-              <li key={idx}>
-                <strong>{form.title}:</strong> {form.response || "なし"}
-              </li>
-            ))}
-          </ul>
+          <Accordion className="ApplyHistoryAccordionMenu" expanded={expanded === posts.id} onChange={handleChange(posts.id)}>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1-content"
+              id="panel1-header"
+            >
+              <Typography className="ApplyDetails" component="span">応募内容</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <>
+                {posts.write_form.elements.map((form, idx) => (
+                  <Accordion key={`Element${idx}`} expanded={elementExpanded === `Element${idx}`} onChange={handleElementChange(`Element${idx}`)}>
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-controls="panel1bh-content"
+                      id="panel1bh-header"
+                    >
+                      <Typography className="ApplyDetailsTitle">
+                      {form.title}
+                      </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Typography className="ApplyDetailsResponse">
+                      {form.response || "なし"}
+                      </Typography>
+                    </AccordionDetails>
+                  </Accordion>
+                ))}
+              </>
+            </AccordionDetails>
+          </Accordion>
+
+
         </div>
       </div>
     );
@@ -119,16 +233,22 @@ const Apply_history = forwardRef(({ id }, ref) => {
 
   return (
     <>
+      <Typography variant="h4" className="ApplyFormUserName">
+        {accountData.user_name}の応募履歴一覧
+      </Typography>
+
       {Array.isArray(applyHistories) ? (
         applyHistories.length > 0 ? (
-          applyHistories.map((posts, index) => (
-            <div className="post_card" ref={ref} key={index}>
-              {/* ヘッダー部分 */}
-              {renderHeader(posts)}
-              {/* コンテンツ部分 */}
-              {renderDetails(posts)}
-            </div>
-          ))
+          <div className="apply_history_container">
+            {applyHistories.map((posts, index) => (
+              <div className="post_card" ref={ref} key={index}>
+                {/* ヘッダー部分 */}
+                {renderHeader(posts)}
+                {/* コンテンツ部分 */}
+                {renderDetails(posts)}
+              </div>
+            ))}
+          </div>
         ) : (
           <p>応募履歴がありません。</p>
         )
@@ -148,9 +268,6 @@ const Apply_history = forwardRef(({ id }, ref) => {
           colors={["#41a4ff", "#FFFFFF", "#41a4ff", "#41a4ff", "#FFFFFF"]}
         />
       )}
-
-
-
     </>
   );
 });

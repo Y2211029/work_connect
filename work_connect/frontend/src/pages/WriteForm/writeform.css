@@ -1,13 +1,246 @@
 .WriteForm_Container{
-    height:100%
+    height:100%;
+    width:100%;
 }
 
 .WriteForm {
-    width: 100%; /* 固定幅 */
-    margin-left: 30%;
+    width:800px;
+    min-width: 100%;
+    margin-left: 50%;
     margin-bottom:10px;
     align-items: center; /* 縦の中央揃え */
+}
 
+
+
+
+.sv-string-viewer{
+    width:100%;
+    font-size: 15px;
+}
+
+.FormApplyButton{
+    position: relative;
+    width: 100px;
+    border-color:#5956FF;
+    color:#5956FF;
+    margin-left:80%;
+}
+
+.FormApplyButton:hover{
+    cursor:pointer;
+}
+
+.sd-header__text .sd-title span{
+    margin-left: 5%;
+    font-size:20px;
+}
+
+@media(max-width:1700px){
+    .WriteForm {
+        margin-left:0;
+    }
+
+        
+    .FormApplyButton{
+        position: relative;
+        left:25px;
+        width: 200px;
+        border-color:#5956FF;
+        color:#5956FF;
+        font-size:20px;
+    }
+
+}
+
+@media(max-width:1200px){
+    .WriteForm {
+        width:100vw;
+        margin-left:0;
+        margin-bottom:10px;
+        align-items: center; /* 縦の中央揃え */
+    }
+
+    .sv-string-viewer{
+        font-size: 30px;
+    }
+    .NewsDetailBackButton{
+        font-size:40px;
+    }
+
+    .sd-element__title span {
+        font-size:20px;
+    }
+
+    .sd-title.sd-container-modern__title{
+        width:100vw;
+        padding: 0;
+
+    }
+
+    .sd-input{
+        font-size:100%;
+    }
+    
+    .FormApplyButton{
+        position: relative;
+        left:25px;
+        width: 200px;
+        border-color:#5956FF;
+        color:#5956FF;
+        font-size:30px;
+    }
+
+    .WriteForm_Container{
+        padding-top: 5%;
+        padding-bottom: 10%;
+    }
+
+    .sd-title.sd-container-modern__title{
+        padding: 10px;
+    }
+
+    .sd-header__text .sd-title span{
+        margin-left: 5%;
+    }
+}
+
+
+
+@media(max-width:900px){
+    .WriteForm {
+        width:100vw;
+        margin-left: 0;
+        margin-bottom:10px;
+        align-items: center; /* 縦の中央揃え */
+    }
+
+    .sv-string-viewer{
+        font-size: 15px;
+    }
+    .NewsDetailBackButton{
+        font-size:30px;
+    }
+
+    .sd-element__title span {
+        font-size:15px;
+    }
+
+    .sd-title.sd-container-modern__title{
+        padding: 0;
+    }
+
+    .sd-input{
+        font-size:80%;
+    }
+
+    .FormApplyButton{
+        position: relative;
+        left:25px;
+        width: 150px;
+        border-color:#5956FF;
+        color:#5956FF;
+        font-size:20px;
+    }
+
+    .WriteForm_Container{
+        padding-bottom: 10%;
+        padding-top: 5%;
+    }
+
+    .sd-header__text .sd-title span{
+        margin-left: 5%;
+    }
+}
+
+@media(max-width:600px){
+    .WriteForm {
+        width: 100vw;
+        margin-left: 0 ;
+        margin-bottom:10px;
+        align-items: center; /* 縦の中央揃え */
+    }
+
+    .sd-header__text .sd-title span{
+        margin-left: 5%;
+    }
+
+    .sv-string-viewer{
+        font-size: 15px;
+    }
+    .NewsDetailBackButton{
+        font-size:30px;
+    }
+
+    .sd-element__title span {
+        font-size:10px;
+    }
+
+    .sd-title.sd-container-modern__title{
+        padding: 0;
+    }
+
+    .sd-input{
+        font-size:80%;
+    }
+
+    .FormApplyButton{
+        position: relative;
+        left:25px;
+        width: 100px;
+        border-color:#5956FF;
+        color:#5956FF;
+        font-size:15px;
+    }
+
+    .WriteForm_Container{
+        padding-bottom: 10%;
+    }
+
+}
+
+@media (max-width: 400px) {
+    .WriteForm {
+        width: 100vw;
+        margin-bottom: 10px;
+    }
+
+    .MuiStack-root css-1x68ktx-MuiStack-root{
+        width: 100vw;
+    }
+
+    .WriteForm_Container{
+        padding-top: 5%;
+        padding-bottom: 10%;
+    }
+
+
+    .sv-string-viewer {
+        font-size: 10px;
+    }
+
+    .NewsDetailBackButton {
+        font-size: 30px;
+    }
+
+    .sd-element__title span {
+        font-size: 10px;
+    }
+
+    .sd-title.sd-container-modern__title {
+        padding: 0;
+    }
+
+    .sd-input {
+        font-size: 80%;
+    }
+
+    .FormApplyButton {
+        position: relative;
+        width: 100px;
+        border-color: #5956FF;
+        color: #5956FF;
+    }
 }
 
 /* .sd-header__text .sd-title {

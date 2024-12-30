@@ -1,8 +1,11 @@
+import { useState } from "react";
 import PropTypes from "prop-types";
 import Stack from '@mui/material/Stack';
 import Typography from "@mui/material/Typography";
 import TooltipTitle from '@mui/material/Tooltip';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Modal from "react-modal";
 
 // Chart.js
 import {
@@ -11,13 +14,16 @@ import {
   LinearScale,
   PointElement,
   LineElement,
+  BarElement,
+  ArcElement,
+  RadarController,
+  ScatterController,
   Title,
   Tooltip,
   Legend,
-  BarController,
-  BarElement,
+  RadialLinearScale
 } from "chart.js";
-import { Bar } from 'react-chartjs-2';
+import { Bar, Line, Pie, Doughnut, Radar, Scatter } from "react-chartjs-2";
 
 // グラフ表示用のコンポーネント
 ChartJS.register(
@@ -25,25 +31,78 @@ ChartJS.register(
   LinearScale,
   PointElement,
   LineElement,
+  BarElement,
+  ArcElement, // 円グラフ系
+  RadarController, // レーダーチャート
+  RadialLinearScale,
+  ScatterController, // 散布図
   Title,
   Tooltip,
-  Legend,
-  BarController,
-  BarElement
+  Legend
 );
-
 const Graph = ({ title, responses }) => {
   const responseCounts = responses.reduce((acc, response) => {
     acc[response] = (acc[response] || 0) + 1;
     return acc;
   }, {});
 
+  const [graphKind, setGraphKind] = useState("Bar"); // デフォルトをBarグラフに
+
   const labels = Object.keys(responseCounts);
   const dataValues = Object.values(responseCounts);
 
+  const Total = ({ title }) => {
+    return (
+      <>
+        {title}
+      </>
+    );
+  };
+  
+
+  const pieData = {
+    labels, // 各セクションのラベル
+    datasets: [
+      {
+        data: dataValues, // 各セクションの値
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.5)",
+          "rgba(54, 162, 235, 0.5)",
+          "rgba(255, 206, 86, 0.5)",
+          "rgba(75, 192, 192, 0.5)",
+          "rgba(153, 102, 255, 0.5)",
+          "rgba(255, 159, 64, 0.5)",
+        ],
+        borderColor: [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(75, 192, 192, 1)",
+          "rgba(153, 102, 255, 1)",
+          "rgba(255, 159, 64, 1)",
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const pieOptions = {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: {
+        position: "top", // 凡例の位置
+      },
+      title: {
+        display: true,
+        text: title,
+      },
+    },
+  };
+
   const options = {
     responsive: true,
-    maintainAspectRatio: false,
+    maintainAspectRatio: true,
     plugins: {
       title: {
         display: true,
@@ -52,11 +111,23 @@ const Graph = ({ title, responses }) => {
     },
   };
 
+  const bar_y_options = {
+    responsive: true,
+    indexAxis: 'y',
+    maintainAspectRatio: true,
+    plugins: {
+      title: {
+        display: true,
+        text: title,
+      },
+    },
+  }
+
   const data = {
     labels,
     datasets: [
       {
-        label: '回答数',
+        label: "回答数",
         data: dataValues,
         borderColor: "rgba(255, 99, 132, 1)",
         backgroundColor: "rgba(255, 99, 132, 0.5)",
@@ -64,10 +135,66 @@ const Graph = ({ title, responses }) => {
     ],
   };
 
+  const GraphSwitch = (type) => {
+    setGraphKind(type); // グラフの種類を切り替え
+  };
+
+  const ShowGraphSwitch = () => {
+    switch (graphKind) {
+      case "Bar":
+        return <Bar options={options} data={data} />;
+      case "Bar-y":
+      return <Bar options={bar_y_options} data={data} />;
+      case "Line":
+        return <Line options={options} data={data} />;
+      case "Pie":
+        return <Pie options={pieOptions} data={pieData} />;
+      case "Doughnut":
+        return <Doughnut options={pieOptions} data={pieData} />;
+      case "Radar":
+        return <Radar options={options} data={data} />;
+      case "Scatter":
+        return <Scatter options={options} data={data} />;
+      case "Total":
+        return <Total title={title}/>;
+      default:
+        return <Bar options={options} data={data} />;
+    }
+  };
+
+  const GraphArray = [
+    { title: '縦棒グラフ', type: 'Bar' },
+    { title: '横棒グラフ', type: 'Bar-y' },
+    { title: '折れ線グラフ', type: 'Line' },
+    { title: '円グラフ', type: 'Pie' },
+    { title: 'ドーナツグラフ', type: 'Doughnut' },
+    { title: 'レーダーチャート', type: 'Radar' },
+    { title: '散布図', type: 'Scatter' },
+    { title: '集計', type: 'Total' },
+
+  ]
+
   return (
-    <Box sx={{ width: '100%', height: '200px' }}>
-      <Bar options={options} data={data} style={{ height: '100%', width: '100%' }} />
-    </Box>
+    <>
+      <Box sx={{ display: 'flex', width: '100%', height: '400px', alignItems: "center", overflow: "hidden" }}>
+        <div style={{ width: "80%", height: "70%", transformOrigin: "top left" }}>
+          {graphKind}
+          {ShowGraphSwitch()}
+        </div>
+        <Stack spacing={2} direction="column" className="GraphSelectButton">
+          {GraphArray.map((graph, idx) => (
+            <Button
+              key={idx}
+              variant="outlined"
+              onClick={() => GraphSwitch(graph.type)}
+            >
+              {graph.title}
+            </Button>
+          ))}
+
+        </Stack>
+      </Box>
+    </>
   );
 };
 
@@ -84,6 +211,20 @@ const Summary = ({
   setViewStudentName
 }) => {
   console.log(GroupedResponses);
+
+  const [showGpaph, setShowGraph] = useState(false);
+  const [modalData, setModalData] = useState({ title: "", responses: [] });
+
+  const showGpaphCancel = () => {
+    setShowGraph(false);
+  }
+
+  const ShowGraph = (title, responses) => {
+    setModalData({ title, responses }); // モーダル用のデータをセット
+    setShowGraph(true); // モーダルを表示
+  }
+
+
 
   const IndividualJump = (e, number, studentName) => {
     console.log("IndividualJump通りました");
@@ -109,70 +250,84 @@ const Summary = ({
       return (
         <>
           <TooltipTitle title={'24時間以内に応募されました'}>
-          <p style={{ color: 'red', marginLeft: '5%' }}>New!</p>
+            <p style={{ color: 'red', marginLeft: '5%' }}>New!</p>
           </TooltipTitle>
         </>
       )
-  } else {
-  return null;
+    } else {
+      return null;
+    }
   }
-}
 
 
 
-return (
-  <>
-    <div className="summary-form">
-      <Stack direction="column" spacing={2}>
-        <div className="writeform-container">
-          <Typography className="writeform-title">
-            回答者: {application_form[selectedIndex].user_name.length}名
-          </Typography>
-          {application_form[selectedIndex].user_name.map((user, index) => (
-            <Typography
-              key={user.write_form_id || index}
-              className="writeform-answereddata"
-              onClick={(e) => IndividualJump(e, 2, user.user_name)}
-            >
-               <Stack direction={"row"}>
-                <TooltipTitle title={`クリックすると${user.user_name}の回答が見られます`}>
-                  <p>{user.user_name}さん</p>
-                </TooltipTitle>
+  return (
+    <>
+      <div className="summary-form">
+        <Stack direction="column" spacing={2}>
+          <div className="c">
+            <Typography className="writeform-title">
+              回答者: {application_form[selectedIndex].user_name.length}名
+            </Typography>
+            {application_form[selectedIndex].user_name.map((user, index) => (
+              <Typography
+                key={user.write_form_id || index}
+                className="writeform-answereddata"
+                onClick={(e) => IndividualJump(e, 2, user.user_name)}
+              >
+                <Stack direction={"row"}>
+                  <TooltipTitle title={`クリックすると${user.user_name}の回答が見られます`}>
+                    <p>{user.user_name}さん</p>
+                  </TooltipTitle>
                   {time_check(user.news_created_at)}
                 </Stack>
 
-            </Typography>
-          ))}
-        </div>
-        {GroupedResponses &&
-          Object.entries(GroupedResponses).map(([title, { responses, type, contents }], index) => (
-            <div key={index} className="writeform-container">
-              <Typography className="writeform-title">
-                {title}
               </Typography>
-              <Typography className="writeform-contents">
-                {contents}
-              </Typography>
-              <Typography className="writeform-length">
-                {responses.length}件の回答
-              </Typography>
-              {responses.map((response, idx) => (
-                <Typography key={idx} className="writeform-answereddata">
-                  {response}
+            ))}
+          </div>
+          {GroupedResponses &&
+            Object.entries(GroupedResponses).map(([title, { responses, contents }], index) => (
+              <div key={index} className="writeform-container">
+                <Typography className="writeform-title">
+                  {title}
                 </Typography>
-              ))}
-              {type === 'checkbox' || type === 'radiogroup' && <Graph title={title} responses={responses} />}
-              <Graph title={title} responses={responses} />
+                <Typography className="writeform-contents">
+                  {contents}
+                </Typography>
+                <Typography className="writeform-length">
+                  {responses.length}件の回答
+                </Typography>
+                {responses.map((response, idx) => (
+                  <Typography key={idx} className="writeform-answereddata">
+                    {response}
+                  </Typography>
+                ))}
+                <Typography onClick={() => ShowGraph(title, responses)} className="aaa">
+                  グラフを見る
+                </Typography>
+                {/* <Graph title={title} responses={responses} /> */}
 
-            </div>
-          ))}
-      </Stack>
+              </div>
+            ))}
+        </Stack>
 
-    </div>
+        <Modal
+          isOpen={showGpaph}
+          onRequestClose={showGpaphCancel} // モーダルを閉じるコールバック
+          shouldCloseOnOverlayClick={true} // オーバーレイクリックでモーダルを閉じる
+          contentLabel="グラフモーダル"
+          overlayClassName="modal-overlay" /* オーバーレイに適用 */
+          className="modal-content" /* コンテンツに適用 */
+        >
+          <Graph title={modalData.title} responses={modalData.responses} />
+        </Modal>
+      </div>
 
-  </>
 
-)
+
+    </>
+
+  )
 }
 
 Summary.propTypes = {

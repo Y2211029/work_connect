@@ -84,7 +84,7 @@ export function NavTabs({ initialTabValue, companyname }) {
   const { user_name } = useParams();
   const [searchParams] = useSearchParams();
   const accountData = getSessionData("accountData");
-  const Screen = useMediaQuery("(max-width:600px) and (min-width:401px)");
+  const Screen = useMediaQuery("(max-width:600px) and (min-width:300px)");
   const [isReady, setIsReady] = useState(false);
 
   const [myPageFlag, setMyPageFlag] = useState(false);

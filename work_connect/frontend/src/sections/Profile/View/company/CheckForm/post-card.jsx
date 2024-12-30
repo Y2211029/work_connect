@@ -117,7 +117,7 @@ const PostCard = forwardRef(({ post }) => {
 
           <div className="write-form">
             <Box className="FormSelect-Box">
-              <Tabs value={value} aria-label="nav tabs example" role="navigation">
+              <Tabs value={value} aria-label="nav tabs example" role="navigation" centered>
                 <Tab label="要約" onClick={(e) => handleTabClick(e, 0)} />
                 <Tab label="回答別" onClick={(e) => handleTabClick(e, 1)} />
                 <Tab label="個別" onClick={(e) => handleTabClick(e, 2)} />

@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
-
+import useMediaQuery from '@mui/material/useMediaQuery';
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -66,6 +66,7 @@ export default function NavTabs() {
   const { user_name } = useParams();
   const [myPageFlag, setMyPageFlag] = useState(false);
   const [storageId, setStorageId] = useState(null);
+  const Screen = useMediaQuery("(max-width:600px) and (min-width:300px)");
 
   useEffect(() => {
     if (user_name == accountData.user_name) {
@@ -167,11 +168,11 @@ export default function NavTabs() {
         2024/09/13 14:38 Tabsコンポーネントに直接onClickイベントをすると動かないので
         子コンポーネントにそれぞれhandleTabClickを適応させました。
       */}
-      <Tabs value={value} aria-label="nav tabs example" role="navigation">
-        <Tab label={myPageFlag ? "マイページ" : "プロフィール"}  onClick={(e) => handleTabClick(e, 0)} />
-        <Tab label="作品" onClick={(e) => handleTabClick(e, 1)} />
-        <Tab label="動画" onClick={(e) => handleTabClick(e, 2)} />
-        {storageUserNameStatus && <Tab label="応募履歴" onClick={(e) => handleTabClick(e, 3)} />}
+      <Tabs className="ProfileTabs" value={value} aria-label="nav tabs example" role="navigation" centered={Screen}>
+        <Tab className="ProfileTabsBox" label={myPageFlag ? "マイページ" : "プロフィール"}  onClick={(e) => handleTabClick(e, 0)} />
+        <Tab className="ProfileTabsBox" label="作品" onClick={(e) => handleTabClick(e, 1)} />
+        <Tab className="ProfileTabsBox" label="動画" onClick={(e) => handleTabClick(e, 2)} />
+        {storageUserNameStatus && <Tab className="ProfileTabsBox" label="応募履歴" onClick={(e) => handleTabClick(e, 3)} />}
       </Tabs>
       {value === 0 && <ProfileMypage />}
       {value === 1 && <ListView type="works" ParamUserName={user_name} />}

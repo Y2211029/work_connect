@@ -160,12 +160,12 @@
 @media(max-width:900px){
     .form_writed_at{
         width:90%;
-        font-size:17px;
+        font-size:15px;
     }
 
     .postDateTimeDisplay{
         width:400px;
-        font-size:17px;
+        font-size:15px;
     }
 }
 

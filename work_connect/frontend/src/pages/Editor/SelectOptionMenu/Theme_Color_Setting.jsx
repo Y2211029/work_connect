@@ -165,6 +165,7 @@ export default function Theme_Color_Setting({
           onChange={handleColorChange} // 色変更
         />
 
+        <Stack direction={"row"}>
         {/* ライト/ダークモード */}
         <ToggleButtonGroup
           size="thin"
@@ -185,6 +186,8 @@ export default function Theme_Color_Setting({
           isClearable
           className="Theme_Select"
         />
+  
+        </Stack>
 
         {/* 保存ボタン */}
         <Button

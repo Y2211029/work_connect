@@ -113,7 +113,7 @@ const PostCard = forwardRef(({ post }) => {
       )}
 
       {writeformshow && selectedIndex !== null && (
-        <div style={{ flexGrow: 1 }}>
+        <div className="writeformshow">
 
           <div className="write-form">
             <Box className="FormSelect-Box">
@@ -124,31 +124,31 @@ const PostCard = forwardRef(({ post }) => {
               </Tabs>
             </Box>
 
-          {value === 0 && (
-            <Summary
-              application_form={application_form}
-              selectedIndex={selectedIndex}
-              GroupedResponses={groupedResponses}
-              HandleTabClick={handleTabClick}
-              setViewStudentName={setViewStudentName}
-            />
-          )}
-          {value === 1 && (
-            <Question
-              application_form={application_form}
-              selectedIndex={selectedIndex}
-              GroupedResponses={groupedResponses}
-            />
-          )}
-          {value === 2 && (
-            <Individual
-              application_form={application_form}
-              selectedIndex={selectedIndex}
-              GroupedResponses={groupedResponses}
-              viewingStudentName={viewingStudentName}
-            />
-          )}
-        </div>
+            {value === 0 && (
+              <Summary
+                application_form={application_form}
+                selectedIndex={selectedIndex}
+                GroupedResponses={groupedResponses}
+                HandleTabClick={handleTabClick}
+                setViewStudentName={setViewStudentName}
+              />
+            )}
+            {value === 1 && (
+              <Question
+                application_form={application_form}
+                selectedIndex={selectedIndex}
+                GroupedResponses={groupedResponses}
+              />
+            )}
+            {value === 2 && (
+              <Individual
+                application_form={application_form}
+                selectedIndex={selectedIndex}
+                GroupedResponses={groupedResponses}
+                viewingStudentName={viewingStudentName}
+              />
+            )}
+          </div>
 
         </div>
       )}

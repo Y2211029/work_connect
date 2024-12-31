@@ -115,8 +115,10 @@ const EditCompanyInformation = ({
                                                                 expandIcon={<ExpandMoreIcon />}
                                                                 aria-controls={`${item.id}-content`}
                                                                 id={`${item.id}-header`}
+                                                                className="EditCompanyInformation-AccordionSummary"
                                                             >
-                                                                <Typography sx={{ width: '100%', flexShrink: 0, whiteSpace: 'pre-line'}}>{item.title}:<br></br>{item.contents}</Typography>
+                                                                <Typography>{item.title}</Typography>
+                                                                <Typography>{item.contents}</Typography>
                                                             </AccordionSummary>
                                                             <AccordionDetails>
                                                             <input

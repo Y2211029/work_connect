@@ -23,7 +23,7 @@ import {
   Legend,
   RadialLinearScale
 } from "chart.js";
-import { Bar, Line, Pie, Doughnut, Radar, Scatter } from "react-chartjs-2";
+import { Bar, Line, Pie, Doughnut, Radar } from "react-chartjs-2";
 
 // グラフ表示用のコンポーネント
 ChartJS.register(
@@ -153,8 +153,6 @@ const Graph = ({ title, responses }) => {
         return <Doughnut options={pieOptions} data={pieData} />;
       case "Radar":
         return <Radar options={options} data={data} />;
-      case "Scatter":
-        return <Scatter options={options} data={data} />;
       case "Total":
         return <Total title={title}/>;
       default:
@@ -169,7 +167,6 @@ const Graph = ({ title, responses }) => {
     { title: '円グラフ', type: 'Pie' },
     { title: 'ドーナツグラフ', type: 'Doughnut' },
     { title: 'レーダーチャート', type: 'Radar' },
-    { title: '散布図', type: 'Scatter' },
     { title: '集計', type: 'Total' },
 
   ]
@@ -294,17 +291,21 @@ const Summary = ({
                 <Typography className="writeform-contents">
                   {contents}
                 </Typography>
+                <Stack direction="row">
                 <Typography className="writeform-length">
                   {responses.length}件の回答
                 </Typography>
+                <Typography onClick={() => ShowGraph(title, responses)} className="showgraph-length">
+                  グラフを見る
+                </Typography>
+                </Stack>
+
                 {responses.map((response, idx) => (
                   <Typography key={idx} className="writeform-answereddata">
                     {response}
                   </Typography>
                 ))}
-                <Typography onClick={() => ShowGraph(title, responses)} className="aaa">
-                  グラフを見る
-                </Typography>
+
                 {/* <Graph title={title} responses={responses} /> */}
 
               </div>

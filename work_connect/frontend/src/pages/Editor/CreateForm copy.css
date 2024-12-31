@@ -12,15 +12,15 @@ body {
 
 .TextSetting {
   position: relative;
-  top: 350px;
+  top: 200px;
   left: 50%;
   width: 50%;
-  max-width: 700px;
-  min-width: 500px;
+  max-width: 600px;
+  min-width: 350px;
   transform: translate(-50%, -50%);
   /* height: auto; */
   border-width: 2px;
-  padding: 20px;
+  padding: 30px;
   padding-right: 30px;
   border: solid 1px;
   background-color: rgb(255, 255, 255);
@@ -258,25 +258,99 @@ input[type="number"]::-webkit-inner-spin-button {
 /* スマホサイズの場合 */
 @media (max-width: 900px) {}
 
+@media (max-width: 600px) {
+
+
+  .FormDemo {
+    /* width: 700px; */
+    overflow: auto;
+    /* スクロールを有効にする */
+  }
+
+
+  .SurveyModal {
+    width: 50vh;
+  }
+
+
+
+
+  .TextSetting {
+    top: 200px;
+    left: 30%;
+    width: 30%;
+    height: 500px;
+    overflow: auto;
+  }
+
+  .TextSetting::-webkit-scrollbar {
+    width: 6px;
+    /* スクロールバーの幅 */
+    height: 10px;
+  }
+
+  .TextSetting::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    /* スクロールバーの背景色 */
+  }
+
+  .TextSetting::-webkit-scrollbar-thumb {
+    background-color: purple;
+    /* スクロールバーの色 */
+    border-radius: 10px;
+    /* スクロールバーの角を丸める */
+    border: 3px solid #f1f1f1;
+    /* スクロールバーの周りのスペース */
+  }
+
+  .TextSetting::-webkit-scrollbar-thumb:hover {
+    background-color: #800080;
+    /* ホバー時の色変更 */
+  }
+
+
+
+  .modal-content {
+    height: 120%;
+    top: 40%;
+    /* モーダルの高さ */
+    width: 1000px;
+    /* モーダルの幅 */
+    left: 65%;
+  }
+
+  .FormSelectMenu_Text {
+    position: relative;
+    font-size: 16px;
+  }
+
+  .FormSelectMenu {
+    /* margin-left: 7%; */
+    width: 600px;
+  }
+
+  .Menu_Addform {
+    width: 400px;
+    /* margin-left: -5px; */
+  }
+
+  .QuestionMenu {
+    width: 370px;
+    left: 100%;
+    padding-top: 5px;
+  }
+
+
+}
 
 @media (max-width: 400px) {
 
   
   .TextSetting {
-    top: 250px;
-    left: 50%;
+    top: 450px;
+    left: 45%;
     width: 30%;
-    min-width: 350px;
     height: 500px;
-    overflow: auto;
-    scrollbar-color: black white;
-    scrollbar-width: thin;
-  }
-
-  .TextSetting::-webkit-scrollbar {
-
-   margin-left:40%;
-  
   }
 
 

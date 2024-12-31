@@ -53,7 +53,7 @@ const CreateForm = ({ newsid, HandleBack, title }) => {
   const createform_search_url = "http://127.0.0.1:8000/createform_search";
   const [questions, setQuestions] = useState({});
   const [deadlineDate, setDeadlineDate] = useState(dayjs());
-  const [backGroundColor, setBackGroundColor] = useState('#cccccc')
+  const [backGroundColor, setBackGroundColor] = useState('#FFFFFF')
   const [titleColor, setTitleColor] = useState('#000000');
   const [barColor, setBarColor] = useState('#000000');
   const [questionColor, setQuestionColor] = useState('#000000');
@@ -209,7 +209,7 @@ const addQuestion = (Questions_Genre) => {
   console.log("更新された質問リスト:", updatedQuestions);
 
   // ステートを更新
-  setQuestions(JSON.parse(updatedQuestions));  // 文字列としてステートを更新
+  setQuestions(updatedQuestions);  // 文字列としてステートを更新
 
   // `newQuestion` をモーダル用に設定
   setQuestionData(newQuestion);
@@ -508,7 +508,7 @@ const addQuestion = (Questions_Genre) => {
       };
   
       // 更新した質問リストをステートに反映
-      setQuestions(JSON.parse(updatedQuestions));
+      setQuestions(updatedQuestions);
     }
   
     // `questionData` をクリア
@@ -659,9 +659,6 @@ const addQuestion = (Questions_Genre) => {
           WriteNewsHandleBack={WriteNewsHandleBack}
         />
 
-
-
-
         <Modal
           isOpen={modalopen}
           onRequestClose={CreateFormCancel} // モーダルを閉じるコールバック
@@ -715,10 +712,6 @@ const addQuestion = (Questions_Genre) => {
       </Stack>
 
       <div className="FormDemo"> {/* フォーム部分 */}
-
-
-
-
         <div>
           <Tooltip title="編集する">
             <IconButton onClick={handleOpenThemeModal}>

@@ -133,6 +133,16 @@
     /* 縦方向のスクロールを有効にする */
 }
 
+.EditCompanyInformation-AccordionSummary{
+    display: block;
+    width: 100%; /* 必要に応じて調整 */
+    max-width: 100px; /* 制限したい最大幅 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: aqua;
+}
+
 .EditCompanyInformation-Accordion {
     height: 100%;
     width: 60%;

@@ -261,26 +261,6 @@ const PostCard = forwardRef(({ post },) => {
       )}
 
 
-
-
-      {/* {!canEdit ? (
-        <div>
-        <Tooltip title="編集する">
-          <IconButton onClick={() => handleEditClick(CompanyId)}>
-            <ModeEditIcon />
-          </IconButton>
-        </Tooltip>
-        </div>
-      ) : (
-        <div>
-        <Tooltip title="編集する">
-          <IconButton onClick={() => handleEditClick(CompanyId)}>
-            <ModeEditIcon />
-          </IconButton>
-        </Tooltip>
-        </div>
-      )} */}
-
       {canEdit ? (
         <div>
           <Tooltip title="編集する">

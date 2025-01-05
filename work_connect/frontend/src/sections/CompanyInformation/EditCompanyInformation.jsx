@@ -88,39 +88,39 @@ const EditCompanyInformation = ({
             className="modal-content" /* コンテンツに適用 */
         >
             <div>
-                    <div className="modal_window">
-                        <TableContainer component={Paper} className="Modal_tableContainer">
+                <div className="modal_window">
+                    <TableContainer component={Paper} className="Modal_tableContainer">
 
-                            <Table className="Modal_Table">
-                                <TableHead className="FixedTableHead">
+                        <Table className="Modal_Table">
+                            <TableHead className="FixedTableHead">
 
-                                    <Button variant="outlined" onClick={CloseModal} className="CloseButton">
-                                        閉じる
-                                    </Button>
+                                <Button variant="outlined" onClick={CloseModal} className="CloseButton">
+                                    閉じる
+                                </Button>
 
-                                </TableHead>
-                                <TableBody className="EditCompanyInformationTableBody">
-                                    <DndContext modifiers={[restrictToVerticalAxis]} collisionDetection={closestCenter} onDragEnd={HandleDragEnd}>
-                                        <SortableContext items={editedContents.map(item => item.id)} strategy={verticalListSortingStrategy}>
-                                            {editedContents.map((item, index) => (
-                                                <SortableRow key={item.id} id={item.id}>
-                                                    <>
-                                                        <Accordion
-                                                            key={item.id}
-                                                            expanded={expanded === item.id}
-                                                            onChange={AccordionhandleChange(item.id)}
-                                                            className="EditCompanyInformation-Accordion"
+                            </TableHead>
+                            <TableBody className="EditCompanyInformationTableBody">
+                                <DndContext modifiers={[restrictToVerticalAxis]} collisionDetection={closestCenter} onDragEnd={HandleDragEnd}>
+                                    <SortableContext items={editedContents.map(item => item.id)} strategy={verticalListSortingStrategy}>
+                                        {editedContents.map((item, index) => (
+                                            <SortableRow key={item.id} id={item.id}>
+                                                <>
+                                                    <Accordion
+                                                        key={item.id}
+                                                        expanded={expanded === item.id}
+                                                        onChange={AccordionhandleChange(item.id)}
+                                                        className="EditCompanyInformation-Accordion"
+                                                    >
+                                                        <AccordionSummary
+                                                            expandIcon={<ExpandMoreIcon />}
+                                                            aria-controls={`${item.id}-content`}
+                                                            id={`${item.id}-header`}
+                                                            className="EditCompanyInformation-AccordionSummary"
                                                         >
-                                                            <AccordionSummary
-                                                                expandIcon={<ExpandMoreIcon />}
-                                                                aria-controls={`${item.id}-content`}
-                                                                id={`${item.id}-header`}
-                                                                className="EditCompanyInformation-AccordionSummary"
-                                                            >
-                                                                <Typography>{item.title}</Typography>
-                                                                <Typography>{item.contents}</Typography>
-                                                            </AccordionSummary>
-                                                            <AccordionDetails>
+                                                            <Typography>{item.title}</Typography>
+                                                            <Typography>{item.contents}</Typography>
+                                                        </AccordionSummary>
+                                                        <AccordionDetails>
                                                             <input
                                                                 type="text"
                                                                 value={item.title}
@@ -150,19 +150,19 @@ const EditCompanyInformation = ({
                                                                 </IconButton>
                                                             </Tooltip>
 
-                                                            </AccordionDetails>
-                                                        </Accordion>
-                                                        <Divider />
-                                                    </>
-                                                </SortableRow>
-                                            ))}
-                                        </SortableContext>
-                                    </DndContext>
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </div>
+                                                        </AccordionDetails>
+                                                    </Accordion>
+                                                    <Divider />
+                                                </>
+                                            </SortableRow>
+                                        ))}
+                                    </SortableContext>
+                                </DndContext>
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                 </div>
+            </div>
         </Modal>
     );
 };

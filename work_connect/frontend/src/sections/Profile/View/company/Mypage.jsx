@@ -106,6 +106,9 @@ const ProfileMypage = () => {
 
   // DBからのレスポンスが入る変数
   const [ResponseData, setResponseData] = useState([]);
+  const [CompanyInformationData, setResponseCompanyInformationData] = useState([]);
+
+
   const [responseIcon, setResponseIcon] = useState(true);
 
   // セッションストレージ取得
@@ -141,7 +144,9 @@ const ProfileMypage = () => {
           },
         });
         if (response) {
+          console.log("レスポンスの企業情報",response.data[0].companyInformation);
           setResponseData(response.data[0]);
+          setResponseCompanyInformationData(response.data[0].companyInformation);
           setFollowStatus(response.data[0].follow_status);
         }
       } catch (err) {
@@ -594,6 +599,17 @@ const ProfileMypage = () => {
               )}
             </Item>
           </Box>
+        )}
+
+        {/* 自由記述の企業情報 */}
+        {CompanyInformationData && !close &&(
+            CompanyInformationData.map((info,index) => (
+              <Box id="companyinfodata" key={index}>
+              <Typography variant="h6">{info.title}</Typography>
+              <Item style={{ whiteSpace: 'pre-line' }}>{info.contents}
+              </Item>
+            </Box>
+            ))
         )}
 
       </Stack>

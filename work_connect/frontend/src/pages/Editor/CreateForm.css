@@ -31,6 +31,7 @@ body {
 .SurveyModal {
   margin-top: 5%;
   width:50%;
+  /* height: 100%; */
   /* width: 500px;
   height:550px; */
   overflow-x: auto;
@@ -203,6 +204,7 @@ input[type="number"]::-webkit-inner-spin-button {
   height: auto;
   /* モーダルの高さ */
   width: 20%;
+  background-color: antiquewhite;
   /* モーダルの幅 */
   /* コンテンツの背景色 (必要に応じて追加) */
 }
@@ -261,7 +263,7 @@ input[type="number"]::-webkit-inner-spin-button {
 
 @media (max-width: 400px) {
 
-  
+
   .TextSetting {
     top: 250px;
     left: 50%;
@@ -276,12 +278,17 @@ input[type="number"]::-webkit-inner-spin-button {
   .TextSetting::-webkit-scrollbar {
 
    margin-left:40%;
-  
+
   }
 
+  .ShowForm{
+    padding-bottom: 30%;
+  }
 
   .SurveyModal {
     width: 50vh;
+
+
   }
 
   .FormSelectMenu {

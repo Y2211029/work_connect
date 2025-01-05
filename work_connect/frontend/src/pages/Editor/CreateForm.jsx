@@ -94,7 +94,7 @@ const CreateForm = ({ newsid, HandleBack, title }) => {
         const response = await axios.post(createform_search_url, {
           newsid: newsid, // POST ボディに含める
       });
-        
+
         console.log("レスポンスのクリエイトフォーム",response.data.create_form);
         if (Array.isArray(response.data.create_form) && response.data.create_form.length > 0) {
           console.log("持ってきた内容", response.data.create_form);
@@ -283,7 +283,7 @@ const addQuestion = (Questions_Genre) => {
     console.log("受け取った設定", settings);
     console.log("inputType 確認: ", settings.inputType);
     console.log("質問の長さ", questions.length);
-  
+
     // questionsが文字列型ならパースする
     let currentQuestions = questions;
     if (typeof currentQuestions === "string") {
@@ -294,7 +294,7 @@ const addQuestion = (Questions_Genre) => {
         currentQuestions = { elements: [] };  // パース失敗時に空の配列を初期化
       }
     }
-  
+
     // 最後の質問に設定を適用
     const updatedQuestions = {
       ...currentQuestions,
@@ -347,15 +347,15 @@ const addQuestion = (Questions_Genre) => {
           : q
       ),
     };
-  
+
     console.log("更新した質問", updatedQuestions);
     // 更新したquestionsをJSON形式に変換してセット
-    setQuestions(updatedQuestions); 
-  
+    setQuestions(updatedQuestions);
+
     setQuestionData(null);
     setModalOpen(false); // モーダルを閉じる
   };
-  
+
 
 
   console.table(questions);
@@ -486,7 +486,7 @@ const addQuestion = (Questions_Genre) => {
   // キャンセル時の処理
   const CreateFormCancel = () => {
     console.log("編集中のデータ", questionData);
-  
+
     // questionsが文字列ならパースしてオブジェクトにする
     let currentQuestions = questions;
     if (typeof currentQuestions === "string") {
@@ -497,7 +497,7 @@ const addQuestion = (Questions_Genre) => {
         currentQuestions = { elements: [] }; // パース失敗時に空の配列を初期化
       }
     }
-  
+
     // 新規作成の場合のみ質問を削除
     if (editingStatus === "New") {
       const updatedQuestions = {
@@ -506,17 +506,17 @@ const addQuestion = (Questions_Genre) => {
           (q) => q.name !== questionData.name
         ),
       };
-  
+
       // 更新した質問リストをステートに反映
       setQuestions(updatedQuestions);
     }
-  
+
     // `questionData` をクリア
     setQuestionData(null);
-  
+
     // モーダルを閉じる
     setModalOpen(false);
-  };  
+  };
   // titleColor,barColor,questionColor
   const ThemeColorSave = (selectedOption, alignment,backgroundColor,titleColor,questionColor,barColor) => {
     if (selectedOption && alignment) {
@@ -646,9 +646,6 @@ const addQuestion = (Questions_Genre) => {
 
   return (
     <>
-
-
-
       <Stack direction="row" spacing={2} >
         <FormSelectMenu
           SetDeadlineDate={setDeadlineDate}
@@ -706,7 +703,6 @@ const addQuestion = (Questions_Genre) => {
               light_dark={alignment}
               applytheme={applyTheme}
             />
-
           </Stack>
         </Modal>
       </Stack>
@@ -735,11 +731,11 @@ const addQuestion = (Questions_Genre) => {
             style={{ flexDirection: "column" }}
           />
         ) : (
-          <>
+          <div className="ShowForm">
             <div className="SurveyModal">
               <Survey model={survey} />
             </div>
-          </>
+          </div>
         )}
       </div>
 

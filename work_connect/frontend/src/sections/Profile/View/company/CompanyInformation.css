@@ -189,6 +189,10 @@
     justify-content: center;
 }
 
+.CompanyInformation_Options{
+    margin: 10px;
+}
+
 @media(max-width:1700px){
     .tableContainer {
         margin-left:10%;

@@ -111,7 +111,7 @@ class CompanyInformationController extends Controller
         $all_company_information_array = $this->all_company_informations_pull($CompanyName);
 
 
-        return response()->json(['message' => '処理が完了しました', 
+        return response()->json(['message' => '処理が完了しました',
         'title_contents' => $title_contents_array ,
         'all_company_information' => $all_company_information_array,
         'company_id' => $companyId
@@ -202,6 +202,7 @@ class CompanyInformationController extends Controller
                     'company_name' => $item->company_name,
                     'id' => $item->company_information_id,
                     'company_id' => $item->company_id,
+                    'row_number' => $item->row_number,
                     'public_status' => $item->public_status,
                 ];
             })->toArray();

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\profile;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\w_users;
+use App\Models\w_company_information;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -85,7 +86,9 @@ class PostMypageController extends Controller
 
         } if($kind === "c") {
 
-            // 学生側の処理
+            \Log::info($kind);
+
+            // 企業側の処理
 
             // reactからデータを取得
             // 必須項目
@@ -107,6 +110,9 @@ class PostMypageController extends Controller
             $Qualification = $request->input('Qualification') === "" ? null : $request->input('Qualification');
             $Software = $request->input('Software') === "" ? null : $request->input('Software');
             $CompanyHPMap = $request->input('CompanyHPMap') === "" ? null : $request->input('CompanyHPMap');
+            //任意で追加可能な企業情報
+            $CompanyInformationData = $request->input('CompanyInformationData') === "" ? null : $request->input('CompanyInformationData');
+
 
             try {
                 // updateする項目
@@ -132,6 +138,38 @@ class PostMypageController extends Controller
                 DB::table('w_companies')
                 ->where('user_name', $ProfileUserName)
                 ->update($data);
+
+                //企業情報の更新がある場合
+                \Log::info("CompanyInformationData: " . json_encode($CompanyInformationData));
+                if ($CompanyInformationData) {
+                    foreach ($CompanyInformationData as $company) {
+                        // 配列としてアクセスする場合
+                        $CompanyData = DB::table('w_companies_information')
+                            ->where('id', $company['id'])
+                            ->where('company_id', $company['company_id'])
+                            ->first();
+
+                        // あれば更新、なければ挿入
+                        if ($CompanyData) {
+                            w_company_information::where('id', $CompanyData->id)
+                                ->update([
+                                    'title' => $company['title'],
+                                    'contents' => $company['contents'],
+                                    'public_status' => $company['public_status'],
+                                    'row_number' => $company['row_number'],
+                                ]);
+                        } else {
+                            w_company_information::create([
+                                'title' => $company['title'], // 変更するべき情報
+                                'contents' => $company['contents'],
+                                'company_id' => $company['company_id'],
+                                'public_status' => $company['public_status'],
+                                'row_number' => $company['row_number'],
+                            ]);
+                        }
+                    }
+                }
+
 
                 return json_encode(true);
 
@@ -219,6 +257,7 @@ class PostMypageController extends Controller
                 ->update($data);
 
             return json_encode(true);
+
         } catch (\Exception $e) {
 
             \Log::info('registerController:新規登録データのDB保存処理エラー');

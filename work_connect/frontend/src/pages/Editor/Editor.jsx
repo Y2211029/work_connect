@@ -1380,7 +1380,7 @@ const Editor = () => {
           {imageUrl && (
             <div className="uploaded-image" id="uploaded-image">
               <img src={`${imageUrl}`} alt="Uploaded" />
-              <CancelIcon onClick={thumbnail_img_delete} />
+              <CancelIcon className="thumbnail_img_delete_icon" onClick={thumbnail_img_delete} />
             </div>
           )}
 
@@ -1397,7 +1397,8 @@ const Editor = () => {
                 onClick={() => document.getElementById("fileInput").click()}
                 // sx={{ width: { xs: "95%", sm: "90%", md: "80%" } }}
                 variant="outlined"
-                className="image_serach_icon_button_icon"
+                className="image_search_icon_button_icon"
+                style={{ display: displayInput ? "block" : "none" }}
               >
                 <ImageSearchIcon className="cover_img_upload" style={{ display: displayInput ? "block" : "none" }} />
               </IconButton>

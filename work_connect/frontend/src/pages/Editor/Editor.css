@@ -12,7 +12,7 @@ body {
 }
 
 .editor_title {
-  width: 50%;
+  width: 90%;
   height: 10%;
   font-weight: bold;
   font-size: 30px;
@@ -45,20 +45,20 @@ body {
   transition: 0.5s;
 }
 
-.image_serach_icon_button_icon {
-  width: 50% !important;
+.image_search_icon_button_icon {
+  width: 20% !important;
   height: 100%;
   min-height: 200px;
-  min-width: 300px;
+  min-width: 350px;
   border-radius: 5px !important;
   border: 2px dashed rgb(88, 99, 248);
 }
 
-.image_serach_icon_button_icon:hover {
+.image_search_icon_button_icon:hover {
   cursor: pointer;
 }
 
-.image_serach_icon_button_icon:active {
+.image_search_icon_button_icon:active {
   border-radius: 5px !important;
   width: 50% !important;
 }
@@ -332,13 +332,6 @@ td {
   margin: 0;
 }
 
-
-
-
-
-/* sx={{
-  position: 'relative', width: '160px', borderColor: '#A9A9A9', color: '#A9A9A9', backgroundColor: '#F5F5F5', // 背景色を薄いグレーに設定
-  '&:hover': { borderColor: '#A9A9A9', backgroundColor: '#F5F5F5', }, */
 .Not_Upload_Button {
   position: relative;
   width: auto;
@@ -538,8 +531,114 @@ td {
   border-radius: 5px;
 }
 
-@media (max-width: 600px),
-(max-width: 400px) {
+@media(max-width:1700px){
+
+  .thumbnail_img_delete_icon{
+    font-size: 40px;
+  }
+
+  .uploaded-image {
+    padding-top: 10%;
+    left: 20%;
+    width: 500px;
+    height: 200px;
+  }
+
+  .SelectMenu{
+    padding-top: 5%;
+  }
+
+  .image_search_icon_button_icon {
+    width: 50% !important;
+    height: 200px;
+    min-width: 100px;
+    min-height: 30px;
+  }
+
+  .cover_img_upload {
+    width: 100%;
+    height: 100px;
+    box-sizing: border-box;
+    margin: 0;
+    border: none;
+    transition: 0.5s;
+  }
+}
+
+@media(max-width:1200px){
+
+  .thumbnail_img_delete_icon{
+    font-size: 40px;
+  }
+
+  .uploaded-image {
+    padding-top: 10%;
+    left: 30%;
+    width: 500px;
+    height: 200px;
+  }
+
+  .SelectMenu{
+    padding-top: 5%;
+  }
+
+  .image_search_icon_button_icon {
+    width: 50% !important;
+    height: 200px;
+    min-width: 100px;
+    min-height: 30px;
+  }
+
+  .cover_img_upload {
+    width: 100%;
+    height: 100px;
+    box-sizing: border-box;
+    margin: 0;
+    border: none;
+    transition: 0.5s;
+  }
+}
+
+
+
+@media(max-width: 900px){
+  .thumbnail_img_delete_icon{
+    font-size: 40px;
+  }
+
+  .uploaded-image {
+    padding-top: 10%;
+    left: 20%;
+    width: 500px;
+    height: 200px;
+  }
+
+  .SelectMenu{
+    padding-top: 5%;
+  }
+
+  .image_search_icon_button_icon {
+    width: 50% !important;
+    height: 150px;
+    min-width: 100px;
+    min-height: 30px;
+  }
+
+  .cover_img_upload {
+    width: 100%;
+    height: 100px;
+    box-sizing: border-box;
+    margin: 0;
+    border: none;
+    transition: 0.5s;
+  }
+}
+
+@media (max-width: 600px){
+
+  .thumbnail_img_delete_icon{
+    font-size: 30px;
+  }
 
   .editor-wrapper {
     width: 90%;
@@ -570,11 +669,6 @@ td {
     padding-left: 5%;
   }
 
-  .uploaded-image {
-    padding-top: 5%;
-    left: 15%;
-  }
-
   .uploaded-image img {
     width: 90%;
     height: auto;
@@ -583,6 +677,34 @@ td {
     max-height: 400px;
     object-fit: cover;
   }
+
+  .uploaded-image {
+    padding-top: 15%;
+    left: 15%;
+    width: 300px;
+    height: 200px;
+  }
+
+  .SelectMenu{
+    padding-top: 5%;
+  }
+
+  .image_search_icon_button_icon {
+    width: 50% !important;
+    height: 80px;
+    min-width: 100px;
+    min-height: 30px;
+  }
+
+  .cover_img_upload {
+    width: 100%;
+    height: 50px;
+    box-sizing: border-box;
+    margin: 0;
+    border: none;
+    transition: 0.5s;
+  }
+
 
   .ce-popover--opened>.ce-popover__container {
     top:40%;
@@ -594,6 +716,12 @@ td {
 }
 
 @media(max-width:400px){
+
+  .thumbnail_img_delete_icon{
+    font-size: 20px;
+  }
+
+
   .ce-popover--opened>.ce-popover__container {
     top:40%;
   }
@@ -601,5 +729,33 @@ td {
   .ce-popover__container{
     width: 50%;
   }
-  
+
+  .uploaded-image {
+    padding-top: 20%;
+    left: 20px;
+    width: 300px;
+    height: 200px;
+  }
+
+  .SelectMenu{
+    padding-top: 10%;
+  }
+
+  .image_search_icon_button_icon {
+    width: 50% !important;
+    height: 80px;
+    min-width: 100px;
+    min-height: 30px;
+  }
+
+  .cover_img_upload {
+    width: 100%;
+    height: 50px;
+    box-sizing: border-box;
+    margin: 0;
+    border: none;
+    transition: 0.5s;
+  }
+
+
 }

@@ -42,10 +42,10 @@ import Environment from "./EditDetailFields/Environment";
 import ProgrammingLanguage from "./EditDetailFields/ProgrammingLanguage";
 import Qualification from "./EditDetailFields/Qualification";
 import Software from "./EditDetailFields/Software";
-
 import CompanyHPMap from "./EditDetailFields/CompanyHPMap";
 import IntroVideo from "./EditDetailFields/IntroVideo";
-
+//企業情報
+import CompanyInformation from "./EditDetailFields/CompanyInformation";
 
 
 // Showmoreのスタイルを定義
@@ -100,6 +100,7 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
   // Laravelとの通信用URL
   const Get_url = "http://localhost:8000/get_profile_mypage";
   const Post_url = "http://localhost:8000/post_profile_mypage";
+  const CompanyInformation_url = "http://localhost:8000/company_informations";
 
   // ログイン中のuser_nameではない
   // ＊＊＊他ルートからアクセスしたときに表示したいユーザのuser_nameをここで指定＊＊＊
@@ -109,6 +110,8 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
 
   // DBからのレスポンスが入る変数
   const [ResponseData, setResponseData] = useState([]);
+  const [CompanyInformationData, setResponseCompanyInformationData] = useState([]);
+  const [CompanyId, setCompanyId] = useState(null);
 
   // ProfileUserNameが変化したとき
   useEffect(() => {
@@ -123,7 +126,10 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
           },
         });
         if (response) {
+          console.log("企業情報", response.data[0].companyInformation);
+          console.log("ID", response.data[0].id);
           setResponseData(response.data[0]);
+          setCompanyId(response.data[0].id);
         }
         // console.log("ResponseData:", ResponseData);
       } catch (err) {
@@ -134,6 +140,23 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
     GetData();
   }, [user_name, ProfileUserName]);
 
+  useEffect(() => {
+    async function CompanyInformationGetData() {
+      try {
+        const response = await axios.get(CompanyInformation_url, {
+          params: { CompanyName: user_name }, // クエリパラメータとして渡す
+        });
+        console.log("レスポンス", response);
+        console.log("企業情報", response.data.title_contents);
+        console.log("すべての企業情報", response.data.all_company_information);
+        setResponseCompanyInformationData(response.data.all_company_information);
+      } catch (error) {
+        console.error("データの取得中にエラーが発生しました！", error);
+      }
+    }
+    CompanyInformationGetData();
+  }, [user_name]);
+
   // 初回レンダリング時の一度だけ実行させる
   useEffect(() => {
     detail.current.forEach(ref => {
@@ -141,13 +164,6 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
     });
     Edit.current.style.display = 'none';
   }, []);
-
-
-  useEffect(() => {
-    console.log("ResponseDataResponseDataResponseData", ResponseData);
-  }, [ResponseData]);
-
-
 
   // 戻るボタンを押したときの処理
   const handleBackClick = () => {
@@ -187,7 +203,7 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
     async function PostData() {
       try {
         console.log(SessionData.CompanyName);
-        console.log("あいうえおかきくけこ");
+        console.log("CompanyInformationData", CompanyInformationData);
         // Laravel側からデータを取得
         const response = await axios.post(Post_url, {
           // 企業側で送信
@@ -225,7 +241,10 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
           // ソフトウェア
           Software: SessionData.CompanySoftware,
           // ホームページURL
-          CompanyHPMap: SessionData.CompanyHPMap
+          CompanyHPMap: SessionData.CompanyHPMap,
+
+          //詳細な企業情報
+          CompanyInformationData: CompanyInformationData
         });
         console.log("レスポンス", response);
         if (response.data === true) {
@@ -325,6 +344,100 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
 
   };
 
+  const HandleAddRow = (rowNumber) => {
+    console.log("現在のrow_number", rowNumber);
+
+    const maxId = Math.max(...CompanyInformationData.map(item => item.id), 0); // ユニークIDを生成
+    const newId = maxId + 1;
+
+    const newRow = {
+      id: newId, // ユニークID
+      title: '新しいタイトル', // 新しい行の初期タイトル
+      contents: '新しい内容', // 新しい行の初期内容
+      public_status: 0, // 初期は非公開
+      company_id: CompanyId, // 既存の企業IDを設定
+      row_number: rowNumber + 1 // 新しい行のrow_numberを設定
+    };
+
+    console.log("追加する行", newRow);
+
+    setResponseCompanyInformationData(prevContents => {
+      if (Array.isArray(prevContents)) {
+        console.log("配列データ:", prevContents);
+
+        // 新しい行を挿入
+        const newContents = [...prevContents];
+        const insertIndex = prevContents.findIndex(item => item.row_number === rowNumber) + 1;
+        newContents.splice(insertIndex, 0, newRow);
+
+        // row_numberを振り直す
+        const updatedContents = newContents.map((item, index) => ({
+          ...item,
+          row_number: index + 1, // インデックス + 1 で番号振り直し
+        }));
+
+        console.log("更新後のデータ", updatedContents);
+        return updatedContents;
+      }
+
+      return prevContents; // もし配列でない場合はそのまま返す
+    });
+  };
+
+
+  const HandleDeleteRow = (index) => {
+    const result = window.confirm("本当に削除しますか?");
+    if (result) {
+      setResponseCompanyInformationData(prevContents => {
+        console.log("更新前の企業情報", prevContents);
+        const updatedContents = prevContents.filter(item => item.id !== index);
+        console.log("更新後の企業情報", updatedContents);
+        return updatedContents;
+      });
+    }
+  };
+
+  const HandleChangePublicStatus = (index) => {
+    setResponseCompanyInformationData(prevContents => {
+      console.log(index);
+      console.log(prevContents);
+      return prevContents.map(item => {
+        // 該当するidが見つかった場合、public_statusをトグル
+        if (item.id === index) {
+          return {
+            ...item,
+            public_status: item.public_status === 1 ? 0 : 1
+          };
+        }
+        console.log("更新後", item);
+        return item;
+      });
+    });
+  };
+
+  const HandleCompanyInformationChange = (e, genre, id) => {
+    let newValue = e.target.value;
+
+    const updatedInfo = CompanyInformationData.map((item) =>
+        item.id === id
+            ? genre === "contents"
+                ? { ...item, contents: newValue }
+                : genre === "title"
+                ? { ...item, title: newValue }
+                : item
+            : item
+    );
+
+    setResponseCompanyInformationData(updatedInfo);
+
+    // セッションストレージを更新する処理
+    updateSessionData("accountData", "CompanyInformation", updatedInfo);
+    console.log("更新後の企業情報", updatedInfo);
+};
+
+
+
+
   return (
     <Stack spacing={3} ref={Edit}>
       {/* 戻るボタン */}
@@ -411,6 +524,27 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
         <Typography variant="h6">紹介動画</Typography>
         <IntroVideo IntroVideoData={ResponseData.video_url} />
       </Box>
+
+
+      {/* 自由記述の企業情報 */}
+      {CompanyInformationData && !close && (
+        <>
+          <Typography variant="h6">詳細な企業情報</Typography>
+          {CompanyInformationData.map((info) => (
+            <Box id="companyinfodata" key={info.id}>
+              <CompanyInformation
+                info={info}
+                HandleAddRow={HandleAddRow}
+                HandleDeleteRow={HandleDeleteRow}
+                HandleChangePublicStatus={HandleChangePublicStatus}
+                HandleCompanyInformationChange={HandleCompanyInformationChange}
+              />
+            </Box>
+          ))}
+        </>
+      )}
+
+
       <Box>
         <Save>
           <Button variant="outlined"

@@ -234,13 +234,196 @@
   /* コンテンツの背景色 (必要に応じて追加) */
 }
 
+.border_surround {
+  height: 30%;
+  width: 350px;
+  position: absolute;
+  left: 30%;
+  transform: translateX(-50%);
+  top:70%;
+  gap:10px;
+}
+
+
 .GraphSelectButton {
-  position: relative;
-  top: 0%;
-  width: 30%;
-  height: 90%;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 10px;
+  row-gap: 10px;
   overflow: hidden;
-  overflow-y: scroll;
+  width: 800px;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 1%;
+  padding-top: 1%;
+  padding-bottom: 5%;
+}
+
+
+.GraphBox {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.GraphButton {
+  width: 130px;
+  height: 50px;
+  font-size: 12px;
+  margin-top: 20%;
+}
+
+.css-1sazv7p-MuiStack-root>:not(style):not(style){
+  margin-top: 5px;
+}
+
+
+@media(max-width:1700px){
+  .modal-content {
+    height: 90%;
+    width: 80%;
+    overflow: hidden;
+  }
+
+  .GraphBox {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+  }
+
+  .border_surround{
+    height:30%;
+    width:700px;
+    margin-left: 0%;
+  }
+
+  .GraphSelectButton {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    overflow: hidden;
+    width: 700px;
+    height: 100%;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 3%;
+    padding-top: 1%;
+    padding-bottom: 5%;
+  }
+
+  .GraphButton {
+    width: 200px;
+    height: 50px;
+    font-size: 20px;
+    margin-top: 20%;
+  }
+
+  .css-1sazv7p-MuiStack-root>:not(style):not(style){
+    margin-top: 5px;
+  }
+
+}
+
+/* max-width: 1700px */
+@media(max-width:1200px){
+  .modal-content {
+    height: 90%;
+    width: 80%;
+    overflow: hidden;
+  }
+
+  .GraphBox {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+  }
+
+  .border_surround{
+    height:30%;
+    width:700px;
+    margin-left: 0%;
+  }
+
+  .GraphSelectButton {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    overflow: auto;
+    width: 700px;
+    height: 100%;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 5%;
+    padding-top: 1%;
+    padding-bottom: 5%;
+  }
+
+  .GraphButton {
+    width: 200px;
+    height: 50px;
+    font-size: 20px;
+    margin-top: 20%;
+  }
+
+  .css-1sazv7p-MuiStack-root>:not(style):not(style){
+    margin-top: 5px;
+  }
+
+}
+
+@media(max-width:900px){
+  .modal-content {
+
+    width: 95%;
+    height: 70%;
+  }
+
+  .GraphBox {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+  }
+
+  .border_surround {
+    height: 30%;
+    width: 350px;
+    position: absolute;
+    left: 20%;
+    transform: translateX(-50%);
+    top:70%;
+    gap:10px;
+  }
+
+  .GraphSelectButton {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    overflow: auto;
+    width: 800px;
+    height: 90%;
+    justify-content: center;
+    margin-top: 5%;
+    padding-top: 1%;
+    padding-bottom: 5%;
+  }
+
+  .GraphButton {
+    position: relative;
+    width: 200px;
+    height: 50px;
+    font-size: 15px;
+    margin-top: 20%;
+  }
+
+  .css-1sazv7p-MuiStack-root>:not(style):not(style){
+    margin-top: 5px;
+  }
+
 }
 
 @media(max-width:600px){
@@ -306,7 +489,53 @@
     margin-left: 25%;
   }
 
+  .modal-content {
+    height: 50%;
+    width: 90%;
+  }
+
+  .border_surround {
+    height: 25%;
+    width: 350px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top:70%;
+  }
+
+  .GraphBox {
+    display: flex;
+    position: relative;
+    flex-direction: column; /* Stack the graph and buttons vertically */
+    width: 100%;
+    height: 100%; /* Make sure the container takes full height */
+  }
+
+  .GraphSelectButton {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    overflow: auto;
+    width: 350px;
+    height: 100%;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 5%;
+    padding-top: 0;
+    border:1px solid;
+    padding-bottom: 10px;
+  }
+  .GraphButton {
+    width: 150px;
+    height: 30px;
+    font-size: 12px;
+  }
+
+  .css-1sazv7p-MuiStack-root>:not(style):not(style){
+    margin-top: 10px;
+  }
 }
+
 
 @media(max-width: 400px) {
   .writeformshow {
@@ -365,6 +594,47 @@
     margin-left: 3%;
   }
 
+  .border_surround {
+    height: 25%;
+    width: 350px;
+    position: absolute;
+    left: 60%;
+    transform: translateX(-50%);
+    top:70%;
+  }
+
+
+
+  .GraphBox {
+    display: flex;
+    flex-direction: column; /* Stack the graph and buttons vertically */
+    width: 100%;
+    height: 100%; /* Make sure the container takes full height */
+  }
+
+  .GraphSelectButton {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 0px;
+    overflow: auto;
+    width: 300px;
+    height: 110%;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 3%;
+    padding-top: 0;
+    border:1px solid;
+    padding-bottom: 10px;
+  }
+  .GraphButton {
+    width: 120px;
+    height: 30px;
+    font-size: 10px;
+  }
+
+  .css-1sazv7p-MuiStack-root>:not(style):not(style){
+    margin-top: 7px;
+  }
 
 
 }

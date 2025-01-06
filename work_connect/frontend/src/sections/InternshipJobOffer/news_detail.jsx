@@ -63,6 +63,8 @@ const InternshipJobOfferPage = () => {
         console.log("デッドラインステータス", deadline_status);
         console.log("ライトフォームステータス", writeform_status);
         console.log("クリエイトフォームステータス", createform_status);
+        console.log("前の記事", previousNews);
+        console.log("次の記事", nextNews);
 
         setWriteFormStatus(writeform_status);
         setDeadLineStatus(deadline_status);
@@ -173,8 +175,8 @@ const InternshipJobOfferPage = () => {
 
             <h1 className="news_title">{NewsDetail.article_title}</h1>
 
-            <div style={{display:'flex'}}>
-              <Stack direction={'row'} sx={{alignItems: 'center' }}>
+            <div style={{ display: 'flex' }}>
+              <Stack direction={'row'} sx={{ alignItems: 'center' }}>
                 <img
                   className="Company_News_img"
                   src={`http://localhost:8000/storage/images/userIcon/${NewsDetail.icon}`}
@@ -348,49 +350,53 @@ const InternshipJobOfferPage = () => {
                       ))}
                     </div>
                   );
-                // 他のブロックタイプもここで処理できます
                 default:
                   return null;
               }
             })}
           </div>
 
-          <Stack direction={'row'} className="previous_back_article_stack">
-            {previousNews ? (
-              <div className="PreviousNews">
-                <ArrowBackIosIcon className="PreviousNews_icon" />
-                <div className="PreviousNews_content">
-                  <span className="PreviousNews_span">前の記事</span>
-                  <Typography
-                    className="PreviousNews_text"
-                    onClick={() => handleNewsJump(previousNews.id)}
-                    sx={{ cursor: 'pointer' }}
-                  >
-                    {previousNews.article_title}
-                  </Typography>
-                </div>
-              </div>
-            ) : (<div className="PreviousNews">
-          </div>)}
+          {(previousNews || nextNews) && (
+  <Stack direction="row" className="previous_back_article_stack">
+    {/* 前の記事 */}
+    <div className="PreviousNews">
+      {previousNews ? (
+        <>
+          <ArrowBackIosIcon className="PreviousNews_icon" />
+          <div className="PreviousNews_content">
+            <span className="PreviousNews_span">前の記事</span>
+            <Typography
+              className="PreviousNews_text"
+              onClick={() => handleNewsJump(previousNews.id)}
+              sx={{ cursor: 'pointer' }}
+            >
+              {previousNews.article_title}
+            </Typography>
+          </div>
+        </>
+      ) : null}
+    </div>
 
-            {nextNews ? (
-              <div className="NextNews">
-                <div className="NextNews_content">
-                  <span className="NextNews_span">次の記事</span>
-                  <Typography
-                    className="NextNews_text"
-                    onClick={() => handleNewsJump(nextNews.id)}
-                    sx={{ cursor: 'pointer' }}
-                  >
-                    {nextNews.article_title}
-                  </Typography>
-                </div>
-                <ArrowForwardIosIcon className="NextNews_icon" />
-              </div>
-            ) : (<div className="NextNews">
-          </div>)}
-          </Stack>
-
+    {/* 次の記事 */}
+    <div className="NextNews">
+      {nextNews ? (
+        <>
+          <div className="NextNews_content">
+            <span className="NextNews_span">次の記事</span>
+            <Typography
+              className="NextNews_text"
+              onClick={() => handleNewsJump(nextNews.id)}
+              sx={{ cursor: 'pointer' }}
+            >
+              {nextNews.article_title}
+            </Typography>
+          </div>
+          <ArrowForwardIosIcon className="NextNews_icon" />
+        </>
+      ) : null}
+    </div>
+  </Stack>
+)}
 
         </div>
       ) : (

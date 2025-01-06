@@ -36,7 +36,8 @@ header .logo {
   color: black !important;
   border-radius: 50% !important;
   box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 10px !important;
-  z-index: 1400 !important;
+  z-index: 1200 !important;
+  /* z-index もともとは1400だがモーダルの上にこの矢印がくるため変更 */
 }
 
 .toolbar {
@@ -1242,7 +1243,7 @@ textarea {
   .arrow_up_ward_icon {
     bottom: 110px !important;
   }
-  
+
   .searchbar {
     width: 60% !important;
     height: 80% !important;

@@ -390,20 +390,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
         }));
       },
     },
-    // writeforms: {
-    //   ItemName: "応募用フォーム",
-    //   url: `http://localhost:8000/write_form_get/${NewsDetailId}`,
-    //   idKey: "id",
-    //   tags: ["genre"],
-    //   generatePosts: (WorkOfList) => {
-    //     return WorkOfList.map((company) => ({
-    //       company_id: company.company_id,
-    //       create_form: company.create_form,
-    //       news_id: company.news_id,
-    //       article_title: company.article_title,
-    //     }));
-    //   },
-    // },
+
     specialjoboffers: {
       ItemName: `${ParamUserName}の求人一覧`,
       url: `http://localhost:8000/Internship_JobOffer/special_company_news/${ParamUserName}/${SessionAccountData.id}/JobOffer`,
@@ -639,7 +626,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
 
 
 
-  
+
 
   const fetcher = (lastUrl) =>
     fetch(lastUrl).then((res) => {

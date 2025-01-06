@@ -109,10 +109,12 @@ const PostCard = forwardRef(({ post }) => {
         </div>
 
       ) : (
-        null
+        <Typography>
+        応募フォームはありません
+        </Typography>
       )}
 
-      {writeformshow && selectedIndex !== null && (
+      {writeformshow && selectedIndex !== null && application_form.length > 0 && (
         <div className="writeformshow">
 
           <div className="write-form">

@@ -58,7 +58,7 @@ const Graph = ({ title, responses }) => {
       </>
     );
   };
-  
+
 
   const pieData = {
     labels, // 各セクションのラベル
@@ -88,7 +88,7 @@ const Graph = ({ title, responses }) => {
 
   const pieOptions = {
     responsive: true,
-    maintainAspectRatio: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: "top", // 凡例の位置
@@ -102,11 +102,19 @@ const Graph = ({ title, responses }) => {
 
   const options = {
     responsive: true,
-    maintainAspectRatio: true,
+    maintainAspectRatio: false,
+    aspectRatio: 1,
     plugins: {
       title: {
         display: true,
         text: title,
+      },
+    },
+    scales: {
+      y: {
+        ticks: {
+          stepSize: 1,
+        },
       },
     },
   };
@@ -114,13 +122,14 @@ const Graph = ({ title, responses }) => {
   const bar_y_options = {
     responsive: true,
     indexAxis: 'y',
-    maintainAspectRatio: true,
+    maintainAspectRatio: false,
     plugins: {
       title: {
         display: true,
         text: title,
       },
     },
+
   }
 
   const data = {
@@ -135,30 +144,27 @@ const Graph = ({ title, responses }) => {
     ],
   };
 
-  const GraphSwitch = (type) => {
-    setGraphKind(type); // グラフの種類を切り替え
-  };
 
-  const ShowGraphSwitch = () => {
-    switch (graphKind) {
-      case "Bar":
-        return <Bar options={options} data={data} />;
-      case "Bar-y":
-      return <Bar options={bar_y_options} data={data} />;
-      case "Line":
-        return <Line options={options} data={data} />;
-      case "Pie":
-        return <Pie options={pieOptions} data={pieData} />;
-      case "Doughnut":
-        return <Doughnut options={pieOptions} data={pieData} />;
-      case "Radar":
-        return <Radar options={options} data={data} />;
-      case "Total":
-        return <Total title={title}/>;
-      default:
-        return <Bar options={options} data={data} />;
-    }
-  };
+  // const ShowGraphSwitch = () => {
+  //   switch (graphKind) {
+  //     case "Bar":
+  //       return <Bar options={options} data={data} />;
+  //     case "Bar-y":
+  //     return <Bar options={bar_y_options} data={data} />;
+  //     case "Line":
+  //       return <Line options={options} data={data} />;
+  //     case "Pie":
+  //       return <Pie options={pieOptions} data={pieData} />;
+  //     case "Doughnut":
+  //       return <Doughnut options={pieOptions} data={pieData} />;
+  //     case "Radar":
+  //       return <Radar options={options} data={data} />;
+  //     case "Total":
+  //       return <Total title={title}/>;
+  //     default:
+  //       return <Bar options={options} data={data} />;
+  //   }
+  // };
 
   const GraphArray = [
     { title: '縦棒グラフ', type: 'Bar' },
@@ -173,23 +179,43 @@ const Graph = ({ title, responses }) => {
 
   return (
     <>
-      <Box sx={{ display: 'flex', width: '100%', height: '400px', alignItems: "center", overflow: "hidden" }}>
-        <div style={{ width: "80%", height: "70%", transformOrigin: "top left" }}>
-          {graphKind}
-          {ShowGraphSwitch()}
+      <Box className="GraphBox">
+        <div style={{ width: "90%", height: "70%" }}>
+          {(() => {
+            switch (graphKind) {
+              case "Bar":
+                return <Bar options={options} data={data} />;
+              case "Bar-y":
+                return <Bar options={bar_y_options} data={data} />;
+              case "Line":
+                return <Line options={options} data={data} />;
+              case "Pie":
+                return <Pie options={pieOptions} data={pieData} />;
+              case "Doughnut":
+                return <Doughnut options={pieOptions} data={pieData} />;
+              case "Radar":
+                return <Radar options={options} data={data} />;
+              case "Total":
+                return <Total title={title} />;
+              default:
+                return <Bar options={options} data={data} />;
+            }
+          })()}
         </div>
-        <Stack spacing={2} direction="column" className="GraphSelectButton">
-          {GraphArray.map((graph, idx) => (
-            <Button
-              key={idx}
-              variant="outlined"
-              onClick={() => GraphSwitch(graph.type)}
-            >
-              {graph.title}
-            </Button>
-          ))}
-
-        </Stack>
+        <div className="border_surround">
+          <Stack spacing={2} direction="column" className="GraphSelectButton">
+            {GraphArray.map((graph, idx) => (
+              <Button
+                key={idx}
+                variant="outlined"
+                onClick={() => setGraphKind(graph.type)}
+                className="GraphButton"
+              >
+                {graph.title}
+              </Button>
+            ))}
+          </Stack>
+        </div>
       </Box>
     </>
   );
@@ -292,12 +318,12 @@ const Summary = ({
                   {contents}
                 </Typography>
                 <Stack direction="row">
-                <Typography className="writeform-length">
-                  {responses.length}件の回答
-                </Typography>
-                <Typography onClick={() => ShowGraph(title, responses)} className="showgraph-length">
-                  グラフを見る
-                </Typography>
+                  <Typography className="writeform-length">
+                    {responses.length}件の回答
+                  </Typography>
+                  <Typography onClick={() => ShowGraph(title, responses)} className="showgraph-length">
+                    グラフを見る
+                  </Typography>
                 </Stack>
 
                 {responses.map((response, idx) => (
@@ -305,8 +331,6 @@ const Summary = ({
                     {response}
                   </Typography>
                 ))}
-
-                {/* <Graph title={title} responses={responses} /> */}
 
               </div>
             ))}

@@ -109,13 +109,6 @@ export function NavTabs({ initialTabValue, companyname }) {
     return accountData?.ProfileTabState ?? initialTabValue ?? 0;
   }
 
-  // useEffect(() => {
-  //   if (pageName !== 'checkform') {
-  //     setValue(0);
-  //   }
-  //   console.log("サーチパラムス", pageName);
-  // }, [pageName]);
-
   //URLによってタブを変更する
   useEffect(() => {
     const page = searchParams.get("page");

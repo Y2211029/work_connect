@@ -250,7 +250,7 @@
         scrollbar-width: 100px;
     }
 
-    
+
 
 }
 
@@ -291,9 +291,9 @@
     .NextNews_icon,
     .PreviousNews_icon {
         font-size: 60px;
-    } 
+    }
 
-    
+
     .Menu {
         top: 60px;
         height: auto;
@@ -375,7 +375,7 @@
     .NextNews_icon,
     .PreviousNews_icon {
         font-size: 60px;
-    } 
+    }
 
 }
 
@@ -446,7 +446,7 @@
         font-size: 12px;
     }
 
-    
+
 .PreviousNews_span, .NextNews_span {
     font-size: 10px;
     cursor: pointer;
@@ -455,7 +455,7 @@
 .NextNews_icon,
 .PreviousNews_icon {
     font-size: 40px;
-} 
+}
 
 
     .news_headerimg {
@@ -512,7 +512,7 @@
         font-size: 12px;
     }
 
-    
+
 .PreviousNews_span, .NextNews_span {
     font-size: 10px;
     cursor: pointer;

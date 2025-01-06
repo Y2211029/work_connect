@@ -49,7 +49,7 @@ class GetMypageController extends Controller
 
                 // $companyList の各要素に $companyInformation を追加する
                 foreach ($companyList as $company) {
-                    $company->companyInformation = $companyInformation->isNotEmpty() ? $companyInformation : '公開可能な企業情報はありません';
+                    $company->companyInformation = $companyInformation->isNotEmpty() ? $companyInformation : [];
                 }
 
                 // フォロー状態をチェック

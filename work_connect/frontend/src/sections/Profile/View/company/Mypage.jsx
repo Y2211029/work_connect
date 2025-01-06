@@ -144,7 +144,7 @@ const ProfileMypage = () => {
           },
         });
         if (response) {
-          console.log("レスポンスの企業情報",response.data[0].companyInformation);
+          console.log("レスポンスの企業情報", response.data[0].companyInformation);
           setResponseData(response.data[0]);
           setResponseCompanyInformationData(response.data[0].companyInformation);
           setFollowStatus(response.data[0].follow_status);
@@ -374,7 +374,7 @@ const ProfileMypage = () => {
   };
 
   return (
-    <Box sx={{ margin: "30px 0px 50px 18%", width: "64%"}}>
+    <Box sx={{ margin: "30px 0px 50px 18%", width: "64%" }}>
       {/* 編集のコンポーネントをここで呼び出し */}
       <ProfileMypageEdit ref={childRef} />
       <Stack spacing={3} ref={Profile}>
@@ -602,15 +602,17 @@ const ProfileMypage = () => {
         )}
 
         {/* 自由記述の企業情報 */}
-        {CompanyInformationData && !close &&(
-            CompanyInformationData.map((info,index) => (
-              <Box id="companyinfodata" key={index}>
+        {CompanyInformationData.length > 0 && !close ? (
+          CompanyInformationData.map((info, index) => (
+            <Box id="companyinfodata" key={index}>
               <Typography variant="h6">{info.title}</Typography>
-              <Item style={{ whiteSpace: 'pre-line' }}>{info.contents}
-              </Item>
+              <Item style={{ whiteSpace: 'pre-line' }}>{info.contents}</Item>
             </Box>
-            ))
+          ))
+        ) : (
+          null
         )}
+
 
       </Stack>
     </Box>

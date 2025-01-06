@@ -143,8 +143,8 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
   useEffect(() => {
     async function CompanyInformationGetData() {
       try {
-        const response = await axios.get(CompanyInformation_url, {
-          params: { CompanyName: user_name }, // クエリパラメータとして渡す
+        const response = await axios.post(CompanyInformation_url, {
+          CompanyName: user_name,
         });
         console.log("レスポンス", response);
         console.log("企業情報", response.data.title_contents);
@@ -419,13 +419,13 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
     let newValue = e.target.value;
 
     const updatedInfo = CompanyInformationData.map((item) =>
-        item.id === id
-            ? genre === "contents"
-                ? { ...item, contents: newValue }
-                : genre === "title"
-                ? { ...item, title: newValue }
-                : item
+      item.id === id
+        ? genre === "contents"
+          ? { ...item, contents: newValue }
+          : genre === "title"
+            ? { ...item, title: newValue }
             : item
+        : item
     );
 
     setResponseCompanyInformationData(updatedInfo);
@@ -433,7 +433,7 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
     // セッションストレージを更新する処理
     updateSessionData("accountData", "CompanyInformation", updatedInfo);
     console.log("更新後の企業情報", updatedInfo);
-};
+  };
 
 
 
@@ -527,22 +527,38 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
 
 
       {/* 自由記述の企業情報 */}
-      {CompanyInformationData && !close && (
+      {!close && (
         <>
-          <Typography variant="h6">詳細な企業情報</Typography>
-          {CompanyInformationData.map((info) => (
-            <Box id="companyinfodata" key={info.id}>
-              <CompanyInformation
-                info={info}
-                HandleAddRow={HandleAddRow}
-                HandleDeleteRow={HandleDeleteRow}
-                HandleChangePublicStatus={HandleChangePublicStatus}
-                HandleCompanyInformationChange={HandleCompanyInformationChange}
-              />
+          {Array.isArray(CompanyInformationData) && CompanyInformationData.length > 0 ? (
+            <>
+              <Typography variant="h6">詳細な企業情報</Typography>
+              {CompanyInformationData.map((info) => (
+                <Box id="companyinfodata" key={info.id}>
+                  <CompanyInformation
+                    info={info}
+                    HandleAddRow={HandleAddRow}
+                    HandleDeleteRow={HandleDeleteRow}
+                    HandleChangePublicStatus={HandleChangePublicStatus}
+                    HandleCompanyInformationChange={HandleCompanyInformationChange}
+                  />
+                </Box>
+              ))}
+            </>
+          ) : (
+            <Box textAlign="center" mt={2}>
+              <Typography variant="body1">企業情報がありません</Typography>
+              <Button variant="outlined"
+            sx={{ borderColor: '#1877F2', color: '#1877F2', '&:hover': { borderColor: '#1877F2' }, cursor: 'pointer' }}
+            size="large" onClick={HandleAddRow}>
+                企業情報を追加する
+              </Button>
             </Box>
-          ))}
+
+          )}
         </>
       )}
+
+
 
 
       <Box>

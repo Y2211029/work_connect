@@ -183,7 +183,6 @@ const CreateForm = ({ newsid, HandleBack, title }) => {
   const [create_news_id] = useState(newsid);
 
   // 質問を追加する関数 //dropdown
-  // 質問を追加する関数 // dropdown
   const addQuestion = (Questions_Genre) => {
     console.log("クリックしたジャンル", Questions_Genre);
 
@@ -379,7 +378,6 @@ const CreateForm = ({ newsid, HandleBack, title }) => {
   const themeObject = themes[applyTheme];
   if (themeObject) {
     console.log('themeobjectがありました', themeObject);
-
     themeObject.cssVariables["--sjs-general-backcolor-dim"] = backGroundColor;  // 背景色設定
     themeObject.cssVariables["--sjs-primary-backcolor"] = barColor;            // バーの色設定
     themeObject.cssVariables["--sjs-font-surveytitle-color"] = titleColor;     // タイトルの色設定
@@ -558,20 +556,9 @@ const CreateForm = ({ newsid, HandleBack, title }) => {
       console.log("questionColor", questionColor);
       console.log("barColor", barColor);
 
-      // ThemeNameとColorPaletteをsurveyJsonに設定
-      questions.themeSettings.themeName = selectedOption.value;
-      questions.themeSettings.colorPalette = alignment.toLowerCase();
-      questions.themeSettings.backgroundColor = backgroundColor; //背景色
-      questions.themeSettings.titleColor = titleColor; //ニュースタイトルのテキストカラー
-      questions.themeSettings.questionTitleColor = questionColor //質問見出しのテキストカラー
-      questions.themeSettings.barColor = barColor //ニュースタイトルと質問の間のバーのカラー
-
-      console.log("更新後のthemeSettings", questions.themeSettings);
-
       // 結合されたテーマ名を生成
       const themeKey = `${selectedOption.theme}${alignment}`; // キャメルケースを維持
       console.log("生成されたテーマキー", themeKey);
-
 
       if (themes[themeKey]) {
         const themeObject = themes[themeKey]; // 現在のテーマを取得
@@ -585,7 +572,14 @@ const CreateForm = ({ newsid, HandleBack, title }) => {
         console.error(`テーマ '${themeKey}' が themes オブジェクトに存在しません`);
       }
 
-      console.log("テーマオブジェクトの中身", themeObject);
+      // ThemeNameとColorPaletteをsurveyJsonに設定
+      questions.themeSettings.themeName = selectedOption.value;
+      questions.themeSettings.colorPalette = alignment.toLowerCase();
+      questions.themeSettings.backgroundColor = backgroundColor; //背景色
+      questions.themeSettings.titleColor = titleColor; //ニュースタイトルのテキストカラー
+      questions.themeSettings.questionTitleColor = questionColor; //質問見出しのテキストカラー
+      questions.themeSettings.barColor = barColor; //ニュースタイトルと質問の間のバーのカラー
+      questions.themeSettings.themeKey = themeKey;
 
       // 状態更新
       setBackGroundColor(backgroundColor);

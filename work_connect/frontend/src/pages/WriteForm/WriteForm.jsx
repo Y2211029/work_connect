@@ -15,7 +15,7 @@ import Box from '@mui/material/Box';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import './writeform.css';
 
-import { Plain } from "survey-core/themes";
+import * as themes from "survey-core/themes";
 
 // ----------------------------------------------------------------------
 
@@ -73,21 +73,33 @@ export default function WriteFormPage() {
 
   // Survey モデルの生成
   const survey = new Model(createForm);
+  const themeObject = themes["ThreeDimensionalLight"];
+  if (themeObject) {
+    console.log('themeobjectがありました', themeObject);
+    themeObject.cssVariables["--sjs-general-backcolor-dim"] = createForm.themeSettings.backgroundColor;  // 背景色設定
+    themeObject.cssVariables["--sjs-primary-backcolor"] = createForm.themeSettings.barColor;            // バーの色設定
+    themeObject.cssVariables["--sjs-font-surveytitle-color"] = createForm.themeSettings.titleColor;     // タイトルの色設定
+    themeObject.cssVariables["--sjs-font-questiontitle-color"] = createForm.themeSettings.questionTitleColor; // 質問タイトルの色設定
 
-  survey.applyTheme(Plain);
+    survey.applyTheme(themeObject); // テーマを再適用
+    console.log("テーマオブジェクトの中身", themeObject);
+  } else {
+    console.error(`テーマ '${themeObject}' が見つかりません`);
+  }
+
 
   const WriteFormSave = () => {
     const isValid = survey.validate();
-  
+
     if (isValid) {
       console.log("フォームは有効です。保存処理を実行します。");
-  
+
       // フォームのデータを取得
       const formData = survey.data;
       console.log("保存するデータ:", formData);
       console.log("サーベイ:", survey);
       console.log("フォームデータ:", createForm);
-  
+
       // フォーム定義とユーザーの回答を統合する
       const transformFormFieldsWithResponses = (fields, responses) => {
         return fields.map(field => {
@@ -99,13 +111,13 @@ export default function WriteFormPage() {
           };
         });
       };
-  
+
       // フォーム定義とユーザーの回答を統合
       const formDefinitionWithResponses = {
         title: createForm.title, // タイトルをそのまま保持
         elements: transformFormFieldsWithResponses(createForm.elements, formData) // フィールドと回答を統合
       };
-  
+
       // 統合データを表示（確認用）
       console.log("Survey.js形式のデータ:", formDefinitionWithResponses);
 

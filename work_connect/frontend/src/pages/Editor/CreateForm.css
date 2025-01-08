@@ -204,7 +204,6 @@ input[type="number"]::-webkit-inner-spin-button {
   height: auto;
   /* モーダルの高さ */
   width: 20%;
-  background-color: antiquewhite;
   /* モーダルの幅 */
   /* コンテンツの背景色 (必要に応じて追加) */
 }

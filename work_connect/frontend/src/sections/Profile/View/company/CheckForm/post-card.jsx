@@ -35,15 +35,23 @@ const PostCard = forwardRef(({ post }) => {
     setValue(newValue);
   };
 
+  console.log("application_form[selectedIndex]",application_form[selectedIndex]?.user_name);
   const groupedResponses = application_form[selectedIndex]?.user_name.reduce((acc, user) => {
+    console.log("User Write Form Elements:", user);  // user.write_form.elementsをログ出力
+
     user.write_form.elements.forEach((response) => {
+      console.log("Response:", response);  // 各responseをログ出力
+
       if (!acc[response.title]) {
-        acc[response.title] = { responses: [], type: response.type, contents: response.contents };
+        acc[response.title] = { responses: [], type: response.type, contents: response.contents, userNames: [] };
       }
       acc[response.title].responses.push(response.response);
+      acc[response.title].userNames.push(user.user_name);
     });
+
     return acc;
   }, {});
+
 
   return (
     <>

@@ -25,31 +25,33 @@ import {
 } from "chart.js";
 import { Bar, Line, Pie, Doughnut, Radar } from "react-chartjs-2";
 
-// グラフ表示用のコンポーネント
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  ArcElement, // 円グラフ系
-  RadarController, // レーダーチャート
-  RadialLinearScale,
-  ScatterController, // 散布図
-  Title,
-  Tooltip,
-  Legend
-);
-const Graph = ({ title, responses }) => {
-  const responseCounts = responses.reduce((acc, response) => {
-    acc[response] = (acc[response] || 0) + 1;
+
+const Graph = ({ title, responses, userNames }) => {
+  console.log("レスポンスの内容", responses);
+  console.log("レスポンスの内容", userNames);
+
+  const responseUserMap = responses.map((response, index) => ({
+    response,
+    userName: userNames[index],
+  }));
+
+  const responseCounts = responseUserMap.reduce((acc, { response, userName }) => {
+    if (!acc[response]) {
+      acc[response] = { count: 0, users: [] };
+    }
+    acc[response].count += 1;
+    acc[response].users.push(userName);
     return acc;
   }, {});
+
+  console.log("responseCounts",responseCounts);
+
 
   const [graphKind, setGraphKind] = useState("Bar"); // デフォルトをBarグラフに
 
   const labels = Object.keys(responseCounts);
-  const dataValues = Object.values(responseCounts);
+  const dataValues = Object.values(responseCounts).map(item => item.count);
+  const userMappings = Object.values(responseCounts).map(item => item.users);
 
   const Total = ({ title }) => {
     return (
@@ -59,12 +61,38 @@ const Graph = ({ title, responses }) => {
     );
   };
 
+  const pieOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+      title: {
+        display: true,
+        text: title,
+      },
+      tooltip: {
+        enabled: true,
+        callbacks: {
+          label: (tooltipItem) => {
+            const index = tooltipItem.dataIndex;
+            const total = dataValues.reduce((a, b) => a + b, 0);
+            const value = dataValues[index];
+            const percentage = ((value / total) * 100).toFixed(1);
+            const users = userMappings[index].join(", ");
+            return [`回答数: ${value} ${percentage}%`, `${users}`];
+          },
+        },
+      },
+    },
+  };
 
   const pieData = {
-    labels, // 各セクションのラベル
+    labels,
     datasets: [
       {
-        data: dataValues, // 各セクションの値
+        data: dataValues,
         backgroundColor: [
           "rgba(255, 99, 132, 0.5)",
           "rgba(54, 162, 235, 0.5)",
@@ -86,20 +114,6 @@ const Graph = ({ title, responses }) => {
     ],
   };
 
-  const pieOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: "top", // 凡例の位置
-      },
-      title: {
-        display: true,
-        text: title,
-      },
-    },
-  };
-
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -108,6 +122,19 @@ const Graph = ({ title, responses }) => {
       title: {
         display: true,
         text: title,
+      },
+      tooltip: {
+        enabled: true,
+        callbacks: {
+          label: (tooltipItem) => {
+            const index = tooltipItem.dataIndex;
+            const total = dataValues.reduce((a, b) => a + b, 0);
+            const value = dataValues[index];
+            const percentage = ((value / total) * 100).toFixed(1);
+            const users = userMappings[index].join(", ");
+            return [`回答数: ${value} ${percentage}%`, `${users}`];
+          },
+        },
       },
     },
     scales: {
@@ -127,6 +154,19 @@ const Graph = ({ title, responses }) => {
       title: {
         display: true,
         text: title,
+      },
+      tooltip: {
+        enabled: true,
+        callbacks: {
+          label: (tooltipItem) => {
+            const index = tooltipItem.dataIndex;
+            const total = dataValues.reduce((a, b) => a + b, 0);
+            const value = dataValues[index];
+            const percentage = ((value / total) * 100).toFixed(1);
+            const users = userMappings[index].join(", ");
+            return [`回答数: ${value} ${percentage}%`, `${users}`];
+          },
+        },
       },
     },
 
@@ -166,6 +206,22 @@ const Graph = ({ title, responses }) => {
   //   }
   // };
 
+  // グラフ表示用のコンポーネント
+  ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    BarElement,
+    ArcElement, // 円グラフ系
+    RadarController, // レーダーチャート
+    RadialLinearScale,
+    ScatterController, // 散布図
+    Title,
+    Tooltip,
+    Legend,
+  );
+
   const GraphArray = [
     { title: '縦棒グラフ', type: 'Bar' },
     { title: '横棒グラフ', type: 'Bar-y' },
@@ -174,7 +230,6 @@ const Graph = ({ title, responses }) => {
     { title: 'ドーナツグラフ', type: 'Doughnut' },
     { title: 'レーダーチャート', type: 'Radar' },
     { title: '集計', type: 'Total' },
-
   ]
 
   return (
@@ -223,6 +278,7 @@ const Graph = ({ title, responses }) => {
 
 Graph.propTypes = {
   title: PropTypes.string.isRequired,
+  userNames: PropTypes.string.isRequired,
   responses: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
@@ -233,21 +289,19 @@ const Summary = ({
   HandleTabClick,
   setViewStudentName
 }) => {
-  console.log(GroupedResponses);
+  console.log("グループドレスポンス", GroupedResponses);
 
   const [showGpaph, setShowGraph] = useState(false);
-  const [modalData, setModalData] = useState({ title: "", responses: [] });
+  const [modalData, setModalData] = useState({ title: "", responses: [], userNames: [] });
 
   const showGpaphCancel = () => {
     setShowGraph(false);
   }
 
-  const ShowGraph = (title, responses) => {
-    setModalData({ title, responses }); // モーダル用のデータをセット
+  const ShowGraph = (title, responses, userNames) => {
+    setModalData({ title, responses, userNames }); // モーダル用のデータをセット
     setShowGraph(true); // モーダルを表示
   }
-
-
 
   const IndividualJump = (e, number, studentName) => {
     console.log("IndividualJump通りました");
@@ -308,8 +362,9 @@ const Summary = ({
               </Typography>
             ))}
           </div>
+
           {GroupedResponses &&
-            Object.entries(GroupedResponses).map(([title, { responses, contents }], index) => (
+            Object.entries(GroupedResponses).map(([title, { responses, contents, userNames }], index) => (
               <div key={index} className="writeform-container">
                 <Typography className="writeform-title">
                   {title}
@@ -321,7 +376,7 @@ const Summary = ({
                   <Typography className="writeform-length">
                     {responses.length}件の回答
                   </Typography>
-                  <Typography onClick={() => ShowGraph(title, responses)} className="showgraph-length">
+                  <Typography onClick={() => ShowGraph(title, responses, userNames)} className="showgraph-length">
                     グラフを見る
                   </Typography>
                 </Stack>
@@ -344,7 +399,7 @@ const Summary = ({
           overlayClassName="modal-overlay" /* オーバーレイに適用 */
           className="modal-content" /* コンテンツに適用 */
         >
-          <Graph title={modalData.title} responses={modalData.responses} />
+          <Graph title={modalData.title} responses={modalData.responses} userNames={modalData.userNames} />
         </Modal>
       </div>
 
@@ -370,6 +425,7 @@ Summary.propTypes = {
               type: PropTypes.string.isRequired,
               response: PropTypes.string.isRequired,
               contents: PropTypes.string.isRequired,
+              userNames: PropTypes.string.isRequired,
             })
           ).isRequired,
           write_form_id: PropTypes.number.isRequired,
@@ -379,7 +435,7 @@ Summary.propTypes = {
   ).isRequired,
 
   selectedIndex: PropTypes.number,
-  GroupedResponses: PropTypes.func.isRequired,
+  GroupedResponses: PropTypes.object.isRequired,
   HandleTabClick: PropTypes.func.isRequired,
   setViewStudentName: PropTypes.func.isRequired
 }

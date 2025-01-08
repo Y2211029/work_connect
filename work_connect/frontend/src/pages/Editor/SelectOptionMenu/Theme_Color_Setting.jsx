@@ -18,6 +18,7 @@ export default function Theme_Color_Setting({
   light_dark,
   onSave,
   onClose,
+  onReset
 }) {
   const [alignment, setAlignment] = useState(light_dark || "Light");
   const [selectingTheme, setSelectingTheme] = useState(null);
@@ -186,7 +187,7 @@ export default function Theme_Color_Setting({
           isClearable
           className="Theme_Select"
         />
-  
+
         </Stack>
 
         {/* 保存ボタン */}
@@ -194,11 +195,22 @@ export default function Theme_Color_Setting({
           variant="contained"
           color="primary"
           onClick={() =>
-            onSave(selectingTheme, alignment, backgroundColor, titleColor, barColor, questionColor)
+            onSave(selectingTheme, alignment, backgroundColor, titleColor,questionColor,barColor)
           }
           className="FormButton"
         >
           保存
+        </Button>
+
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() =>
+            onReset()
+          }
+          className="FormButton"
+        >
+          リセット
         </Button>
 
         {/* キャンセルボタン */}
@@ -224,4 +236,5 @@ Theme_Color_Setting.propTypes = {
   light_dark: PropTypes.string,
   onClose: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
+  onReset: PropTypes.func.isRequired,
 };

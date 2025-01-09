@@ -638,6 +638,21 @@ const NewsSelectMenu = ({
                     >
                         <Typography className="NewsSelectButton_Text">入力メニュー</Typography>
                     </Button>
+                    <Menu
+                        id="menu-input"
+                        anchorEl={anchorElInput}
+                        open={openInputMenu}
+                        onClose={handleCloseInputMenu}
+                        MenuListProps={{
+                            'aria-labelledby': 'input-button',
+                        }}
+                        className='menu_input'
+                    >
+                        <MenuItem onClick={(e) => handleMenuItemClick(e, 'input', 'eventday')}>開催日</MenuItem>
+                        <MenuItem onClick={(e) => handleMenuItemClick(e, 'input', 'jobtype')}>募集職種</MenuItem>
+                        <MenuItem onClick={(e) => handleMenuItemClick(e, 'input', 'message')}>通知メッセージ</MenuItem>
+                        <MenuItem onClick={(e) => handleMenuItemClick(e, 'input', 'createform')}>応募用フォーム</MenuItem>
+                    </Menu>
                 </div>
 
                 <div className="ButtonContainer">
@@ -650,6 +665,20 @@ const NewsSelectMenu = ({
                     >
                         <Typography className="NewsSelectButton_Text">確認メニュー</Typography>
                     </Button>
+                    <Menu
+                        id="menu-confirmation"
+                        anchorEl={anchorElConfirmation}
+                        open={openConfirmationMenu}
+                        onClose={handleCloseConfirmationMenu}
+                        MenuListProps={{
+                            'aria-labelledby': 'confirmation-button',
+                        }}
+                        className="menu_confirmation"
+                    >
+                        <MenuItem onClick={(e) => handleMenuItemClick(e, 'confirmation', 'editing_status')}>編集状況</MenuItem>
+                        <MenuItem onClick={(e) => handleMenuItemClick(e, 'confirmation', 'draft_list')}>下書きリスト</MenuItem>
+
+                    </Menu>
                 </div>
 
                 <div className="ButtonContainer">
@@ -659,6 +688,29 @@ const NewsSelectMenu = ({
                     >
                         <Typography className="NewsSelectButton_Text">下書き保存</Typography>
                     </Button>
+                    <Popover
+                        open={Boolean(popoverAnchorEl)}
+                        anchorEl={popoverAnchorEl}
+                        onClose={() => setPopoverAnchorEl(null)}
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'left',
+                        }}
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'left',
+
+                        }}
+                        PaperProps={{
+                            className: getPopoverClass(menuState),
+                            sx: {
+                                top: 0,
+                                marginLeft: '9%',
+                            },
+                        }}
+                    >
+                        {renderPopoverContent()}
+                    </Popover>
                 </div>
 
                 <div className="ButtonContainer">

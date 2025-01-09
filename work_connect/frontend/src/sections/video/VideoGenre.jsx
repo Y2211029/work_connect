@@ -77,6 +77,7 @@ const VideoGenre = (props) => {
     selectedOption.map((value) => {
       valueArray.push(value.value);
     });
+    setSelectedOption(selectedOption);
     props.callSetVideoData("VideoGenre", valueArray.join(","));
   };
 
@@ -90,7 +91,7 @@ const VideoGenre = (props) => {
       placeholder="▼"
       isClearable
       isMulti
-      onChange={handleChange}
+      onChange={handleChange} 
     />
   );
 };

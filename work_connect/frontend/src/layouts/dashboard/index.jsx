@@ -8,6 +8,7 @@ export const WorkImageContext = createContext();
 // export const SearchCheckContext = createContext();
 // export const SortOption = createContext();
 export const WebScokectContext = createContext();
+export const DeleteIdContext = createContext();
 
 
 import Box from "@mui/material/Box";
@@ -95,6 +96,8 @@ export default function DashboardLayout({ children }) {
     websocketFollowStatus: "",
   });
 
+  const [DeleteId, setDeleteId] = useState();
+
   const value1 = {
     AllItems,
     setAllItems,
@@ -104,6 +107,12 @@ export default function DashboardLayout({ children }) {
     workImage,
     setWorkImage,
   };
+  const value4 = {
+    DeleteId, 
+    setDeleteId
+  };
+
+
 
   // WebSocket接続
   useEffect(() => {
@@ -174,17 +183,19 @@ export default function DashboardLayout({ children }) {
         <AllItemsContext.Provider value={value1}>
           <WorkImageContext.Provider value={value3}>
             <WebScokectContext.Provider value={value2}>
-              <Header onOpenNav={() => setOpenNav(true)} />
-              <Box
-                sx={{
-                  minHeight: 1,
-                  display: "flex",
-                  flexDirection: { xs: "column", lg: "row" },
-                }}
-              >
-                <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} />
-                <Main>{children}</Main>
-              </Box>
+              <DeleteIdContext.Provider value={value4}>
+                <Header onOpenNav={() => setOpenNav(true)} />
+                <Box
+                  sx={{
+                    minHeight: 1,
+                    display: "flex",
+                    flexDirection: { xs: "column", lg: "row" },
+                  }}
+                >
+                  <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} />
+                  <Main>{children}</Main>
+                </Box>
+              </DeleteIdContext.Provider>
             </WebScokectContext.Provider>
           </WorkImageContext.Provider>
         </AllItemsContext.Provider>

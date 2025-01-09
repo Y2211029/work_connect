@@ -24,7 +24,7 @@
 .popover_createform {
     margin-top: -50px;
     width: 240px;
-    height:200px;
+    height: 200px;
 }
 
 .draftlisttable {
@@ -44,21 +44,18 @@
 }
 
 
-.delete_icon{
+.delete_icon {
     align-items: center;
     cursor: pointer;
 }
 
-.delete_text{
-    margin-left:5%;
-    width:40px;
+.delete_text {
+    margin-left: 5%;
+    width: 40px;
     font-size: 10px;
-}_
+}
 
-
-
-
-.Last_updated_date {
+_ .Last_updated_date {
     margin-bottom: 8px;
     font-size: 10px;
 }
@@ -92,16 +89,32 @@
     overflow-wrap: break-word !important;
 }
 
-.NewsSelectButton {
+/* .NewsSelectButton {
     padding-top: 1%;
+} */
+.NewsSelectButton {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.NewsSelectButton .ButtonContainer {
+    flex: 1 1 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.NewsSelectButton .ButtonContainer button {
+    width: 100%;
 }
 
 .createFormJump {
-    width:90%;
+    width: 90%;
     padding: 3%;
     border: 1px solid blue;
     color: blue;
-    font-size:12px;
+    font-size: 12px;
     text-align: center;
 }
 
@@ -166,15 +179,15 @@
 
 
 @media(max-width:1600px) {
-    .NewsSelectButton {
+    /* .NewsSelectButton {
         padding-top: 3%;
-    }
+    } */
 }
 
 @media(max-width:1200px) {
-    .NewsSelectButton {
+    /* .NewsSelectButton {
         padding-top: 3%;
-    }
+    } */
 
     .NewsUploadButton_Text,
     .NewsSelectButton_Text {
@@ -183,8 +196,30 @@
 }
 
 @media(max-width: 900px) {
-    .NewsSelectButton {
+    /* .NewsSelectButton {
         padding-top: 5%;
+    } */
+
+    .NewsSelectButton {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        /* 2列構成 */
+        gap: 4px;
+        /* セル間の余白 */
+    }
+
+    .NewsSelectButton .ButtonContainer {
+        display: block;
+        /* セルのように見せるためにブロック配置 */
+        text-align: center;
+        border: 1px solid #ddd;
+        padding: 8px;
+        background-color: #f9f9f9;
+        border-radius: 4px;
+    }
+
+    .NewsSelectButton .ButtonContainer:hover {
+        background-color: #e9e9e9;
     }
 
     .NewsUploadButton_Text,
@@ -192,236 +227,236 @@
         font-size: 20px;
     }
 
-            /* 開催日の時間のテキストサイズ */
-            .MuiInputBase-input {
-                font-size: 20px;
-            }
-        
-            .menu_confirmation {
-                width: 60%;
-                height: 40%;
-            }
-        
-        
-            .menu_confirmation .MuiMenu-list {
-                display: flex;
-                flex-direction: row;
-            }
-        
-            .menu_input .MuiMenuItem-root,
-            .menu_confirmation .MuiMenuItem-root {
-                font-size: 20px;
-                min-height: 0;
-            }
-        
-        
-        
-        
-            .popover_eventday {
-                margin-top: -25px;
-                position: relative;
-                width: 270px;
-                margin-left: 25%;
-            }
-        
-            .popover_jobtype {
-                width: 300px;
-                margin-top: -50px;
-                min-height: 250px;
-                margin-left: 35%;
-            }
-        
-            .popover_createform {
-                margin-top: -50px;
-                width: 200px;
-                margin-left: 35%;
-            }
-        
-            .popover_message {
-                margin-top: -50px;
-                width: 200px;
-                margin-left: 35%;
-            }
-        
-        
-            .Message_Length {
-                text-align: left;
-            }
-        
-            .popover_editing_status {
-                position: relative;
-                width: 300px;
-                margin-top: 30px;
-                max-height: 300px;
-                margin-left: -20px;
-                height: 400px;
-            }
-        
-            .editingstatus {
-                margin-left: 20px;
-                padding-top: 10px;
-                width: 100%;
-                overflow-y: scroll;
-                height: 500px;
-            }
-        
-            .editingstatus p {
-                font-size: 12px;
-            }
-        
-            .popover_draft_list {
-                position: relative;
-                width: 300px;
-                margin-top: 30px;
-                min-height: 100px;
-                margin-left: -20px;
-            }
-        
-            .draftlistScroll {
-                overflow-y: auto;
-                /* 必要に応じてスクロールバーを表示 */
-                overflow-x: hidden;
-                height: 300px;
-                margin-left: 10%;
-            }
-        
-            .add_draft_news_text {
-                font-size: 10px;
-            }
-    
+    /* 開催日の時間のテキストサイズ */
+    .MuiInputBase-input {
+        font-size: 20px;
+    }
+
+    .menu_confirmation {
+        width: 60%;
+        height: 40%;
+    }
+
+
+    .menu_confirmation .MuiMenu-list {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .menu_input .MuiMenuItem-root,
+    .menu_confirmation .MuiMenuItem-root {
+        font-size: 20px;
+        min-height: 0;
+    }
+
+
+
+
+    .popover_eventday {
+        margin-top: -25px;
+        position: relative;
+        width: 270px;
+        margin-left: 25%;
+    }
+
+    .popover_jobtype {
+        width: 300px;
+        margin-top: -50px;
+        min-height: 250px;
+        margin-left: 35%;
+    }
+
+    .popover_createform {
+        margin-top: -50px;
+        width: 200px;
+        margin-left: 35%;
+    }
+
+    .popover_message {
+        margin-top: -50px;
+        width: 200px;
+        margin-left: 35%;
+    }
+
+
+    .Message_Length {
+        text-align: left;
+    }
+
+    .popover_editing_status {
+        position: relative;
+        width: 300px;
+        margin-top: 30px;
+        max-height: 300px;
+        margin-left: -20px;
+        height: 400px;
+    }
+
+    .editingstatus {
+        margin-left: 20px;
+        padding-top: 10px;
+        width: 100%;
+        overflow-y: scroll;
+        height: 500px;
+    }
+
+    .editingstatus p {
+        font-size: 12px;
+    }
+
+    .popover_draft_list {
+        position: relative;
+        width: 300px;
+        margin-top: 30px;
+        min-height: 100px;
+        margin-left: -20px;
+    }
+
+    .draftlistScroll {
+        overflow-y: auto;
+        /* 必要に応じてスクロールバーを表示 */
+        overflow-x: hidden;
+        height: 300px;
+        margin-left: 10%;
+    }
+
+    .add_draft_news_text {
+        font-size: 10px;
+    }
+
 }
 
 
 
 
 @media(max-width:600px) {
-    .NewsSelectButton {
+    /* .NewsSelectButton {
         padding-top: 5%;
         width: 350px;
-    }
+    } */
 
     .NewsUploadButton_Text,
     .NewsSelectButton_Text {
         font-size: 12px;
     }
 
-        /* 開催日の時間のテキストサイズ */
-        .MuiInputBase-input {
-            font-size: 10px;
-        }
-    
-        .menu_confirmation {
-            width: 60%;
-            height: 40%;
-        }
-    
-    
-        .menu_confirmation .MuiMenu-list {
-            display: flex;
-            flex-direction: row;
-        }
-    
-        .menu_input .MuiMenuItem-root,
-        .menu_confirmation .MuiMenuItem-root {
-            font-size: 12px;
-            min-height: 0;
-        }
-    
-    
-    
-    
-        .popover_eventday {
-            margin-top: -25px;
-            position: relative;
-            width: 170px;
-            margin-left: 35%;
-        }
-    
-        .popover_jobtype {
-            width: 200px;
-            margin-top: -50px;
-            min-height: 250px;
-            margin-left: 35%;
-        }
+    /* 開催日の時間のテキストサイズ */
+    .MuiInputBase-input {
+        font-size: 10px;
+    }
 
-        /* 応募職種のドロップダウンリストのフォントサイズ */
-        .select_jobtype__menu{
-            font-size: 10px;
-        }
+    .menu_confirmation {
+        width: 60%;
+        height: 40%;
+    }
 
-        .css-1dyz3mf{
-            font-size:10px;
-        }
-    
-        .popover_createform {
-            margin-top: -50px;
-            width: 200px;
-            margin-left: 35%;
-        }
-    
-    
-    
-        .popover_message {
-            margin-top: -50px;
-            width: 200px;
-            margin-left: 35%;
-        }
-    
-    
-        .Message_Length {
-            text-align: left;
-        }
-    
-        .popover_editing_status {
-            position: relative;
-            width: 300px;
-            margin-top: 30px;
-            max-height: 300px;
-            margin-left: -20px;
-            height: 400px;
-        }
-    
-        .editingstatus {
-            margin-left: 20px;
-            padding-top: 10px;
-            width: 100%;
-            overflow-y: scroll;
-            height: 500px;
-        }
-    
-        .editingstatus p {
-            font-size: 12px;
-        }
-    
-        .popover_draft_list {
-            position: relative;
-            width: 300px;
-            margin-top: 30px;
-            min-height: 100px;
-            margin-left: -20px;
-        }
-    
-        .draftlistScroll {
-            overflow-y: auto;
-            /* 必要に応じてスクロールバーを表示 */
-            overflow-x: hidden;
-            height: 300px;
-            margin-left: 10%;
-        }
-    
-        .add_draft_news_text {
-            font-size: 10px;
-        }
-    
+
+    .menu_confirmation .MuiMenu-list {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .menu_input .MuiMenuItem-root,
+    .menu_confirmation .MuiMenuItem-root {
+        font-size: 12px;
+        min-height: 0;
+    }
+
+
+
+
+    .popover_eventday {
+        margin-top: -25px;
+        position: relative;
+        width: 170px;
+        margin-left: 35%;
+    }
+
+    .popover_jobtype {
+        width: 200px;
+        margin-top: -50px;
+        min-height: 250px;
+        margin-left: 35%;
+    }
+
+    /* 応募職種のドロップダウンリストのフォントサイズ */
+    .select_jobtype__menu {
+        font-size: 10px;
+    }
+
+    .css-1dyz3mf {
+        font-size: 10px;
+    }
+
+    .popover_createform {
+        margin-top: -50px;
+        width: 200px;
+        margin-left: 35%;
+    }
+
+
+
+    .popover_message {
+        margin-top: -50px;
+        width: 200px;
+        margin-left: 35%;
+    }
+
+
+    .Message_Length {
+        text-align: left;
+    }
+
+    .popover_editing_status {
+        position: relative;
+        width: 300px;
+        margin-top: 30px;
+        max-height: 300px;
+        margin-left: -20px;
+        height: 400px;
+    }
+
+    .editingstatus {
+        margin-left: 20px;
+        padding-top: 10px;
+        width: 100%;
+        overflow-y: scroll;
+        height: 500px;
+    }
+
+    .editingstatus p {
+        font-size: 12px;
+    }
+
+    .popover_draft_list {
+        position: relative;
+        width: 300px;
+        margin-top: 30px;
+        min-height: 100px;
+        margin-left: -20px;
+    }
+
+    .draftlistScroll {
+        overflow-y: auto;
+        /* 必要に応じてスクロールバーを表示 */
+        overflow-x: hidden;
+        height: 300px;
+        margin-left: 10%;
+    }
+
+    .add_draft_news_text {
+        font-size: 10px;
+    }
+
 
 
 }
 
 @media(max-width:400px) {
-    .NewsSelectButton {
+    /* .NewsSelectButton {
         padding-top: 5%;
         width: 300px;
-    }
+    } */
 
     .NewsUploadButton_Text,
     .NewsSelectButton_Text {
@@ -468,20 +503,20 @@
         margin-left: 35%;
     }
 
-        /* 応募職種のドロップダウンリストのフォントサイズ */
-        .select_jobtype__menu{
-            font-size: 10px;
-        }
+    /* 応募職種のドロップダウンリストのフォントサイズ */
+    .select_jobtype__menu {
+        font-size: 10px;
+    }
 
-        .css-1dyz3mf{
-            font-size:10px;
-        }
+    .css-1dyz3mf {
+        font-size: 10px;
+    }
 
     .popover_createform {
         margin-top: -50px;
         width: 240px;
         margin-left: 25%;
-        height:170px;
+        height: 170px;
     }
 
     .draftlisttable {
@@ -490,31 +525,31 @@
         border: 1px solid black;
         border-collapse: separate;
         /* テーブルの境界線を一貫して表示 */
-        height:auto;
+        height: auto;
         overflow: auto;
     }
-    
+
     .draftlisttable thead {
         background-color: #338DC9;
         padding: 5px;
     }
 
-    .delete_icon{
+    .delete_icon {
         align-items: center;
         cursor: pointer;
     }
 
-    .delete_text{
-        margin-left:5%;
-        width:40px;
+    .delete_text {
+        margin-left: 5%;
+        width: 40px;
         font-size: 10px;
-    }_
+    }
 
-    .Last_updated_date {
+    _ .Last_updated_date {
         margin-bottom: 8px;
         font-size: 10px;
     }
-    
+
 
 
     .popover_message {
@@ -567,7 +602,7 @@
 
     .draftlist {
         width: 130px;
-        font-size:12px;
+        font-size: 12px;
     }
 
     .add_draft_news_text {

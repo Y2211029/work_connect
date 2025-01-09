@@ -142,7 +142,7 @@ const VideoPosting = () => {
       !workData.YoutubeURL ||
       !workData.VideoTitle ||
       !workData.VideoGenre ||
-      !workData.Introduction
+      !workData.VideoIntroduction
     ) {
       alert("エラー：未入力項目があります。");
     } else {

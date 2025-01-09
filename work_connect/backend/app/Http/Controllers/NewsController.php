@@ -195,7 +195,7 @@ class NewsController extends Controller
         // ニュースタイトル一覧を取得
         $title = w_write_form::where('recipient_company_id', $CompanyId)
             ->join('w_news', 'w_write_forms.news_id', '=', 'w_news.id')
-            ->where('w_news.public_status', 1)
+            ->whereIn('w_news.public_status', [1, 2])            
             ->groupBy('w_news.article_title')
             ->select('w_news.article_title');
 
@@ -203,7 +203,7 @@ class NewsController extends Controller
         $query = w_write_form::where('recipient_company_id', $CompanyId)
             ->join('w_news', 'w_write_forms.news_id', '=', 'w_news.id')
             ->join('w_users', 'w_write_forms.user_id', '=', 'w_users.id')
-            ->where('w_news.public_status', 1)
+            ->whereIn('w_news.public_status', [1, 2])     
             ->select('w_write_forms.*', 'w_news.*', 'w_users.*', 'w_news.created_at as news_created_at', 'w_write_forms.id as write_form_id')
             ->get();
 
@@ -447,29 +447,42 @@ class NewsController extends Controller
         return response()->json($posts);
     }
 
-    public function news_delete(Request $request)
+    public function news_delete(Request $request, $news_id)
     {
-        $news_id = $request->input('news_id');
-        Log::info("news_id" . $news_id);
-
-        //$news_idでニュースがあるかチェック
-        $news_check = w_news::where('id', $news_id)
-            ->first();
-
-        if ($news_check) {
-            //ニュースがあれば削除
-            $news_check->delete();
-
-            //応募用フォームを作成しているかチェック
-            $create_form_check = w_create_form::where('news_id', $news_id)
-                ->first();
-
-            //応募用フォームがあれば削除(応募したフォームは削除しない)
-            if ($create_form_check) {
-                $create_form_check->delete();
+        try {
+            // ログにリクエスト情報を記録
+            Log::info("ニュース削除リクエスト: news_id=" . $news_id);
+    
+            // $news_idでニュースがあるかチェック
+            $news_check = w_news::where('id', $news_id)->first();
+    
+            if (!$news_check) {
+                // ニュースが存在しない場合
+                Log::warning("ニュースが見つかりません: news_id=" . $news_id);
+                return response()->json([
+                    "message" => "ニュースが見つかりません。",
+                    "status" => "error"
+                ], 404);
             }
-
-            return response()->json("成功");
+    
+            // ニュースの公開状態を変更 (削除フラグとして2を設定)
+            $news_check->update(['public_status' => 2]);
+    
+            Log::info("ニュース削除成功: news_id=" . $news_id);
+    
+            return response()->json([
+                "message" => "ニュースが削除されました。",
+                "status" => "success"
+            ], 200);
+        } catch (\Exception $e) {
+            // 例外が発生した場合の処理
+            Log::error("ニュース削除中にエラーが発生しました: " . $e->getMessage());
+    
+            return response()->json([
+                "message" => "エラーが発生しました。",
+                "status" => "error"
+            ], 500);
         }
     }
+    
 }

@@ -96,48 +96,57 @@ const Editor = () => {
 
   //ニュースを投稿した際の処理
   const news_upload = async () => {
+    const news_upload_confirm = confirm("本当にニュースを公開しますか?");
+    if (!news_upload_confirm) {
+      return; // ユーザーがキャンセルした場合は処理を終了
+    }
+  
     alert("ニュースを投稿しました");
-
+  
     try {
       if (!editorInstance.current || typeof editorInstance.current.save !== "function") {
         console.error("Editor instance or save function not available");
         return;
       }
-
+  
+      // ニュース内容を保存
       const outputData = await editorInstance.current.save();
-
-      console.log("sessionId", sessionId);
-      console.log("news_id", news_id);
-      console.log("title", title);
-      console.log("header_img", imageUrl);
-      console.log("outputData", outputData);
-      console.log("notificationMessage", notificationMessage);
-      console.log("followerCounter", followerCounter);
-
-      // websocketサーバーに送信
+  
+      // デバッグ用ログ
+      console.log("sessionId:", sessionId);
+      console.log("news_id:", news_id);
+      console.log("title:", title);
+      console.log("header_img:", imageUrl);
+      console.log("outputData:", outputData);
+      console.log("notificationMessage:", notificationMessage);
+      console.log("followerCounter:", followerCounter);
+  
+      // WebSocketサーバーに送信
       const response = await axios.post("http://localhost:8000/news_upload", {
-        method: "POST",
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
         company_id: sessionId, // 企業ID
-        news_id: news_id, //ニュースid
-        title: title, //ニュースタイトル
-        header_img: imageUrl, //ニュースサムネイル画像
-        value: outputData, //ニュースの内容
-        message: notificationMessage, //採用担当者からの一言メッセージ
-        genre: genre,
-        followerCounter: followerCounter, //通知が必要かどうかの判断材料(0なら通知処理を行わない)
+        news_id: news_id, // ニュースID
+        title: title, // ニュースタイトル
+        header_img: imageUrl, // ニュースサムネイル画像
+        value: outputData, // ニュースの内容
+        message: notificationMessage, // 採用担当者からの一言メッセージ
+        genre: genre, // ジャンル
+        followerCounter: followerCounter, // 通知が必要かどうかの判断材料
+      }, {
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
-      console.log(response);
-      console.log(response.data.id);
-      console.log(response.data);
-      console.log("成功");
-      navigate(`/NewsDetail/${news_id}`);
+  
+      // レスポンスの確認
+      console.log("成功:", response.data);
+      navigate(`/NewsDetail/${news_id}`); // 投稿後、ニュース詳細ページへ移動
+  
     } catch (error) {
-      console.log("Error:", error);
+      console.error("エラー:", error);
+      alert("ニュース投稿中にエラーが発生しました。");
     }
   };
+  
 
   const titlechange = (event) => {
     setTitle(event.target.value); // テキストエリアの値をstateに反映

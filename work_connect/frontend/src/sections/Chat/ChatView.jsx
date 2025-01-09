@@ -146,8 +146,14 @@ const FollowGroup = ({
     <>
       {/***  見出し部分 ***/}
 
-      {/* ホバーでフォロー数を表示 */}
-      <Tooltip title={followStatusCount ? `${followStatusCount}人` : "0人"}>
+      {/* ホバーでフォロー人数を表示(学生は「人」単位、企業は「社」単位。) */}
+      <Tooltip
+        title={
+          followStatusCount
+            ? `${followStatusCount} ${chatViewId?.[0] === 'S' ? '人' : '社'}`
+            : `0 ${chatViewId?.[0] === 'S' ? '人' : '社'}`
+        }
+      >
         <ListItemButton onClick={handleClick}>
           <ListItemIcon>
             <PersonIcon />
@@ -391,6 +397,10 @@ const ColorRingStyle = () => {
 // メインのコンポーネント
 const ChatView = () => {
 
+  //////////////////////////////////////////////////////////////////////
+  /// 変数宣言 ここから ///////////////////////////////////
+  //////////////////////////////////////////////////////////////////////
+
   // websocket通信のデータ保存先
   const chatContext = useContext(WebScokectContext);
 
@@ -492,7 +502,13 @@ const ChatView = () => {
   const get_channel_list = "http://localhost:8000/get_channel_list";
   const get_chat = "http://localhost:8000/get_chat";
 
-  /// 画面読み込み後、1度だけ実行
+  //////////////////////////////////////////////////////////////////////
+  /// 変数宣言 ここまで ///////////////////////////////////
+  //////////////////////////////////////////////////////////////////////
+
+  ///////////////////////////////////
+  /// useEffect(画面読み込み後、1度だけ実行)
+  ///////////////////////////////////
   useEffect(() => {
 
     //GetChannelList();
@@ -538,9 +554,9 @@ const ChatView = () => {
     // 関数呼び出し
     restoreScrollPosition();
     scrollToBottom();
-
     // UI調整
     handleResize();
+
     window.addEventListener('resize', handleResize);
     // 画面全体のwidthが900px未満かつチャット相手未選択のときはフォローリスト表示
     if (window.innerWidth < 900 && !chatViewId) {
@@ -555,7 +571,10 @@ const ChatView = () => {
   }, []);
 
 
-  // chatContext.WebSocketState.Chat,chatViewIdを取得したとき
+  ///////////////////////////////////
+  /// useEffect(chatContext.WebSocketState.Chat,chatViewIdが変化したとき実行)
+  /// 相手から送られたチャットを即時に反映させる
+  ///////////////////////////////////
   useEffect(() => {
 
     // セッションストレージ取得
@@ -569,24 +588,27 @@ const ChatView = () => {
       AlreadyReadChat(chatViewId);
     }, 1000);
 
-
   }, [chatContext.WebSocketState.Chat, chatViewId]);
 
-  // chatContext.WebSocketState.Chat2を取得したとき
-  // リアルタイムで既読や削除を反映させる
-
+  ///////////////////////////////////
+  /// useEffect(chatContext.WebSocketState.Chat2が変化したとき実行)
+  /// 既読、削除、編集した結果を即時に反映させる
+  ///////////////////////////////////
   useEffect(() => {
     // トーク画面の再読み込み
     GetChat(chatViewId);
   }, [chatContext.WebSocketState.Chat2]);
 
 
-  // chatEditDataが変更されたとき
+  ///////////////////////////////////
+  /// useEffect(chatEditDataが変化したとき実行)
+  /// 既読、削除、編集した結果を即時に反映させる
+  ///////////////////////////////////
   useEffect(() => {
     updateSessionData("accountData", "ChatEditData", chatEditData);
   }, [chatEditData]);
 
-  /// ListItemButtonが押された時の処理
+  /// ChatOpen関数・・・フォローリストのメンバが押された時の処理
   const ChatOpen = (element) => {
 
     // element.idが存在するときのみ実行
@@ -610,7 +632,7 @@ const ChatView = () => {
     window.location.reload();
   };
 
-  // テキストが変更されたとき
+  // textChange関数・・・テキストが変更されたとき
   const textChange = (e) => {
     const newValue = e.target.value;
     // newValueをセット
@@ -618,7 +640,7 @@ const ChatView = () => {
     console.log("newvalue:" + newValue);
   };
 
-  // 送信ボタンが押されたとき
+  // sendClick関数・・・送信ボタンが押されたとき
   const sendClick = () => {
     const newValue = TextData;
     console.log("送信内容は:" + newValue + "です");
@@ -627,7 +649,7 @@ const ChatView = () => {
     scrollToBottom();
   };
 
-  /// フォローリストの取得
+  /// GetChannelList関数・・・フォローリストの取得
   const GetChannelList = () => {
     async function GetData() {
       try {
@@ -667,7 +689,7 @@ const ChatView = () => {
     }
   };
 
-  /// 最新のチャットを取得する処理
+  /// GetChat関数・・・最新のチャットを取得する処理
   const GetChat = (id) => {
     async function GetData() {
       console.log('チャットデータを取得中...' + id);
@@ -701,7 +723,7 @@ const ChatView = () => {
     }
   };
 
-  /// チャットを送信する処理
+  /// PostChat関数・・・チャットを送信する処理
   const PostChat = () => {
     async function PostData() {
       try {
@@ -715,8 +737,8 @@ const ChatView = () => {
           body: JSON.stringify({ MyUserId: MyUserId, PairUserId: PairUserId, Message: TextData }),
         });
         console.log("送信成功しました");
+        // テキストボックスを空にしておく
         setTextData("");
-        updateSessionData("accountData", "GetStartUnread", 0);
       } catch (err) {
         console.log("err:", err);
       }
@@ -729,7 +751,7 @@ const ChatView = () => {
     }
   };
 
-  /// チャットを削除する処理
+  /// DeleteChat関数・・・チャットを削除する処理
   const DeleteChat = (id) => {
     async function PostData() {
       try {
@@ -760,7 +782,7 @@ const ChatView = () => {
     }
   };
 
-  /// 既読をつける処理
+  /// AlreadyReadChat関数・・・既読をつける処理
   const AlreadyReadChat = (id) => {
     async function PostData() {
       try {
@@ -783,7 +805,7 @@ const ChatView = () => {
     }
   };
 
-  /// チャットを更新する処理
+  /// UpDateChat関数・・・チャットを更新する処理
   const UpDateChat = () => {
     async function PostData() {
       try {
@@ -816,31 +838,44 @@ const ChatView = () => {
 
   };
 
-  // 送信時間から日にちを取り出す関数
+  // GetDay関数・・・送信時間から日にちを取り出す関数
   const GetDay = (time) => {
-    // 日付部分を切り取る
-    const ChatDate = time.slice(0, 10); // "2024-10-07" などを取得
+
+    // 日付部分を切り取る 例 : "2024-10-07"
+    const ChatDate = time.slice(0, 10);
     if (PrevChatDate && PrevChatDate === ChatDate) {
-      // 前のデータと日付が同じ場合は、日付を表示しないのでreturnで空文字列を返す
+      // 前のメッセージと日付が同じ場合は、日付を表示しないのでreturnで空文字列を返す
       return "";
     }
-    // メッセージの送信日時を更新しておく
+    // メッセージの送信日時を保存しておく
     PrevChatDate = ChatDate;
 
-    const [year, month, day] = ChatDate.split('-'); // 年、月、日を分割
-    console.log(year);
-    // 月と日を整数に変換し、形式を整える
-    const formattedDate = `${parseInt(month, 10)}月${parseInt(day, 10)}日`; // "10月7日"
+    // 配列に入れる
+    const [year, month, day] = ChatDate.split('-');
 
-    // 曜日を取得
-    const date = new Date(`${ChatDate}T00:00:00+09:00`); // UTCからDateオブジェクトに変換
-    const options = { weekday: 'long' }; // 曜日のオプション
-    const dayOfWeek = date.toLocaleDateString('ja-JP', options); // 日本語の曜日を取得
+    // 現在の日付を取得
+    const today = new Date();
+    const chatDateObj = new Date(year, parseInt(month, 10) - 1, parseInt(day, 10)); // 月は0から始まるため-1する
 
-    return `${formattedDate} (${dayOfWeek.slice(0, 1)})`; // 返り値(例: 10月7日 (日曜日) )
+    // 1年以上前かを判定
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(today.getFullYear() - 1);
+
+    // 曜日を取得する
+    const date = new Date(`${ChatDate}T00:00:00+09:00`);
+    const options = { weekday: 'long' };
+    const dayOfWeek = date.toLocaleDateString('ja-JP', options);
+
+    // 返り値
+    if (chatDateObj < oneYearAgo) {
+      // 一年以上前なら「年」も表示
+      return `${parseInt(year, 10)}年${parseInt(month, 10)}月${parseInt(day, 10)}日 (${dayOfWeek.slice(0, 1)})`;
+    } else {
+      return `${parseInt(month, 10)}月${parseInt(day, 10)}日 (${dayOfWeek.slice(0, 1)})`;
+    }
   };
 
-  // 送信時間から時:分だけを取り出す関数
+  // GetTime関数・・・送信時間から時:分だけを取り出す関数
   const GetTime = (time) => {
 
     // 文字列を切り取って時間と分を取得
@@ -854,10 +889,11 @@ const ChatView = () => {
       hour = hour.slice(1);
     }
 
-    return `${hour}:${timeString.slice(3)}`; // 返り値
+    // 返り値
+    return `${hour}:${timeString.slice(3)}`;
   };
 
-  // 「ここから未読」を表示する関数
+  // GetStartUnread関数・・・「ここから未読」を表示する関数
   const GetStartUnread = (read, id) => {
 
     if (read === "未読" && unreadMessageFlag === false) {
@@ -877,7 +913,7 @@ const ChatView = () => {
     return "";
   };
 
-  // チャットのスクロールを下にする関数
+  // scrollToBottom関数・・・チャットのスクロールを下にする関数
   const scrollToBottom = () => {
     const chatBox = chatBoxscroll.current;
     // chatBoxがなければ中断
@@ -905,12 +941,12 @@ const ChatView = () => {
     };
   };
 
-  // フォローリストのスクロール位置をセッションストレージに保存する関数
+  // saveScrollPosition関数・・・フォローリストのスクロール位置をセッションストレージに保存する関数
   const saveScrollPosition = () => {
     updateSessionData("accountData", "ListBoxscroll", ListBoxscroll.current.scrollTop);
   };
 
-  // セッションストレージを使い、フォローリストのスクロールの高さを調整
+  // restoreScrollPosition関数・・・セッションストレージを使い、フォローリストのスクロールの高さを調整
   const restoreScrollPosition = () => {
     const ListBoxscrollPosition = getSessionData("accountData").ListBoxscroll;
     if (ListBoxscrollPosition) {
@@ -920,14 +956,14 @@ const ChatView = () => {
     }
   };
 
-  // onChange={chatEditChange}で実行
+  // アクション : onChange={chatEditChange}で実行
   const chatEditChange = (e) => {
     const newValue = e.target.value;
     // newValueをセット
     setChatEditData(newValue);
   };
 
-  // widthが変化したとき
+  // アクション : widthが変化したとき
   const handleResize = () => {
     setShowChatView(true);
     if (window.innerWidth < 900) {
@@ -944,7 +980,7 @@ const ChatView = () => {
     }
   };
 
-  // 戻るボタン(画面全体のwidthが900px未満のとき)
+  // アクション : onClick={handleBackClick}で実行(画面全体のwidthが900px未満のとき)
   const handleBackClick = () => {
     if (window.innerWidth < 900) {
       // 画面全体のwidthが900px未満のとき
@@ -953,7 +989,9 @@ const ChatView = () => {
     }
   };
 
-  ///////////////////// ポップメニューに関する処理 /////////////////////
+  //////////////////////////////////////////////////////////////////////
+  /// ポップメニュー(チャットの編集、削除)に関する処理 ここから /////////////
+  //////////////////////////////////////////////////////////////////////
   // 開く
   const popMenu = (e) => {
     // 変数の上書き
@@ -1016,6 +1054,9 @@ const ChatView = () => {
       // キャンセル（いいえ）が押された場合の処理
     }
   };
+  //////////////////////////////////////////////////////////////////////
+  /// ポップメニュー(チャットの編集、削除)に関する処理 ここまで /////////////
+  //////////////////////////////////////////////////////////////////////
 
   return (
     <>
@@ -1150,7 +1191,12 @@ const ChatView = () => {
                       {/* アイコン */}
                       <SelectIcon chatViewIcon={chatViewIcon} />
                       {/* 企業名またはユーザーネーム */}
-                      <Box sx={{ fontSize: '1.9rem' }}>
+                      <Box sx={{
+                        fontSize: '1.9rem',
+                        overflow: 'hidden',         // 内容がコンテナを超えた場合に隠す
+                        textOverflow: 'ellipsis',  // 省略記号を表示
+                        whiteSpace: 'nowrap',      // テキストを1行に制限
+                      }}>
                         {chatViewCompanyName ?
                           chatViewCompanyName :
                           chatViewUserName}

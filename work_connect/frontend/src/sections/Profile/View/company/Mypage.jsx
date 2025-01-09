@@ -111,6 +111,10 @@ const ProfileMypage = () => {
 
   const [responseIcon, setResponseIcon] = useState(true);
 
+  // マップ、YouTube動画の初期値設定
+  const [CompanyAddressMapURL, setCompanyAddressMapURL] = useState(null);
+  const [IntroVideoURL, setIntroVideoURL] = useState(null);
+
   // セッションストレージ取得
   const { getSessionData } = useSessionStorage();
 
@@ -148,6 +152,11 @@ const ProfileMypage = () => {
           setResponseData(response.data[0]);
           setResponseCompanyInformationData(response.data[0].companyInformation);
           setFollowStatus(response.data[0].follow_status);
+          // マップ
+          console.log("XXXXXXXXXXXXXXXXXXXXXXX"+response.data[0].map_url);
+          handleMapUrl(response.data[0].map_url);
+          // youtube
+          handleVideoUrl(response.data[0].video_url);
         }
       } catch (err) {
         console.log("err:", err);
@@ -166,6 +175,7 @@ const ProfileMypage = () => {
     detail.current.forEach((ref) => {
       if (ref) ref.style.display = "none";
     });
+
   }, []);
 
   // フォロー
@@ -214,43 +224,44 @@ const ProfileMypage = () => {
 
   // マップのURL
   const handleMapUrl = (URL) => {
-    let extractedUrl = null;
+    let extractedMapUrl = null;
 
     if (URL.includes("iframe")) {
       // src属性からURLを抽出する
       const regex = /src="([^"]+)"/;
       const match = URL.match(regex);
       if (match && match[1]) {
-        extractedUrl = match[1];
+        extractedMapUrl = match[1];
       }
     }
-    return extractedUrl;
+    setCompanyAddressMapURL(extractedMapUrl);
   };
 
   // YouTubeのリンク設定
   const handleVideoUrl = (URL) => {
-    let extractedUrl = null;
+    let extractedMovieUrl = null;
 
     // 共有リンク (https://youtu.be/)
     if (URL.includes("youtu.be")) {
       const videoId = URL.split("/").pop().split("?")[0];
-      extractedUrl = `https://www.youtube.com/embed/${videoId}`;
+      extractedMovieUrl = `https://www.youtube.com/embed/${videoId}`;
     }
     // 埋め込み用リンクを入力した場合 (<iframe ...>)
     else if (URL.includes("iframe")) {
       const regex = /src="([^"]+)"/;
       const match = URL.match(regex);
       if (match && match[1]) {
-        extractedUrl = match[1];
+        extractedMovieUrl = match[1];
       }
     }
     // 通常のYouTubeリンク (https://www.youtube.com/watch?v=)
     else if (URL.includes("watch?v=")) {
       const videoId = URL.split("v=")[1].split("&")[0];
-      extractedUrl = `https://www.youtube.com/embed/${videoId}`;
+      extractedMovieUrl = `https://www.youtube.com/embed/${videoId}`;
     }
+    setIntroVideoURL(extractedMovieUrl);
 
-    return extractedUrl;
+    //return extractedMovieUrl;
   };
 
   // 編集ボタンを押したときの処理
@@ -486,10 +497,10 @@ const ProfileMypage = () => {
         <Box>
           <Typography variant="h6">本社所在地マップ</Typography>
           <Item>
-            {ResponseData.map_url ? (
+            {CompanyAddressMapURL ? (
               <Iframe
                 //url={ResponseData.map_url}
-                url={handleMapUrl(ResponseData.map_url)}
+                url={CompanyAddressMapURL}
                 width="100%"
                 height="400px"
               />
@@ -582,15 +593,15 @@ const ProfileMypage = () => {
             </Item>
           </Box>
         )}
-        {/* ResponseData.video_urlがあるときのみ表示 */}
-        {ResponseData.video_url && !close && (
+        {/* IntroVideoURLがあるときのみ表示 */}
+        {IntroVideoURL && !close && (
           <Box ref={(el) => (detail.current[8] = el)} id="detail">
             <Typography variant="h6">紹介動画</Typography>
             <Item>
-              {ResponseData.video_url ? (
+              {IntroVideoURL ? (
                 <Iframe
                   //url={ResponseData.video_url}
-                  url={handleVideoUrl(ResponseData.video_url)}
+                  url={IntroVideoURL}
                   width="100%"
                   height="400px"
                 />

@@ -2031,6 +2031,7 @@ export default function Searchbar() {
                                         options={options.follow_status}
                                         value={searchSource.follow_status}
                                         isClearable
+                                        closeMenuOnSelect={false}
                                         isMulti
                                         onChange={handleChangeFollowStatus}
                                       />
@@ -2201,6 +2202,7 @@ export default function Searchbar() {
                                       options={options.work_genre}
                                       value={searchSource.work_genre}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangeWorkGenre}
                                     />
@@ -2230,6 +2232,7 @@ export default function Searchbar() {
                                       options={options.programming_language}
                                       value={searchSource.programming_language}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangeProgrammingLanguage}
                                     />
@@ -2259,6 +2262,7 @@ export default function Searchbar() {
                                       options={options.development_environment}
                                       value={searchSource.development_environment}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangeDevelopmentEnvironment}
                                     />
@@ -2294,6 +2298,7 @@ export default function Searchbar() {
                                           options={options.follow_status}
                                           value={searchSource.follow_status}
                                           isClearable
+                                          closeMenuOnSelect={false}
                                           isMulti
                                           onChange={handleChangeFollowStatus}
                                         />
@@ -2465,6 +2470,7 @@ export default function Searchbar() {
                                       options={options.video_genre}
                                       value={searchSource.video_genre}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangeVideoGenre}
                                     />
@@ -2500,6 +2506,7 @@ export default function Searchbar() {
                                           options={options.follow_status}
                                           value={searchSource.follow_status}
                                           isClearable
+                                          closeMenuOnSelect={false}
                                           isMulti
                                           onChange={handleChangeFollowStatus}
                                         />
@@ -2700,6 +2707,7 @@ export default function Searchbar() {
                                       options={options.desired_occupation}
                                       value={searchSource.desired_occupation}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangeDesiredOccupation}
                                     />
@@ -2728,6 +2736,7 @@ export default function Searchbar() {
                                       options={options.desired_work_region}
                                       value={searchSource.desired_work_region}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangeDesiredWorkRegion}
                                     />
@@ -2756,6 +2765,7 @@ export default function Searchbar() {
                                       options={options.student_programming_language}
                                       value={searchSource.student_programming_language}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangeStudentProgrammingLanguage}
                                     />
@@ -2784,6 +2794,7 @@ export default function Searchbar() {
                                       options={options.student_development_environment}
                                       value={searchSource.student_development_environment}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangeStudentDevelopmentEnvironment}
                                     />
@@ -2812,6 +2823,7 @@ export default function Searchbar() {
                                       options={options.software}
                                       value={searchSource.software}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangeSoftware}
                                     />
@@ -2840,6 +2852,7 @@ export default function Searchbar() {
                                       options={options.acquisition_qualification}
                                       value={searchSource.acquisition_qualification}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangeAcquisitionQualification}
                                     />
@@ -2868,6 +2881,7 @@ export default function Searchbar() {
                                       options={options.hobby}
                                       value={searchSource.hobby}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangeHobby}
                                     />
@@ -2901,6 +2915,7 @@ export default function Searchbar() {
                                       options={options.work_genre}
                                       value={searchSource.work_genre}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangeWorkGenre}
                                     />
@@ -2929,6 +2944,7 @@ export default function Searchbar() {
                                       options={options.programming_language}
                                       value={searchSource.programming_language}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangeProgrammingLanguage}
                                     />
@@ -2957,6 +2973,7 @@ export default function Searchbar() {
                                       options={options.development_environment}
                                       value={searchSource.development_environment}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangeDevelopmentEnvironment}
                                     />
@@ -2990,6 +3007,7 @@ export default function Searchbar() {
                                       options={options.work_genre}
                                       value={searchSource.work_genre}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangeWorkGenre}
                                     />
@@ -3025,6 +3043,7 @@ export default function Searchbar() {
                                           options={options.follow_status}
                                           value={searchSource.follow_status}
                                           isClearable
+                                          closeMenuOnSelect={false}
                                           isMulti
                                           onChange={handleChangeFollowStatus}
                                         />
@@ -3057,6 +3076,7 @@ export default function Searchbar() {
                                       options={options.selected_occupation}
                                       value={searchSource.selected_occupation}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangeSelectedOccupation}
                                     />
@@ -3085,6 +3105,7 @@ export default function Searchbar() {
                                       options={options.prefecture}
                                       value={searchSource.prefecture}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangePrefecture}
                                     />
@@ -3113,6 +3134,7 @@ export default function Searchbar() {
                                       options={options.industry}
                                       value={searchSource.industry}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangeIndustry}
                                     />
@@ -3141,6 +3163,7 @@ export default function Searchbar() {
                                       options={options.development_environment}
                                       value={searchSource.development_environment}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangeDevelopmentEnvironment}
                                     />
@@ -3169,6 +3192,7 @@ export default function Searchbar() {
                                       options={options.programming_language}
                                       value={searchSource.programming_language}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangeProgrammingLanguage}
                                     />
@@ -3197,6 +3221,7 @@ export default function Searchbar() {
                                       options={options.acquisition_qualification}
                                       value={searchSource.acquisition_qualification}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangeAcquisitionQualification}
                                     />
@@ -3225,6 +3250,7 @@ export default function Searchbar() {
                                       options={options.software}
                                       value={searchSource.software}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangeSoftware}
                                     />
@@ -3282,6 +3308,7 @@ export default function Searchbar() {
                                           options={options.follow_status}
                                           value={searchSource.follow_status}
                                           isClearable
+                                          closeMenuOnSelect={false}
                                           isMulti
                                           onChange={handleChangeFollowStatus}
                                         />
@@ -3330,6 +3357,7 @@ export default function Searchbar() {
                                       options={options.selected_occupation}
                                       value={searchSource.selected_occupation}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangeSelectedOccupation}
                                     />
@@ -3358,6 +3386,7 @@ export default function Searchbar() {
                                       options={options.prefecture}
                                       value={searchSource.prefecture}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangePrefecture}
                                     />
@@ -3386,6 +3415,7 @@ export default function Searchbar() {
                                       options={options.industry}
                                       value={searchSource.industry}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangeIndustry}
                                     />
@@ -3414,6 +3444,7 @@ export default function Searchbar() {
                                       options={options.development_environment}
                                       value={searchSource.development_environment}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangeDevelopmentEnvironment}
                                     />
@@ -3442,6 +3473,7 @@ export default function Searchbar() {
                                       options={options.programming_language}
                                       value={searchSource.programming_language}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangeProgrammingLanguage}
                                     />
@@ -3470,6 +3502,7 @@ export default function Searchbar() {
                                       options={options.acquisition_qualification}
                                       value={searchSource.acquisition_qualification}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangeAcquisitionQualification}
                                     />
@@ -3498,6 +3531,7 @@ export default function Searchbar() {
                                       options={options.software}
                                       value={searchSource.software}
                                       isClearable
+                                      closeMenuOnSelect={false}
                                       isMulti
                                       onChange={handleChangeSoftware}
                                     />

@@ -8,6 +8,8 @@ const Language = (props) => {
   const { InsertTagFunction } = InsertTag();
   const url = "http://localhost:8000/get_work_language_tag";
   const [options, setOptions] = useState([]);
+  const [selectedOption, setSelectedOption] = useState([]);
+
   useEffect(() => {
     async function LanguageFunction() {
       try {
@@ -39,12 +41,34 @@ const Language = (props) => {
     axios.get(url);
   }, []);
 
+  useEffect(() => {
+    console.log("workData:", props.workData);
+
+    if (props.workData != undefined) {
+      const option = [];
+      console.log(true);
+      const genreArray = props.workData.split(",");
+      if (genreArray[0] != "") {
+        genreArray.map((value) => {
+          option.push({ value: value, label: value });
+          // setSelectedOption((prevOptions) => [...prevOptions, { value: value, label: value }]);
+        });
+      }
+      console.log("selectedOption", option);
+
+      setSelectedOption(option);
+    }
+  }, [props.workData]);
+
   const handleChange = (selectedOption, actionMeta) => {
     console.log(actionMeta);
     if (actionMeta && actionMeta.action === "create-option") {
       const inputValue = actionMeta;
       console.log(inputValue);
-      const newOption = { value: inputValue.option.value, label: inputValue.option.label };
+      const newOption = {
+        value: inputValue.option.value,
+        label: inputValue.option.label,
+      };
       setOptions([...options, newOption]);
       // 12は作品投稿のプログラミング言語です。
       InsertTagFunction(inputValue.option.value, 12);
@@ -53,17 +77,28 @@ const Language = (props) => {
     selectedOption.map((value) => {
       valueArray.push(value.value);
     });
+    setSelectedOption(selectedOption);
     props.callSetWorkData("Language", valueArray.join(","));
   };
 
-  return <CreatableSelect
-        // プレフィックス＝接頭語
-        // CreatableSelect内のInput要素のClass名の頭にMyPageEditItemsをつけるという意味
-        classNamePrefix="MyPageEditItems" options={options} placeholder="▼" isClearable isMulti onChange={handleChange} />;
+  return (
+    <CreatableSelect
+      // プレフィックス＝接頭語
+      // CreatableSelect内のInput要素のClass名の頭にMyPageEditItemsをつけるという意味
+      classNamePrefix="MyPageEditItems"
+      options={options}
+      value={selectedOption}
+      placeholder="▼"
+      isClearable
+      isMulti
+      onChange={handleChange}
+    />
+  );
 };
 
 Language.propTypes = {
   callSetWorkData: PropTypes.func,
+  workData: PropTypes.string.isRequired,
 };
 
 export default Language;

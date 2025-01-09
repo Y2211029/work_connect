@@ -23,6 +23,7 @@ class NewsController extends Controller
             ->select('w_news.*', 'w_companies.*', 'w_news.created_at as news_created_at', 'w_news.id as news_id')
             ->first();
 
+
         if ($news_detail) {
             $news_detail->summary = json_decode($news_detail->summary);
 
@@ -54,10 +55,7 @@ class NewsController extends Controller
                 ->first();
 
             Log::info('クリエイトフォーム' . $createForm);
-            Log::info('ジャンル'. $news_detail->genre);
-
-
-
+            Log::info('ジャンル' . $news_detail->genre);
 
             //もしもジャンルがブログではないかつフォームを作成していた場合
             //今見ている人が応募済みかどうかチェック
@@ -92,7 +90,34 @@ class NewsController extends Controller
                 $news_detail->createform_status = false;
             }
 
-            return response()->json($news_detail);
+            $CompanyId =  $news_detail->company_id;
+            $NewsId =  $news_detail->news_id;
+    
+            $all_news_data = w_news::where('company_id', $CompanyId)
+                ->where('public_status', 1)
+                ->orderby('updated_at', 'asc')
+                ->get();
+    
+            Log::info($all_news_data);
+    
+            // 該当ニュースの前後のニュースを取得
+            $targetIndex = $all_news_data->search(function ($item) use ($NewsId) {
+                return $item->id == $NewsId;
+            });
+    
+            // 前のニュース（$targetIndex - 1）
+            $previousNews = $all_news_data->get($targetIndex - 1) ?? null;
+    
+            // 次のニュース（$targetIndex + 1）
+            $nextNews = $all_news_data->get($targetIndex + 1) ?? null;
+    
+            // Logで確認
+            Log::info('前のニュース:', [$previousNews]);
+            Log::info('次のニュース:', [$nextNews]);
+
+            // ['apply_histories' => $posts]
+
+            return response()->json(['news_detail' => $news_detail , 'previousNews' => $previousNews , 'nextNews' => $nextNews]);
         } else {
             return response()->json(['error' => 'ニュースが見つかりませんでした。'], 404);
         }
@@ -110,8 +135,10 @@ class NewsController extends Controller
             ->select(
                 'w_companies.company_name as companies_name',
                 'w_companies.icon as icon',
+                'w_companies.user_name as companies_user_name',
                 'w_news.id as news_id',
                 'w_news.article_title as news_title',
+                'w_news.event_day as event_day',
                 'w_news.genre as news_genre',
                 'w_news.header_img as img',
                 'w_write_forms.id as write_form_id',
@@ -128,9 +155,11 @@ class NewsController extends Controller
             $posts[] = [
                 'id' => $id,
                 'companies_name' => $app->companies_name,
+                'companies_user_name' => $app->companies_user_name,
                 'news_id' => $app->news_id,
                 'news_title' => $app->news_title,
                 'news_genre' => $app->news_genre,
+                'event_day' => $app->event_day,
                 'img' => $app->img,
                 'write_form_id' => $app->write_form_id,
                 'write_form' => json_decode($app->write_form, true), // 配列としてデコード
@@ -234,7 +263,7 @@ class NewsController extends Controller
             $postsQuery = w_news::where('w_news.public_status', 1)
                 ->where('w_news.genre', $category)
                 ->join('w_companies', 'w_news.company_id', '=', 'w_companies.id')
-                ->select('w_news.*', 'w_companies.*', 'w_news.created_at as news_created_at','w_news.genre as genre', 'w_news.id as news_id');
+                ->select('w_news.*', 'w_companies.*', 'w_news.created_at as news_created_at', 'w_news.genre as genre', 'w_news.id as news_id');
 
             if ($userName !== null) {
                 $postsQuery->where('w_companies.user_name', $userName);
@@ -250,40 +279,39 @@ class NewsController extends Controller
                 ->take($perPage)
                 ->get();
 
-            if($posts){
+            if ($posts) {
                 foreach ($posts as $post) {
 
                     Log::info("ジャンル", ['genre' => $post->genre]);
 
                     // w_create_formsテーブルから応募用フォームがあるかチェック
                     $createformData = w_create_form::where('news_id', $post->news_id)->first();
-                    Log::info('$createformData'. $createformData);
+                    Log::info('$createformData' . $createformData);
 
                     if ($createformData) {
                         // 現在のデッドラインを取得
                         $Deadline = $createformData->deadline;
-                    
+
                         // デッドラインが指定されている場合のみ更新
                         if (!empty($Deadline)) {
                             Log::info('デッドライン: ' . $Deadline);
                             $now = Carbon::now('Asia/Tokyo');
                             Log::info('現在の時刻: ' . $now);
                             info('データ型: ' . gettype($Deadline) . ', ' . gettype($now));
-                    
+
                             // デッドラインを Carbon オブジェクトに変換
                             try {
                                 $DeadlineObject = Carbon::parse($Deadline);
-                    
+
                                 // 締め切りを確認する 締切日を設定していないもしくは締切日超過の場合はfalseを返す
                                 if ($DeadlineObject->lt($now)) {
                                     $post->deadline_status = true;
                                 } else {
                                     $post->deadline_status = false;
                                 }
-                    
+
                                 // デッドラインを更新
                                 $post->deadline = $DeadlineObject;
-                    
                             } catch (\Exception $e) {
                                 Log::error('デッドラインの変換に失敗しました: ' . $e->getMessage());
                                 $post->deadline_status = false; // 変換失敗時はデフォルト値にする
@@ -307,14 +335,14 @@ class NewsController extends Controller
 
 
                     $isFollowing = w_follow::where('follow_sender_id', $id)
-                    ->where('follow_recipient_id', $post->company_id)
-                    ->exists();
+                        ->where('follow_recipient_id', $post->company_id)
+                        ->exists();
 
-                $isFollowedByUser = w_follow::where('follow_sender_id', $post->company_id)
-                    ->where('follow_recipient_id', $id)
-                    ->exists();
+                    $isFollowedByUser = w_follow::where('follow_sender_id', $post->company_id)
+                        ->where('follow_recipient_id', $id)
+                        ->exists();
 
-                if ($isFollowing && $isFollowedByUser) {
+                    if ($isFollowing && $isFollowedByUser) {
                         $post->follow_status = '相互フォローしています';
                     } elseif ($isFollowing) {
                         $post->follow_status = 'フォローしています';
@@ -327,8 +355,7 @@ class NewsController extends Controller
 
 
                 return json_encode($posts);
-
-            }else{
+            } else {
                 $posts = [];
                 return json_encode($posts);
             }
@@ -420,15 +447,16 @@ class NewsController extends Controller
         return response()->json($posts);
     }
 
-    public function news_delete(Request $request){
+    public function news_delete(Request $request)
+    {
         $news_id = $request->input('news_id');
         Log::info("news_id" . $news_id);
 
         //$news_idでニュースがあるかチェック
-        $news_check =w_news::where('id', $news_id)
+        $news_check = w_news::where('id', $news_id)
             ->first();
 
-        if($news_check){
+        if ($news_check) {
             //ニュースがあれば削除
             $news_check->delete();
 
@@ -437,7 +465,7 @@ class NewsController extends Controller
                 ->first();
 
             //応募用フォームがあれば削除(応募したフォームは削除しない)
-            if($create_form_check){
+            if ($create_form_check) {
                 $create_form_check->delete();
             }
 

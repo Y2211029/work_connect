@@ -79,6 +79,7 @@ const MajorNameDropdown = ({ MajorNameData }) => {
                 onChange={handleChange}
                 options={options}
                 placeholder="▼"
+             
                 isClearable
                 styles={{
                     control: (base) => ({

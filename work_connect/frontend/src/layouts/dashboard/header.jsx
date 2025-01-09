@@ -273,6 +273,7 @@ export default function Header({ onOpenNav }) {
                     width: 250,
                   },
                 }}
+                disableScrollLock
               >
                 {NEWS_MENU_OPTIONS.map((option) => (
                   <MenuItem key={option.label} onClick={() => handleMenuItemClick(option.path)} sx={{ display: login_state ? "block" : "none" }}>
@@ -285,11 +286,21 @@ export default function Header({ onOpenNav }) {
           </>
         ) : null}
 
-        <Button id="LoginButton" onClick={handleChange} variant="contained" style={{ display: Display.HomePage === "" ? "none" : "block" }}>
+        <Button
+          id="LoginButton"
+          onClick={handleChange}
+          variant="contained"
+          sx={{ display: Display.HomePage == "none" ? { xs: "none", md: "none", lg: "flex" } : "none" }}
+        >
           ログイン
         </Button>
 
-        <Button id="PreSignButton" onClick={handleChange} variant="outlined" style={{ display: Display.HomePage === "" ? "none" : "block" }}>
+        <Button
+          id="PreSignButton"
+          onClick={handleChange}
+          variant="outlined"
+          sx={{ display: Display.HomePage == "none" ? { xs: "none", md: "none", lg: "flex" } : "none" }}
+        >
           新規登録
         </Button>
 
@@ -320,7 +331,7 @@ export default function Header({ onOpenNav }) {
 
         <NotificationsPopover />
 
-        <Tooltip title="アカウント" sx={{ display: Display.HomePage ? "none" : "flex" }}>
+        <Tooltip title="アカウント" sx={{ display: Display.HomePage === "none" ? "none" : "flex" }}>
           <IconButton
             sx={{
               marginLeft: "auto", // 右揃え
@@ -335,6 +346,13 @@ export default function Header({ onOpenNav }) {
         </Tooltip>
       </Stack>
     </>
+  );
+
+  const renderArrowTopButton = (
+    <ArrowUpwardIcon
+      onClick={handleScrollToTop}
+      className="arrow_up_ward_icon"
+    />
   );
 
   const renderToolBar = (
@@ -399,6 +417,9 @@ export default function Header({ onOpenNav }) {
               anchorOrigin={{ vertical: "top", horizontal: "center" }}
               transformOrigin={{ vertical: "bottom", horizontal: "center" }}
               // popover全体ではなく、ボタンを囲っている一つ階層が上の要素のスタイリングをする。
+              sx={{
+                p: 0,
+              }}
               PaperProps={{
                 sx: {
                   p: 0, // 内側の余白（padding）を0に設定
@@ -407,6 +428,7 @@ export default function Header({ onOpenNav }) {
                   width: "fit-contents", // 幅を250pxに設定
                 },
               }}
+              disableScrollLock
             >
               <Button onClick={handleOpenModal} variant="contained" sx={buttonStyle}>
                 作品投稿
@@ -449,6 +471,7 @@ export default function Header({ onOpenNav }) {
                 anchorOrigin={{ vertical: "top", horizontal: "center" }}
                 transformOrigin={{ vertical: "bottom", horizontal: "center" }}
                 // popover全体ではなく、ボタンを囲っている一つ階層が上の要素のスタイリングをする。
+
                 PaperProps={{
                   sx: {
                     p: 0, // 内側の余白（padding）を0に設定
@@ -457,6 +480,7 @@ export default function Header({ onOpenNav }) {
                     width: "fit-contents", // 幅を250pxに設定
                   },
                 }}
+                disableScrollLock
               >
                 {NEWS_MENU_OPTIONS.map((option) => (
                   <MenuItem key={option.label} onClick={() => handleMenuItemClick(option.path)} sx={{ display: login_state ? "block" : "none" }}>
@@ -489,6 +513,31 @@ export default function Header({ onOpenNav }) {
   useEffect(() => {
     console.log("theme.zIndex", theme.zIndex);
   }, [theme]);
+  const renderPhoneSizeLogin = (
+    <>
+      <Box className="top_page_phone_size_box" sx={{ display: Display.HomePage == "none" ? { xs: "flex", md: "flex", lg: "none" } : "none" }}>
+        <Button
+          id="LoginButton"
+          onClick={handleChange}
+          className="top_page_phone_size_button"
+          variant="contained"
+          // sx={{ display: Display.HomePage === "none" ? "flex" : "none" }}
+        >
+          ログイン
+        </Button>
+
+        <Button
+          id="PreSignButton"
+          onClick={handleChange}
+          className="top_page_phone_size_button"
+          variant="outlined"
+          // sx={{ display: Display.HomePage === "none" ? "flex" : "none" }}
+        >
+          新規登録
+        </Button>
+      </Box>
+    </>
+  );
 
   return (
     <>
@@ -518,24 +567,10 @@ export default function Header({ onOpenNav }) {
         >
           {renderContent}
         </Toolbar>
-        <ArrowUpwardIcon
-          onClick={handleScrollToTop}
-          style={{
-            display: Display.HomePage ? "none" : "block",
-            cursor: "pointer",
-            width: "50px",
-            height: "50px",
-            position: "fixed",
-            top: "52vw",
-            right: "1.5vw",
-            color: "black",
-            borderRadius: "50%",
-            boxShadow: "rgba(0, 0, 0, 0.5) 0px 0px 10px",
-          }}
-        />
       </AppBar>
-
+      {renderArrowTopButton}
       {renderToolBar}
+      {renderPhoneSizeLogin}
     </>
   );
 }

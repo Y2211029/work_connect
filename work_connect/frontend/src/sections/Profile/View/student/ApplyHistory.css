@@ -1,52 +1,75 @@
-.post_card {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-    margin: 16px 0;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
-    font-family: Arial, sans_serif;
+/* 2列レイアウトの親要素 */
+.apply_history_container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* 300px以上の要素を並べる */
+    gap: 16px; /* 要素間のスペース */
+    padding: 16px; /* 全体のパディング */
     width:100%;
+    height:100%;
+    max-width: 800px;
+    align-items: start;
+    padding-top: 5%;
 }
+  
+  /* カード要素のスタイル */
+  .post_card {
+    background-color: #fff; /* 背景色 */
+    border: 1px solid #ddd; /* 境界線 */
+    border-radius: 8px; /* 角丸 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* シャドウ */
+    padding: 16px; /* 内側の余白 */
+  }
+
+  .ApplyFormUserName{
+    margin: 0;
+    font-weight: 700;
+    line-height: 1.5;
+    font-size: 1.45rem;
+    font-family: Public Sans, sans-serif;
+    padding-left: 1.5%;
+    padding-top: 1.5%;
+    padding-bottom: 1.5%;
+  }
+
+  .ApplyFormCompaniesName{
+    height:20px;
+    margin-top: 5%;
+    text-decoration: none;
+    }
+  
+
 
 .post_card_header {
     position: relative;
-    width: 10%;
+    width: 15%;
     overflow: hidden;
+    padding-right: 10px;
 }
 
 .post_card_img {
     margin-top:15%;
-    margin-left:20%;
-    width: 36px;
-    height: 36px;
+    margin-left:10%;
+    width: 50px;
+    height: 40px;
     object-fit: cover;
     border-radius: 50%;
 }
 
 .form_writed_at{
-    margin-left: 10px;
+    padding-left: 10px;
 }
 
 .post_card_content {
-    padding: 16px;
+    padding-left: 10px;
+    padding-bottom: 15px;
 }
 
 .post_card_title {
-    font-size: 1.5rem;
+    font-size: 1.0rem;
     margin: 0;
     color: #333;
+    padding-bottom:10px;
 }
-
-.post_card_genre,
-.post_card_company,
-.post_card_date,
-.post_card_postDateTimeDisplay{
-    font-size: 1rem;
-    margin: 20px 0;
-    color: #555;
-}
-
 
 .post_card_form h3 {
     margin: 16px 0 8px;
@@ -68,4 +91,161 @@
 
 .post_card_form li strong {
     color: #555;
+}
+
+.ApplyHistoryAccordionMenu{
+    border:1px solid blue; 
+    width:90%;
+    left:3%;
+}
+
+.postDateTimeDisplay{
+    padding-left: 10px;
+}
+
+.EventDayAlert{
+    font-size:12px;
+}
+
+.ApplyDetailsTitle{
+    font-weight: bold;
+}
+
+@media(max-width:1200px){
+    .apply_history_container {
+        max-width: 1000px;
+    }
+
+    .CompaniesName{
+        font-size:20px;
+    }
+
+    .EventDayAlert{
+        font-size:15px;
+    }
+
+    .form_writed_at{
+        width:70%;
+        height: 10px;
+        font-size:17px;
+    }
+
+    .postDateTimeDisplay{
+        width:400px;
+        height: 20px;
+        font-size:17px;
+    }
+
+    .post_card_img {
+        width: 60px;
+        height: 50px;
+    }
+
+
+    .post_card_title {
+        font-size: 20px;
+    }
+
+    .ApplyDetails,
+    .ApplyDetailsResponse{
+        font-size:20px;
+    }
+
+    .ApplyDetailsTitle{
+        font-size:20px;
+    }
+
+}
+
+@media(max-width:900px){
+    .form_writed_at{
+        width:90%;
+        font-size:15px;
+    }
+
+    .postDateTimeDisplay{
+        width:400px;
+        font-size:15px;
+    }
+}
+
+@media(max-width:600px){
+    .ApplyFormUserName{
+        font-size: 1.25rem;
+        padding-top: 5%;
+        padding-left: 5%;
+    }
+
+    .form_writed_at{
+        width:70%;
+        height: 10px;
+        font-size:15px;
+    }
+
+    .postDateTimeDisplay{
+        width:400px;
+        height: 20px;
+        font-size:15px;
+    }
+
+    .post_card_title {
+        font-size: 15px;
+    }
+
+    .ApplyDetails,
+    .ApplyDetailsResponse{
+        font-size:15px;
+    }
+
+    .ApplyDetailsTitle{
+        font-size:15px;
+    }
+}
+
+@media(max-width:400px){
+    .form_writed_at{
+        width:70%;
+        height: 10px;
+        font-size:12px;
+    }
+
+    .postDateTimeDisplay{
+        width:400px;
+        height: 20px;
+        font-size:12px;
+    }
+
+    .post_card_img {
+        width: 50px;
+        height: 40px;
+    }
+
+    .CompaniesName{
+        font-size:12px;
+    }
+
+    .form_writed_at{
+        width:90%;
+        font-size:12px;
+    }
+
+    .postDateTimeDisplay{
+        width:400px;
+        font-size:12px;
+    }
+
+    .post_card_title {
+        font-size: 12px;
+    }
+
+    .ApplyDetails,
+    .ApplyDetailsResponse{
+        font-size:12px;
+    }
+
+    .ApplyDetailsTitle{
+        font-size:12px;
+    }
+
+
 }

@@ -23,7 +23,7 @@ const displayContentsName = {
   user_name: "ユーザーネーム",
   password: "パスワード",
   // passwordCheck: "パスワードチェック",
-  graduation_year: "卒業年度",
+  graduation_year: "卒業年",
   school_name: "学校名",
   department_name: "学部",
   faculty_name: "学科",
@@ -129,7 +129,7 @@ const SessionDataList = ({ sessionData }) => {
                 value={full_kananame}
                 />
               );
-            } else if (label === "卒業年度"){
+            } else if (label === "卒業年"){
               // 「年」をつけて表示。
               itemContentValues = (
                 <TextField

@@ -79,6 +79,7 @@ const FacultyNameDropdown = ({ FacultyNameData }) => {
         onChange={handleChange}
         options={options}
         placeholder="▼"
+
         isClearable
         styles={{
            // 12/5 

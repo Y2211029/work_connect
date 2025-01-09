@@ -16,10 +16,12 @@ const Question = ({ application_form, selectedIndex }) => {
     const [maxId, setMaxId] = useState(0);
     const [idNumber, setIdNumber] = useState("");
 
+    console.log("アプリケーションフォーム", application_form[selectedIndex].user_name);
+
     useEffect(() => {
         if (application_form[selectedIndex]?.user_name) {
             const grouped = application_form[selectedIndex].user_name.reduce((acc, user) => {
-                user.write_form.forEach((response) => {
+                user.write_form.elements.forEach((response) => { 
                     if (!acc[response.title]) {
                         acc[response.title] = {
                             responses: [],
@@ -33,10 +35,13 @@ const Question = ({ application_form, selectedIndex }) => {
                 });
                 return acc;
             }, {});
+    
             setGroupedResponses(grouped);
-            const MaxId = Math.max(...Object.values(grouped).map(response => Number(response.id)));
+    
+            // MaxIdの取得でNumberを使用して文字列を数値に変換
+            const MaxId = Math.max(...Object.values(grouped).map(response => Number(response.id) || 0));
             setMaxId(MaxId);
-
+    
             const firstTitle = Object.keys(grouped)[0];
             if (firstTitle) {
                 setSelectedTitle(firstTitle);

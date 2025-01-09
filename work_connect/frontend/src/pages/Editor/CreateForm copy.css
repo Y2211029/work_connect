@@ -1,0 +1,391 @@
+body {
+  height: 100%;
+  /* 高さを100%に設定して、親要素の高さに合わせる */
+  margin: 0;
+  overflow: auto !important;
+  /* マージンをリセットして、余白が生じないようにする */
+}
+
+.TextFormButton {
+  width: 20%;
+}
+
+.TextSetting {
+  position: relative;
+  top: 200px;
+  left: 50%;
+  width: 50%;
+  max-width: 600px;
+  min-width: 350px;
+  transform: translate(-50%, -50%);
+  /* height: auto; */
+  border-width: 2px;
+  padding: 30px;
+  padding-right: 30px;
+  border: solid 1px;
+  background-color: rgb(255, 255, 255);
+  border-radius: 30px;
+}
+
+
+.SurveyModal {
+  margin-top: 5%;
+  width:50%;
+  /* width: 500px;
+  height:550px; */
+  overflow-x: auto;
+  overflow-y: hidden;
+  /* 縦のオーバーフローは非表示 */
+}
+
+input[type="number"] {
+  -webkit-appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: auto;
+}
+
+.sd-header__text .sd-title {
+  font-size:20px;
+}
+
+.sd-root-modern {
+  margin: 0 auto;
+  /* 自動で左右のマージンを設定し、中央揃えにします */
+}
+
+
+.back_news_draft {
+  cursor: pointer;
+
+  /* ボタンに少し丸みを追加 */
+  padding: 8px 10px 20px 20px;
+  /* 内側に余白を追加 */
+  width: 250px;
+}
+
+.Form-container {
+  width: 100%;
+}
+
+.FormDemo {
+  position: relative;
+  overflow: auto;
+  /* スクロールを有効にする */
+  flex-grow: 1;
+  height: 100%;
+  top: 100px;
+}
+
+
+.FormMenuScroll {
+  height: 100%;
+  /* 親要素の高さいっぱいに設定 */
+  overflow-y: auto;
+  /* 縦スクロールを可能に */
+  overflow-x: hidden;
+  scrollbar-color: black white;
+  scrollbar-width: thin;
+}
+
+
+
+.MuiStack-root  .css-1sazv7p-MuiStack-root {
+  left: 10%;
+}
+
+.SelectMenu {
+  margin-top: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+.QuestionMenu_Hamburger {
+  padding: 10px;
+  display: flex;
+  /* フレックスボックスを有効化して子要素を横並びに */
+  flex-direction: row;
+  /* 子要素を横方向に配置 */
+  align-items: stretch;
+  /* 子要素の高さを揃える */
+  gap: 10px;
+  /* 子要素間の間隔 */
+  padding-bottom: 10px;
+  width: fit-content;
+  /* 必要に応じて調整 */
+  overflow-y: auto;
+}
+
+
+
+.FormMenuButton {
+  display: block;
+  width: 10%;
+}
+
+.FormMenuButton:hover {
+  background-color: "#a9a9a9",
+}
+
+.FormMenu-Accordion {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: white;
+}
+
+.form_information {
+  width: 100%;
+  height: 30%;
+  border: 1px solid;
+}
+
+.table_number {
+  width: 15%;
+  text-align: center;
+}
+
+.table_title {
+  width: 70%;
+  padding: 0.1em;
+  text-align: center;
+}
+
+.table_type {
+  width: 100%;
+  padding: 0.1em;
+  text-align: center;
+}
+
+
+.FormMenu {
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  border: 1px solid black;
+  width: 250px;
+  justify-content: center;
+}
+
+.FormMenuIcon {
+  font-size: 25px;
+}
+
+.modal-overlay {
+  background-color: rgba(0, 0, 0, 0.7);
+  /* オーバーレイの背景色 */
+  z-index: 1200;
+  /* オーバーレイの z-index */
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  /* 全画面に表示させるため */
+  top: 0;
+  left: 0;
+}
+
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: none;
+  border-radius: 4%;
+  /* モーダルの角丸 */
+  padding: 1.5rem;
+  /* overflow: hidden; */
+  z-index: 1300;
+  /* コンテンツの z-index */
+  height: auto;
+  /* モーダルの高さ */
+  width: 20%;
+  /* モーダルの幅 */
+  /* コンテンツの背景色 (必要に応じて追加) */
+}
+
+.Back_Button {
+  position: relative;
+  top: 10px;
+}
+
+.Delete_Button {
+  background-color: white;
+  color: red;
+  border: 1px solid red;
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  margin-right: 20px;
+  margin-top: 10px;
+}
+
+.Edit_Button {
+  background-color: white;
+  color: blue;
+  border: 1px solid blue;
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  margin-right: 20px;
+  margin-top: 10px;
+}
+
+.FormSelectMenu {
+  width: 700px;
+}
+
+.newsEditMenuButton {
+  margin: 0px 2px;
+}
+
+.Theme_Select{
+  width:50%;
+}
+
+@media (max-width: 1200px) {
+  .QuestionMenu_Hamburger {
+    width: fit-content;
+    height: fit-content;
+    column-gap: 0px;
+    padding: 0;
+  }
+}
+
+/* スマホサイズの場合 */
+@media (max-width: 900px) {}
+
+@media (max-width: 600px) {
+
+
+  .FormDemo {
+    /* width: 700px; */
+    overflow: auto;
+    /* スクロールを有効にする */
+  }
+
+
+  .SurveyModal {
+    width: 50vh;
+  }
+
+
+
+
+  .TextSetting {
+    top: 200px;
+    left: 30%;
+    width: 30%;
+    height: 500px;
+    overflow: auto;
+  }
+
+  .TextSetting::-webkit-scrollbar {
+    width: 6px;
+    /* スクロールバーの幅 */
+    height: 10px;
+  }
+
+  .TextSetting::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    /* スクロールバーの背景色 */
+  }
+
+  .TextSetting::-webkit-scrollbar-thumb {
+    background-color: purple;
+    /* スクロールバーの色 */
+    border-radius: 10px;
+    /* スクロールバーの角を丸める */
+    border: 3px solid #f1f1f1;
+    /* スクロールバーの周りのスペース */
+  }
+
+  .TextSetting::-webkit-scrollbar-thumb:hover {
+    background-color: #800080;
+    /* ホバー時の色変更 */
+  }
+
+
+
+  .modal-content {
+    height: 120%;
+    top: 40%;
+    /* モーダルの高さ */
+    width: 1000px;
+    /* モーダルの幅 */
+    left: 65%;
+  }
+
+  .FormSelectMenu_Text {
+    position: relative;
+    font-size: 16px;
+  }
+
+  .FormSelectMenu {
+    /* margin-left: 7%; */
+    width: 600px;
+  }
+
+  .Menu_Addform {
+    width: 400px;
+    /* margin-left: -5px; */
+  }
+
+  .QuestionMenu {
+    width: 370px;
+    left: 100%;
+    padding-top: 5px;
+  }
+
+
+}
+
+@media (max-width: 400px) {
+
+  
+  .TextSetting {
+    top: 450px;
+    left: 45%;
+    width: 30%;
+    height: 500px;
+  }
+
+
+  .SurveyModal {
+    width: 50vh;
+  }
+
+  .FormSelectMenu {
+    /* margin-left: 3%; */
+    width: fit-content;
+    display: flex;
+
+  }
+
+  .FormSelectMenu_Text {
+    position: relative;
+    font-size: 12px;
+  }
+
+
+  .Menu_Addform {
+    width: 400px;
+    /* margin-left: -10px; */
+  }
+
+  .QuestionMenu {
+    width: 370px;
+    left: 100%;
+    padding-top: 5px;
+  }
+
+  .menu_deadline{
+    width:55%;
+    height:40%;
+
+  }
+
+}

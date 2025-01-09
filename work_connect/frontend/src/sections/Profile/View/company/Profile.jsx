@@ -6,7 +6,6 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import ProfileMypage from "./Mypage";
 import ProfileNews from "./News";
-import ProfileCompanyInformation from "./CompanyInformation";
 import ProfileCheckForm from "./CheckForm";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import { AllItemsContext } from "src/layouts/dashboard/index";
@@ -84,7 +83,7 @@ export function NavTabs({ initialTabValue, companyname }) {
   const { user_name } = useParams();
   const [searchParams] = useSearchParams();
   const accountData = getSessionData("accountData");
-  const Screen = useMediaQuery("(max-width:600px) and (min-width:401px)");
+  const Screen = useMediaQuery("(max-width:600px) and (min-width:300px)");
   const [isReady, setIsReady] = useState(false);
 
   const [myPageFlag, setMyPageFlag] = useState(false);
@@ -110,13 +109,6 @@ export function NavTabs({ initialTabValue, companyname }) {
     return accountData?.ProfileTabState ?? initialTabValue ?? 0;
   }
 
-  // useEffect(() => {
-  //   if (pageName !== 'checkform') {
-  //     setValue(0);
-  //   }
-  //   console.log("サーチパラムス", pageName);
-  // }, [pageName]);
-
   //URLによってタブを変更する
   useEffect(() => {
     const page = searchParams.get("page");
@@ -132,14 +124,9 @@ export function NavTabs({ initialTabValue, companyname }) {
         setValue(1);
         pageCheck("?page=news&category=JobOffer");
         break;
-      case "companyinformation":
+      case "checkform":
         setProfileTabState(2);
         setValue(2);
-        pageCheck("?page=companyinformation");
-        break;
-      case "checkform":
-        setProfileTabState(3);
-        setValue(3);
         pageCheck("?page=checkform");
         break;
       default:
@@ -207,12 +194,8 @@ export function NavTabs({ initialTabValue, companyname }) {
       setProfileTabState(1);
       pageCheck("?page=news&category=JobOffer");
     } else if (newValue === 2) {
-      // 企業情報が押されたとき
-      setProfileTabState(2);
-      pageCheck("?page=companyinformation");
-    } else if (newValue === 3) {
       // 応募フォームが押されたとき
-      setProfileTabState(3);
+      setProfileTabState(2);
       pageCheck("?page=checkform");
     }
     setAllItems((prevItems) => ({
@@ -251,14 +234,12 @@ export function NavTabs({ initialTabValue, companyname }) {
           <Tabs className="ProfileTabs" value={value ?? 0} aria-label="nav tabs example" role="navigation" centered={Screen}>
             <Tab className="ProfileTabsBox" label={myPageFlag ? "マイページ" : "プロフィール"} onClick={(e) => handleTabClick(e, 0)} />
             <Tab className="ProfileTabsBox" label="ニュース" onClick={(e) => handleTabClick(e, 1)} />
-            <Tab className="ProfileTabsBox" label="企業情報" onClick={(e) => handleTabClick(e, 2)} />
             {/* 今ログインしている企業だけに出るタブ */}
-            {checkformboolean && <Tab className="ProfileTabsBox" label={<span>応募<br />フォーム</span>} onClick={(e) => handleTabClick(e, 3)} />}
+            {checkformboolean && <Tab className="ProfileTabsBox" label={<span>応募<br />フォーム</span>} onClick={(e) => handleTabClick(e, 2)} />}
           </Tabs>
           {value === 0 && <ProfileMypage />} {/* value が 0 の場合マイページ */}
           {value === 1 && <ProfileNews />} {/* value が 1 の場合ニュース */}
-          {value === 2 && <ProfileCompanyInformation />} {/* value が 2 の場合企業情報 */}
-          {value === 3 && <ProfileCheckForm />} {/* value が 3 の場合応募フォーム一覧 */}
+          {value === 2 && <ProfileCheckForm />} {/* value が 2 の場合応募フォーム一覧 */}
         </>
 
       )}

@@ -31,7 +31,7 @@ const Environment = (props) => {
       }
     }
     EnvironmentFunction();
-    if(props.workData){
+    if (props.workData) {
       props.workData.map((value) => {
         selectedOption.push({ value: value.name, label: value.name });
       });
@@ -39,6 +39,25 @@ const Environment = (props) => {
     }
     axios.get(url);
   }, []);
+
+  useEffect(() => {
+    console.log("workData:", props.workData);
+
+    if (props.workData != undefined) {
+      const option = [];
+      console.log(true);
+      const genreArray = props.workData.split(",");
+      if (genreArray[0] != "") {
+        genreArray.map((value) => {
+          option.push({ value: value, label: value });
+          // setSelectedOption((prevOptions) => [...prevOptions, { value: value, label: value }]);
+        });
+      }
+      console.log("selectedOption", option);
+
+      setSelectedOption(option);
+    }
+  }, [props.workData]);
 
   const handleChange = (selectedOption, actionMeta) => {
     if (actionMeta && actionMeta.action === "create-option") {
@@ -55,6 +74,7 @@ const Environment = (props) => {
     selectedOption.map((value) => {
       valueArray.push(value.value);
     });
+    setSelectedOption(selectedOption);
     props.callSetWorkData("Environment", valueArray.join(","));
   };
 

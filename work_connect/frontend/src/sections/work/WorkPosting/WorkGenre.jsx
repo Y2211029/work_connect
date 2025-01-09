@@ -37,19 +37,26 @@ const WorkGenre = (props) => {
       }
     }
     WorkGenreFunction();
-    console.log("workData:", props.workData);
-    
-    if(props.workData){
-      console.log(true);
-      props.workData.map((value) => {
-        selectedOption.push({ value: value.name, label: value.name });
-      });
-      console.log(selectedOption);
-
-      setSelectedOption(selectedOption);
-    }
-    axios.get(url);
   }, []);
+
+  useEffect(() => {
+    console.log("workData:", props.workData);
+
+    if (props.workData != undefined) {
+      const option = [];
+      console.log(true);
+      const genreArray = props.workData.split(",");
+      if (genreArray[0] != "") {
+        genreArray.map((value) => {
+          option.push({ value: value, label: value });
+          // setSelectedOption((prevOptions) => [...prevOptions, { value: value, label: value }]);
+        });
+      }
+      console.log("selectedOption", option);
+
+      setSelectedOption(option);
+    }
+  }, [props.workData]);
 
   const handleChange = (selectedOption, actionMeta) => {
     console.log(actionMeta);
@@ -69,6 +76,7 @@ const WorkGenre = (props) => {
     selectedOption.map((value) => {
       valueArray.push(value.value);
     });
+    setSelectedOption(selectedOption);
     props.callSetWorkData("WorkGenre", valueArray.join(","));
   };
 

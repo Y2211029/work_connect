@@ -13,6 +13,9 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 const InternshipJobOfferPage = () => {
   const [csrfToken, setCsrfToken] = useState("");
@@ -21,6 +24,8 @@ const InternshipJobOfferPage = () => {
   const [writeformStatus, setWriteFormStatus] = useState(null);
   const [deadlinestatus, setDeadLineStatus] = useState(null);
   const [createformstatus, setCreateFormStatus] = useState(null);
+  const [previousNews, setPreviousNews] = useState(null);
+  const [nextNews, setNextNews] = useState(null);
 
   const csrf_url = "http://localhost:8000/csrf-token";
   const { news_id } = useParams(); // パラメータから id を取得
@@ -46,19 +51,27 @@ const InternshipJobOfferPage = () => {
           },
         });
         console.log(response.data);
-        SetNewsDetail(response.data);
-        setFollowStatus(response.data.follow_status);
-        const writeform_status = response.data.writeform_status;
-        const deadline_status = response.data.deadline_status;
-        const createform_status = response.data.createform_status;
+        console.log(response.data.news_detail);
+        SetNewsDetail(response.data.news_detail);
+        setFollowStatus(response.data.news_detail.follow_status);
+        const writeform_status = response.data.news_detail.writeform_status;
+        const deadline_status = response.data.news_detail.deadline_status;
+        const createform_status = response.data.news_detail.createform_status;
+        const previousNews = response.data.previousNews;
+        const nextNews = response.data.nextNews;
 
         console.log("デッドラインステータス", deadline_status);
         console.log("ライトフォームステータス", writeform_status);
         console.log("クリエイトフォームステータス", createform_status);
+        console.log("前の記事", previousNews);
+        console.log("次の記事", nextNews);
 
         setWriteFormStatus(writeform_status);
         setDeadLineStatus(deadline_status);
         setCreateFormStatus(createform_status);
+        setPreviousNews(previousNews);
+        setNextNews(nextNews);
+
       } catch (error) {
         console.error("データの取得中にエラーが発生しました！", error);
       }
@@ -99,7 +112,7 @@ const InternshipJobOfferPage = () => {
     const year = dateObj.getFullYear();
     const month = dateObj.getMonth() + 1;
     const day = dateObj.getDate();
-    return `${year}/${month}/${day}`;
+    return `${year}年${month}月${day}日`;
   };
 
   const handleProfileJump = () => {
@@ -113,6 +126,12 @@ const InternshipJobOfferPage = () => {
   const handleChatJump = () => {
     navigate(`/Chat`);
   };
+
+  const handleNewsJump = (newsdetail_id) => {
+    navigate(`/NewsDetail/${newsdetail_id}`);
+  };
+
+
 
   let Genre;
   if (NewsDetail && NewsDetail.genre === "Internship") {
@@ -137,20 +156,48 @@ const InternshipJobOfferPage = () => {
 
       {NewsDetail ? (
         <div className="NewsDetailContainer">
-          <div className="StickyMenu">
-            <Button className="NewsDetail_Button" variant="contained">
-              {Genre}
-            </Button>
+          <div className="Menu">
+            <Stack direction={"row"} spacing={2}>
+              <Button className="NewsDetail_Button" variant="contained">
+                {Genre}
+              </Button>
+
+              {Genre !== 'ブログ' ? (
+                <div className='day_information'>
+                  開催日:{formatDate(NewsDetail.event_day)}
+                  締切日:{formatDate(NewsDetail.deadline)}
+                </div>
+              ) : null}
+
+
+
+            </Stack>
+
             <h1 className="news_title">{NewsDetail.article_title}</h1>
 
-            <Stack direction="row" spacing={2}>
-              <Tooltip title="クリックするとプロフィールに行きます">
-                <p className="news_company_name" onClick={handleProfileJump}>
-                  {NewsDetail.company_name}
-                </p>
-              </Tooltip>
-              <p className="news_created_at">{formatDate(NewsDetail.news_created_at)}</p>
-            </Stack>
+            <div style={{ display: 'flex' }}>
+              <Stack direction={'row'} sx={{ alignItems: 'center' }}>
+                <img
+                  className="Company_News_img"
+                  src={`http://localhost:8000/storage/images/userIcon/${NewsDetail.icon}`}
+                  alt="Company Icon"
+                />
+                <div className="news_company_profile">
+                  <Tooltip title="クリックするとプロフィールに行きます">
+                    <p
+                      className="news_company_name"
+                      onClick={handleProfileJump}
+                      style={{ margin: 0 }}
+                    >
+                      {NewsDetail.company_name}
+                    </p>
+                  </Tooltip>
+                  <p className="news_created_at" style={{ margin: 0 }}>
+                    {formatDate(NewsDetail.news_created_at)}
+                  </p>
+                </div>
+              </Stack>
+            </div>
 
             <Stack direction="row" spacing={2} className="NewsDetail_Stack">
               {data?.id?.[0] === "S" && (
@@ -218,7 +265,7 @@ const InternshipJobOfferPage = () => {
               )}
             </Stack>
 
-            <Divider className="StickyMenu_Divider"></Divider>
+            <Divider className="Menu_Divider"></Divider>
           </div>
 
           {/* NewsDetailHeader要素 サムネイルと会社名・お気に入りボタンを一括りにする */}
@@ -303,12 +350,54 @@ const InternshipJobOfferPage = () => {
                       ))}
                     </div>
                   );
-                // 他のブロックタイプもここで処理できます
                 default:
                   return null;
               }
             })}
           </div>
+
+          {(previousNews || nextNews) && (
+  <Stack direction="row" className="previous_back_article_stack">
+    {/* 前の記事 */}
+    <div className="PreviousNews">
+      {previousNews ? (
+        <>
+          <ArrowBackIosIcon className="PreviousNews_icon" />
+          <div className="PreviousNews_content">
+            <span className="PreviousNews_span">前の記事</span>
+            <Typography
+              className="PreviousNews_text"
+              onClick={() => handleNewsJump(previousNews.id)}
+              sx={{ cursor: 'pointer' }}
+            >
+              {previousNews.article_title}
+            </Typography>
+          </div>
+        </>
+      ) : null}
+    </div>
+
+    {/* 次の記事 */}
+    <div className="NextNews">
+      {nextNews ? (
+        <>
+          <div className="NextNews_content">
+            <span className="NextNews_span">次の記事</span>
+            <Typography
+              className="NextNews_text"
+              onClick={() => handleNewsJump(nextNews.id)}
+              sx={{ cursor: 'pointer' }}
+            >
+              {nextNews.article_title}
+            </Typography>
+          </div>
+          <ArrowForwardIosIcon className="NextNews_icon" />
+        </>
+      ) : null}
+    </div>
+  </Stack>
+)}
+
         </div>
       ) : (
         <ColorRing

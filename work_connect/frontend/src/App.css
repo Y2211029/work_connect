@@ -25,6 +25,21 @@ header .logo {
 }
 
 
+.arrow_up_ward_icon {
+  display: block !important;
+  cursor: pointer !important;
+  width: 50px !important;
+  height: 50px !important;
+  position: fixed !important;
+  right: 1.5vw !important;
+  bottom: 20px !important;
+  color: black !important;
+  border-radius: 50% !important;
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 10px !important;
+  z-index: 1200 !important;
+  /* z-index もともとは1400だがモーダルの上にこの矢印がくるため変更 */
+}
+
 .toolbar {
   position: fixed;
   bottom: 0px;
@@ -94,19 +109,20 @@ nav ul li a:hover {
   border-radius: 20px;
   width: 83.5%;
   margin: 0 auto;
-  height: 600px;
+  height: 100%;
 }
 
 .top_page_content {
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: space-around;
   align-items: center;
 }
 
 .top_page_content_first {
   padding: 0px 25px;
+  position: relative;
+  top: -5%;
 }
 
 /* 作品を投稿して企業から手を差し伸べてもらおう!!!*/
@@ -233,18 +249,7 @@ nav ul li a:hover {
 
 
 
-.preSignUpUiForm button {
-  background-color: #f3f6fc;
-  width: 100%;
-  margin-top: 10px;
-  border: none;
-  border-radius: 5px;
-  padding: 10px 30px;
-  color: black;
-  font-size: 15px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
+
 
 .signUpUiForm button {
   background-color: #f3f6fc;
@@ -575,6 +580,8 @@ textarea {
   width: 100%;
   left: 150px;
   padding-right: 10px;
+
+  transition: all 0.5s ease-in-out;
 }
 
 .VideoPostingUiForm::-webkit-scrollbar {
@@ -729,6 +736,11 @@ textarea {
 .item-Link {
   font-size: 16px;
   font-weight: Bold;
+  text-decoration: none;
+}
+
+.item-Link:hover {
+  text-decoration: none;
 }
 
 .custom-color-ring-wrapper {
@@ -798,6 +810,30 @@ textarea {
   /* 高さを設定 */
   font-size: 20px;
   /* 矢印アイコンのサイズ */
+}
+
+.render_More_Image_Count {
+  width: 30%;
+  height: 150px;
+  background: #FFFFFF;
+  border: 2px solid #F1F1F1;
+  /* box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); */
+  border-radius: 0px 0px 10px 10px;
+  transition: 0.2s;
+}
+
+.render_More_Image_Count:hover {
+  border-color: #328BFF;
+  background-color: #F1F1F1;
+  cursor: pointer;
+}
+
+.render_More_Image_Count_Int {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 
 
@@ -882,6 +918,7 @@ textarea {
 }
 
 .modal-custom-splide {
+  width: 100%;
   height: 100%;
 }
 
@@ -1049,6 +1086,78 @@ textarea {
   overflow-wrap: break-word !important;
 }
 
+/* コンテナ全体 */
+.handshake-container {
+  position: relative;
+  width: 300px;
+  height: 150px;
+  margin: 50px auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* 上腕（固定部分） */
+.arm {
+  position: relative;
+  width: 80px;
+  height: 20px;
+  background-color: #f4a261;
+  /* 肌色 */
+  border-radius: 10px;
+  /* 丸みをつける */
+  display: flex;
+  justify-content: flex-end;
+  /* 前腕を右端に配置 */
+}
+
+/* 左腕 */
+.left-arm {
+  transform: rotate(20deg);
+  transform-origin: left center;
+  /* 左側の軸を基準に回転 */
+}
+
+/* 右腕 */
+.right-arm {
+  transform: rotate(-20deg);
+  transform-origin: right center;
+  /* 右側の軸を基準に回転 */
+}
+
+/* 前腕（動く部分） */
+.forearm {
+  width: 60px;
+  height: 20px;
+  background-color: #2a9d8f;
+  /* 緑色 */
+  border-radius: 10px;
+  /* 丸みをつける */
+  position: relative;
+  transform-origin: left center;
+  /* 左側を基準に揺れる */
+  animation: forearm-swing 1.5s infinite ease-in-out;
+  /* 揺れるアニメーション */
+  top: -10px;
+  /* 上腕と自然につながるように調整 */
+}
+
+/* 前腕の揺れアニメーション */
+@keyframes forearm-swing {
+
+  0%,
+  100% {
+    transform: rotate(0);
+    /* 元の位置 */
+  }
+
+  50% {
+    transform: rotate(-10deg);
+    /* 下に振れる */
+  }
+}
+
+
 @media (max-width: 1700px) {
   .searchbar {
     width: 40% !important;
@@ -1062,6 +1171,10 @@ textarea {
 
   .column-container {
     column-gap: 13px;
+  }
+
+  .render_More_Image_Count {
+    width: 35%;
   }
 }
 
@@ -1079,9 +1192,58 @@ textarea {
   .column-container {
     column-gap: 10px;
   }
+
+  .render_More_Image_Count {
+    width: 40%;
+  }
+
+  .top_page_wrapper {
+    height: 80vh;
+  }
+
+  .top_page_content {
+    justify-content: center;
+    align-items: center;
+  }
+
+  .top_page_message {
+    font-size: 3.5rem;
+    color: white;
+  }
+
+  .top_page_messege_span,
+  .top_page_messege_span_second {
+    color: white;
+    font-size: 4.5rem;
+  }
+
+  .top_page_phone_size_box {
+    position: fixed;
+    bottom: 5%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .top_page_phone_size_button {
+    width: 50%;
+    border-radius: 50px !important;
+
+  }
+
+  .top_page_phone_size_button:first-child {
+    margin-bottom: 10px;
+  }
+
 }
 
 @media (max-width: 900px) {
+  .arrow_up_ward_icon {
+    bottom: 110px !important;
+  }
+
   .searchbar {
     width: 60% !important;
     height: 80% !important;
@@ -1107,6 +1269,92 @@ textarea {
 
 
 
+  .top_page_message {
+    font-size: 2.5rem;
+    color: white;
+  }
+
+  .top_page_messege_span,
+  .top_page_messege_span_second {
+    color: white;
+    font-size: 3.0rem;
+  }
+
+
+  .render_More_Image_Count {
+    width: 45%;
+  }
+
+  .top_page_phone_size_button {
+    width: 60%;
+    border-radius: 50px !important;
+
+  }
+
+  /* 作品投稿 */
+  .WorkPostingFormContainer {
+    height: fit-content;
+    width: 100%;
+    display: flex;
+    overflow: scroll;
+  }
+
+  .WorkPostingFormContainer form {
+    max-width: 600px;
+  }
+
+  .WorkPostingUiForm {
+    /* position: relativeを無効にする */
+    position: static;
+
+    flex-direction: column;
+    height: fit-content;
+  }
+
+  .ImageUpload {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    max-width: 600px;
+  }
+
+  .WorkSubmit,
+  .VideoPostingUiForm {
+    /* position: relativeを無効にする */
+    position: static;
+  }
+
+  .WorkInformation,
+  .VideoInformation {
+    padding: 0;
+    margin: 0;
+    overflow: unset;
+  }
+
+  .VideoPostingFormContainer {
+    height: fit-content;
+    width: 100%;
+    display: flex;
+    overflow: scroll;
+  }
+
+  .VideoPostingFormContainer form {
+    max-width: 600px;
+  }
+
+  .VideoPostingUiForm {
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
+
+  .VideoInformation {
+    width: 100%;
+    position: static;
+  }
+
+  .VideoSubmit {
+    position: static;
+  }
 }
 
 @media (max-width: 600px) {
@@ -1140,6 +1388,28 @@ textarea {
   .MyPageEditItems__multi-value__label {
     font-size: 14px !important;
   }
+
+  .render_More_Image_Count {
+    width: 50%;
+  }
+
+  .top_page_phone_size_button {
+    width: 70%;
+    border-radius: 50px !important;
+
+  }
+
+  .top_page_message {
+    font-size: 1.5rem;
+    color: white;
+  }
+
+  .top_page_messege_span,
+  .top_page_messege_span_second {
+    color: white;
+    font-size: 2.0rem;
+  }
+
 }
 
 @media (max-width: 400px) {
@@ -1160,4 +1430,22 @@ textarea {
   .column-container {
     column-gap: 2px;
   }
+
+  .top_page_phone_size_button {
+    width: 80%;
+    border-radius: 50px !important;
+
+  }
+
+  .top_page_message {
+    font-size: 1.2rem;
+    color: white;
+  }
+
+  .top_page_messege_span,
+  .top_page_messege_span_second {
+    color: white;
+    font-size: 1.4rem;
+  }
+
 }

@@ -55,6 +55,7 @@ use App\Http\Controllers\tag\GetLanguageTagController;
 use App\Http\Controllers\tag\GetEnvironmentTagController;
 use App\Http\Controllers\movie\VideoPostingController;
 use App\Http\Controllers\movie\VideoEditController;
+use App\Http\Controllers\movie\VideoDeleteController;
 use App\Http\Controllers\tag\GetVideoGenreTagController;
 use App\Http\Controllers\tag\GetStudentProgrammingLanguageTagController;
 use App\Http\Controllers\tag\GetStudentDevelopmentEnvironmentTagController;
@@ -73,6 +74,7 @@ use App\Http\Controllers\tag\GetCompanySoftwareTagController;
 use App\Http\Controllers\tag\GetCompanyNameListController;
 use App\Http\Controllers\work\WorkPostingController;
 use App\Http\Controllers\work\WorkEditController;
+use App\Http\Controllers\work\WorkDeleteController;
 use App\Http\Controllers\search\SearchWorkController;
 use App\Http\Controllers\search\SearchVideoController;
 use App\Http\Controllers\search\SearchStudentController;
@@ -125,7 +127,9 @@ Route::post('/insert_tag', [InsertTagController::class, 'InsertTagController']);
 // 作品投稿
 Route::post('/work_posting', [WorkPostingController::class, 'store']);
 // 作品編集
-Route::post('/work_edit', [WorkEditController::class, 'store']);
+Route::post('/work_edit/{id}', [WorkEditController::class, 'store']);
+// 作品削除
+Route::post('/work_delete/{id}', [WorkDeleteController::class, 'store']);
 // 作品ジャンルタグ取得
 Route::get('/get_work_genre_tag', [GetGenreTagController::class, 'GetGenreTagController']);
 // 作品のプログラミング言語タグ取得
@@ -135,7 +139,9 @@ Route::get('/get_work_environment_tag', [GetEnvironmentTagController::class, 'Ge
 // 動画投稿
 Route::post('/video_posting', [VideoPostingController::class, 'VideoPostingController']);
 // 動画編集
-Route::post('/video_edit', [VideoEditController::class, 'VideoEditController']);
+Route::post('/video_edit/{id}', [VideoEditController::class, 'VideoEditController']);
+// 動画削除
+Route::post('/video_delete/{id}', [VideoDeleteController::class, 'VideoDeleteController']);
 // 動画ジャンルタグ取得
 Route::get('/get_video_genre_tag', [GetVideoGenreTagController::class, 'GetVideoGenreTagController']);
 
@@ -283,7 +289,7 @@ Route::get('/special_forms/{CompanyId}', [NewsController::class, 'special_forms'
 Route::get('/news_detail/{newsdetail_id}', [NewsController::class, 'news_detail_get']);
 Route::post('/news_bookmark', [NewsController::class, 'news_bookmark']);
 Route::get('/thumbnail_img_delete/{id}', [EditorController::class, 'thumbnail_img_delete']);
-Route::get('/createform_search', action: [EditorController::class, 'createform_search']);
+Route::post('/createform_search', action: [EditorController::class, 'createform_search']);
 Route::get('/api/embed', action: [EditorController::class, 'embed']);
 Route::post('/rewrite_news_delete', [EditorController::class, 'rewrite_news_delete']);
 Route::post('/news_delete', [NewsController::class, 'news_delete']);
@@ -294,7 +300,7 @@ Route::post('/get_apply_history', action: [NewsController::class, 'get_apply_his
 
 
 //企業の詳細情報を取得
-Route::get('/company_informations', action: [CompanyInformationController::class, 'company_informations']);
+Route::post('/company_informations', action: [CompanyInformationController::class, 'company_informations']);
 Route::post('/company_informations_save', action: [CompanyInformationController::class, 'company_informations_save']);
 Route::post('/all_company_informations_pull', action: [CompanyInformationController::class, 'all_company_informations_pull']);
 
@@ -304,6 +310,33 @@ Route::post('/create_form_save', [FormController::class, 'create_form_save']);
 Route::get('/create_form_get/{NewsDetailId}', [FormController::class, 'create_form_get']);
 Route::get('/write_form_get', [FormController::class, 'write_form_get']);
 Route::post('/write_form_save', [FormController::class, 'write_form_save']);
+
+//画像読み込み
+Route::get('/images/work/{filename}', function ($filename) {
+    $path = storage_path('app\public\images\work\\' . $filename);
+    if (!file_exists($path)) {
+        \Log::info('gazou:'. $path);
+        abort(404);
+
+    } else {
+        \Log::info('gazou2:'.$path);
+    }
+
+    $file = file_get_contents($path);
+    $type = mime_content_type($path);
+    \Log::info('gazoutype:'.$type);
+
+    $fileSize = filesize($path);
+    \Log::info("File size on server: " . $fileSize);
+
+    // バッファをクリア
+    ob_clean();
+
+    return Response::make($file, 200, [
+        'Content-Type' => $type,
+        'Content-Disposition' => 'inline',
+    ]);
+});
 
 
 //設定機能

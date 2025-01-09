@@ -8,15 +8,20 @@ import 'survey-core/defaultV2.min.css';
 import Button from '@mui/material/Button';
 import Stack from "@mui/material/Stack";
 import PropTypes from "prop-types";
+import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import Box from '@mui/material/Box';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import './writeform.css';
+
+import * as themes from "survey-core/themes";
 
 // ----------------------------------------------------------------------
 
 export default function WriteFormPage() {
 
   const { newsdetail_id } = useParams()
-  const [title, SetTitle] = useState(null);
   const [companyId, SetCompanyId] = useState(null);
   const [newsId, SetNewsId] = useState(null);
   const [createForm, SetCreateForm] = useState([]);
@@ -38,12 +43,11 @@ export default function WriteFormPage() {
       try {
         const response = await axios.get(`http://localhost:8000/write_form_get`, {
           params: {
-            NewsId: newsdetail_id, //今ログインしている人のid
+            NewsId: newsdetail_id, //今ログインしているニュースのid
           },
         });
         console.log("レスポンスデータ", response.data);
         const WriteForm = response.data;
-        SetTitle(WriteForm.title);
         SetCompanyId(WriteForm.company_id);
         SetCreateForm(WriteForm.create_form);
         SetNewsId(WriteForm.news_id);
@@ -67,61 +71,24 @@ export default function WriteFormPage() {
     document.head.appendChild(styleSheet);
   }, []);
 
-  // フォームフィールドをSurveyの形式に変換する
-  const transformFormFields = (fields) => {
-    // fieldsが存在するかチェック
-    console.error("バリデーション", fields.validators);
-
-    if (!fields || !Array.isArray(fields)) {
-      console.error("フォームフィールドがありません。fields:", fields);
-
-      return {
-        title: { title },
-        pages: [],
-      };
-    }
-
-    return {
-      title: title,
-      pages: [
-        {
-          name: "page1",
-          elements: fields.map(field => ({
-            type: field.type,
-            name: field.name,
-            title: field.title,
-            ...(field.inputType && { inputType: field.inputType }), // inputType を確認
-            ...(field.validators && { validators: field.validators }), // validators を確認
-            ...(field.response && { defaultValue: field.response }),  // response を defaultValue に設定
-            ...(field.choices && { choices: field.choices }), // choices を追加
-            ...(field.placeholder && { placeholder: field.placeholder }), // placeholder を追加
-            ...(field.description && { description: field.description }), //descriptionを追加
-            ...(field.autocomplete && { autocomplete: field.autocomplete }),
-            ...(field.autoGrow && { autoGrow: field.autoGrow }),
-            ...(field.otherText && { otherText: field.otherText }),
-            ...(field.showOtherItem && { showOtherItem: field.showOtherItem }),
-            ...(field.clearText && { clearText: field.clearText }),
-            ...(field.showClearButton && { showClearButton: field.showClearButton }),
-            ...(field.colCount && { colCount: field.colCount }),
-            ...(field.maxLength && { maxLength: field.maxLength }),
-            ...(field.rows && { rows: field.rows }),
-            ...(field.isrequired && { isrequired: field.isrequired }),
-          })),
-        }
-      ]
-    };
-  };
-
-
-
-  // フォームフィールドデータをSurvey形式に変換
-  const surveyData = transformFormFields(createForm);
-
   // Survey モデルの生成
-  const survey = new Model(surveyData);
+  const survey = new Model(createForm);
+  const themeObject = themes["ThreeDimensionalLight"];
+  if (themeObject) {
+    console.log('themeobjectがありました', themeObject);
+    themeObject.cssVariables["--sjs-general-backcolor-dim"] = createForm.themeSettings.backgroundColor;  // 背景色設定
+    themeObject.cssVariables["--sjs-primary-backcolor"] = createForm.themeSettings.barColor;            // バーの色設定
+    themeObject.cssVariables["--sjs-font-surveytitle-color"] = createForm.themeSettings.titleColor;     // タイトルの色設定
+    themeObject.cssVariables["--sjs-font-questiontitle-color"] = createForm.themeSettings.questionTitleColor; // 質問タイトルの色設定
+
+    survey.applyTheme(themeObject); // テーマを再適用
+    console.log("テーマオブジェクトの中身", themeObject);
+  } else {
+    console.error(`テーマ '${themeObject}' が見つかりません`);
+  }
+
 
   const WriteFormSave = () => {
-    // Surveyモデルのバリデーション実行
     const isValid = survey.validate();
 
     if (isValid) {
@@ -130,20 +97,29 @@ export default function WriteFormPage() {
       // フォームのデータを取得
       const formData = survey.data;
       console.log("保存するデータ:", formData);
+      console.log("サーベイ:", survey);
+      console.log("フォームデータ:", createForm);
 
       // フォーム定義とユーザーの回答を統合する
       const transformFormFieldsWithResponses = (fields, responses) => {
-        return fields.map(field => ({
-          ...field,
-          response: responses[field.name] || null // ユーザーの回答をフォーム定義に追加
-        }));
+        return fields.map(field => {
+          // ユーザーの回答を取得
+          const response = responses[field.name] || null; // 回答がなければ null
+          return {
+            ...field,
+            response // フィールドに対応する回答を追加
+          };
+        });
       };
 
       // フォーム定義とユーザーの回答を統合
-      const formDefinitionWithResponses = transformFormFieldsWithResponses(createForm, formData);
+      const formDefinitionWithResponses = {
+        title: createForm.title, // タイトルをそのまま保持
+        elements: transformFormFieldsWithResponses(createForm.elements, formData) // フィールドと回答を統合
+      };
 
       // 統合データを表示（確認用）
-      console.log("フォーム定義と回答を統合したデータ:", formDefinitionWithResponses);
+      console.log("Survey.js形式のデータ:", formDefinitionWithResponses);
 
       // Axiosを使用してデータを保存する
       axios.post(writeformsaveurl, {
@@ -181,63 +157,60 @@ export default function WriteFormPage() {
     window.location.href = `/NewsDetail/${newsdetail_id}`;
   };
 
+    return (
+      <>
+        <Helmet>
+          <title> 応募する | Work&Connect </title>
+        </Helmet>
 
-  return (
-    <>
-      <Helmet>
-        <title> 応募する | Work&Connect </title>
-      </Helmet>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+          <Tooltip title="戻る">
+            <IconButton
+              onClick={() => NewsDetailBack()}
+              sx={{
+                '&:hover': { backgroundColor: '#f0f0f0' },
+              }}
 
-      <Button
-        variant="outlined"
-        onClick={() => NewsDetailBack()}
-        sx={{
-          position: 'sticky',
-          top: '100px',
-          width: '150px',
-          borderColor: '#5956FF',
-          color: '#5956FF',
-          '&:hover': { borderColor: '#5956FF' },
-          cursor: 'pointer',
-        }}
-      >
-        ニュースに戻る
-      </Button>
+            >
+              <ArrowBackOutlinedIcon className="NewsDetailBackButton" sx={{ fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" } }} />
+            </IconButton>
+          </Tooltip>
+        </Box>
 
-      <div className="WriteForm_Container">
-        <Stack sx={{ display: "inline-block" }}>
-          <div className="WriteForm">
-            <Survey model={survey} />
-          </div>
-        </Stack>
-        <Button variant="outlined" onClick={WriteFormSave}
-        sx={{ position: 'relative', left:'300px', width: "100px", borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
-        応募する
-      </Button>
-      </div>
+        <div className="WriteForm_Container">
+          <Stack sx={{ display: "inline-block" }}>
+            <div className="WriteForm">
+              <Survey model={survey} />
+            </div>
+          </Stack>
+        </div>
+
+        <Button variant="outlined" onClick={WriteFormSave} className="FormApplyButton">
+            応募する
+          </Button>
 
 
 
-    </>
-  );
+      </>
+    );
 
-}
+  }
 
-// displayName を設定
-WriteFormPage.displayName = 'WriteFormPage';
+  // displayName を設定
+  WriteFormPage.displayName = 'WriteFormPage';
 
-WriteFormPage.propTypes = {
-  post: PropTypes.shape({
-    company_id: PropTypes.string,
-    news_id: PropTypes.string,
-    article_title: PropTypes.string,
-    create_form: PropTypes.arrayOf(PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      type: PropTypes.string.isRequired,
-      inputtype: PropTypes.string,
-      validators: PropTypes.array,
-    })).isRequired,
-  }).isRequired,
-};
+  WriteFormPage.propTypes = {
+    post: PropTypes.shape({
+      company_id: PropTypes.string,
+      news_id: PropTypes.string,
+      article_title: PropTypes.string,
+      create_form: PropTypes.arrayOf(PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        title: PropTypes.string.isRequired,
+        type: PropTypes.string.isRequired,
+        inputtype: PropTypes.string,
+        validators: PropTypes.array,
+      })).isRequired,
+    }).isRequired,
+  };
 

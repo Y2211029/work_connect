@@ -189,7 +189,7 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
           StudentKanaName: SessionData.StudentKanaName,
           // 自己紹介
           Intro: SessionData.Intro,
-          // 卒業年度
+          // 卒業年
           Graduation: SessionData.Graduation,
           // 学校名
           SchoolName: SessionData.SchoolName,
@@ -339,7 +339,7 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
         <Intro IntroData={ResponseData.intro} />
       </Box>
       <Box>
-        <Typography variant="h6">卒業年度*</Typography>
+        <Typography variant="h6">卒業年*</Typography>
         <GraduationYear GraduationData={ResponseData.graduation_year} />
       </Box>
       <Box>

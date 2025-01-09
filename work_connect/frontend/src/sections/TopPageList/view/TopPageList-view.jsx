@@ -1,6 +1,5 @@
 import { useState, useContext } from "react";
 import { useSessionStorage } from "../../../hooks/use-sessionStorage";
-import { DeviceFrameset } from "react-device-frameset";
 import "react-device-frameset/styles/marvel-devices.min.css";
 import $ from "jquery";
 
@@ -93,7 +92,7 @@ export default function TopPageListView() {
                   variant="contained"
                   className="top_page_button login"
                   onClick={handleChange}
-                  style={{ display: Display.HomePage === "" ? "none" : "block" }}
+                  sx={{ display: Display.HomePage == "none" ? { xs: "none", md: "none", lg: "flex" } : "none" }}
                 >
                   始めよう
                 </Button>
@@ -110,11 +109,6 @@ export default function TopPageListView() {
                 <CompanyPreSignModal callSetPreModalChange={callSetPreModalChange} />
               ) : null}
             </div>
-          </div>
-          <div style={{ height: "100%" }}>
-            <DeviceFrameset style={{width: "100%", heihgt: "100%"}} device="iPhone X" /*landscape*/>
-              <img className="top_page_app_image"  src="/assets/images/covers/phoneAppImage.png" alt="" />
-            </DeviceFrameset>
           </div>
         </div>
       </div>

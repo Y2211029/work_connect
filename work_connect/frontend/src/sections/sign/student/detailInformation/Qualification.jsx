@@ -56,6 +56,7 @@ const Qualification = () => {
         onChange={handleChange}
         options={options}
         placeholder="▼"
+        closeMenuOnSelect={false}
         isMulti
       />
     </>

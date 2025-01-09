@@ -26,17 +26,20 @@ class WorkPostingController extends Controller
         $annotation = $request->input('annotation');
 
         $pathArray = [];
+
         if (is_array($imagesArray) && count($imagesArray) > 0) {
             foreach ($imagesArray as $value) {
                 // \Log::info('$value: ', $value);
                 $pathArray[] = explode('/', $value->store('public/images/work'))[3];
+                $mimeType = $value -> getMimeType();
+                \Log::info('$mimeType: '. $mimeType);
             }
         } else {
             // エラーハンドリング：nullが渡された場合
             return response()->json(['error' => 'No images provided.'], 400);
         }
 
-        \Log::info('$pathArray: ', $pathArray);
+        // \Log::info('$pathArray: '. $pathArray);
         $annotation_json = json_encode($annotation);
 
         // データ保存 (例: DBに保存)

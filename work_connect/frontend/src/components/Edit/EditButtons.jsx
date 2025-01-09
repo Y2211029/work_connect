@@ -10,6 +10,8 @@ import Tooltip from "@mui/material/Tooltip";
 import Popover from "@mui/material/Popover";
 import IconButton from "@mui/material/IconButton";
 
+import axios from "axios";
+
 const EditButtons = ({ workId, videoId }) => {
   const [open, setOpen] = useState(false);
   const buttonRef = useRef(null); // ボタンの参照を取得
@@ -42,17 +44,32 @@ const EditButtons = ({ workId, videoId }) => {
   };
   const queryParams = useQueryParams();
 
-  const handleButtonClick = (e, action) => {
+  const handleButtonClick = async (e, action) => {
     e.preventDefault(); // リンク遷移を防止
     const page = queryParams.get("page");
     if (action === "edit") {
       if (page === "work") {
         navigate(`/WorkEdit/${workId}`); // 作品編集
-      } else if(page === "movie") {
+      } else if (page === "movie") {
         navigate(`/VideoEdit/${videoId}`); // 作品編集
       }
     } else if (action === "delete") {
-      navigate("/VideoList"); // 削除
+      const confirmed = window.confirm("本当に削除しますか？");
+
+      if (confirmed) {
+        try {
+          if (page === "work") {
+            await axios.post(`http://localhost:8000/work_delete/${workId}`);
+          } else if (page === "movie") {
+            await axios.post(`http://localhost:8000/video_delete/${videoId}`);
+          }
+          alert("削除しました");
+          window.location.reload();
+        } catch (error) {
+          alert("削除に失敗しました");
+          console.error(error);
+        }
+      }
     }
   };
 

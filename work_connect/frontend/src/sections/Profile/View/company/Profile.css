@@ -19,7 +19,10 @@
   }
 
   @media(max-width:400px){
-
+    .ProfileTabsBox{
+      min-width:85px;
+    }
+    
   }
 
 

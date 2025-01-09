@@ -45,12 +45,13 @@ const PostCard = forwardRef(({ post }, ref) => {
     article_title,
     header_img,
     news_created_at,
-    icon,
+    icon_id,
     followStatus: initialFollowStatus,
     open_jobs,
     deadline,
     event_day,
     count,
+    author,
   } = post;
 
   const [open, setOpen] = useState(null);
@@ -111,17 +112,19 @@ const PostCard = forwardRef(({ post }, ref) => {
   };
 
   // 企業アイコン
-  const renderAvatar = (
-    <Avatar
-      alt={company_name}
-      src={icon ? `http://localhost:8000/storage/images/userIcon/${icon}` : ""}
-      sx={{
-        zIndex: 9,
-        width: 30,
-        height: 30,
-      }}
-    />
-  );
+  const renderAvatar =
+    (console.log("icon_id", icon_id),
+    (
+      <Avatar
+        alt={author.name}
+        src={icon_id ? `http://localhost:8000/storage/images/userIcon/${icon_id}` : author.avatarUrl}
+        sx={{
+          zIndex: 9,
+          width: 30,
+          height: 30,
+        }}
+      />
+    ));
 
   // サムネイル
   const renderThumbnail = (
@@ -158,7 +161,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   // フォームのレンダリング（企業の投稿の場合）
   // const renderForm =
   //   company_id === accountData.id && count > 0 ? (
-      
+
   //     <Typography
   //       sx={{ opacity: 0.48, cursor: "pointer", textAlign: "right" }}
   //       onClick={() => {
@@ -169,22 +172,21 @@ const PostCard = forwardRef(({ post }, ref) => {
   //     </Typography>
   //   ) : null;
 
-    const renderForm =
-  company_id === accountData.id && count > 0 ? (
-    <Link
-      to={`/Profile/${user_name}?page=checkform`}
-      style={{
-        opacity: 0.48,
-        cursor: "pointer",
-        textAlign: "right",
-        textDecoration: "none", // デフォルトの下線を消す場合
-        color: "inherit", // 見た目を他のテキストと統一したい場合
-      }}
-    >
-      {count}件のフォーム回答
-    </Link>
-  ) : null;
-
+  const renderForm =
+    company_id === accountData.id && count > 0 ? (
+      <Link
+        to={`/Profile/${user_name}?page=checkform`}
+        style={{
+          opacity: 0.48,
+          cursor: "pointer",
+          textAlign: "right",
+          textDecoration: "none", // デフォルトの下線を消す場合
+          color: "inherit", // 見た目を他のテキストと統一したい場合
+        }}
+      >
+        {count}件のフォーム回答
+      </Link>
+    ) : null;
 
   //フォローステータス
   const renderFollow = followStatus !== "フォローできません" && followStatus !== "フォローする" && (

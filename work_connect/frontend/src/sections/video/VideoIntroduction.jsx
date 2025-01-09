@@ -60,11 +60,11 @@ const Textarea = styled(BaseTextareaAutosize)(
 const VideoIntroduction = (props) => {
 
   const theme = useTheme();
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState(null);
   const [hasError, setHasError] = useState(false);
 
   const handleChange = (e) => {
-    props.callSetVideoData("Introduction", e.target.value);
+    props.callSetVideoData("VideoIntroduction", e.target.value);
     setInputValue(e.target.value);
     setHasError(e.target.value === ''); // 空の場合にエラーを表示
   };
@@ -79,7 +79,7 @@ const VideoIntroduction = (props) => {
         maxRows={12}
         aria-label="maximum height"
         placeholder="500字以内"
-        value={inputValue}
+        value={props.movieData}
         onChange={handleChange}
         maxLength={500}
         sx={{
@@ -110,5 +110,6 @@ const VideoIntroduction = (props) => {
 
 VideoIntroduction.propTypes = {
   callSetVideoData: PropTypes.func,
+  movieData: PropTypes.string.isRequired,
 };
 export default VideoIntroduction;

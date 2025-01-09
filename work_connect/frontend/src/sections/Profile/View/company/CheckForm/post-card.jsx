@@ -35,15 +35,23 @@ const PostCard = forwardRef(({ post }) => {
     setValue(newValue);
   };
 
+  console.log("application_form[selectedIndex]",application_form[selectedIndex]?.user_name);
   const groupedResponses = application_form[selectedIndex]?.user_name.reduce((acc, user) => {
-    user.write_form.forEach((response) => {
+    console.log("User Write Form Elements:", user);  // user.write_form.elementsをログ出力
+
+    user.write_form.elements.forEach((response) => {
+      console.log("Response:", response);  // 各responseをログ出力
+
       if (!acc[response.title]) {
-        acc[response.title] = { responses: [], type: response.type, contents: response.contents };
+        acc[response.title] = { responses: [], type: response.type, contents: response.contents, userNames: [] };
       }
       acc[response.title].responses.push(response.response);
+      acc[response.title].userNames.push(user.user_name);
     });
+
     return acc;
   }, {});
+
 
   return (
     <>
@@ -109,46 +117,48 @@ const PostCard = forwardRef(({ post }) => {
         </div>
 
       ) : (
-        null
+        <Typography>
+        応募フォームはありません
+        </Typography>
       )}
 
-      {writeformshow && selectedIndex !== null && (
-        <div style={{ flexGrow: 1 }}>
+      {writeformshow && selectedIndex !== null && application_form.length > 0 && (
+        <div className="writeformshow">
 
           <div className="write-form">
             <Box className="FormSelect-Box">
-              <Tabs value={value} aria-label="nav tabs example" role="navigation">
+              <Tabs value={value} aria-label="nav tabs example" role="navigation" centered>
                 <Tab label="要約" onClick={(e) => handleTabClick(e, 0)} />
                 <Tab label="回答別" onClick={(e) => handleTabClick(e, 1)} />
                 <Tab label="個別" onClick={(e) => handleTabClick(e, 2)} />
               </Tabs>
             </Box>
 
-          {value === 0 && (
-            <Summary
-              application_form={application_form}
-              selectedIndex={selectedIndex}
-              GroupedResponses={groupedResponses}
-              HandleTabClick={handleTabClick}
-              setViewStudentName={setViewStudentName}
-            />
-          )}
-          {value === 1 && (
-            <Question
-              application_form={application_form}
-              selectedIndex={selectedIndex}
-              GroupedResponses={groupedResponses}
-            />
-          )}
-          {value === 2 && (
-            <Individual
-              application_form={application_form}
-              selectedIndex={selectedIndex}
-              GroupedResponses={groupedResponses}
-              viewingStudentName={viewingStudentName}
-            />
-          )}
-        </div>
+            {value === 0 && (
+              <Summary
+                application_form={application_form}
+                selectedIndex={selectedIndex}
+                GroupedResponses={groupedResponses}
+                HandleTabClick={handleTabClick}
+                setViewStudentName={setViewStudentName}
+              />
+            )}
+            {value === 1 && (
+              <Question
+                application_form={application_form}
+                selectedIndex={selectedIndex}
+                GroupedResponses={groupedResponses}
+              />
+            )}
+            {value === 2 && (
+              <Individual
+                application_form={application_form}
+                selectedIndex={selectedIndex}
+                GroupedResponses={groupedResponses}
+                viewingStudentName={viewingStudentName}
+              />
+            )}
+          </div>
 
         </div>
       )}

@@ -20,30 +20,14 @@ class CompanyInformationController extends Controller
             Log::info("企業名: " . $CompanyName);
 
             // データ取得
-            $title_contents_array = $this->getCompanyInformationData($CompanyName);
             $all_company_information_array = $this->all_company_informations_pull($CompanyName);
 
-            // データが見つからない場合
-            if (empty($title_contents_array)) {
-                Log::info("会社情報が見つかりません: " . $CompanyName);
-                return response()->json([
-                    'success' => false,
-                    'message' => '会社情報が見つかりません',
-                    'data' => [
-                        'title_contents' => [],
-                        'all_company_information' => []
-                    ]
-                ], 404);
-            }
-
             // 正常レスポンス
-            Log::info("title_contents_array: " . json_encode($title_contents_array));
             Log::info("all_company_information_array: " . json_encode($all_company_information_array));
 
             return response()->json([
                 'success' => true,
                 'message' => '会社情報を取得しました',
-                'title_contents' => $title_contents_array,
                 'all_company_information' => $all_company_information_array
             ], 200);
         } catch (\Exception $e) {
@@ -64,6 +48,13 @@ class CompanyInformationController extends Controller
         $companyInformationArray = $request->input("CompanyInformation");
         $CompanyName = $request->input("CompanyName");
 
+
+
+        $company = w_company::where('user_name',$CompanyName)
+            ->first();
+
+        $companyId = $company->id;
+
         Log::info("companyInformationArray" . json_encode($companyInformationArray));
         Log::info("CompanyName" . $CompanyName);
 
@@ -77,7 +68,7 @@ class CompanyInformationController extends Controller
                     'contents' => $companyInformation['contents'],
                     'company_id' => $companyInformation['company_id'],
                     'public_status' => $companyInformation['public_status'],
-                    'row_number' => $companyInformation['row_number'],
+                    'row_number' => $companyInformation['id'],
                 ]);
 
             if ($updated === 0) {
@@ -92,7 +83,7 @@ class CompanyInformationController extends Controller
                         'contents' => $companyInformation['contents'],
                         'company_id' => $companyInformation['company_id'],
                         'public_status' => $companyInformation['public_status'],
-                        'row_number' => $companyInformation['row_number'],
+                        'row_number' => $companyInformation['id'],
                     ]);
                 } else {
                     Log::info("Duplicate entry found, not creating a new record for ID: {$companyInformation['id']}");
@@ -101,55 +92,14 @@ class CompanyInformationController extends Controller
         }
 
         $title_contents_array = $this->getCompanyInformationData($CompanyName);
+        $all_company_information_array = $this->all_company_informations_pull($CompanyName);
 
-        return response()->json(['message' => '処理が完了しました', 'title_contents' => $title_contents_array]);
-    }
 
-    private function getCompanyInformationData($CompanyName)
-    {
-        Log::info("処理開始: {$CompanyName}");
-
-        $company = w_company::where('user_name', $CompanyName)->first();
-        if (!$company) {
-            Log::info("会社が見つかりませんでした: {$CompanyName}");
-            return null;
-        }
-
-        $Company_Id = $company->id;
-        Log::info("会社ID: {$Company_Id}");
-
-        $all_company_information = w_company_information::where('company_id', $Company_Id)
-            ->get();
-        Log::info($all_company_information);
-
-        $company_information = w_company_information::where('company_id', $Company_Id)
-            ->where('public_status', 1)
-            ->join('w_companies', 'w_companies_information.company_id', '=', 'w_companies.id')
-            ->select(
-                'w_companies_information.*',
-                'w_companies.*',
-                'w_companies_information.id as company_information_id',
-                'w_companies.company_name as company_name'
-            )
-            ->orderBy('w_companies_information.row_number', 'asc')
-            ->get();
-
-        if ($company_information->isNotEmpty()) {
-            Log::info("企業情報が見つかりました: 件数 " . $company_information->count());
-            return $company_information->map(function ($item) {
-                return [
-                    'title' => $item->title,
-                    'contents' => $item->contents,
-                    'company_name' => $item->company_name,
-                    'id' => $item->company_information_id,
-                    'company_id' => $item->company_id,
-                    'public_status' => $item->public_status,
-                ];
-            })->toArray();
-        } else {
-            Log::info("企業情報が見つかりませんでした: {$CompanyName}");
-            return [];
-        }
+        return response()->json(['message' => '処理が完了しました',
+        'title_contents' => $title_contents_array ,
+        'all_company_information' => $all_company_information_array,
+        'company_id' => $companyId
+        ]);
     }
 
 
@@ -189,6 +139,7 @@ class CompanyInformationController extends Controller
                     'company_name' => $item->company_name,
                     'id' => $item->company_information_id,
                     'company_id' => $item->company_id,
+                    'row_number' => $item->row_number,
                     'public_status' => $item->public_status,
                 ];
             })->toArray();

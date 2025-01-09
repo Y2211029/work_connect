@@ -26,6 +26,7 @@ const Individual = ({
     const [responses, setResponses] = useState({ usernames: "", id: "", writeforms: [] });
     const [idNumber, setIdNumber] = useState("");
     const [loading, setLoading] = useState(true);
+    console.log("アプリケーションフォーム", application_form[selectedIndex].user_name);
 
     useEffect(() => {
         let userIdCounter = 1;
@@ -41,7 +42,7 @@ const Individual = ({
                     userIdCounter++;
                 }
 
-                acc[userKey].write_forms.push(...user.write_form);
+                acc[userKey].write_forms.push(...user.write_form.elements);
 
                 return acc;
             }, {});
@@ -55,7 +56,7 @@ const Individual = ({
             //呼び出していた名前をsetSelectedUserNameに入れる
             const firstUsername = viewingStudentName || Object.keys(grouped)[0];
             if (firstUsername) {
-                console.log("firstUsername",firstUsername);
+                console.log("firstUsername", firstUsername);
                 setSelectedUserName(firstUsername);
                 const initialId = grouped[firstUsername].id || 1;
                 setIdNumber(initialId);
@@ -82,10 +83,10 @@ const Individual = ({
         setIdNumber(newId);
 
         console.log(groupedResponses[UserName]);
-        console.log("newId",newId);
-        console.log("usernames",UserName);
-        console.log("write_form",groupedResponses[UserName].write_forms);
-        };
+        console.log("newId", newId);
+        console.log("usernames", UserName);
+        console.log("write_form", groupedResponses[UserName].write_forms);
+    };
 
     const handleIdChange = (event) => {
         const newId = event.target.value;
@@ -137,7 +138,18 @@ const Individual = ({
         const css =
             `.sv-action__content .sd-btn--action.sd-navigation__complete-btn {
             display: none;
-          }`;
+          }
+                  .sd-root-modern {
+            background-color: #F9FAFB !important; /* 背景色を変更 */
+        }  
+            .sd-input--readonly{
+            background-color:#FFFFFF;}
+
+            .sd-item--readonly.sd-item--readonly .sd-item__decorator{
+  background-color:#FFFFFF;
+}
+
+          `;
         const styleSheet = document.createElement("style");
         styleSheet.type = "text/css";
         styleSheet.innerText = css;
@@ -147,8 +159,8 @@ const Individual = ({
     useEffect(() => {
         if (!loading && Array.isArray(responses.writeforms) && responses.writeforms.length > 0) {
             // transformFormFieldsの処理をuseEffect内で行う
-            console.log("responses.writeforms",responses.writeforms);
-                const surveyData = {
+            console.log("responses.writeforms", responses.writeforms);
+            const surveyData = {
                 pages: [
                     {
                         name: "page1",
@@ -175,17 +187,18 @@ const Individual = ({
         <>
             {loading ? ( // ローディング中はサーベイを表示しない
                 <ColorRing
-                visible={true}
-                height="100"
-                width="100"
-                ariaLabel="color-ring-loading"
-                wrapperStyle={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
-                wrapperClass="custom-color-ring-wrapper" // カスタムクラスを指定
-                colors={["#41a4ff", "#FFFFFF", "#41a4ff", "#41a4ff", "#FFFFFF"]}
-                style={{ flexDirection: "column" }}
-              />
+                    visible={true}
+                    height="100"
+                    width="100"
+                    ariaLabel="color-ring-loading"
+                    wrapperStyle={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
+                    wrapperClass="custom-color-ring-wrapper" // カスタムクラスを指定
+                    colors={["#41a4ff", "#FFFFFF", "#41a4ff", "#41a4ff", "#FFFFFF"]}
+                    style={{ flexDirection: "column" }}
+                />
             ) : (
-                <>
+                <div className="Individual">
+
                     <Select value={selectedUserName} onChange={handleUserNameChange} displayEmpty className="title-dropdown">
                         {Object.keys(groupedResponses).map((user_name, index) => (
                             <MenuItem key={index} value={user_name}>
@@ -211,6 +224,7 @@ const Individual = ({
                             }}
                             sx={{
                                 width: '40px',
+                                backgroundColor:'#FFFFFF'
                             }}
                         /> / {maxId} 名の回答
 
@@ -223,7 +237,7 @@ const Individual = ({
                             <Survey model={surveyModel} />
                         </Box>
                     )}
-                </>
+                </div>
             )}
         </>
     );

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -9,14 +9,16 @@ import EditNoteIcon from "@mui/icons-material/EditNote";
 import Tooltip from "@mui/material/Tooltip";
 import Popover from "@mui/material/Popover";
 import IconButton from "@mui/material/IconButton";
+import { DeleteIdContext } from "src/layouts/dashboard/index";
+
 
 import axios from "axios";
 
-const EditButtons = ({ workId, videoId }) => {
+const EditButtons = ({ deleteId }) => {
   const [open, setOpen] = useState(false);
   const buttonRef = useRef(null); // ボタンの参照を取得
   const navigate = useNavigate();
-
+  const {  setDeleteId } = useContext(DeleteIdContext);
   const handleGlobalClick = (e) => {
     // ボタン外をクリックした場合に閉じる
     if (buttonRef.current && !buttonRef.current.contains(e.target)) {
@@ -49,9 +51,9 @@ const EditButtons = ({ workId, videoId }) => {
     const page = queryParams.get("page");
     if (action === "edit") {
       if (page === "work") {
-        navigate(`/WorkEdit/${workId}`); // 作品編集
+        navigate(`/WorkEdit/${deleteId}`); // 作品編集
       } else if (page === "movie") {
-        navigate(`/VideoEdit/${videoId}`); // 作品編集
+        navigate(`/VideoEdit/${deleteId}`); // 作品編集
       }
     } else if (action === "delete") {
       const confirmed = window.confirm("本当に削除しますか？");
@@ -59,12 +61,13 @@ const EditButtons = ({ workId, videoId }) => {
       if (confirmed) {
         try {
           if (page === "work") {
-            await axios.post(`http://localhost:8000/work_delete/${workId}`);
+            await axios.post(`http://localhost:8000/work_delete/${deleteId}`);
           } else if (page === "movie") {
-            await axios.post(`http://localhost:8000/video_delete/${videoId}`);
+            await axios.post(`http://localhost:8000/video_delete/${deleteId}`);
           }
+          setDeleteId(deleteId)
           alert("削除しました");
-          window.location.reload();
+          // window.location.reload();
         } catch (error) {
           alert("削除に失敗しました");
           console.error(error);
@@ -117,8 +120,7 @@ const EditButtons = ({ workId, videoId }) => {
 };
 
 EditButtons.propTypes = {
-  workId: PropTypes.string.isRequired,
-  videoId: PropTypes.string.isRequired,
+  deleteId : PropTypes.string.isRequired,
 };
 
 export default EditButtons;

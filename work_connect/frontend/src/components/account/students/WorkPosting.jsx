@@ -34,7 +34,7 @@ const WorkPosting = () => {
   const [message, setMessage] = useState("");
   // const [imagesName, setImagesName] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
-  const [videoId, setVideoId] = useState("");
+  // const [videoId, setVideoId] = useState("");
   const [hasError, setHasError] = useState(false);
   const [Image, setImage] = useState();
   const [Description, setDescription] = useState();
@@ -124,7 +124,7 @@ const WorkPosting = () => {
 
     // 入力が空の場合、videoIdをリセットしてYoutubeURLをクリア
     if (url === "") {
-      setVideoId(""); // videoIdを空にリセット
+      // setVideoId(""); // videoIdを空にリセット
       callSetWorkData("YoutubeURL", ""); // YoutubeURLもリセット
       return; // ここで処理を終了
     }
@@ -160,7 +160,7 @@ const WorkPosting = () => {
     }
 
     if (extractedVideoId) {
-      setVideoId(extractedVideoId); // videoIdを設定
+      // setVideoId(extractedVideoId); // videoIdを設定
       callSetWorkData("YoutubeURL", extractedVideoId); // 最新のvideoIdを反映
     }
   };
@@ -268,9 +268,10 @@ const WorkPosting = () => {
                     onChange={handleChange}
                     value={videoUrl}
                     error={hasError}
+                    // placeholder="YouTubeのURL、ID、またはiframeコードを入力してください。"
                   />
                 </div>
-                {videoId ? (
+                {/* {videoId ? (
                   <p>
                     <br />
                   </p>
@@ -278,7 +279,7 @@ const WorkPosting = () => {
                   <p>
                     YouTubeのURL、ID、またはiframeコードを入力してください。
                   </p>
-                )}
+                )} */}
                 <div className="WorkPostingImageFormField">
                   <ImageUpload
                     onImagesUploaded={handleImageChange}
@@ -296,7 +297,7 @@ const WorkPosting = () => {
               <div className="WorkPostingFormField">
                 <div className="workGenre" id="workGenre">
                   <p className="work_genre">
-                    ジャンル*
+                    ジャンル<span className="requiredInput">*</span>
                     {/* ジャンル&nbsp;<span className="red_txt">必須</span>
                     &nbsp;
                     <span className="alert_red_txt" id="alert_a_3">
@@ -327,7 +328,7 @@ const WorkPosting = () => {
               </div>
             </div>
           </div>
-          <input type="submit" value="送信" className="WorkSubmit" />
+          <input type="submit" value="投稿" className="WorkSubmit" />
         </form>
         {message && <p>{message}</p>}
       </div>

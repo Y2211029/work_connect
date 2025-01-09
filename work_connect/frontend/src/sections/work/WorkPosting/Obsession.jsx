@@ -70,7 +70,7 @@ const Obsession = (props) => {
   return (
     <div>
       <p>
-        こだわりポイント*
+        こだわりポイント<span className="requiredInput">*</span>
         <Textarea
           error={hasError}
           name="Obsession"

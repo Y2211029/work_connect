@@ -85,7 +85,7 @@ const Environment = (props) => {
       classNamePrefix="MyPageEditItems"
       options={options}
       value={selectedOption}
-      placeholder="▼"
+      placeholder="選択"
       isClearable
       isMulti
       onChange={handleChange}

@@ -248,7 +248,7 @@ const VideoDetailItem = () => {
   const renderYoutubeFrame = (
     <di style={{ display: "flex", height: "fit-contents", aspectRatio: "16 / 9", border: "none", borderRadius: "10px" }}>
       <Iframe
-        src={`https://www.youtube.com/embed/${VideoDetail.youtube_url}?iv_load_policy=3&modestbranding=1&fs=0`}
+        src={`https://www.youtube-nocookie.com/embed/${VideoDetail.youtube_url}?iv_load_policy=3&modestbranding=1&fs=0&showinfo=0&rel=0&controls=1`}
         width="100%"
         height="fit-contents"
         title="YouTube video player"

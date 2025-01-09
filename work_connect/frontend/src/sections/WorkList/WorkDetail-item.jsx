@@ -67,9 +67,11 @@ const opts = {
   aspectRatio: "16 / 9",
   objectFit: "contain",
   playerVars: {
-    modestbranding: 0,
-    controls: 0,
+    modestbranding: 1,
+    controls: 1,
     iv_load_policy: 3,
+    showinfo: 0,
+    rel: 0,
   },
 };
 
@@ -466,6 +468,13 @@ const WorkDetailItem = () => {
                           width: "100%",
                           height: "100%",
                         }}
+                        onReady={(event) => {
+                          const iframe = event.target.getIframe();
+                          iframe.src = iframe.src.replace(
+                            "https://www.youtube.com",
+                            "https://www.youtube-nocookie.com"
+                          );
+                        }}
                       />
                     </Box>
                   ) : (
@@ -562,6 +571,13 @@ const WorkDetailItem = () => {
                                   left: 0,
                                   width: "100%",
                                   height: "100%",
+                                }}
+                                onReady={(event) => {
+                                  const iframe = event.target.getIframe();
+                                  iframe.src = iframe.src.replace(
+                                    "https://www.youtube.com",
+                                    "https://www.youtube-nocookie.com"
+                                  );
                                 }}
                               />
                             </Box>

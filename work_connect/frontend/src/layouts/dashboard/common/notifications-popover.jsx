@@ -397,19 +397,19 @@ export default function NotificationsPopover() {
       if (value.category == "フォロー") {
         if (value.detail == "相互フォロー") {
           if (value.send_user_id[0] == "S") {
-            description = value.student_name + value.student_surname + "さんと相互フォローになりました";
+            description = value.user_name + "さんと相互フォローになりました";
           } else if (value.send_user_id[0] == "C") {
             description = value.company_name + "と相互フォローになりました";
           }
         } else if (value.detail == "") {
           if (value.send_user_id[0] == "S") {
-            description = value.student_name + value.student_surname + "さんにフォローされました";
+            description = value.user_name + "さんにフォローされました";
           } else if (value.send_user_id[0] == "C") {
             description = value.company_name + "にフォローされました";
           }
         }
       } else if (value.category == "作品" || value.category == "動画") {
-        description = value.student_name + value.student_surname + `さんが${value.category}を投稿しました`;
+        description = value.user_name + `さんが${value.category}を投稿しました`;
       } else if (value.category == "インターンシップ" || value.category == "説明会" || value.category == "求人" || value.category == "ブログ") {
         description = value.message;
         title = value.company_name + "の" + value.category;

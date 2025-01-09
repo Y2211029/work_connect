@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import { useLocation } from 'react-router-dom';
 import axios from "axios";
 
 import ChatIcon from "@mui/icons-material/Chat";
@@ -20,10 +21,16 @@ const ChatPng = () => {
   const all_unread_chat = "http://localhost:8000/all_unread_chat";
 
   // テキストの文章を保持する変数
-  const [count, setCount] = useState(null);
+  const [count, setCount] = useState(0);
 
   const Display = useContext(MyContext);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // パスが変わったとき
+  useEffect(() => {
+    AllUnreadCount();
+  }, [location]);
 
   // WebSocketStateのChatが変化したとき
   useEffect(() => {
@@ -33,6 +40,7 @@ const ChatPng = () => {
   // アイコンを押したとき
   const handleClick = () => {
     navigate(`/Chat`);
+    AllUnreadCount();
   };
 
   // チャットのすべての未読件数を取得

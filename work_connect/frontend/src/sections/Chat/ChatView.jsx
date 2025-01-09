@@ -840,6 +840,7 @@ const ChatView = () => {
 
   // GetDay関数・・・送信時間から日にちを取り出す関数
   const GetDay = (time) => {
+
     // 日付部分を切り取る 例 : "2024-10-07"
     const ChatDate = time.slice(0, 10);
     if (PrevChatDate && PrevChatDate === ChatDate) {
@@ -849,10 +850,16 @@ const ChatView = () => {
     // メッセージの送信日時を保存しておく
     PrevChatDate = ChatDate;
 
+    // 配列に入れる
     const [year, month, day] = ChatDate.split('-');
-    console.log(year);
-    // 月と日を整数に変換し、形式を整える
-    const formattedDate = `${parseInt(month, 10)}月${parseInt(day, 10)}日`;
+
+    // 現在の日付を取得
+    const today = new Date();
+    const chatDateObj = new Date(year, parseInt(month, 10) - 1, parseInt(day, 10)); // 月は0から始まるため-1する
+
+    // 1年以上前かを判定
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(today.getFullYear() - 1);
 
     // 曜日を取得する
     const date = new Date(`${ChatDate}T00:00:00+09:00`);
@@ -860,7 +867,12 @@ const ChatView = () => {
     const dayOfWeek = date.toLocaleDateString('ja-JP', options);
 
     // 返り値
-    return `${formattedDate} (${dayOfWeek.slice(0, 1)})`;
+    if (chatDateObj < oneYearAgo) {
+      // 一年以上前なら「年」も表示
+      return `${parseInt(year, 10)}年${parseInt(month, 10)}月${parseInt(day, 10)}日 (${dayOfWeek.slice(0, 1)})`;
+    } else {
+      return `${parseInt(month, 10)}月${parseInt(day, 10)}日 (${dayOfWeek.slice(0, 1)})`;
+    }
   };
 
   // GetTime関数・・・送信時間から時:分だけを取り出す関数
@@ -1179,7 +1191,12 @@ const ChatView = () => {
                       {/* アイコン */}
                       <SelectIcon chatViewIcon={chatViewIcon} />
                       {/* 企業名またはユーザーネーム */}
-                      <Box sx={{ fontSize: '1.9rem' }}>
+                      <Box sx={{
+                        fontSize: '1.9rem',
+                        overflow: 'hidden',         // 内容がコンテナを超えた場合に隠す
+                        textOverflow: 'ellipsis',  // 省略記号を表示
+                        whiteSpace: 'nowrap',      // テキストを1行に制限
+                      }}>
                         {chatViewCompanyName ?
                           chatViewCompanyName :
                           chatViewUserName}

@@ -50,8 +50,6 @@ const InternshipJobOfferPage = () => {
             MyId: data.id, //今ログインしている人のid
           },
         });
-        console.log(response.data);
-        console.log(response.data.news_detail);
         SetNewsDetail(response.data.news_detail);
         setFollowStatus(response.data.news_detail.follow_status);
         const writeform_status = response.data.news_detail.writeform_status;
@@ -59,12 +57,6 @@ const InternshipJobOfferPage = () => {
         const createform_status = response.data.news_detail.createform_status;
         const previousNews = response.data.previousNews;
         const nextNews = response.data.nextNews;
-
-        console.log("デッドラインステータス", deadline_status);
-        console.log("ライトフォームステータス", writeform_status);
-        console.log("クリエイトフォームステータス", createform_status);
-        console.log("前の記事", previousNews);
-        console.log("次の記事", nextNews);
 
         setWriteFormStatus(writeform_status);
         setDeadLineStatus(deadline_status);

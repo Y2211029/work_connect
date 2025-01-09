@@ -74,7 +74,7 @@ export default function WriteFormPage() {
   // Survey モデルの生成
   const survey = new Model(createForm);
   const themeObject = themes["ThreeDimensionalLight"];
-  if (themeObject) {
+  if (themeObject && createForm.themeSettings) {
     console.log('themeobjectがありました', themeObject);
     themeObject.cssVariables["--sjs-general-backcolor-dim"] = createForm.themeSettings.backgroundColor;  // 背景色設定
     themeObject.cssVariables["--sjs-primary-backcolor"] = createForm.themeSettings.barColor;            // バーの色設定
@@ -178,16 +178,17 @@ export default function WriteFormPage() {
         </Box>
 
         <div className="WriteForm_Container">
-          <Stack sx={{ display: "inline-block" }}>
+          <Stack direction={"row"} sx={{ display: "inline-block" }}>
             <div className="WriteForm">
               <Survey model={survey} />
             </div>
+            <Button variant="outlined" onClick={WriteFormSave} className="FormApplyButton">
+            応募する
+            </Button>
           </Stack>
         </div>
 
-        <Button variant="outlined" onClick={WriteFormSave} className="FormApplyButton">
-            応募する
-          </Button>
+
 
 
 

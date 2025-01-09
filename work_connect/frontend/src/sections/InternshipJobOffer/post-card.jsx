@@ -10,10 +10,12 @@ import Tooltip from "@mui/material/Tooltip";
 import Divider from "@mui/material/Divider";
 import Popover from "@mui/material/Popover";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
-
+import axios from "axios";
 // ----------------------------------------------------------------------
+
 const getDeadlineMessage = (deadline) => {
   const today = new Date();
   const deadlineDate = new Date(deadline);
@@ -111,20 +113,36 @@ const PostCard = forwardRef(({ post }, ref) => {
     );
   };
 
+  const handleDeleteClick = async(news_id) =>{
+    const confirmed = window.confirm("本当に削除しますか？");
+
+    if (confirmed) {
+      console.log("news_id",news_id);
+      try {
+        await axios.post(`http://localhost:8000/news_delete/${news_id}`);
+        alert("削除しました");
+        window.location.reload();
+      } catch (error) {
+        alert("削除に失敗しました");
+        console.error(error);
+      }
+    }
+  }
+
   // 企業アイコン
   const renderAvatar =
     (console.log("icon_id", icon_id),
-    (
-      <Avatar
-        alt={author.name}
-        src={icon_id ? `http://localhost:8000/storage/images/userIcon/${icon_id}` : author.avatarUrl}
-        sx={{
-          zIndex: 9,
-          width: 30,
-          height: 30,
-        }}
-      />
-    ));
+      (
+        <Avatar
+          alt={author.name}
+          src={icon_id ? `http://localhost:8000/storage/images/userIcon/${icon_id}` : author.avatarUrl}
+          sx={{
+            zIndex: 9,
+            width: 30,
+            height: 30,
+          }}
+        />
+      ));
 
   // サムネイル
   const renderThumbnail = (
@@ -314,19 +332,31 @@ const PostCard = forwardRef(({ post }, ref) => {
       }}
     >
       {renderDate}
-      <Stack
-        direction="row"
-        justifyContent="flex-end"
-        alignItems="center"
-        spacing={1}
-        sx={{
-          mt: 3,
-          color: "common.black",
-        }}
-      >
-        {renderAvatar}
-        {renderCompanyName}
-      </Stack>
+
+      {company_id === accountData.id ? (
+          <Tooltip title="削除">
+          <Button onClick={() => handleDeleteClick(news_id)}>
+            <DeleteIcon sx={{ color: "red" }} />
+          </Button>
+        </Tooltip>
+      ) : (
+        <Stack
+          direction="row"
+          justifyContent="flex-end"
+          alignItems="center"
+          spacing={1}
+          sx={{
+            mt: 3,
+            color: "common.black",
+          }}
+        >
+          {renderAvatar}
+          {renderCompanyName}
+        </Stack>
+
+      )}
+
+
     </Stack>
   );
 

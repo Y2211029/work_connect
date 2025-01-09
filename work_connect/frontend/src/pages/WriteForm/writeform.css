@@ -5,14 +5,11 @@
 
 .WriteForm {
     width:800px;
-    min-width: 100%;
+    /* min-width: 100%; */
     margin-left: 50%;
     margin-bottom:10px;
     align-items: center; /* 縦の中央揃え */
 }
-
-
-
 
 .sv-string-viewer{
     width:100%;
@@ -24,7 +21,7 @@
     width: 100px;
     border-color:#5956FF;
     color:#5956FF;
-    margin-left:80%;
+    margin-left:20%;
 }
 
 .FormApplyButton:hover{
@@ -38,16 +35,15 @@
 
 @media(max-width:1700px){
     .WriteForm {
+        width: 80%;
         margin-left:0;
     }
 
         
     .FormApplyButton{
         position: relative;
-        left:25px;
+        margin-left: 0%;
         width: 200px;
-        border-color:#5956FF;
-        color:#5956FF;
         font-size:20px;
     }
 
@@ -55,14 +51,13 @@
 
 @media(max-width:1200px){
     .WriteForm {
-        width:100vw;
-        margin-left:0;
+        width: 80%;
         margin-bottom:10px;
         align-items: center; /* 縦の中央揃え */
     }
 
     .sv-string-viewer{
-        font-size: 30px;
+        font-size: 25px;
     }
     .NewsDetailBackButton{
         font-size:40px;
@@ -75,7 +70,6 @@
     .sd-title.sd-container-modern__title{
         width:100vw;
         padding: 0;
-
     }
 
     .sd-input{
@@ -84,10 +78,8 @@
     
     .FormApplyButton{
         position: relative;
-        left:25px;
+        margin-left: 10%;
         width: 200px;
-        border-color:#5956FF;
-        color:#5956FF;
         font-size:30px;
     }
 
@@ -136,11 +128,9 @@
 
     .FormApplyButton{
         position: relative;
-        left:25px;
         width: 150px;
-        border-color:#5956FF;
-        color:#5956FF;
         font-size:20px;
+        margin-left:0px;
     }
 
     .WriteForm_Container{
@@ -156,9 +146,10 @@
 @media(max-width:600px){
     .WriteForm {
         width: 100vw;
-        margin-left: 0 ;
+        margin-left: 0;
         margin-bottom:10px;
         align-items: center; /* 縦の中央揃え */
+        padding-bottom: 3%;
     }
 
     .sd-header__text .sd-title span{
@@ -173,7 +164,7 @@
     }
 
     .sd-element__title span {
-        font-size:10px;
+        font-size:15px;
     }
 
     .sd-title.sd-container-modern__title{
@@ -186,11 +177,9 @@
 
     .FormApplyButton{
         position: relative;
-        left:25px;
         width: 100px;
-        border-color:#5956FF;
-        color:#5956FF;
         font-size:15px;
+        margin-left: 5%;
     }
 
     .WriteForm_Container{
@@ -205,7 +194,7 @@
         margin-bottom: 10px;
     }
 
-    .MuiStack-root css-1x68ktx-MuiStack-root{
+    .MuiStack-root .css-1x68ktx-MuiStack-root{
         width: 100vw;
     }
 
@@ -214,9 +203,12 @@
         padding-bottom: 10%;
     }
 
+    .sd-header__text .sd-title span{
+        font-size:15px;
+    }
 
     .sv-string-viewer {
-        font-size: 10px;
+        font-size: 12px;
     }
 
     .NewsDetailBackButton {
@@ -224,7 +216,7 @@
     }
 
     .sd-element__title span {
-        font-size: 10px;
+        font-size: 12px;
     }
 
     .sd-title.sd-container-modern__title {
@@ -232,14 +224,16 @@
     }
 
     .sd-input {
-        font-size: 80%;
+        font-size: 70%;
     }
 
     .FormApplyButton {
         position: relative;
-        width: 100px;
+        width: 80px;
+        margin-left: 5%;
         border-color: #5956FF;
         color: #5956FF;
+        font-size: 12px;
     }
 }
 

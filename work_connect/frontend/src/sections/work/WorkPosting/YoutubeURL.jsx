@@ -20,11 +20,13 @@ const YoutubeURL = (props) => {
             marginTop: "6px",
             marginBottom: "0",
           }}
+          placeholder="YouTubeの|URL|ID|iframe|のいずれかを入力"
         />
       </p>
     </div>
   );
 };
+// fontSize: "11px",
 
 YoutubeURL.propTypes = {
   callSetWorkData: PropTypes.func,

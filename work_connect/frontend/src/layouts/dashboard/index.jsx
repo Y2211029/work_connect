@@ -108,7 +108,7 @@ export default function DashboardLayout({ children }) {
     setWorkImage,
   };
   const value4 = {
-    DeleteId, 
+    DeleteId,
     setDeleteId
   };
 

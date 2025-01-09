@@ -683,7 +683,6 @@ const NewsSelectMenu = ({
 
                 <div className="ButtonContainer">
                     <Button
-                        variant="outlined"
                         onClick={news_save}
                     >
                         <Typography className="NewsSelectButton_Text">下書き保存</Typography>
@@ -717,14 +716,16 @@ const NewsSelectMenu = ({
                     {(isContentReady && isFollowerValid) ? (
                         <Button
                             className="News_Upload_Button"
-                            variant="outlined"
+                            // variant="outlined"
                             onClick={news_upload}
                         >
                             <Typography className="NewsUploadButton_Text">ニュースを公開する</Typography>
                         </Button>
                     ) : (
                         <Tooltip title="まだ公開できません">
-                            <Button variant="outlined" className="Not_Upload_Button">
+                            <Button
+                                //  variant="outlined"
+                                className="Not_Upload_Button">
                                 <Typography className="NewsUploadButton_Text">ニュースを公開する</Typography>
                             </Button>
                         </Tooltip>

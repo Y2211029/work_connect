@@ -19,7 +19,7 @@ body {
   outline: none;
   border: none;
   left: 10%;
-  padding-bottom: 35px;
+  /* padding-bottom: 35px; */
   overflow-x: hidden;
   overflow-y: hidden;
   background-color: #F9FAFB;
@@ -531,6 +531,17 @@ td {
   border-radius: 5px;
 }
 
+.editor_title::placeholder,
+  .editor_title {
+    font-size: 25px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 10%;
+    padding-left: 5%;
+  }
+
 @media(max-width:1700px){
 
   .thumbnail_img_delete_icon{
@@ -658,16 +669,7 @@ td {
     height:200px;
   }
 
-  .editor_title::placeholder,
-  .editor_title {
-    font-size: 25px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 10%;
-    padding-left: 5%;
-  }
+  
 
   .uploaded-image img {
     width: 90%;

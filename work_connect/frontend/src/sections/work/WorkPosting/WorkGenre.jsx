@@ -87,7 +87,7 @@ const WorkGenre = (props) => {
       classNamePrefix="MyPageEditItems"
       options={options}
       value={selectedOption}
-      placeholder="▼"
+      placeholder="選択"
       isClearable
       isMulti
       onChange={handleChange}

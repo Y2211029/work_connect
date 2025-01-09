@@ -461,9 +461,10 @@ nav ul li a:hover {
 }
 
 .WorkPostingFormField input {
-  padding: 15px;
+  padding: 8px 13px;
   width: 100%;
   border-radius: 10px;
+
 }
 
 .WorkPostingImageFormField {
@@ -532,15 +533,15 @@ textarea {
   text-align: center;
   cursor: pointer;
   padding: 9px 32px;
-  background: #6666ff;
+  background: #4BA2FB;
   color: #ffffff;
   line-height: 1em;
   transition: .3s;
-  border: 2px solid #6666ff;
+  border: 2px solid #4BA2FB;
 }
 
 .WorkSubmit:hover {
-  color: #6666ff;
+  color: #4BA2FB;
   background: #ffffff;
 }
 
@@ -548,7 +549,53 @@ textarea {
   border-color: #3399FF;
 }
 
+
 /* 作品投稿画面 ここまで */
+
+.imageUproadButton {
+  display: flex;
+  flex-direction: column;
+  border-width: 2px;
+  border-style: dashed;
+  border-color: #4ba2fb;
+  border-radius: 5px;
+  height: 12.0625rem;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  width: 100%;
+  min-width: 300px;
+  transition: 0.2s;
+}
+
+.imageUproadButton:hover {
+  background-color: #a9a9a9 !important;
+}
+
+.workImageDeleteButton {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: white;
+  color: red;
+  border-color: red;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  z-index: 2;
+  font-size: 20px;
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.workImageDeleteButton:hover {
+  background: red;
+  color: white;
+  border-color: white;
+}
 
 /* 動画投稿画面 ここから */
 
@@ -1142,6 +1189,52 @@ textarea {
   /* 上腕と自然につながるように調整 */
 }
 
+.requiredInput {
+  color: red;
+}
+
+.MuiInputBase-input::placeholder {
+  font-size: 16px;
+  color: #1C2025 !important;
+}
+
+.css-1jqq78o-placeholder {
+  font-weight: normal;
+}
+
+textarea::-webkit-input-placeholder {
+  font-size: 16px;
+}
+
+textarea::-moz-placeholder {
+  font-size: 16px;
+}
+
+textarea:-ms-input-placeholder {
+  font-size: 16px;
+}
+
+textarea::placeholder {
+  font-size: 16px;
+}
+
+.work_after_posting {
+  display: flex;
+  justify-content: center;
+  /* 横方向に中央揃え */
+  align-items: center;
+  /* 縦方向に中央揃え */
+  min-height: calc(100vh - 138px);
+  /* 画面の高さを最低でも取る */
+  width: 100%;
+  /* 横幅を100%にする */
+  padding: 0;
+  /* 余計なパディングがないことを確認 */
+  box-sizing: border-box;
+  /* パディングやボーダーのサイズが含まれるようにする */
+}
+
+
 /* 前腕の揺れアニメーション */
 @keyframes forearm-swing {
 
@@ -1181,6 +1274,12 @@ textarea {
 
   .render_More_Image_Count {
     width: 35%;
+  }
+
+  .MuiInputBase-input::placeholder {
+    font-size: 14px;
+    color: #1C2025 !important;
+
   }
 }
 
@@ -1249,6 +1348,11 @@ textarea {
     margin-bottom: 10px;
   }
 
+  .MuiInputBase-input::placeholder {
+    font-size: 12px;
+    color: #1C2025 !important;
+
+  }
 }
 
 @media (max-width: 900px) {
@@ -1369,6 +1473,28 @@ textarea {
   .VideoSubmit {
     position: static;
   }
+
+  .MuiInputBase-input::placeholder {
+    font-size: 14px;
+    color: #1C2025 !important;
+
+  }
+
+  textarea::-webkit-input-placeholder {
+    font-size: 14px;
+  }
+
+  textarea::-moz-placeholder {
+    font-size: 14px;
+  }
+
+  textarea:-ms-input-placeholder {
+    font-size: 14px;
+  }
+
+  textarea::placeholder {
+    font-size: 14px;
+  }
 }
 
 @media (max-width: 600px) {
@@ -1430,6 +1556,27 @@ textarea {
     font-size: 2.0rem;
   }
 
+  .MuiInputBase-input::placeholder {
+    font-size: 12px;
+    color: #1C2025 !important;
+
+  }
+
+  textarea::-webkit-input-placeholder {
+    font-size: 12px;
+  }
+
+  textarea::-moz-placeholder {
+    font-size: 12px;
+  }
+
+  textarea:-ms-input-placeholder {
+    font-size: 12px;
+  }
+
+  textarea::placeholder {
+    font-size: 12px;
+  }
 }
 
 @media (max-width: 400px) {
@@ -1474,4 +1621,26 @@ textarea {
     font-size: 1.4rem;
   }
 
+  .MuiInputBase-input::placeholder {
+    font-size: 11px;
+    color: #1C2025 !important;
+
+  }
+
+
+  textarea::-webkit-input-placeholder {
+    font-size: 11px;
+  }
+
+  textarea::-moz-placeholder {
+    font-size: 11px;
+  }
+
+  textarea:-ms-input-placeholder {
+    font-size: 11px;
+  }
+
+  textarea::placeholder {
+    font-size: 11px;
+  }
 }

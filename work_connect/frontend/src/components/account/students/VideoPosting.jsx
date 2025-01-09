@@ -94,13 +94,15 @@ const VideoPosting = () => {
     height: "283",
     width: "450",
     playerVars: {
-      modestbranding: 0,
-      controls: 0,
+      modestbranding: 1,
+      controls: 1,
       iv_load_policy: 3,
+      showinfo: 0,
+      rel: 0,
     },
   };
 
-  
+
 
   const VideoSubmit = async (e) => {
     e.preventDefault();
@@ -140,7 +142,7 @@ const VideoPosting = () => {
       !workData.YoutubeURL ||
       !workData.VideoTitle ||
       !workData.VideoGenre ||
-      !workData.Introduction
+      !workData.VideoIntroduction
     ) {
       alert("エラー：未入力項目があります。");
     } else {
@@ -166,7 +168,17 @@ const VideoPosting = () => {
               </div>
               <br />
               {videoId ? (
-                <YouTube videoId={videoId} opts={opts} />
+                <YouTube
+                  videoId={videoId}
+                  opts={opts}
+                  onReady={(event) => {
+                    const iframe = event.target.getIframe();
+                    iframe.src = iframe.src.replace(
+                      "https://www.youtube.com",
+                      "https://www.youtube-nocookie.com"
+                    );
+                  }}
+                />
               ) : (
                 <p>YouTubeのURL、ID、またはiframeコードを入力してください。</p>
               )}

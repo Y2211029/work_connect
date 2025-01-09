@@ -84,7 +84,7 @@ const Introduction = (props) => {
   return (
     <div>
       <p>
-        作品紹介文*
+        作品紹介文<span className="requiredInput">*</span>
         <Textarea
           error={hasError}
           name="Introduction"

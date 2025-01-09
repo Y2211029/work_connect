@@ -323,7 +323,7 @@ const WorkEdit = () => {
           }
         );
         console.log(formData);
-        navigation("/WorkSelect");
+        navigation("/WorkSelect?type=edit");
         setMessage(response.data.message);
       } catch (error) {
         console.error(
@@ -449,7 +449,7 @@ const WorkEdit = () => {
               </div>
             </div>
           </div>
-          <input type="submit" value="送信" className="WorkSubmit" />
+          <input type="submit" value="更新" className="WorkSubmit" />
         </form>
         {message && <p>{message}</p>}
         {error && <p>{error}</p>}

@@ -116,19 +116,19 @@ const SortableItem = ({
     zIndex: 4,
   };
 
-  const buttonStyle = {
-    position: "absolute", // 削除ボタンを右上に配置
-    top: "5px",
-    right: "5px",
-    background: "red",
-    color: "white",
-    border: "none",
-    borderRadius: "50%", // 丸いボタン
-    width: "25px",
-    height: "25px",
-    cursor: "pointer",
-    zIndex: 2,
-  };
+  // const buttonStyle = {
+  //   position: "absolute", // 削除ボタンを右上に配置
+  //   top: "5px",
+  //   right: "5px",
+  //   background: "red",
+  //   color: "white",
+  //   border: "none",
+  //   borderRadius: "50%", // 丸いボタン
+  //   width: "25px",
+  //   height: "25px",
+  //   cursor: "pointer",
+  //   zIndex: 2,
+  // };
 
   // 画像削除のハンドラ
   const handleDelete = (e) => {
@@ -141,7 +141,7 @@ const SortableItem = ({
     <div ref={setNodeRef} style={style} {...attributes} draggable={true}>
       <div style={containerStyle}>
         <img src={image} alt="" style={imgStyle} {...listeners} />
-        <button type="button" style={buttonStyle} onClick={handleDelete}>
+        <button type="button" className="workImageDeleteButton" /*style={buttonStyle}*/ onClick={handleDelete}>
           ×
         </button>
       </div>
@@ -443,20 +443,23 @@ const ImageUpload = ({
     display: "none", // ファイルインプットを隠す
   };
 
-  const buttonStyle = {
-    display: "flex",
-    flexDirection: "column",
-    borderWidth: "2px",
-    borderStyle: "dashed",
-    borderColor: "rgb(88, 99, 248)",
-    borderRadius: "5px",
-    height: "12.0625rem",
-    justifyContent: "center",
-    alignItems: "center",
-    cursor: "pointer",
-    width: "100%",
-    minWidth: "300px",
-  };
+  // const buttonStyle = {
+  //   display: "flex",
+  //   flexDirection: "column",
+  //   borderWidth: "2px",
+  //   borderStyle: "dashed",
+  //   borderColor: "#4BA2FB",
+  //   borderRadius: "5px",
+  //   height: "12.0625rem",
+  //   justifyContent: "center",
+  //   alignItems: "center",
+  //   cursor: "pointer",
+  //   width: "100%",
+  //   minWidth: "300px",
+  //   "&:hover" : {
+  //     bgColor:"#a9a9a9",
+  //   }
+  // };
 
   const activeItem = items.find((item) => item.id === activeId); // ドラッグ中のアイテム
 
@@ -520,7 +523,7 @@ const ImageUpload = ({
           ) : null}
         </DragOverlay>
       </DndContext>
-      <button type="button" onClick={handleButtonClick} style={buttonStyle}>
+      <button type="button" onClick={handleButtonClick} className="imageUproadButton">
         アップロード
       </button>
     </div>

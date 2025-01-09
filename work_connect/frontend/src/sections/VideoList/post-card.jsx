@@ -109,7 +109,7 @@ const PostCard = forwardRef(({ post }, ref) => {
           color: "common.black",
         }}
       >
-        {isNotMyProfile ? renderAvatar : <EditButtons videoId={movie_id}/>}
+        {isNotMyProfile ? renderAvatar : <EditButtons deleteId={movie_id}/>}
         {isNotMyProfile ? renderUserName : null}
       </Stack>
     </Stack>

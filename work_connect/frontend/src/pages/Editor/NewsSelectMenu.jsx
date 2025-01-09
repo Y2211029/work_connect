@@ -257,7 +257,7 @@ const NewsSelectMenu = ({
         console.log("サムネイル画像", draft.header_img);
         if (draft.header_img === null) {
             return (
-                <ImageNotSupportedIcon/>
+                <ImageNotSupportedIcon />
             );
         } else {
             return <img src={`${draft.header_img}`} alt="Draft Image" />;
@@ -469,10 +469,10 @@ const NewsSelectMenu = ({
                                         const createFormArray = selected_draft.create_form[0].create_form;
                                         console.log("createFormArray", JSON.parse(createFormArray).elements?.length);
                                         // console.log("createFormArray", JSON.parse(createFormArray.elements));
-                                          // elementsが正しく出力されるか確認
+                                        // elementsが正しく出力されるか確認
                                         // const question_count = createFormArray.elements ? createFormArray.elements.length : 0;
                                         const question_count = JSON.parse(createFormArray).elements?.length;
-                                        console.log("質問数:", question_count);                                  
+                                        console.log("質問数:", question_count);
                                         return (
                                             <>
                                                 <NewsMenuTable className="draftlisttable">
@@ -490,7 +490,7 @@ const NewsSelectMenu = ({
                                                                     </p>
 
                                                                     <div>
-                                                                        <DeleteIcon className='delete_icon'/>
+                                                                        <DeleteIcon className='delete_icon' />
                                                                         <p className='delete_text'>削除</p>
                                                                     </div>
                                                                 </Stack>
@@ -627,114 +627,112 @@ const NewsSelectMenu = ({
 
     return (
         <>
-            <div className='NewsSelectButton'>
-                {/* ボタン群 */}
-                <Button
-                    id="input-button"
-                    aria-controls={openInputMenu ? 'menu-input' : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={openInputMenu ? 'true' : undefined}
-                    onClick={handleClickInputMenu}
-                    sx={{ border: '1px solid', mx: 1 }}
-                >
-                    <Typography className="NewsSelectButton_Text">入力メニュー</Typography>
-                </Button>
-                <Menu
-                    id="menu-input"
-                    anchorEl={anchorElInput}
-                    open={openInputMenu}
-                    onClose={handleCloseInputMenu}
-                    MenuListProps={{
-                        'aria-labelledby': 'input-button',
-                    }}
-                    className='menu_input'
-                >
-                    <MenuItem onClick={(e) => handleMenuItemClick(e, 'input', 'eventday')}>開催日</MenuItem>
-                    <MenuItem onClick={(e) => handleMenuItemClick(e, 'input', 'jobtype')}>募集職種</MenuItem>
-                    <MenuItem onClick={(e) => handleMenuItemClick(e, 'input', 'message')}>通知メッセージ</MenuItem>
-                    <MenuItem onClick={(e) => handleMenuItemClick(e, 'input', 'createform')}>応募用フォーム</MenuItem>
-                </Menu>
+            <div className="NewsSelectButton">
+                <div className="ButtonContainer">
+                    <Button
+                        id="input-button"
+                        aria-controls={openInputMenu ? 'menu-input' : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={openInputMenu ? 'true' : undefined}
+                        onClick={handleClickInputMenu}
+                    >
+                        <Typography className="NewsSelectButton_Text">入力メニュー</Typography>
+                    </Button>
+                    <Menu
+                        id="menu-input"
+                        anchorEl={anchorElInput}
+                        open={openInputMenu}
+                        onClose={handleCloseInputMenu}
+                        MenuListProps={{
+                            'aria-labelledby': 'input-button',
+                        }}
+                        className='menu_input'
+                    >
+                        <MenuItem onClick={(e) => handleMenuItemClick(e, 'input', 'eventday')}>開催日</MenuItem>
+                        <MenuItem onClick={(e) => handleMenuItemClick(e, 'input', 'jobtype')}>募集職種</MenuItem>
+                        <MenuItem onClick={(e) => handleMenuItemClick(e, 'input', 'message')}>通知メッセージ</MenuItem>
+                        <MenuItem onClick={(e) => handleMenuItemClick(e, 'input', 'createform')}>応募用フォーム</MenuItem>
+                    </Menu>
+                </div>
 
-                {/* 確認メニューのボタン */}
-                <Button
-                    id="confirmation-button"
-                    aria-controls={openConfirmationMenu ? 'menu-confirmation' : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={openConfirmationMenu ? 'true' : undefined}
-                    onClick={handleClickConfirmationMenu}
-                    sx={{ border: '1px solid', mx: 1 }}
-                >
-                    <Typography className="NewsSelectButton_Text">確認メニュー</Typography>
+                <div className="ButtonContainer">
+                    <Button
+                        id="confirmation-button"
+                        aria-controls={openConfirmationMenu ? 'menu-confirmation' : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={openConfirmationMenu ? 'true' : undefined}
+                        onClick={handleClickConfirmationMenu}
+                    >
+                        <Typography className="NewsSelectButton_Text">確認メニュー</Typography>
+                    </Button>
+                    <Menu
+                        id="menu-confirmation"
+                        anchorEl={anchorElConfirmation}
+                        open={openConfirmationMenu}
+                        onClose={handleCloseConfirmationMenu}
+                        MenuListProps={{
+                            'aria-labelledby': 'confirmation-button',
+                        }}
+                        className="menu_confirmation"
+                    >
+                        <MenuItem onClick={(e) => handleMenuItemClick(e, 'confirmation', 'editing_status')}>編集状況</MenuItem>
+                        <MenuItem onClick={(e) => handleMenuItemClick(e, 'confirmation', 'draft_list')}>下書きリスト</MenuItem>
 
-                </Button>
-                <Menu
-                    id="menu-confirmation"
-                    anchorEl={anchorElConfirmation}
-                    open={openConfirmationMenu}
-                    onClose={handleCloseConfirmationMenu}
-                    MenuListProps={{
-                        'aria-labelledby': 'confirmation-button',
-                    }}
-                    className="menu_confirmation"
-                >
-                    <MenuItem onClick={(e) => handleMenuItemClick(e, 'confirmation', 'editing_status')}>編集状況</MenuItem>
-                    <MenuItem onClick={(e) => handleMenuItemClick(e, 'confirmation', 'draft_list')}>下書きリスト</MenuItem>
+                    </Menu>
+                </div>
 
-                </Menu>
+                <div className="ButtonContainer">
+                    <Button
+                        variant="outlined"
+                        onClick={news_save}
+                    >
+                        <Typography className="NewsSelectButton_Text">下書き保存</Typography>
+                    </Button>
+                    <Popover
+                        open={Boolean(popoverAnchorEl)}
+                        anchorEl={popoverAnchorEl}
+                        onClose={() => setPopoverAnchorEl(null)}
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'left',
+                        }}
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'left',
 
+                        }}
+                        PaperProps={{
+                            className: getPopoverClass(menuState),
+                            sx: {
+                                top: 0,
+                                marginLeft: '9%',
+                            },
+                        }}
+                    >
+                        {renderPopoverContent()}
+                    </Popover>
+                </div>
 
-
-                <Button
-                    variant="outlined"
-                    onClick={news_save}
-                    sx={{
-                        border: '1px solid',
-                        mx: 1,
-                        backgroundColor: 'rgba(255, 255, 255, 1)',
-                    }}
-                >
-                    <Typography className="NewsSelectButton_Text">下書き保存</Typography>
-                </Button>
-
-
-
-                <Popover
-                    open={Boolean(popoverAnchorEl)}
-                    anchorEl={popoverAnchorEl}
-                    onClose={() => setPopoverAnchorEl(null)}
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                    }}
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'left',
-
-                    }}
-                    PaperProps={{
-                        className: getPopoverClass(menuState),
-                        sx: {
-                            top: 0,
-                            marginLeft: '9%',
-                        },
-                    }}
-                >
-                    {renderPopoverContent()}
-                </Popover>
+                <div className="ButtonContainer">
+                    {(isContentReady && isFollowerValid) ? (
+                        <Button
+                            className="News_Upload_Button"
+                            variant="outlined"
+                            onClick={news_upload}
+                        >
+                            <Typography className="NewsUploadButton_Text">ニュースを公開する</Typography>
+                        </Button>
+                    ) : (
+                        <Tooltip title="まだ公開できません">
+                            <Button variant="outlined" className="Not_Upload_Button">
+                                <Typography className="NewsUploadButton_Text">ニュースを公開する</Typography>
+                            </Button>
+                        </Tooltip>
+                    )}
+                </div>
             </div>
 
-            {(isContentReady && isFollowerValid) ? (
-                <Button className="News_Upload_Button" variant="outlined" onClick={news_upload} sx={{ border: '1px solid', mx: 1 }}>
-                    <Typography className="NewsUploadButton_Text">ニュースを公開する</Typography>
 
-                </Button>
-            ) : (
-                <Tooltip title="まだ公開できません">
-                    <Button variant="outlined" className="Not_Upload_Button" sx={{ border: '1px solid', mx: 1 }}>
-                        <Typography className="NewsUploadButton_Text">ニュースを公開する</Typography>
-                    </Button>
-                </Tooltip>
-            )}
         </>
 
     );

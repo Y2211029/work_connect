@@ -17,6 +17,8 @@ import { useIntersection } from "src/routes/hooks/use-intersection";
 
 import { UseCreateTagbutton } from "src/hooks/use-createTagbutton";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import { DeleteIdContext } from "src/layouts/dashboard/index";
+
 
 const setting = {
   rootMargin: "40px",
@@ -117,13 +119,13 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
         case path === "/VideoList" ||
           path === `/Profile/${SessionAccountData.user_name}?page=movie` ||
           path === `/Profile/${ParamUserName}?page=movie`: {
-          const { default: VideoListPostCard } = await import("src/sections/VideoList/post-card");
-          const { default: VideoListPostSort } = await import("src/sections/VideoList/post-sort");
-          setPostCard(() => VideoListPostCard);
-          setPostSort(() => VideoListPostSort);
-          console.log("VideoListPostCard");
-          break;
-        }
+            const { default: VideoListPostCard } = await import("src/sections/VideoList/post-card");
+            const { default: VideoListPostSort } = await import("src/sections/VideoList/post-sort");
+            setPostCard(() => VideoListPostCard);
+            setPostSort(() => VideoListPostSort);
+            console.log("VideoListPostCard");
+            break;
+          }
 
         case path === "/StudentList": {
           const { default: StudentListPostCard } = await import("src/sections/StudentList/post-card");
@@ -143,11 +145,11 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
           (options.DecodeURL === `/Profile/${ParamUserName}` &&
             options.page === "news" &&
             ["JobOffer", "Internship", "Blog", "Session"].includes(options.category)): {
-          const { default: Internship_JobOfferPostCard } = await import("src/sections/InternshipJobOffer/post-card");
-          setPostCard(() => Internship_JobOfferPostCard);
-          console.log("Internship_JobOfferPostCard");
-          break;
-        }
+            const { default: Internship_JobOfferPostCard } = await import("src/sections/InternshipJobOffer/post-card");
+            setPostCard(() => Internship_JobOfferPostCard);
+            console.log("Internship_JobOfferPostCard");
+            break;
+          }
 
         case path === `/Profile/${ParamUserName}` && options.page === "checkform": {
           const { default: CheckFormPostCard } = await import("src/sections/Profile/View/company/CheckForm/post-card");
@@ -560,6 +562,7 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
 
   const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData");
+  const { DeleteId } = useContext(DeleteIdContext);
 
   useEffect(() => {
     loginStatusCheckFunction();
@@ -647,6 +650,20 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
 
   let LaravelResponse = isLoading;
 
+  useEffect(() => {
+    if (DeleteId !== null) {
+      if (pageParam == "work") {
+        setWorkOfList((prevList) =>
+          prevList.filter((item) => item.work_id !== DeleteId)
+        );
+      } else if (pageParam == "movie") {
+        setWorkOfList((prevList) =>
+          prevList.filter((item) => item.movie_id !== DeleteId)
+        );
+      }
+    }
+  }, [DeleteId]);
+
   // 検索時にsetWorkOfListをリセット
   useEffect(() => {
     // タグを選択した状態
@@ -717,10 +734,10 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
       }
       // if (data.length !== 0 || Page !== 1) {
       //   console.log("ローディング削除:2");
-        setAllItems((prev) => ({
-          ...prev,
-          IsLoading: false, // データが空のときはtrueにしてローディングを維持
-        }));
+      setAllItems((prev) => ({
+        ...prev,
+        IsLoading: false, // データが空のときはtrueにしてローディングを維持
+      }));
       // }
     }
   }, [data, error, ResetItem, IsSearch.Check, IsSearch.searchResultEmpty]);
@@ -787,8 +804,8 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   const renderWorkItems =
     WorkOfList.length !== 0 && PostCard
       ? WorkOfList.map((post, index) => (
-          <PostCard className="mediaCard" ref={index === WorkOfList.length - 1 ? ref : null} key={`${post}-${index}`} post={post} index={index} />
-        ))
+        <PostCard className="mediaCard" ref={index === WorkOfList.length - 1 ? ref : null} key={`${post}-${index}`} post={post} index={index} />
+      ))
       : WorkOfList.length === 0 && !IsLoading && !LaravelResponse && hasLoadedOnce
         ? "0件です"
         : "";

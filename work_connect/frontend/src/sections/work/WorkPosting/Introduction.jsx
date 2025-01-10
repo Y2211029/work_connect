@@ -64,7 +64,7 @@ const Introduction = (props) => {
 
   const handleChange = (e) => {
     props.callSetWorkData("Introduction", e.target.value);
-    console.log("nagasa",e.target.value);
+    console.log("nagasa", e.target.value);
 
     setInputValue(e.target.value);
     setHasError(e.target.value === ""); // 空の場合にエラーを表示
@@ -82,27 +82,25 @@ const Introduction = (props) => {
   }, [inputValue]);
 
   return (
-    <div>
-      <p>
-        作品紹介文<span className="requiredInput">*</span>
-        <Textarea
-          error={hasError}
-          name="Introduction"
-          maxRows={12}
-          aria-label="maximum height"
-          placeholder="500字以内"
-          value={props.workData}
-          onChange={handleChange}
-          maxLength={500}
-          sx={{
-            border:
-              inputValue === ""
-                ? "1px red solid"
-                : `1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]}`,
-          }}
-        />
-      </p>
-
+    <p style={{ marginTop: "30px" }}>
+      作品紹介文<span className="requiredInput">*</span>
+      <Textarea
+        error={hasError}
+        name="Introduction"
+        maxRows={12}
+        aria-label="maximum height"
+        placeholder="500字以内"
+        value={props.workData}
+        onChange={handleChange}
+        maxLength={500}
+        sx={{
+          border:
+            inputValue === ""
+              ? "1px red solid"
+              : `1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]}`,
+        }}
+        className="WorkInputElements"
+      />
       <Typography
         variant="body2"
         color="textSecondary"
@@ -117,7 +115,8 @@ const Introduction = (props) => {
         )}{" "}
         / 500
       </Typography>
-    </div>
+    </p>
+
   );
 };
 

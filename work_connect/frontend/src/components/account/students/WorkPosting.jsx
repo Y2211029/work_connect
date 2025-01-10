@@ -268,7 +268,7 @@ const WorkPosting = () => {
                     onChange={handleChange}
                     value={videoUrl}
                     error={hasError}
-                    // placeholder="YouTubeのURL、ID、またはiframeコードを入力してください。"
+                  // placeholder="YouTubeのURL、ID、またはiframeコードを入力してください。"
                   />
                 </div>
                 {/* {videoId ? (
@@ -289,46 +289,50 @@ const WorkPosting = () => {
                 </div>
               </div>
             </div>
-            <div className="WorkInformation">
-              <div className="WorkPostingFormField">
-                <WorkTitle callSetWorkData={callSetWorkData} />
-              </div>
-              {/* ジャンル */}
-              <div className="WorkPostingFormField">
-                <div className="workGenre" id="workGenre">
-                  <p className="work_genre">
-                    ジャンル<span className="requiredInput">*</span>
-                    {/* ジャンル&nbsp;<span className="red_txt">必須</span>
+            <div className="WorkPostInputElements">
+              <div className="WorkInformation">
+                <div className="WorkPostingFormField">
+                  <WorkTitle callSetWorkData={callSetWorkData} />
+                </div>
+                {/* ジャンル */}
+                <div className="WorkPostingFormField">
+                  <div className="workGenre" id="workGenre">
+                    <p className="work_genre">
+                      ジャンル<span className="requiredInput">*</span>
+                      {/* ジャンル&nbsp;<span className="red_txt">必須</span>
                     &nbsp;
                     <span className="alert_red_txt" id="alert_a_3">
-                      タグを入れてください
+                    タグを入れてください
                     </span> */}
+                      <WorkGenre callSetWorkData={callSetWorkData} />
+                    </p>
+                  </div>
+                </div>
+                <div className="WorkPostingFormField postingTextArea">
+                  <Introduction callSetWorkData={callSetWorkData} />
+                </div>
+                <div className="WorkPostingFormField postingTextArea">
+                  <Obsession callSetWorkData={callSetWorkData} />
+                </div>
+                <div className="WorkPostingFormField">
+                  <p>
+                    プログラミング言語
+                    <Language callSetWorkData={callSetWorkData} />
                   </p>
-                  <WorkGenre callSetWorkData={callSetWorkData} />
+                </div>
+                <div className="WorkPostingFormField">
+                  <p>
+                    開発環境
+                    <Environment callSetWorkData={callSetWorkData} />
+                  </p>
                 </div>
               </div>
-              <br />
-              <div className="WorkPostingFormField">
-                <Introduction callSetWorkData={callSetWorkData} />
-              </div>
-              <div className="WorkPostingFormField">
-                <Obsession callSetWorkData={callSetWorkData} />
-              </div>
-              <div className="WorkPostingFormField">
-                <p>
-                  プログラミング言語
-                  <Language callSetWorkData={callSetWorkData} />
-                </p>
-              </div>
-              <div className="WorkPostingFormField">
-                <p>
-                  開発環境
-                  <Environment callSetWorkData={callSetWorkData} />
-                </p>
+              <div className="postingInput">
+                <input type="submit" value="投稿" className="WorkSubmit" />
               </div>
             </div>
           </div>
-          <input type="submit" value="投稿" className="WorkSubmit" />
+
         </form>
         {message && <p>{message}</p>}
       </div>

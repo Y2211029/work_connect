@@ -71,7 +71,7 @@ const VideoIntroduction = (props) => {
   return (
     <div>
       <p>
-        作品紹介文*
+        紹介文<span className="requiredInput">*</span>
       </p>
       <Textarea
         error={hasError}

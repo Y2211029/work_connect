@@ -107,9 +107,9 @@ const SortableItem = ({
   };
 
   const containerStyle = {
-    width: "100%",
-    maxWidth: "400px",
-    height: "225px",
+    width: "fit-contents",
+    // maxWidth: "400px",
+    height: "fit-contents",
     overflow: "hidden",
     position: "relative",
     boxSizing: "border-box",
@@ -256,13 +256,14 @@ const ImageUpload = ({
       const newItems = workDetailData.map((file, index) => {
         console.log("workData[index]", workData[index]);
         // URL.revokeObjectURL(URL.createObjectURL(workData[index]));
-        return({
-        id: `${file.image}-${index}-${Date.now()}`, // 一意のIDを生成
-        // image: URL.createObjectURL(workData[index]), // ローカルURLを作成
-        image: file.imageSrc,
-        name: file.image,
-        description: file.annotation, // 初期状態は空の説明
-      })});
+        return ({
+          id: `${file.image}-${index}-${Date.now()}`, // 一意のIDを生成
+          // image: URL.createObjectURL(workData[index]), // ローカルURLを作成
+          image: file.imageSrc,
+          name: file.image,
+          description: file.annotation, // 初期状態は空の説明
+        })
+      });
       setItems((prevItems) => {
         // 配列型
         const updatedItems = [...prevItems, ...newItems];
@@ -464,9 +465,9 @@ const ImageUpload = ({
   const activeItem = items.find((item) => item.id === activeId); // ドラッグ中のアイテム
 
   const overlayStyle = {
-    width: "100%",
-    maxWidth: "400px",
-    height: "225px",
+    width: "fit-contents",
+    // maxWidth: "400px",
+    height: "fit-contents",
     overflow: "hidden",
     position: "relative",
     zIndex: 3,
@@ -480,16 +481,20 @@ const ImageUpload = ({
   };
 
   return (
-    <div>
-      <p>画像*</p>
-      <input
-        type="file"
-        multiple
-        id="inputElement"
-        onChange={handleImageUpload} // 画像アップロードのイベントハンドラ
-        ref={fileInputRef} // ファイルインプットの参照
-        style={inputStyle} // 見えないようにスタイルを設定
-      />
+    <div className="ImageUproadElements">
+      <p>画像<span className="requiredInput">*</span>
+        <input
+          type="file"
+          multiple
+          id="inputElement"
+          onChange={handleImageUpload} // 画像アップロードのイベントハンドラ
+          ref={fileInputRef} // ファイルインプットの参照
+          style={inputStyle} // 見えないようにスタイルを設定
+        />
+        <button type="button" onClick={handleButtonClick} className="imageUproadButton">
+          アップロード
+        </button>
+      </p>
       <DndContext
         sensors={sensors} // センサー設定を渡す
         collisionDetection={closestCenter} // 衝突検知を中心ベースに設定
@@ -523,9 +528,7 @@ const ImageUpload = ({
           ) : null}
         </DragOverlay>
       </DndContext>
-      <button type="button" onClick={handleButtonClick} className="imageUproadButton">
-        アップロード
-      </button>
+
     </div>
   );
 };

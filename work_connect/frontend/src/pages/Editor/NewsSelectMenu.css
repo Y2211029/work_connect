@@ -87,6 +87,7 @@ _ .Last_updated_date {
 }
 
 .NewsSelectButton {
+    width: 60%;
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
@@ -100,7 +101,7 @@ _ .Last_updated_date {
     align-items: center;
     /* セルのように見せるためにブロック配置 */
     text-align: center;
-    border: 1px solid #4BA2FB;
+    border: 1px solid #bbbbbb;
     background-color: #F9FAFB;
     border-radius: 4px !important;
     transition: 0.2s;
@@ -110,9 +111,27 @@ _ .Last_updated_date {
     background-color: #4BA2FB;
 }
 
+.Not_Upload_Button {
+    flex: 1 1 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* セルのように見せるためにブロック配置 */
+    text-align: center;
+    border: 1px solid #bbbbbb;
+    background-color: #F9FAFB;
+    border-radius: 4px !important;
+    transition: 0.2s;
+}
+.Not_Upload_Button:hover {
+    background-color: #f0908d !important;
+}
+
+
+
 .NewsSelectButton .ButtonContainer button {
     width: 100%;
-    color: #4BA2FB !important;
+    color: #212b30 !important;
 }
 
 .NewsSelectButton .ButtonContainer button:hover {
@@ -182,9 +201,15 @@ _ .Last_updated_date {
     /* .NewsSelectButton {
         padding-top: 3%;
     } */
+    .NewsSelectButton {
+        width: 80%;
+    }
 }
 
 @media(max-width:1200px) {
+    .NewsSelectButton {
+        width: 80%;
+    }
     /* .NewsSelectButton {
         padding-top: 3%;
     } */
@@ -196,9 +221,9 @@ _ .Last_updated_date {
 }
 
 @media(max-width: 900px) {
-    /* .NewsSelectButton {
-        padding-top: 5%;
-    } */
+    .NewsSelectButton {
+        width: 100%;
+    }
 
     .NewsSelectButton {
         display: grid;
@@ -206,16 +231,21 @@ _ .Last_updated_date {
         /* 2列構成 */
         gap: 0px;
         /* セル間の余白 */
-        
+
     }
-    .NewsSelectButton .ButtonContainer  {
+
+    .NewsSelectButton .ButtonContainer {
         border-radius: 0px !important;
     }
-
-
+    
+    
     .NewsUploadButton_Text,
     .NewsSelectButton_Text {
         font-size: 16px;
+    }
+    
+    .Not_Upload_Button {
+        border-radius: 0px !important;
     }
 
 

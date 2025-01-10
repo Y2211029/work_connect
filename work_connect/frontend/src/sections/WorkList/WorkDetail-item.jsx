@@ -423,7 +423,7 @@ const WorkDetailItem = () => {
 
   // let ImageSet = workDetail.image
 
-  const renderMoreImageCount = WorkSlideCheck &&  Object.keys(WorkSlide).length > 1 && (
+  const renderMoreImageCount = WorkSlideCheck && Object.keys(WorkSlide).length > 1 && (
     // console.log("ImageSet", ImageSet),
     <>
       <Box component="div" className="render_More_Image_Count">
@@ -541,7 +541,7 @@ const WorkDetailItem = () => {
                     aria-labelledby="modal-autoplay-example-heading"
                     hasTrack={false}
                     className="modal-custom-splide" // クラス名を追加
-                    // style={{ height: "100%" }}
+                  // style={{ height: "100%" }}
                   >
                     <SplideTrack className="modal-custom-splide-track">
                       {WorkSlide.map((slide, index) => (
@@ -801,6 +801,17 @@ const WorkDetailItem = () => {
       </div>
     </>
   );
+  // こだわりポイント
+  const renderObsession = workDetail.obsession && (
+    <>
+      <Typography variant="h5" className="WorkDetail_typo">
+        ● こだわりポイント
+      </Typography>
+      <div className="Detail_info-intro" style={{ fontSize: "16px" }}>
+        {workDetail.obsession}
+      </div>
+    </>
+  );
 
   // 作品ジャンル
   const renderGenre = WorkGenre && (
@@ -851,7 +862,7 @@ const WorkDetailItem = () => {
       {workComment && Object.keys(Comment).length > 0 && <h3>コメント一覧</h3>}
       {workComment.map((item, index) =>
         (item.commenter_id === AccountData.id && item.commenter_user_name === AccountData.user_name) ||
-        (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
+          (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
           <div key={index}>
             {/* {console.log("comment", Comment)} */}
             <Divider sx={{ borderStyle: "dashed", margin: "5px 0px 20px 0px", width: "90%" }} />
@@ -992,6 +1003,7 @@ const WorkDetailItem = () => {
         {renderGallery}
 
         {renderIntro}
+        {renderObsession}
         {renderGenre}
         {renderProgrammingLang}
         {renderDevelopmentEnv}

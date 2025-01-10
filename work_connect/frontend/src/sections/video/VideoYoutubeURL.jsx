@@ -19,20 +19,26 @@ const VideoYoutubeURL = (props) => {
 
   return (
     <div>
-      <p>動画*</p>
-      <TextField
-        fullWidth
-        margin="normal"
-        type="text"
-        name="text"
-        variant="outlined"
-        onChange={handleChange}
-        value={props.value}
-        error={error}
-        sx={{
-          backgroundColor: "#fff", // 背景色を指定
-        }}
-      />
+      <p>動画<span className="requiredInput">*</span>
+
+        <TextField
+          fullWidth
+          margin="normal"
+          type="text"
+          name="text"
+          variant="outlined"
+          onChange={handleChange}
+          value={props.value}
+          error={error}
+          sx={{
+            backgroundColor: "#fff", // 背景色を指定
+            borderRadius: "8px", // 角の丸みを設定
+            marginTop: "6px",
+            marginBottom: "0",
+          }}
+          placeholder="YouTubeの|URL|ID|iframe|のいずれかを入力"
+        />
+      </p>
     </div>
   );
 };

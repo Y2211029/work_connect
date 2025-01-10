@@ -180,34 +180,39 @@ const VideoPosting = () => {
                   }}
                 />
               ) : (
-                <p>YouTubeのURL、ID、またはiframeコードを入力してください。</p>
+                // <p>YouTubeのURL、ID、またはiframeコードを入力してください。</p>
+                ""
               )}
             </div>
-            <div className="VideoInformation">
-              <div className="VideoPostingFormField">
-                <VideoTitle callSetVideoData={callSetVideoData} />
-              </div>
-              {/* ジャンル */}
-              <div className="VideoPostingFormField">
-                <div className="workGenre" id="workGenre">
-                  <p className="work_genre">
-                    ジャンル
-                    {/* ジャンル&nbsp;<span className="red_txt">必須</span>
+            <div className="WorkPostInputElements">
+              <div className="VideoInformation">
+                <div className="VideoPostingFormField">
+                  <VideoTitle callSetVideoData={callSetVideoData} />
+                </div>
+                {/* ジャンル */}
+                <div className="VideoPostingFormField">
+                  <div className="workGenre" id="workGenre">
+                    <p className="work_genre">
+                      ジャンル<span className="requiredInput">*</span>
+
+                      {/* ジャンル&nbsp;<span className="red_txt">必須</span>
                     &nbsp;
                     <span className="alert_red_txt" id="alert_a_3">
                       タグを入れてください
                     </span> */}
-                  </p>
-                  <VideoGenre callSetVideoData={callSetVideoData} />
+                      <VideoGenre callSetVideoData={callSetVideoData} />
+                    </p>
+                  </div>
+                </div>
+                <div className="VideoPostingFormField">
+                  <VideoIntroduction callSetVideoData={callSetVideoData} />
                 </div>
               </div>
-              <br />
-              <div className="VideoPostingFormField">
-                <VideoIntroduction callSetVideoData={callSetVideoData} />
+              <div className="postingInput">
+                <input type="submit" value="投稿" className="VideoSubmit" />
               </div>
             </div>
           </div>
-          <input type="submit" value="送信" className="VideoSubmit" />
         </form>
         {message && <p>{message}</p>}
       </div>

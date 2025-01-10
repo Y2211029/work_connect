@@ -712,8 +712,8 @@ const NewsSelectMenu = ({
                     </Popover>
                 </div>
 
-                <div className="ButtonContainer">
-                    {(isContentReady && isFollowerValid) ? (
+                {(isContentReady && isFollowerValid) ? (
+                    <div className="ButtonContainer">
                         <Button
                             className="News_Upload_Button"
                             // variant="outlined"
@@ -721,16 +721,17 @@ const NewsSelectMenu = ({
                         >
                             <Typography className="NewsUploadButton_Text">ニュースを公開する</Typography>
                         </Button>
-                    ) : (
+                    </div>
+                ) : (
+                    <div className="Not_Upload_Button">
                         <Tooltip title="まだ公開できません">
-                            <Button
-                                //  variant="outlined"
-                                className="Not_Upload_Button">
+                            <Button>
                                 <Typography className="NewsUploadButton_Text">ニュースを公開する</Typography>
+
                             </Button>
                         </Tooltip>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
 
 

@@ -68,27 +68,25 @@ const Obsession = (props) => {
     setHasError(e.target.value === ""); // 空の場合にエラーを表示
   };
   return (
-    <div>
-      <p>
-        こだわりポイント<span className="requiredInput">*</span>
-        <Textarea
-          error={hasError}
-          name="Obsession"
-          maxRows={12}
-          aria-label="maximum height"
-          placeholder="500字以内"
-          value={props.workData}
-          onChange={handleChange}
-          maxLength={500}
-          sx={{
-            border:
-              inputValue === ""
-                ? "1px red solid"
-                : `1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]}`,
-          }}
-        />
-      </p>
-
+    <p>
+      こだわりポイント<span className="requiredInput">*</span>
+      <Textarea
+        error={hasError}
+        name="Obsession"
+        maxRows={12}
+        aria-label="maximum height"
+        placeholder="500字以内"
+        value={props.workData}
+        onChange={handleChange}
+        maxLength={500}
+        sx={{
+          border:
+            inputValue === ""
+              ? "1px red solid"
+              : `1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]}`,
+        }}
+        className="WorkInputElements"
+      />
       <Typography
         variant="body2"
         color="textSecondary"
@@ -103,7 +101,8 @@ const Obsession = (props) => {
         )}{" "}
         / 500
       </Typography>
-    </div>
+    </p>
+
   );
 };
 

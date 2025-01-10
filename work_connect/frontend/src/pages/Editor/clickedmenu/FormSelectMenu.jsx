@@ -112,40 +112,8 @@ const NewsSelectMenu = ({
         { lavel: 'ランキング', icon: <StarIcon />, click: () => addQuestion('ranking') },
     ];
 
-    // 入力タイプに基づくラベルの配列
-    // const TypeChangeArray = [
-    //     { menu: "text", text: "テキスト" },
-    //     { menu: "username", text: "ユーザーネーム" },
-    //     { menu: "email", text: "メールアドレス" },
-    //     { menu: "password", text: "パスワード" },
-    //     { menu: "url", text: "URL" },
-    //     { menu: "date", text: "日付" },
-    //     { menu: "time", text: "時間" },
-    //     { menu: "datetime-local", text: "年月日/時分" },
-    //     { menu: "month", text: "月間" },
-    //     { menu: "week", text: "週間" },
-    //     { menu: "number", text: "数値" },
-    //     { menu: "range", text: "範囲" },
-    //     { menu: "tel", text: "電話番号" },
-    //     { menu: "radio", text: "単一選択:ラジオボタン" },
-    //     { menu: "radiogroup", text: "複数選択:ラジオボタン" },
-    //     { menu: "dropdown", text: "単一選択:ドロップダウンメニュー" },
-    //     { menu: "tagbox", text: "複数選択:ドロップダウンメニュー" },
-    //     { menu: "checkbox", text: "チェックボックス" },
-    //     { menu: "boolean", text: "真偽値" },
-    //     { menu: "comment", text: "コメント" },
-    //     { menu: "rating", text: "評価" },
-    //     { menu: "ranking", text: "ランキング" },
-    //     { menu: "imagepicker", text: "画像ピッカー" },
-    // ];
-
-    // const typechange = (type) => {
-    //     const matched = TypeChangeArray.find((item) => item.menu === type);
-    //     return matched ? matched.text : "不明なタイプ";
-    // };
-
     return (
-        <div>
+        <div className='Buttons'>
 
             <div className='Back_Button'>
                 <Tooltip title="ニュース記事の編集に戻る">
@@ -180,11 +148,17 @@ const NewsSelectMenu = ({
                     className='Menu_Addform'
                     anchorOrigin={{
                         vertical: 'top',
-                        horizontal: 'left', // 必要に応じて 'center' に変更
+                        horizontal: 'left', 
                     }}
                     transformOrigin={{
                         vertical: 'top',
-                        horizontal: 'left', // 必要に応じて 'center' に変更
+                        horizontal: 'left', 
+                    }}
+                    PaperProps={{
+                        sx: {
+                            padding: '15px', // 必要に応じてパディングも追加
+                            boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.2)', // 影の調整例
+                        },
                     }}
                 >
                     <div className='QuestionMenu'>
@@ -195,7 +169,6 @@ const NewsSelectMenu = ({
                             sx={{
                                 display: 'flex',
                                 flexWrap: 'wrap',
-                                // overflowX: 'auto',  // 横スクロールを有効化
                                 paddingBottom: '20px',
                             }}
                         >
@@ -260,59 +233,6 @@ const NewsSelectMenu = ({
                     </Box>
 
                 </Menu>
-
-                {/* <Tooltip title="全質問のデータを確認できます"> */}
-                {/* 確認メニューのボタン */}
-                {/* <Button
-                    id="FormInformatiion-button"
-                    aria-controls={openFormInformatiionMenu ? 'menu-FormInformatiion' : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={openFormInformatiionMenu ? 'true' : undefined}
-                    onClick={handleClickFormInformatiionMenu}
-                    sx={{ border: '1px solid', mx: 1 }}
-                >
-                    フォーム情報
-                </Button>
-            </Tooltip>
-            <Menu
-                id="menu-FormInformatiion"
-                anchorEl={anchorElFormInformatiion}
-                open={openFormInformatiionMenu}
-                onClose={handleCloseFormInformatiionMenu}
-                MenuListProps={{
-                    'aria-labelledby': 'FormInformatiion-button',
-                }}
-                sx={{ left: '20%' }}
-            >
-                <div className="form_information">
-                    <TableContainer component={Paper}>
-                        <NewsMenuTable sx={{ maxWidth: 700 }} aria-label="simple table">
-                            <TableBody>
-                                {questions.map((question, index) => (
-                                    <div key={index}>
-                                        <TableRow>
-                                            <TableCell className="table_label">ナンバー</TableCell>
-                                            <TableCell>{question.id}</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell className="table_label">タイトル</TableCell>
-                                            <TableCell>{question.title}</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell className="table_label">タイプ</TableCell>
-                                            <TableCell>{typechange(question.type)}</TableCell>
-                                        </TableRow>
-                                    </div>
-                                ))}
-                            </TableBody>
-                        </NewsMenuTable>
-                    </TableContainer>
-                </div> */}
-                {/* </Menu> */}
-
-
-
-
 
                 <Button
                     variant="outlined"

@@ -8,6 +8,14 @@ import PropTypes from 'prop-types';
 import Checkbox from '@mui/material/Checkbox';
 
 export default function Text({ onSave, onCancel, questionData }) {
+    
+    const inputtype = [
+        { label: 'テキスト', id: 1, name: "username" },
+        { label: 'メールアドレス', id: 2, name: "email" },
+        { label: 'パスワード', id: 3, name: "password" },
+        { label: 'URL', id: 4, name: "url" },
+    ];
+
     const [title, setTitle] = useState("");
     const [maxLength, setMaxLength] = useState("");
     const [minLength, setMinLength] = useState("");
@@ -19,17 +27,14 @@ export default function Text({ onSave, onCancel, questionData }) {
     const [validatorsMinLength, setValidatorsMinLength] = useState("");
     const [validatorsMaxLength, setValidatorsMaxLength] = useState("");
     const [validatorstext, setValidatorstext] = useState("");
+    const [error, setError] = useState(false);
 
-    const inputtype = [
-        { label: 'テキスト', id: 1, name: "username" },
-        { label: 'メールアドレス', id: 2, name: "email" },
-        { label: 'パスワード', id: 3, name: "password" },
-        { label: 'URL', id: 4, name: "url" },
-    ];
+
 
     // questionData が変更されたら、各フィールドにデータをセットする
     useEffect(() => {
         if (questionData) {
+            console.log("questionData.inputType",questionData.inputType);
             setTitle(questionData.title || "");
             setMaxLength(questionData.maxLength || "");
             setMinLength(questionData.minLength || "");
@@ -49,36 +54,43 @@ export default function Text({ onSave, onCancel, questionData }) {
 
     // 保存ボタンがクリックされた時にデータを親コンポーネントに渡す
     const handleSave = () => {
-        const validators = [];
-        if (validatorsMinLength || validatorsMaxLength || validatorstext) {
-            validators.push({
-                type: 'text',
-                maxLength: validatorsMaxLength ? parseInt(validatorsMaxLength, 10) : undefined,
-                minLength: validatorsMinLength ? parseInt(validatorsMinLength, 10) : undefined,
-                text: validatorstext || ""
-            });
+        if(selectedType){
+            const validators = [];
+            if (validatorsMinLength || validatorsMaxLength || validatorstext) {
+                validators.push({
+                    type: 'text',
+                    maxLength: validatorsMaxLength ? parseInt(validatorsMaxLength, 10) : undefined,
+                    minLength: validatorsMinLength ? parseInt(validatorsMinLength, 10) : undefined,
+                    text: validatorstext || ""
+                });
+            }
+    
+            const settings = {
+                title: title || "新しい質問",
+                inputType: selectedType ? selectedType.name : "username",
+                maxLength: maxLength ? parseInt(maxLength, 10) : undefined,
+                minLength: minLength ? parseInt(minLength, 10) : undefined,
+                placeholder: placeholder || "",
+                autocomplete: autocomplete || false,
+                isrequired: isrequired || false,
+                description: description || "",
+                validators: validators
+            };
+    
+            onSave(settings);
+            console.log("設定", settings);
+        }else{
+            setError(true);
         }
 
-        const settings = {
-            title: title || "新しい質問",
-            inputType: selectedType ? selectedType.name : "username",
-            maxLength: maxLength ? parseInt(maxLength, 10) : undefined,
-            minLength: minLength ? parseInt(minLength, 10) : undefined,
-            placeholder: placeholder || "",
-            autocomplete: autocomplete || false,
-            isrequired: isrequired || false,
-            description: description || "",
-            validators: validators
-        };
-
-        onSave(settings);
-        console.log("設定", settings);
     };
 
     //編集をキャンセルして追加したフォームを削除
     const handleCancel = () => {
         onCancel();
     }
+
+    console.log("selectedTypeの中身",selectedType);
 
     return (
         <div className="TextSetting">
@@ -97,8 +109,9 @@ export default function Text({ onSave, onCancel, questionData }) {
                         ...params.InputProps,
                         className: 'autocomplete_component_text',
                     }}
+                    error={error} // エラー状態を反映
+                    helperText={error ? "種類を選択してください。" : ""}
                     />}
-                // sx={{width: "90%",}}
                 />
 
                 <TextField
@@ -106,7 +119,6 @@ export default function Text({ onSave, onCancel, questionData }) {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     fullWidth
-                // sx={{width: "90%",}}
                 />
 
 

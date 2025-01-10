@@ -689,6 +689,7 @@ const NewsSelectMenu = ({
                     </Button>
                     <Popover
                         open={Boolean(popoverAnchorEl)}
+                        disableScrollLock={false}
                         anchorEl={popoverAnchorEl}
                         onClose={() => setPopoverAnchorEl(null)}
                         anchorOrigin={{

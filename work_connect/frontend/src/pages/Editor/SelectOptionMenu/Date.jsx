@@ -21,6 +21,7 @@ export default function Data({ onSave, onCancel, questionData }) {
     const [pastdate, setPastDate] = useState(false);
     const [defaultValueExpression, setdefaultValueExpression] = useState("");
     const [expanded, setExpanded] = useState(false);
+    const [error, setError] = useState(false);
 
 
     const [max, setMax] = useState("");
@@ -48,19 +49,23 @@ export default function Data({ onSave, onCancel, questionData }) {
 
     // 保存ボタンがクリックされた時にデータを親コンポーネントに渡す
     const handleSave = () => {
+        if(selectedType){
+            const settings = {
+                title: title || "新しい質問",
+                inputType: selectedType ? selectedType.name : "date",
+                isRequired: isrequired || false,
+                defaultValueExpression: defaultValueExpression || "",
+                minValueExpression: pastdate ? "today()" : undefined,
+                min: min || undefined,
+                max: max || undefined,
+    
+            };
+            onSave(settings);
+            console.log("設定", settings);
+        }else{
+            setError(true);
+        }
 
-        const settings = {
-            title: title || "新しい質問",
-            inputType: selectedType ? selectedType.name : "date",
-            isRequired: isrequired || false,
-            defaultValueExpression: defaultValueExpression || "",
-            minValueExpression: pastdate ? "today()" : undefined,
-            min: min || undefined,
-            max: max || undefined,
-
-        };
-        onSave(settings);
-        console.log("設定", settings);
     };
 
     //編集をキャンセルして追加したフォームを削除
@@ -99,7 +104,11 @@ export default function Data({ onSave, onCancel, questionData }) {
                     onChange={(event, newValue) => setSelectedType(newValue)}
                     isOptionEqualToValue={(option, value) => option.name === value?.name}
                     fullWidth
-                    renderInput={(params) => <TextField {...params} label="種類" />}
+                    renderInput={(params) => <TextField {...params} label="種類" 
+                    error={error} // エラー状態を反映
+                    helperText={error ? "種類を選択してください。" : ""}
+                    />}
+
                 />
 
                 <TextField

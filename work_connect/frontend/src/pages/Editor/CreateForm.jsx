@@ -41,7 +41,7 @@ import FormSelectMenu from "./clickedmenu/FormSelectMenu";
 
 Modal.setAppElement('#root');
 
-const CreateForm = ({ newsid, HandleBack, title }) => {
+const CreateForm = ({ newsid, HandleBack}) => {
 
   console.log("ニュースid", newsid);
   console.log("HandleBack関数", HandleBack);
@@ -122,14 +122,14 @@ const CreateForm = ({ newsid, HandleBack, title }) => {
         } else {
           console.warn("create_form が空か存在しません。デフォルト値を設定します。");
           createform = {
-            title: title,
+            title: 'タイトル未設定',
             elements: [
               {
                 id: "1",
                 name: "Question1",
                 title: "デフォルトの質問",
                 type: "text",
-                inputType: "text",
+                inputType: "username",
                 isRequired: false,
               }
             ],

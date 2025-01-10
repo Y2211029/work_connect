@@ -458,7 +458,7 @@ _ .Last_updated_date {
 
     /* 開催日の時間のテキストサイズ */
     .MuiInputBase-input {
-        font-size: 10px;
+        font-size: 15px;
     }
 
     .menu_confirmation {

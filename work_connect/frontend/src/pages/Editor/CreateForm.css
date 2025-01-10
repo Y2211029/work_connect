@@ -2,7 +2,6 @@ body {
   height: 100%;
   /* 高さを100%に設定して、親要素の高さに合わせる */
   margin: 0;
-  overflow: auto !important;
   /* マージンをリセットして、余白が生じないようにする */
 }
 
@@ -10,22 +9,32 @@ body {
   width: 20%;
 }
 
+
+
 .TextSetting {
-  position: relative;
-  top: 350px;
+  position: fixed;
+  top: 50%;
   left: 50%;
+  transform: translate(-50%, -50%);
   width: 50%;
   max-width: 700px;
   min-width: 500px;
-  transform: translate(-50%, -50%);
-  /* height: auto; */
   border-width: 2px;
   padding: 20px;
   padding-right: 30px;
   border: solid 1px;
   background-color: rgb(255, 255, 255);
   border-radius: 30px;
+  /* max-height を削除 */
 }
+
+.FormMenuScroll {
+  max-height: 600px; /* スクロール可能領域の高さを設定 */
+  overflow: auto; /* 縦スクロールを可能に */
+  scrollbar-color: black white;
+  scrollbar-width: thin;
+}
+
 
 
 .SurveyModal {
@@ -81,15 +90,7 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 
-.FormMenuScroll {
-  height: 100%;
-  /* 親要素の高さいっぱいに設定 */
-  overflow-y: auto;
-  /* 縦スクロールを可能に */
-  overflow-x: hidden;
-  scrollbar-color: black white;
-  scrollbar-width: thin;
-}
+
 
 
 
@@ -121,7 +122,11 @@ input[type="number"]::-webkit-inner-spin-button {
   overflow-y: auto;
 }
 
-
+.Menu_Addform {
+  width: 1500px;
+  height: 50%;
+  margin-top: 3%;
+}
 
 .FormMenuButton {
   display: block;
@@ -211,6 +216,7 @@ input[type="number"]::-webkit-inner-spin-button {
 .Back_Button {
   position: relative;
   top: 10px;
+  width: auto;
 }
 
 .Delete_Button {
@@ -259,16 +265,52 @@ input[type="number"]::-webkit-inner-spin-button {
 /* スマホサイズの場合 */
 @media (max-width: 900px) {}
 
+@media(max-width:600px){
+  .SurveyModal {
+    width: 90vw;
+    padding-bottom: 50%;
+  }
+
+  .QuestionMenu {
+    width: 370px;
+    left: 100%;
+    padding: 1%;
+  }
+
+  .Buttons{
+    width: 100%;
+  }
+
+  .FormSelectMenu {
+    width: 100%;
+    display: flex;
+  }
+
+  .FormSelectMenu_Text {
+    font-size: 12px;
+  }
+
+  .QuestionMenu_Hamburger {
+    width: fit-content;
+    height: fit-content;
+    column-gap: 0px;
+    padding: 0;
+  }
+
+  .Menu_Addform {
+    margin-top: 10%;
+    margin-left: 10px;
+  }
+
+}
+
 
 @media (max-width: 400px) {
 
 
   .TextSetting {
-    top: 250px;
-    left: 50%;
-    width: 30%;
-    min-width: 350px;
     height: 500px;
+    min-width: 350px;
     overflow: auto;
     scrollbar-color: black white;
     scrollbar-width: thin;
@@ -286,15 +328,11 @@ input[type="number"]::-webkit-inner-spin-button {
 
   .SurveyModal {
     width: 50vh;
-
-
   }
 
   .FormSelectMenu {
-    /* margin-left: 3%; */
     width: fit-content;
     display: flex;
-
   }
 
   .FormSelectMenu_Text {
@@ -302,22 +340,35 @@ input[type="number"]::-webkit-inner-spin-button {
     font-size: 12px;
   }
 
+  .QuestionMenu_Hamburger {
+    width: fit-content;
+    height: fit-content;
+    column-gap: 0px;
+    padding: 0;
+  }
 
   .Menu_Addform {
-    width: 400px;
-    /* margin-left: -10px; */
+    margin-top: 10%;
   }
 
   .QuestionMenu {
     width: 370px;
-    left: 100%;
-    padding-top: 5px;
+
   }
 
   .menu_deadline{
     width:55%;
     height:40%;
-
   }
 
+  .Back_Button {
+    position: relative;
+    top: 10px;
+    width: auto;
+  }
+
+  .Buttons{
+    width: 100%;
+  }
+  
 }

@@ -14,25 +14,25 @@ const VideoTitle = (props) => {
   };
 
   return (
-    <div>
-      <p>
-        タイトル*
-        <TextField
-          fullWidth
-          margin="normal"
-          name="Title"
-          value={props.movieData}
-          onChange={handleChange}
-          // required
-          type="text"
-          variant="outlined"
-          error={hasError}
-          sx={{
-            backgroundColor: "#fff",
-          }}
-        />
-      </p>
-    </div>
+    <p>
+      タイトル<span className="requiredInput">*</span>
+      <TextField
+        fullWidth
+        margin="normal"
+        name="Title"
+        value={props.movieData}
+        onChange={handleChange}
+        required
+        type="text"
+        variant="outlined"
+        error={hasError}
+        sx={{
+          backgroundColor: "#fff",
+        }}
+        placeholder="タイトルを入力"
+        className="WorkInputElements"
+      />
+    </p>
   );
 };
 

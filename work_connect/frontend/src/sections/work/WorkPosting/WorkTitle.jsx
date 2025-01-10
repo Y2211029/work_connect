@@ -13,26 +13,25 @@ const WorkTitle = (props) => {
   };
 
   return (
-    <div>
-      <p>
-        タイトル<span className="requiredInput">*</span>
-        <TextField
-          fullWidth
-          margin="normal"
-          name="Title"
-          value={props.workData}
-          onChange={handleChange}
-          required
-          type="text"
-          variant="outlined"
-          error={hasError}
-          sx={{
-            backgroundColor: "#fff",
-          }}
-          placeholder="タイトルを入力"
-        />
-      </p>
-    </div>
+    <p>
+      タイトル<span className="requiredInput">*</span>
+      <TextField
+        fullWidth
+        margin="normal"
+        name="Title"
+        value={props.workData}
+        onChange={handleChange}
+        required
+        type="text"
+        variant="outlined"
+        error={hasError}
+        sx={{
+          backgroundColor: "#fff",
+        }}
+        placeholder="タイトルを入力"
+        className="WorkInputElements"
+      />
+    </p>
   );
 };
 

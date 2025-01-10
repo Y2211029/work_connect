@@ -83,6 +83,7 @@ const Environment = (props) => {
       // プレフィックス＝接頭語
       // CreatableSelect内のInput要素のClass名の頭にMyPageEditItemsをつけるという意味
       classNamePrefix="MyPageEditItems"
+      className="WorkInputElements"
       options={options}
       value={selectedOption}
       placeholder="選択"

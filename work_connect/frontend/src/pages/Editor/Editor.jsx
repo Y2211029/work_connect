@@ -38,8 +38,7 @@ import IconButton from "@mui/material/IconButton";
 
 //MUIアイコン
 import ImageSearchIcon from "@mui/icons-material/ImageSearch";
-import CancelIcon from "@mui/icons-material/Cancel";
-import Stack from "@mui/material/Stack";
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 // import TableContainer from '@mui/material/TableContainer';
 import { Helmet } from "react-helmet-async";
@@ -100,18 +99,18 @@ const Editor = () => {
     if (!news_upload_confirm) {
       return; // ユーザーがキャンセルした場合は処理を終了
     }
-  
+
     alert("ニュースを投稿しました");
-  
+
     try {
       if (!editorInstance.current || typeof editorInstance.current.save !== "function") {
         console.error("Editor instance or save function not available");
         return;
       }
-  
+
       // ニュース内容を保存
       const outputData = await editorInstance.current.save();
-  
+
       // デバッグ用ログ
       console.log("sessionId:", sessionId);
       console.log("news_id:", news_id);
@@ -120,7 +119,7 @@ const Editor = () => {
       console.log("outputData:", outputData);
       console.log("notificationMessage:", notificationMessage);
       console.log("followerCounter:", followerCounter);
-  
+
       // WebSocketサーバーに送信
       const response = await axios.post("http://localhost:8000/news_upload", {
         company_id: sessionId, // 企業ID
@@ -136,17 +135,17 @@ const Editor = () => {
           "Content-Type": "application/json",
         },
       });
-  
+
       // レスポンスの確認
       console.log("成功:", response.data);
       navigate(`/NewsDetail/${news_id}`); // 投稿後、ニュース詳細ページへ移動
-  
+
     } catch (error) {
       console.error("エラー:", error);
       alert("ニュース投稿中にエラーが発生しました。");
     }
   };
-  
+
 
   const titlechange = (event) => {
     setTitle(event.target.value); // テキストエリアの値をstateに反映
@@ -1356,7 +1355,7 @@ const Editor = () => {
       </Stack>
 
       {/* CreateForm の表示 */}
-      {CreateFormOpen && <CreateForm newsid={news_id} HandleBack={handleBack} title={title}/>}
+      {CreateFormOpen && <CreateForm newsid={news_id} HandleBack={handleBack} title={title} />}
 
       {!CreateFormOpen && (
         <>
@@ -1388,8 +1387,10 @@ const Editor = () => {
           {/* アップロードされた画像の表示 */}
           {imageUrl && (
             <div className="uploaded-image" id="uploaded-image">
-              <img src={`${imageUrl}`} alt="Uploaded" />
-              <CancelIcon className="thumbnail_img_delete_icon" onClick={thumbnail_img_delete} />
+              <div className="NewsThumnbnailElements">
+                <img src={`${imageUrl}`} alt="Uploaded" />
+                <HighlightOffIcon className="thumbnail_img_delete_icon" onClick={thumbnail_img_delete} />
+              </div>
             </div>
           )}
 

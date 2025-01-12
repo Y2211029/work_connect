@@ -459,7 +459,8 @@ const NewsSelectMenu = ({
                     );
                 case 'createform':
                     return (
-                        <Box sx={{ p: 2, minWidth: 300 }}>
+                        <Box sx={{ p: 2, minWidth: 300, 
+                         }}>
                             <div className="create_form">
                                 {/* selected_draftが存在し、create_form配列が空でない場合に表示 */}
                                 {selected_draft?.create_form?.length > 0 ? (
@@ -517,11 +518,9 @@ const NewsSelectMenu = ({
                                             onClick={() => {
                                                 CreateFormJump();
                                             }}
-
                                             sx={{ border: '1px solid', mx: 1 }}
                                         >
                                             <Typography className="NewsSelectButton_Text">応募フォームを作成する</Typography>
-
                                         </Button>
 
                                     </>
@@ -706,6 +705,7 @@ const NewsSelectMenu = ({
                             sx: {
                                 top: 0,
                                 marginLeft: '9%',
+                                
                             },
                         }}
                     >

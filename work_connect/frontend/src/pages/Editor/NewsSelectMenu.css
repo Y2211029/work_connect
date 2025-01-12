@@ -23,8 +23,8 @@
 
 .popover_createform {
     margin-top: -50px;
-    width: 240px;
-    height: 200px;
+    width: fit-content;
+    height: fit-content;
 }
 
 .draftlisttable {
@@ -87,7 +87,8 @@ _ .Last_updated_date {
 }
 
 .NewsSelectButton {
-    width: 60%;
+    width: 30%;
+    min-width: 600px;
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
@@ -107,7 +108,7 @@ _ .Last_updated_date {
     transition: 0.2s;
 }
 
-.NewsSelectButton .ButtonContainer:hover {
+.NewsSelectButton .ButtonContainer button:hover {
     background-color: #4BA2FB;
 }
 
@@ -122,8 +123,18 @@ _ .Last_updated_date {
     background-color: #F9FAFB;
     border-radius: 4px !important;
     transition: 0.2s;
+
 }
-.Not_Upload_Button:hover {
+
+
+.Not_Upload_Button button {
+    width: 100%;
+    border-radius: 0px;
+    color: #212b30;
+}
+
+.Not_Upload_Button button:hover {
+    color: white;
     background-color: #f0908d !important;
 }
 
@@ -131,12 +142,14 @@ _ .Last_updated_date {
 
 .NewsSelectButton .ButtonContainer button {
     width: 100%;
+    border-radius: 0px;
     color: #212b30 !important;
 }
 
 .NewsSelectButton .ButtonContainer button:hover {
     color: white !important;
 }
+
 
 .createFormJump {
     width: 90%;
@@ -147,10 +160,16 @@ _ .Last_updated_date {
     text-align: center;
 }
 
+
 .popover_jobtype {
-    width: 400px;
-    min-height: 300px;
+    width: fit-content;
+    height: fit-content;
+
+    min-width: 250px;
+    max-width: 500px;
+    padding: 10px;
 }
+
 
 .popover_draft_list {
     width: 300px;
@@ -181,10 +200,10 @@ _ .Last_updated_date {
 /* const getPopoverSize = (menuState) => {
     switch (menuState) {
         case 'eventday':
-            return { width: '300px', minHeight: '100px' };
+        return { width: '300px', minHeight: '100px' };
         case 'jobtype':
-            return { width: '400px', minHeight: '300px' };
-        case 'message':
+        return { width: '400px', minHeight: '300px' };
+                case 'message':
             return { width: '350px', minHeight: '100px' };
         case 'createform':
             return { width: '300px', minHeight: '100px' };
@@ -198,25 +217,21 @@ _ .Last_updated_date {
 
 
 @media(max-width:1600px) {
-    /* .NewsSelectButton {
-        padding-top: 3%;
-    } */
+
     .NewsSelectButton {
-        width: 80%;
+        width: 55%;
+        min-width: 100px;
     }
 }
 
 @media(max-width:1200px) {
-    .NewsSelectButton {
-        width: 80%;
-    }
     /* .NewsSelectButton {
         padding-top: 3%;
     } */
 
     .NewsUploadButton_Text,
     .NewsSelectButton_Text {
-        font-size: 16px;
+        font-size: 12px;
     }
 }
 
@@ -237,13 +252,13 @@ _ .Last_updated_date {
     .NewsSelectButton .ButtonContainer {
         border-radius: 0px !important;
     }
-    
-    
+
+
     .NewsUploadButton_Text,
     .NewsSelectButton_Text {
-        font-size: 16px;
+        font-size: 12px;
     }
-    
+
     .Not_Upload_Button {
         border-radius: 0px !important;
     }
@@ -281,12 +296,7 @@ _ .Last_updated_date {
         margin-left: 25%;
     }
 
-    .popover_jobtype {
-        width: 300px;
-        margin-top: -50px;
-        min-height: 250px;
-        margin-left: 35%;
-    }
+
 
     .popover_createform {
         margin-top: -50px;
@@ -359,7 +369,7 @@ _ .Last_updated_date {
 
     .NewsUploadButton_Text,
     .NewsSelectButton_Text {
-        font-size: 14px;
+        font-size: 12px;
     }
 
     /* 開催日の時間のテキストサイズ */
@@ -394,12 +404,6 @@ _ .Last_updated_date {
         margin-left: 35%;
     }
 
-    .popover_jobtype {
-        width: 200px;
-        margin-top: -50px;
-        min-height: 250px;
-        margin-left: 35%;
-    }
 
     /* 応募職種のドロップダウンリストのフォントサイズ */
     .select_jobtype__menu {
@@ -518,13 +522,6 @@ _ .Last_updated_date {
         margin-left: 35%;
     }
 
-    .popover_jobtype {
-        width: 200px;
-        margin-top: -50px;
-        min-height: 250px;
-        margin-left: 35%;
-    }
-
     /* 応募職種のドロップダウンリストのフォントサイズ */
     .select_jobtype__menu {
         font-size: 10px;
@@ -535,10 +532,7 @@ _ .Last_updated_date {
     }
 
     .popover_createform {
-        margin-top: -50px;
-        width: 240px;
         margin-left: 25%;
-        height: 170px;
     }
 
     .draftlisttable {

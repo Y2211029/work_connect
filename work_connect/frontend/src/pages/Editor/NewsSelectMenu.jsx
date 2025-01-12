@@ -75,16 +75,16 @@ const Textarea = styled(BaseTextareaAutosize)(
   background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
   border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
   box-shadow: 0px 2px 2px ${theme.palette.mode === 'dark' ? grey[900] : grey[50]};
-  
+
   &:hover {
     border-color: ${blue[400]};
   }
-  
+
   &:focus {
     border-color: ${blue[400]};
     box-shadow: 0 0 0 3px ${theme.palette.mode === 'dark' ? blue[600] : blue[200]};
   }
-  
+
   // firefox
   &:focus-visible {
     outline: 0;
@@ -459,7 +459,7 @@ const NewsSelectMenu = ({
                     );
                 case 'createform':
                     return (
-                        <Box sx={{ p: 2, minWidth: 300, 
+                        <Box sx={{ p: 2, minWidth: 300,
                          }}>
                             <div className="create_form">
                                 {/* selected_draftが存在し、create_form配列が空でない場合に表示 */}
@@ -498,7 +498,8 @@ const NewsSelectMenu = ({
 
                                                                 <Tooltip title="クリックすると応募フォーム作成画面へ行きます" placement="left">
                                                                     <Typography id="createFormJump" className="createFormJump"
-                                                                        onClick={() => {
+                                                                        onClick={async() => {
+                                                                            await handleCloseInputMenu();
                                                                             CreateFormJump();
                                                                         }}>
                                                                         応募フォームを作成する
@@ -705,7 +706,7 @@ const NewsSelectMenu = ({
                             sx: {
                                 top: 0,
                                 marginLeft: '9%',
-                                
+
                             },
                         }}
                     >

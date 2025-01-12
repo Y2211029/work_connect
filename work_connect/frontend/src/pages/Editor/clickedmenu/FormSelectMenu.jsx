@@ -78,12 +78,10 @@ const NewsSelectMenu = ({
   // 入力メニューのクリックイベント
   const handleClickInputMenu = (event) => {
     setAnchorElInput(event.currentTarget);
-    document.body.style.overflow = "hidden";
   };
 
-  const handleCloseInputMenu = () => {
+  const handleCloseInputMenu = async() => {
     setAnchorElInput(null);
-    document.body.style.overflow = "";
   };
 
   //フォーム追加ボタン

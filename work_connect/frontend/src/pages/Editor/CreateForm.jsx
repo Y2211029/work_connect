@@ -792,9 +792,6 @@ const CreateForm = ({ newsid, HandleBack}) => {
           </Tooltip>
         </div>
 
-        {applyTheme}
-
-
         {!questions || questions.length === 0 ? (
           <ColorRing
             visible={true}

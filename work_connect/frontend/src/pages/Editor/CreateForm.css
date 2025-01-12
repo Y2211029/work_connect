@@ -1,4 +1,5 @@
 body {
+  overflow: auto;
   height: 100%;
   /* 高さを100%に設定して、親要素の高さに合わせる */
   margin: 0;
@@ -40,8 +41,7 @@ body {
 
 
 .SurveyModal {
-  margin-top: 5%;
-  width: 50%;
+  width: 30%;
   overflow-x: auto;
   overflow-y: hidden;
   /* 縦のオーバーフローは非表示 */
@@ -85,7 +85,6 @@ input[type="number"]::-webkit-inner-spin-button {
   /* スクロールを有効にする */
   flex-grow: 1;
   height: 100%;
-  top: 100px;
 }
 
 
@@ -240,13 +239,6 @@ input[type="number"]::-webkit-inner-spin-button {
   margin-top: 10px;
 }
 
-<<<<<<< HEAD
-=======
-.Buttons {
-
-  width: 100%;
-}
->>>>>>> 78d4466124970ff302c36ddf10cba4b49fe85308
 
 .FormSelectMenu {
   width: 30%;
@@ -272,6 +264,7 @@ input[type="number"]::-webkit-inner-spin-button {
     column-gap: 0px;
     padding: 0;
   }
+
   .SurveyModal {
     width: 80% !important;
     padding-bottom: 50%;
@@ -287,7 +280,7 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 @media(max-width:600px) {
-  
+
 
   .QuestionMenu {
     width: 370px;
@@ -324,8 +317,6 @@ input[type="number"]::-webkit-inner-spin-button {
 
 
 @media (max-width: 400px) {
-
-
   .TextSetting {
     height: 500px;
     min-width: 350px;
@@ -335,14 +326,21 @@ input[type="number"]::-webkit-inner-spin-button {
   }
 
   .TextSetting::-webkit-scrollbar {
-
     margin-left: 40%;
-
   }
 
   .ShowForm {
-    padding-bottom: 30%;
+    padding-bottom: 40%; /* スクロール余白 */
+    height: auto; /* 高さを自動調整 */
   }
+
+  .SurveyModal {
+    height: 100%; /* 子要素の高さを100%に設定 */
+    padding-bottom: 40%;
+    overflow-y: auto; /* 縦スクロールを有効化 */
+  }
+
+
   .FormSelectMenu {
     width: fit-content;
     display: flex;

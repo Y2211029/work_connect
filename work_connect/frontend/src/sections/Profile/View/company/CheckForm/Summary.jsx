@@ -6,6 +6,7 @@ import TooltipTitle from '@mui/material/Tooltip';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from "react-modal";
+import CloseIcon from '@mui/icons-material/Close';
 
 // Chart.js
 import {
@@ -26,7 +27,7 @@ import {
 import { Bar, Line, Pie, Doughnut, Radar } from "react-chartjs-2";
 
 
-const Graph = ({ title, responses, userNames }) => {
+const Graph = ({ title, responses, userNames,onRequestClose }) => {
   console.log("レスポンスの内容", responses);
   console.log("レスポンスの内容", userNames);
 
@@ -52,14 +53,6 @@ const Graph = ({ title, responses, userNames }) => {
   const labels = Object.keys(responseCounts);
   const dataValues = Object.values(responseCounts).map(item => item.count);
   const userMappings = Object.values(responseCounts).map(item => item.users);
-
-  const Total = ({ title }) => {
-    return (
-      <>
-        {title}
-      </>
-    );
-  };
 
   const pieOptions = {
     responsive: true,
@@ -229,12 +222,12 @@ const Graph = ({ title, responses, userNames }) => {
     { title: '円グラフ', type: 'Pie' },
     { title: 'ドーナツグラフ', type: 'Doughnut' },
     { title: 'レーダーチャート', type: 'Radar' },
-    { title: '集計', type: 'Total' },
   ]
 
   return (
     <>
       <Box className="GraphBox">
+        <CloseIcon className="CreateForm_Cancel_Button" onClick={() => onRequestClose()} />
         <div style={{ width: "90%", height: "70%" }}>
           {(() => {
             switch (graphKind) {
@@ -250,8 +243,6 @@ const Graph = ({ title, responses, userNames }) => {
                 return <Doughnut options={pieOptions} data={pieData} />;
               case "Radar":
                 return <Radar options={options} data={data} />;
-              case "Total":
-                return <Total title={title} />;
               default:
                 return <Bar options={options} data={data} />;
             }
@@ -280,6 +271,7 @@ Graph.propTypes = {
   title: PropTypes.string.isRequired,
   userNames: PropTypes.string.isRequired,
   responses: PropTypes.arrayOf(PropTypes.string).isRequired,
+  onRequestClose:PropTypes.func.isRequired
 };
 
 const Summary = ({
@@ -399,7 +391,7 @@ const Summary = ({
           overlayClassName="modal-overlay" /* オーバーレイに適用 */
           className="modal-content" /* コンテンツに適用 */
         >
-          <Graph title={modalData.title} responses={modalData.responses} userNames={modalData.userNames} />
+          <Graph title={modalData.title} responses={modalData.responses} userNames={modalData.userNames} onRequestClose={showGpaphCancel}/>
         </Modal>
       </div>
 

@@ -92,25 +92,25 @@ class NewsController extends Controller
 
             $CompanyId =  $news_detail->company_id;
             $NewsId =  $news_detail->news_id;
-    
+
             $all_news_data = w_news::where('company_id', $CompanyId)
                 ->where('public_status', 1)
                 ->orderby('updated_at', 'asc')
                 ->get();
-    
+
             Log::info($all_news_data);
-    
+
             // 該当ニュースの前後のニュースを取得
             $targetIndex = $all_news_data->search(function ($item) use ($NewsId) {
                 return $item->id == $NewsId;
             });
-    
+
             // 前のニュース（$targetIndex - 1）
             $previousNews = $all_news_data->get($targetIndex - 1) ?? null;
-    
+
             // 次のニュース（$targetIndex + 1）
             $nextNews = $all_news_data->get($targetIndex + 1) ?? null;
-    
+
             // Logで確認
             Log::info('前のニュース:', [$previousNews]);
             Log::info('次のニュース:', [$nextNews]);
@@ -195,7 +195,7 @@ class NewsController extends Controller
         // ニュースタイトル一覧を取得
         $title = w_write_form::where('recipient_company_id', $CompanyId)
             ->join('w_news', 'w_write_forms.news_id', '=', 'w_news.id')
-            ->whereIn('w_news.public_status', [1, 2])            
+            ->whereIn('w_news.public_status', [1, 2])
             ->groupBy('w_news.article_title')
             ->select('w_news.article_title');
 
@@ -203,7 +203,7 @@ class NewsController extends Controller
         $query = w_write_form::where('recipient_company_id', $CompanyId)
             ->join('w_news', 'w_write_forms.news_id', '=', 'w_news.id')
             ->join('w_users', 'w_write_forms.user_id', '=', 'w_users.id')
-            ->whereIn('w_news.public_status', [1, 2])     
+            ->whereIn('w_news.public_status', [1, 2])
             ->select('w_write_forms.*', 'w_news.*', 'w_users.*', 'w_news.created_at as news_created_at', 'w_write_forms.id as write_form_id')
             ->get();
 
@@ -233,8 +233,9 @@ class NewsController extends Controller
                         'write_form' => json_decode($q->write_form), // ここでデコード
                         'user_name' => $q->user_name,
                         'write_form_id' => $q->write_form_id,
+                        'writeformDateTime' => $q->writeformDateTime,
                         'news_created_at' => $q->news_created_at,
-                        // 他の必要なフィールドもここで追加
+                        'genre' => $q->genre,
                     ];
                 }
             }
@@ -452,10 +453,10 @@ class NewsController extends Controller
         try {
             // ログにリクエスト情報を記録
             Log::info("ニュース削除リクエスト: news_id=" . $news_id);
-    
+
             // $news_idでニュースがあるかチェック
             $news_check = w_news::where('id', $news_id)->first();
-    
+
             if (!$news_check) {
                 // ニュースが存在しない場合
                 Log::warning("ニュースが見つかりません: news_id=" . $news_id);
@@ -464,12 +465,12 @@ class NewsController extends Controller
                     "status" => "error"
                 ], 404);
             }
-    
+
             // ニュースの公開状態を変更 (削除フラグとして2を設定)
             $news_check->update(['public_status' => 2]);
-    
+
             Log::info("ニュース削除成功: news_id=" . $news_id);
-    
+
             return response()->json([
                 "message" => "ニュースが削除されました。",
                 "status" => "success"
@@ -477,12 +478,12 @@ class NewsController extends Controller
         } catch (\Exception $e) {
             // 例外が発生した場合の処理
             Log::error("ニュース削除中にエラーが発生しました: " . $e->getMessage());
-    
+
             return response()->json([
                 "message" => "エラーが発生しました。",
                 "status" => "error"
             ], 500);
         }
     }
-    
+
 }

@@ -500,6 +500,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
       tags: ["genre"],
       generatePosts: (WorkOfList) => {
         if (Array.isArray(WorkOfList)) {
+          console.log("応募フォーム一覧のWorkOfList",WorkOfList);
           const application_form = WorkOfList.map((company) => ({
             article_title: company.article_title,
             user_name: company.users,

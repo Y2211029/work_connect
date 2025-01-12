@@ -87,8 +87,7 @@ _ .Last_updated_date {
 }
 
 .NewsSelectButton {
-    width: 30%;
-    min-width: 600px;
+    width: fit-content;  
     display: flex;
     flex-wrap: wrap;
     gap: 8px;

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\search;
 
 use App\Http\Controllers\Controller;
+use App\Models\w_follow;
 use Illuminate\Http\Request;
 use App\Models\w_users;
 
@@ -155,7 +156,7 @@ class SearchStudentController extends Controller
 
             // 検索文字列で絞り込み
             if ($searchText != "") {
-                $query->where(function($query) use ($searchText) {
+                $query->where(function ($query) use ($searchText) {
                     // 学生の情報
                     $query->orWhere('w_users.user_name', 'LIKE', '%' . $searchText . '%');
                     $query->orWhere('w_users.student_surname', 'LIKE', '%' . $searchText . '%');
@@ -186,17 +187,17 @@ class SearchStudentController extends Controller
             }
 
             // フォロー状況で検索
-            if(in_array("フォローしている", $follow_status_array) && in_array("フォローされている", $follow_status_array)) {
+            if (in_array("フォローしている", $follow_status_array) && in_array("フォローされている", $follow_status_array)) {
                 // 相互フォローの場合
                 $query->join('w_follow as f1', 'w_users.id', '=', 'f1.follow_recipient_id');
                 $query->where('f1.follow_sender_id', $myId);
                 $query->join('w_follow as f2', 'w_users.id', '=', 'f2.follow_sender_id');
                 $query->where('f2.follow_recipient_id', $myId);
-            } else if(in_array("フォローしている", $follow_status_array)) {
+            } else if (in_array("フォローしている", $follow_status_array)) {
                 // フォローしている場合
                 $query->join('w_follow', 'w_users.id', '=', 'w_follow.follow_recipient_id');
                 $query->where('w_follow.follow_sender_id', $myId);
-            } else if(in_array("フォローされている", $follow_status_array)) {
+            } else if (in_array("フォローされている", $follow_status_array)) {
                 // フォローされている場合
                 $query->join('w_follow', 'w_users.id', '=', 'w_follow.follow_sender_id');
                 $query->where('w_follow.follow_recipient_id', $myId);
@@ -205,6 +206,46 @@ class SearchStudentController extends Controller
             $results = $query->skip($offset)
                 ->take($perPage) //件数
                 ->get();
+
+            // 各ユーザーのフォロー状態を確認して更新
+            $results = $results->map(function ($user) use ($myId) {
+                // ユーザーのIDを取得
+                $id = $user->id;
+                // Log::info('$user->id');
+                // Log::info($id);
+                // もしも $id の最初の文字が "S" であれば、フォロー状態を確認
+                if ($id[0] !== $myId[0]) {
+                    // Log::info('ID[0]が "C" の場合の処理を実行');
+                    // Log::info('IDの値: ' . $id);
+
+                    // フォローしているかどうか
+                    $isFollowing = w_follow::where('follow_sender_id', $myId)
+                        ->where('follow_recipient_id', $id)
+                        ->exists();
+
+                    // フォローされているかどうか
+                    $isFollowedByUser = w_follow::where('follow_sender_id', $id)
+                        ->where('follow_recipient_id', $myId)
+                        ->exists();
+
+                    // フォロー状態を設定
+                    if ($isFollowing && $isFollowedByUser) {
+                        $user->follow_status = '相互フォローしています';
+                    } elseif ($isFollowing) {
+                        $user->follow_status = 'フォローしています';
+                    } elseif ($isFollowedByUser) {
+                        $user->follow_status = 'フォローされています';
+                    } else {
+                        $user->follow_status = 'フォローする';
+                    }
+
+                } else {
+                    // $id の最初の文字が "S" でない場合はフォローできないメッセージを設定
+                    $user->follow_status = 'フォローできません';
+                }
+
+                return $user;
+            });
 
             $resultsArray = json_decode(json_encode($results), true);
 

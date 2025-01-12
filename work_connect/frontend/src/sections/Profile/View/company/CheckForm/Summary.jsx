@@ -7,6 +7,10 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from "react-modal";
 import CloseIcon from '@mui/icons-material/Close';
+import moment from 'moment';
+import 'moment/locale/ja';
+import { postDateTimeDisplay } from "src/components/view/PostDatatime";
+
 
 // Chart.js
 import {
@@ -25,6 +29,7 @@ import {
   RadialLinearScale
 } from "chart.js";
 import { Bar, Line, Pie, Doughnut, Radar } from "react-chartjs-2";
+import { Divider } from "@mui/material";
 
 
 const Graph = ({ title, responses, userNames,onRequestClose }) => {
@@ -314,17 +319,24 @@ const Summary = ({
 
     // 文字列の日付をDateオブジェクトに変換
     const targetDateObj = new Date(targetDate);
+    const formattedDate = moment(time).format('YYYY/MM/DD HH時mm分');
 
     if (targetDateObj >= twentyFourHoursAgo) {
       return (
         <>
           <TooltipTitle title={'24時間以内に応募されました'}>
             <p style={{ color: 'red', marginLeft: '5%' }}>New!</p>
+            <p>応募日:{formattedDate}</p>
+            <p>{postDateTimeDisplay(time)}</p>
           </TooltipTitle>
         </>
       )
     } else {
-      return null;
+      return(
+        <>
+        <p>応募日:{formattedDate} ({postDateTimeDisplay(time)})</p>
+        </>
+      );
     }
   }
 
@@ -347,11 +359,12 @@ const Summary = ({
                 <Stack direction={"row"}>
                   <TooltipTitle title={`クリックすると${user.user_name}の回答が見られます`}>
                     <p>{user.user_name}さん</p>
+                    {time_check(user.writeformDateTime)}
                   </TooltipTitle>
-                  {time_check(user.news_created_at)}
                 </Stack>
-
+              <Divider />
               </Typography>
+
             ))}
           </div>
 

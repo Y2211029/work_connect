@@ -106,6 +106,7 @@ _ .Last_updated_date {
     background-color: #F9FAFB;
     border-radius: 4px !important;
     transition: 0.2s;
+
 }
 
 .NewsSelectButton .ButtonContainer button:hover {
@@ -218,10 +219,6 @@ _ .Last_updated_date {
 
 @media(max-width:1600px) {
 
-    .NewsSelectButton {
-        width: 55%;
-        min-width: 100px;
-    }
 }
 
 @media(max-width:1200px) {
@@ -251,6 +248,7 @@ _ .Last_updated_date {
 
     .NewsSelectButton .ButtonContainer {
         border-radius: 0px !important;
+
     }
 
 

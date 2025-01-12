@@ -117,7 +117,7 @@ const NewsSelectMenu = ({
 
       <br />
 
-      <div className="NewsSelectButton formselect">
+      <div className="FormSelectButton formselect">
         <div className="ButtonContainer">
           <Button
             id="addform-button"

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\search;
 
 use App\Http\Controllers\Controller;
 use App\Models\w_company;
+use App\Models\w_follow;
 use Illuminate\Http\Request;
 
 class SearchCompanyController extends Controller
@@ -96,7 +97,7 @@ class SearchCompanyController extends Controller
 
             // 検索文字列で絞り込み
             if ($searchText != "") {
-                $query->where(function($query) use ($searchText) {
+                $query->where(function ($query) use ($searchText) {
                     // 企業の情報
                     $query->orWhere('w_companies.user_name', 'LIKE', '%' . $searchText . '%');
                     $query->orWhere('w_companies.company_name', 'LIKE', '%' . $searchText . '%');
@@ -114,17 +115,17 @@ class SearchCompanyController extends Controller
             }
 
             // フォロー状況で検索
-            if(in_array("フォローしている", $follow_status_array) && in_array("フォローされている", $follow_status_array)) {
+            if (in_array("フォローしている", $follow_status_array) && in_array("フォローされている", $follow_status_array)) {
                 // 相互フォローの場合
                 $query->join('w_follow as f1', 'w_companies.id', '=', 'f1.follow_recipient_id');
                 $query->where('f1.follow_sender_id', $myId);
                 $query->join('w_follow as f2', 'w_companies.id', '=', 'f2.follow_sender_id');
                 $query->where('f2.follow_recipient_id', $myId);
-            } else if(in_array("フォローしている", $follow_status_array)) {
+            } else if (in_array("フォローしている", $follow_status_array)) {
                 // フォローしている場合
                 $query->join('w_follow', 'w_companies.id', '=', 'w_follow.follow_recipient_id');
                 $query->where('w_follow.follow_sender_id', $myId);
-            } else if(in_array("フォローされている", $follow_status_array)) {
+            } else if (in_array("フォローされている", $follow_status_array)) {
                 // フォローされている場合
                 $query->join('w_follow', 'w_companies.id', '=', 'w_follow.follow_sender_id');
                 $query->where('w_follow.follow_recipient_id', $myId);
@@ -134,6 +135,45 @@ class SearchCompanyController extends Controller
                 ->take($perPage) //件数
                 ->get();
 
+            // 各企業のフォロー状態を確認して更新
+            $results = $results->map(function ($company) use ($myId) {
+                $id = $company->id;
+
+                // IDの最初の文字が "C" の場合にフォロー状態を確認
+                if ($id[0] !== $myId[0]) {
+                    // Log::info('ID[0]が "S" の場合の処理を実行');
+                    // Log::info('IDの値: ' . $id);
+
+                    // ログインしているユーザーのIDを取得する必要があります（例: auth()->id()       
+
+
+                    // ユーザーがログインしているアカウントをフォローしているかどうか
+                    $isFollowing = w_follow::where('follow_sender_id', $myId)
+                        ->where('follow_recipient_id', $id)
+                        ->exists();
+
+                    // ログインしているアカウントがユーザーをフォローしているかどうか
+                    $isFollowedByUser = w_follow::where('follow_sender_id', $id)
+                        ->where('follow_recipient_id', $myId)
+                        ->exists();
+
+                    // フォロー状態を設定
+                    if ($isFollowing && $isFollowedByUser) {
+                        $company->follow_status = '相互フォローしています';
+                    } elseif ($isFollowing) {
+                        $company->follow_status = 'フォローしています';
+                    } elseif ($isFollowedByUser) {
+                        $company->follow_status = 'フォローされています';
+                    } else {
+                        $company->follow_status = 'フォローする';
+                    }
+                } else {
+                    // IDの最初の文字が "C" でない場合はフォローできないメッセージを設定
+                    $company->follow_status = 'フォローできません';
+                }
+
+                return $company;
+            });
             $resultsArray = json_decode(json_encode($results), true);
 
             // \Log::info('SearchVideoController:$resultsArray:');

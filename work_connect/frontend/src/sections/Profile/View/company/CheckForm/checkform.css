@@ -25,6 +25,16 @@
   height: 30px;
 }
 
+.News_List_Title{
+  width: 80%;
+}
+
+.News_List_Title span{
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 
 .title-box {

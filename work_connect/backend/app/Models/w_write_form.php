@@ -18,6 +18,7 @@ class w_write_form extends Model
         'news_id',
         'recipient_company_id',
         'write_form',
+        'check_read',
         'writeformDateTime',
     ];
 

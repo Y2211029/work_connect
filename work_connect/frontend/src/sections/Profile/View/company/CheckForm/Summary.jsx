@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect,useRef } from "react";
 import PropTypes from "prop-types";
 import Stack from '@mui/material/Stack';
 import Typography from "@mui/material/Typography";
@@ -10,6 +10,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import moment from 'moment';
 import 'moment/locale/ja';
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
+import axios from "axios";
 
 
 // Chart.js
@@ -32,7 +33,7 @@ import { Bar, Line, Pie, Doughnut, Radar } from "react-chartjs-2";
 import { Divider } from "@mui/material";
 
 
-const Graph = ({ title, responses, userNames,onRequestClose }) => {
+const Graph = ({ title, responses, userNames, onRequestClose }) => {
   console.log("レスポンスの内容", responses);
   console.log("レスポンスの内容", userNames);
 
@@ -50,7 +51,7 @@ const Graph = ({ title, responses, userNames,onRequestClose }) => {
     return acc;
   }, {});
 
-  console.log("responseCounts",responseCounts);
+  console.log("responseCounts", responseCounts);
 
 
   const [graphKind, setGraphKind] = useState("Bar"); // デフォルトをBarグラフに
@@ -276,8 +277,99 @@ Graph.propTypes = {
   title: PropTypes.string.isRequired,
   userNames: PropTypes.string.isRequired,
   responses: PropTypes.arrayOf(PropTypes.string).isRequired,
-  onRequestClose:PropTypes.func.isRequired
+  onRequestClose: PropTypes.func.isRequired
 };
+
+//未読を既読に変える
+const Already_Read = async (unread_data) => {
+  console.log("未読から既読に変えました");
+  console.log("user", unread_data);
+  try {
+    const response = await axios.post(
+      `http://localhost:8000/change_un_read`,
+      {
+        unread_data: unread_data, // 未読のデータ
+      }
+    );
+
+    // 成功時にレスポンスデータをログ表示
+    if (response && response.data) {
+      console.log("成功:", response.data);
+    }
+  } catch (error) {
+    console.error("処理中にエラーが発生しました！", error);
+  }
+};
+
+
+const UnreadStart = ({ onRead,unread_data }) => {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          onRead(unread_data); // 可視範囲に入ったら関数を実行
+        }
+      },
+      {
+        root: null, // ビューポート
+        threshold: 1.0, // 完全に見えたら発火
+      }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => {
+      if (ref.current) {
+        observer.unobserve(ref.current);
+      }
+    };
+  }, [onRead]);
+
+  return (
+    <Typography
+      ref={ref}
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      variant="caption"
+      component="div"
+      sx={{
+        position: "relative",
+        margin: "0 10px",
+        backgroundColor: "#F9FAFB",
+        zIndex: 1,
+        fontSize: "13px",
+        "&::before": {
+          content: '""',
+          position: "absolute",
+          left: 0,
+          top: "50%",
+          width: "45%",
+          borderBottom: "1px dashed #000",
+        },
+        "&::after": {
+          content: '""',
+          position: "absolute",
+          right: 0,
+          top: "50%",
+          width: "45%",
+          borderBottom: "1px dashed #000",
+        },
+      }}
+    >
+      ここから未読
+    </Typography>
+  );
+};
+UnreadStart.propTypes = {
+  onRead: PropTypes.func.isRequired,
+  unread_data: PropTypes.array.isRequired,
+};
+
 
 const Summary = ({
   application_form,
@@ -332,38 +424,60 @@ const Summary = ({
         </>
       )
     } else {
-      return(
+      return (
         <>
-        <p>応募日:{formattedDate} ({postDateTimeDisplay(time)})</p>
+          <p>応募日:{formattedDate} ({postDateTimeDisplay(time)})</p>
         </>
       );
     }
   }
 
 
+  const unread_data = application_form[selectedIndex].user_name.filter(app => app.check_read === "未読");
+
+  const lastUnreadId = application_form[selectedIndex].user_name.reduceRight(
+    (acc, user, index) => (user.check_read === "未読" && acc === -1 ? index : acc),
+    -1 // 初期値として -1 を指定
+  );
+
+  console.log("unread_id",lastUnreadId);
+  console.log("application_form[selectedIndex].user_name",application_form[selectedIndex].user_name);
 
   return (
     <>
       <div className="summary-form">
         <Stack direction="column" spacing={2}>
-          <div className="c">
+          <div>
             <Typography className="writeform-title">
               回答者: {application_form[selectedIndex].user_name.length}名
             </Typography>
-            {application_form[selectedIndex].user_name.map((user, index) => (
-              <Typography
-                key={user.write_form_id || index}
-                className="writeform-answereddata"
-                onClick={(e) => IndividualJump(e, 2, user.user_name)}
-              >
-                <Stack direction={"row"}>
-                  <TooltipTitle title={`クリックすると${user.user_name}の回答が見られます`}>
-                    <p>{user.user_name}さん</p>
-                    {time_check(user.writeformDateTime)}
-                  </TooltipTitle>
-                </Stack>
-              <Divider />
-              </Typography>
+            {application_form[selectedIndex].user_name.map((user, index) =>
+            (
+
+              <>
+
+                <Typography
+                  key={user.write_form_id || index}
+                  className="writeform-answereddata"
+                  onClick={(e) => IndividualJump(e, 2, user.user_name)}
+                >
+                  <Stack direction={"row"}>
+                    <TooltipTitle title={`クリックすると${user.user_name}さんの回答が見られます`}>
+                      <p>{user.user_name}さん</p>
+                      {time_check(user.writeformDateTime)}
+                    </TooltipTitle>
+                  </Stack>
+                  {console.log("user.check_read:", user.check_read)}
+
+
+                </Typography>
+
+                <Divider />
+
+                {index === lastUnreadId && (
+                  <UnreadStart onRead={Already_Read} unread_data={unread_data}/>
+                )}
+              </>
 
             ))}
           </div>
@@ -404,7 +518,7 @@ const Summary = ({
           overlayClassName="modal-overlay" /* オーバーレイに適用 */
           className="modal-content" /* コンテンツに適用 */
         >
-          <Graph title={modalData.title} responses={modalData.responses} userNames={modalData.userNames} onRequestClose={showGpaphCancel}/>
+          <Graph title={modalData.title} responses={modalData.responses} userNames={modalData.userNames} onRequestClose={showGpaphCancel} />
         </Modal>
       </div>
 
@@ -430,7 +544,7 @@ Summary.propTypes = {
               type: PropTypes.string.isRequired,
               response: PropTypes.string.isRequired,
               contents: PropTypes.string.isRequired,
-              userNames: PropTypes.string.isRequired,
+              userNames: PropTypes.array.isRequired,
             })
           ).isRequired,
           write_form_id: PropTypes.number.isRequired,

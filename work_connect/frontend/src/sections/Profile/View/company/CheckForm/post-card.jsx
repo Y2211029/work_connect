@@ -38,14 +38,6 @@ const PostCard = forwardRef(({ post }) => {
     return news.user_name?.some((user) => user.genre === "Session");
   });
 
-  console.log("JobOffer", JobOffer);
-  console.log("Internship", Internship);
-  console.log("Session", Session);
-
-  console.log("JobOffer",JobOffer);
-  console.log("Internship",Internship);
-  console.log("Session",Session);
-
   const [writeformshow, setWriteFormShow] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [open, setOpen] = useState(false);
@@ -139,11 +131,12 @@ const PostCard = forwardRef(({ post }) => {
                 handleClick(index);
               }}>
 
-              {/* ユーザー名 */}
-              <Typography className="circle_number">
-                        {element.user_name?.length}
-              </Typography>
-              <ListItemText primary={element.article_title} />
+              {/* <Typography className="circle_number">
+                        {element.user_name.length}
+              </Typography> */}
+              <Tooltip title={element.article_title}>
+              <ListItemText className="News_List_Title" primary={element.article_title} />
+              </Tooltip>
             </ListItemButton>
           ))}
         </List>
@@ -197,48 +190,13 @@ const PostCard = forwardRef(({ post }) => {
               groupinghandleClick={()=>groupinghandleClick("Internship")}
               NewsList={Internship}
             />
-            <NewsGroup title={"説明会"}
+            <NewsGroup
+              title={"説明会"}
               groupingOpen={SessionGroupingOpen}
               groupinghandleClick={()=>groupinghandleClick("Session")}
               NewsList={Session}
             />
 
-            {/* {application_form.map((posts, index) => (
-              <ListItemButton
-                onClick={() => handleClick(index)}
-                key={index}
-                id={index}
-                sx={{
-                  backgroundColor: selectedIndex === index ? 'gray' : 'transparent',
-                  '&:hover': {
-                    backgroundColor: selectedIndex === index ? 'darkgray' : 'lightgray',
-                  },
-                }}
-              >
-                <ListItemText
-                  primary={
-                    <>
-                      <Typography className="circle_number">
-                        {posts.user_name.length}
-                      </Typography>
-                      <Tooltip title={posts.article_title}>
-                        <Typography
-                          textOverflow="ellipsis"
-                          sx={{
-                            fontSize: '0.8rem',
-                            overflow: 'hidden',
-                            whiteSpace: 'nowrap',
-                            textOverflow: 'ellipsis',
-                          }}
-                        >
-                          {posts.article_title}
-                        </Typography>
-                      </Tooltip>
-                    </>
-                  }
-                />
-              </ListItemButton>
-            ))} */}
           </List>
         </div>
 

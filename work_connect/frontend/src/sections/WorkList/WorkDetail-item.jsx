@@ -25,6 +25,7 @@ import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import { Splide, SplideSlide, SplideTrack } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
 import "src/App.css";
+import { parseLinks } from "../../components/Link/ParseLink";
 //------------------------------------------------------------------------------------
 
 // ここでアプリケーションのルートエレメントを設定
@@ -428,7 +429,9 @@ const WorkDetailItem = () => {
     <>
       <Box component="div" className="render_More_Image_Count">
         {/* メインスライドの今見えている一枚（youtube動画または画像）をのぞいて残り何枚画像があるのか。 */}
-        <Typography variant="h6" className="render_More_Image_Count_Int" onClick={() => openModal(1)}>+{Object.keys(WorkSlide).length - 1}枚の画像</Typography>
+        <Typography variant="h6" className="render_More_Image_Count_Int" onClick={() => openModal(1)}>
+          +{Object.keys(WorkSlide).length - 1}枚の画像
+        </Typography>
       </Box>
     </>
   );
@@ -470,10 +473,7 @@ const WorkDetailItem = () => {
                         }}
                         onReady={(event) => {
                           const iframe = event.target.getIframe();
-                          iframe.src = iframe.src.replace(
-                            "https://www.youtube.com",
-                            "https://www.youtube-nocookie.com"
-                          );
+                          iframe.src = iframe.src.replace("https://www.youtube.com", "https://www.youtube-nocookie.com");
                         }}
                       />
                     </Box>
@@ -541,7 +541,7 @@ const WorkDetailItem = () => {
                     aria-labelledby="modal-autoplay-example-heading"
                     hasTrack={false}
                     className="modal-custom-splide" // クラス名を追加
-                  // style={{ height: "100%" }}
+                    // style={{ height: "100%" }}
                   >
                     <SplideTrack className="modal-custom-splide-track">
                       {WorkSlide.map((slide, index) => (
@@ -574,10 +574,7 @@ const WorkDetailItem = () => {
                                 }}
                                 onReady={(event) => {
                                   const iframe = event.target.getIframe();
-                                  iframe.src = iframe.src.replace(
-                                    "https://www.youtube.com",
-                                    "https://www.youtube-nocookie.com"
-                                  );
+                                  iframe.src = iframe.src.replace("https://www.youtube.com", "https://www.youtube-nocookie.com");
                                 }}
                               />
                             </Box>
@@ -797,7 +794,7 @@ const WorkDetailItem = () => {
         ●作品の紹介
       </Typography>
       <div className="Detail_info-intro" style={{ fontSize: "16px" }}>
-        {workDetail.work_intro}
+        {parseLinks(workDetail.work_intro)}
       </div>
     </>
   );
@@ -808,7 +805,7 @@ const WorkDetailItem = () => {
         ● こだわりポイント
       </Typography>
       <div className="Detail_info-intro" style={{ fontSize: "16px" }}>
-        {workDetail.obsession}
+      {parseLinks(workDetail.obsession)}
       </div>
     </>
   );
@@ -862,7 +859,7 @@ const WorkDetailItem = () => {
       {workComment && Object.keys(Comment).length > 0 && <h3>コメント一覧</h3>}
       {workComment.map((item, index) =>
         (item.commenter_id === AccountData.id && item.commenter_user_name === AccountData.user_name) ||
-          (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
+        (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
           <div key={index}>
             {/* {console.log("comment", Comment)} */}
             <Divider sx={{ borderStyle: "dashed", margin: "5px 0px 20px 0px", width: "90%" }} />

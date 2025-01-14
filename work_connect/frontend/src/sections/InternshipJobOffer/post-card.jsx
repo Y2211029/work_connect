@@ -113,11 +113,11 @@ const PostCard = forwardRef(({ post }, ref) => {
     );
   };
 
-  const handleDeleteClick = async(news_id) =>{
+  const handleDeleteClick = async (news_id) => {
     const confirmed = window.confirm("本当に削除しますか？");
 
     if (confirmed) {
-      console.log("news_id",news_id);
+      console.log("news_id", news_id);
       try {
         await axios.post(`http://localhost:8000/news_delete/${news_id}`);
         alert("削除しました");
@@ -127,28 +127,31 @@ const PostCard = forwardRef(({ post }, ref) => {
         console.error(error);
       }
     }
-  }
+  };
 
   // 企業アイコン
   const renderAvatar =
     (console.log("icon_id", icon_id),
-      (
-        <Avatar
-          alt={author.name}
-          src={icon_id ? `http://localhost:8000/storage/images/userIcon/${icon_id}` : author.avatarUrl}
-          sx={{
-            zIndex: 9,
-            width: 30,
-            height: 30,
-          }}
-        />
-      ));
+    (
+      <Avatar
+        alt={author.name}
+        src={icon_id ? `http://localhost:8000/storage/images/userIcon/${icon_id}` : author.avatarUrl}
+        sx={{
+          zIndex: 9,
+          width: 30,
+          height: 30,
+        }}
+      />
+    ));
 
   // サムネイル
   const renderThumbnail = (
     <Box
       component="img"
       src={header_img}
+      onError={(e) => {
+        e.target.src = "http://localhost:8000/storage/images/work/NoImage.png"; // エラー時にサンプル画像をセット
+      }}
       sx={{
         aspectRatio: 16 / 9,
         borderRadius: "10px",
@@ -334,7 +337,7 @@ const PostCard = forwardRef(({ post }, ref) => {
       {renderDate}
 
       {company_id === accountData.id ? (
-          <Tooltip title="削除">
+        <Tooltip title="削除">
           <Button onClick={() => handleDeleteClick(news_id)}>
             <DeleteIcon sx={{ color: "red" }} />
           </Button>
@@ -353,10 +356,7 @@ const PostCard = forwardRef(({ post }, ref) => {
           {renderAvatar}
           {renderCompanyName}
         </Stack>
-
       )}
-
-
     </Stack>
   );
 

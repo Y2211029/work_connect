@@ -201,6 +201,7 @@ class NewsController extends Controller
             ->join('w_news', 'w_write_forms.news_id', '=', 'w_news.id')
             ->whereIn('w_news.public_status', [1, 2])
             ->groupBy('w_news.article_title')
+            ->orderBy('w_news.created_at', 'desc')
             ->select('w_news.article_title');
 
         // ニュースデータを取得
@@ -208,6 +209,7 @@ class NewsController extends Controller
             ->join('w_news', 'w_write_forms.news_id', '=', 'w_news.id')
             ->join('w_users', 'w_write_forms.user_id', '=', 'w_users.id')
             ->whereIn('w_news.public_status', [1, 2])
+            ->orderBy('w_write_forms.writeformDateTime', 'desc')
             ->select('w_write_forms.*', 'w_news.*', 'w_users.*', 'w_news.created_at as news_created_at', 'w_write_forms.id as write_form_id')
             ->get();
 

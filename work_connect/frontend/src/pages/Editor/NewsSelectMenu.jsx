@@ -7,6 +7,7 @@ import Box from "@mui/material/Box";
 import PropTypes from "prop-types";
 import "./NewsSelectMenu.css";
 import Tooltip from "@mui/material/Tooltip";
+import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 
 // 応募締め切り日を設定:MUI
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
@@ -15,7 +16,7 @@ import moment from "moment";
 import "moment/locale/ja";
 
 // 募集職種のタグを設定
-import Select from "react-select";
+import CreatableSelect from "react-select/creatable";
 import GetTagAllList from "src/components/tag/GetTagAllList";
 
 // 通知に添えるメッセージ
@@ -97,7 +98,8 @@ const InputDateWithTime = ({ date, setEventDay, format = "YYYY/MM/DD HH:mm" }) =
   return (
     <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="ja">
       <DateTimePicker
-        value={moment(date)} // 親コンポーネントから渡された日付を使用
+        slotProps={{ calendarHeader: { format: 'YYYY年MM月' } }}
+        value={moment(date)}
         onChange={(newDate) => {
           if (newDate) {
             const formattedDate = moment(newDate).format("YYYY-MM-DD HH:mm:ss");
@@ -183,6 +185,9 @@ const NewsSelectMenu = ({
   const [Message, setMessage] = useState(notificationMessage);
   const theme = useTheme();
 
+  console.log("isContentReady",isContentReady);
+  console.log("isFollowerValid",isFollowerValid);
+
   useEffect(() => {
     let optionArrayPromise = GetTagAllListFunction("company_selected_occupation");
     optionArrayPromise.then((result) => {
@@ -239,9 +244,10 @@ const NewsSelectMenu = ({
   };
 
   const FormattedDate = (time) => {
-    console.log("時間", time);
-    return moment(time).tz("Asia/Tokyo").format("YYYY/MM/DD HH:mm");
+    moment.locale("ja"); // 日本語ロケール設定
+    return moment.utc(time).format("YYYY/MM/DD HH:mm");
   };
+
 
   const header_img_show = (draft) => {
     console.log("サムネイル画像", draft.header_img);
@@ -309,6 +315,8 @@ const NewsSelectMenu = ({
                   </p>
                 ) : key === "selectedOccupation" && labels.length > 0 ? (
                   <Box className="news_job_acordion_menu">{ShowTags(labels)}</Box> // labelsが空でない場合に表示
+                ) : key === "imageurl" ? (
+                  <img src={`${check_element}`} className="EditorStatusCheck_Img" alt="サムネイル" />
                 ) : (
                   <p>設定完了していません</p>
                 )
@@ -400,7 +408,7 @@ const NewsSelectMenu = ({
           );
         case "jobtype":
           return (
-            <Select
+            <CreatableSelect
               id="prefecturesDropdown"
               value={selectedOccupation}
               onChange={setSelectedOccupation}
@@ -437,8 +445,8 @@ const NewsSelectMenu = ({
                 maxLength={100}
                 sx={{
                   border: Message === "" ? "1px red solid" : `1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]}`,
-                  width: "60%",
                 }}
+                className="NotificationMessage"
               />
               <Typography variant="body2" color="textSecondary" className="Message_Length">
                 {Message ? Message.length : <span style={{ color: "red", opacity: 0.7 }}>0</span>} / 100
@@ -463,18 +471,19 @@ const NewsSelectMenu = ({
                     console.log("質問数:", question_count);
                     return (
                       <>
-                        <NewsMenuTable className="draftlisttable">
+                        <NewsMenuTable className="createformtable">
                           <TableBody>
                             <TableRow>
                               <TableCell style={{ backgroundColor: "#fff", border: "none" }}>
-                                <div className="Last_updated_date">最終更新日: {FormattedDate(DateTime)}</div>
+                                <div className="Last_updated_date">
+                                  最終更新日: {FormattedDate(DateTime)}
+                                </div>
 
                                 <Stack direction={"row"}>
-                                  <p className="draftlist">質問数: {question_count}</p>
+                                  <p className="question_count">質問数: {question_count}</p>
 
                                   <div>
                                     <DeleteIcon className="delete_icon" />
-                                    <p className="delete_text">削除</p>
                                   </div>
                                 </Stack>
 
@@ -498,18 +507,30 @@ const NewsSelectMenu = ({
                     );
                   })()
                 ) : (
-                  <>
+                  <div className="Not_CreateForm">
+                    <Tooltip title="作成することで1つのサイトで広報活動と募集活動が完結します" placement="top">
+                    <Typography className="CreateFormExplanation_Text">
+                      応募フォームが作成されていません<br></br>
+                      作成することで1つのサイトで<br></br>
+                      広報活動と募集活動が完結します
+                    </Typography>
+                    </Tooltip>
+                    <Stack direction={"row"}>
                     <Button
-                      className="createFormJump"
                       onClick={async () => {
                         await handleCloseInputMenu();
                         CreateFormJump();
                       }}
                       sx={{ border: "1px solid", mx: 1 }}
+                      className="CreateFormButton"
                     >
                       <Typography className="NewsSelectButton_Text">応募フォームを作成する</Typography>
                     </Button>
-                  </>
+                    <Typography className="CreateFormExplanation_Text" color="error">
+                      任意
+                    </Typography>
+                    </Stack>
+                  </div>
                 )}
               </div>
             </Box>
@@ -558,17 +579,20 @@ const NewsSelectMenu = ({
                     <TableHead>
                       <TableRow>
                         <TableCell style={{ backgroundColor: "#fff", border: "none" }}>
-                          <div className="Last_updated_date">最終更新日: {FormattedDate(draft.updated_at)}</div>
+                          <Tooltip title={`最終更新日:${FormattedDate(draft.updated_at)}`}>
+                          <div className="Last_updated_date">
+                            最終更新日:{postDateTimeDisplay(FormattedDate(draft.updated_at))}
+                          </div>
+                          </Tooltip>
+
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                             {/* 画像を左側に配置 */}
                             <div className="news_img">{header_img_show(draft)}</div>
                             {/* テキストと削除ボタンを右側に配置 */}
                             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
                               <div style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
-                                <DeleteIcon />
-                                <p style={{ margin: 0, marginLeft: "4px" }} onClick={() => RewriteNewsDelete(draft.id)}>
-                                  削除
-                                </p>
+                                <DeleteIcon onClick={() => RewriteNewsDelete(draft.id)}/>
+
                               </div>
                             </div>
                           </div>
@@ -631,7 +655,7 @@ const NewsSelectMenu = ({
             <MenuItem onClick={(e) => handleMenuItemClick(e, "input", "eventday")}>開催日</MenuItem>
             <MenuItem onClick={(e) => handleMenuItemClick(e, "input", "jobtype")}>募集職種</MenuItem>
             <MenuItem onClick={(e) => handleMenuItemClick(e, "input", "message")}>通知メッセージ</MenuItem>
-            <MenuItem onClick={(e) => handleMenuItemClick(e, "input", "createform")}>応募用フォーム</MenuItem>
+            <MenuItem onClick={(e) => handleMenuItemClick(e, "input", "createform")}>応募フォーム</MenuItem>
           </Menu>
         </div>
 

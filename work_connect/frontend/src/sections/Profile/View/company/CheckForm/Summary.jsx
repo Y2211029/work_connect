@@ -1,4 +1,4 @@
-import { useState,useEffect,useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import Stack from '@mui/material/Stack';
 import Typography from "@mui/material/Typography";
@@ -145,32 +145,6 @@ const Graph = ({ title, responses, userNames, onRequestClose }) => {
     },
   };
 
-  const bar_y_options = {
-    responsive: true,
-    indexAxis: 'y',
-    maintainAspectRatio: false,
-    plugins: {
-      title: {
-        display: true,
-        text: title,
-      },
-      tooltip: {
-        enabled: true,
-        callbacks: {
-          label: (tooltipItem) => {
-            const index = tooltipItem.dataIndex;
-            const total = dataValues.reduce((a, b) => a + b, 0);
-            const value = dataValues[index];
-            const percentage = ((value / total) * 100).toFixed(1);
-            const users = userMappings[index].join(", ");
-            return [`回答数: ${value} ${percentage}%`, `${users}`];
-          },
-        },
-      },
-    },
-
-  }
-
   const data = {
     labels,
     datasets: [
@@ -223,7 +197,6 @@ const Graph = ({ title, responses, userNames, onRequestClose }) => {
 
   const GraphArray = [
     { title: '縦棒グラフ', type: 'Bar' },
-    { title: '横棒グラフ', type: 'Bar-y' },
     { title: '折れ線グラフ', type: 'Line' },
     { title: '円グラフ', type: 'Pie' },
     { title: 'ドーナツグラフ', type: 'Doughnut' },
@@ -239,8 +212,6 @@ const Graph = ({ title, responses, userNames, onRequestClose }) => {
             switch (graphKind) {
               case "Bar":
                 return <Bar options={options} data={data} />;
-              case "Bar-y":
-                return <Bar options={bar_y_options} data={data} />;
               case "Line":
                 return <Line options={options} data={data} />;
               case "Pie":
@@ -302,7 +273,7 @@ const Already_Read = async (unread_data) => {
 };
 
 
-const UnreadStart = ({ onRead,unread_data }) => {
+const UnreadStart = ({ onRead, unread_data }) => {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -440,8 +411,8 @@ const Summary = ({
     -1 // 初期値として -1 を指定
   );
 
-  console.log("unread_id",lastUnreadId);
-  console.log("application_form[selectedIndex].user_name",application_form[selectedIndex].user_name);
+  console.log("unread_id", lastUnreadId);
+  console.log("application_form[selectedIndex].user_name", application_form[selectedIndex].user_name);
 
   return (
     <>
@@ -475,7 +446,7 @@ const Summary = ({
                 <Divider />
 
                 {index === lastUnreadId && (
-                  <UnreadStart onRead={Already_Read} unread_data={unread_data}/>
+                  <UnreadStart onRead={Already_Read} unread_data={unread_data} />
                 )}
               </>
 
@@ -502,7 +473,7 @@ const Summary = ({
 
                 {responses.map((response, idx) => (
                   <Typography key={idx} className="writeform-answereddata">
-                    {response}
+                    {response ? response : "無回答"}
                   </Typography>
                 ))}
 
@@ -521,8 +492,6 @@ const Summary = ({
           <Graph title={modalData.title} responses={modalData.responses} userNames={modalData.userNames} onRequestClose={showGpaphCancel} />
         </Modal>
       </div>
-
-
 
     </>
 

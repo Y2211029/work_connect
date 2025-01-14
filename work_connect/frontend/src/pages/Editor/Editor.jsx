@@ -86,7 +86,15 @@ const Editor = () => {
   const thumbnail_image_save_url = "http://127.0.0.1:8000/thumbnail_image_save";
 
   const csrf_url = "http://localhost:8000/csrf-token";
-  const isContentReady = !!(title && imageUrl && charCount && eventDay && selectedOccupation); // 必須データが揃っているか確認
+
+  const isContentReady = !!(
+    title &&
+    imageUrl &&
+    charCount &&
+    !moment(eventDay).isSame(moment(), 'day') &&
+    selectedOccupation.length > 0
+  );
+
   const isFollowerValid = (followerCounter > 0 && notificationMessage) || followerCounter === 0 || followerCounter === undefined;
 
   const navigate = useNavigate();
@@ -318,7 +326,8 @@ const Editor = () => {
     }
     // news_idをセット
     setNewsId(select_draft_list.id);
-    setEventDay(moment(select_draft_list.event_day));
+    moment.locale("ja"); // 日本語ロケール設定
+    setEventDay(moment.utc(select_draft_list.event_day).format("YYYY/MM/DD HH:mm"));
 
     // まず変換関数を定義
     const transformOpenJobs = (openJobsString) => {

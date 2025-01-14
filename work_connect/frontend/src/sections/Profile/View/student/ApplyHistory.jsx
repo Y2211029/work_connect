@@ -61,12 +61,28 @@ const Apply_history = forwardRef(({ id }, ref) => {
     return `${year}/${month}/${day}`;
   };
 
-  const getEventDayMessage = (event_day) => {
+  const getEventDayMessage = (event_day, check_read) => {
     const today = new Date();
     const eventDayDate = new Date(event_day);
 
+
+    const CheckReadMessage = (check_read) => {
+
+      const checkReadMessage = (check_read === "既読") ? "確認済" : "確認できていません";
+      const AlertColor = (check_read === "既読") ? "info,dark" : "error";
+      return (
+        <>
+          <Typography className="CheckReadAlert" variant="body1" color={AlertColor}>
+            {checkReadMessage}
+          </Typography>
+        </>
+      )
+    }
+
     // 日付の差分を計算 (ミリ秒 -> 日)
     const diffInDays = Math.ceil((eventDayDate - today) / (1000 * 60 * 60 * 24));
+
+
 
     // 日付の差分を月単位で計算
     const diffInMonths =
@@ -76,9 +92,15 @@ const Apply_history = forwardRef(({ id }, ref) => {
     // 残り1週間以内は1日単位で表示
     if (diffInDays > 0 && diffInDays <= 7) {
       return (
-        <Typography className="EventDayAlert" variant="body1" color="error">
-          開催日まで残り{diffInDays}日!
-        </Typography>
+        <>
+          <Stack direction={"row"}>
+            <Typography className="EventDayAlert" variant="body1" color="error">
+              開催日まで残り{diffInDays}日!
+            </Typography>
+            {CheckReadMessage(check_read)}
+          </Stack>
+        </>
+
       );
     }
 
@@ -86,18 +108,26 @@ const Apply_history = forwardRef(({ id }, ref) => {
     if (diffInDays > 7 && diffInDays <= 14) {
       const weeksLeft = Math.ceil(diffInDays / 7); // 残りの週数を計算
       return (
-        <Typography className="EventDayAlert" variant="body1" color="primary">
-          開催日まで残り{weeksLeft}週間!
-        </Typography>
+        <>
+          <Typography className="EventDayAlert" variant="body1" color="primary">
+            開催日まで残り{weeksLeft}週間!
+          </Typography>
+          {CheckReadMessage(check_read)}
+        </>
+
       );
     }
 
     // 残り1ヶ月以上の場合は月数を表示
     if (diffInMonths >= 1) {
       return (
-        <Typography className="EventDayAlert" variant="body1" color="info.dark">
-          開催日まで残り{diffInMonths}ヶ月!
-        </Typography>
+        <>
+          <Typography className="EventDayAlert" variant="body1" color="info.dark">
+            開催日まで残り{diffInMonths}ヶ月!
+          </Typography>
+          {CheckReadMessage(check_read)}
+        </>
+
       );
     }
 
@@ -128,36 +158,36 @@ const Apply_history = forwardRef(({ id }, ref) => {
         Apply_genre = '求人への応募日';
         break;
     }
-    console.log("ユーザーネーム",posts.user_name);
-    return (  
+    console.log("ユーザーネーム", posts.user_name);
+    return (
       <>
-        {getEventDayMessage(posts.event_day)}
+        {getEventDayMessage(posts.event_day, posts.check_read)}
         <Tooltip title={`クリックすると${posts.companies_name}さんのプロフィールにリンクします`}>
-        <Link to={`/Profile/${posts.companies_user_name}`}
-                    style={{
-                      textDecoration: "none",
-                      color: "common.black",
-                      height: 30,
-                      fontWeight: "Bold",
-                    }}>
-        <Stack direction={"row"}>
-          <div className="post_card_header">
-            <img
-              src={
-                posts.icon
-                  ? `http://localhost:8000/storage/images/userIcon/${posts.icon}`
-                  : <svg className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-67i7n3-MuiSvgIcon-root" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="PersonIcon"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4m0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4"></path></svg> // 代替画像のURLを設定
-              }
-              id={posts.id}
-              alt={`${posts.companies_name || "未設定"} ヘッダー画像`}
-              className="post_card_img"
-            />
-          </div>
-          <div className="ApplyFormCompaniesName">
-          <Typography className="CompaniesName">{posts.companies_name}</Typography>
-          </div>
-        </Stack>
-        </Link>
+          <Link to={`/Profile/${posts.companies_user_name}`}
+            style={{
+              textDecoration: "none",
+              color: "common.black",
+              height: 30,
+              fontWeight: "Bold",
+            }}>
+            <Stack direction={"row"}>
+              <div className="post_card_header">
+                <img
+                  src={
+                    posts.icon
+                      ? `http://localhost:8000/storage/images/userIcon/${posts.icon}`
+                      : <svg className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-67i7n3-MuiSvgIcon-root" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="PersonIcon"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4m0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4"></path></svg> // 代替画像のURLを設定
+                  }
+                  id={posts.id}
+                  alt={`${posts.companies_name || "未設定"} ヘッダー画像`}
+                  className="post_card_img"
+                />
+              </div>
+              <div className="ApplyFormCompaniesName">
+                <Typography className="CompaniesName">{posts.companies_name}</Typography>
+              </div>
+            </Stack>
+          </Link>
         </Tooltip>
         <Stack direction={"row"}>
           <p className="form_writed_at">{Apply_genre}</p>
@@ -171,25 +201,35 @@ const Apply_history = forwardRef(({ id }, ref) => {
 
   // コンテンツ部分の表示
   const renderDetails = (posts) => {
-    console.log("posts",posts.news_id);
+    console.log("posts", posts.news_id);
     console.log("posts", posts.write_form.elements);
     return (
       <div className="post_card_content">
-        <Tooltip title="クリックするとニュース詳細にリンクします" placement="top">
-          <Link
-            to={`/NewsDetail/${posts.news_id}`}
-            className="link"
-            style={{
-              color: "common.black",
-              height: 30,
-              fontWeight: "Bold",
-            }}
-          >
+        {posts.public_status !== "1" ? (
+          <Tooltip title="このニュースは見ることができません" placement="top">
             <Typography className="post_card_title">
               {posts.news_title}
             </Typography>
-          </Link>
-        </Tooltip>
+
+          </Tooltip>
+        ) : (
+          <Tooltip title="クリックするとニュース詳細にリンクします" placement="top">
+            <Link
+              to={`/NewsDetail/${posts.news_id}`}
+              className="link"
+              style={{
+                color: "common.black",
+                height: 30,
+                fontWeight: "Bold",
+              }}
+            >
+              <Typography className="post_card_title">
+                {posts.news_title}
+              </Typography>
+            </Link>
+          </Tooltip>
+        )}
+
 
 
         <div className="post_card_form">
@@ -211,12 +251,12 @@ const Apply_history = forwardRef(({ id }, ref) => {
                       id="panel1bh-header"
                     >
                       <Typography className="ApplyDetailsTitle">
-                      {form.title}
+                        {form.title}
                       </Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                       <Typography className="ApplyDetailsResponse">
-                      {form.response || "なし"}
+                        {form.response || "なし"}
                       </Typography>
                     </AccordionDetails>
                   </Accordion>

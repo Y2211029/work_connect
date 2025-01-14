@@ -319,7 +319,6 @@ const ChatEditModal = ({
         </Typography>
 
         <Textarea
-          multiline
           minRows={1} // 最小行数を設定
           maxRows={4} // 最大行数を設定
           sx={{
@@ -726,6 +725,7 @@ const ChatView = () => {
   /// PostChat関数・・・チャットを送信する処理
   const PostChat = () => {
     async function PostData() {
+      console.log("postdata通ってます");
       try {
         const PairUserId = getSessionData("accountData").ChatOpenId;
         // バックエンドにリクエストを送信

@@ -296,6 +296,7 @@ Route::post('/news_delete/{news_id}', [NewsController::class, 'news_delete']);
 
 //学生(自分)が応募した履歴を確認
 Route::post('/get_apply_history', action: [NewsController::class, 'get_apply_history']);
+Route::post('/change_un_read', action: [NewsController::class, 'change_un_read']);
 
 
 

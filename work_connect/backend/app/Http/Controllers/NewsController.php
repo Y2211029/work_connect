@@ -141,8 +141,10 @@ class NewsController extends Controller
                 'w_news.event_day as event_day',
                 'w_news.genre as news_genre',
                 'w_news.header_img as img',
+                'w_news.public_status as public_status',
                 'w_write_forms.id as write_form_id',
                 'w_write_forms.write_form as write_form',
+                'w_write_forms.check_read as check_read',
                 'w_write_forms.writeformDateTime as form_writed_at',
             )
             ->orderBy('form_writed_at', direction: 'desc')
@@ -161,8 +163,10 @@ class NewsController extends Controller
                 'news_genre' => $app->news_genre,
                 'event_day' => $app->event_day,
                 'img' => $app->img,
+                'public_status' => $app->public_status,
                 'write_form_id' => $app->write_form_id,
                 'write_form' => json_decode($app->write_form, true), // 配列としてデコード
+                'check_read' => $app->check_read,
                 'form_writed_at' => $app->form_writed_at,
                 'icon' => $app->icon,
             ];
@@ -234,6 +238,7 @@ class NewsController extends Controller
                         'user_name' => $q->user_name,
                         'write_form_id' => $q->write_form_id,
                         'writeformDateTime' => $q->writeformDateTime,
+                        'check_read' => $q->check_read,
                         'news_created_at' => $q->news_created_at,
                         'genre' => $q->genre,
                     ];
@@ -363,13 +368,6 @@ class NewsController extends Controller
             Log::info("all_news_get:posts");
             Log::info($posts);
 
-            // $postArray = json_decode(json_encode($posts), true);
-
-            // Log::info("all_news_get:postArray");
-            // Log::info($postArray);
-
-            // return response()->json($posts);
-            // return json_encode($postArray);
         } catch (\Exception $e) {
             Log::error('all_news_get エラー: ' . $e->getMessage());
             return response()->json(['error' => 'データ取得中にエラーが発生しました。'], 500);
@@ -485,5 +483,28 @@ class NewsController extends Controller
             ], 500);
         }
     }
+
+    public function change_un_read(Request $request)
+    {
+        $unread_data = $request->input("unread_data");
+
+        // 未読データの処理
+        foreach ($unread_data as $data) {
+            // `write_form_id`で該当のデータを取得
+            $writeForm = w_write_form::where("id", $data["write_form_id"])->first();
+
+            if ($writeForm) {
+                // `check_read` を '既読' に更新
+                $writeForm->update(['check_read' => "既読"]);
+            }
+        }
+
+        // 成功レスポンス
+        return response()->json([
+            "message" => "既読になりました",
+            "status" => "success"
+        ], 200);
+    }
+
 
 }

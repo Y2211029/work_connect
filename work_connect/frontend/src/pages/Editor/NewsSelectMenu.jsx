@@ -501,7 +501,8 @@ const NewsSelectMenu = ({
                   <>
                     <Button
                       className="createFormJump"
-                      onClick={() => {
+                      onClick={async () => {
+                        await handleCloseInputMenu();
                         CreateFormJump();
                       }}
                       sx={{ border: "1px solid", mx: 1 }}

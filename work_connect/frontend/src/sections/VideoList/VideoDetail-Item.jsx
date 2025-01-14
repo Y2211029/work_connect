@@ -14,6 +14,7 @@ import Container from "@mui/material/Container";
 import { AVATAR } from "src/layouts/dashboard/config-layout";
 import { UseCreateTagbutton } from "src/hooks/use-createTagbutton";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import { parseLinks } from "../../components/Link/ParseLink";
 
 const VideoDetailItem = () => {
   // ログイン情報の取得
@@ -267,7 +268,7 @@ const VideoDetailItem = () => {
         ●動画の紹介
       </Typography>
       <div className="Detail_info-intro" style={{ fontSize: "16px" }}>
-        {VideoDetail.intro}
+        {parseLinks(VideoDetail.intro)}
       </div>
     </>
   );

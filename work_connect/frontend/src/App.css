@@ -906,6 +906,16 @@ textarea {
   width: 100%;
 }
 
+.detailURL {
+  color: #212B36 !important;
+  text-decoration: none !important;
+}
+
+.detailURL:hover {
+  color: #41a4ff !important;
+  text-decoration: underline !important;
+}
+
 
 .top_comment_area {
   margin: 0px auto;
@@ -1243,6 +1253,7 @@ textarea::placeholder {
 }
 
 
+
 /* 前腕の揺れアニメーション */
 @keyframes forearm-swing {
 
@@ -1262,7 +1273,7 @@ textarea::placeholder {
 @media (max-width: 1700px) {
   .searchbar {
     width: 40% !important;
-    height: 80% !important;
+    height: 70% !important;
   }
 
   .arrow_up_ward_icon {
@@ -1298,13 +1309,13 @@ textarea::placeholder {
 @media (max-width: 1200px) {
   .searchbar {
     width: 50% !important;
-    height: 80% !important;
+    height: 70% !important;
   }
 
   .arrow_up_ward_icon {
     bottom: 20px !important;
-    width: 70px !important;
-    height: 70px !important;
+    width: 40px !important;
+    height: 40px !important;
   }
 
   .column-container,
@@ -1370,13 +1381,13 @@ textarea::placeholder {
 @media (max-width: 900px) {
   .arrow_up_ward_icon {
     bottom: 110px !important;
-    width: 60px !important;
-    height: 60px !important;
+    width: 40px !important;
+    height: 40px !important;
   }
 
   .searchbar {
     width: 60% !important;
-    height: 80% !important;
+    height: 70% !important;
   }
 
   .Modal form {
@@ -1515,7 +1526,7 @@ textarea::placeholder {
 @media (max-width: 600px) {
   .searchbar {
     width: 70% !important;
-    height: 80% !important;
+    height: 70% !important;
   }
 
   .arrow_up_ward_icon {
@@ -1597,7 +1608,7 @@ textarea::placeholder {
 @media (max-width: 400px) {
   .searchbar {
     width: 80% !important;
-    height: 80% !important;
+    height: 70% !important;
   }
 
   .arrow_up_ward_icon {

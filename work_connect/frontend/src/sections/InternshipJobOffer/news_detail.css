@@ -184,21 +184,16 @@
 }
 
 .NewsDetail_Button {
+    width: auto;
     font-size: 12px;
     padding: 8px 16px;
     margin: 4px;
-    background: linear-gradient(#41A4FF, #9198e5);
 }
 
 .Apply_Button {
     font-size: 12px;
     padding: 8px 16px;
     margin: 4px;
-}
-
-
-.NewsDetail_Button:hover {
-    background: linear-gradient(#c2c2c2, #e5ad91);
 }
 
 .css-1szdb53-MuiButtonBase-root-MuiButton-root.Mui-disabled {
@@ -239,6 +234,17 @@
     font-size: 40px;
 }
 
+.EventDayAlert{
+    width: 120px;
+    font-size:12px;
+    padding-right: 20%;
+
+}
+
+.css-r3djoj-MuiTouchRipple-root{
+    margin: 0;
+}
+
 
 
 
@@ -252,6 +258,11 @@
         padding-top: 3%;
         padding-bottom: 5%;
         padding-left: 4%;
+    }
+
+    .News_Header{
+        position: relative;
+        left: 5%;
     }
 
 }
@@ -535,6 +546,8 @@
         font-size: 12px;
         padding: 0px;
     }
+
+
 
 
 }

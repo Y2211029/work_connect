@@ -98,6 +98,75 @@ const InternshipJobOfferPage = () => {
     }
   };
 
+  const getEventDayMessage = (event_day) => {
+    const today = new Date();
+    const eventDayDate = new Date(event_day);
+
+    // 日付の差分を計算 (ミリ秒 -> 日)
+    const diffInDays = Math.ceil((eventDayDate - today) / (1000 * 60 * 60 * 24));
+
+    // 日付の差分を月単位で計算
+    const diffInMonths =
+      (eventDayDate.getFullYear() - today.getFullYear()) * 12 +
+      (eventDayDate.getMonth() - today.getMonth());
+
+    // 残り1週間以内は1日単位で表示
+    if (diffInDays > 0 && diffInDays <= 7) {
+      return (
+        <>
+
+          <Button className="NewsDetail_Button" variant="contained" color="error">
+            開催日まで残り{diffInDays}日!
+          </Button>
+
+        </>
+
+      );
+    }
+
+    // 残り2週間以内なら週数単位で表示
+    if (diffInDays > 7 && diffInDays <= 14) {
+      const weeksLeft = Math.ceil(diffInDays / 7); // 残りの週数を計算
+      return (
+        <>
+          <Button className="NewsDetail_Button" variant="contained" color="warning">
+            開催日まで残り{weeksLeft}週間!
+          </Button>
+        </>
+
+      );
+    }
+
+    // 残り1ヶ月以上の場合は月数を表示
+    if (diffInMonths >= 1) {
+      return (
+        <>
+          {/* <Typography className="EventDayAlert" variant="body1" color="info.dark">
+          
+          </Typography> */}
+
+          <Button className="NewsDetail_Button" variant="contained" color="secondary">
+            開催日まで残り{diffInMonths}ヶ月!
+          </Button>
+        </>
+
+      );
+    }
+
+    // マイナスだった場合すでに開催されていると判断し、開催済みと表示
+    if (diffInDays < 0) {
+      return (
+        <Button className="NewsDetail_Button" variant="contained" color="success">
+          開催されました!
+        </Button>
+
+      );
+    }
+
+    // それ以外は何も返さない
+    return null;
+  };
+
   //日付をYY/MM/DDに変換する
   const formatDate = (dateString) => {
     const dateObj = new Date(dateString);
@@ -149,6 +218,7 @@ const InternshipJobOfferPage = () => {
       {NewsDetail ? (
         <div className="NewsDetailContainer">
           <div className="Menu">
+
             <Stack direction={"row"} spacing={2}>
               <Button className="NewsDetail_Button" variant="contained">
                 {Genre}
@@ -156,8 +226,7 @@ const InternshipJobOfferPage = () => {
 
               {Genre !== 'ブログ' ? (
                 <div className='day_information'>
-                  開催日:{formatDate(NewsDetail.event_day)}
-                  締切日:{formatDate(NewsDetail.deadline)}
+                  {getEventDayMessage(NewsDetail.event_day)}
                 </div>
               ) : null}
 
@@ -165,30 +234,33 @@ const InternshipJobOfferPage = () => {
 
             </Stack>
 
-            <h1 className="news_title">{NewsDetail.article_title}</h1>
+            <div className="News_Header">
+              <h1 className="news_title">{NewsDetail.article_title}</h1>
 
-            <div style={{ display: 'flex' }}>
-              <Stack direction={'row'} sx={{ alignItems: 'center' }}>
-                <img
-                  className="Company_News_img"
-                  src={`http://localhost:8000/storage/images/userIcon/${NewsDetail.icon}`}
-                  alt="Company Icon"
-                />
-                <div className="news_company_profile">
-                  <Tooltip title="クリックするとプロフィールに行きます">
-                    <p
-                      className="news_company_name"
-                      onClick={handleProfileJump}
-                      style={{ margin: 0 }}
-                    >
-                      {NewsDetail.company_name}
+              <div style={{ display: 'flex' }}>
+                <Stack direction={'row'} sx={{ alignItems: 'center' }}>
+                  <img
+                    className="Company_News_img"
+                    src={`http://localhost:8000/storage/images/userIcon/${NewsDetail.icon}`}
+                    alt="Company Icon"
+                  />
+                  <div className="news_company_profile">
+                    <Tooltip title="クリックするとプロフィールに行きます">
+                      <p
+                        className="news_company_name"
+                        onClick={handleProfileJump}
+                        style={{ margin: 0 }}
+                      >
+                        {NewsDetail.company_name}
+                      </p>
+                    </Tooltip>
+                    <p className="news_created_at" style={{ margin: 0 }}>
+                      {formatDate(NewsDetail.news_created_at)}
                     </p>
-                  </Tooltip>
-                  <p className="news_created_at" style={{ margin: 0 }}>
-                    {formatDate(NewsDetail.news_created_at)}
-                  </p>
-                </div>
-              </Stack>
+                  </div>
+                </Stack>
+              </div>
+
             </div>
 
             <Stack direction="row" spacing={2} className="NewsDetail_Stack">
@@ -349,46 +421,46 @@ const InternshipJobOfferPage = () => {
           </div>
 
           {(previousNews || nextNews) && (
-  <Stack direction="row" className="previous_back_article_stack">
-    {/* 前の記事 */}
-    <div className="PreviousNews">
-      {previousNews ? (
-        <>
-          <ArrowBackIosIcon className="PreviousNews_icon" />
-          <div className="PreviousNews_content">
-            <span className="PreviousNews_span">前の記事</span>
-            <Typography
-              className="PreviousNews_text"
-              onClick={() => handleNewsJump(previousNews.id)}
-              sx={{ cursor: 'pointer' }}
-            >
-              {previousNews.article_title}
-            </Typography>
-          </div>
-        </>
-      ) : null}
-    </div>
+            <Stack direction="row" className="previous_back_article_stack">
+              {/* 前の記事 */}
+              <div className="PreviousNews">
+                {previousNews ? (
+                  <>
+                    <ArrowBackIosIcon className="PreviousNews_icon" />
+                    <div className="PreviousNews_content">
+                      <span className="PreviousNews_span">前の記事</span>
+                      <Typography
+                        className="PreviousNews_text"
+                        onClick={() => handleNewsJump(previousNews.id)}
+                        sx={{ cursor: 'pointer' }}
+                      >
+                        {previousNews.article_title}
+                      </Typography>
+                    </div>
+                  </>
+                ) : null}
+              </div>
 
-    {/* 次の記事 */}
-    <div className="NextNews">
-      {nextNews ? (
-        <>
-          <div className="NextNews_content">
-            <span className="NextNews_span">次の記事</span>
-            <Typography
-              className="NextNews_text"
-              onClick={() => handleNewsJump(nextNews.id)}
-              sx={{ cursor: 'pointer' }}
-            >
-              {nextNews.article_title}
-            </Typography>
-          </div>
-          <ArrowForwardIosIcon className="NextNews_icon" />
-        </>
-      ) : null}
-    </div>
-  </Stack>
-)}
+              {/* 次の記事 */}
+              <div className="NextNews">
+                {nextNews ? (
+                  <>
+                    <div className="NextNews_content">
+                      <span className="NextNews_span">次の記事</span>
+                      <Typography
+                        className="NextNews_text"
+                        onClick={() => handleNewsJump(nextNews.id)}
+                        sx={{ cursor: 'pointer' }}
+                      >
+                        {nextNews.article_title}
+                      </Typography>
+                    </div>
+                    <ArrowForwardIosIcon className="NextNews_icon" />
+                  </>
+                ) : null}
+              </div>
+            </Stack>
+          )}
 
         </div>
       ) : (

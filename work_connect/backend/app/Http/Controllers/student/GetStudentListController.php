@@ -64,8 +64,8 @@ class GetStudentListController extends Controller
                 return $user;
             });
 
-            // Log::info('GetStudentListController: $StudentOfList:');
-            // Log::info(json_encode($StudentOfList));
+            Log::info('GetStudentListController: $StudentOfList:');
+            Log::info(json_encode($StudentOfList));
 
             // 結果をJSON形式で返す
             return response()->json($StudentOfList);

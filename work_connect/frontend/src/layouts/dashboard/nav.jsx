@@ -126,7 +126,7 @@ function NavItem({ item }) {
         ...prevItems,
         IsLoading : true, // 一時的にローディングを解除
       }));
-      console.log("あいうえお")
+      
       setAllItems((prevItems) => ({
         ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
         ResetItem: true,

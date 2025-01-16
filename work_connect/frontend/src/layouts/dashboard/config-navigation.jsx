@@ -38,31 +38,6 @@ const navConfig = [
     path: '/Internship_JobOffer?page=JobOffer',
     icon: <NewspaperOutlinedIcon />,
   },
-  // {
-  //   title: '作品一覧',
-  //   path: '/',
-  //   icon: <TipsAndUpdatesOutlinedIcon />,
-  // },
-  // {
-  //   title: '動画一覧',
-  //   path: '/VideoList',
-  //   icon: <VideoLibraryOutlinedIcon />,
-  // },
-  // {
-  //   title: '学生一覧',
-  //   path: '/StudentList',
-  //   icon: icon('ic_student'),
-  // },
-  // {
-  //   title: '企業一覧',
-  //   path: '/CompanyList',
-  //   icon: <ApartmentIcon />,
-  // },
-  // {
-  //   title: 'ニュース一覧',
-  //   path: '/Internship_JobOffer?page=JobOffer',
-  //   icon: <NewspaperOutlinedIcon />,
-  // },
 ];
 
 export default navConfig;

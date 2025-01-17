@@ -1,8 +1,7 @@
-import ListView from "src/components/view/list-view";
+
 import { useParams } from 'react-router-dom';
-// import SpecialCompanyNewsView from "./specialCompanyNews-view";
-// import News from "../News";
 import Profile from "../Profile";
+import NewsOfList from '../../../../InternshipJobOffer/NewsOfList';
 
 const SpecialCompanyNewsListView = () => {
     const { user_name, Genre } = useParams();
@@ -13,7 +12,7 @@ const SpecialCompanyNewsListView = () => {
         return (
             <>
                 <Profile value={value} />
-                <ListView type="specialjoboffers" ParamUserName={user_name} />
+                <NewsOfList type="specialjoboffers" ParamUserName={user_name} />
             </>
         );
     } else if (Genre === "Internship") {
@@ -21,7 +20,7 @@ const SpecialCompanyNewsListView = () => {
         return (
             <>
                 <Profile value={value} />
-                <ListView type="specialinternships" ParamUserName={user_name} />
+                <NewsOfList type="specialinternships" ParamUserName={user_name} />
             </>
         );
     } else if (Genre === "Blog") {
@@ -29,7 +28,7 @@ const SpecialCompanyNewsListView = () => {
         return (
             <>
                 <Profile value={value} />
-                <ListView type="specialblogs" ParamUserName={user_name} />
+                <NewsOfList type="specialblogs" ParamUserName={user_name} />
             </>
         );
     } else if (Genre === "Forms") {
@@ -37,7 +36,7 @@ const SpecialCompanyNewsListView = () => {
         return (
             <>
                 <Profile value={value} />
-                <ListView type="specialforms" ParamUserName={user_name} />
+                <NewsOfList type="specialforms" ParamUserName={user_name} />
             </>
         );
     } else {

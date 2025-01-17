@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
+import NavTabs from "../sections/InternshipJobOffer/newsSelect-view";
 
-import { InternshipJobOfferView } from "src/sections/InternshipJobOffer/view";
 
 
 // ----------------------------------------------------------------------
@@ -12,7 +12,7 @@ export default function InternshipJobOfferPage() {
         <title> ニュース一覧 | Work&Connect </title>
       </Helmet>
 
-      <InternshipJobOfferView />
+      <NavTabs />
     </>
   );
 }

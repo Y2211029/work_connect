@@ -86,8 +86,6 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
   useEffect(() => {
     const currentPath = window.location.pathname;
     setDecode(decodeURIComponent(currentPath));
-    console.log("パス名", currentPath);
-    console.log("DecodeURL", decodeURIComponent(currentPath));
   }, [window.location.pathname]);
 
   useEffect(() => {
@@ -101,8 +99,7 @@ export default function ItemObjectAndPostCard({ type, ParamUserName }) {
     setNewsDetailId(NewsDetailId);
   }, [NewsDetailId]);
 
-  console.log("page", page);
-  console.log("category", category);
+  // あいうえ
 
   useEffect(() => {
     const loadComponentForPath = async (path, options = {}) => {
@@ -719,25 +716,18 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
 
   /*----- 検索されていないかつ作品データがあるとき -----*/
   useEffect(() => {
-    console.log("検索されていないかつ作品データがあるとき:page", Page);
-    console.log("検索されていないかつ作品データがあるとき:data", data);
     if (!ResetItem && !IsSearch.Check && data) {
-      console.log("検索されていないかつ作品データがあるとき:WorkOfList", WorkOfList);
-      console.log("検索されていないかつ作品データがあるとき:data", data);
 
       funcSetWorksItem(idKey, tags, WorkOfList, setWorkOfList, data, setIsLoadItem, setIsLoadItemColorLing, error, generatePosts);
 
-      // データが更新されてからisLoadingをfalseに設定
       console.log("data:", data);
       if (data.length !== 0) {
         setIsLoadItem(false);
         console.log("data:setIsLoadItem:false");
       }
-      // if (data.length !== 0 || Page !== 1) {
-      //   console.log("ローディング削除:2");
       setAllItems((prev) => ({
         ...prev,
-        IsLoading: false, // データが空のときはtrueにしてローディングを維持
+        IsLoading: false, 
       }));
       // }
     }
@@ -768,24 +758,6 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
   }, [DataList, IsSearch.Check, IsSearch.searchResultEmpty]);
 
   useEffect(() => {
-    console.log("IsLoadingIsLoading  ", IsLoading);
-  }, [IsLoading]);
-
-  useEffect(() => {
-    console.log("WorkOfList", WorkOfList);
-  }, [WorkOfList]);
-
-  useEffect(() => {
-    console.log("accountData : /Profile/${accountData.user_name}", accountData.user_name);
-    console.log("accountData : accountData.id[0]", accountData.id[0]);
-    console.log("accountData : location.pathname", location.pathname);
-  }, [accountData.user_name]);
-
-  useEffect(() => {
-    console.log("useSWR:lastUrl:", lastUrl);
-    console.log("useSWR:LaravelResponse:", LaravelResponse);
-    console.log("useSWR:page:", Page);
-    console.log("useSWR:WorkOfList:", WorkOfList);
     if (LaravelResponse == false && Page != 1) {
       console.log("ローディング削除:1");
       setAllItems((prevItems) => ({
@@ -795,13 +767,6 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
     }
   }, [LaravelResponse, lastUrl]);
 
-  useEffect(() => {
-    console.log("renderWorkItems:IsLoading:", !IsLoading);
-    console.log("renderWorkItems:LaravelResponse:", !LaravelResponse);
-    console.log("renderWorkItems:hasLoadedOnce:", hasLoadedOnce);
-  }, [IsLoading, LaravelResponse, hasLoadedOnce]);
-
-  // WorkOfList の表示ロジック
   const renderWorkItems =
     WorkOfList.length !== 0 && PostCard
       ? WorkOfList.map((post, index) => (
@@ -826,7 +791,6 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
         />
       )}
 
-      {/* <Container  style={{ width: "100%" }}> */}
       <div className="list-view-Container">
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           {location.pathname == `/Profile/${accountData.user_name}` && accountData.id[0] == "S" ? (
@@ -848,16 +812,6 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
           )}
         </Stack>
         <Stack mb={5} direction="row" alignItems="center" justifyContent="flex-end">
-          {/*
-          IsSearch.searchResultEmpty = false 作品データあり
-          IsSearch.searchResultEmpty = true 作品データなし
-
-          IsSearch.searchResultEmpty !== true
-          IsSearch.searchResultEmpty !== true
-          「検索結果が0件でない場合に表示」
-
-          // 学生・企業一覧の場合は並び替え必要ないので非表示にする。
-          */}
 
           {PostSort && PathName !== "CompanyList" && PathName !== "StudentList" && IsSearch.searchResultEmpty !== true && (
             <PostSort
@@ -872,9 +826,6 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
         </Stack>
 
         <Grid className="column-container" spacing={1}>
-          {/* <div> */}
-          {/* 作品アイテムの表示 */}
-          {/* <div className="column-container">{renderWorkItems}</div> */}
           {renderWorkItems}
           {isLoadItemColorLing && (
             <ColorRing
@@ -887,10 +838,8 @@ const ListView = ({ SessionAccountData, PathName, urlMapping, PostCard, PostSort
               colors={["#41a4ff", "#FFFFFF", "#41a4ff", "#41a4ff", "#FFFFFF"]}
             />
           )}
-          {/* </div> */}
         </Grid>
       </div>
-      {/* </Container> */}
     </>
   );
 };

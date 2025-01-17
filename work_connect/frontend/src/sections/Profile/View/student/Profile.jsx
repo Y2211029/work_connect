@@ -11,7 +11,8 @@ import Tab from "@mui/material/Tab";
 import ProfileMypage from "./Mypage";
 import ProfileApplyHistory from "./ApplyHistory";
 import { AllItemsContext } from "src/layouts/dashboard/index";
-import ListView from "src/components/view/list-view";
+import WorkOfList from "../../../WorkList/WorkOfList";
+import VideoOfList from "../../../VideoList/VideoOfList";
 
 function samePageLinkNavigation(event) {
   if (
@@ -169,14 +170,14 @@ export default function NavTabs() {
         子コンポーネントにそれぞれhandleTabClickを適応させました。
       */}
       <Tabs className="ProfileTabs" value={value} aria-label="nav tabs example" role="navigation" centered={Screen}>
-        <Tab className="ProfileTabsBox" label={myPageFlag ? "マイページ" : "プロフィール"}  onClick={(e) => handleTabClick(e, 0)} />
+        <Tab className="ProfileTabsBox" label={myPageFlag ? "マイページ" : "プロフィール"} onClick={(e) => handleTabClick(e, 0)} />
         <Tab className="ProfileTabsBox" label="作品" onClick={(e) => handleTabClick(e, 1)} />
         <Tab className="ProfileTabsBox" label="動画" onClick={(e) => handleTabClick(e, 2)} />
         {storageUserNameStatus && <Tab className="ProfileTabsBox" label="応募履歴" onClick={(e) => handleTabClick(e, 3)} />}
       </Tabs>
       {value === 0 && <ProfileMypage />}
-      {value === 1 && <ListView type="works" ParamUserName={user_name} />}
-      {value === 2 && <ListView type="movies" ParamUserName={user_name} />}
+      {value === 1 && <WorkOfList ParamUserName={user_name} />}
+      {value === 2 && <VideoOfList ParamUserName={user_name} />}
       {value === 3 && <ProfileApplyHistory id={storageId} />}
     </Box>
   );

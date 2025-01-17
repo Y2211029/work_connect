@@ -45,6 +45,7 @@ class SearchInternshipJobOffer extends Controller
                 ->take($perPage) //件数
                 ->get();
 
+                
             $resultsArray = json_decode(json_encode($results), true);
 
             \Log::info('SearchInternshipJobOffer:$resultsArray:');

@@ -28,8 +28,8 @@ export const StudentListPage = lazy(() => import("src/pages/studentList"));
 export const CompanyListPage = lazy(() => import("src/pages/companyList"));
 
 // 作品・動画・学生・企業詳細画面
-export const WorkDetail = lazy(() => import("src/sections/WorkList/view/WorkDetail"));
-export const VideoDetail = lazy(() => import("src/sections/VideoList/view/VideoDetail"));
+export const WorkDetail = lazy(() => import("src/sections/WorkList/WorkDetail"));
+export const VideoDetail = lazy(() => import("src/sections/VideoList/VideoDetail"));
 export const TestPage = lazy(() => import("src/sections/TestPage"));
 export const Follow = lazy(() => import("src/sections/Follow"));
 

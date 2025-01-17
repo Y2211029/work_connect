@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -7,64 +6,40 @@ import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 
-// import { follow } from "src/_mock/follow";
-// import { useSessionStorage } from "src/hooks/use-sessionStorage";
-
 import { TypographyItems } from "src/components/typography/ItemTypography";
 
 // ----------------------------------------------------------------------
 
-const PostCard = forwardRef(({ post }, ref) => {
+const PostCard = forwardRef((props, ref) => {
   const {
-    company_id,
-    icon,
-    userName,
-    companyName,
-    industry,
-    selectedOccupation,
-    prefecture,
-    intro,
-    author,
-    followStatus: initialFollowStatus,
-  } = post;
+    companies: {
+      icon,
+      user_name,
+      company_name,
+      industry,
+      selected_occupation,
+      prefecture,
+      intro,
+      follow_status,
+    },
+  } = props;
 
-  // const [followStatus, setFollowStatus] = useState(initialFollowStatus);
-  const followStatus = initialFollowStatus;
-  // const { getSessionData } = useSessionStorage();
-  // const accountData = getSessionData("accountData");
-  // const data = {
-  //   account_id: accountData.id,
-  // };
 
-  console.log("followStatus", followStatus);
+  console.log("follow_status", follow_status);
 
-  useEffect(() => {
-    console.log("company_id", company_id);
-  }, [company_id]);
 
-  // const handleFollowClick = async () => {
-  //   try {
-  //     const updatedFollowStatus = await follow(data.account_id, company_id);
-  //     if (updatedFollowStatus) {
-  //       setFollowStatus(updatedFollowStatus);
-  //     }
-  //   } catch (error) {
-  //     console.error("フォロー処理中にエラーが発生しました！", error);
-  //   }
-  // };
 
-  const renderFollow = followStatus !== "フォローできません" && followStatus !== "フォローする" && (
+  const renderFollow = follow_status !== "フォローできません" && follow_status !== "フォローする" && (
     <div className="stack_follow_status">
       <Typography opacity="0.48" sx={{ width: "100%" }} className="follow_status">
-        {followStatus}
+        {follow_status}
       </Typography>
-    </div> 
+    </div>
   );
 
   const renderAvatar = (
     <Avatar
-      alt={author.name}
-      src={icon ? `http://localhost:8000/storage/images/userIcon/${icon}` : author.avatarUrl}
+      src={icon ? `http://localhost:8000/storage/images/userIcon/${icon}` : "/assets/images/avatars/avatar_0.jpg"}
       sx={{
         width: 100,
         height: 100,
@@ -78,14 +53,14 @@ const PostCard = forwardRef(({ post }, ref) => {
   // 企業名
   const renderUserName = (
     <Typography variant="caption" component="div" className="userName_items">
-      {companyName}
+      {company_name}
     </Typography>
   );
 
   // 業界
   const renderIndustry = industry !== null ? <TypographyItems ItemName="業界" ItemDetail={industry} /> : null;
   // 職種
-  const renderSelectedOccupation = selectedOccupation !== null ? <TypographyItems ItemName="職種" ItemDetail={selectedOccupation} /> : null;
+  const renderSelectedOccupation = selected_occupation !== null ? <TypographyItems ItemName="職種" ItemDetail={selected_occupation} /> : null;
 
   // 勤務地
   const renderPrefecture = prefecture !== null ? <TypographyItems ItemName="勤務地" ItemDetail={prefecture} /> : null;
@@ -95,7 +70,7 @@ const PostCard = forwardRef(({ post }, ref) => {
 
   return (
     <div ref={ref}>
-      <Link to={`/Profile/${userName}?page=mypage`} color="inherit" variant="subtitle2" underline="none" className="link item-Link">
+      <Link to={`/Profile/${user_name}?page=mypage`} color="inherit" variant="subtitle2" underline="none" className="link item-Link">
         <Stack sx={{ display: "inline-block", width: "100%" }}>
           <div className="postCard item-stack" style={{ width: "100%", padding: "10px" }}>
             {/* フォロー状況 */}
@@ -132,7 +107,7 @@ const PostCard = forwardRef(({ post }, ref) => {
 PostCard.displayName = "PostCard";
 
 PostCard.propTypes = {
-  post: PropTypes.object.isRequired,
+  companies: PropTypes.object.isRequired,
 };
 
 export default PostCard;

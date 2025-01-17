@@ -12,7 +12,7 @@ import Popover from "@mui/material/Popover";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
-import { useSessionStorage } from "src/hooks/use-sessionStorage";
+import { useSessionStorage } from "../../hooks/use-sessionStorage";
 import axios from "axios";
 // ----------------------------------------------------------------------
 
@@ -38,27 +38,30 @@ const getDeadlineMessage = (deadline) => {
   return null;
 };
 
-const PostCard = forwardRef(({ post }, ref) => {
+const PostCard = forwardRef((props, ref) => {
   const {
-    company_id,
-    news_id,
-    company_name,
-    user_name,
-    article_title,
-    header_img,
-    news_created_at,
-    icon_id,
-    followStatus: initialFollowStatus,
-    open_jobs,
-    deadline,
-    event_day,
-    count,
-    author,
-  } = post;
+    NewItem: {
+
+      company_id,
+      news_id,
+      company_name,
+      user_name,
+      article_title,
+      header_img,
+      news_created_at,
+      icon,
+      follow_status,
+      open_jobs,
+      deadline,
+      event_day,
+      form_data_count,
+    }
+  } = props;
+
+  console.log("company_id", props)
 
   const [open, setOpen] = useState(null);
   const [expanded, setExpanded] = useState(false);
-  const followStatus = initialFollowStatus;
   const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData");
   const [PathName, setPathName] = useState("");
@@ -105,11 +108,9 @@ const PostCard = forwardRef(({ post }, ref) => {
     const month = dateObj.getMonth() + 1;
     const day = dateObj.getDate();
     return (
-      <>
-        <Tooltip title="締め切り間近!">
-          {year}/{month}/{day}
-        </Tooltip>
-      </>
+      <Tooltip title="締め切り間近!">
+        {year}/{month}/{day}
+      </Tooltip>
     );
   };
 
@@ -131,18 +132,17 @@ const PostCard = forwardRef(({ post }, ref) => {
 
   // 企業アイコン
   const renderAvatar =
-    (console.log("icon_id", icon_id),
-    (
-      <Avatar
-        alt={author.name}
-        src={icon_id ? `http://localhost:8000/storage/images/userIcon/${icon_id}` : author.avatarUrl}
-        sx={{
-          zIndex: 9,
-          width: 30,
-          height: 30,
-        }}
-      />
-    ));
+    (console.log("icon", icon),
+      (
+        <Avatar
+          src={icon ? `http://localhost:8000/storage/images/userIcon/${icon}` : "/assets/images/avatars/avatar_0.jpg"}
+          sx={{
+            zIndex: 9,
+            width: 30,
+            height: 30,
+          }}
+        />
+      ));
 
   // サムネイル
   const renderThumbnail = (
@@ -181,7 +181,7 @@ const PostCard = forwardRef(({ post }, ref) => {
   );
   // フォームのレンダリング（企業の投稿の場合）
   // const renderForm =
-  //   company_id === accountData.id && count > 0 ? (
+  //   company_id === accountData.id && form_data_count > 0 ? (
 
   //     <Typography
   //       sx={{ opacity: 0.48, cursor: "pointer", textAlign: "right" }}
@@ -189,12 +189,12 @@ const PostCard = forwardRef(({ post }, ref) => {
   //         navigate(`/Profile/${user_name}?page=checkform`);
   //       }}
   //     >
-  //       {count}件のフォーム回答
+  //       {form_data_count}件のフォーム回答
   //     </Typography>
   //   ) : null;
 
   const renderForm =
-    company_id === accountData.id && count > 0 ? (
+    company_id === accountData.id && form_data_count > 0 ? (
       <Link
         to={`/Profile/${user_name}?page=checkform`}
         style={{
@@ -205,15 +205,15 @@ const PostCard = forwardRef(({ post }, ref) => {
           color: "inherit", // 見た目を他のテキストと統一したい場合
         }}
       >
-        {count}件のフォーム回答
+        {form_data_count}件のフォーム回答
       </Link>
     ) : null;
 
   //フォローステータス
-  const renderFollow = followStatus !== "フォローできません" && followStatus !== "フォローする" && (
+  const renderFollow = follow_status !== "フォローできません" && follow_status !== "フォローする" && (
     <div className="stack_follow_status">
       <Typography opacity="0.48" sx={{ width: "100%" }} className="follow_status">
-        {followStatus}
+        {follow_status}
       </Typography>
     </div>
   );
@@ -381,7 +381,10 @@ const PostCard = forwardRef(({ post }, ref) => {
 PostCard.displayName = "PostCard"; // displayName を設定
 
 PostCard.propTypes = {
-  post: PropTypes.object.isRequired,
+  Internship: PropTypes.object.isRequired,
 };
 
 export default PostCard;
+PostCard.propTypes = {
+  NewItem: PropTypes.object.isRequired, 
+};

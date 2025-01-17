@@ -14,16 +14,26 @@ import EditButtons from "src/components/Edit/EditButtons";
 
 // ----------------------------------------------------------------------
 
-const PostCard = forwardRef(({ post }, ref) => {
-  const { movie_id, movie, icon, title, genre, intro, author, userName, createdAt } = post;
+const PostCard = forwardRef((props, ref) => {
+  const {
+    movies: {
+      movie_id,
+      youtube_url,
+      icon,
+      title,
+      genre,
+      intro,
+      user_name,
+      created_at }
+  } = props;
   const myProfileURL = useLocation();
-  const isNotMyProfile = myProfileURL.pathname != "/Profile/" + userName;
+  const isNotMyProfile = myProfileURL.pathname != "/Profile/" + user_name;
 
   // youtube iframe
-  const renderMovie = movie !== null && (
+  const renderMovie = youtube_url !== null && (
     <Box
       component="img"
-      src={`https://img.youtube.com/vi/${movie}/mqdefault.jpg`}
+      src={`https://img.youtube.com/vi/${youtube_url}/mqdefault.jpg`}
       sx={{
         aspectRatio: 16 / 9,
         borderRadius: "5px",
@@ -37,8 +47,8 @@ const PostCard = forwardRef(({ post }, ref) => {
   // アイコン
   const renderAvatar = icon !== null && (
     <Avatar
-      alt={author.name}
-      src={icon ? `http://localhost:8000/storage/images/userIcon/${icon}` : author.avatarUrl}
+
+      src={icon ? `http://localhost:8000/storage/images/userIcon/${icon}` : "/assets/images/avatars/avatar_0.jpg"}
       sx={{
         zIndex: 9,
         width: 30,
@@ -64,11 +74,11 @@ const PostCard = forwardRef(({ post }, ref) => {
         color: "common.black",
       }}
     >
-      {postDateTimeDisplay(createdAt)}
+      {postDateTimeDisplay(created_at)}
     </Typography>
   );
   /*  ユーザー名 */
-  const renderUserName = userName !== null && (
+  const renderUserName = user_name !== null && (
     <Typography
       // キャプションは通常、小さいサイズで補足情報や注釈などを表示するために使われます。
       variant="caption"
@@ -79,7 +89,7 @@ const PostCard = forwardRef(({ post }, ref) => {
         color: "common.black",
       }}
     >
-      {userName}
+      {user_name}
     </Typography>
   );
 
@@ -109,7 +119,7 @@ const PostCard = forwardRef(({ post }, ref) => {
           color: "common.black",
         }}
       >
-        {isNotMyProfile ? renderAvatar : <EditButtons deleteId={movie_id}/>}
+        {isNotMyProfile ? renderAvatar : <EditButtons deleteId={movie_id} />}
         {isNotMyProfile ? renderUserName : null}
       </Stack>
     </Stack>
@@ -172,7 +182,7 @@ const PostCard = forwardRef(({ post }, ref) => {
 
 PostCard.displayName = "PostCard";
 PostCard.propTypes = {
-  post: PropTypes.object.isRequired,
+  movies: PropTypes.object.isRequired,
 };
 
 export default PostCard;

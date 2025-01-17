@@ -1,7 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 
-import { StudentListView } from 'src/sections/StudentList/view';
-
+import StudentOfList from '../sections/StudentList/StudentOfList';
 // ----------------------------------------------------------------------
 
 export default function studentListPage() {
@@ -11,7 +10,7 @@ export default function studentListPage() {
         <title> 学生一覧 | Work&Connect </title>
       </Helmet>
 
-      <StudentListView />
+      <StudentOfList/>
     </>
   );
 }

@@ -236,8 +236,6 @@ const CreateForm = ({ newsid, HandleBack}) => {
     openModal(Questions_Genre);
   };
 
-
-
   const openModal = (Questions_Genre) => {
     setSelectMenu(Questions_Genre);
     setModalOpen(true);
@@ -405,11 +403,10 @@ const CreateForm = ({ newsid, HandleBack}) => {
     // 削除ボタンのクリックイベント
     deleteButton.onclick = function () {
       // 削除する質問の ID を取得
-      const questionId = options.question.name;
-      console.log("questionId", questionId);
+      const targetId = options.question.jsonObj.id;
 
-      // `questions` ステートから削除対象の質問を除外
-      const updatedQuestions = questions.filter(q => q.name !== questionId);
+      // `questions.elements` 配列から `targetId` に一致する要素を除外
+      const updatedQuestions = questions.elements.filter(q => q.id !== targetId);
 
       // ID と name を振り直す
       const reassignedQuestions = updatedQuestions.map((q, index) => ({
@@ -418,14 +415,21 @@ const CreateForm = ({ newsid, HandleBack}) => {
         name: `Question${index + 1}`, // 新しいname
       }));
 
-      // ステートを更新して再描画
-      setQuestions(JSON.parse(reassignedQuestions));
+      console.log("降りなおした後のreassignedQuestions",reassignedQuestions);
 
+      // ステートを更新して再描画
+      setQuestions({
+        ...questions, // 他のプロパティ (title, themeSettings) を保持
+        elements: reassignedQuestions, // 更新された質問を elements に設定
+      });
+      
       // SurveyJS 内でも削除
       const page = options.question.page;
+      console.log("page",page);
+      console.log("options.question",options.question);
       page.removeQuestion(options.question);
 
-      console.log(reassignedQuestions); // 再割り当てされた質問を確認
+      console.log("reassignedQuestions",reassignedQuestions); // 再割り当てされた質問を確認
     };
 
     // 編集ボタンのクリックイベント
@@ -482,6 +486,10 @@ const CreateForm = ({ newsid, HandleBack}) => {
     styleSheet.innerText = css;
     document.head.appendChild(styleSheet);
   }, []);
+
+  useEffect(()=>{
+    console.log("質問が変更しました",questions);
+  },[questions])
 
 
 

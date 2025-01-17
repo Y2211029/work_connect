@@ -307,6 +307,9 @@ const ChatEditModal = ({
         borderRadius: '10px',
         boxShadow: 24,
         p: 4,
+        '@media (max-width: 900px)': {
+          width: '90%',
+        },
       }}>
 
         <Typography
@@ -1224,6 +1227,9 @@ const ChatView = () => {
               sx={{
                 height: '82%',
                 overflow: 'auto',
+                '@media (max-width: 900px)': {
+                  height: '80%',
+                },
               }}>
 
               {(ResponseData && ResponseData.length > 0 && ResponseData !== "null") ? (ResponseData.map((element, index) => (

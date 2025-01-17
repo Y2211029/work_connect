@@ -11,7 +11,7 @@ import moment from 'moment';
 import 'moment/locale/ja';
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 import axios from "axios";
-
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 // Chart.js
 import {
@@ -56,7 +56,21 @@ const Graph = ({ title, responses, userNames, onRequestClose }) => {
 
   const [graphKind, setGraphKind] = useState("Bar"); // デフォルトをBarグラフに
 
+  const transform = (labels) => {
+    const MAX_LENGTH = 10;
+    return labels.map((label) => {
+      if (label.length > MAX_LENGTH) {
+        return label.substring(0, MAX_LENGTH) + "...";
+      }
+      return label;
+    });
+  };
+
+  const Screen = useMediaQuery("(max-width:600px) and (min-width:30px)");
   const labels = Object.keys(responseCounts);
+  const transformlabels = transform(Object.keys(responseCounts));
+  console.log("labels", labels);
+  console.log("labels", transformlabels);
   const dataValues = Object.values(responseCounts).map(item => item.count);
   const userMappings = Object.values(responseCounts).map(item => item.users);
 
@@ -87,6 +101,8 @@ const Graph = ({ title, responses, userNames, onRequestClose }) => {
     },
   };
 
+
+
   const pieData = {
     labels,
     datasets: [
@@ -113,6 +129,8 @@ const Graph = ({ title, responses, userNames, onRequestClose }) => {
     ],
   };
 
+
+
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -121,6 +139,9 @@ const Graph = ({ title, responses, userNames, onRequestClose }) => {
       title: {
         display: true,
         text: title,
+        font: {
+          size: 15,  // タイトルのフォントサイズ
+        },
       },
       tooltip: {
         enabled: true,
@@ -137,111 +158,108 @@ const Graph = ({ title, responses, userNames, onRequestClose }) => {
       },
     },
     scales: {
+      x: {
+        ticks: {
+          font: {
+            size: 15,  // x軸ラベルのフォントサイズ
+          },
+        },
+        scaleLabel: {
+          display: true,
+          labelString: 'X軸ラベル',  
+          font: {
+            size: 15,  
+          },
+        },
+      },
       y: {
         ticks: {
-          stepSize: 1,
+          font: {
+            size: 15, 
+          },
         },
       },
     },
   };
-
-  const data = {
-    labels,
-    datasets: [
-      {
-        label: "回答数",
-        data: dataValues,
-        borderColor: "rgba(255, 99, 132, 1)",
-        backgroundColor: "rgba(255, 99, 132, 0.5)",
-      },
-    ],
-  };
+  
 
 
-  // const ShowGraphSwitch = () => {
-  //   switch (graphKind) {
-  //     case "Bar":
-  //       return <Bar options={options} data={data} />;
-  //     case "Bar-y":
-  //     return <Bar options={bar_y_options} data={data} />;
-  //     case "Line":
-  //       return <Line options={options} data={data} />;
-  //     case "Pie":
-  //       return <Pie options={pieOptions} data={pieData} />;
-  //     case "Doughnut":
-  //       return <Doughnut options={pieOptions} data={pieData} />;
-  //     case "Radar":
-  //       return <Radar options={options} data={data} />;
-  //     case "Total":
-  //       return <Total title={title}/>;
-  //     default:
-  //       return <Bar options={options} data={data} />;
-  //   }
-  // };
+const data = {
+  labels: Screen ? transformlabels : labels,
+  datasets: [
+    {
+      label: "回答数",
+      data: dataValues,
+      borderColor: "rgba(255, 99, 132, 1)",
+      backgroundColor: "rgba(255, 99, 132, 0.5)",
+    },
 
-  // グラフ表示用のコンポーネント
-  ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    BarElement,
-    ArcElement, // 円グラフ系
-    RadarController, // レーダーチャート
-    RadialLinearScale,
-    ScatterController, // 散布図
-    Title,
-    Tooltip,
-    Legend,
-  );
+  ],
+};
 
-  const GraphArray = [
-    { title: '縦棒グラフ', type: 'Bar' },
-    { title: '折れ線グラフ', type: 'Line' },
-    { title: '円グラフ', type: 'Pie' },
-    { title: 'ドーナツグラフ', type: 'Doughnut' },
-    { title: 'レーダーチャート', type: 'Radar' },
-  ]
+// グラフ表示用のコンポーネント
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement, // 円グラフ系
+  RadarController, // レーダーチャート
+  RadialLinearScale,
+  ScatterController, // 散布図
+  Title,
+  Tooltip,
+  Legend,
+);
 
-  return (
-    <>
-      <Box className="GraphBox">
-        <CloseIcon className="CreateForm_Cancel_Button" onClick={() => onRequestClose()} />
-        <div style={{ width: "90%", height: "70%" }}>
-          {(() => {
-            switch (graphKind) {
-              case "Bar":
-                return <Bar options={options} data={data} />;
-              case "Line":
-                return <Line options={options} data={data} />;
-              case "Pie":
-                return <Pie options={pieOptions} data={pieData} />;
-              case "Doughnut":
-                return <Doughnut options={pieOptions} data={pieData} />;
-              case "Radar":
-                return <Radar options={options} data={data} />;
-              default:
-                return <Bar options={options} data={data} />;
-            }
-          })()}
-        </div>
-        <div className="border_surround">
-          <Stack spacing={2} direction="column" className="GraphSelectButton">
-            {GraphArray.map((graph, idx) => (
-              <Button
-                key={idx}
-                variant="outlined"
-                onClick={() => setGraphKind(graph.type)}
-                className="GraphButton"
-              >
-                {graph.title}
-              </Button>
-            ))}
-          </Stack>
-        </div>
-      </Box>
-    </>
-  );
+const GraphArray = [
+  { title: '縦棒グラフ', type: 'Bar' },
+  { title: '折れ線グラフ', type: 'Line' },
+  { title: '円グラフ', type: 'Pie' },
+  { title: 'ドーナツグラフ', type: 'Doughnut' },
+  { title: 'レーダーチャート', type: 'Radar' },
+]
+
+return (
+  <>
+    <Box className="GraphBox">
+      <CloseIcon className="CreateForm_Cancel_Button" onClick={() => onRequestClose()} />
+      <div className="Graph">
+        {(() => {
+          switch (graphKind) {
+            case "Bar":
+              return <Bar options={options} data={data} />;
+            case "Line":
+              return <Line options={options} data={data} />;
+            case "Pie":
+              return <Pie options={pieOptions} data={pieData} />;
+            case "Doughnut":
+              return <Doughnut options={pieOptions} data={pieData} />;
+            case "Radar":
+              return <Radar options={options} data={data} />;
+            default:
+              return <Bar options={options} data={data} />;
+          }
+        })()}
+      </div>
+      <div className="border_surround">
+        <Stack spacing={2} direction="column" className="GraphSelectButton">
+          {GraphArray.map((graph, idx) => (
+            <Button
+              key={idx}
+              variant="outlined"
+              onClick={() => setGraphKind(graph.type)}
+              className="GraphButton"
+            >
+              {graph.title}
+            </Button>
+          ))}
+        </Stack>
+      </div>
+    </Box>
+  </>
+);
 };
 
 Graph.propTypes = {

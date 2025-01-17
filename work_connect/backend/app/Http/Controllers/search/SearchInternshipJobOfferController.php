@@ -99,7 +99,7 @@ class SearchInternshipJobOfferController extends Controller
 
             $query->select(
                 'w_companies.*',
-                'w_create_forms.deadline',
+                'w_news.deadline',
                 'w_news.*',
                 'w_news.created_at as news_created_at'
             );
@@ -204,6 +204,8 @@ class SearchInternshipJobOfferController extends Controller
                 $query->where('w_follow.follow_recipient_id', $myId);
             }
 
+
+
             // 締切日で絞り込み
             if ($deadline_day != "") {
                 // 今日の日付 (開始日) を取得
@@ -212,7 +214,7 @@ class SearchInternshipJobOfferController extends Controller
                 Log::info($today_str);
                 Log::info('SearchInternshipJobOffer.$deadline_day');
                 Log::info($deadline_day);
-                $query->whereBetween('w_create_forms.deadline', [$today_str, $deadline_day]);
+                $query->whereBetween('w_news.deadline', [$today_str, $deadline_day]);
             }
 
             // 開催日で絞り込み

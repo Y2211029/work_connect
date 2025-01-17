@@ -48,9 +48,6 @@ export default function NavTabs() {
   const { /*DataList,*/ IsSearch, Page, sortOption } = AllItems;
   const Screen = useMediaQuery("(max-width:600px) and (min-width:401px)");
 
-  // const { setAllItems } = useContext(AllItemsContext);
-  // const { IsSearch, Page, sortOption } = AllItems;
-
   const getInitialNewsTabState = () => {
     const accountData = getSessionData("accountData");
     return accountData.NewsTabState ? accountData.NewsTabState : 0;

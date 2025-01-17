@@ -220,9 +220,12 @@ const InternshipJobOfferPage = () => {
           <div className="Menu">
 
             <Stack direction={"row"} spacing={2}>
-              <Button className="NewsDetail_Button" variant="contained">
-                {Genre}
+              <div className="day_information">
+              <Button className="NewsDetail_Button" variant="contained" color="primary">
+              {Genre}
               </Button>
+              </div>
+
 
               {Genre !== 'ブログ' ? (
                 <div className='day_information'>

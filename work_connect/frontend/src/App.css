@@ -1128,6 +1128,7 @@ textarea {
 .news_list_view_items {
   width: 100%;
   padding: 10px !important;
+  cursor: pointer;
 }
 
 .news_acordion_button {

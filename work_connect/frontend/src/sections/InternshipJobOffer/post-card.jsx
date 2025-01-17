@@ -104,9 +104,37 @@ const PostCard = forwardRef(({ post }, ref) => {
     const year = dateObj.getFullYear();
     const month = dateObj.getMonth() + 1;
     const day = dateObj.getDate();
+
+    const today = new Date();
+    // 日付の差分を計算 (ミリ秒 -> 日)
+    const diffInDays = Math.ceil((dateObj - today) / (1000 * 60 * 60 * 24));
+
+    // 日付の差分を月単位で計算
+    const diffInMonths =
+      (dateObj.getFullYear() - today.getFullYear()) * 12 +
+      (dateObj.getMonth() - today.getMonth());
+
+    const weeksLeft = Math.ceil(diffInDays / 7);
+
+    let deadlineMessage;
+    switch (true) {
+      case diffInDays < 0:
+        deadlineMessage = "既に締め切られています!"
+        break;
+      case diffInDays > 0 && diffInDays <= 7:
+        deadlineMessage = "締め切り間近!";
+        break;
+      case diffInDays > 7 && diffInDays <= 14:
+        deadlineMessage = `締め切りまで${weeksLeft}週間!`;
+        break;
+      case diffInMonths >= 1:
+        deadlineMessage = `締め切りまで${diffInMonths}ヶ月!`;
+        break;
+    }
+
     return (
       <>
-        <Tooltip title="締め切り間近!">
+        <Tooltip title={deadlineMessage}>
           {year}/{month}/{day}
         </Tooltip>
       </>
@@ -132,17 +160,17 @@ const PostCard = forwardRef(({ post }, ref) => {
   // 企業アイコン
   const renderAvatar =
     (console.log("icon_id", icon_id),
-    (
-      <Avatar
-        alt={author.name}
-        src={icon_id ? `http://localhost:8000/storage/images/userIcon/${icon_id}` : author.avatarUrl}
-        sx={{
-          zIndex: 9,
-          width: 30,
-          height: 30,
-        }}
-      />
-    ));
+      (
+        <Avatar
+          alt={author.name}
+          src={icon_id ? `http://localhost:8000/storage/images/userIcon/${icon_id}` : author.avatarUrl}
+          sx={{
+            zIndex: 9,
+            width: 30,
+            height: 30,
+          }}
+        />
+      ));
 
   // サムネイル
   const renderThumbnail = (

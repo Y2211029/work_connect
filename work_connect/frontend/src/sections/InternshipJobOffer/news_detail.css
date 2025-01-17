@@ -245,6 +245,9 @@
     margin: 0;
 }
 
+.css-pl8gqh-MuiStack-root>:not(style):not(style) {
+    margin: 10px;
+}
 
 
 

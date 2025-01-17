@@ -98,7 +98,7 @@ class SearchInternshipJobOfferController extends Controller
 
             $query->select(
                 'w_companies.*',
-                'w_create_forms.deadline',
+                'w_news.deadline',
                 'w_news.*',
                 'w_news.created_at as news_created_at'
             );
@@ -203,6 +203,8 @@ class SearchInternshipJobOfferController extends Controller
                 $query->where('w_follow.follow_recipient_id', $myId);
             }
 
+
+
             // 締切日で絞り込み
             if($deadline_day != "") {
                 // 今日の日付 (開始日) を取得
@@ -211,7 +213,7 @@ class SearchInternshipJobOfferController extends Controller
                 Log::info($today_str);
                 Log::info('SearchInternshipJobOffer.$deadline_day');
                 Log::info($deadline_day);
-                $query->whereBetween('w_create_forms.deadline', [$today_str, $deadline_day]);
+                $query->whereBetween('w_news.deadline', [$today_str, $deadline_day]);
             }
 
             // 開催日で絞り込み
@@ -231,6 +233,48 @@ class SearchInternshipJobOfferController extends Controller
             $results = $query->skip($offset)
                 ->take($perPage) //件数
                 ->get();
+
+
+            // 各企業のフォロー状態を確認して更新
+            $results = $results->map(function ($company) use ($myId) {
+                $id = $company->company_id;
+
+                // IDの最初の文字が "C" の場合にフォロー状態を確認
+                if ($id[0] !== $myId[0]) {
+                    // Log::info('ID[0]が "S" の場合の処理を実行');
+                    // Log::info('IDの値: ' . $id);
+
+                    // ログインしているユーザーのIDを取得する必要があります（例: auth()->id()       
+
+
+                    // ユーザーがログインしているアカウントをフォローしているかどうか
+                    $isFollowing = w_follow::where('follow_sender_id', $myId)
+                        ->where('follow_recipient_id', $id)
+                        ->exists();
+
+                    // ログインしているアカウントがユーザーをフォローしているかどうか
+                    $isFollowedByUser = w_follow::where('follow_sender_id', $id)
+                        ->where('follow_recipient_id', $myId)
+                        ->exists();
+
+                    // フォロー状態を設定
+                    if ($isFollowing && $isFollowedByUser) {
+                        $company->follow_status = '相互フォローしています';
+                    } elseif ($isFollowing) {
+                        $company->follow_status = 'フォローしています';
+                    } elseif ($isFollowedByUser) {
+                        $company->follow_status = 'フォローされています';
+                    } else {
+                        $company->follow_status = 'フォローする';
+                    }
+                } else {
+                    // IDの最初の文字が "C" でない場合はフォローできないメッセージを設定
+                    $company->follow_status = 'フォローできません';
+                }
+
+                return $company;
+            });
+            
 
             $resultsArray = json_decode(json_encode($results), true);
 

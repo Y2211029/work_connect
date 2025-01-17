@@ -508,13 +508,11 @@ const NewsSelectMenu = ({
                   })()
                 ) : (
                   <div className="Not_CreateForm">
-                    <Tooltip title="作成することで1つのサイトで広報活動と募集活動が完結します" placement="top">
                     <Typography className="CreateFormExplanation_Text">
                       応募フォームが作成されていません<br></br>
                       作成することで1つのサイトで<br></br>
                       広報活動と募集活動が完結します
                     </Typography>
-                    </Tooltip>
                     <Stack direction={"row"}>
                     <Button
                       onClick={async () => {

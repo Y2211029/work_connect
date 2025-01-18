@@ -85,6 +85,7 @@ const PostCard = forwardRef((props, ref) => {
   const renderdepartmentName = department_name !== null ? <TypographyItems ItemName="学部" ItemDetail={department_name} /> : null;
 
   const renderfacultyName = faculty_name !== null ? <TypographyItems ItemName="学科" ItemDetail={faculty_name} /> : null;
+  
   const rendermajorName = major_name !== null ? <TypographyItems ItemName="専攻" ItemDetail={major_name} /> : null;
 
   const rendercourseName = course_name !== null ? <TypographyItems ItemName="コース" ItemDetail={course_name} /> : null;

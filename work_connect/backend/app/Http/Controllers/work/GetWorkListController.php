@@ -58,18 +58,31 @@ class GetWorkListController extends Controller
             // JOIN
             //     w_users ON w_works.creator_id = w_users.id AND w_users.user_name = "yoshioka" ;
 
+            $totalItems = $workList->count();
+
             $workList = $workList->skip($offset)
                 ->take($perPage) //件数
                 ->get();
 
-                $workListArray = json_decode(json_encode($workList), true);
+            $message = null;
+            if ($page == 1 && $totalItems === 0) {
+                $message = "0件です。";
+            }
+
+            return response()->json([
+                'list' => $workList,
+                'count' => $totalItems,
+                'message' => $message,
+            ]);
 
             \Log::info('GetWorkListController:$response:');
-            \Log::info(json_encode($workListArray));
+            \Log::info(json_encode($workList));
             \Log::info('GetWorkListController:$:');
             \Log::info(json_encode($sortOption));
+            \Log::info('GetWorkListController:$:totalItems');
+            \Log::info(json_encode($totalItems));
 
-            return json_encode($workListArray);
+            return json_encode($workList);
         } catch (\Exception $e) {
             \Log::info('GetWorkListController:user_name重複チェックエラー');
             \Log::info($e);

@@ -13,16 +13,21 @@ class GetStudentListController extends Controller
     public function GetStudentListController(Request $request, $MyId)
     {
         try {
-            
+
             // ページネーションの設定
             $page = (int) $request->query('page', 1);
             $perPage = 20; // 一ページ当たりのアイテム数
             $offset = ($page - 1) * $perPage;
 
+            // 結果をJSON形式で返す
+
+
             // ユーザーリストを取得
             $StudentOfList = w_users::skip($offset)
                 ->take($perPage)
                 ->get();
+
+            $totalItems = $StudentOfList->count();
 
             // 各ユーザーのフォロー状態を確認して更新
             $StudentOfList = $StudentOfList->map(function ($user) use ($MyId) {
@@ -52,7 +57,7 @@ class GetStudentListController extends Controller
                         $user->follow_status = 'フォローしています';
                     } elseif ($isFollowedByUser) {
                         $user->follow_status = 'フォローされています';
-                    } else  {
+                    } else {
                         $user->follow_status = 'フォローする';
                     }
 
@@ -67,8 +72,18 @@ class GetStudentListController extends Controller
             Log::info('GetStudentListController: $StudentOfList:');
             Log::info(json_encode($StudentOfList));
 
-            // 結果をJSON形式で返す
-            return response()->json($StudentOfList);
+
+            $message = null;
+            if ($page == 1 && $totalItems === 0) {
+                $message = "0件です。";
+            }
+
+            return response()->json([
+                'list' => $StudentOfList,
+                'count' => $totalItems,
+                'message' => $message,
+            ]);
+            
         } catch (\Exception $e) {
             Log::error('GetStudentListController: エラー');
             Log::error($e);

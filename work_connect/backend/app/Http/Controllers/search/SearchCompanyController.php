@@ -131,6 +131,8 @@ class SearchCompanyController extends Controller
                 $query->where('w_follow.follow_recipient_id', $myId);
             }
 
+            $totalItems = $query->count();
+
             $results = $query->skip($offset)
                 ->take($perPage) //件数
                 ->get();
@@ -174,17 +176,17 @@ class SearchCompanyController extends Controller
 
                 return $company;
             });
-            $resultsArray = json_decode(json_encode($results), true);
 
-            // \Log::info('SearchVideoController:$resultsArray:');
-            // \Log::info($resultsArray);
+            $message = null;
+            if ($page == 1 && $totalItems === 0) {
+                $message = "0件です。";
+            }
 
-            return json_encode($resultsArray);
-            // if (count($resultsArray) == 0) {
-            //     return json_encode("検索結果0件");
-            // } else {
-            //     return json_encode($resultsArray);
-            // }
+            return response()->json([
+                'list' => $results,
+                'count' => $totalItems,
+                'message' => $message,
+            ]);
         } catch (\Exception $e) {
             \Log::info('SearchVideoController:user_name重複チェックエラー');
             \Log::info($e);

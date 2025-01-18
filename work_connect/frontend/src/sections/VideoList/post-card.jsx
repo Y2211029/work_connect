@@ -9,23 +9,18 @@ import Typography from "@mui/material/Typography";
 
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 import Divider from "@mui/material/Divider";
-
+import { UseCreateTagbutton } from "src/hooks/use-createTagbutton";
 import EditButtons from "src/components/Edit/EditButtons";
 
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef((props, ref) => {
   const {
-    movies: {
-      movie_id,
-      youtube_url,
-      icon,
-      title,
-      genre,
-      intro,
-      user_name,
-      created_at }
+    movies: { movie_id, youtube_url, icon, title, genre, intro, user_name, created_at },
   } = props;
+
+  const { tagCreate } = UseCreateTagbutton();
+
   const myProfileURL = useLocation();
   const isNotMyProfile = myProfileURL.pathname != "/Profile/" + user_name;
 
@@ -47,7 +42,6 @@ const PostCard = forwardRef((props, ref) => {
   // アイコン
   const renderAvatar = icon !== null && (
     <Avatar
-
       src={icon ? `http://localhost:8000/storage/images/userIcon/${icon}` : "/assets/images/avatars/avatar_0.jpg"}
       sx={{
         zIndex: 9,
@@ -61,7 +55,7 @@ const PostCard = forwardRef((props, ref) => {
   const renderTitle = title !== null && title;
 
   // ジャンル
-  const renderGenre = genre !== null ? <div>{genre}</div> : null;
+  const renderGenre = genre !== null && <div style={{ margin: "10px 0px 10px 0px" }}>{tagCreate(genre)}</div>;
 
   /* 投稿日 */
   const renderDate = (

@@ -41,7 +41,6 @@ const getDeadlineMessage = (deadline) => {
 const PostCard = forwardRef((props, ref) => {
   const {
     NewItem: {
-
       company_id,
       news_id,
       company_name,
@@ -55,10 +54,10 @@ const PostCard = forwardRef((props, ref) => {
       deadline,
       event_day,
       form_data_count,
-    }
+    },
   } = props;
 
-  console.log("company_id", props)
+  console.log("company_id", props);
 
   const [open, setOpen] = useState(null);
   const [expanded, setExpanded] = useState(false);
@@ -113,16 +112,14 @@ const PostCard = forwardRef((props, ref) => {
     const diffInDays = Math.ceil((dateObj - today) / (1000 * 60 * 60 * 24));
 
     // 日付の差分を月単位で計算
-    const diffInMonths =
-      (dateObj.getFullYear() - today.getFullYear()) * 12 +
-      (dateObj.getMonth() - today.getMonth());
+    const diffInMonths = (dateObj.getFullYear() - today.getFullYear()) * 12 + (dateObj.getMonth() - today.getMonth());
 
     const weeksLeft = Math.ceil(diffInDays / 7);
 
     let deadlineMessage;
     switch (true) {
-      case diffInDays < 0:
-        deadlineMessage = "既に締め切られています!"
+      case diffInDays <= 0:
+        deadlineMessage = "既に締め切られています!";
         break;
       case diffInDays > 0 && diffInDays <= 7:
         deadlineMessage = "締め切り間近!";
@@ -136,7 +133,7 @@ const PostCard = forwardRef((props, ref) => {
     }
 
     return (
-      <Tooltip title="締め切り間近!">
+      <Tooltip title={`${deadlineMessage}`}>
         {year}/{month}/{day}
       </Tooltip>
     );
@@ -161,16 +158,16 @@ const PostCard = forwardRef((props, ref) => {
   // 企業アイコン
   const renderAvatar =
     (console.log("icon", icon),
-      (
-        <Avatar
-          src={icon ? `http://localhost:8000/storage/images/userIcon/${icon}` : "/assets/images/avatars/avatar_0.jpg"}
-          sx={{
-            zIndex: 9,
-            width: 30,
-            height: 30,
-          }}
-        />
-      ));
+    (
+      <Avatar
+        src={icon ? `http://localhost:8000/storage/images/userIcon/${icon}` : "/assets/images/avatars/avatar_0.jpg"}
+        sx={{
+          zIndex: 9,
+          width: 30,
+          height: 30,
+        }}
+      />
+    ));
 
   // サムネイル
   const renderThumbnail = (
@@ -414,5 +411,5 @@ PostCard.propTypes = {
 
 export default PostCard;
 PostCard.propTypes = {
-  NewItem: PropTypes.object.isRequired, 
+  NewItem: PropTypes.object.isRequired,
 };

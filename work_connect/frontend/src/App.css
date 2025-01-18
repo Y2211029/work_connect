@@ -1253,6 +1253,15 @@ textarea::placeholder {
   /* パディングやボーダーのサイズが含まれるようにする */
 }
 
+.tagButton {
+  font-size: 11px;
+  background-color: white;
+  border: 1px solid #b8b8b8;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 2px;
+  width: fit-content;
+}
 
 
 /* 前腕の揺れアニメーション */

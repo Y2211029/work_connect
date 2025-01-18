@@ -1,16 +1,15 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { ColorRing } from 'react-loader-spinner';
-import axios from 'axios';
+import React, { useContext, useEffect, useState } from "react";
+import { ColorRing } from "react-loader-spinner";
+import axios from "axios";
+import PropTypes from "prop-types";
 
-// import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 
 import { useIntersection } from "src/routes/hooks/use-intersection";
-import { useSessionStorage } from 'src/hooks/use-sessionStorage'; // エイリアスが有効な場合
+import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import { AllItemsContext } from "src/layouts/dashboard";
-import PostCard from './post-card';
-import PropTypes from 'prop-types';
+import PostCard from "./post-card";
 
 const MemoizedPostCard = React.memo(PostCard);
 
@@ -28,15 +27,11 @@ const NewsOfList = ({ type, ParamUserName }) => {
   const [isIntersecting, ref] = useIntersection(setting);
   const [isLoadItem, setIsLoadItem] = useState(false);
   const [isLoadItemColorLing, setIsLoadItemColorLing] = useState(false);
+  const [noDataMessage, setNoDataMessage] = useState(null);
 
   // ローディングの状態を管理
   useEffect(() => {
-    console.log("IsLoading", IsLoading)
-    if (IsLoading) {
-      setIsLoadItem(true);
-    } else {
-      setIsLoadItem(false);
-    }
+    setIsLoadItem(IsLoading);
   }, [IsLoading]);
 
   // スクロールしたら次のデータを取得
@@ -48,87 +43,93 @@ const NewsOfList = ({ type, ParamUserName }) => {
         Page: prevItems.Page + 1,
       }));
     }
-  }, [isIntersecting]);
+  }, [isIntersecting, setAllItems]);
 
   // 検索時にsetWorkOfListをリセット
   useEffect(() => {
-    // タグを選択した状態
     if (IsSearch.Check) {
       setStudents([]);
+      setNoDataMessage(null);
     }
   }, [IsSearch.searchToggle, IsSearch.Check]);
-
 
   // 学生データを取得
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        let response;
-        // if (ParamUserName !== null) {
-        //   response = await axios.get(`/Internship_JobOffer/special_company_news/${ParamUserName}/${accountData.id}/${type}`, {
-        //     params: { page: Page },
-        //   });
-        // } else {
-          response = await axios.get(`http://localhost:8000/Internship_JobOffer/${accountData.id}/${type}`, {
-            params: { page: Page },
-          });
-        // }
-        console.log("ParamUserName", ParamUserName)
-        console.log("Internship_JobOffer :  response.data", response.data)
-
-        if (response.data.length !== 0) {
-          setStudents((prevStudents) => {
-            // 新しいデータを前回の学生データの後ろに追加
-            const newStudents = response.data.filter(
-              (newStudent) => !prevStudents.some((NewItem) => NewItem.id === newStudent.id)
-            );
-            console.log("newStudents", newStudents);
-            return [...prevStudents, ...newStudents]; // 新しいデータを追加
-          });
+        let baseURL = `http://localhost:8000/Internship_JobOffer/`;
+        if (ParamUserName) {
+          baseURL += `special_company_news/${ParamUserName}/${accountData.id}/${type}`;
+        } else {
+          baseURL += `${accountData.id}/${type}`;
         }
+
+        const response = await axios.get(baseURL, {
+          params: { page: Page },
+        });
+
+        console.log("response", response.data);
+        if (response.data.message === "0件です。") {
+          setStudents([]);
+          setNoDataMessage("0件です。");
+        } else if (response.data.count > 0) {
+          setStudents((prevStudents) => {
+            const newStudents = response.data.list.filter((newStudent) => !prevStudents.some((NewItem) => NewItem.id === newStudent.id));
+            return [...prevStudents, ...newStudents];
+          });
+          setNoDataMessage(null);
+        } else {
+          if (Page === 1) {
+            setStudents([]);
+          }
+        }
+
         setIsLoadItem(false);
-        setIsLoadItemColorLing(false)
+        setIsLoadItemColorLing(false);
       } catch (error) {
-        console.error('データ取得中にエラーが発生しました:', error);
+        console.error("データ取得中にエラーが発生しました:", error);
+        setIsLoadItem(false);
+        setIsLoadItemColorLing(false);
+        setNoDataMessage("エラーが発生しました。");
       }
     };
 
-    // 検索状態による分岐
     if (IsSearch.Check) {
-      if (DataList.length !== 0) {
-        setStudents((prevStudents) => {
-          // 新しいデータを前回の学生データの後ろに追加
-          const newStudents = DataList.filter(
-            (newStudent) => !prevStudents.some((NewItem) => NewItem.id === newStudent.id)
-          );
-          console.log("newStudents", newStudents);
-          return [...prevStudents, ...newStudents]; // 新しいデータを追加
-        });
+      console.log("検索結果:NewsOfList:", DataList);
+      if (DataList) {
+        if (DataList.message === "0件です。") {
+          setStudents([]);
+          setNoDataMessage("0件です。");
+        } else if (DataList.list) {
+          setStudents((prevStudents) => {
+            const newStudents = DataList.list.filter((newStudent) => !prevStudents.some((NewItem) => NewItem.id === newStudent.id));
+            return [...prevStudents, ...newStudents];
+          });
+          setNoDataMessage(null);
+        }
       }
 
       setAllItems((prevItems) => ({
         ...prevItems,
         IsLoading: false,
       }));
-      setIsLoadItemColorLing(false)
+      setIsLoadItemColorLing(false);
     } else {
-      if (Page == 1) {
-        setIsLoadItem(true); // ローディング開始
+      if (Page === 1) {
+        setIsLoadItem(true);
       }
       fetchStudents();
     }
-  }, [accountData.id, IsSearch.Check, Page, DataList]);
-
+  }, [accountData.id, IsSearch.Check, Page, DataList, type, ParamUserName, setAllItems]);
 
   // リスト描画のメモ化
   const renderedStudents = students.map((NewItem, index) => (
-    <MemoizedPostCard ref={index === students.length - 1 ? ref : null} key={NewItem.id + NewItem.company_id} NewItem={NewItem} />
+    <MemoizedPostCard ref={index === students.length - 1 ? ref : null} key={`${NewItem.id}-${NewItem.company_id}-${index}`} NewItem={NewItem} />
   ));
 
   useEffect(() => {
-    console.log("students", students)
-  }, [students])
-
+    console.log("students", students);
+  }, [students]);
 
   return (
     <>
@@ -145,12 +146,11 @@ const NewsOfList = ({ type, ParamUserName }) => {
         />
       )}
       <div className="list-view-Container">
-        {/* <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4">学生一覧</Typography>
-        </Stack> */}
         <Grid className="column-container">
-          {students.length === 0 && Page > 1 && IsSearch.Check && (
-            <Typography variant="h6" color="textSecondary">0件です。</Typography>
+          {noDataMessage && (
+            <Typography variant="h6" color="textSecondary">
+              {noDataMessage}
+            </Typography>
           )}
           {renderedStudents}
           {isLoadItemColorLing && (

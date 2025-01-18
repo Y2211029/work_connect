@@ -1,16 +1,17 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { ColorRing } from 'react-loader-spinner';
-import axios from 'axios';
+import React, { useContext, useEffect, useState } from "react";
+import { ColorRing } from "react-loader-spinner";
+import axios from "axios";
 import PropTypes from "prop-types";
 
 import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 
+
 import { useIntersection } from "src/routes/hooks/use-intersection";
 import { AllItemsContext } from "src/layouts/dashboard";
-import PostCard from './post-card';
-import PostSort from './post-sort';
+import PostCard from "./post-card";
+import PostSort from "./post-sort";
 
 const MemoizedPostCard = React.memo(PostCard);
 
@@ -25,31 +26,23 @@ const WorkOfList = ({ ParamUserName }) => {
   const [isIntersecting, ref] = useIntersection(setting);
   const [isLoadItem, setIsLoadItem] = useState(false);
   const [isLoadItemColorLing, setIsLoadItemColorLing] = useState(false);
+  const [noDataMessage, setNoDataMessage] = useState(null);
 
   // 並べ替え
   const handleSortChange = (event) => {
-    // 並べ替え内容「例：投稿日が新しい順」を取得
     const newValue = event.target.value;
-    // URLパラメータにセットしてLaravel側でデータを1取得するための準備
     setAllItems((prevItems) => ({
       ...prevItems,
       IsLoading: true,
       Page: 1,
       sortOption: newValue,
     }));
-    // 無駄なアイテム追加を防ぐために一度綺麗にする
     setStudents([]);
+    setNoDataMessage(null);
   };
 
-
-  // ローディングの状態を管理
   useEffect(() => {
-    console.log("IsLoading", IsLoading)
-    if (IsLoading) {
-      setIsLoadItem(true);
-    } else {
-      setIsLoadItem(false);
-    }
+    setIsLoadItem(IsLoading);
   }, [IsLoading]);
 
   // スクロールしたら次のデータを取得
@@ -61,16 +54,15 @@ const WorkOfList = ({ ParamUserName }) => {
         Page: prevItems.Page + 1,
       }));
     }
-  }, [isIntersecting]);
+  }, [isIntersecting, setAllItems]);
 
   // 検索時にsetWorkOfListをリセット
   useEffect(() => {
-    // タグを選択した状態
     if (IsSearch.Check) {
       setStudents([]);
+      setNoDataMessage(null);
     }
   }, [IsSearch.searchToggle, IsSearch.Check]);
-
 
   // 学生データを取得
   useEffect(() => {
@@ -79,60 +71,67 @@ const WorkOfList = ({ ParamUserName }) => {
         const response = await axios.get(`http://localhost:8000/get_work_list`, {
           params: { page: Page, sort: sortOption, userName: ParamUserName },
         });
-        console.log("Params", Page)
 
-        if (response.data.length !== 0) {
+        if (response.data.message === "0件です。") {
+          setStudents([]);
+          setNoDataMessage("0件です。");
+        } else if (response.data.count > 0) {
           setStudents((prevStudents) => {
-            // 新しいデータを前回の学生データの後ろに追加
-            const newStudents = response.data.filter(
-              (newStudent) => !prevStudents.some((works) => works.id === newStudent.id)
-            );
-            console.log("newStudents", newStudents);
-            return [...prevStudents, ...newStudents]; // 新しいデータを追加
+            const newStudents = response.data.list.filter((newStudent) => !prevStudents.some((works) => works.id === newStudent.id));
+            return [...prevStudents, ...newStudents];
           });
+          setNoDataMessage(null);
+        } else {
+          if (Page === 1) {
+            setStudents([]);
+          }
         }
         setIsLoadItem(false);
-        setIsLoadItemColorLing(false)
+        setIsLoadItemColorLing(false);
       } catch (error) {
-        console.error('データ取得中にエラーが発生しました:', error);
+        console.error("データ取得中にエラーが発生しました:", error);
+        setIsLoadItem(false);
+        setIsLoadItemColorLing(false);
+        setNoDataMessage("エラーが発生しました。");
       }
     };
 
-    // 検索状態による分岐
+    console.log("検索結果:VideoOfList:", DataList);
     if (IsSearch.Check) {
-      if (DataList.length !== 0) {
-        setStudents((prevStudents) => {
-          // 新しいデータを前回の学生データの後ろに追加
-          const newStudents = DataList.filter(
-            (newStudent) => !prevStudents.some((works) => works.id === newStudent.id)
-          );
-          console.log("newStudents", newStudents);
-          return [...prevStudents, ...newStudents]; // 新しいデータを追加
-        });
+      if (DataList) {
+        if (DataList.message === "0件です。") {
+          setStudents([]);
+          setNoDataMessage(DataList.message);
+        } else if (DataList.list) {
+          setStudents((prevStudents) => {
+            const newStudents = DataList.list.filter((newStudent) => !prevStudents.some((works) => works.id === newStudent.id));
+            return [...prevStudents, ...newStudents];
+          });
+          setNoDataMessage(null);
+        }
       }
 
       setAllItems((prevItems) => ({
         ...prevItems,
         IsLoading: false,
       }));
-      setIsLoadItemColorLing(false)
+      setIsLoadItemColorLing(false);
     } else {
-      if (Page == 1) {
-        setIsLoadItem(true); // ローディング開始
+      if (Page === 1) {
+        setIsLoadItem(true);
       }
       fetchStudents();
     }
-  }, [IsSearch.Check, Page, DataList, sortOption]);
+  }, [IsSearch.Check, Page, DataList, sortOption, ParamUserName, setAllItems]);
 
   // リスト描画のメモ化
   const renderedStudents = students.map((works, index) => (
-    <MemoizedPostCard ref={index === students.length - 1 ? ref : null} key={works.id} works={works} />
+    <MemoizedPostCard ref={index === students.length - 1 ? ref : null} key={`${works.id} - ${index}`} works={works} />
   ));
 
   useEffect(() => {
-    console.log("students", students)
-  }, [students])
-
+    console.log("students", students);
+  }, [students]);
 
   return (
     <>
@@ -150,11 +149,10 @@ const WorkOfList = ({ ParamUserName }) => {
       )}
       <div className="list-view-Container">
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4">作品一覧</Typography>
+          <Typography variant="h5">{ParamUserName != undefined ? ParamUserName + "の" : ""}作品一覧</Typography>
         </Stack>
-        <Stack mb={5} direction="row" alignItems="center" justifyContent="flex-end">
-
-          {IsSearch.searchResultEmpty !== true && (
+        {IsSearch.searchResultEmpty !== true && (
+          <Stack mb={5} direction="row" alignItems="center" justifyContent="flex-end">
             <PostSort
               options={[
                 { value: "orderNewPostsDate", label: "投稿日が新しい順" },
@@ -163,12 +161,14 @@ const WorkOfList = ({ ParamUserName }) => {
               sortOption={sortOption}
               onSort={handleSortChange}
             />
-          )}
-        </Stack>
+          </Stack>
+        )}
 
         <Grid className="column-container">
-          {students.length === 0 && Page > 1 && IsSearch.Check && (
-            <Typography variant="h6" color="textSecondary">0件です。</Typography>
+          {noDataMessage && (
+            <Typography variant="h6" color="textSecondary">
+              {noDataMessage}
+            </Typography>
           )}
           {renderedStudents}
           {isLoadItemColorLing && (
@@ -190,5 +190,5 @@ const WorkOfList = ({ ParamUserName }) => {
 
 export default WorkOfList;
 WorkOfList.propTypes = {
-  ParamUserName: PropTypes.string
+  ParamUserName: PropTypes.string,
 };

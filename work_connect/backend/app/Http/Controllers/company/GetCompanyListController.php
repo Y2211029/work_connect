@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 class GetCompanyListController extends Controller
 {
 
-    public function GetCompanyListController(Request $request,$MyId)
+    public function GetCompanyListController(Request $request, $MyId)
     {
         try {
             $page = (int) $request->query('page', 1);
@@ -23,6 +23,7 @@ class GetCompanyListController extends Controller
             $companyList = w_company::skip($offset)
                 ->take($perPage)
                 ->get();
+            $totalItems = $companyList->count();
             // Log::info('GetCompanyListController:companyList');
             // Log::info(json_encode($companyList));
 
@@ -36,7 +37,7 @@ class GetCompanyListController extends Controller
                     // Log::info('IDの値: ' . $id);
 
                     // ログインしているユーザーのIDを取得する必要があります（例: auth()->id()       
-             
+
 
                     // ユーザーがログインしているアカウントをフォローしているかどうか
                     $isFollowing = w_follow::where('follow_sender_id', $MyId)
@@ -66,10 +67,16 @@ class GetCompanyListController extends Controller
                 return $company;
             });
 
-            // Log::info(json_encode($companyList));
+            $message = null;
+            if ($page == 1 && $totalItems === 0) {
+                $message = "0件です。";
+            }
 
-            // 結果をJSON形式で返す
-            return response()->json($companyList);
+            return response()->json([
+                'list' => $companyList,
+                'count' => $totalItems,
+                'message' => $message,
+            ]);
         } catch (\Exception $e) {
             Log::error('GetCompanyListController: エラー', ['exception' => $e]);
 

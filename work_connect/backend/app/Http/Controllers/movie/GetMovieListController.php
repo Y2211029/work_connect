@@ -39,18 +39,29 @@ class GetMovieListController extends Controller
             if ($sortOption === 'orderOldPostsDate') {
                 $movieList->orderBy('w_movies.created_at', 'asc');
             }
+            
+            $totalItems = $movieList->count();
+
             $movieList = $movieList->skip($offset)
                 ->take($perPage) //件数
                 ->get();
 
-            $movieListArray = json_decode(json_encode($movieList), true);
 
-            \Log::info('GetMovieListController:$movieListArray:');
-            \Log::info(json_encode($movieListArray));
+            $message = null;
+            if ($page == 1 && $totalItems === 0) {
+                $message = "0件です。";
+            }
+            
+            return response()->json([
+                'list' => $movieList,
+                'count' => $totalItems,
+                'message' => $message,
+            ]);
+            
+            \Log::info('GetMovieListController:$movieList:');
+            \Log::info(json_encode($movieList));
             \Log::info('GetMovieListController:$:');
             \Log::info(json_encode($sortOption));
-
-            return json_encode($movieListArray);
         } catch (\Exception $e) {
             \Log::info('GetMovieListController:user_name重複チェックエラー');
             \Log::info($e);

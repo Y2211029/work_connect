@@ -231,6 +231,8 @@ class SearchInternshipJobOfferController extends Controller
             // 公開されているニュースのみ取得
             $query->where('w_news.public_status', '1');
 
+            $totalItems = $query->count();
+
             $results = $query->skip($offset)
                 ->take($perPage) //件数
                 ->get();
@@ -275,17 +277,22 @@ class SearchInternshipJobOfferController extends Controller
                 return $company;
             });
 
-            $resultsArray = json_decode(json_encode($results), true);
+            $message = null;
+            if ($page == 1 && $totalItems === 0) {
+                $message = "0件です。";
+            }
 
-            \Log::info('SearchInternshipJobOffer:$resultsArray:');
-            \Log::info($resultsArray);
+            \Log::info('SearchInternshipJobOffer:$message');
+            \Log::info($message);
+            \Log::info('SearchInternshipJobOffer:$results');
+            \Log::info($results);
 
-            return json_encode($resultsArray);
-            // if (count($resultsArray) == 0) {
-            //     return json_encode("検索結果0件");
-            // } else {
-            //     return json_encode($resultsArray);
-            // }
+            return response()->json([
+                'list' => $results,
+                'count' => $totalItems,
+                'message' => $message,
+            ]);
+
         } catch (\Exception $e) {
             \Log::info('SearchInternshipJobOffer:エラー');
             \Log::info($e);

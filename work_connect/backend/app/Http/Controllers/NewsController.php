@@ -90,8 +90,8 @@ class NewsController extends Controller
                 $news_detail->createform_status = false;
             }
 
-            $CompanyId =  $news_detail->company_id;
-            $NewsId =  $news_detail->news_id;
+            $CompanyId = $news_detail->company_id;
+            $NewsId = $news_detail->news_id;
 
             $all_news_data = w_news::where('company_id', $CompanyId)
                 ->where('public_status', 1)
@@ -117,7 +117,7 @@ class NewsController extends Controller
 
             // ['apply_histories' => $posts]
 
-            return response()->json(['news_detail' => $news_detail , 'previousNews' => $previousNews , 'nextNews' => $nextNews]);
+            return response()->json(['news_detail' => $news_detail, 'previousNews' => $previousNews, 'nextNews' => $nextNews]);
         } else {
             return response()->json(['error' => 'ニュースが見つかりませんでした。'], 404);
         }
@@ -283,97 +283,100 @@ class NewsController extends Controller
                 $postsQuery->orderBy('w_news.created_at', 'asc');
             }
 
+            $totalItems = $postsQuery->count();
             $posts = $postsQuery->skip($offset)
                 ->take($perPage)
                 ->get();
+            $message = null;
+            if ($page == 1 && $totalItems === 0) {
+                $message = "0件です。";
+            }
 
-            if ($posts) {
-                foreach ($posts as $post) {
+            foreach ($posts as $post) {
 
-                    Log::info("ジャンル", ['genre' => $post->genre]);
+                Log::info("ジャンル", ['genre' => $post->genre]);
 
-                    // w_create_formsテーブルから応募用フォームがあるかチェック
-                    $createformData = w_create_form::where('news_id', $post->news_id)->first();
-                    Log::info('$createformData' . $createformData);
+                // w_create_formsテーブルから応募用フォームがあるかチェック
+                $createformData = w_create_form::where('news_id', $post->news_id)->first();
+                Log::info('$createformData' . $createformData);
 
-                    if ($createformData) {
-                        // 現在のデッドラインを取得
-                        $Deadline = $createformData->deadline;
+                if ($createformData) {
+                    // 現在のデッドラインを取得
+                    $Deadline = $createformData->deadline;
 
-                        // デッドラインが指定されている場合のみ更新
-                        if (!empty($Deadline)) {
-                            Log::info('デッドライン: ' . $Deadline);
-                            $now = Carbon::now('Asia/Tokyo');
-                            Log::info('現在の時刻: ' . $now);
-                            info('データ型: ' . gettype($Deadline) . ', ' . gettype($now));
+                    // デッドラインが指定されている場合のみ更新
+                    if (!empty($Deadline)) {
+                        Log::info('デッドライン: ' . $Deadline);
+                        $now = Carbon::now('Asia/Tokyo');
+                        Log::info('現在の時刻: ' . $now);
+                        info('データ型: ' . gettype($Deadline) . ', ' . gettype($now));
 
-                            // デッドラインを Carbon オブジェクトに変換
-                            try {
-                                $DeadlineObject = Carbon::parse($Deadline);
+                        // デッドラインを Carbon オブジェクトに変換
+                        try {
+                            $DeadlineObject = Carbon::parse($Deadline);
 
-                                // 締め切りを確認する 締切日を設定していないもしくは締切日超過の場合はfalseを返す
-                                if ($DeadlineObject->lt($now)) {
-                                    $post->deadline_status = true;
-                                } else {
-                                    $post->deadline_status = false;
-                                }
-
-                                // デッドラインを更新
-                                $post->deadline = $DeadlineObject;
-                            } catch (\Exception $e) {
-                                Log::error('デッドラインの変換に失敗しました: ' . $e->getMessage());
-                                $post->deadline_status = false; // 変換失敗時はデフォルト値にする
+                            // 締め切りを確認する 締切日を設定していないもしくは締切日超過の場合はfalseを返す
+                            if ($DeadlineObject->lt($now)) {
+                                $post->deadline_status = true;
+                            } else {
+                                $post->deadline_status = false;
                             }
-                        } else {
-                            Log::info('新しいデッドラインが指定されていません。変更は行われません。');
-                            $post->deadline_status = false;
+
+                            // デッドラインを更新
+                            $post->deadline = $DeadlineObject;
+                        } catch (\Exception $e) {
+                            Log::error('デッドラインの変換に失敗しました: ' . $e->getMessage());
+                            $post->deadline_status = false; // 変換失敗時はデフォルト値にする
                         }
-                    }
-
-                    // w_write_formsテーブルからすべてのフォームデータを取得
-                    $formData = w_write_form::where('news_id', $post->news_id)->get();
-
-
-                    // 取得したフォームデータの数をpostsに追加
-                    $post->form_data_count = $formData->count();
-
-                    Log::info('sender_id: ' . $id);
-                    Log::info('recipient_id: ' . $post->company_id);
-
-
-
-                    $isFollowing = w_follow::where('follow_sender_id', $id)
-                        ->where('follow_recipient_id', $post->company_id)
-                        ->exists();
-
-                    $isFollowedByUser = w_follow::where('follow_sender_id', $post->company_id)
-                        ->where('follow_recipient_id', $id)
-                        ->exists();
-
-                    if ($isFollowing && $isFollowedByUser) {
-                        $post->follow_status = '相互フォローしています';
-                    } elseif ($isFollowing) {
-                        $post->follow_status = 'フォローしています';
-                    } elseif ($isFollowedByUser) {
-                        $post->follow_status = 'フォローされています';
                     } else {
-                        $post->follow_status = 'フォローする';
+                        Log::info('新しいデッドラインが指定されていません。変更は行われません。');
+                        $post->deadline_status = false;
                     }
                 }
 
+                // w_write_formsテーブルからすべてのフォームデータを取得
+                $formData = w_write_form::where('news_id', $post->news_id)->get();
 
-                return json_encode($posts);
-            } else {
-                $posts = [];
-                return json_encode($posts);
+
+                // 取得したフォームデータの数をpostsに追加
+                $post->form_data_count = $formData->count();
+
+                Log::info('sender_id: ' . $id);
+                Log::info('recipient_id: ' . $post->company_id);
+
+
+
+                $isFollowing = w_follow::where('follow_sender_id', $id)
+                    ->where('follow_recipient_id', $post->company_id)
+                    ->exists();
+
+                $isFollowedByUser = w_follow::where('follow_sender_id', $post->company_id)
+                    ->where('follow_recipient_id', $id)
+                    ->exists();
+
+                if ($isFollowing && $isFollowedByUser) {
+                    $post->follow_status = '相互フォローしています';
+                } elseif ($isFollowing) {
+                    $post->follow_status = 'フォローしています';
+                } elseif ($isFollowedByUser) {
+                    $post->follow_status = 'フォローされています';
+                } else {
+                    $post->follow_status = 'フォローする';
+                }
             }
-            Log::info("all_news_get:posts");
-            Log::info($posts);
+
 
         } catch (\Exception $e) {
             Log::error('all_news_get エラー: ' . $e->getMessage());
             return response()->json(['error' => 'データ取得中にエラーが発生しました。'], 500);
         }
+
+        // return json_encode($posts);
+        return response()->json([
+            'list' => $posts,
+            'count' => $totalItems,
+            'message' => $message,
+        ]);
     }
 
     public function special_company_news(Request $request, $username, $Myid, $Genre)
@@ -412,6 +415,8 @@ class NewsController extends Controller
             $newsQuery->orderBy('news_created_at', 'desc');
         }
 
+        $totalItems = $newsQuery->count();
+
         // ページネーションの適用
         $posts = $newsQuery->skip($offset)->take($perPage)->get();
 
@@ -444,8 +449,17 @@ class NewsController extends Controller
                 $post->follow_status = 'フォローする';
             }
         }
+        $message = null;
+        if ($page == 1 && $totalItems === 0) {
+            $message = "0件です。";
+        }
 
-        return response()->json($posts);
+        return response()->json([
+            'list' => $posts,
+            'count' => $totalItems,
+            'message' => $message,
+        ]);
+
     }
 
     public function news_delete(Request $request, $news_id)

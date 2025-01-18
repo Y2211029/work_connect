@@ -1,24 +1,17 @@
 import { useContext, useEffect, useState } from "react";
-import PropTypes from 'prop-types';
-import Box from '@mui/material/Box';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import PropTypes from "prop-types";
+import Box from "@mui/material/Box";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { AllItemsContext } from "src/layouts/dashboard/index";
 import { useParams } from "react-router-dom";
-import ListView from "src/components/view/list-view";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
-import './SpecialCompanyNews.css';
+import "./SpecialCompanyNews.css";
+import NewsOfList from "../../../../InternshipJobOffer/NewsOfList";
 
 function samePageLinkNavigation(event) {
-  return !(
-    event.defaultPrevented ||
-    event.button !== 0 ||
-    event.metaKey ||
-    event.ctrlKey ||
-    event.altKey ||
-    event.shiftKey
-  );
+  return !(event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.altKey || event.shiftKey);
 }
 
 function LinkTab(props) {
@@ -30,7 +23,7 @@ function LinkTab(props) {
           event.preventDefault();
         }
       }}
-      aria-current={props.selected ? 'page' : undefined}
+      aria-current={props.selected ? "page" : undefined}
       {...props}
     />
   );
@@ -73,36 +66,36 @@ export default function NavTabs() {
   useEffect(() => {
     const handlePopState = () => {
       const urlParams = new URLSearchParams(window.location.search);
-      const category = urlParams.get('category');
+      const category = urlParams.get("category");
       let newValue;
 
       switch (category) {
-        case 'Internship':
+        case "Internship":
           newValue = 1;
           break;
-        case 'Session':
+        case "Session":
           newValue = 2;
           break;
-        case 'Blog':
+        case "Blog":
           newValue = 3;
           break;
 
-        case 'JobOffer':
+        case "JobOffer":
         default:
           newValue = 0;
           break;
       }
 
-      setValue(newValue);  // 正しいタブの値を設定
+      setValue(newValue); // 正しいタブの値を設定
       setProfileTabState(newValue);
     };
 
     // popstate イベントをリスニング
-    window.addEventListener('popstate', handlePopState);
+    window.addEventListener("popstate", handlePopState);
 
     // コンポーネントのアンマウント時にリスナーを削除
     return () => {
-      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener("popstate", handlePopState);
     };
   }, []);
 
@@ -110,11 +103,11 @@ export default function NavTabs() {
     console.log("handleTabClick");
     setAllItems((prevItems) => ({
       ...prevItems,
-      IsLoading : true, // 一時的にローディングを解除
+      IsLoading: true, // 一時的にローディングを解除
     }));
 
     if (sortOption !== "orderNewPostsDate" || Page > 1 || IsSearch.Check == true) {
-      console.log("あいうえお")
+      console.log("あいうえお");
       setAllItems((prevItems) => ({
         ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
         ResetItem: true,
@@ -125,29 +118,26 @@ export default function NavTabs() {
       }));
       // 必要に応じて、スクロール位置や他の状態もリセット
     }
-    if (
-      event.type !== 'click' ||
-      (event.type === 'click' && samePageLinkNavigation(event))
-    ) {
+    if (event.type !== "click" || (event.type === "click" && samePageLinkNavigation(event))) {
       setValue(newValue);
-      setProfileTabState(newValue);  // インデックスをそのまま保存
+      setProfileTabState(newValue); // インデックスをそのまま保存
 
       let category;
       switch (newValue) {
         case 0:
-          category = 'JobOffer';
+          category = "JobOffer";
           break;
         case 1:
-          category = 'Internship';
+          category = "Internship";
           break;
         case 3:
-          category = 'Blog';
+          category = "Blog";
           break;
         case 2:
-          category = 'Session';
+          category = "Session";
           break;
         default:
-          category = 'JobOffer';
+          category = "JobOffer";
       }
 
       // ページ遷移または状態の更新処理
@@ -155,30 +145,34 @@ export default function NavTabs() {
     }
   };
 
-function pageCheck(pageStr) {
+  function pageCheck(pageStr) {
     const url = new URL(window.location.href);
-    const urlStr = url.pathname.split('?')[0]; // クエリパラメータを取り除く
-    window.history.pushState({}, '', `${urlStr}?page=${pageStr}`);
+    const urlStr = url.pathname.split("?")[0]; // クエリパラメータを取り除く
+    window.history.pushState({}, "", `${urlStr}?page=${pageStr}`);
   }
 
   return (
     <Box className="tabBox">
-      <Tabs
-        value={value}
-        aria-label="nav tabs example"
-        role="navigation"
-        className="News_Tabs"
-        centered={Screen}
-      >
+      <Tabs value={value} aria-label="nav tabs example" role="navigation" className="News_Tabs" centered={Screen}>
         <Tab className="NewsSelect_Box" label="求人" onClick={(e) => handleTabClick(e, 0)} />
-        <Tab className="NewsSelect_Box" label={<span>インターン<br />シップ</span>} onClick={(e) => handleTabClick(e, 1)} />
+        <Tab
+          className="NewsSelect_Box"
+          label={
+            <span>
+              インターン
+              <br />
+              シップ
+            </span>
+          }
+          onClick={(e) => handleTabClick(e, 1)}
+        />
         <Tab className="NewsSelect_Box" label="説明会" onClick={(e) => handleTabClick(e, 2)} />
         <Tab className="NewsSelect_Box" label="ブログ" onClick={(e) => handleTabClick(e, 3)} />
       </Tabs>
-      {value === 0 && <ListView type="specialjoboffers" ParamUserName={user_name} />}
-      {value === 1 && <ListView type="specialinternships" ParamUserName={user_name} />}
-      {value === 2 && <ListView type="specialsessions" ParamUserName={user_name} />}
-      {value === 3 && <ListView type="specialblogs" ParamUserName={user_name} />}
+      {value === 0 && <NewsOfList type="JobOffer" ParamUserName={user_name} />}
+      {value === 1 && <NewsOfList type="Internship" ParamUserName={user_name} />}
+      {value === 2 && <NewsOfList type="Session" ParamUserName={user_name} />}
+      {value === 3 && <NewsOfList type="Blog" ParamUserName={user_name} />}
     </Box>
   );
 }

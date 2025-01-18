@@ -101,14 +101,14 @@ class SearchVideoController extends Controller
 
             // 検索文字列で絞り込み
             if ($searchText != "") {
-                $query->where(function($query) use ($searchText, $infoStr) {
+                $query->where(function ($query) use ($searchText, $infoStr) {
                     // 動画の情報
                     $query->where('w_movies.title', 'LIKE', '%' . $searchText . '%');
                     $query->orWhere('w_movies.genre', 'LIKE', '%' . $searchText . '%');
                     $query->orWhere('w_movies.intro', 'LIKE', '%' . $searchText . '%');
 
-                    if($infoStr != "学生プロフィール内動画検索") {
-                    // 学生の情報
+                    if ($infoStr != "学生プロフィール内動画検索") {
+                        // 学生の情報
                         $query->orWhere('w_users.user_name', 'LIKE', '%' . $searchText . '%');
                         $query->orWhere('w_users.student_surname', 'LIKE', '%' . $searchText . '%');
                         $query->orWhere('w_users.student_name', 'LIKE', '%' . $searchText . '%');
@@ -130,17 +130,17 @@ class SearchVideoController extends Controller
             }
 
             // フォロー状況で検索
-            if(in_array("フォローしている", $follow_status_array) && in_array("フォローされている", $follow_status_array)) {
+            if (in_array("フォローしている", $follow_status_array) && in_array("フォローされている", $follow_status_array)) {
                 // 相互フォローの場合
                 $query->join('w_follow as f1', 'w_movies.creator_id', '=', 'f1.follow_recipient_id');
                 $query->where('f1.follow_sender_id', $myId);
                 $query->join('w_follow as f2', 'w_movies.creator_id', '=', 'f2.follow_sender_id');
                 $query->where('f2.follow_recipient_id', $myId);
-            } else if(in_array("フォローしている", $follow_status_array)) {
+            } else if (in_array("フォローしている", $follow_status_array)) {
                 // フォローしている場合
                 $query->join('w_follow', 'w_movies.creator_id', '=', 'w_follow.follow_recipient_id');
                 $query->where('w_follow.follow_sender_id', $myId);
-            } else if(in_array("フォローされている", $follow_status_array)) {
+            } else if (in_array("フォローされている", $follow_status_array)) {
                 // フォローされている場合
                 $query->join('w_follow', 'w_movies.creator_id', '=', 'w_follow.follow_sender_id');
                 $query->where('w_follow.follow_recipient_id', $myId);
@@ -152,11 +152,26 @@ class SearchVideoController extends Controller
             if ($sortOption === 'orderOldPostsDate') {
                 $query->orderBy('w_movies.created_at', 'asc');
             }
+            $totalItems = $query->count();
+
             $results = $query->skip($offset)
                 ->take($perPage) //件数
                 ->get();
+            $message = null;
+            if ($page == 1 && $totalItems === 0) {
+                $message = "0件です。";
+            }
 
-            $resultsArray = json_decode(json_encode($results), true);
+            \Log::info('SearchVideoController:$message');
+            \Log::info($message);
+            \Log::info('SearchVideoController:$results');
+            \Log::info($results);
+
+            return response()->json([
+                'list' => $results,
+                'count' => $totalItems,
+                'message' => $message,
+            ]);
 
             // \Log::info('SearchVideoController:$resultsArray:');
             // \Log::info($resultsArray);

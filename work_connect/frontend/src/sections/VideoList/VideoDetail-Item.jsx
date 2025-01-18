@@ -283,7 +283,7 @@ const VideoDetailItem = () => {
     </>
   );
 
-  const renderCommentButton = (
+  const renderCommentButton = VideoDetail.title && (
     <div
       className="top_comment_area"
       style={{

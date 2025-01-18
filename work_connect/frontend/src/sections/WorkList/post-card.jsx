@@ -10,25 +10,16 @@ import Typography from "@mui/material/Typography";
 import SvgColor from "src/components/svg-color";
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
 import Divider from "@mui/material/Divider";
-// import YouTubeIcon from '@mui/icons-material/YouTube'
-
+import { UseCreateTagbutton } from "src/hooks/use-createTagbutton";
 import EditButtons from "src/components/Edit/EditButtons";
 // ----------------------------------------------------------------------
 
 const PostCard = forwardRef((props, ref) => {
   const {
-    works: {
-      work_id,
-      work_genre,
-      thumbnail,
-      youtube_url,
-      icon,
-      work_name,
-      work_intro,
-      user_name,
-      created_at }
+    works: { work_id, work_genre, thumbnail, youtube_url, icon, work_name, work_intro, user_name, created_at },
   } = props;
 
+  const { tagCreate } = UseCreateTagbutton();
 
   const myProfileURL = useLocation();
   const isNotMyProfile = myProfileURL.pathname != "/Profile/" + user_name;
@@ -85,7 +76,6 @@ const PostCard = forwardRef((props, ref) => {
   // アイコン
   const renderAvatar = (
     <Avatar
-
       src={icon ? `http://localhost:8000/storage/images/userIcon/${icon}` : "/assets/images/avatars/avatar_0.jpg"}
       sx={{
         zIndex: 9,
@@ -99,7 +89,7 @@ const PostCard = forwardRef((props, ref) => {
   const renderTitle = work_name && work_name;
 
   // ジャンル
-  const renderGenre = work_genre !== null ? <div style={{ margin: "10px 0px 10px 0px" }}>{work_genre}</div> : null;
+  const renderGenre = work_genre !== null && <div style={{ margin: "10px 0px 10px 0px" }}>{tagCreate(work_genre)}</div>;
 
   /* 投稿日 */
   const renderDate = (

@@ -29,7 +29,7 @@ import DeadlineCalender from "src/components/search/DeadlineCalender";
 import EventCalender from "src/components/search/EventCalender";
 import NewsDisplayed from "src/components/search/NewsDisplayed";
 
-import schoolList from 'src/data/school_list.json';
+import schoolList from "src/data/school_list.json";
 
 // ----------------------------------------------------------------------
 
@@ -168,7 +168,7 @@ export default function Searchbar() {
     company_name: [],
     industry: [],
     deadline_calender: "",
-    event_calender: ""
+    event_calender: "",
   });
 
   const [saveOptions, setSaveOptions] = useState({
@@ -599,11 +599,11 @@ export default function Searchbar() {
   // マイページ、Topページ、
   let RefineSearch =
     location.pathname != "/Profile/" + location.pathname.split("/")[2] + "/mypage" &&
-      location.pathname != "/Top" &&
-      location.pathname != "/Settings" &&
-      location.pathname != "/Chat" &&
-      location.pathname != "/WorkPosting" &&
-      location.pathname != "/VideoPosting"
+    location.pathname != "/Top" &&
+    location.pathname != "/Settings" &&
+    location.pathname != "/Chat" &&
+    location.pathname != "/WorkPosting" &&
+    location.pathname != "/VideoPosting"
       ? true
       : false;
   // console.log("let RefineSearch =", RefineSearch);
@@ -622,25 +622,26 @@ export default function Searchbar() {
 
   const responseItems = (data) => {
     // 作品などのデータがあるとき
-    if (data.length > 0) {
+    if (data.list.length > 0) {
       setAllItems((prevItems) => ({
         ...prevItems,
         DataList: data,
         IsSearch: { ...prevItems.IsSearch, searchResultEmpty: false },
       }));
     }
+    console.log("data", data);
 
     //ローディングアニメーション止めるため
-    if (data.length === 0) {
+    if (data.list.length === 0) {
       setAllItems((prevItems) => ({
         ...prevItems,
         IsLoading: false,
-        DataList: [],
+        DataList: data,
       }));
     }
 
     // ”検索結果0件だ”を表示するため
-    if (data.length === 0 && Page === 1) {
+    if (data.list.length === 0 && Page === 1) {
       setAllItems((prevItems) => ({
         ...prevItems,
         IsSearch: { ...prevItems.IsSearch, searchResultEmpty: true },
@@ -719,6 +720,7 @@ export default function Searchbar() {
 
         // WorkOfList-view.jsxにデータを渡す
         const responseData = response.data;
+        console.log("searchbar, linkfor : '/'", responseData);
         responseItems(responseData);
       } else if (PathName == "/VideoList") {
         // 動画一覧の場合
@@ -1697,9 +1699,6 @@ export default function Searchbar() {
       ...prevState,
       ...searchSource,
     }));
-
-
-
   };
 
   // ページが変更された時に次のデータを取得する
@@ -1904,9 +1903,9 @@ export default function Searchbar() {
       {RefineSearch && (
         <>
           {(PathName.startsWith("/Profile/") && PathName.endsWith("/mypage")) ||
-            (PathName.startsWith("/WorkDetail/") && PathName.endsWith("")) ||
-            (PathName.startsWith("/VideoDetail/") && PathName.endsWith("")) ||
-            (PathName.startsWith("/NewsDetail/") && PathName.endsWith("")) ||
+          (PathName.startsWith("/WorkDetail/") && PathName.endsWith("")) ||
+          (PathName.startsWith("/VideoDetail/") && PathName.endsWith("")) ||
+          (PathName.startsWith("/NewsDetail/") && PathName.endsWith("")) ||
           (PathName.startsWith("/Editor/") && PathName.endsWith("")) ? null : (
             <>
               <Box>
@@ -1916,7 +1915,10 @@ export default function Searchbar() {
                   value={searchSource.searchText}
                   onChange={handleChangeText}
                   onKeyDown={(e) => {
+                    
                     if (e.key === "Enter" && searchSource.searchText.trim() !== "") {
+                      handleSearch();
+                    } else if (e.key === "Enter" && IsSearch.Check) {
                       handleSearch();
                     } else if (e.key === "Enter") {
                       e.preventDefault(); //入力が空の場合はEnterキーを無効化
@@ -1943,7 +1945,7 @@ export default function Searchbar() {
                   endAdornment={
                     // 絞り込みアイコン
 
-                    <InputAdornment position="end" sx={{ display: Display.thisCompanyNews, "&:hover": {cursor: "pointer"}}}>
+                    <InputAdornment position="end" sx={{ display: Display.thisCompanyNews, "&:hover": { cursor: "pointer" } }}>
                       <HeaderAvatar onClick={handleOpen}>
                         <IconAdjustmentsHorizontal stroke={1.5} size="18px" />
                       </HeaderAvatar>
@@ -3604,7 +3606,7 @@ export default function Searchbar() {
                           タグを削除する
                         </Button>
                         <Button className={classes.textField} variant="outlined" onClick={handleCancel}>
-                        直前のタグを復元
+                          直前のタグを復元
                         </Button>
                         <Button className={classes.textField} variant="contained" onClick={handleSearch}>
                           検索

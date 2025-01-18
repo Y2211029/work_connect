@@ -119,7 +119,7 @@ const PostCard = forwardRef((props, ref) => {
     let deadlineMessage;
     switch (true) {
       case diffInDays <= 0:
-        deadlineMessage = "既に締め切られています!";
+        deadlineMessage = "既に締め切られています!"
         break;
       case diffInDays > 0 && diffInDays <= 7:
         deadlineMessage = "締め切り間近!";
@@ -133,6 +133,7 @@ const PostCard = forwardRef((props, ref) => {
     }
 
     return (
+      <Tooltip title={`${deadlineMessage}`}>
       <Tooltip title={`${deadlineMessage}`}>
         {year}/{month}/{day}
       </Tooltip>

@@ -21,7 +21,7 @@ const Question = ({ application_form, selectedIndex }) => {
     useEffect(() => {
         if (application_form[selectedIndex]?.user_name) {
             const grouped = application_form[selectedIndex].user_name.reduce((acc, user) => {
-                user.write_form.elements.forEach((response) => { 
+                user.write_form.elements.forEach((response) => {
                     if (!acc[response.title]) {
                         acc[response.title] = {
                             responses: [],
@@ -35,13 +35,13 @@ const Question = ({ application_form, selectedIndex }) => {
                 });
                 return acc;
             }, {});
-    
+
             setGroupedResponses(grouped);
-    
+
             // MaxIdの取得でNumberを使用して文字列を数値に変換
             const MaxId = Math.max(...Object.values(grouped).map(response => Number(response.id) || 0));
             setMaxId(MaxId);
-    
+
             const firstTitle = Object.keys(grouped)[0];
             if (firstTitle) {
                 setSelectedTitle(firstTitle);
@@ -162,13 +162,13 @@ const Question = ({ application_form, selectedIndex }) => {
             </Stack>
 
             {selectedTitle && (
-                <div className="selected_qustion">
+                <div className="selected_question">
                     <h4>{selectedTitle}</h4>
                     {responses.usernames.map((username, idx) => (
                         <div className="questions" key={idx}>
                             <p>{username}</p>
-                            <div className="bar"></div>    
-                            <p>{responses.responses[idx]}</p>
+                            <div className="bar"></div>
+                            <p>{responses.responses[idx]? responses.responses[idx]:"無回答"}</p>
                         </div>
                     ))}
                 </div>

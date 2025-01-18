@@ -1,4 +1,4 @@
-import { forwardRef, useState } from "react";
+import { forwardRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Typography from "@mui/material/Typography";
 import ListSubheader from '@mui/material/ListSubheader';
@@ -19,6 +19,8 @@ import Collapse from '@mui/material/Collapse';
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import Diversity3Icon from '@mui/icons-material/Diversity3';
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
+import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import './checkform.css';
 
 const PostCard = forwardRef(({ post }) => {
@@ -40,15 +42,30 @@ const PostCard = forwardRef(({ post }) => {
 
   const [writeformshow, setWriteFormShow] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState(null);
-  const [open, setOpen] = useState(false);
   const [value, setValue] = useState(0);
   const [viewingStudentName, setViewStudentName] = useState("");
   const [JobOfferGroupingOpen, setJobOfferGroupingOpen] = useState(true);
   const [InternshipGroupingOpen, setInternshipGroupingOpen] = useState(true);
   const [SessionGroupingOpen, setSessionGroupingOpen] = useState(true);
+  const [showWriteForm, setShowWriteForm] = useState(false);
+  const Screen = useMediaQuery("(max-width:600px) and (min-width:301px)");
+
+  const toggleSlide = () => {
+    const writeFormElement = document.querySelector('.writeformshow');
+    if (writeFormElement) {
+      writeFormElement.classList.remove('active'); // 'active' クラスのみ削除
+    }
+
+    // アニメーションが完了するまで待つためにsetTimeoutで非表示にする
+    setTimeout(() => {
+      setShowWriteForm(false);
+      setSelectedIndex(null);
+      // ここで非表示にする
+    }, 300); // アニメーション時間と合わせて遅延（300msの例）
+  };
 
   const groupinghandleClick = (genre) => {
-    switch(genre){
+    switch (genre) {
       case "JobOffer":
         setJobOfferGroupingOpen(!JobOfferGroupingOpen);
         break;
@@ -64,7 +81,6 @@ const PostCard = forwardRef(({ post }) => {
   };
 
   const handleClick = (index) => {
-    setOpen(!open);
     if (selectedIndex === index) return;
     setWriteFormShow(true);
     setSelectedIndex(index);
@@ -91,13 +107,13 @@ const PostCard = forwardRef(({ post }) => {
     return acc;
   }, {});
 
-  const NewsGroup = ({ title, groupingOpen, groupinghandleClick,NewsList }) => {
+  const NewsGroup = ({ title, groupingOpen, groupinghandleClick, NewsList }) => {
     return (
       <>
         <Tooltip
-          title={title}
+          title={`${NewsList.length}記事`}
         >
-          <ListItemButton onClick={()=>groupinghandleClick()}>
+          <ListItemButton onClick={() => groupinghandleClick()}>
 
             <ListItemIcon>
               {title === "求人" && <HandshakeIcon />}
@@ -116,31 +132,31 @@ const PostCard = forwardRef(({ post }) => {
         </Tooltip>
 
         <Collapse in={groupingOpen} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          {/* ニュースリスト */}
-          {NewsList.map((element,index) => (
-            <ListItemButton
-              key={index}
-              sx={{
-                backgroundColor: selectedIndex === index ? '#cce5ff' : 'initial',
-                '&:hover': {
-                  backgroundColor: selectedIndex === index ? '#99ccff' : '#eee',
-                },
-              }}
-              onClick={() => {
-                handleClick(index);
-              }}>
+          <List component="div" disablePadding>
+            {/* ニュースリスト */}
+            {NewsList.map((element, index) => (
+              <ListItemButton
+                key={index}
+                sx={{
+                  backgroundColor: selectedIndex === index ? '#cce5ff' : 'initial',
+                  '&:hover': {
+                    backgroundColor: selectedIndex === index ? '#99ccff' : '#eee',
+                  },
+                }}
+                onClick={() => {
+                  handleClick(index);
+                }}>
 
-              {/* <Typography className="circle_number">
+                {/* <Typography className="circle_number">
                         {element.user_name.length}
               </Typography> */}
-              <Tooltip title={element.article_title}>
-              <ListItemText className="News_List_Title" primary={element.article_title} />
-              </Tooltip>
-            </ListItemButton>
-          ))}
-        </List>
-      </Collapse>
+                <Tooltip title={element.article_title}>
+                  <ListItemText className="News_List_Title" primary={element.article_title} />
+                </Tooltip>
+              </ListItemButton>
+            ))}
+          </List>
+        </Collapse>
 
       </>
     )
@@ -152,11 +168,38 @@ const PostCard = forwardRef(({ post }) => {
     NewsList: PropTypes.array
   };
 
+  useEffect(() => {
+    // writeformshow && selectedIndex !== null && application_form.length > 0 が true になった場合
+    if (writeformshow && selectedIndex !== null && application_form.length > 0) {
+      // 遅延を加えてからアニメーション開始
+      setTimeout(() => {
+        setShowWriteForm(true);
+      }, 10); // 500msの遅延を設定
+    }
+  }, [writeformshow, selectedIndex, application_form]); // 状態が変わるたびに確認
+
+  useEffect(() => {
+    // showWriteForm が true のときに .writeformshow に active クラスを追加
+    if (showWriteForm) {
+      const element = document.querySelector('.writeformshow');
+      if (element) {
+        console.log("エレメント", element);
+
+        // 遅延して `active` クラスを追加
+        setTimeout(() => {
+          element.classList.add('active');
+          console.log("activeクラスを追加しました");
+        }, 10); // クラス追加の遅延
+      } else {
+        console.log("writeformshowが見つかりません");
+      }
+    }
+  }, [showWriteForm]); // showWriteForm が変わるたびに実行
 
   return (
-    <>
+    <div className="CheckForm">
       {application_form.length > 0 ? (
-        <div style={{ width: '90%', margin: 'auto' }}>
+        <div className="CheckFormList">
           <List
             sx={(theme) => ({
               width: '100%',
@@ -181,19 +224,19 @@ const PostCard = forwardRef(({ post }) => {
             <NewsGroup
               title={"求人"}
               groupingOpen={JobOfferGroupingOpen}
-              groupinghandleClick={()=>groupinghandleClick("JobOffer")}
-              NewsList = {JobOffer}
+              groupinghandleClick={() => groupinghandleClick("JobOffer")}
+              NewsList={JobOffer}
             />
             <NewsGroup
               title={"インターンシップ"}
               groupingOpen={InternshipGroupingOpen}
-              groupinghandleClick={()=>groupinghandleClick("Internship")}
+              groupinghandleClick={() => groupinghandleClick("Internship")}
               NewsList={Internship}
             />
             <NewsGroup
               title={"説明会"}
               groupingOpen={SessionGroupingOpen}
-              groupinghandleClick={()=>groupinghandleClick("Session")}
+              groupinghandleClick={() => groupinghandleClick("Session")}
               NewsList={Session}
             />
 
@@ -202,47 +245,59 @@ const PostCard = forwardRef(({ post }) => {
 
       ) : null}
 
-      {writeformshow && selectedIndex !== null && application_form.length > 0 && (
-        <div className="writeformshow">
+      {showWriteForm &&
+        (
+          <div className="writeform-container">
+            <div className="writeformshow">
+              <div className="write-form">
+              {Screen ? (
+                  <>
+                    <div className="BackCheckFormList">
+                    <Tooltip title="戻る">
+                    <ArrowBackOutlinedIcon onClick={() => toggleSlide()} />
+                    </Tooltip>
+                    </div>
+                  </>
+                ) : ""}
 
-          <div className="write-form">
-            <Box className="FormSelect-Box">
-              <Tabs value={value} aria-label="nav tabs example" role="navigation" centered>
-                <Tab label="要約" onClick={(e) => handleTabClick(e, 0)} />
-                <Tab label="回答別" onClick={(e) => handleTabClick(e, 1)} />
-                <Tab label="個別" onClick={(e) => handleTabClick(e, 2)} />
-              </Tabs>
-            </Box>
 
-            {value === 0 && (
-              <Summary
-                application_form={application_form}
-                selectedIndex={selectedIndex}
-                GroupedResponses={groupedResponses}
-                HandleTabClick={handleTabClick}
-                setViewStudentName={setViewStudentName}
-              />
-            )}
-            {value === 1 && (
-              <Question
-                application_form={application_form}
-                selectedIndex={selectedIndex}
-                GroupedResponses={groupedResponses}
-              />
-            )}
-            {value === 2 && (
-              <Individual
-                application_form={application_form}
-                selectedIndex={selectedIndex}
-                GroupedResponses={groupedResponses}
-                viewingStudentName={viewingStudentName}
-              />
-            )}
+                <Box className="FormSelect-Box">
+                  <Tabs value={value} aria-label="nav tabs example" role="navigation" centered>
+                    <Tab label="要約" onClick={(e) => handleTabClick(e, 0)} />
+                    <Tab label="回答別" onClick={(e) => handleTabClick(e, 1)} />
+                    <Tab label="個別" onClick={(e) => handleTabClick(e, 2)} />
+                  </Tabs>
+                </Box>
+
+                {value === 0 && (
+                  <Summary
+                    application_form={application_form}
+                    selectedIndex={selectedIndex}
+                    GroupedResponses={groupedResponses}
+                    HandleTabClick={handleTabClick}
+                    setViewStudentName={setViewStudentName}
+                  />
+                )}
+                {value === 1 && (
+                  <Question
+                    application_form={application_form}
+                    selectedIndex={selectedIndex}
+                    GroupedResponses={groupedResponses}
+                  />
+                )}
+                {value === 2 && (
+                  <Individual
+                    application_form={application_form}
+                    selectedIndex={selectedIndex}
+                    GroupedResponses={groupedResponses}
+                    viewingStudentName={viewingStudentName}
+                  />
+                )}
+              </div>
+            </div>
           </div>
-
-        </div>
-      )}
-    </>
+        )}
+    </div>
   );
 });
 

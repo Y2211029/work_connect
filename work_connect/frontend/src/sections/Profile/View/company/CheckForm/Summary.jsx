@@ -166,22 +166,22 @@ const Graph = ({ title, responses, userNames, onRequestClose }) => {
         },
         scaleLabel: {
           display: true,
-          labelString: 'X軸ラベル',  
+          labelString: 'X軸ラベル',
           font: {
-            size: 15,  
+            size: 15,
           },
         },
       },
       y: {
         ticks: {
           font: {
-            size: 15, 
+            size: 15,
           },
         },
       },
     },
   };
-  
+
 
 
 const data = {
@@ -473,7 +473,7 @@ const Summary = ({
 
           {GroupedResponses &&
             Object.entries(GroupedResponses).map(([title, { responses, contents, userNames }], index) => (
-              <div key={index} className="writeform-container">
+              <div key={index} className="writeform-responce-container">
                 <Typography className="writeform-title">
                   {title}
                 </Typography>

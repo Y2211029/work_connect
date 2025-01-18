@@ -134,7 +134,6 @@ const PostCard = forwardRef((props, ref) => {
 
     return (
       <Tooltip title={`${deadlineMessage}`}>
-      <Tooltip title={`${deadlineMessage}`}>
         {year}/{month}/{day}
       </Tooltip>
     );

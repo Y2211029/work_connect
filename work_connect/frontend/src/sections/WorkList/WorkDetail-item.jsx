@@ -5,6 +5,7 @@ import { ColorRing } from "react-loader-spinner";
 import YouTube from "react-youtube";
 
 import Modal from "react-modal";
+import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
@@ -14,6 +15,7 @@ import Container from "@mui/material/Container";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import Divider from "@mui/material/Divider";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 // youtubeコンポーネントは外部CSS（例：MUI(sx={{}})）はセキュリティ上効かない、真のCSSを使う
 import YouTubeIcon from "@mui/icons-material/YouTube";
@@ -805,7 +807,7 @@ const WorkDetailItem = () => {
         ● こだわりポイント
       </Typography>
       <div className="Detail_info-intro" style={{ fontSize: "16px" }}>
-      {parseLinks(workDetail.obsession)}
+        {parseLinks(workDetail.obsession)}
       </div>
     </>
   );
@@ -853,71 +855,88 @@ const WorkDetailItem = () => {
     </>
   );
 
+  useEffect(() => {
+    console.log("workComment", workComment);
+  }, [workComment]);
   // コメント
   const renderComment = workComment && Object.keys(Comment).length > 0 && (
     <>
       {workComment && Object.keys(Comment).length > 0 && <h3>コメント一覧</h3>}
+
       {workComment.map((item, index) =>
         (item.commenter_id === AccountData.id && item.commenter_user_name === AccountData.user_name) ||
-        (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.company_name) ? (
-          <div key={index}>
-            {/* {console.log("comment", Comment)} */}
-            <Divider sx={{ borderStyle: "dashed", margin: "5px 0px 20px 0px", width: "90%" }} />
-            <Stack dir ection="row" justifyContent="space-between" alignItems="center" spacing={3} sx={{ width: "80%", paddingBottom: "5px" }}>
+        (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.CompanyName) ? (
+          <div key={index} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <Divider sx={{ borderStyle: "solid", my: 2, display: "block", width: "80%" }} />
+            <Stack dir ection="row" justifyContent="space-between" alignItems="flex-start" spacing={3} sx={{ width: "80%", paddingBottom: "5px" }}>
               <Stack direction="row" justifyContent="left" alignItems="center" spacing={1}>
                 <div>{item.commenter_user_name || item.commenter_company_name}</div>
               </Stack>
-              <Stack direction="row" justifyContent="right" alignItems="center" spacing={1}>
+              <Stack direction="row" justifyContent="right" alignItems="center" spacing={1} sx={{ width: "100%" }}>
                 <Stack direction="row" justifyContent="left" alignItems="center" spacing={1}>
-                  <Button variant="outlined" onClick={() => handleClick(item.id)}>
-                    編集
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    onClick={() => handleCancel(item.id)}
-                    className={`comment_${item.id}`}
-                    style={{ display: Comment[item.id]?.display }}
-                  >
-                    キャンセル
-                  </Button>
-                </Stack>
-                <Stack direction="row" justifyContent="left" alignItems="center" spacing={1}>
-                  <Button
-                    variant="contained"
-                    onClick={() => handleSave(item.id)}
-                    className={`comment_${item.id}`}
-                    style={{ display: Comment[item.id]?.display }}
-                  >
-                    保存
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    sx={{ color: "error.main" }}
-                    onClick={() => handleDelete(item.id)}
-                    className={`comment_${item.id}`}
-                    style={{ display: Comment[item.id]?.display }}
-                  >
-                    削除
-                  </Button>
+                  <IconButton onClick={() => handleClick(item.id)}>
+                    {/* 編集ボタン */}
+                    <MoreVertIcon />
+                  </IconButton>
                 </Stack>
               </Stack>
             </Stack>
 
-            <textarea
+            <div
               style={{
                 width: "80%",
-                height: "100px",
               }}
-              className="comment_text_area items"
-              value={Comment[item.id].text}
-              readOnly={Comment[item.id].readOnly} // 読み取り専用にする場合
-              onChange={(e) => handleChenge(e.target.value, item.id)}
-            />
+            >
+              <textarea
+                style={{
+                  height: "100px",
+                }}
+                className="comment_text_area items"
+                value={Comment[item.id].text}
+                readOnly={Comment[item.id].readOnly} // 読み取り専用にする場合
+                onChange={(e) => handleChenge(e.target.value, item.id)}
+              />
+              <Stack direction="row" justifyContent="left" alignItems="flex-end" spacing={1}>
+                <Button
+                  variant="outlined"
+                  onClick={() => handleCancel(item.id)}
+                  className={`comment_${item.id}`}
+                  style={{ display: Comment[item.id]?.display }}
+                >
+                  キャンセル
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => handleSave(item.id)}
+                  className={`comment_${item.id}`}
+                  sx={{
+                    display: Comment[item.id]?.display,
+                    bgcolor: "#1e90ff",
+                    transition: "0.5s",
+                    "&:hover": { cursor: "pointer", backgroundColor: "#0567c8" },
+                    "&:active": { backgroundColor: "#1e90ff" },
+                  }}
+                >
+                  保存
+                </Button>
+                <Button
+                  variant="outlined"
+                  sx={{ color: "error.main" }}
+                  onClick={() => handleDelete(item.id)}
+                  className={`comment_${item.id}`}
+                  style={{ display: Comment[item.id]?.display }}
+                >
+                  削除
+                </Button>
+              </Stack>
+            </div>
           </div>
         ) : (
-          <div key={index}>
-            <hr />
-            <p>{item.commenter_user_name || item.commenter_company_name}</p>
+          <div key={index} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <Divider sx={{ borderStyle: "solid", my: 2, display: "block", width: "80%" }} />
+            <div style={{ width: "80%" }}>
+              <p>{item.commenter_user_name || item.commenter_company_name}</p>
+            </div>
             <textarea
               style={{
                 width: "80%",
@@ -955,7 +974,16 @@ const WorkDetailItem = () => {
               <Button variant="outlined" onClick={() => handlePostCancel()}>
                 キャンセル
               </Button>
-              <Button variant="contained" onClick={() => handlePost()}>
+              <Button
+                variant="contained"
+                onClick={() => handlePost()}
+                sx={{
+                  bgcolor: "#1e90ff",
+                  transition: "0.5s",
+                  "&:hover": { cursor: "pointer", backgroundColor: "#0567c8" },
+                  "&:active": { backgroundColor: "#1e90ff" },
+                }}
+              >
                 コメント
               </Button>
             </div>
@@ -1007,7 +1035,7 @@ const WorkDetailItem = () => {
         {renderWorkURL}
 
         {renderCommentButton}
-        {renderComment}
+        <div>{renderComment}</div>
       </Container>
     </>
   );

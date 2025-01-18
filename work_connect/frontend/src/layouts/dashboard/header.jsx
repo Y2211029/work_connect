@@ -64,9 +64,10 @@ export default function Header({ onOpenNav }) {
   const buttonStyle = {
     display: Display.HomePage,
     margin: 4,
-    "&:hover": {
-      backgroundColor: "#a9a9a9",
-    },
+    bgcolor: "#1e90ff",
+    transition: "0.5s",
+    "&:hover": { cursor: "pointer", backgroundColor: "#0567c8" },
+    "&:active": { backgroundColor: "#1e90ff" },
   };
 
   // style CSS ここまで
@@ -232,9 +233,10 @@ export default function Header({ onOpenNav }) {
               sx={{
                 display: Display.HomePage === "none" ? "none" : { xs: "none", md: "flex" },
                 margin: 4,
-                "&:hover": {
-                  backgroundColor: "#a9a9a9",
-                },
+                bgcolor: "#1e90ff",
+                transition: "0.5s",
+                "&:hover": { cursor: "pointer", backgroundColor: "#0567c8" },
+                "&:active": { backgroundColor: "#1e90ff" },
               }}
             >
               作品投稿
@@ -245,9 +247,10 @@ export default function Header({ onOpenNav }) {
               sx={{
                 display: Display.HomePage === "none" ? "none" : { xs: "none", md: "flex" },
                 margin: 4,
-                "&:hover": {
-                  backgroundColor: "#a9a9a9",
-                },
+                bgcolor: "#1e90ff",
+                transition: "0.5s",
+                "&:hover": { cursor: "pointer", backgroundColor: "#0567c8" },
+                "&:active": { backgroundColor: "#1e90ff" },
               }}
             >
               動画投稿
@@ -256,7 +259,17 @@ export default function Header({ onOpenNav }) {
         ) : data.id[0] === "C" ? (
           <>
             <Stack direction="row" alignItems="center" spacing={1}>
-              <Button onClick={handleOpen} variant="contained" sx={{ display: Display.HomePage === "none" ? "none" : { xs: "none", md: "flex" } }}>
+              <Button
+                onClick={handleOpen}
+                variant="contained"
+                sx={{
+                  display: Display.HomePage === "none" ? "none" : { xs: "none", md: "flex" },
+                  bgcolor: "#1e90ff",
+                  transition: "0.5s",
+                  "&:hover": { cursor: "pointer", backgroundColor: "#0567c8" },
+                  "&:active": { backgroundColor: "#1e90ff" },
+                }}
+              >
                 ニュース投稿
               </Button>
               <Popover
@@ -348,12 +361,7 @@ export default function Header({ onOpenNav }) {
     </>
   );
 
-  const renderArrowTopButton = (
-    <ArrowUpwardIcon
-      onClick={handleScrollToTop}
-      className="arrow_up_ward_icon"
-    />
-  );
+  const renderArrowTopButton = <ArrowUpwardIcon onClick={handleScrollToTop} className="arrow_up_ward_icon" />;
 
   const renderToolBar = (
     <>

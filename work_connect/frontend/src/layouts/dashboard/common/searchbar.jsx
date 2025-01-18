@@ -16,6 +16,7 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
 import CloseIcon from "@mui/icons-material/Close";
+import ClearIcon from "@mui/icons-material/Clear";
 
 import { IconAdjustmentsHorizontal, IconSearch } from "@tabler/icons-react";
 import { MyContext } from "src/layouts/dashboard/index";
@@ -1915,7 +1916,6 @@ export default function Searchbar() {
                   value={searchSource.searchText}
                   onChange={handleChangeText}
                   onKeyDown={(e) => {
-                    
                     if (e.key === "Enter" && searchSource.searchText.trim() !== "") {
                       handleSearch();
                     } else if (e.key === "Enter" && IsSearch.Check) {
@@ -1943,10 +1943,23 @@ export default function Searchbar() {
                     )
                   }
                   endAdornment={
-                    // 絞り込みアイコン
-
                     <InputAdornment position="end" sx={{ display: Display.thisCompanyNews, "&:hover": { cursor: "pointer" } }}>
-                      <HeaderAvatar onClick={handleOpen}>
+                      {/* 検索入力欄に文字が入力された際にバツボタンを表示 */}
+                      {searchSource.searchText.trim() !== "" && (
+                        <IconButton onClick={() => setsearchSource({ ...searchSource, searchText: "" })} sx={{ mr: 1, padding: "2px" }}>
+                          <ClearIcon fontSize="small" />
+                        </IconButton>
+                      )}
+                      {/* 絞り込みアイコン */}
+                      <HeaderAvatar
+                        onClick={handleOpen}
+                        sx={{
+                          bgcolor: "#1e90ff",
+                          transition: "0.5s",
+                          "&:hover": { cursor: "pointer", backgroundColor: "#0567c8" },
+                          "&:active": { backgroundColor: "#1e90ff" },
+                        }}
+                      >
                         <IconAdjustmentsHorizontal stroke={1.5} size="18px" />
                       </HeaderAvatar>
                     </InputAdornment>

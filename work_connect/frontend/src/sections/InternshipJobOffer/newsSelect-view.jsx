@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState } from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
-import Box from '@mui/material/Box';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import Box from "@mui/material/Box";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { AllItemsContext } from "src/layouts/dashboard/index";
-import './news_detail.css';
+import "./news_detail.css";
 import NewsOfList from "./NewsOfList";
 
 function samePageLinkNavigation(event) {
@@ -32,7 +32,7 @@ function LinkTab(props) {
           event.preventDefault();
         }
       }}
-      aria-current={props.selected && 'page'}
+      aria-current={props.selected && "page"}
       {...props}
     />
   );
@@ -72,41 +72,37 @@ export default function NavTabs() {
       }));
       // 必要に応じて、スクロール位置や他の状態もリセット
     }
-    if (
-      event.type !== 'click' ||
-      (event.type === 'click' && samePageLinkNavigation(event))
-    ) {
+    if (event.type !== "click" || (event.type === "click" && samePageLinkNavigation(event))) {
       setValue(newValue);
 
       let category;
       switch (newValue) {
         case 0:
-          category = 'JobOffer';
+          category = "JobOffer";
           break;
         case 1:
-          category = 'Internship';
+          category = "Internship";
           break;
         case 2:
-          category = 'Session';
+          category = "Session";
           break;
         case 3:
-          category = 'Blog';
+          category = "Blog";
           break;
         default:
-          category = 'JobOffer';
+          category = "JobOffer";
       }
 
       // ページ遷移または状態の更新処理
       pageCheck(category);
-
     }
   };
 
   function pageCheck(pageStr) {
     // navigate(`/Profile/${user_name}?page=${pageStr}`);
     const url = new URL(window.location.href);
-    const urlStr = url.pathname.split('?')[0]; // クエリパラメータを取り除く
-    window.history.pushState({}, '', `${urlStr}?page=${pageStr}`);
+    const urlStr = url.pathname.split("?")[0]; // クエリパラメータを取り除く
+    window.history.pushState({}, "", `${urlStr}?page=${pageStr}`);
   }
 
   // useEffect(() => {
@@ -124,23 +120,23 @@ export default function NavTabs() {
   useEffect(() => {
     const handlePopState = () => {
       const urlParams = new URLSearchParams(window.location.search);
-      const page = urlParams.get('page');
+      const page = urlParams.get("page");
       let number = 0;
 
       switch (page) {
-        case 'JobOffer':
+        case "JobOffer":
           setValue(0);
           number = 0;
           break;
-        case 'Internship':
+        case "Internship":
           setValue(1);
           number = 1;
           break;
-        case 'Blog':
+        case "Blog":
           setValue(2);
           number = 2;
           break;
-        case 'Session':
+        case "Session":
           setValue(3);
           number = 3;
           break;
@@ -154,34 +150,26 @@ export default function NavTabs() {
     };
 
     // popstate イベントをリスニング
-    window.addEventListener('popstate', handlePopState);
+    window.addEventListener("popstate", handlePopState);
 
     // コンポーネントのアンマウント時にリスナーを削除
     return () => {
-      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener("popstate", handlePopState);
     };
   }, []);
 
   return (
     <Box className="tabBox">
-      <Tabs
-        value={value}
-        aria-label="nav tabs example"
-        role="navigation"
-        className="News_Tabs"
-        centered={Screen}
-      >
-
+      <Tabs value={value} aria-label="nav tabs example" role="navigation" className="News_Tabs" centered={Screen}>
         <Tab className="NewsSelect_Box" label="求人" onClick={(e) => handleTabClick(e, 0)} />
-        <Tab className="NewsSelect_Box" label={<span>インターン<br />シップ</span>} onClick={(e) => handleTabClick(e, 1)} />
+        <Tab className="NewsSelect_Box" label="インターンシップ" onClick={(e) => handleTabClick(e, 1)} />
         <Tab className="NewsSelect_Box" label="説明会" onClick={(e) => handleTabClick(e, 2)} />
         <Tab className="NewsSelect_Box" label="ブログ" onClick={(e) => handleTabClick(e, 3)} />
-
       </Tabs>
-      {value === 0 && <NewsOfList   type="JobOffer" />}
-      {value === 1 && <NewsOfList  type="Internship" />}
-      {value === 2 && <NewsOfList  type="Session" />}
-      {value === 3 && <NewsOfList  type="Blog" />}
+      {value === 0 && <NewsOfList type="JobOffer" />}
+      {value === 1 && <NewsOfList type="Internship" />}
+      {value === 2 && <NewsOfList type="Session" />}
+      {value === 3 && <NewsOfList type="Blog" />}
     </Box>
   );
 }

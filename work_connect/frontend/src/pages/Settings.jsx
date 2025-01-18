@@ -238,7 +238,7 @@ const Settings = () => {
   return (
     <Container maxWidth="xl">
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4">設定</Typography>
+        <Typography variant="h5">設定</Typography>
       </Stack>
       <div className="setting">
         <div >

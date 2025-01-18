@@ -270,7 +270,7 @@ const Card = ({ PathName, urlMapping, PostCard, PostSort }) => {
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           {typeof ItemName === "string" ? (
             <>
-              <Typography variant="h4">{ItemName}</Typography>
+              <Typography variant="h5">{ItemName}</Typography>
             </>
           ) : null}
         </Stack>

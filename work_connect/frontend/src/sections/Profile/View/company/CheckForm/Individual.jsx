@@ -140,8 +140,8 @@ const Individual = ({
             display: none;
           }
                   .sd-root-modern {
-            background-color: #F9FAFB !important; /* 背景色を変更 */
-        }  
+            background-color: #FFFFFF !important; /* 背景色を変更 */
+        }
             .sd-input--readonly{
             background-color:#FFFFFF;}
 
@@ -171,7 +171,7 @@ const Individual = ({
                             ...(field.validators && { validators: field.validators }),
                             ...(field.inputType && { inputType: field.inputType }),
                             ...(field.choices && { choices: field.choices }),
-                            ...(field.response && { defaultValue: field.response }),
+                            ...(field.response && { defaultValue: field.response } || {defaultValue: "※無回答で"}),
                             readOnly: true,
                         })),
                     },

@@ -1,3 +1,16 @@
+.CheckFormList{
+  width:100%;
+  margin: auto;
+}
+
+
+.FormSelect-Box{
+  width: 100%;
+  align-items: center;
+  margin-left: 5%;
+  background-color: #F9FAFB;;
+}
+
 .answerer-profile {
   flex-direction: column;
   align-items: flex-start;
@@ -54,9 +67,10 @@
   display: block;
   border-radius: 8px;
   padding: 10px 10px 24px;
-  width: 400px;
+  width: 700px;
   height: auto;
   overflow: hidden;
+  margin-left: 15%;
 }
 
 .writeformshow {
@@ -65,18 +79,14 @@
 }
 
 .summary-form {
-  display: block;
   border-radius: 8px;
-  padding: 20px 5px 10px 5px;
-  width: 100%;
-  margin-left: 0%;
-  height: auto;
-  overflow: auto;
-  background-color: #FFFFFF;
+  background-color: white;
+  width: 95%;
+  padding-top: 5%;
+  margin-left: 3%;
 }
 
-.writeform-container {
-  border: 1px solid rgb(218, 220, 224);
+.writeform-container{
   margin-bottom: 12px;
   margin-left: 10px;
 }
@@ -120,7 +130,7 @@
   margin-left: 30%;
   cursor: pointer;
   text-align: center;
-} 
+}
 
 .showgraph-length:hover {
   background-color: rgb(218, 220, 224);
@@ -142,9 +152,11 @@
 }
 
 .question {
-  background-color: #FFFFFF;
-  width: 100%;
+  border-radius: 8px;
+  background-color: white;
+  width: 95%;
   padding-top: 5%;
+  margin-left: 5%;
 }
 
 .question.p {
@@ -152,6 +164,9 @@
 }
 
 .Individual {
+  border-radius: 8px;
+  margin-left: 5%;
+  width: 95%;
   padding-top: 5%;
   background-color: #FFFFFF;
   height: auto;
@@ -163,7 +178,7 @@
   --sd-timer-size: calc(18 * var(--sjs-base-unit, var(--base-unit, 8px)));
   width: 100%;
   font-family: var(--sjs-font-family, var(--font-family, var(--sjs-default-font-family)));
-  background-color: #F9FAFB; /* ここを変更 */
+  background-color: #F9FAFB;
   position: relative;
 }
 .title-dropdown {
@@ -183,7 +198,7 @@
   background-color: #FFFFFF;
 }
 
-.selected_qustion {
+.selected_question {
   position: relative;
   left: 10%;
   padding-bottom: 5%;
@@ -307,6 +322,12 @@
   margin-top: 5px;
 }
 
+.BackCheckFormList{
+  width: 5%;
+  position: relative;
+  left: 10%;
+}
+
 
 @media(max-width:1700px){
   .modal-content {
@@ -357,8 +378,9 @@
   .css-1sazv7p-MuiStack-root>:not(style):not(style){
     margin-top: 5px;
   }
-
 }
+
+
 
 /* max-width: 1700px */
 @media(max-width:1200px){
@@ -410,6 +432,21 @@
   .css-1sazv7p-MuiStack-root>:not(style):not(style){
     margin-top: 5px;
   }
+
+  .writeform-container{
+    display: flex;
+    width: 60%;
+    position: relative;
+    margin: 0;
+  }
+
+
+  .write-form{
+    width: 500px;
+    padding-bottom: 50%;
+    margin-left: 5%;
+  }
+
 
 }
 
@@ -465,6 +502,26 @@
     margin-top: 5px;
   }
 
+
+  .CheckFormList{
+    width:70%;
+    margin: 0;
+  }
+
+  .writeform-container{
+    display: flex;
+    width: 60%;
+    position: relative;
+    margin: 0;
+  }
+
+
+  .write-form{
+    width: 450px;
+    padding-bottom: 50%;
+    margin-left: -20%;
+  }
+
 }
 
 @media(max-width:600px){
@@ -473,45 +530,69 @@
     height: 60%;
   }
 
+
+  .CheckFormList{
+    width:100%;
+    margin: 0;
+  }
+
+
   .Graph{
     height: 60%;
   }
 
+  .writeform-container{
+    display: flex;
+    width: 100%;
+    position: relative;
+    margin: 0;
+    background-color: #DAE2ED;
+  }
 
   .writeformshow {
-    margin-top: 5%;
-    margin-left:3%;
-    width: 350px;
+    position: absolute;
+    top: -10;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: translateX(100%); /* 初期状態で画面外 */
+    transition: transform 0.3s ease-in-out; /* アニメーション速度を確認 */
+    z-index: 1;
+    background: white;
   }
 
-  .write-form {
-    display: block;
-    border-radius: 8px;
-    padding: 10px 10px 24px;
-    width: 350px;
-    height: auto;
-    overflow: hidden;
+  .writeformshow.active {
+    transform: translateX(0); /* アクティブ状態で画面内 */
+    margin-left: 0;
+    height: 50%;
   }
+
+
+  .write-form{
+    margin-top: -80%;
+    width: 430px;
+    padding-bottom: 50%;
+    margin-left: -10%;
+  }
+
+
+  .writeformshow {
+    margin-top: 0;
+  }
+
 
   .summary-form {
     display: block;
     border-radius: 8px;
-    width: 95%;
-    margin-left: 5%;
+    width: 100%;
     height: auto;
     overflow: auto;
   }
 
   .FormSelect-Box {
-    width: 90%;
+    width: 100%;
     align-items: center;
     margin-left: 5%;
-  }
-
-  .question {
-    width: 90%;
-    padding-top: 10%;
-    margin-left: 0%;
   }
 
   .questions {
@@ -519,12 +600,18 @@
   }
 
   .title-dropdown {
-    margin-left: 15%;
+    top: 5%;
     background-color:#FFFFFF;
   }
 
+  .selected_question{
+    width:100%;
+    left: 10%;
+  }
+
   .question-slider {
-    margin-left: 5%;
+    width: auto;
+    margin-left: 0;
     padding-top: 5%;
     justify-content: center;
   }
@@ -591,6 +678,10 @@
 
 @media(max-width: 400px) {
 
+  .CheckFormList{
+    width:90%;
+    margin: auto;
+  }
 
   .modal-content{
     height: 60%;
@@ -629,55 +720,21 @@
     font-size: 10px;
   }
 
-
-  .writeformshow {
-    margin-top: 5%;
-    margin-left:-2%;
-    width: 350px;
-  }
-
-  .write-form {
-    display: block;
-    border-radius: 8px;
-    padding: 10px 10px 24px;
-    width: 350px;
-    height: auto;
-    overflow: hidden;
-  }
-
   .FormSelect-Box {
-    width: 90%;
+    width: 100%;
     align-items: center;
     margin-left: 5%;
   }
 
-
-  .question {
-    width: 90%;
-    padding-top: 10%;
-    margin-left: 5%;
-  }
-
-
-  .selected_question {
-    margin-left: 10%;
-    padding-bottom: 5%;
+  .selected_question{
+    width:100%;
+    left: 10%;
   }
 
   .questions {
     margin-bottom: 12px;
     margin-top: 12px;
     width: 80%;
-  }
-
-  .title-dropdown {
-    margin-left: 10%;
-  }
-
-  .question-slider {
-    margin-left: 5%;
-    padding-top: 5%;
-    justify-content: center;
   }
 
   .Survey-Box {
@@ -695,12 +752,41 @@
     top:70%;
   }
 
-
-
-
   .css-1sazv7p-MuiStack-root>:not(style):not(style){
     margin-top: 7px;
   }
 
+  .writeform-container{
+    display: flex;
+    width: 100%;
+    position: relative;
+    margin: 0;
+    background-color: #DAE2ED;
+  }
+
+  .summary-form {
+    display: block;
+    border-radius: 8px;
+    width: 95%;
+    margin-left:5%;
+    height: auto;
+    overflow: auto;
+  }
+
+  .showgraph-length {
+    margin-left: 20%;
+  }
+
+  .list-view-Container {
+    margin: 20px;
+    height: 100%;
+  }
+
+  .write-form{
+    margin-top: -100%;
+    width: 100vw;
+    padding-bottom: 50%;
+    margin-left: -10%;
+  }
 
 }

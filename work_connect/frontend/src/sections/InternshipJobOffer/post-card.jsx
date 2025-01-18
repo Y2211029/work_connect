@@ -121,7 +121,7 @@ const PostCard = forwardRef((props, ref) => {
 
     let deadlineMessage;
     switch (true) {
-      case diffInDays < 0:
+      case diffInDays <= 0:
         deadlineMessage = "既に締め切られています!"
         break;
       case diffInDays > 0 && diffInDays <= 7:
@@ -136,7 +136,7 @@ const PostCard = forwardRef((props, ref) => {
     }
 
     return (
-      <Tooltip title="締め切り間近!">
+      <Tooltip title={`${deadlineMessage}`}>
         {year}/{month}/{day}
       </Tooltip>
     );
@@ -414,5 +414,5 @@ PostCard.propTypes = {
 
 export default PostCard;
 PostCard.propTypes = {
-  NewItem: PropTypes.object.isRequired, 
+  NewItem: PropTypes.object.isRequired,
 };

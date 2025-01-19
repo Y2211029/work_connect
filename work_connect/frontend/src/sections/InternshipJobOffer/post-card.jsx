@@ -12,8 +12,10 @@ import Popover from "@mui/material/Popover";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
+import { UseCreateTagbutton } from "src/hooks/use-createTagbutton";
 import { useSessionStorage } from "../../hooks/use-sessionStorage";
 import axios from "axios";
+
 // ----------------------------------------------------------------------
 
 const getDeadlineMessage = (deadline) => {
@@ -64,7 +66,7 @@ const PostCard = forwardRef((props, ref) => {
   const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData");
   const [PathName, setPathName] = useState("");
-  // const navigate = useNavigate();
+  const { tagCreate } = UseCreateTagbutton();
 
   useLayoutEffect(() => {
     let url = new URL(window.location.href);
@@ -119,7 +121,7 @@ const PostCard = forwardRef((props, ref) => {
     let deadlineMessage;
     switch (true) {
       case diffInDays <= 0:
-        deadlineMessage = "既に締め切られています!"
+        deadlineMessage = "既に締め切られています!";
         break;
       case diffInDays > 0 && diffInDays <= 7:
         deadlineMessage = "締め切り間近!";
@@ -182,8 +184,9 @@ const PostCard = forwardRef((props, ref) => {
         borderRadius: "10px",
         marginBottom: "10px",
         width: "400px",
-        height: "250px",
+        // height: "250px",
         borderColor: "blue",
+        objectFit: "contain",
       }}
     />
   );
@@ -304,7 +307,7 @@ const PostCard = forwardRef((props, ref) => {
           },
         }}
       >
-        <Box className="news_job_acordion_menu">{open_jobs}</Box>
+        <Box className="news_job_acordion_menu">{tagCreate(open_jobs)}</Box>
       </Popover>
 
       {renderForm}

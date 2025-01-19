@@ -20,7 +20,7 @@ export const SpecialCompanyNewsItem = () => {
   const data = {
     id: accountData.id,
   };
-  console.log("idは",data.id);
+  console.log("idは", data.id);
 
   // 特定の企業のニュースの一覧データを取得する用URL
   const url = `http://localhost:8000/Internship_JobOffer/special_company_news/${data.id}`;
@@ -48,12 +48,12 @@ export const SpecialCompanyNewsItem = () => {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // 月は0始まりなので+1
-    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // 月は0始まりなので+1
+    const day = String(date.getDate()).padStart(2, "0");
     return `${year}/${month}/${day}`;
   };
 
-  const posts = newsData.map((_, key) => ({
+  const posts = newsData.list.map((_, key) => ({
     news_id: newsData[key].news_id,
     company_name: newsData[key].company_name,
     article_title: newsData[key].article_title,

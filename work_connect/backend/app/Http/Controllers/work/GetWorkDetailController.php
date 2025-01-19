@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\w_works;
 use App\Models\w_images;
 use App\Models\w_comment;
+use Illuminate\Support\Facades\DB;
 
 class GetWorkDetailController extends Controller
 {
@@ -56,8 +57,8 @@ class GetWorkDetailController extends Controller
                 })
                 ->select(
                     'w_comments.*',
-                    'w_users.user_name AS commenter_user_name',
-                    'w_companies.company_name AS commenter_company_name'
+                    DB::raw('COALESCE(w_users.user_name, w_companies.user_name) AS commenter_name'), // 名前を共通化
+                    DB::raw('COALESCE(w_users.icon, w_companies.icon) AS commenter_icon')               // アイコンを共通化
                 )
                 ->where('w_comments.various_id', $id)
                 ->where('w_comments.genre', 'works')

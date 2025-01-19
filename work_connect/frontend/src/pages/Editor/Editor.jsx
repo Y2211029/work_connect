@@ -50,7 +50,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 //過去に投稿したニュースを取得
-import specialCompanyNewsItem from "src/_mock/specialCompanyNewsItem";
+// import specialCompanyNewsItem from "src/_mock/specialCompanyNewsItem";
 
 //時間
 import moment from "moment-timezone";
@@ -438,8 +438,8 @@ const Editor = () => {
     }
   };
 
-  const postsFrominternshipJobOffer = specialCompanyNewsItem();
-  console.log("postsFromCompany", postsFrominternshipJobOffer);
+  // const postsFrominternshipJobOffer = specialCompanyNewsItem();
+  // console.log("postsFromCompany", postsFrominternshipJobOffer);
 
   useEffect(() => {
     async function getSessionId() {
@@ -1358,7 +1358,7 @@ const Editor = () => {
 
       {/* ニュースタイトルを表示 */}
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4" className="News_Title">
+        <Typography variant="h5" className="News_Title">
           {newsTitle ? `${newsTitle}ニュースの編集` : "ニュースの編集"}
         </Typography>
       </Stack>

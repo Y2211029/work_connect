@@ -5,6 +5,7 @@ import Iframe from "react-iframe";
 import axios from "axios";
 
 import Box from "@mui/material/Box";
+import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
@@ -321,17 +322,31 @@ const VideoDetailItem = () => {
     <>
       {videoComment && Object.keys(Comment).length > 0 && <h3>コメント一覧</h3>}
       {videoComment.map((item, index) =>
-        (item.commenter_id === AccountData.id && item.commenter_user_name === AccountData.user_name) ||
-        (item.commenter_id === AccountData.id && item.commenter_company_name === AccountData.CompanyName) ? (
+        (item.commenter_id === AccountData.id && item.commenter_name === AccountData.user_name) ||
+        (item.commenter_id === AccountData.id && item.commenter_name === AccountData.CompanyName) ? (
           <div key={index} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
             <Divider sx={{ borderStyle: "solid", my: 2, display: "block", width: "80%" }} />
-            <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={3} sx={{ width: "80%", paddingBottom: "5px" }}>
-              <Stack direction="row" justifyContent="left" alignItems="center" spacing={1}>
-                <div>{item.commenter_user_name || item.commenter_company_name}</div>
-              </Stack>
-              <Stack direction="row" justifyContent="right" alignItems="center" spacing={1}>
+            <Stack dir ection="row" justifyContent="space-between" alignItems="flex-start" spacing={3} sx={{ width: "80%", paddingBottom: "5px" }}>
+              <Stack direction="row" justifyContent="space-between " alignItems="center" spacing={1} sx={{ width: "100%" }}>
+                <Link to={`/Profile/${item.commenter_name}?page=mypage`} className="commentMypageLink">
+                  <Stack direction="row" justifyContent="left" alignItems="center" spacing={1}>
+                    <Avatar
+                      src={
+                        item.commenter_icon
+                          ? `http://localhost:8000/storage/images/userIcon/${item.commenter_icon}`
+                          : "/assets/images/avatars/avatar_0.jpg"
+                      }
+                      sx={{
+                        zIndex: 9,
+                        width: 30,
+                        height: 30,
+                      }}
+                    />
+                    <p>{item.commenter_name}</p>
+                  </Stack>
+                </Link>
                 <Stack direction="row" justifyContent="left" alignItems="center" spacing={1}>
-                  <IconButton onClick={() => handleClick(item.id)}>
+                  <IconButton onClick={() => handleClick(item.id)} sx={{ padding: 0 }}>
                     {/* 編集ボタン */}
                     <MoreVertIcon />
                   </IconButton>
@@ -339,7 +354,11 @@ const VideoDetailItem = () => {
               </Stack>
             </Stack>
 
-            <div style={{ width: "80%" }}>
+            <div
+              style={{
+                width: "80%",
+              }}
+            >
               <textarea
                 style={{
                   height: "100px",
@@ -349,7 +368,7 @@ const VideoDetailItem = () => {
                 readOnly={Comment[item.id].readOnly} // 読み取り専用にする場合
                 onChange={(e) => handleChenge(e.target.value, item.id)}
               />
-              <Stack direction="row" justifyContent="left" alignItems="center" spacing={1}>
+              <Stack direction="row" justifyContent="left" alignItems="flex-end" spacing={1}>
                 <Button
                   variant="outlined"
                   onClick={() => handleCancel(item.id)}
@@ -362,7 +381,13 @@ const VideoDetailItem = () => {
                   variant="contained"
                   onClick={() => handleSave(item.id)}
                   className={`comment_${item.id}`}
-                  style={{ display: Comment[item.id]?.display }}
+                  sx={{
+                    display: Comment[item.id]?.display,
+                    bgcolor: "#1e90ff",
+                    transition: "0.5s",
+                    "&:hover": { cursor: "pointer", backgroundColor: "#0567c8" },
+                    "&:active": { backgroundColor: "#1e90ff" },
+                  }}
                 >
                   保存
                 </Button>
@@ -382,7 +407,27 @@ const VideoDetailItem = () => {
           <div key={index} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
             <Divider sx={{ borderStyle: "solid", my: 2, display: "block", width: "80%" }} />
             <div style={{ width: "80%" }}>
-              <p>{item.commenter_user_name || item.commenter_company_name}</p>
+              <Stack dir ection="row" justifyContent="space-between" alignItems="flex-start" spacing={3} sx={{ width: "80%", paddingBottom: "5px" }}>
+                <Stack direction="row" justifyContent="space-between " alignItems="center" spacing={1} sx={{ width: "100%" }}>
+                  <Link to={`/Profile/${item.commenter_name}?page=mypage`} className="commentMypageLink">
+                    <Stack direction="row" justifyContent="left" alignItems="center" spacing={1}>
+                      <Avatar
+                        src={
+                          item.commenter_icon
+                            ? `http://localhost:8000/storage/images/userIcon/${item.commenter_icon}`
+                            : "/assets/images/avatars/avatar_0.jpg"
+                        }
+                        sx={{
+                          zIndex: 9,
+                          width: 30,
+                          height: 30,
+                        }}
+                      />
+                      <p>{item.commenter_name}</p>
+                    </Stack>
+                  </Link>
+                </Stack>
+              </Stack>
             </div>
             <textarea
               style={{

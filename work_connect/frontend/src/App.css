@@ -1263,6 +1263,16 @@ textarea::placeholder {
   width: fit-content;
 }
 
+.commentMypageLink {
+  text-decoration: none;
+  color: #212B36;
+}
+
+.commentMypageLink:hover {
+  text-decoration: underline;
+  color: #1877F2;
+}
+
 
 /* 前腕の揺れアニメーション */
 @keyframes forearm-swing {

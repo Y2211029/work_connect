@@ -40,8 +40,8 @@ header .logo {
 }
 
 .panel-container {
-  width: 600px;
-  background: #F3F3F3;
+  width: 100%;
+  
   display: flex;
   flex-direction: column;
   margin-right: 10px;
@@ -49,8 +49,8 @@ header .logo {
 
 .panel-content {
   display: flex;
-  flex-direction: column;
-  padding: 10px;
+  /* flex-direction: column; */
+  padding:  20px 10px;
 }
 
 .loginSotushin2025 {
@@ -65,7 +65,7 @@ header .logo {
   display: flex;
   flex-direction: column;
   width: 80%;
-  height: 200px;
+  height: 300px;
   margin: 0 auto;
   overflow-y: scroll;
 }
@@ -222,6 +222,9 @@ nav ul li a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+  padding-bottom: 50px;
 }
 
 .Login_modal_Button {
@@ -1377,20 +1380,11 @@ textarea::placeholder {
 }
 
 @media (max-width: 1200px) {
-  .panel-container {
-    width: 50%;
-    margin-right: 0px;
+  .loginSotushin2025 {
+    padding-bottom: 10px;
   }
-
-  .Modal {
-    /* height: 100vh;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center; */
-    flex-direction: column;
-    gap: 20px;
-    padding-bottom: 50px;
+  .panel-container {
+    margin-right: 0px;
   }
 
 
@@ -1468,6 +1462,10 @@ textarea::placeholder {
 @media (max-width: 900px) {
   .button-container {
     width: 90%;
+  }
+  .panel-content {
+    display: block;
+    margin: 0 auto;
   }
 
   .arrow_up_ward_icon {
@@ -1620,7 +1618,7 @@ textarea::placeholder {
   }
 
   .panel-container {
-    width: 80%;
+    width: 100%;
     margin-right: 0px;
   }
 

@@ -66,6 +66,12 @@ const StudentLoginModal = (props) => {
     e.preventDefault();
   };
 
+  const handleClose = (event, reason) => {
+    if (reason === 'backdropClick') return;
+    setShowModal(false);
+    setFormErrors({}); // エラーメッセージをリセット
+
+  };
   // ヘッダーのログインボタンを押したときにログインモーダルを開いたり閉じたりする処理
   $("#loginModalOpenButton").click(function (e) {
     e.preventDefault();
@@ -74,11 +80,15 @@ const StudentLoginModal = (props) => {
     if (clickOneTimes.current) return; // 送信処理中かを判定する（trueなら抜ける）
     clickOneTimes.current = true; // 送信処理中フラグを立てる
 
+
     if (showModal == true) {
       setShowModal(false);
     } else {
       setShowModal(true);
     }
+    // if (showModal == false) {
+    //   setShowModal(true);
+    // }
 
     clickOneTimes.current = false; // 送信処理中フラグを下げる
   });
@@ -88,12 +98,13 @@ const StudentLoginModal = (props) => {
     props.callSetModalChange("企業");
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setFormErrors({}); // エラーメッセージをリセット
-  };
+  // const handleCloseModal = () => {
+  //   setShowModal(false);
+  //   setFormErrors({}); // エラーメッセージをリセット
+  // };
 
   const handleChange = (e) => {
+    console.log("CompanyLogine.target",e.target); // ログ
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
   };
@@ -287,14 +298,19 @@ const StudentLoginModal = (props) => {
   const renderLoginAccount = (
     <div className="panel-container">
       <div className="panel-content">
-        <img className="loginSotushin2025" src="http://localhost:8000/storage/images/work/sotushin2025.jpeg" alt="sotushin panel" />
+        <img className="loginSotushin2025" src="http://localhost:8000/storage/images/work/sotushin2025.png" alt="sotushin panel" />
         <div className="button-container">
-          <button type="button" className="login_Honban_data" onClick={() => dataUsers('mitsuhashi', '2023gakusei')}>mitsuhashi</button>
-          <button type="button" className="login_Honban_data" onClick={() => dataUsers('fujita', '2023gakusei')}>fujita</button>
           <button type="button" className="login_Honban_data" onClick={() => dataUsers('yoshioka', '2023gakusei')}>yoshioka</button>
-          <button type="button" className="login_Honban_data" onClick={() => dataUsers('kaneda', '2023gakusei')}>kaneda</button>
           <button type="button" className="login_Honban_data" onClick={() => dataUsers('bandou', '2023gakusei')}>bandou</button>
-          <button type="button" className="login_Honban_data" onClick={() => dataUsers('deguti', '2023gakusei')}>deguti</button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers('tanaka', '2024gakusei')}>tanaka</button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers('sato', '2024gakusei')}>sato</button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers('suzuki', '2024gakusei')}>suzuki</button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers('nakamura', '2024gakusei')}>nakamura</button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers('takahashi', '2024gakusei')}>takahashi</button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers('kobayashi', '2024gakusei')}>kobayashi</button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers('watanabe', '2024gakusei')}>watanabe</button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers('mori', '2024gakusei')}>mori</button>
+
         </div>
       </div>
     </div>
@@ -305,11 +321,12 @@ const StudentLoginModal = (props) => {
   return (
     <div className="LoginModalTopElement">
       {/* 条件付きレンダリングを使用 */}
-      <Modal isOpen={showModal} contentLabel="Example Modal" style={ModalStyle}>
+      <Modal isOpen={showModal} contentLabel="Example Modal" onClose={handleClose} style={ModalStyle}>
         {/* <Box component="div" sx={{ display: "flex", flexDirection: { md: "column", lg: "none" } }}> */}
         <div className="Modal">
-          {renderLoginAccount}
+         
           <form onSubmit={handleSubmit} className="formInModal">
+          {renderLoginAccount}
             <Stack
               direction="row"
               spacing={2}
@@ -331,7 +348,7 @@ const StudentLoginModal = (props) => {
                 <Typography variant="h" className="login_modal_items">ログイン（学生）</Typography>
               </Stack>
               {/* モーダル右上の❌ボタン */}
-              <IconButton onClick={handleCloseModal}>
+              <IconButton onClick={handleClose}>
                 <CloseIcon />
               </IconButton>
             </Stack>
@@ -394,7 +411,7 @@ const StudentLoginModal = (props) => {
               <Button variant="outlined" className="Login_modal_Button" type="submit" sx={{ width: { xs: "95%", sm: "90%", md: "80%" } }}>
                 ログイン
               </Button>
-              {Object.keys(formErrors).length === 0 && isSubmit && handleCloseModal}
+              {Object.keys(formErrors).length === 0 && isSubmit && handleClose}
 
               <Typography variant="h5" className="login_modal_items">
                 企業の方はこちらから
@@ -407,7 +424,7 @@ const StudentLoginModal = (props) => {
         </div>
         {/* </Box> */}
       </Modal>
-    </div>
+    </div >
   );
 };
 StudentLoginModal.propTypes = {

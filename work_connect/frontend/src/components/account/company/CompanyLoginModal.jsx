@@ -45,6 +45,15 @@ const CompanyLoginModal = (props) => {
   // パスワード表示/非表示の切り替え(パスワード)
   const [showPassword, setShowPassword] = useState("");
 
+  const dataUsers = (userName, password) => {
+    // e.stopPropagation(); // イベントの伝播を防止
+    setFormValues((prev) => ({
+      ...prev,
+      user_name: userName,
+      password: password,
+    }));
+  }
+
   const handleClickShowPassword = (e) => {
     setShowModal(true);
     setShowPassword(!showPassword);
@@ -56,16 +65,22 @@ const CompanyLoginModal = (props) => {
     e.preventDefault();
   };
 
+  const handleClose = (event, reason) => {
+    if (reason === 'backdropClick') return;
+    setShowModal(false);
+    setFormErrors({}); // エラーメッセージをリセット
+  };
   const handleOpenStudentModal = () => {
     props.callSetModalChange("学生");
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setFormErrors({}); // エラーメッセージをリセット
-  };
+  // const handleCloseModal = () => {
+  //   setShowModal(false);
+  //   setFormErrors({}); // エラーメッセージをリセット
+  // };
 
   const handleChange = (e) => {
+    console.log("CompanyLogine.target",e.target); // ログ
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
   };
@@ -88,6 +103,7 @@ const CompanyLoginModal = (props) => {
   // aysncつけました
   const handleSubmit = async (e) => {
     e.preventDefault();
+  console.log("Submitted Form: ", formValues);  // 追加
     // フォームの送信処理architect_2024-09-12_14-10-31.png
     setFormErrors(validate(formValues));
     setIsSubmit(true);
@@ -257,16 +273,35 @@ const CompanyLoginModal = (props) => {
     return errors;
   };
 
-  const fillDemoCredentials = () => {
-    setFormValues({ user_name: "株式会社アーキテクト", password: "ArchitectPassword" });
-  };
+  const renderLoginAccount = (
+    <div className="panel-container">
+      <div className="panel-content">
+        <img className="loginSotushin2025" src="http://localhost:8000/storage/images/work/sotushin2025.png" alt="sotushin panel" />
+        <div className="button-container">
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers('TechCompany', 'TechPassword')}>TechCompany</button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers('EcoGreen', 'EcoGreenPassword')}>EcoGreen</button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers('Financials', 'FinancialsPassword')}>Financials</button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers('MedicalCare', 'MedicalCarePassword')}>MedicalCare</button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers('Architect', 'ArchitectPassword')}>Architect</button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers('Entertainment', 'EntertainmentPassword')}>Entertainment</button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers('Transport', 'TransportPassword')}>Transport</button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers('Telecom', 'TelecomPassword')}>Telecom</button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers('InteriorDesign', 'InteriorDesignPassword')}>InteriorDesign</button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers('FoodService', 'FoodServicePassword')}>FoodService</button>
+
+        </div>
+      </div>
+    </div>
+
+  );
 
   return (
-    <div>
+    <div className="LoginModalTopElement" onClick={handleMouseDownPassword}>
       {/* 条件付きレンダリングを使用 */}
-      <Modal isOpen={showModal} contentLabel="Example Modal" style={ModalStyle}>
+      <Modal isOpen={showModal} contentLabel="Example Modal" onClose={handleClose} style={ModalStyle}>
         <div className="Modal">
           <form onSubmit={handleSubmit} className="formInModal">
+            {renderLoginAccount}
             <Stack
               direction="row"
               spacing={2}
@@ -288,7 +323,7 @@ const CompanyLoginModal = (props) => {
                 <Typography variant="h" className="login_modal_items">ログイン（企業）</Typography>
               </Stack>
               {/* モーダル右上の❌ボタン */}
-              <IconButton onClick={handleCloseModal}>
+              <IconButton onClick={handleClose}>
                 <CloseIcon />
               </IconButton>
             </Stack>
@@ -343,13 +378,13 @@ const CompanyLoginModal = (props) => {
                   ),
                 }}
               />
-              <Button variant="outlined" type="button" className="Login_modal_Button" onClick={fillDemoCredentials} sx={{ width: { xs: "95%", sm: "90%", md: "80%" } }}>
+              {/* <Button variant="outlined" type="button" className="Login_modal_Button" onClick={fillDemoCredentials} sx={{ width: { xs: "95%", sm: "90%", md: "80%" } }}>
                 ユーザーネーム:株式会社アーキテクト パスワード:ArchitectPassword
-              </Button>
-              <Button variant="outlined" type="submit" className="Login_modal_Button" sx={{ width: { xs: "95%", sm: "90%", md: "80%" } }}>
+              </Button> */}
+              <Button variant="outlined" className="Login_modal_Button" type="submit" sx={{ width: { xs: "95%", sm: "90%", md: "80%" } }}>
                 ログイン
               </Button>
-              {Object.keys(formErrors).length === 0 && isSubmit && handleCloseModal}
+              {Object.keys(formErrors).length === 0 && isSubmit && handleClose}
               <div>
                 学生の方はこちらから
                 <Link href="" onClick={handleOpenStudentModal} id="loginStudentModalLink" className="Login_Sign_select_C_or_S">

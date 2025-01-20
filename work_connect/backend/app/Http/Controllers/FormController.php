@@ -15,8 +15,13 @@ class FormController extends Controller
 
     public function create_form_save(Request $request)
     {
-        // 日本の現在時刻を取得
+        // 日本の現在時刻を取得FF
         $now = Carbon::now('Asia/Tokyo');
+
+        // $nowをログ出力F
+        Log::info('現在の時間: ' . $now->toDateTimeString());
+        Log::info('現在の時間', ['time' => $now->toDateTimeString()]);
+
 
         // react側からのリクエスト
         $create_form = json_encode($request->input('create_form')); // フォーム内容

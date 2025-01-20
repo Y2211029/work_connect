@@ -81,8 +81,8 @@ input[type="number"]::-webkit-inner-spin-button {
 
 .FormDemo {
   position: relative;
-  overflow: auto;
-  /* スクロールを有効にする */
+  overflow-x: hidden;
+  overflow-y: auto;
   flex-grow: 1;
   height: 100%;
 }
@@ -274,7 +274,6 @@ input[type="number"]::-webkit-inner-spin-button {
   display: flex;
   justify-content: center;
   align-items: center;
-  /* セルのように見せるためにブロック配置 */
   text-align: center;
   border: 1px solid #bbbbbb;
   background-color: #F9FAFB;
@@ -297,6 +296,12 @@ input[type="number"]::-webkit-inner-spin-button {
   color: white !important;
 }
 
+.ShowForm{
+  width: 100%;
+  position: relative;
+  left: 30%;
+}
+
 
 @media (max-width: 1200px) {
   .QuestionMenu_Hamburger {
@@ -309,6 +314,14 @@ input[type="number"]::-webkit-inner-spin-button {
   .SurveyModal {
     width: 80% !important;
     padding-bottom: 50%;
+  }
+
+  .ShowForm {
+    padding-bottom: 40%;
+    /* スクロール余白 */
+    height: auto;
+    /* 高さを自動調整 */
+    left: 10%;
   }
 
 
@@ -324,6 +337,19 @@ input[type="number"]::-webkit-inner-spin-button {
   .Buttons {
     width: 100%;
   }
+
+  .ShowForm {
+    padding-bottom: 40%;
+    /* スクロール余白 */
+    height: auto;
+    /* 高さを自動調整 */
+    left: 0;
+  }
+
+
+
+
+
 }
 
 @media(max-width:600px) {
@@ -360,6 +386,8 @@ input[type="number"]::-webkit-inner-spin-button {
     margin-left: 10px;
   }
 
+
+
 }
 
 
@@ -374,13 +402,6 @@ input[type="number"]::-webkit-inner-spin-button {
 
   .TextSetting::-webkit-scrollbar {
     margin-left: 40%;
-  }
-
-  .ShowForm {
-    padding-bottom: 40%;
-    /* スクロール余白 */
-    height: auto;
-    /* 高さを自動調整 */
   }
 
   .SurveyModal {

@@ -75,8 +75,13 @@
 }
 
 .delete_icon {
+    color: red;
     align-items: center;
     cursor: pointer;
+}
+
+.delete_icon:hover{
+    color: red;
 }
 
 .Last_updated_date {
@@ -188,6 +193,7 @@
     color: blue;
     font-size: 12px;
     text-align: center;
+    cursor: pointer;
 }
 
 

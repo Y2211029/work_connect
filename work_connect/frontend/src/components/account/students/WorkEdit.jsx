@@ -71,8 +71,10 @@ const WorkEdit = () => {
           Obsession: data["作品"][0].obsession,
           Language: data["作品"][0].programming_language,
           Environment: data["作品"][0].development_environment,
+          YoutubeURL: data["作品"][0].youtube_url,
         });
         setVideoUrl(data["作品"][0].youtube_url);
+        setVideoId(data["作品"][0].youtube_url);
         // setImage(data["作品"][0].images);
       } catch (error) {
         setError(error.message);

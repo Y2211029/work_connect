@@ -47,6 +47,7 @@ class EditorController extends Controller
                 'event_day' => $eventDay,
                 'message' => $message,
                 'created_at' => $now,
+                'updated_at' => $now,
                 'public_status' => "0"
             ]);
             Log::info("作成");

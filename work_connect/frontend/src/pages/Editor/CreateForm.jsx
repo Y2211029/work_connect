@@ -197,7 +197,7 @@ const CreateForm = ({ newsid, HandleBack}) => {
     // questionsが文字列型ならパースする
     if (typeof currentQuestions === "string") {
       try {
-        currentQuestions = JSON.parse(currentQuestions);  // パースしてオブジェクトに変換
+        currentQuestions = JSON.parse(currentQuestions); 
       } catch (error) {
         console.error("questions のパースに失敗しました:", error);
         currentQuestions = { elements: [] };  // パース失敗時に空の配列を初期化
@@ -206,7 +206,8 @@ const CreateForm = ({ newsid, HandleBack}) => {
 
     // `elements` に追加する新しい質問データ
     const newQuestion = {
-      name: `Question${currentQuestions.elements.length + 1}`,  // 修正: 正しいインデックスを使用
+      id: `${currentQuestions.elements.length + 1}`,
+      name: `Question${currentQuestions.elements.length + 1}`, 
       title: `新しい質問 ${currentQuestions.elements.length + 1}`,
       type: type,  // 質問のタイプ
       inputType: inputType,  // 入力タイプ
@@ -256,10 +257,6 @@ const CreateForm = ({ newsid, HandleBack}) => {
           return "radiogroup";
         case "dropdown":
           return "dropdown";
-        // case "Number":
-        //   return "text";
-        // case "Date":
-        //     return "text";
         case "checkbox":
           return "checkbox";
         case "boolean":
@@ -496,6 +493,7 @@ const CreateForm = ({ newsid, HandleBack}) => {
 
   // フォームの編集データを保存
   const CreateFormSave = async () => {
+    console.log("ニュースID",create_news_id);
     console.log("フォーム内容", questions);
     console.log("締切日", deadlineDate);
     console.log("背景色", backGroundColor);
@@ -670,7 +668,8 @@ const CreateForm = ({ newsid, HandleBack}) => {
   }
 
   const WriteNewsHandleBack = async (event) => {
-    event.preventDefault(); // デフォルトの挙動を防ぐ
+    event.preventDefault();
+    console.log("news_idの中身");
     HandleBack();
   };
 

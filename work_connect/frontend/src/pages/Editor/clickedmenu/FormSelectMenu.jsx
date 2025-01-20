@@ -12,13 +12,7 @@ import "moment/locale/ja";
 import Typography from "@mui/material/Typography";
 
 //フォーム情報
-// import NewsMenuTable from '@mui/material/Table';
-// import TableBody from '@mui/material/TableBody';
-// import TableCell from '@mui/material/TableCell';
-// import TableContainer from '@mui/material/TableContainer';
-// import TableRow from '@mui/material/TableRow';
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
-// import Paper from '@mui/material/Paper';
 
 //フォーム追加
 import Stack from "@mui/material/Stack";
@@ -28,7 +22,6 @@ import WatchLaterIcon from "@mui/icons-material/WatchLater";
 import MoneyIcon from "@mui/icons-material/Money";
 import RadioIcon from "@mui/icons-material/Radio";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
-// import BrushIcon from '@mui/icons-material/Brush';
 import FlakyIcon from "@mui/icons-material/Flaky";
 import NotesIcon from "@mui/icons-material/Notes";
 import AssessmentIcon from "@mui/icons-material/Assessment";

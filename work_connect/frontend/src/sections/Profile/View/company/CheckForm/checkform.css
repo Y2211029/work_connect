@@ -328,6 +328,11 @@
   left: 10%;
 }
 
+.writeformshow.active {
+  background-color: none;
+}
+
+
 
 @media(max-width:1700px){
   .modal-content {
@@ -521,6 +526,7 @@
     padding-bottom: 50%;
     margin-left: -20%;
   }
+
 
 }
 

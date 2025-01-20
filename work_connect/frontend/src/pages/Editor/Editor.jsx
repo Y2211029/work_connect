@@ -74,7 +74,7 @@ const Editor = () => {
   const [charCount, setCharCount] = useState(0);
   const [usedImages, setUsedImages] = useState([]);
   const [notificationMessage, setNotificationMessage] = useState(null);
-  const [eventDay, setEventDay] = useState(moment());
+  const [eventDay, setEventDay] = useState(moment.utc());
   const [isSaved, setIsSaved] = useState(false);
   const [CreateFormOpen, setCreateFormOpen] = useState(false);
   const [formSummary, setFormSummary] = useState(null);
@@ -204,6 +204,7 @@ const Editor = () => {
 
       setDraftList(response.data.news_draft_list); // 下書きリスト最新に更新
       console.log("レスポンスのドラフトリスト", response.data.news_draft_list);
+      console.log("news_idの中身",response.data.id);
       setNewsId(response.data.id); // news_idを更新する
       setIsSaved(true); // 保存済みとして状態を設定
       setFormSummary(formSummary);
@@ -491,7 +492,7 @@ const Editor = () => {
     }
 
     newsDraftList();
-  }, [sessionId]); // sessionIdが変更されたときに実行される
+  }, [sessionId,CreateFormOpen]); 
 
   useEffect(() => {
     if (editorHolder.current && !editorInstance.current) {
@@ -1345,6 +1346,9 @@ const Editor = () => {
       } catch (error) {
         console.error("handleBack内でのエラー:", error);
       }
+
+
+
     } else {
       console.error("editorInstanceが無効です");
     }

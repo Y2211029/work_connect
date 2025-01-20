@@ -95,11 +95,12 @@ const Textarea = styled(BaseTextareaAutosize)(
 
 const InputDateWithTime = ({ date, setEventDay, format = "YYYY/MM/DD HH:mm" }) => {
   moment.locale("ja"); // 日本語設定
+  console.log("この時のデータの中身は?", date);
   return (
     <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="ja">
       <DateTimePicker
         slotProps={{ calendarHeader: { format: 'YYYY年MM月' } }}
-        value={moment(date)}
+        value={moment(date).tz("Asia/Tokyo")}
         onChange={(newDate) => {
           if (newDate) {
             const formattedDate = moment(newDate).format("YYYY-MM-DD HH:mm:ss");
@@ -179,14 +180,17 @@ const NewsSelectMenu = ({
   const [menuState, setMenuState] = useState(null);
   const openInputMenu = Boolean(anchorElInput);
   const openConfirmationMenu = Boolean(anchorElConfirmation);
-
   const { GetTagAllListFunction } = GetTagAllList();
   const [options, setOptions] = useState([]);
   const [Message, setMessage] = useState(notificationMessage);
   const theme = useTheme();
+  const [WarningArray, setWarningArray] = useState([]);
 
-  console.log("isContentReady",isContentReady);
-  console.log("isFollowerValid",isFollowerValid);
+  console.log("imageurlの中身", imageUrl);
+
+  console.log("isContentReady", isContentReady);
+  console.log("isFollowerValid", isFollowerValid);
+  console.log("eventDayの中身", eventDay);
 
   useEffect(() => {
     let optionArrayPromise = GetTagAllListFunction("company_selected_occupation");
@@ -297,22 +301,25 @@ const NewsSelectMenu = ({
         <TableBody>
           <TableRow>
             <TableCell>
-              {check_element !== null && (key !== "selectedOccupation" || (Array.isArray(labels) && labels.length > 0)) ? (
+              {check_element !== null && check_element !== "" && (key !== "selectedOccupation" || (Array.isArray(labels) && labels.length > 0)) ? (
                 <CheckBoxIcon color="primary" aria-label="設定完了しています" />
               ) : (
                 <ErrorIcon color="error" aria-label="設定完了していません" />
               )}
             </TableCell>
             <TableCell>
-              {check_element !== null ? (
+              {check_element !== null && check_element !== "" ? (
                 key === "title" || key === "notificationMessage" ? (
                   <p>{check_element}</p>
                 ) : key === "eventDay" ? (
-                  <p>
-                    {moment(check_element).format("YYYY/MM/DD")}
-                    <br />
-                    {moment(check_element).format("HH時mm分~")}
-                  </p>
+                  <>
+                    {moment(check_element).isSame(moment(), 'day') ? <p style={{ color: "red" }}>今日です</p> : null}
+                    <p>
+                      {moment(check_element).format("YYYY/MM/DD")}
+                      <br />
+                      {moment(check_element).tz("Asia/Tokyo").format("HH時mm分~")}
+                    </p>
+                  </>
                 ) : key === "selectedOccupation" && labels.length > 0 ? (
                   <Box className="news_job_acordion_menu">{ShowTags(labels)}</Box> // labelsが空でない場合に表示
                 ) : key === "imageurl" ? (
@@ -397,6 +404,40 @@ const NewsSelectMenu = ({
     }
   };
 
+
+
+  const WarningTargetArray =
+    [
+      { name: "タイトル", judge: title == null || title == "", element: title },
+      { name: "サムネイル", judge: imageUrl == null || imageUrl == "", element: imageUrl },
+      ...followerCounter > 0 ? [{ name: "通知に添えるメッセージ", judge: notificationMessage == null || notificationMessage == "", element: notificationMessage }] : [],
+      { name: "開催日", judge: moment(eventDay).isSame(moment(), 'day'), element: eventDay },
+      { name: "募集職種", judge: selectedOccupation.length <= 0, element: selectedOccupation },
+      { name: "記事内容", judge: charCount <= 0, element: charCount },
+    ]
+
+  useEffect(() => {
+    const newWarningArray = WarningTargetArray
+      .filter(warn => warn.judge)
+      .map(warn => warn.name);
+
+    setWarningArray(newWarningArray);
+  }, [title, imageUrl, notificationMessage, eventDay, selectedOccupation, charCount]); // 依存関係の配列
+
+  const WarningCheck = () => {
+    const warningText = WarningArray.join(", ");
+    return (
+      <div className="Not_Upload_Button">
+        <Tooltip title={`公開できません: ${warningText}を更新してください`}>
+          <Button>
+            <Typography className="NewsUploadButton_Text">ニュースを公開する</Typography>
+          </Button>
+        </Tooltip>
+      </div>
+    );
+  };
+  
+
   const renderPopoverContent = () => {
     if (selectedMenu === "input") {
       switch (menuState) {
@@ -464,11 +505,7 @@ const NewsSelectMenu = ({
                     const DateTime = selected_draft.create_form[0].createformDateTime;
                     const createFormArray = selected_draft.create_form[0].create_form;
                     console.log("createFormArray", JSON.parse(createFormArray).elements?.length);
-                    // console.log("createFormArray", JSON.parse(createFormArray.elements));
-                    // elementsが正しく出力されるか確認
-                    // const question_count = createFormArray.elements ? createFormArray.elements.length : 0;
                     const question_count = JSON.parse(createFormArray).elements?.length;
-                    console.log("質問数:", question_count);
                     return (
                       <>
                         <NewsMenuTable className="createformtable">
@@ -514,19 +551,19 @@ const NewsSelectMenu = ({
                       広報活動と募集活動が完結します
                     </Typography>
                     <Stack direction={"row"}>
-                    <Button
-                      onClick={async () => {
-                        await handleCloseInputMenu();
-                        CreateFormJump();
-                      }}
-                      sx={{ border: "1px solid", mx: 1 }}
-                      className="CreateFormButton"
-                    >
-                      <Typography className="NewsSelectButton_Text">応募フォームを作成する</Typography>
-                    </Button>
-                    <Typography className="CreateFormExplanation_Text" color="error">
-                      任意
-                    </Typography>
+                      <Button
+                        onClick={async () => {
+                          await handleCloseInputMenu();
+                          CreateFormJump();
+                        }}
+                        sx={{ border: "1px solid", mx: 1 }}
+                        className="CreateFormButton"
+                      >
+                        <Typography className="NewsSelectButton_Text">応募フォームを作成する</Typography>
+                      </Button>
+                      <Typography className="CreateFormExplanation_Text" color="error">
+                        任意
+                      </Typography>
                     </Stack>
                   </div>
                 )}
@@ -578,9 +615,9 @@ const NewsSelectMenu = ({
                       <TableRow>
                         <TableCell style={{ backgroundColor: "#fff", border: "none" }}>
                           <Tooltip title={`最終更新日:${FormattedDate(draft.updated_at)}`}>
-                          <div className="Last_updated_date">
-                            最終更新日:{postDateTimeDisplay(FormattedDate(draft.updated_at))}
-                          </div>
+                            <div className="Last_updated_date">
+                              最終更新日:{postDateTimeDisplay(FormattedDate(draft.updated_at))}
+                            </div>
                           </Tooltip>
 
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -588,9 +625,8 @@ const NewsSelectMenu = ({
                             <div className="news_img">{header_img_show(draft)}</div>
                             {/* テキストと削除ボタンを右側に配置 */}
                             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-                              <div style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
-                                <DeleteIcon onClick={() => RewriteNewsDelete(draft.id)}/>
-
+                              <div style={{ display: "flex", alignItems: "center", cursor: "pointer", color: "red" }}>
+                                <DeleteIcon onClick={() => RewriteNewsDelete(draft.id)} />
                               </div>
                             </div>
                           </div>
@@ -711,24 +747,21 @@ const NewsSelectMenu = ({
           </Popover>
         </div>
 
+
+
         {isContentReady && isFollowerValid ? (
           <div className="ButtonContainer">
             <Button
               className="News_Upload_Button"
               // variant="outlined"
-              onClick={news_upload}
-            >
+              onClick={news_upload}>
               <Typography className="NewsUploadButton_Text">ニュースを公開する</Typography>
             </Button>
           </div>
         ) : (
-          <div className="Not_Upload_Button">
-            <Tooltip title="まだ公開できません">
-              <Button>
-                <Typography className="NewsUploadButton_Text">ニュースを公開する</Typography>
-              </Button>
-            </Tooltip>
-          </div>
+          <>
+            {WarningCheck()}
+          </>
         )}
       </div>
     </>

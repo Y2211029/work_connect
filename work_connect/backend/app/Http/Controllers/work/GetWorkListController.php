@@ -44,19 +44,6 @@ class GetWorkListController extends Controller
             if ($sortOption === 'orderOldPostsDate') {
                 $workList->orderBy('w_works.created_at', 'asc');
             }
-            // userName パラメータが存在する場合のフィルタリング
-
-            // SELECT
-            //     w_works.*,
-            //     w_users.user_name,
-            //     w_users.icon,
-            //     w_users.programming_language AS users_programming_language,
-            //     w_users.development_environment AS users_development_environment,
-            //     w_users.other AS users_other
-            // FROM
-            //     w_works
-            // JOIN
-            //     w_users ON w_works.creator_id = w_users.id AND w_users.user_name = "yoshioka" ;
 
             $totalItems = $workList->count();
 

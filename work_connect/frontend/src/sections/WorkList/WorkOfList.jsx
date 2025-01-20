@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { /*useNavigate,*/ useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { ColorRing } from "react-loader-spinner";
 import axios from "axios";
 import PropTypes from "prop-types";
@@ -7,7 +7,6 @@ import PropTypes from "prop-types";
 import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-
 
 import { useIntersection } from "src/routes/hooks/use-intersection";
 import { AllItemsContext } from "src/layouts/dashboard";
@@ -21,7 +20,6 @@ const setting = {
 };
 
 const WorkOfList = ({ ParamUserName }) => {
-  // const navigate = useNavigate();
   const location = useLocation();
   const prevLocation = useRef(location);
   const { AllItems, setAllItems } = useContext(AllItemsContext);
@@ -35,14 +33,14 @@ const WorkOfList = ({ ParamUserName }) => {
   useEffect(() => {
     const handlePopState = () => {
       if (location.pathname === prevLocation.current.pathname) {
-        alert('ブラウザバックが検知されました');
+        alert("ブラウザバックが検知されました");
       }
     };
 
-    window.addEventListener('popstate', handlePopState);
+    window.addEventListener("popstate", handlePopState);
 
     return () => {
-      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener("popstate", handlePopState);
     };
   }, [location]);
 
@@ -98,10 +96,13 @@ const WorkOfList = ({ ParamUserName }) => {
           setStudents([]);
           setNoDataMessage("0件です。");
         } else if (response.data.count > 0) {
+          console.log("WorkOfList - response.data.list", response.data.list);
           setStudents((prevStudents) => {
-            const newStudents = response.data.list.filter((newStudent) => !prevStudents.some((works) => works.id === newStudent.id));
+            const newStudents = response.data.list.filter((newStudent) => !prevStudents.some((works) => works.work_id === newStudent.work_id));
+
             return [...prevStudents, ...newStudents];
           });
+
           setNoDataMessage(null);
         } else {
           if (Page === 1) {
@@ -126,7 +127,7 @@ const WorkOfList = ({ ParamUserName }) => {
           setNoDataMessage(DataList.message);
         } else if (DataList.list) {
           setStudents((prevStudents) => {
-            const newStudents = DataList.list.filter((newStudent) => !prevStudents.some((works) => works.id === newStudent.id));
+            const newStudents = DataList.list.filter((newStudent) => !prevStudents.some((works) => works.work_id === newStudent.work_id));
             return [...prevStudents, ...newStudents];
           });
           setNoDataMessage(null);
@@ -144,11 +145,19 @@ const WorkOfList = ({ ParamUserName }) => {
       }
       fetchStudents();
     }
+    return () => {
+      setAllItems((prev) => ({
+        ...prev,
+        Page: 1,
+        sortOption: "orderNewPostsDate",
+      }));
+      console.log("WorkOfList unmount")
+    };
   }, [IsSearch.Check, Page, DataList, sortOption, ParamUserName, setAllItems]);
 
   // リスト描画のメモ化
   const renderedStudents = students.map((works, index) => (
-    <MemoizedPostCard ref={index === students.length - 1 ? ref : null} key={`${works.id} - ${index}`} works={works} />
+    <MemoizedPostCard ref={index === students.length - 1 ? ref : null} key={`${works.work_id} - ${index}`} works={works} />
   ));
 
   useEffect(() => {

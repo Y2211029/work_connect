@@ -111,6 +111,13 @@ const StudentOfList = () => {
       }
       fetchStudents();
     }
+    return () => {
+      setAllItems((prev) => ({
+        ...prev,
+        Page: 1,
+      }));
+      console.log("StudentOfList unmount");
+    };
   }, [accountData.id, IsSearch.Check, Page, DataList, setAllItems]);
 
   // リスト描画のメモ化

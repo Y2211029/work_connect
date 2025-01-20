@@ -92,7 +92,7 @@ const CompanyOfList = () => {
           setNoDataMessage("0件です。");
         } else if (DataList.list) {
           setStudents((prevStudents) => {
-            const newStudents = DataList.list .filter((newStudent) => !prevStudents.some((companies) => companies.id === newStudent.id));
+            const newStudents = DataList.list.filter((newStudent) => !prevStudents.some((companies) => companies.id === newStudent.id));
             return [...prevStudents, ...newStudents];
           });
           setNoDataMessage(null);
@@ -110,6 +110,14 @@ const CompanyOfList = () => {
       }
       fetchStudents();
     }
+
+    return () => {
+      setAllItems((prev) => ({
+        ...prev,
+        Page: 1,
+      }));
+      console.log("VideoOfList unmount");
+    };
   }, [accountData.id, IsSearch.Check, Page, DataList, setAllItems]);
 
   // リスト描画のメモ化

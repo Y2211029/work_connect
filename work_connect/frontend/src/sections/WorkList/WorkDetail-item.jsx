@@ -140,7 +140,27 @@ const WorkDetailItem = () => {
   const workCommentDelete = "http://localhost:8000/post_work_comment_delete";
 
   // console.log("currentSlideIndex", currentSlideIndex);
+  useEffect(() => {
+    if (mainSplideRef.current) {
+      const splide = mainSplideRef.current;
 
+      // splide.on("overflow", (isOverflow) => {
+      //   if (isOverflow) {
+      //     // 十分なスライドがあるときの処理
+      console.log("スライドは十分あります", splide);
+      //   } else {
+      //     // スライドが不足しているときの処理
+      //     console.log("スライドが不足しています");
+      //   }
+      // });
+    }
+    // splide.mount();
+
+    // // クリーンアップ
+    // return () => {
+    //   splide.destroy();
+    // };
+  }, []);
   // Laravel側から作品詳細データを取得
   useEffect(() => {
     setAccountData(getSessionData("accountData"));
@@ -450,6 +470,10 @@ const WorkDetailItem = () => {
           hasTrack={false}
           onMoved={(splide, newIndex) => setCurrentSlideIndex(newIndex)}
           style={{ width: "100%", height: "100%", margin: "0 auto" }}
+          // options={{
+          //   arrows: WorkSlide.length > 1, // 矢印を表示するかどうかを動的に設定
+          // }}
+          className={WorkSlide.length === 1 ? "hide-arrows" : ""}
         >
           <div style={{ position: "relative" }}>
             <SplideTrack>

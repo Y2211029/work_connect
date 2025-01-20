@@ -68,11 +68,11 @@ const NewsOfList = ({ type, ParamUserName }) => {
           params: { page: Page },
         });
 
-        console.log("response", response.data);
         if (response.data.message === "0件です。") {
           setStudents([]);
           setNoDataMessage("0件です。");
         } else if (response.data.count > 0) {
+          console.log("response", response.data);
           setStudents((prevStudents) => {
             const newStudents = response.data.list.filter((newStudent) => !prevStudents.some((NewItem) => NewItem.id === newStudent.id));
             return [...prevStudents, ...newStudents];
@@ -120,6 +120,14 @@ const NewsOfList = ({ type, ParamUserName }) => {
       }
       fetchStudents();
     }
+
+    return () => {
+      setAllItems((prev) => ({
+        ...prev,
+        Page: 1,
+      }));
+      console.log("NewsOfList unmount");
+    };
   }, [accountData.id, IsSearch.Check, Page, DataList, type, ParamUserName, setAllItems]);
 
   // リスト描画のメモ化

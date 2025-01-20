@@ -41,7 +41,7 @@ header .logo {
 
 .panel-container {
   width: 100%;
-  
+
   display: flex;
   flex-direction: column;
   margin-right: 10px;
@@ -50,7 +50,7 @@ header .logo {
 .panel-content {
   display: flex;
   /* flex-direction: column; */
-  padding:  20px 10px;
+  padding: 20px 10px;
 }
 
 .loginSotushin2025 {
@@ -61,7 +61,7 @@ header .logo {
   object-fit: contain;
 }
 
-.button-container {
+.edit-work-video-button-container {
   display: flex;
   flex-direction: column;
   width: 80%;
@@ -70,23 +70,29 @@ header .logo {
   overflow-y: scroll;
 }
 
-.login_Honban_data {
-  /* 必要に応じてボタンのスタイルを追加できます */
-}
-
 .arrow_up_ward_icon {
-  display: block !important;
+  /* display: block !important; */
   cursor: pointer !important;
   width: 50px !important;
   height: 50px !important;
   position: fixed !important;
   right: 1.5vw !important;
-  bottom: 20px !important;
-  color: black !important;
+  bottom: 30px !important;
   border-radius: 50% !important;
-  box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 10px !important;
+  border: 1.5px solid #637381;
+  /* box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 10px !important; */
   z-index: 1200 !important;
   /* z-index もともとは1400だがモーダルの上にこの矢印がくるため変更 */
+  overflow: visible;
+  transition: 0.2s !important;
+}
+
+.arrow_up_ward_icon:hover {
+  background-color: #414c56;
+}
+
+.arrow_up_ward_icon:active {
+  color: #ffffff;
 }
 
 .toolbar {
@@ -1383,6 +1389,7 @@ textarea::placeholder {
   .loginSotushin2025 {
     padding-bottom: 10px;
   }
+
   .panel-container {
     margin-right: 0px;
   }
@@ -1463,6 +1470,7 @@ textarea::placeholder {
   .button-container {
     width: 90%;
   }
+
   .panel-content {
     display: block;
     margin: 0 auto;

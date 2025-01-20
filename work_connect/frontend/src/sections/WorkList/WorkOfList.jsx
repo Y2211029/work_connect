@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { /*useNavigate,*/ useLocation } from "react-router-dom";
 import { ColorRing } from "react-loader-spinner";
 import axios from "axios";
 import PropTypes from "prop-types";
@@ -20,6 +21,9 @@ const setting = {
 };
 
 const WorkOfList = ({ ParamUserName }) => {
+  // const navigate = useNavigate();
+  const location = useLocation();
+  const prevLocation = useRef(location);
   const { AllItems, setAllItems } = useContext(AllItemsContext);
   const { IsLoading, IsSearch, Page, DataList, sortOption } = AllItems;
   const [students, setStudents] = useState([]);
@@ -27,6 +31,24 @@ const WorkOfList = ({ ParamUserName }) => {
   const [isLoadItem, setIsLoadItem] = useState(false);
   const [isLoadItemColorLing, setIsLoadItemColorLing] = useState(false);
   const [noDataMessage, setNoDataMessage] = useState(null);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      if (location.pathname === prevLocation.current.pathname) {
+        alert('ブラウザバックが検知されました');
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [location]);
+
+  useEffect(() => {
+    prevLocation.current = location;
+  }, [location]);
 
   // 並べ替え
   const handleSortChange = (event) => {
@@ -130,7 +152,7 @@ const WorkOfList = ({ ParamUserName }) => {
   ));
 
   useEffect(() => {
-    console.log("students", students);
+    console.log("WorkOfList", students);
   }, [students]);
 
   return (

@@ -26,6 +26,53 @@ header .logo {
   font-size: 30px;
 }
 
+/* .LoginModalTopElement {} */
+
+.loginButton,
+.login_Honban_data {
+  padding: 10px;
+  margin: 2px;
+  background: #41A4FF;
+  color: white;
+  font-weight: 600;
+  border-radius: 10px;
+  border: 2px solid #fff;
+}
+
+.panel-container {
+  width: 600px;
+  background: #F3F3F3;
+  display: flex;
+  flex-direction: column;
+  margin-right: 10px;
+}
+
+.panel-content {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+.loginSotushin2025 {
+  max-width: 300px;
+  max-height: 300px;
+  margin: 0 auto;
+  width: 100%;
+  object-fit: contain;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  height: 200px;
+  margin: 0 auto;
+  overflow-y: scroll;
+}
+
+.login_Honban_data {
+  /* 必要に応じてボタンのスタイルを追加できます */
+}
 
 .arrow_up_ward_icon {
   display: block !important;
@@ -171,7 +218,6 @@ nav ul li a:hover {
 
 /* 以下、出口記入 */
 .Modal {
-  height: 100vh;
   width: 100%;
   display: flex;
   align-items: center;
@@ -209,6 +255,7 @@ nav ul li a:hover {
 }
 
 .Modal form {
+  /* position: relative; */
   background-color: white;
   width: 70%;
   max-width: 600px;
@@ -217,6 +264,9 @@ nav ul li a:hover {
   border: 1px solid #dfdfdf;
   font-weight: 700;
 }
+
+
+
 
 .loginUiForm {
   display: flex;
@@ -1327,6 +1377,23 @@ textarea::placeholder {
 }
 
 @media (max-width: 1200px) {
+  .panel-container {
+    width: 50%;
+    margin-right: 0px;
+  }
+
+  .Modal {
+    /* height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center; */
+    flex-direction: column;
+    gap: 20px;
+    padding-bottom: 50px;
+  }
+
+
   .searchbar {
     width: 50% !important;
     height: 70% !important;
@@ -1399,6 +1466,10 @@ textarea::placeholder {
 }
 
 @media (max-width: 900px) {
+  .button-container {
+    width: 90%;
+  }
+
   .arrow_up_ward_icon {
     bottom: 110px !important;
     width: 40px !important;
@@ -1544,6 +1615,15 @@ textarea::placeholder {
 }
 
 @media (max-width: 600px) {
+  .button-container {
+    width: 100%;
+  }
+
+  .panel-container {
+    width: 80%;
+    margin-right: 0px;
+  }
+
   .searchbar {
     width: 70% !important;
     height: 70% !important;
@@ -1626,6 +1706,11 @@ textarea::placeholder {
 }
 
 @media (max-width: 400px) {
+  .panel-container {
+    width: 90%;
+    margin-right: 0px;
+  }
+
   .searchbar {
     width: 80% !important;
     height: 70% !important;

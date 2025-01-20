@@ -10,7 +10,7 @@ import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import LoginStatusCheck from "src/components/account/loginStatusCheck/loginStatusCheck";
 
 import "src/App.css";
-
+// import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
@@ -47,6 +47,14 @@ const StudentLoginModal = (props) => {
   // パスワード表示/非表示の切り替え(パスワード)
   const [showPassword, setShowPassword] = useState("");
 
+
+  const dataUsers = (userName, password) => {
+    setFormValues((prev) => ({
+      ...prev,
+      user_name: userName,
+      password: password,
+    }));
+  }
   const handleClickShowPassword = (e) => {
     setShowModal(true);
     setShowPassword(!showPassword);
@@ -276,16 +284,31 @@ const StudentLoginModal = (props) => {
     return errors;
   };
 
-  // 開発環境のみ使用
-  const fillDemoCredentials = () => {
-    setFormValues({ user_name: "yoshioka", password: "2023gakusei" });
-  };
+  const renderLoginAccount = (
+    <div className="panel-container">
+      <div className="panel-content">
+        <img className="loginSotushin2025" src="http://localhost:8000/storage/images/work/sotushin2025.jpeg" alt="sotushin panel" />
+        <div className="button-container">
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers('mitsuhashi', '2023gakusei')}>mitsuhashi</button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers('fujita', '2023gakusei')}>fujita</button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers('yoshioka', '2023gakusei')}>yoshioka</button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers('kaneda', '2023gakusei')}>kaneda</button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers('bandou', '2023gakusei')}>bandou</button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers('deguti', '2023gakusei')}>deguti</button>
+        </div>
+      </div>
+    </div>
+
+  );
+
 
   return (
-    <div>
+    <div className="LoginModalTopElement">
       {/* 条件付きレンダリングを使用 */}
       <Modal isOpen={showModal} contentLabel="Example Modal" style={ModalStyle}>
+        {/* <Box component="div" sx={{ display: "flex", flexDirection: { md: "column", lg: "none" } }}> */}
         <div className="Modal">
+          {renderLoginAccount}
           <form onSubmit={handleSubmit} className="formInModal">
             <Stack
               direction="row"
@@ -364,9 +387,10 @@ const StudentLoginModal = (props) => {
                 }}
               />
 
-              <Button variant="outlined" className="Login_modal_Button" type="button" onClick={fillDemoCredentials} sx={{ width: { xs: "95%", sm: "90%", md: "80%" } }}>
+
+              {/* <Button variant="outlined" className="Login_modal_Button" type="button" onClick={fillDemoCredentials} sx={{ width: { xs: "95%", sm: "90%", md: "80%" } }}>
                 ユーザーネーム:yoshioka パスワード:2023gakusei
-              </Button>
+              </Button> */}
               <Button variant="outlined" className="Login_modal_Button" type="submit" sx={{ width: { xs: "95%", sm: "90%", md: "80%" } }}>
                 ログイン
               </Button>
@@ -381,6 +405,7 @@ const StudentLoginModal = (props) => {
             </div>
           </form>
         </div>
+        {/* </Box> */}
       </Modal>
     </div>
   );

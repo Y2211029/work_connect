@@ -26,6 +26,7 @@ const PostCard = forwardRef((props, ref) => {
 
   const alternativeImage = "http://localhost:8000/storage/images/work/NoImage.png";
 
+  console.log("thumbnail",thumbnail)
   const renderThumbnail =
     // Youtube動画がある場合
     youtube_url !== null ? (
@@ -40,6 +41,7 @@ const PostCard = forwardRef((props, ref) => {
           aspectRatio: "16 / 9",
           overflow: "hidden",
           cursor: "pointer",
+          marginBottom: "5px",
         }}
       >
         <Box
@@ -50,6 +52,7 @@ const PostCard = forwardRef((props, ref) => {
             width: "100%",
             height: "100%",
             objectFit: "cover",
+            
           }}
         />
       </Box>
@@ -58,7 +61,7 @@ const PostCard = forwardRef((props, ref) => {
       <>
         <Box
           component="img"
-          src={thumbnail}
+          src={`http://localhost:8000/storage/images/work/${thumbnail}`}
           onError={(e) => {
             e.target.src = alternativeImage; // エラー時にサンプル画像をセット
           }}
@@ -67,7 +70,7 @@ const PostCard = forwardRef((props, ref) => {
             borderRadius: "5px",
             width: "100%",
             objectFit: "cover",
-            marginBottom: "10px",
+            marginBottom: "5px",
           }}
         />
       </>
@@ -77,160 +80,160 @@ const PostCard = forwardRef((props, ref) => {
   const renderAvatar = (
     <Avatar
       src={icon ? `http://localhost:8000/storage/images/userIcon/${icon}` : "/assets/images/avatars/avatar_0.jpg"}
-      sx={{
-        zIndex: 9,
-        width: 30,
-        height: 30,
-      }}
-    />
-  );
+          sx={{
+            zIndex: 9,
+            width: 30,
+            height: 30,
+          }}
+        />
+        );
 
-  // タイトル
-  const renderTitle = work_name && work_name;
+        // タイトル
+        const renderTitle = work_name && work_name;
 
-  // ジャンル
-  const renderGenre = work_genre !== null && <div style={{ margin: "10px 0px 10px 0px" }}>{tagCreate(work_genre)}</div>;
+        // ジャンル
+        const renderGenre = work_genre !== null && <div style={{ margin: "10px 0px 10px 0px" }}>{tagCreate(work_genre)}</div>;
 
-  /* 投稿日 */
-  const renderDate = (
-    <Typography
-      variant="caption"
-      component="div"
-      sx={{
-        mb: 2,
-        opacity: 0.48,
-        color: "common.black",
-        fontSize: "12px",
-      }}
-    >
-      {postDateTimeDisplay(created_at)}
-    </Typography>
-  );
+        /* 投稿日 */
+        const renderDate = (
+        <Typography
+          variant="caption"
+          component="div"
+          sx={{
+            mb: 2,
+            opacity: 0.48,
+            color: "common.black",
+            fontSize: "12px",
+          }}
+        >
+          {postDateTimeDisplay(created_at)}
+        </Typography>
+        );
 
-  const renderUserName = (
-    <Typography
-      variant="caption"
-      component="div"
-      sx={{
-        mb: 2,
-        opacity: 0.48,
-        color: "common.black",
-      }}
-    >
-      {user_name}
-    </Typography>
-  );
+        const renderUserName = (
+        <Typography
+          variant="caption"
+          component="div"
+          sx={{
+            mb: 2,
+            opacity: 0.48,
+            color: "common.black",
+          }}
+        >
+          {user_name}
+        </Typography>
+        );
 
-  const renderInfo = (
-    <Stack
-      direction="row"
-      justifyContent="space-between"
-      alignItems="center"
-      spacing={1}
-      sx={{
-        mt: 3,
-        color: "common.black",
-        paddingTop: "10px",
-        width: "100%",
-        margin: "0px",
-      }}
-    >
-      {renderDate}
-      <Stack
-        direction="row"
-        justifyContent="flex-end"
-        alignItems="center"
-        spacing={1}
-        sx={{
-          mt: 3,
-          color: "common.black",
-        }}
-      >
-        {isNotMyProfile ? renderAvatar : <EditButtons deleteId={work_id} />}
-        {isNotMyProfile ? renderUserName : null}
-      </Stack>
-    </Stack>
-  );
-
-  const renderShape = (
-    <SvgColor
-      color="paper"
-      src="/assets/icons/shape-avatar.svg"
-      sx={{
-        width: 80,
-        height: 36,
-        zIndex: 9,
-        bottom: -15,
-        position: "absolute",
-        color: "background.paper",
-        display: "none",
-      }}
-    />
-  );
-
-  const renderIntro = (
-    <Typography
-      variant="caption"
-      component="div"
-      sx={{
-        mb: 2,
-        opacity: 0.85,
-        fontSize: "12px",
-        color: "common.black",
-        margin: "0px",
-        overflowWrap: "anywhere",
-      }}
-    >
-      {work_intro}
-    </Typography>
-  );
-
-  const renderItems = (
-    <div ref={ref}>
-      <Link to={`/WorkDetail/${work_id}`} variant="subtitle2" underline="none" className="link item-Link">
-        <Stack sx={{ display: "inline-block", width: "100%" }}>
-          <div className="postCard item-stack" style={{ width: "100%" }}>
-            {renderShape}
-            {renderThumbnail}
-            {renderTitle}
-            <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 0px 0px" }} />
-            {renderGenre}
-            <Divider sx={{ borderStyle: "dashed", display: "block", margin: "0px 0px 5px 0px" }} />
-            {renderIntro}
-            <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 5px 0px" }} />
-            {renderInfo}
-          </div>
+        const renderInfo = (
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          spacing={1}
+          sx={{
+            mt: 3,
+            color: "common.black",
+            paddingTop: "10px",
+            width: "100%",
+            margin: "0px",
+          }}
+        >
+          {renderDate}
+          <Stack
+            direction="row"
+            justifyContent="flex-end"
+            alignItems="center"
+            spacing={1}
+            sx={{
+              mt: 3,
+              color: "common.black",
+            }}
+          >
+            {isNotMyProfile ? renderAvatar : <EditButtons deleteId={work_id} />}
+            {isNotMyProfile ? renderUserName : null}
+          </Stack>
         </Stack>
-      </Link>
-    </div>
-  );
+        );
 
-  const renderEditItems = (
-    <div ref={ref}>
-      <Stack sx={{ display: "inline-block", width: "100%" }}>
-        <div className="postCard item-stack" style={{ width: "100%" }}>
+        const renderShape = (
+        <SvgColor
+          color="paper"
+          src="/assets/icons/shape-avatar.svg"
+          sx={{
+            width: 80,
+            height: 36,
+            zIndex: 9,
+            bottom: -15,
+            position: "absolute",
+            color: "background.paper",
+            display: "none",
+          }}
+        />
+        );
+
+        const renderIntro = (
+        <Typography
+          variant="caption"
+          component="div"
+          sx={{
+            mb: 2,
+            opacity: 0.85,
+            fontSize: "12px",
+            color: "common.black",
+            margin: "0px",
+            overflowWrap: "anywhere",
+          }}
+        >
+          {work_intro}
+        </Typography>
+        );
+
+        const renderItems = (
+        <div ref={ref}>
           <Link to={`/WorkDetail/${work_id}`} variant="subtitle2" underline="none" className="link item-Link">
-            {renderShape}
-            {renderThumbnail}
-            {renderTitle}
-            <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 0px 0px" }} />
-            {renderGenre}
-            <Divider sx={{ borderStyle: "dashed", display: "block", margin: "0px 0px 5px 0px" }} />
-            {renderIntro}
-            <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 5px 0px" }} />
+            <Stack sx={{ display: "inline-block", width: "100%" }}>
+              <div className="postCard item-stack" style={{ width: "100%" }}>
+                {renderShape}
+                {renderThumbnail}
+                {renderTitle}
+                <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 0px 0px" }} />
+                {renderGenre}
+                <Divider sx={{ borderStyle: "dashed", display: "block", margin: "0px 0px 5px 0px" }} />
+                {renderIntro}
+                <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 5px 0px" }} />
+                {renderInfo}
+              </div>
+            </Stack>
           </Link>
-          {renderInfo}
         </div>
-      </Stack>
-    </div>
-  );
+        );
 
-  return isNotMyProfile ? renderItems : renderEditItems;
+        const renderEditItems = (
+        <div ref={ref}>
+          <Stack sx={{ display: "inline-block", width: "100%" }}>
+            <div className="postCard item-stack" style={{ width: "100%" }}>
+              <Link to={`/WorkDetail/${work_id}`} variant="subtitle2" underline="none" className="link item-Link">
+                {renderShape}
+                {renderThumbnail}
+                {renderTitle}
+                <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 0px 0px" }} />
+                {renderGenre}
+                <Divider sx={{ borderStyle: "dashed", display: "block", margin: "0px 0px 5px 0px" }} />
+                {renderIntro}
+                <Divider sx={{ borderStyle: "dashed", display: "block", margin: "10px 0px 5px 0px" }} />
+              </Link>
+              {renderInfo}
+            </div>
+          </Stack>
+        </div>
+        );
+
+        return isNotMyProfile ? renderItems : renderEditItems;
 });
 
-PostCard.displayName = "PostCard";
-PostCard.propTypes = {
-  works: PropTypes.object.isRequired,
+        PostCard.displayName = "PostCard";
+        PostCard.propTypes = {
+          works: PropTypes.object.isRequired,
 };
 
-export default PostCard;
+        export default PostCard;

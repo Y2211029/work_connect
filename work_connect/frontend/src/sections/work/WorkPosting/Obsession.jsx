@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { TextareaAutosize as BaseTextareaAutosize } from "@mui/base/TextareaAutosize";
 import { styled, useTheme } from "@mui/material/styles";
@@ -62,6 +62,12 @@ const Obsession = (props) => {
   const [inputValue, setInputValue] = useState(null);
   const [hasError, setHasError] = useState(false);
 
+  useEffect(() => {
+    if (props.workData != null) {
+      setInputValue(props.workData);
+    }
+  }, [props.workData]);
+
   const handleChange = (e) => {
     props.callSetWorkData("Obsession", e.target.value);
     setInputValue(e.target.value);
@@ -102,7 +108,6 @@ const Obsession = (props) => {
         / 500
       </Typography>
     </p>
-
   );
 };
 

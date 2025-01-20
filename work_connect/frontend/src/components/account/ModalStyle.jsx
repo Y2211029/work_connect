@@ -1,14 +1,20 @@
 const ModalStyle = {
   overlay: {
     zIndex: 1300,
+    overflowY: "scroll",
+    background: "rgb(0 0 0 / 70%)",
+
   },
   content: {
     position: "none",
-    backgroundColor: "rgb(0 0 0 / 70%)",
+    background: "none",
     border: "none",
     borderRadius: "0px",
-    padding: "1.5rem",
+    height: "fit-content",
     overflow: "none",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
   },
 };
 

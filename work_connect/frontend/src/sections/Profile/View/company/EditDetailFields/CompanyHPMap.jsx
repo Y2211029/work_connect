@@ -55,7 +55,8 @@ const CompanyHPMap = ({ CompanyHPMapData }) => {
           backgroundColor: '#fff', // 背景色を指定
           borderRadius: '8px', // 角の丸みを設定
           marginTop: '6px',
-          marginBottom: '0'
+          marginBottom: '0',
+          zIndex: 0,
         }}
         InputProps={{
           sx: {

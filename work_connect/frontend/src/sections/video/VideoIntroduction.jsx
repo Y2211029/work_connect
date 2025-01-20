@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from "prop-types";
 import { TextareaAutosize as BaseTextareaAutosize } from "@mui/base/TextareaAutosize";
 import { styled, useTheme } from "@mui/material/styles";
@@ -62,6 +62,12 @@ const VideoIntroduction = (props) => {
   const theme = useTheme();
   const [inputValue, setInputValue] = useState(null);
   const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    if (props.movieData != null) {
+      setInputValue(props.movieData);
+    }
+  }, [props.movieData]);
 
   const handleChange = (e) => {
     props.callSetVideoData("VideoIntroduction", e.target.value);

@@ -62,6 +62,12 @@ const Introduction = (props) => {
   const [inputValue, setInputValue] = useState(null);
   const [hasError, setHasError] = useState(false);
 
+  useEffect(() => {
+    if (props.workData != null) {
+      setInputValue(props.workData);
+    }
+  }, [props.workData]);
+  
   const handleChange = (e) => {
     props.callSetWorkData("Introduction", e.target.value);
     console.log("nagasa", e.target.value);

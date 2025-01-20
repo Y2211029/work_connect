@@ -2009,7 +2009,7 @@ export default function Searchbar() {
                       sx={{
                         marginTop: "10px",
                         height: "100%",
-                        overflow: "scroll",
+                        overflowY: "scroll",
                       }}
                     >
                       <div

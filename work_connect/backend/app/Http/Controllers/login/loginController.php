@@ -55,7 +55,7 @@ class loginController extends Controller
             } else {
               // 企業の場合
               $userInfo = DB::table('w_companies')
-              ->where('company_name', "$userName")
+              ->where('user_name', "$userName")
               ->where('password', "$password")
               ->first();
             }

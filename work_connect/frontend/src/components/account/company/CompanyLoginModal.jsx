@@ -80,7 +80,7 @@ const CompanyLoginModal = (props) => {
   // };
 
   const handleChange = (e) => {
-    console.log("CompanyLogine.target",e.target); // ログ
+    console.log("CompanyLogine.target", e.target); // ログ
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
   };
@@ -103,7 +103,7 @@ const CompanyLoginModal = (props) => {
   // aysncつけました
   const handleSubmit = async (e) => {
     e.preventDefault();
-  console.log("Submitted Form: ", formValues);  // 追加
+    console.log("Submitted Form: ", formValues);  // 追加
     // フォームの送信処理architect_2024-09-12_14-10-31.png
     setFormErrors(validate(formValues));
     setIsSubmit(true);
@@ -205,6 +205,7 @@ const CompanyLoginModal = (props) => {
     })
       .done(function (data) {
         // ajax成功時の処理
+        console.log("data",data)
 
         if (data != null) {
           console.log(data.id);
@@ -296,10 +297,11 @@ const CompanyLoginModal = (props) => {
   );
 
   return (
-    <div className="LoginModalTopElement" onClick={handleMouseDownPassword}>
+    <div className="LoginModalTopElement" >
       {/* 条件付きレンダリングを使用 */}
       <Modal isOpen={showModal} contentLabel="Example Modal" onClose={handleClose} style={ModalStyle}>
         <div className="Modal">
+
           <form onSubmit={handleSubmit} className="formInModal">
             {renderLoginAccount}
             <Stack

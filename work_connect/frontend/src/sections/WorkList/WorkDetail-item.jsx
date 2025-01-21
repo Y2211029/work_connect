@@ -620,7 +620,7 @@ const WorkDetailItem = () => {
                     </SplideTrack>
                   </Splide>
                 </div>
-                <div className="thumnbail_slide_area" style={{ display: Object.keys(WorkSlide).length == 1 ? "none" : "flex" }}>
+                <div className="thumnbail_slide_area">
                   {/* モーダルメインスライドの下にある小さなスライド */}
                   <Splide
                     ref={thumbnailSplideRef}

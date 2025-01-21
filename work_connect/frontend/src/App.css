@@ -1499,6 +1499,10 @@ textarea::placeholder {
     flex-direction: column;
   }
 
+  .thumnbail_slide_area {
+    display: none !important;
+  } 
+
   .modal_slide_area_first_stack {
     width: 100% !important;
   }
@@ -1783,9 +1787,7 @@ textarea::placeholder {
     font-size: 12px;
   }
 
-  .thumnbail_slide_area {
-    display: none;
-  }
+
 
   .searchbar {
     width: 80% !important;

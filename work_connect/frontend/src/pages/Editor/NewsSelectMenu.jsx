@@ -172,6 +172,7 @@ const NewsSelectMenu = ({
   RewriteNewsEnter,
   selected_draft,
   CreateFormJump,
+  newsDraftList,
 }) => {
   const [anchorElInput, setAnchorElInput] = useState(null); // 入力メニューのアンカー要素
   const [anchorElConfirmation, setAnchorElConfirmation] = useState(null); // 確認メニューのアンカー要素
@@ -217,6 +218,7 @@ const NewsSelectMenu = ({
 
   // 入力メニューのクリックイベント
   const handleClickInputMenu = (event) => {
+    newsDraftList();
     setAnchorElInput(event.currentTarget);
   };
 
@@ -227,6 +229,7 @@ const NewsSelectMenu = ({
 
   // 確認メニューのクリックイベント
   const handleClickConfirmationMenu = (event) => {
+    newsDraftList();
     setAnchorElConfirmation(event.currentTarget);
   };
 
@@ -436,7 +439,7 @@ const NewsSelectMenu = ({
       </div>
     );
   };
-  
+
 
   const renderPopoverContent = () => {
     if (selectedMenu === "input") {
@@ -789,6 +792,7 @@ NewsSelectMenu.propTypes = {
   RewriteNewsEnter: PropTypes.func.isRequired, //下書き中で編集するニュースを選択して、遷移する
   selected_draft: PropTypes.array.isRequired, //現在下書き中のニュース＆フォームの情報
   CreateFormJump: PropTypes.func.isRequired,
+  newsDraftList:PropTypes.func.isRequired,
 };
 
 // PropTypesの型定義

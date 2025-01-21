@@ -101,7 +101,8 @@ class SearchInternshipJobOfferController extends Controller
                 'w_companies.*',
                 'w_news.deadline',
                 'w_news.*',
-                'w_news.created_at as news_created_at'
+                'w_news.created_at as news_created_at',
+                'w_news.id as news_id'
             );
 
             $query->join('w_companies', 'w_news.company_id', '=', 'w_companies.id');
@@ -246,7 +247,7 @@ class SearchInternshipJobOfferController extends Controller
                     // Log::info('ID[0]が "S" の場合の処理を実行');
                     // Log::info('IDの値: ' . $id);
 
-                    // ログインしているユーザーのIDを取得する必要があります（例: auth()->id()       
+                    // ログインしているユーザーのIDを取得する必要があります（例: auth()->id()
 
 
                     // ユーザーがログインしているアカウントをフォローしているかどうか

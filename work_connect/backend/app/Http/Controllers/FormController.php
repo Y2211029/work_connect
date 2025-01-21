@@ -8,6 +8,7 @@ use App\Models\w_news;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\EditorController;
 
 class FormController extends Controller
 
@@ -28,6 +29,7 @@ class FormController extends Controller
         $news_id = $request->input('create_news_id'); //投稿するニュースのID
         $company_id = $request->input('company_id'); //企業のID
         $deadline = $request->input('deadline'); //締切日
+        $genre = $request->input('genre');//ジャンル
 
         Log::info('create_form: ' . $create_form); // JSONエンコードしてログに出力
         Log::info('news_id: ' . $news_id);
@@ -57,10 +59,15 @@ class FormController extends Controller
         // w_newsテーブルにdeadlineを保存
         $w_news->deadline = $deadline;
         $w_news->save();
-        
+
+        $draft_list = EditorController::news_draft_list($request, $company_id, $genre);
+
+
+
         // IDを返す
         return response()->json([
             'create_form_id' => $id,
+            'draft_list' => $draft_list,
         ], 200);
     }
 

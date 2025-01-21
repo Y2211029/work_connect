@@ -82,6 +82,7 @@ header .logo {
   border: 1.5px solid #637381;
   /* box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 10px !important; */
   z-index: 1200 !important;
+  background-color: #FFFFFF;
   /* z-index もともとは1400だがモーダルの上にこの矢印がくるため変更 */
   overflow: visible;
   transition: 0.2s !important;
@@ -1852,4 +1853,9 @@ textarea::placeholder {
   textarea::placeholder {
     font-size: 11px;
   }
+/*
+  .sd-root-modern .sd-container-modern__title{
+    padding-left:10% !important;
+  } */
+
 }

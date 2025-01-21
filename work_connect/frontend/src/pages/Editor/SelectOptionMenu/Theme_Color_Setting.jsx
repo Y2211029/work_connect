@@ -121,21 +121,28 @@ export default function Theme_Color_Setting({
 
   // 色タイプ選択のボタン
   const color_children = [
-    <Stack direction={"column"} key="color-toggle-buttons">
+    <Stack
+      direction={"row"}
+      key="color-toggle-buttons"
+      className="ColorToggleButtons"
+      spacing={2}
+      flexWrap="wrap"
+    >
       <ToggleButton value="Title" key="Title">
-        タイトルテキストカラー
+        タイトル
       </ToggleButton>
       <ToggleButton value="BackGround" key="BackGround">
-        背景色
+        背景
       </ToggleButton>
       <ToggleButton value="Question" key="Question">
-        質問テキストカラー
+        質問
       </ToggleButton>
       <ToggleButton value="Bar" key="Bar">
-        バーカラー
+        バー
       </ToggleButton>
     </Stack>,
   ];
+
 
   // キャンセル処理
   const handleCancel = () => {

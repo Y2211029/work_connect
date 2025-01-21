@@ -1,5 +1,7 @@
 body {
-  overflow: auto;
+  /* overflow-x: auto;
+  overflow-y: hidden; */
+  overflow-y: hidden;
   height: 100%;
   /* 高さを100%に設定して、親要素の高さに合わせる */
   margin: 0;
@@ -57,18 +59,18 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 .sd-header__text .sd-title {
-  font-size: 20px;
+  font-size: 12px;
 }
 
 .sd-root-modern {
   margin: 0 auto;
-  /* 自動で左右のマージンを設定し、中央揃えにします */
 }
+
+
 
 
 .back_news_draft {
   cursor: pointer;
-
   /* ボタンに少し丸みを追加 */
   padding: 8px 10px 20px 20px;
   /* 内側に余白を追加 */
@@ -85,15 +87,14 @@ input[type="number"]::-webkit-inner-spin-button {
   overflow-y: auto;
   flex-grow: 1;
   height: 100%;
+  padding-top: 5%;
+  padding-bottom: 10px;
+  border-radius: 8px;
 }
 
 
-
-
-
-
-.MuiStack-root .css-1sazv7p-MuiStack-root {
-  left: 10%;
+.sd-title.sd-container-modern__title{
+  border-radius:8px;
 }
 
 .SelectMenu {
@@ -301,6 +302,7 @@ input[type="number"]::-webkit-inner-spin-button {
   position: relative;
   left: 30%;
 }
+
 
 
 @media (max-width: 1200px) {

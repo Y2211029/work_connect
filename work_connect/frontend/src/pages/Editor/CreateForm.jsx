@@ -28,9 +28,6 @@ import Theme_Color_Setting from "./SelectOptionMenu/Theme_Color_Setting";
 // MUI
 import Stack from "@mui/material/Stack";
 import PropTypes from 'prop-types';
-import Tooltip from "@mui/material/Tooltip";
-import IconButton from "@mui/material/IconButton";
-import ModeEditIcon from '@mui/icons-material/ModeEdit';
 
 // データ保存
 import axios from "axios";
@@ -41,10 +38,11 @@ import FormSelectMenu from "./clickedmenu/FormSelectMenu";
 
 Modal.setAppElement('#root');
 
-const CreateForm = ({ newsid, HandleBack}) => {
+const CreateForm = ({ newsid, HandleBack, genre,setDraftList,setSelectedDraft}) => {
 
   console.log("ニュースid", newsid);
   console.log("HandleBack関数", HandleBack);
+  console.log("ジャンル", genre);
   const createform_search_url = "http://127.0.0.1:8000/createform_search";
   const [questions, setQuestions] = useState({});
   const [deadlineDate, setDeadlineDate] = useState(dayjs());
@@ -76,49 +74,50 @@ const CreateForm = ({ newsid, HandleBack}) => {
 
   useEffect(() => {
     // 背景色のスタイルを更新
-    applyCustomCss('--sjs-general-backcolor-dim', backGroundColor); //背景色 //テーマによる
+    applyCustomCss('--sjs-general-backcolor-dim', backGroundColor); //背景色
     applyCustomCss('--sjs-font-surveytitle-color', titleColor); //タイトルカラー
     applyCustomCss('--sjs-font-questiontitle-color', questionColor); //質問のタイトルカラー
-    applyCustomCss('--sjs-primary-backcolor', barColor); //テーマによる //タイトルと質問の間の線のカラー
+    applyCustomCss('--sjs-primary-backcolor', barColor);
     console.log("更新されました");
   }, [backGroundColor, titleColor, barColor, questionColor]);
 
-
-
   useEffect(() => {
     const getcreateform = async () => {
-      let createform = {};  // オブジェクト型で初期化
+      let createform = {}; // オブジェクト型で初期化
       console.log("news_id", newsid);
+
+      // デフォルトの themeSettings
+      const defaultThemeSettings = {
+        themeName: theme || 'default', // デフォルトテーマ名
+        colorPalette: alignment || 'Light', // デフォルト配色
+        backgroundColor: backGroundColor || '#FFFFFF', // デフォルト背景色
+        titleColor: titleColor || '#000000', // デフォルトタイトル色
+        questionTitleColor: questionColor || '#000000', // デフォルト質問タイトル色
+        barColor: barColor || '#000000', // デフォルトバー色
+      };
 
       try {
         const response = await axios.post(createform_search_url, {
-          newsid: newsid, // POST ボディに含める
+          newsid, // POST ボディに含める
         });
 
         console.log("レスポンスのクリエイトフォーム", response.data.create_form);
+
         if (Array.isArray(response.data.create_form) && response.data.create_form.length > 0) {
           console.log("持ってきた内容", response.data.create_form);
           setDeadlineDate(response.data.create_form.deadline);
+
           createform = typeof response.data.create_form[0].create_form === "string"
             ? JSON.parse(response.data.create_form[0].create_form)
             : response.data.create_form[0].create_form;
-          console.log("クリエイトフォーム", createform)
-          setBackGroundColor(createform.themeSettings.backgroundColor || '#FFFFFF');
-          setTitleColor(createform.themeSettings.titleColor || '#000000');
-          setQuestionColor(createform.themeSettings.questionTitleColor || '#000000');
-          setBarColor(createform.themeSettings.barColor || '#000000');
-          setTheme(createform.themeSettings.themeName || 'default');
 
-          const themeName = capitalizeFirstLetter(createform.themeSettings.themeName);
-          const colorPalette = capitalizeFirstLetter(createform.themeSettings.colorPalette);
+          console.log("クリエイトフォーム", createform);
 
-          setApplyTheme(`${themeName}${colorPalette}`);
-          console.log("setApplyTheme", `${themeName}${colorPalette}`);
-          if (createform.themeSettings.colorPalette?.includes("light")) {
-            setAlignment("Light");
-          } else {
-            setAlignment("Dark");
-          }
+          // themeSettings を補完
+          createform.themeSettings = {
+            ...defaultThemeSettings,
+            ...createform.themeSettings, // DBから取得したデータを優先
+          };
         } else {
           console.warn("create_form が空か存在しません。デフォルト値を設定します。");
           createform = {
@@ -131,34 +130,35 @@ const CreateForm = ({ newsid, HandleBack}) => {
                 type: "text",
                 inputType: "username",
                 isRequired: false,
-              }
+              },
             ],
-            themeSettings: {
-              themeName: theme,
-              colorPalette: alignment,
-              backgroundColor: backGroundColor || "#FFFFFF",
-            },
+            themeSettings: defaultThemeSettings, // デフォルト設定を使用
           };
         }
+
+        // themeSettings から値をセット
+        const { backgroundColor, titleColor, questionTitleColor, barColor, themeName, colorPalette } = createform.themeSettings;
+
+        setBackGroundColor(backgroundColor);
+        setTitleColor(titleColor);
+        setQuestionColor(questionTitleColor);
+        setBarColor(barColor);
+        setTheme(themeName);
+
+        const formattedThemeName = capitalizeFirstLetter(themeName);
+        const formattedColorPalette = capitalizeFirstLetter(colorPalette);
+
+        setApplyTheme(`${formattedThemeName}${formattedColorPalette}`);
+        console.log("setApplyTheme", `${formattedThemeName}${formattedColorPalette}`);
+
+        if (colorPalette.includes("light")) {
+          setAlignment("Light");
+        } else {
+          setAlignment("Dark");
+        }
+
       } catch (error) {
-        console.error("Error fetching create form data:", error);
-        createform = {
-          title: 'タイトル未設定',
-          elements: [
-            {
-              id: "1",
-              name: "Question1",
-              title: "エラーが発生しました",
-              type: "text",
-              inputType: "text",
-              isRequired: false,
-            }
-          ],
-          themeSettings: {
-            themeName: "error",
-            colorPalette: "light",
-          },
-        };
+        console.error("createform の取得エラー:", error);
       }
 
       setQuestions(createform); // 質問データをステートにセット
@@ -197,7 +197,7 @@ const CreateForm = ({ newsid, HandleBack}) => {
     // questionsが文字列型ならパースする
     if (typeof currentQuestions === "string") {
       try {
-        currentQuestions = JSON.parse(currentQuestions); 
+        currentQuestions = JSON.parse(currentQuestions);
       } catch (error) {
         console.error("questions のパースに失敗しました:", error);
         currentQuestions = { elements: [] };  // パース失敗時に空の配列を初期化
@@ -207,7 +207,7 @@ const CreateForm = ({ newsid, HandleBack}) => {
     // `elements` に追加する新しい質問データ
     const newQuestion = {
       id: `${currentQuestions.elements.length + 1}`,
-      name: `Question${currentQuestions.elements.length + 1}`, 
+      name: `Question${currentQuestions.elements.length + 1}`,
       title: `新しい質問 ${currentQuestions.elements.length + 1}`,
       type: type,  // 質問のタイプ
       inputType: inputType,  // 入力タイプ
@@ -419,7 +419,7 @@ const CreateForm = ({ newsid, HandleBack}) => {
         ...questions, // 他のプロパティ (title, themeSettings) を保持
         elements: reassignedQuestions, // 更新された質問を elements に設定
       });
-      
+
       // SurveyJS 内でも削除
       const page = options.question.page;
       console.log("page",page);
@@ -477,12 +477,20 @@ const CreateForm = ({ newsid, HandleBack}) => {
         .sv-action__content .sd-btn--action.sd-navigation__complete-btn {
           display: none;
         }
+
+        .FormDemo{
+          background-color: ${backGroundColor};
+        }
+
+        .sd-container-modern{
+          border: ${backGroundColor} 1px solid;
+        }
       `;
     const styleSheet = document.createElement("style");
     styleSheet.type = "text/css";
     styleSheet.innerText = css;
     document.head.appendChild(styleSheet);
-  }, []);
+  }, [backGroundColor]);
 
   useEffect(()=>{
     console.log("質問が変更しました",questions);
@@ -498,6 +506,7 @@ const CreateForm = ({ newsid, HandleBack}) => {
     console.log("締切日", deadlineDate);
     console.log("背景色", backGroundColor);
     console.log("テーマ", theme);
+    console.log("ジャンル", genre);
     const create_form_save_url = `http://localhost:8000/create_form_save`;
 
     try {
@@ -506,9 +515,15 @@ const CreateForm = ({ newsid, HandleBack}) => {
         company_id: data.id,
         create_news_id: create_news_id,
         deadline: deadlineDate,
+        genre: genre
       });
       console.log("サーバーからのレスポンス", response.data);
-      // window.location.reload()
+      console.log("下書きリスト", response.data.draft_list);
+      setDraftList(response.data.draft_list);
+      const select_draft_list = response.data.draft_list.find((d) => d.id === newsid);
+      console.log("select_draft_list",select_draft_list);
+      setSelectedDraft(select_draft_list);
+      //下書きリストを更新
       alert("保存が完了しました");
     } catch (error) {
       console.error("フォーム保存エラー", error);
@@ -736,6 +751,7 @@ const CreateForm = ({ newsid, HandleBack}) => {
           addQuestion={addQuestion}
           questions={questions}
           WriteNewsHandleBack={WriteNewsHandleBack}
+          handleOpenThemeModal={handleOpenThemeModal}
         />
 
         <Modal
@@ -791,13 +807,6 @@ const CreateForm = ({ newsid, HandleBack}) => {
       </Stack>
 
       <div className="FormDemo"> {/* フォーム部分 */}
-        <div>
-          <Tooltip title="編集する">
-            <IconButton onClick={handleOpenThemeModal}>
-              <ModeEditIcon />
-            </IconButton>
-          </Tooltip>
-        </div>
 
         {!questions || questions.length === 0 ? (
           <ColorRing
@@ -835,7 +844,10 @@ Text.propTypes = {
 CreateForm.propTypes = {
   newsid: PropTypes.number,
   HandleBack: PropTypes.func.isRequired,
-  title: PropTypes.string
+  title: PropTypes.string,
+  genre:PropTypes.string,
+  setDraftList: PropTypes.func.isRequired,
+  setSelectedDraft:PropTypes.func.isRequired
 };
 
 

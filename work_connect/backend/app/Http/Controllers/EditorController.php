@@ -395,7 +395,7 @@ class EditorController extends Controller
     }
 
 
-    public function news_draft_list(Request $request, $id, $genre)
+    public static function news_draft_list(Request $request, $id, $genre)
     {
         try {
             // 条件に一致するニュースドラフトリストを取得 //適合したジャンルのものだけ持ってくる
@@ -439,20 +439,20 @@ class EditorController extends Controller
         Log::info("createform_search通ってます");
         try {
             $newsid = $request->input('newsid');
-    
+
             // 条件に一致するニュースドラフトリストを取得
             $createForm = w_create_form::where('news_id', $newsid)
                 ->join('w_news', 'w_create_forms.news_id', '=', 'w_news.id') // news_idでw_newsと結合
                 ->get();
-    
+
             // create_form カラムをデコードして返す
             $createForm = $createForm->map(function ($form) {
                 $form->create_form = json_decode($form->create_form); // JSONをデコード
                 return $form;
             });
-    
+
             Log::info("クリエイトフォーム", [$createForm]);
-    
+
             return response()->json(['create_form' => $createForm]);
         } catch (\Exception $e) {
             // エラーレスポンスを返す

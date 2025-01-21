@@ -268,7 +268,7 @@ const PostCard = forwardRef(({ post }) => {
                     <Tab label="個別" onClick={(e) => handleTabClick(e, 2)} />
                   </Tabs>
                 </Box>
-
+                
                 {value === 0 && (
                   <Summary
                     application_form={application_form}

@@ -1,190 +1,288 @@
-.WriteForm_Container{
-    height:100%;
-    width:100%;
-}
-
 .WriteForm {
-    width:800px;
+    width: 800px;
     /* min-width: 100%; */
     margin-left: 50%;
-    margin-bottom:10px;
-    align-items: center; /* 縦の中央揃え */
+    margin-bottom: 10px;
 }
 
-.sv-string-viewer{
-    width:100%;
+.sv-string-viewer {
+    width: 100%;
     font-size: 15px;
 }
 
-.FormApplyButton{
+.FormApplyButton {
     position: relative;
     width: 100px;
-    border-color:#5956FF;
-    color:#5956FF;
-    margin-left:20%;
+    border-color: #5956FF;
+    color: #5956FF;
+    left: 80%;
+    top: 0;
 }
 
-.FormApplyButton:hover{
-    cursor:pointer;
+.FormApplyButton:hover {
+    cursor: pointer;
 }
 
-.sd-header__text .sd-title span{
+.WriteFormActionButton {
+    padding-bottom: 5%;
+}
+
+.sd-header__text .sd-title span {
     margin-left: 5%;
-    font-size:20px;
+    font-size: 20px;
 }
 
-@media(max-width:1700px){
+.Form {
+    width: 100%;
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: auto;
+    flex-grow: 1;
+    height: 100%;
+    padding-top: 5%;
+    padding-bottom: 10px;
+    border-radius: 8px;
+}
+
+.ShowForm {
+    width: 100%;
+    position: relative;
+    left: 20%;
+}
+
+.SurveyModal {
+    width: 70%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    /* 縦のオーバーフローは非表示 */
+}
+
+
+@media(max-width:1700px) {
     .WriteForm {
         width: 80%;
-        margin-left:0;
+        margin-left: 0;
     }
 
 
-    .FormApplyButton{
+    .FormApplyButton {
         position: relative;
         margin-left: 0%;
         width: 200px;
-        font-size:20px;
+        font-size: 20px;
     }
 
 }
 
-@media(max-width:1200px){
+@media(max-width:1200px) {
     .WriteForm {
         width: 80%;
-        margin-bottom:10px;
-        align-items: center; /* 縦の中央揃え */
+        margin-bottom: 10px;
+        align-items: center;
+        /* 縦の中央揃え */
     }
 
-    .sv-string-viewer{
+    .sv-string-viewer {
         font-size: 25px;
     }
-    .NewsDetailBackButton{
-        font-size:40px;
+
+    .NewsDetailBackButton {
+        font-size: 40px;
     }
 
     .sd-element__title span {
-        font-size:20px;
+        font-size: 20px;
     }
 
-    .sd-title.sd-container-modern__title{
-        width:100vw;
+    .sd-title.sd-container-modern__title {
+        width: 100vw;
         padding: 0;
     }
 
-    .sd-input{
-        font-size:100%;
+    .sd-input {
+        font-size: 100%;
     }
 
-    .FormApplyButton{
+    .FormApplyButton {
+        width: 80px;
+        left: 80%;
+        font-size: 12px;
+    }
+
+    .ShowForm {
+        width: 100%;
         position: relative;
-        margin-left: 10%;
-        width: 200px;
-        font-size:30px;
+        left: 0;
     }
 
-    .WriteForm_Container{
-        padding-top: 5%;
-        padding-bottom: 10%;
+    .SurveyModal {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
     }
 
-    .sd-title.sd-container-modern__title{
+    .sd-header__text .sd-title span {
+        font-size: 15px;
+    }
+
+    .sd-title.sd-container-modern__title {
         padding: 10px;
     }
 
-    .sd-header__text .sd-title span{
+    .sd-header__text .sd-title span {
         margin-left: 5%;
     }
-}
 
-
-
-@media(max-width:900px){
-    .WriteForm {
-        width:100vw;
-        margin-left: 0;
-        margin-bottom:10px;
-        align-items: center; /* 縦の中央揃え */
+    /* セレクトボックスの選択肢のスマホUI */
+    /* .sv-popup--overlay .sv-popup__body-content {
+        background-color: #FFFFFF;
     }
 
-    .sv-string-viewer{
-        font-size: 15px;
-    }
-    .NewsDetailBackButton{
-        font-size:30px;
-    }
-
-    .sd-element__title span {
-        font-size:15px;
-    }
-
-    .sd-title.sd-container-modern__title{
-        padding: 0;
-    }
-
-    .sd-input{
-        font-size:80%;
-    }
-
-    .FormApplyButton{
+    .sv-list__filter {
         position: relative;
-        width: 150px;
-        font-size:20px;
-        margin-left:0px;
+        margin-top: 30%;
     }
 
-    .WriteForm_Container{
-        padding-bottom: 10%;
-        padding-top: 5%;
+    .sv-list {
+        position: relative;
+        width: 100%;
     }
 
-    .sd-header__text .sd-title span{
-        margin-left: 5%;
+
+    .sv-popup--dropdown-overlay .sv-list {
+        flex-grow: 0;
     }
+
+    .sv-popup__body-footer {
+        position: relative;
+        margin-top: -30%;
+    } */
+
+    .sv-popup--overlay .sv-popup__body-content {
+        position: relative;
+        max-height: auto;
+        top: 30%;
+        width: 100vw;
+        border-radius: 8px;
+        background: var(--sjs-general-backcolor, var(--background, #fff));
+        padding: 24px 16px 16px;
+        height: auto;
+    }
+
 }
 
-@media(max-width:600px){
+
+
+@media(max-width:900px) {
     .WriteForm {
         width: 100vw;
         margin-left: 0;
-        margin-bottom:10px;
-        align-items: center; /* 縦の中央揃え */
-        padding-bottom: 3%;
+        margin-bottom: 10px;
+        align-items: center;
+        /* 縦の中央揃え */
     }
 
-    .sd-header__text .sd-title span{
-        margin-left: 5%;
-    }
-
-    .sv-string-viewer{
+    .sv-string-viewer {
         font-size: 15px;
     }
-    .NewsDetailBackButton{
-        font-size:30px;
+
+    .NewsDetailBackButton {
+        font-size: 30px;
     }
 
     .sd-element__title span {
-        font-size:15px;
+        font-size: 15px;
     }
 
-    .sd-title.sd-container-modern__title{
+    .sd-title.sd-container-modern__title {
         padding: 0;
     }
 
-    .sd-input{
-        font-size:80%;
+    .sd-input {
+        font-size: 80%;
     }
 
-    .FormApplyButton{
+    .FormApplyButton {
+        width: 80px;
+        left: 60%;
+        font-size: 12px;
+    }
+
+    .ShowForm {
+        width: 100%;
         position: relative;
-        width: 100px;
-        font-size:15px;
+        left: 0;
+    }
+
+    .SurveyModal {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .sd-header__text .sd-title span {
+        font-size: 15px;
+    }
+
+
+
+
+}
+
+@media(max-width:600px) {
+    .WriteForm {
+        width: 100vw;
+        margin-left: 0;
+        margin-bottom: 10px;
+        align-items: center;
+        /* 縦の中央揃え */
+        padding-bottom: 3%;
+    }
+
+    .sd-header__text .sd-title span {
         margin-left: 5%;
     }
 
-    .WriteForm_Container{
-        padding-bottom: 10%;
+    .sv-string-viewer {
+        font-size: 15px;
     }
+
+    .NewsDetailBackButton {
+        font-size: 30px;
+    }
+
+    .sd-element__title span {
+        font-size: 15px;
+    }
+
+    .sd-title.sd-container-modern__title {
+        padding: 0;
+    }
+
+    .sd-input {
+        font-size: 80%;
+    }
+
+
+
+    .FormApplyButton {
+        width: 80px;
+        left: 60%;
+        font-size: 12px;
+    }
+
+    .ShowForm {
+        width: 100%;
+        position: relative;
+        left: 0;
+    }
+
+    .SurveyModal {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
 
 }
 
@@ -194,17 +292,17 @@
         margin-bottom: 10px;
     }
 
-    .MuiStack-root .css-1x68ktx-MuiStack-root{
+    .MuiStack-root .css-1x68ktx-MuiStack-root {
         width: 100vw;
     }
 
-    .WriteForm_Container{
+    .WriteForm_Container {
         padding-top: 5%;
         padding-bottom: 10%;
     }
 
-    .sd-header__text .sd-title span{
-        font-size:15px;
+    .sd-header__text .sd-title span {
+        font-size: 12px;
     }
 
     .sv-string-viewer {
@@ -230,12 +328,31 @@
     .FormApplyButton {
         position: relative;
         width: 80px;
-        margin-left: 5%;
+        left: 60%;
         border-color: #5956FF;
         color: #5956FF;
         font-size: 12px;
     }
-/* 
+
+    .ShowForm {
+        width: 100%;
+        position: relative;
+        left: 0;
+    }
+
+    .SurveyModal {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .sv-string-viewer {
+        font-size: 12px;
+    }
+
+
+
+    /*
     .sv-list{
         width: 100%;
         height: 50%;
@@ -251,7 +368,7 @@
     } */
 
 
-        /* .sv-popup--overlay .sv-popup__body-footer .sv-action-bar {
+    /* .sv-popup--overlay .sv-popup__body-footer .sv-action-bar {
             position: fixed;
             top: 0;
             left: 0;
@@ -269,4 +386,3 @@
 /* .sd-title .sd-container-modern__title{
     background-color: violet !important;
 } */
-

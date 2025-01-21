@@ -28,6 +28,9 @@ import AssessmentIcon from "@mui/icons-material/Assessment";
 import StarIcon from "@mui/icons-material/Star";
 import BurstModeIcon from "@mui/icons-material/BurstMode";
 
+import IconButton from "@mui/material/IconButton";
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
+
 //エディタに戻る
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Tooltip from "@mui/material/Tooltip";
@@ -59,6 +62,7 @@ const NewsSelectMenu = ({
   addQuestion,
   // questions,
   WriteNewsHandleBack,
+  handleOpenThemeModal,
 }) => {
   const [anchorElInput, setAnchorElInput] = useState(null); // 入力メニューのアンカー要素
   // const [anchorElFormInformatiion, setAnchorElFormInformatiion] = useState(null); // 確認メニューのアンカー要素
@@ -73,7 +77,7 @@ const NewsSelectMenu = ({
     setAnchorElInput(event.currentTarget);
   };
 
-  const handleCloseInputMenu = async() => {
+  const handleCloseInputMenu = async () => {
     setAnchorElInput(null);
   };
 
@@ -219,6 +223,13 @@ const NewsSelectMenu = ({
             <Typography className="FormSelectMenu_Text">下書き保存</Typography>
           </Button>
         </div>
+        <div>
+          <Tooltip title="編集する">
+            <IconButton onClick={handleOpenThemeModal}>
+              <ModeEditIcon />
+            </IconButton>
+          </Tooltip>
+        </div>
       </div>
     </div>
   );
@@ -231,6 +242,7 @@ NewsSelectMenu.propTypes = {
   addQuestion: PropTypes.func.isRequired,
   questions: PropTypes.string,
   WriteNewsHandleBack: PropTypes.func.isRequired,
+  handleOpenThemeModal: PropTypes.func.isRequired
 };
 
 // PropTypesの型定義

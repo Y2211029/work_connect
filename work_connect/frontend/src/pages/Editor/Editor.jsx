@@ -66,7 +66,6 @@ const Editor = () => {
   const [imageUrl, setImageUrl] = useState(null); // 画像のURLを保持するステート
   const [displayInput, setDisplayInput] = useState(true); // input要素の表示状態を管理するステート
   const [title, setTitle] = useState(null);
-  const [csrfToken, setCsrfToken] = useState("");
   const [sessionId, setSessionId] = useState(null);
   const [news_id, setNewsId] = useState(0); // ニュースの情報が格納されているDBのidを格納する
   const [draft_list, setDraftList] = useState([]); // ニュースの下書きリストを保持するステート
@@ -84,8 +83,6 @@ const Editor = () => {
 
   const news_save_url = "http://localhost:8000/news_save";
   const thumbnail_image_save_url = "http://127.0.0.1:8000/thumbnail_image_save";
-
-  const csrf_url = "http://localhost:8000/csrf-token";
 
   const isContentReady = !!(
     title &&
@@ -139,9 +136,6 @@ const Editor = () => {
         genre: genre, // ジャンル
         followerCounter: followerCounter, // 通知が必要かどうかの判断材料
       }, {
-        headers: {
-          "Content-Type": "application/json",
-        },
       });
 
       // レスポンスの確認
@@ -195,11 +189,6 @@ const Editor = () => {
           company_id: sessionId, // 企業ID
           genre: genre, //ジャンル
         },
-        {
-          headers: {
-            "X-CSRF-TOKEN": csrfToken,
-          },
-        }
       );
 
       setDraftList(response.data.news_draft_list); // 下書きリスト最新に更新
@@ -245,7 +234,7 @@ const Editor = () => {
 
   const handleFileSelect = async (event) => {
     const file = event.target.files[0];
-    if (file && csrfToken) {
+    if (file) {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("news_id", news_id);
@@ -259,7 +248,6 @@ const Editor = () => {
       try {
         const response = await axios.post(thumbnail_image_save_url, formData, {
           headers: {
-            "X-CSRF-TOKEN": csrfToken,
             "Content-Type": "multipart/form-data",
           },
         });
@@ -338,7 +326,6 @@ const Editor = () => {
       }));
     };
 
-    // 変換関数を使用して、stateにセットする
     const OpenJobs = select_draft_list.open_jobs;
     setSelectedOccupation(transformOpenJobs(OpenJobs));
     console.log("応募職種配列", transformOpenJobs(OpenJobs));
@@ -439,9 +426,6 @@ const Editor = () => {
     }
   };
 
-  // const postsFrominternshipJobOffer = specialCompanyNewsItem();
-  // console.log("postsFromCompany", postsFrominternshipJobOffer);
-
   useEffect(() => {
     async function getSessionId() {
       try {
@@ -457,24 +441,12 @@ const Editor = () => {
         console.error("Error fetching CSRF token:", error);
       }
     }
+    console.log("sessionIdをget");
     getSessionId(); // ページがロードされた時点でsessionstorageからidを取得
-
-    async function fetchCsrfToken() {
-      try {
-        const response = await axios.get(csrf_url); // CSRFトークンを取得するAPIエンドポイント
-        console.log(response.data.csrf_token); // ログ
-        console.log("fetching CSRF token:OK"); // ログ
-        const csrfToken = response.data.csrf_token;
-        setCsrfToken(csrfToken); // 状態を更新
-      } catch (error) {
-        console.error("Error fetching CSRF token:", error);
-      }
-    }
-    fetchCsrfToken(); // ページがロードされた時点でCSRFトークンを取得
   }, []); // 空の依存配列を渡して初回のみ実行
 
-  useEffect(() => {
-    async function newsDraftList() {
+    const newsDraftList = async() =>{
+      console.log("newsDraftList発火");
       if (sessionId) {
         const news_draft_list_url = `http://localhost:8000/news_draft_list/${sessionId}/${genre}`;
         console.log("news_draft_list_url", news_draft_list_url);
@@ -491,8 +463,6 @@ const Editor = () => {
       }
     }
 
-    newsDraftList();
-  }, [sessionId,CreateFormOpen]); 
 
   useEffect(() => {
     if (editorHolder.current && !editorInstance.current) {
@@ -1347,6 +1317,8 @@ const Editor = () => {
         console.error("handleBack内でのエラー:", error);
       }
 
+      newsDraftList(); //下書きリストを更新
+
 
 
     } else {
@@ -1368,7 +1340,13 @@ const Editor = () => {
       </Stack>
 
       {/* CreateForm の表示 */}
-      {CreateFormOpen && <CreateForm newsid={news_id} HandleBack={handleBack} title={title} />}
+      {CreateFormOpen && <CreateForm newsid={news_id}
+      HandleBack={handleBack}
+      title={title}
+      genre={genre}
+      setDraftList={setDraftList}
+      setSelectedDraft = {setSelectedDraft}
+      />}
 
       {!CreateFormOpen && (
         <>
@@ -1394,6 +1372,7 @@ const Editor = () => {
               RewriteNewsDelete={rewrite_news_delete}
               RewriteNewsEnter={rewrite_news}
               CreateFormJump={CreateFormJump}
+              newsDraftList={newsDraftList}
             />
           </div>
 

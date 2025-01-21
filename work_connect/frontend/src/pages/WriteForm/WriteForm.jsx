@@ -6,7 +6,6 @@ import { Model } from 'survey-core';
 import { Survey } from 'survey-react-ui';
 import 'survey-core/defaultV2.min.css';
 import Button from '@mui/material/Button';
-import Stack from "@mui/material/Stack";
 import PropTypes from "prop-types";
 import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
 import IconButton from '@mui/material/IconButton';
@@ -14,6 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Box from '@mui/material/Box';
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import './writeform.css';
+import { ColorRing } from "react-loader-spinner";
 
 import * as themes from "survey-core/themes";
 
@@ -35,10 +35,13 @@ export default function WriteFormPage() {
     account_id: accountData.id,
     account_username: accountData.user_name,
   };
-
+  let backGroundColor;
+  let barColor;
+  let titleColor;
+  let questionTitleColor;
 
   useEffect(() => {
-    //ニュースのデータを抽出するc
+    //ニュースのデータを抽出する
     async function fetchData() {
       try {
         const response = await axios.get(`http://localhost:8000/write_form_get`, {
@@ -58,11 +61,46 @@ export default function WriteFormPage() {
     fetchData();
   }, [newsdetail_id]);
 
+  // Survey モデルの生成
+  const survey = new Model(createForm);
+
+  if (createForm.themeSettings) {
+    const themeObject = themes["ThreeDimensionalLight"];
+    console.log('themeobjectがありました', themeObject);
+    backGroundColor = createForm.themeSettings.backgroundColor;
+    barColor = createForm.themeSettings.barColor;
+    titleColor = createForm.themeSettings.titleColor;
+    questionTitleColor = createForm.themeSettings.questionTitleColor;
+    themeObject.cssVariables["--sjs-general-backcolor-dim"] = backGroundColor;  // 背景色設定
+    themeObject.cssVariables["--sjs-primary-backcolor"] = barColor;            // バーの色設定
+    themeObject.cssVariables["--sjs-font-surveytitle-color"] = titleColor;     // タイトルの色設定
+    themeObject.cssVariables["--sjs-font-questiontitle-color"] = questionTitleColor; // 質問タイトルの色設定
+
+    survey.applyTheme(themeObject); // テーマを再適用
+    console.log("テーマオブジェクトの中身", themeObject);
+  } else {
+    console.log("クリエイトフォームの中身", createForm);
+    // backGroundColor = createForm.cssVariables["--sjs-border-default"];
+    console.log("サーベイ:", survey);
+    console.log("現在のテーマオブジェクト:", survey.cssValue);
+    // console.log("テーマCSS変数:", survey.theme.cssVariables);
+    backGroundColor = "#f3f3f3";
+
+    // // CSS変数を取得
+    // backGroundColor = getComputedStyle(rootElement).getPropertyValue('--sjs-general-backcolor-dim').trim();
+
+  }
+
+  // background-color: var(--sjs-general-backcolor-dim, var(--background-dim, #f3f3f3));
+
   useEffect(() => {
     // 完了ボタンを非表示にする
     const css = `
       .sv-action__content .sd-btn--action.sd-navigation__complete-btn {
         display: none;
+      }
+      .Form{
+        background-color: ${backGroundColor};
       }
     `;
     const styleSheet = document.createElement("style");
@@ -71,28 +109,15 @@ export default function WriteFormPage() {
     document.head.appendChild(styleSheet);
   }, []);
 
-  // Survey モデルの生成
-  const survey = new Model(createForm);
-  const themeObject = themes["ThreeDimensionalLight"];
-  if (themeObject && createForm.themeSettings) {
-    console.log('themeobjectがありました', themeObject);
-    themeObject.cssVariables["--sjs-general-backcolor-dim"] = createForm.themeSettings.backgroundColor;  // 背景色設定
-    themeObject.cssVariables["--sjs-primary-backcolor"] = createForm.themeSettings.barColor;            // バーの色設定
-    themeObject.cssVariables["--sjs-font-surveytitle-color"] = createForm.themeSettings.titleColor;     // タイトルの色設定
-    themeObject.cssVariables["--sjs-font-questiontitle-color"] = createForm.themeSettings.questionTitleColor; // 質問タイトルの色設定
-
-    survey.applyTheme(themeObject); // テーマを再適用
-    console.log("テーマオブジェクトの中身", themeObject);
-  } else {
-    console.error(`テーマ '${themeObject}' が見つかりません`);
-  }
-
 
   const WriteFormSave = () => {
     const isValid = survey.validate();
+    const Apply_Check  = confirm("本当に応募しますか?");
 
-    if (isValid) {
+    if (isValid && Apply_Check) {
       console.log("フォームは有効です。保存処理を実行します。");
+
+
 
       // フォームのデータを取得
       const formData = survey.data;
@@ -157,61 +182,88 @@ export default function WriteFormPage() {
     window.location.href = `/NewsDetail/${newsdetail_id}`;
   };
 
-    return (
-      <>
-        <Helmet>
-          <title> 応募する | Work&Connect </title>
-        </Helmet>
+  return (
+    <>
+      <Helmet>
+        <title> 応募する | Work&Connect </title>
+      </Helmet>
 
-        <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
-          <Tooltip title="戻る">
-            <IconButton
-              onClick={() => NewsDetailBack()}
-              sx={{
-                '&:hover': { backgroundColor: '#f0f0f0' },
-              }}
+      {survey ? (
+        <>
+          <Box className="WriteFormActionButton">
+            <Tooltip title="戻る">
+              <IconButton
+                onClick={() => NewsDetailBack()}
+                sx={{
+                  '&:hover': { backgroundColor: '#f0f0f0' },
+                }}
+              >
+                <ArrowBackOutlinedIcon className="NewsDetailBackButton" sx={{ fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" } }} />
+              </IconButton>
+            </Tooltip>
 
-            >
-              <ArrowBackOutlinedIcon className="NewsDetailBackButton" sx={{ fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" } }} />
-            </IconButton>
-          </Tooltip>
-        </Box>
+            <Button variant="outlined" onClick={WriteFormSave} className="FormApplyButton">
+            応募する
+          </Button>
 
-        <div className="WriteForm_Container">
+          </Box>
+
+          {/* <div className="WriteForm_Container">
           <Stack direction={"row"} sx={{ display: "inline-block" }}>
+          <div className="Form">
             <div className="WriteForm">
               <Survey model={survey} />
             </div>
-            <Button variant="outlined" onClick={WriteFormSave} className="FormApplyButton">
-            応募する
-            </Button>
+          </div>
           </Stack>
-        </div>
+        </div> */}
+
+
+          <div className="Form">
+            <div className="ShowForm">
+              <div className="SurveyModal">
+                <Survey model={survey} />
+              </div>
+            </div>
+          </div>
 
 
 
 
 
-      </>
-    );
+        </>
+      ) : (
+        <ColorRing
+          visible={true}
+          height="100"
+          width="100"
+          ariaLabel="color-ring-loading"
+          wrapperStyle={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
+          wrapperClass="custom-color-ring-wrapper" // カスタムクラスを指定
+          colors={["#41a4ff", "#FFFFFF", "#41a4ff", "#41a4ff", "#FFFFFF"]}
+          style={{ flexDirection: "column" }}
+        />
+      )}
+    </>
+  );
 
-  }
+}
 
-  // displayName を設定
-  WriteFormPage.displayName = 'WriteFormPage';
+// displayName を設定
+WriteFormPage.displayName = 'WriteFormPage';
 
-  WriteFormPage.propTypes = {
-    post: PropTypes.shape({
-      company_id: PropTypes.string,
-      news_id: PropTypes.string,
-      article_title: PropTypes.string,
-      create_form: PropTypes.arrayOf(PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        title: PropTypes.string.isRequired,
-        type: PropTypes.string.isRequired,
-        inputtype: PropTypes.string,
-        validators: PropTypes.array,
-      })).isRequired,
-    }).isRequired,
-  };
+WriteFormPage.propTypes = {
+  post: PropTypes.shape({
+    company_id: PropTypes.string,
+    news_id: PropTypes.string,
+    article_title: PropTypes.string,
+    create_form: PropTypes.arrayOf(PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      type: PropTypes.string.isRequired,
+      inputtype: PropTypes.string,
+      validators: PropTypes.array,
+    })).isRequired,
+  }).isRequired,
+};
 

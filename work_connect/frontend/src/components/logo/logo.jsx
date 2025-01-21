@@ -15,13 +15,13 @@ function Logo() {
   const { /*DataList,*/ IsSearch, Page, sortOption } = AllItems;
   // サイドバークリック 一覧アイテム・並び替え・検索タグ 初期化
   const handleReset = () => {
-    console.log("あいうえおかきくけこ")
+    // console.log("あいうえおかきくけこ")
     if (sortOption !== "orderNewPostsDate" || Page > 1 || IsSearch.Check == true) {
       setAllItems((prevItems) => ({
         ...prevItems,
         IsLoading: true, // 一時的にローディングを解除
       }));
-      console.log("あいうえお")
+      // console.log("あいうえお")
       setAllItems((prevItems) => ({
         ...prevItems, //既存のパラメータ値を変更するためにスプレッド演算子を使用
         ResetItem: true,

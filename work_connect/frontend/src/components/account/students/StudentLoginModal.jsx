@@ -47,14 +47,13 @@ const StudentLoginModal = (props) => {
   // パスワード表示/非表示の切り替え(パスワード)
   const [showPassword, setShowPassword] = useState("");
 
-
   const dataUsers = (userName, password) => {
     setFormValues((prev) => ({
       ...prev,
       user_name: userName,
       password: password,
     }));
-  }
+  };
   const handleClickShowPassword = (e) => {
     setShowModal(true);
     setShowPassword(!showPassword);
@@ -67,10 +66,9 @@ const StudentLoginModal = (props) => {
   };
 
   const handleClose = (event, reason) => {
-    if (reason === 'backdropClick') return;
+    if (reason === "backdropClick") return;
     setShowModal(false);
     setFormErrors({}); // エラーメッセージをリセット
-
   };
   // ヘッダーのログインボタンを押したときにログインモーダルを開いたり閉じたりする処理
   $("#loginModalOpenButton").click(function (e) {
@@ -79,7 +77,6 @@ const StudentLoginModal = (props) => {
 
     if (clickOneTimes.current) return; // 送信処理中かを判定する（trueなら抜ける）
     clickOneTimes.current = true; // 送信処理中フラグを立てる
-
 
     if (showModal == true) {
       setShowModal(false);
@@ -104,7 +101,7 @@ const StudentLoginModal = (props) => {
   // };
 
   const handleChange = (e) => {
-    console.log("CompanyLogine.target",e.target); // ログ
+    console.log("CompanyLogine.target", e.target); // ログ
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
   };
@@ -298,25 +295,42 @@ const StudentLoginModal = (props) => {
   const renderLoginAccount = (
     <div className="panel-container">
       <div className="panel-content">
-        <img className="loginSotushin2025" src="http://localhost:8000/storage/images/work/sotushin2025.png" alt="sotushin panel" />
+        <img className="loginSotushin2025" loading="lazy" src="http://localhost:8000/storage/images/work/sotushin2025.png" alt="sotushin panel" />
         <div className="button-container">
-          <button type="button" className="login_Honban_data" onClick={() => dataUsers('yoshioka', '2023gakusei')}>yoshioka</button>
-          <button type="button" className="login_Honban_data" onClick={() => dataUsers('bandou', '2023gakusei')}>bandou</button>
-          <button type="button" className="login_Honban_data" onClick={() => dataUsers('tanaka', '2024gakusei')}>tanaka</button>
-          <button type="button" className="login_Honban_data" onClick={() => dataUsers('sato', '2024gakusei')}>sato</button>
-          <button type="button" className="login_Honban_data" onClick={() => dataUsers('suzuki', '2024gakusei')}>suzuki</button>
-          <button type="button" className="login_Honban_data" onClick={() => dataUsers('nakamura', '2024gakusei')}>nakamura</button>
-          <button type="button" className="login_Honban_data" onClick={() => dataUsers('takahashi', '2024gakusei')}>takahashi</button>
-          <button type="button" className="login_Honban_data" onClick={() => dataUsers('kobayashi', '2024gakusei')}>kobayashi</button>
-          <button type="button" className="login_Honban_data" onClick={() => dataUsers('watanabe', '2024gakusei')}>watanabe</button>
-          <button type="button" className="login_Honban_data" onClick={() => dataUsers('mori', '2024gakusei')}>mori</button>
-
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers("yoshioka", "2023gakusei")}>
+            yoshioka
+          </button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers("bandou", "2023gakusei")}>
+            bandou
+          </button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers("tanaka", "2024gakusei")}>
+            tanaka
+          </button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers("sato", "2024gakusei")}>
+            sato
+          </button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers("suzuki", "2024gakusei")}>
+            suzuki
+          </button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers("nakamura", "2024gakusei")}>
+            nakamura
+          </button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers("takahashi", "2024gakusei")}>
+            takahashi
+          </button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers("kobayashi", "2024gakusei")}>
+            kobayashi
+          </button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers("watanabe", "2024gakusei")}>
+            watanabe
+          </button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers("mori", "2024gakusei")}>
+            mori
+          </button>
         </div>
       </div>
     </div>
-
   );
-
 
   return (
     <div className="LoginModalTopElement">
@@ -324,9 +338,8 @@ const StudentLoginModal = (props) => {
       <Modal isOpen={showModal} contentLabel="Example Modal" onClose={handleClose} style={ModalStyle}>
         {/* <Box component="div" sx={{ display: "flex", flexDirection: { md: "column", lg: "none" } }}> */}
         <div className="Modal">
-         
           <form onSubmit={handleSubmit} className="formInModal">
-          {renderLoginAccount}
+            {renderLoginAccount}
             <Stack
               direction="row"
               spacing={2}
@@ -337,15 +350,19 @@ const StudentLoginModal = (props) => {
               }}
             >
               <Stack
-                direction={{ xs: 'column', sm: 'column', md: 'row' }}
+                direction={{ xs: "column", sm: "column", md: "row" }}
                 spacing={2}
                 sx={{
                   justifyContent: "space-between",
                   alignItems: "align-items: center",
-                }}>
-
-                <Typography variant="h5" className="login_modal_items">Work&Connect</Typography>
-                <Typography variant="h" className="login_modal_items">ログイン（学生）</Typography>
+                }}
+              >
+                <Typography variant="h5" className="login_modal_items">
+                  Work&Connect
+                </Typography>
+                <Typography variant="h" className="login_modal_items">
+                  ログイン（学生）
+                </Typography>
               </Stack>
               {/* モーダル右上の❌ボタン */}
               <IconButton onClick={handleClose}>
@@ -404,7 +421,6 @@ const StudentLoginModal = (props) => {
                 }}
               />
 
-
               {/* <Button variant="outlined" className="Login_modal_Button" type="button" onClick={fillDemoCredentials} sx={{ width: { xs: "95%", sm: "90%", md: "80%" } }}>
                 ユーザーネーム:yoshioka パスワード:2023gakusei
               </Button> */}
@@ -424,7 +440,7 @@ const StudentLoginModal = (props) => {
         </div>
         {/* </Box> */}
       </Modal>
-    </div >
+    </div>
   );
 };
 StudentLoginModal.propTypes = {

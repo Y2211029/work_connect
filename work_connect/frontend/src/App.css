@@ -790,13 +790,10 @@ textarea {
 }
 
 .gallery-container {
-  column-gap: 10px;
+  gap: 0px;
   column-count: 5;
-  /* デフォルトは5カラム */
   width: 100%;
-  /* 最大幅を設定（必要に応じて変更） */
   margin: 0 auto;
-  /* 中央揃え */
 }
 
 .postCard {
@@ -811,10 +808,9 @@ textarea {
 .GalleryPostCard {
   margin: 0px 0px;
   border-radius: 20px;
-
   width: "100%";
   background: white;
-  padding: 20px;
+  padding: 5px;
 }
 
 .VideoInformation {
@@ -904,13 +900,14 @@ textarea {
 }
 
 .gallery_img {
-  transition: 0.5s all;
   object-fit: contain;
+  border: 1px solid transparent;
 }
 
 .gallery_img:hover {
-  border: 2px solid #41a4ff;
-  transform: scale(1.1);
+  border: 1px solid #41a4ff;
+  background: #1C2025;
+  /* transform: scale(1.1); */
 }
 
 
@@ -963,6 +960,7 @@ textarea {
   overflow-wrap: anywhere;
   white-space: pre-line;
   width: 100%;
+  font-size: 16px;
 }
 
 .detailURL {
@@ -1037,6 +1035,35 @@ textarea {
   height: 100%;
   display: flex;
   flex-direction: column;
+}
+
+.modal_slide_area {
+  width: 100%;
+  height: 100%;
+  z-index: 1301;
+  display: flex;
+  flex-direction: unset;
+}
+
+.annotation-container {
+  word-break: break-word;
+  border-left: 1px dashed #e0e0e0;
+  padding: 10px;
+  margin-left: 10px;
+  overflow: scroll;
+}
+
+.slide-annotation {
+  width: 100%;
+  font-size: 16px;
+}
+
+.thumnbail_slide_area {
+  width: 100%;
+  height: 20%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .modal-custom-splide {
@@ -1313,7 +1340,7 @@ textarea::placeholder {
 }
 
 .tagButton {
-  font-size: 11px;
+  font-size: 12px;
   background-color: white;
   border: 1px solid #b8b8b8;
   border-radius: 5px;
@@ -1467,6 +1494,31 @@ textarea::placeholder {
 }
 
 @media (max-width: 900px) {
+
+  .modal_slide_area {
+    flex-direction: column;
+  }
+
+  .modal_slide_area_first_stack {
+    width: 100% !important;
+  }
+
+  .annotation-container {
+    width: 100% !important;
+    border-left: none;
+    margin-left: 0px;
+    height: 100%;
+    padding-bottom: 20px;
+  }
+
+  .slide-annotation {
+    font-size: 12px;
+  }
+
+  .Detail_info-intro {
+    font-size: 12px;
+  }
+
   .button-container {
     width: 90%;
   }
@@ -1712,9 +1764,27 @@ textarea::placeholder {
 }
 
 @media (max-width: 400px) {
+
   .panel-container {
     width: 90%;
     margin-right: 0px;
+  }
+
+  .splide__arrow {
+    display: none !important;
+  }
+
+
+  .slide-annotation {
+    font-size: 12px;
+  }
+
+  .Detail_info-intro {
+    font-size: 12px;
+  }
+
+  .thumnbail_slide_area {
+    display: none;
   }
 
   .searchbar {

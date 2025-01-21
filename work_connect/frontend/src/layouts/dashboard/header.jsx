@@ -361,7 +361,13 @@ export default function Header({ onOpenNav }) {
     </>
   );
 
-  const renderArrowTopButton = <ArrowUpwardIcon onClick={handleScrollToTop} className="arrow_up_ward_icon" />;
+  const renderArrowTopButton = (
+    <ArrowUpwardIcon
+      onClick={handleScrollToTop}
+      className="arrow_up_ward_icon"
+      sx={{ color: "#637381", display: Display.HomePage === "none" ? "none" : "block", overflow: "visible" }}
+    />
+  );
 
   const renderToolBar = (
     <>

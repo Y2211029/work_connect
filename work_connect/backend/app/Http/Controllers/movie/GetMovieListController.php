@@ -46,11 +46,15 @@ class GetMovieListController extends Controller
                 ->take($perPage) //件数
                 ->get();
 
-
             $message = null;
             if ($page == 1 && $totalItems === 0) {
                 $message = "0件です。";
             }
+            
+            \Log::info('GetMovieListController:$movieList:');
+            \Log::info(json_encode($movieList));
+            \Log::info('GetMovieListController:$:');
+            \Log::info(json_encode($sortOption));
             
             return response()->json([
                 'list' => $movieList,
@@ -58,10 +62,6 @@ class GetMovieListController extends Controller
                 'message' => $message,
             ]);
             
-            \Log::info('GetMovieListController:$movieList:');
-            \Log::info(json_encode($movieList));
-            \Log::info('GetMovieListController:$:');
-            \Log::info(json_encode($sortOption));
         } catch (\Exception $e) {
             \Log::info('GetMovieListController:user_name重複チェックエラー');
             \Log::info($e);

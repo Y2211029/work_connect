@@ -55,6 +55,10 @@ const VideoOfList = ({ ParamUserName }) => {
     }
   }, [isIntersecting, setAllItems]);
 
+  useEffect(() => {
+    // console.log("setAllItems", AllItems);
+  }, [AllItems]);
+
   // 検索時にsetWorkOfListをリセット
   useEffect(() => {
     if (IsSearch.Check) {
@@ -66,6 +70,12 @@ const VideoOfList = ({ ParamUserName }) => {
   // 学生データを取得
   useEffect(() => {
     const fetchStudents = async () => {
+      // console.log("VideoOfList - Page : ", Page);
+      // console.log("VideoOfList - sortOption : ", sortOption);
+      if (ParamUserName !== undefined) {
+        // console.log("VideoOfList - userName : ", ParamUserName);
+      }
+
       try {
         const response = await axios.get(`http://localhost:8000/get_movie_list`, {
           params: { page: Page, sort: sortOption, userName: ParamUserName },
@@ -75,8 +85,10 @@ const VideoOfList = ({ ParamUserName }) => {
           setStudents([]);
           setNoDataMessage("0件です。");
         } else if (response.data.count > 0) {
+          console.log("VideoOfList - response.data.list", response.data.list);
           setStudents((prevStudents) => {
-            const newStudents = response.data.list.filter((newStudent) => !prevStudents.some((movies) => movies.id === newStudent.id));
+            const newStudents = response.data.list.filter((newStudent) => !prevStudents.some((movies) => movies.movie_id === newStudent.movie_id));
+            // console.log("VideoListFilter", newStudents);
             return [...prevStudents, ...newStudents];
           });
           setNoDataMessage(null);
@@ -95,15 +107,16 @@ const VideoOfList = ({ ParamUserName }) => {
       }
     };
 
-    console.log("検索結果:VideoOfList:", DataList);
     if (IsSearch.Check) {
       if (DataList) {
+        // console.log("検索結果:VideoOfList:", DataList);
         if (DataList.message === "0件です。") {
           setStudents([]);
           setNoDataMessage(DataList.message);
         } else if (DataList.list) {
           setStudents((prevStudents) => {
-            const newStudents = DataList.list.filter((newStudent) => !prevStudents.some((movies) => movies.id === newStudent.id));
+            const newStudents = DataList.list.filter((newStudent) => !prevStudents.some((movies) => movies.movie_id === newStudent.movie_id));
+
             return [...prevStudents, ...newStudents];
           });
           setNoDataMessage(null);
@@ -121,17 +134,29 @@ const VideoOfList = ({ ParamUserName }) => {
       }
       fetchStudents();
     }
+
+    return () => {
+      setAllItems((prev) => ({
+        ...prev,
+        Page: 1,
+        sortOption: "orderNewPostsDate",
+      }));
+      console.log("VideoOfList unmount");
+    };
   }, [IsSearch.Check, Page, DataList, sortOption, ParamUserName, setAllItems]);
 
   // リスト描画のメモ化
   const renderedStudents = students.map((movies, index) => (
-    <MemoizedPostCard ref={index === students.length - 1 ? ref : null} key={movies.id} movies={movies} />
+    <MemoizedPostCard ref={index === students.length - 1 ? ref : null} key={`${movies.movie_id} - ${index}`} movies={movies} />
   ));
 
   useEffect(() => {
-    console.log("noDataMessage", noDataMessage);
+    // console.log("noDataMessage", noDataMessage);
   }, [noDataMessage]);
 
+  useEffect(() => {
+    console.log("VideoOflist - List : ", students);
+  }, [students]);
   return (
     <>
       {isLoadItem && (

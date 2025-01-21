@@ -270,9 +270,7 @@ const VideoDetailItem = () => {
       <Typography variant="h5" className="WorkDetail_typo">
         ●動画の紹介
       </Typography>
-      <div className="Detail_info-intro" style={{ fontSize: "16px" }}>
-        {parseLinks(VideoDetail.intro)}
-      </div>
+      <div className="Detail_info-intro">{parseLinks(VideoDetail.intro)}</div>
     </>
   );
 
@@ -458,7 +456,7 @@ const VideoDetailItem = () => {
           style={{ flexDirection: "column" }}
         />
       )}
-      <Container sx={{ padding: "20px 24px" }}>
+      <Container sx={{ padding: "20px 20px 100px 20px" }}>
         {renderLink}
         {renderTitle}
 

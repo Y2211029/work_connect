@@ -59,28 +59,23 @@ const ColorRingStyle = () => {
   return (
     <Box
       sx={{
-        marginTop: '20%',
-        display: 'flex', // Flexboxを使用
-        justifyContent: 'center', // 水平方向中央
-        alignItems: 'center', // 垂直方向中央
+        marginTop: "20%",
+        display: "flex", // Flexboxを使用
+        justifyContent: "center", // 水平方向中央
+        alignItems: "center", // 垂直方向中央
       }}
     >
       <ColorRing
-        style={{
-          visible: true,
-          margin: "0px",
-          height: "10",
-          width: "10",
-          ariaLabel: "color-ring-loading",
-          wrapperClass: "custom-color-ring-wrapper",
-          colors:
-            ["#41a4ff", "#FFFFFF", "#41a4ff", "#41a4ff", "#FFFFFF"]
-        }}
+        visible={true}
+        height="100"
+        width="100"
+        ariaLabel="color-ring-loading"
+        wrapperClass="custom-color-ring-wrapper"
+        colors={["#41a4ff", "#FFFFFF", "#41a4ff", "#41a4ff", "#FFFFFF"]}
       />
     </Box>
   );
-
-}
+};
 
 const ProfileMypage = () => {
   // 「さらに表示」ボタンの初期設定
@@ -107,7 +102,6 @@ const ProfileMypage = () => {
   // DBからのレスポンスが入る変数
   const [ResponseData, setResponseData] = useState([]);
   const [CompanyInformationData, setResponseCompanyInformationData] = useState([]);
-
 
   const [responseIcon, setResponseIcon] = useState(true);
 
@@ -153,7 +147,7 @@ const ProfileMypage = () => {
           setResponseCompanyInformationData(response.data[0].companyInformation);
           setFollowStatus(response.data[0].follow_status);
           // マップ
-          console.log("XXXXXXXXXXXXXXXXXXXXXXX"+response.data[0].map_url);
+          console.log("XXXXXXXXXXXXXXXXXXXXXXX" + response.data[0].map_url);
           handleMapUrl(response.data[0].map_url);
           // youtube
           handleVideoUrl(response.data[0].video_url);
@@ -175,7 +169,6 @@ const ProfileMypage = () => {
     detail.current.forEach((ref) => {
       if (ref) ref.style.display = "none";
     });
-
   }, []);
 
   // フォロー
@@ -463,7 +456,7 @@ const ProfileMypage = () => {
               sx={{
                 height: "calc(100vw * 0.58)",
                 width: "calc(100vw * 0.58)",
-                padding: '20px',
+                padding: "20px",
                 objectFit: "cover",
                 borderRadius: "50%",
                 maxHeight: 350,
@@ -479,7 +472,7 @@ const ProfileMypage = () => {
 
         <Box>
           <Typography variant="h6">企業名</Typography>
-          <Item >{ResponseData.company_name ? ResponseData.company_name : <PulseLoader color="#DAE2ED" />}</Item>
+          <Item>{ResponseData.company_name ? ResponseData.company_name : <PulseLoader color="#DAE2ED" />}</Item>
         </Box>
         <Box>
           <Typography variant="h6">企業名(カタカナ)</Typography>
@@ -520,19 +513,19 @@ const ProfileMypage = () => {
           ResponseData.acquisition_qualification ||
           ResponseData.hp_url ||
           ResponseData.video_url) && (
-            <Box>
-              <Showmore>
-                <Button
-                  variant="outlined"
-                  ref={showmore}
-                  onClick={ShowmoreClick}
-                  sx={{ borderColor: "#5956FF", color: "#5956FF", "&:hover": { borderColor: "#5956FF" }, cursor: "pointer" }}
-                >
-                  {showMoreText}
-                </Button>
-              </Showmore>
-            </Box>
-          )}
+          <Box>
+            <Showmore>
+              <Button
+                variant="outlined"
+                ref={showmore}
+                onClick={ShowmoreClick}
+                sx={{ borderColor: "#5956FF", color: "#5956FF", "&:hover": { borderColor: "#5956FF" }, cursor: "pointer" }}
+              >
+                {showMoreText}
+              </Button>
+            </Showmore>
+          </Box>
+        )}
         {/* ResponseData.prefectureがあるときのみ表示 */}
         {ResponseData.prefecture && !close && (
           <Box ref={(el) => (detail.current[0] = el)} id="detail">
@@ -613,18 +606,14 @@ const ProfileMypage = () => {
         )}
 
         {/* 自由記述の企業情報 */}
-        {CompanyInformationData.length > 0 && !close ? (
-          CompanyInformationData.map((info, index) => (
-            <Box id="companyinfodata" key={index}>
-              <Typography variant="h6">{info.title}</Typography>
-              <Item style={{ whiteSpace: 'pre-line' }}>{info.contents}</Item>
-            </Box>
-          ))
-        ) : (
-          null
-        )}
-
-
+        {CompanyInformationData.length > 0 && !close
+          ? CompanyInformationData.map((info, index) => (
+              <Box id="companyinfodata" key={index}>
+                <Typography variant="h6">{info.title}</Typography>
+                <Item style={{ whiteSpace: "pre-line" }}>{info.contents}</Item>
+              </Box>
+            ))
+          : null}
       </Stack>
     </Box>
   );
@@ -632,5 +621,4 @@ const ProfileMypage = () => {
 
 export default ProfileMypage;
 ProfileMypage.displayName = "Parent";
-ColorRingStyle.propTypes = {
-};
+ColorRingStyle.propTypes = {};

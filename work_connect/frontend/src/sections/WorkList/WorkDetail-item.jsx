@@ -34,23 +34,23 @@ import { parseLinks } from "../../components/Link/ParseLink";
 // ここでアプリケーションのルートエレメントを設定
 Modal.setAppElement("#root");
 
-const options = {
-  type: "loop",
-  gap: "1rem",
-  autoplay: false, //自動再生off
-  pauseOnHover: false, //スクロール停止するかどうか、自動再生と依存関係なので必要なし
-  resetProgress: false, //自動再生が中断されたのち再開する際、それまでの経過時間を維持するか破棄するかを決定
-  aspectRatio: "16 / 9", //アスペクト比
-};
+// const options = {
+//   type: "loop",
+//   gap: "1rem",
+//   autoplay: false, //自動再生off
+//   pauseOnHover: false, //スクロール停止するかどうか、自動再生と依存関係なので必要なし
+//   resetProgress: false, //自動再生が中断されたのち再開する際、それまでの経過時間を維持するか破棄するかを決定
+//   aspectRatio: "16 / 9", //アスペクト比
+// };
 
-const ModalOptions = {
-  type: "loop",
-  gap: "1rem",
-  autoplay: false, //自動再生off
-  pauseOnHover: false, //スクロール停止するかどうか、自動再生と依存関係なので必要なし
-  resetProgress: false, //自動再生が中断されたのち再開する際、それまでの経過時間を維持するか破棄するかを決定
-  aspectRatio: "16 / 9", //アスペクト比
-};
+// const ModalOptions = {
+//   type: "loop",
+//   gap: "1rem",
+//   autoplay: false, //自動再生off
+//   pauseOnHover: false, //スクロール停止するかどうか、自動再生と依存関係なので必要なし
+//   resetProgress: false, //自動再生が中断されたのち再開する際、それまでの経過時間を維持するか破棄するかを決定
+//   aspectRatio: "16 / 9", //アスペクト比
+// };
 
 const thumbsOptions = {
   type: "slide",
@@ -139,8 +139,6 @@ const WorkDetailItem = () => {
   // 作品コメント削除
   const workCommentDelete = "http://localhost:8000/post_work_comment_delete";
 
-  // console.log("currentSlideIndex", currentSlideIndex);
-
   // Laravel側から作品詳細データを取得
   useEffect(() => {
     setAccountData(getSessionData("accountData"));
@@ -208,11 +206,6 @@ const WorkDetailItem = () => {
     });
     setComment(initialCommentState);
   }, [workComment]);
-
-  // useEffect(() => {
-  //   console.log("commentが変更されました。", Comment);
-  // }, [Comment]);
-
   // タグ作成
   useEffect(() => {
     //ジャンル
@@ -255,11 +248,6 @@ const WorkDetailItem = () => {
     // ギャラリモーダルを閉じる
     setGalleryIsOpen(false);
   };
-
-  // コメント欄表示
-  // const handleTextOpen = () => {
-  //   setCommentPost({ ...CommentPost, display: "block" });
-  // };
 
   // コメント投稿キャンセル
   const handlePostCancel = () => {
@@ -439,17 +427,32 @@ const WorkDetailItem = () => {
     </>
   );
 
+  useEffect(() => {
+    console.log("Object.keys(WorkSlide).length", Object.keys(WorkSlide).length);
+  }, [WorkSlide]);
   // メインスライド
   const renderMainSlider = WorkSlideCheck && (
     <Stack direction="column">
       <Stack>
         <Splide
           ref={mainSplideRef}
-          options={options}
+          options={{
+            type: "loop",
+            gap: "1rem",
+            autoplay: false, //自動再生off
+            pauseOnHover: false, //スクロール停止するかどうか、自動再生と依存関係なので必要なし
+            resetProgress: false, //自動再生が中断されたのち再開する際、それまでの経過時間を維持するか破棄するかを決定
+            aspectRatio: "16 / 9", //アスペクト比
+            arrows: Object.keys(WorkSlide).length > 1 ? true : false, // workSlide が 1 の場合は矢印を非表示
+          }}
           aria-labelledby="autoplay-example-heading"
           hasTrack={false}
           onMoved={(splide, newIndex) => setCurrentSlideIndex(newIndex)}
           style={{ width: "100%", height: "100%", margin: "0 auto" }}
+          // options={{
+          //   arrows: WorkSlide.length > 1, // 矢印を表示するかどうかを動的に設定
+          // }}
+          className={WorkSlide.length === 1 ? "hide-arrows" : ""}
         >
           <div style={{ position: "relative" }}>
             <SplideTrack>
@@ -524,22 +527,37 @@ const WorkDetailItem = () => {
       }}
     >
       <div className="modal_slide_stack">
-        <div style={{ borderBottom: "1px dashed #e0e0e0" }}>
+        <div style={{ borderBottom: "1px dashed #e0e0e0", paddingBottom: "10px" }}>
           <Button onClick={closeModal} className="close-button">
             閉じる
           </Button>
-          <Button onClick={openGallery} className="oepn-gallery">
+          <Button onClick={openGallery} className="oepn-gallery" style={{ display: Object.keys(WorkSlide).length == 1 ? "none" : "inline-block" }}>
             ギャラリー
           </Button>
         </div>
-        <div style={{ width: "100%", height: "100%", zIndex: theme.zIndex.modal, display: "flex" }}>
-          <Stack direction="column" justifyContent="space-around" alignItems="center" spacing={0} style={{ width: SLIDER.MODAL_WIDTH }}>
+        <div className="modal_slide_area">
+          <Stack
+            className="modal_slide_area_first_stack"
+            direction="column"
+            justifyContent="space-around"
+            alignItems="center"
+            spacing={0}
+            style={{ width: SLIDER.MODAL_WIDTH }}
+          >
             {modalIsOpen && WorkSlideCheck && (
               <>
                 <div style={{ width: "100%", height: "calc(100% - 20%)", display: "flex", justifyContent: "center", alignItems: "center" }}>
                   <Splide
                     ref={modalSplideRef}
-                    options={ModalOptions}
+                    options={{
+                      type: "loop",
+                      gap: "1rem",
+                      autoplay: false, //自動再生off
+                      pauseOnHover: false, //スクロール停止するかどうか、自動再生と依存関係なので必要なし
+                      resetProgress: false, //自動再生が中断されたのち再開する際、それまでの経過時間を維持するか破棄するかを決定
+                      aspectRatio: "16 / 9", //アスペクト比
+                      arrows: Object.keys(WorkSlide).length > 1 ? true : false, // workSlide が 1 の場合は矢印を非表示
+                    }}
                     onMoved={(splide, newIndex) => setCurrentSlideIndex(newIndex)}
                     aria-labelledby="modal-autoplay-example-heading"
                     hasTrack={false}
@@ -602,7 +620,7 @@ const WorkDetailItem = () => {
                     </SplideTrack>
                   </Splide>
                 </div>
-                <div style={{ width: "100%", height: "calc(100% - 80%)", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                <div className="thumnbail_slide_area" style={{ display: Object.keys(WorkSlide).length == 1 ? "none" : "flex" }}>
                   {/* モーダルメインスライドの下にある小さなスライド */}
                   <Splide
                     ref={thumbnailSplideRef}
@@ -611,11 +629,6 @@ const WorkDetailItem = () => {
                     onMoved={(splide, newIndex) => setCurrentSlideIndex(newIndex)}
                     hasTrack={false}
                     arrows={false}
-                    sx={{
-                      ".splide__arrow": {
-                        display: "none !important",
-                      },
-                    }}
                     aria-label="..."
                   >
                     <SplideTrack>
@@ -672,18 +685,10 @@ const WorkDetailItem = () => {
 
           {/* overScroll 追加 */}
           {modalIsOpen && (
-            <div
-              className="annotation-container"
-              style={{
-                width: SLIDER.ANOTATION,
-                wordBreak: "break-word",
-                borderLeft: "1px dashed #e0e0e0",
-                padding: "10px",
-                marginLeft: "10px",
-                overflow: "scroll",
-              }}
-            >
-              <div style={{ width: "100%" }}>{WorkSlide[currentSlideIndex].annotation}</div>
+            <div className="annotation-container" style={{ width: SLIDER.ANOTATION }}>
+              <div className="slide-annotation" style={{ width: "100%" }}>
+                {WorkSlide[currentSlideIndex].annotation}
+              </div>
             </div>
           )}
         </div>
@@ -796,20 +801,16 @@ const WorkDetailItem = () => {
       <Typography variant="h5" className="WorkDetail_typo">
         ●作品の紹介
       </Typography>
-      <div className="Detail_info-intro" style={{ fontSize: "16px" }}>
-        {parseLinks(workDetail.work_intro)}
-      </div>
+      <div className="Detail_info-intro">{parseLinks(workDetail.work_intro)}</div>
     </>
   );
   // こだわりポイント
   const renderObsession = workDetail.obsession && (
     <>
       <Typography variant="h5" className="WorkDetail_typo">
-        ● こだわりポイント
+        ●こだわりポイント
       </Typography>
-      <div className="Detail_info-intro" style={{ fontSize: "16px" }}>
-        {parseLinks(workDetail.obsession)}
-      </div>
+      <div className="Detail_info-intro">{parseLinks(workDetail.obsession)}</div>
     </>
   );
 
@@ -1057,7 +1058,7 @@ const WorkDetailItem = () => {
         />
       )}
 
-      <Container sx={{ padding: "20px 24px" }}>
+      <Container sx={{ padding: "20px 20px 100px 20px" }}>
         {renderLink}
         {renderTitle}
 

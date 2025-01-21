@@ -56,27 +56,23 @@ const ColorRingStyle = () => {
   return (
     <Box
       sx={{
-        marginTop: '20%',
-        display: 'flex', // Flexboxを使用
-        justifyContent: 'center', // 水平方向中央
-        alignItems: 'center', // 垂直方向中央
+        marginTop: "20%",
+        display: "flex", // Flexboxを使用
+        justifyContent: "center", // 水平方向中央
+        alignItems: "center", // 垂直方向中央
       }}
     >
       <ColorRing
-        style={{
-          visible: true,
-          margin: "0px",
-          height: "10",
-          width: "10",
-          ariaLabel: "color-ring-loading",
-          wrapperClass: "custom-color-ring-wrapper",
-          colors: ["#41a4ff", "#FFFFFF", "#41a4ff", "#41a4ff", "#FFFFFF"]
-        }}
+        visible={true}
+        height="100"
+        width="100"
+        ariaLabel="color-ring-loading"
+        wrapperClass="custom-color-ring-wrapper"
+        colors={["#41a4ff", "#FFFFFF", "#41a4ff", "#41a4ff", "#FFFFFF"]}
       />
     </Box>
   );
-
-}
+};
 
 const ProfileMypage = () => {
   // 「さらに表示」ボタンの初期設定
@@ -112,7 +108,6 @@ const ProfileMypage = () => {
 
   //フォローステータスが変更されるまでの間ボタンを押せなくする
   const [ButtonDisable, setButtonDisable] = useState(false);
-
 
   // websocket通信のデータ保存先
   const notificationContext = useContext(WebScokectContext);
@@ -417,7 +412,7 @@ const ProfileMypage = () => {
               sx={{
                 height: "calc(100vw * 0.58)",
                 width: "calc(100vw * 0.58)",
-                padding: '20px',
+                padding: "20px",
                 objectFit: "cover",
                 borderRadius: "50%",
                 maxHeight: 350,
@@ -429,7 +424,6 @@ const ProfileMypage = () => {
               }}
             />
           )}
-
         </Card>
 
         <Box>
@@ -469,19 +463,19 @@ const ProfileMypage = () => {
           ResponseData.programming_language ||
           ResponseData.acquisition_qualification ||
           ResponseData.software) && (
-            <Box>
-              <Showmore>
-                <Button
-                  variant="outlined"
-                  ref={showmore}
-                  onClick={ShowmoreClick}
-                  sx={{ borderColor: "#5956FF", color: "#5956FF", "&:hover": { borderColor: "#5956FF" }, cursor: "pointer" }}
-                >
-                  {showMoreText}
-                </Button>
-              </Showmore>
-            </Box>
-          )}
+          <Box>
+            <Showmore>
+              <Button
+                variant="outlined"
+                ref={showmore}
+                onClick={ShowmoreClick}
+                sx={{ borderColor: "#5956FF", color: "#5956FF", "&:hover": { borderColor: "#5956FF" }, cursor: "pointer" }}
+              >
+                {showMoreText}
+              </Button>
+            </Showmore>
+          </Box>
+        )}
         {/* ResponseData.faculty_nameがあるときのみ表示 */}
         {ResponseData.faculty_name && !close && (
           <Box ref={(el) => (detail.current[0] = el)} id="detail">
@@ -568,5 +562,4 @@ const ProfileMypage = () => {
 
 export default ProfileMypage;
 ProfileMypage.displayName = "Parent";
-ColorRingStyle.propTypes = {
-};
+ColorRingStyle.propTypes = {};

@@ -11,14 +11,13 @@ import Popover from "@mui/material/Popover";
 import IconButton from "@mui/material/IconButton";
 import { DeleteIdContext } from "src/layouts/dashboard/index";
 
-
 import axios from "axios";
 
 const EditButtons = ({ deleteId }) => {
   const [open, setOpen] = useState(false);
   const buttonRef = useRef(null); // ボタンの参照を取得
   const navigate = useNavigate();
-  const {  setDeleteId } = useContext(DeleteIdContext);
+  const { setDeleteId } = useContext(DeleteIdContext);
   const handleGlobalClick = (e) => {
     // ボタン外をクリックした場合に閉じる
     if (buttonRef.current && !buttonRef.current.contains(e.target)) {
@@ -65,7 +64,7 @@ const EditButtons = ({ deleteId }) => {
           } else if (page === "movie") {
             await axios.post(`http://localhost:8000/video_delete/${deleteId}`);
           }
-          setDeleteId(deleteId)
+          setDeleteId(deleteId);
           alert("削除しました");
           // window.location.reload();
         } catch (error) {
@@ -78,7 +77,7 @@ const EditButtons = ({ deleteId }) => {
 
   return (
     <>
-      <div className="button-container" ref={buttonRef}>
+      <div ref={buttonRef}>
         <Tooltip title="編集">
           <IconButton onClick={() => setOpen(!open)}>
             <MoreVertIcon color="action" />
@@ -120,7 +119,7 @@ const EditButtons = ({ deleteId }) => {
 };
 
 EditButtons.propTypes = {
-  deleteId : PropTypes.string.isRequired,
+  deleteId: PropTypes.string.isRequired,
 };
 
 export default EditButtons;

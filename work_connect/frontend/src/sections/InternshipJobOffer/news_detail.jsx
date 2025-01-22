@@ -52,11 +52,15 @@ const InternshipJobOfferPage = () => {
         });
         SetNewsDetail(response.data.news_detail);
         setFollowStatus(response.data.news_detail.follow_status);
-        const writeform_status = response.data.news_detail.writeform_status;
-        const deadline_status = response.data.news_detail.deadline_status;
+        const writeform_status = response.data.news_detail.writeform_status
+        const deadline_status = response.data.news_detail.deadlineStatus
         const createform_status = response.data.news_detail.createform_status;
         const previousNews = response.data.previousNews;
         const nextNews = response.data.nextNews;
+
+        console.log("デッドラインステータス", deadline_status);
+        console.log("ライトフォームステータス", writeform_status);
+
 
         setWriteFormStatus(writeform_status);
         setDeadLineStatus(deadline_status);
@@ -282,29 +286,31 @@ const InternshipJobOfferPage = () => {
                         variant="contained"
                         sx={{
                           background: deadlinestatus
-                            ? "linear-gradient(#d3d3d3, #a6a6a6)" // 応募できない場合の背景
-                            : writeformStatus
+                            ? writeformStatus
                               ? "linear-gradient(#d3d3d3, #a6a6a6)" // 応募済みの場合の背景
-                              : "linear-gradient(#41A4FF, #9198e5)", // 応募する場合の背景
+                              : "linear-gradient(#41A4FF, #9198e5)" // 応募可能な場合の背景
+                            : "linear-gradient(#d3d3d3, #a6a6a6)", // 締切が過ぎている場合の背景
                           "&:hover": {
-                            background: deadlinestatus || writeformStatus
-                              ? "linear-gradient(#b8b8b8, #9e9e9e)" // 応募できない場合または応募済みの場合のホバー時背景
-                              : "linear-gradient(#c2c2c2, #e5ad91)", // 応募可能な場合のホバー時背景
+                            background: deadlinestatus
+                              ? writeformStatus
+                                ? "linear-gradient(#b8b8b8, #9e9e9e)" // 応募済みの場合のホバー時背景
+                                : "linear-gradient(#c2c2c2, #e5ad91)" // 応募可能な場合のホバー時背景
+                              : "linear-gradient(#b8b8b8, #9e9e9e)", // 締切が過ぎている場合のホバー時背景
                           },
-                          color: "white", // 締切が過ぎた場合の文字色を白に変更
+                          color: "white", // ボタンの文字色
                         }}
                         onClick={
-                          deadlinestatus || writeformStatus
-                            ? undefined // 応募できない場合または応募済みの場合は無効化
-                            : handleFormJump // 応募可能な場合のクリックイベント
+                          deadlinestatus && !writeformStatus
+                            ? handleFormJump // 応募可能な場合のクリックイベント
+                            : undefined // 応募できない場合または応募済みの場合は無効化
                         }
-                        disabled={deadlinestatus || writeformStatus} // 応募できないまたは応募済みの場合にボタンを無効化
+                        disabled={!deadlinestatus || writeformStatus} // 締切が過ぎている場合または応募済みの場合にボタンを無効化
                       >
-                        {deadlinestatus
+                        {!deadlinestatus
                           ? "応募できません" // 締切が過ぎている場合
                           : writeformStatus
                             ? "応募済み" // 応募済みの場合
-                            : "応募する"}
+                            : "応募する"} 
                       </Button>
                     ) : (
                       <Button
@@ -315,14 +321,15 @@ const InternshipJobOfferPage = () => {
                           "&:hover": {
                             background: "linear-gradient(#b8b8b8, #9e9e9e)", // 応募できない場合のホバー時の背景
                           },
-                          color: "white", // 締切が過ぎた場合の文字色を白に変更
+                          color: "white", // 文字色
                         }}
-                        disabled={true} // 応募できないまたは応募済みの場合にボタンを無効化
+                        disabled={true} // ボタンを無効化
                       >
                         応募できません
                       </Button>
                     )
                   )}
+
 
 
 

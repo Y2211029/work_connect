@@ -456,4 +456,12 @@ input[type="number"]::-webkit-inner-spin-button {
     width: 100%;
   }
 
+  .css-1ckejg5-MuiPaper-root-MuiPopover-paper-MuiMenu-paper{
+    position: relative;
+    width: 1000px;
+    margin-left: 10%;
+  }
+
+
+
 }

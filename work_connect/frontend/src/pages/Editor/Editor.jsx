@@ -84,19 +84,29 @@ const Editor = () => {
   const news_save_url = "http://localhost:8000/news_save";
   const thumbnail_image_save_url = "http://127.0.0.1:8000/thumbnail_image_save";
 
+  const navigate = useNavigate();
+  const { genre } = useParams();
+
+  console.log("genreの中身",genre);
+  console.log("sessionIdの中身",sessionId);
   const isContentReady = !!(
     title &&
     imageUrl &&
     charCount &&
-    !moment(eventDay).isSame(moment(), 'day') &&
-    selectedOccupation.length > 0
+    (genre !== "Blog" || moment(eventDay).isAfter(moment(), 'day')) &&
+    (genre !== "Blog" ? selectedOccupation.length > 0 : true)
   );
 
-  const isFollowerValid = (followerCounter > 0 && notificationMessage) || followerCounter === 0 || followerCounter === undefined;
+  console.log("title",title);
+  console.log("imageUrl",imageUrl);
+  console.log("charCount",charCount);
+  console.log("eventDay",eventDay);
+  console.log("selectedOccupation",selectedOccupation);
 
-  const navigate = useNavigate();
-  const { genre } = useParams();
-  console.log(genre);
+
+
+  const isFollowerValid = (followerCounter > 0 && !!notificationMessage) || followerCounter === 0 || followerCounter === undefined;
+
 
   //ニュースを投稿した際の処理
   const news_upload = async () => {
@@ -183,7 +193,7 @@ const Editor = () => {
           value: formSummary, // ニュース記事
           title: title, // タイトル
           news_id: news_id, // ID
-          message: notificationMessage, //通知に添えるメッセージ
+          message: notificationMessage, //通知メッセージ
           selectedOccupation: OpenJobs,
           eventDay: eventDay, //開催日
           company_id: sessionId, // 企業ID
@@ -1352,6 +1362,7 @@ const Editor = () => {
         <>
           <div>
             <NewsSelectMenu
+              sessionId={sessionId}
               setEventDay={setEventDay}
               eventDay={eventDay}
               selected_draft={selected_draft}
@@ -1373,6 +1384,7 @@ const Editor = () => {
               RewriteNewsEnter={rewrite_news}
               CreateFormJump={CreateFormJump}
               newsDraftList={newsDraftList}
+              genre={genre}
             />
           </div>
 

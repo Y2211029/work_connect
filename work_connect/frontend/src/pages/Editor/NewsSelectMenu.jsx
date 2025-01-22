@@ -19,7 +19,7 @@ import "moment/locale/ja";
 import CreatableSelect from "react-select/creatable";
 import GetTagAllList from "src/components/tag/GetTagAllList";
 
-// 通知に添えるメッセージ
+// 通知メッセージ
 import { TextareaAutosize as BaseTextareaAutosize } from "@mui/base/TextareaAutosize";
 import { styled, useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
@@ -93,6 +93,8 @@ const Textarea = styled(BaseTextareaAutosize)(
 `
 );
 
+
+
 const InputDateWithTime = ({ date, setEventDay, format = "YYYY/MM/DD HH:mm" }) => {
   moment.locale("ja"); // 日本語設定
   console.log("この時のデータの中身は?", date);
@@ -152,6 +154,7 @@ const ShowUsedImages = ({ usedImages }) => {
 };
 
 const NewsSelectMenu = ({
+  sessionId,
   setEventDay,
   eventDay,
   setSelectedOccupation,
@@ -173,6 +176,7 @@ const NewsSelectMenu = ({
   selected_draft,
   CreateFormJump,
   newsDraftList,
+  genre
 }) => {
   const [anchorElInput, setAnchorElInput] = useState(null); // 入力メニューのアンカー要素
   const [anchorElConfirmation, setAnchorElConfirmation] = useState(null); // 確認メニューのアンカー要素
@@ -192,6 +196,15 @@ const NewsSelectMenu = ({
   console.log("isContentReady", isContentReady);
   console.log("isFollowerValid", isFollowerValid);
   console.log("eventDayの中身", eventDay);
+  console.log("ジャンル", genre);
+  console.log("followerCounter", followerCounter);
+
+  const [menuItems] = useState([
+    { key: "eventday", label: "開催日" },
+    { key: "jobtype", label: "募集職種" },
+    { key: "createform", label: "応募フォーム" },
+    { key: "message", label: "通知メッセージ" },
+  ]);
 
   useEffect(() => {
     let optionArrayPromise = GetTagAllListFunction("company_selected_occupation");
@@ -408,14 +421,14 @@ const NewsSelectMenu = ({
   };
 
 
-
+  console.log("notificationMessage",notificationMessage);
   const WarningTargetArray =
     [
       { name: "タイトル", judge: title == null || title == "", element: title },
       { name: "サムネイル", judge: imageUrl == null || imageUrl == "", element: imageUrl },
-      ...followerCounter > 0 ? [{ name: "通知に添えるメッセージ", judge: notificationMessage == null || notificationMessage == "", element: notificationMessage }] : [],
-      { name: "開催日", judge: moment(eventDay).isSame(moment(), 'day'), element: eventDay },
-      { name: "募集職種", judge: selectedOccupation.length <= 0, element: selectedOccupation },
+      ...followerCounter > 0 ? [{ name: "通知メッセージ", judge: notificationMessage == null || notificationMessage == "", element: notificationMessage }] : [],
+      ...genre !== "Blog"?[{ name: "開催日", judge: !moment(eventDay).isAfter(moment(), 'day'), element: eventDay }] : [],
+      ...genre !== "Blog"?[{ name: "募集職種", judge: selectedOccupation.length <= 0, element: selectedOccupation }] : [],
       { name: "記事内容", judge: charCount <= 0, element: charCount },
     ]
 
@@ -424,8 +437,15 @@ const NewsSelectMenu = ({
       .filter(warn => warn.judge)
       .map(warn => warn.name);
 
+
+      console.log("title",title);
+      console.log("imageUrl",imageUrl);
+      console.log("charCount",charCount);
+      console.log("eventDay",eventDay);
+      console.log("selectedOccupation",selectedOccupation);
+
     setWarningArray(newWarningArray);
-  }, [title, imageUrl, notificationMessage, eventDay, selectedOccupation, charCount]); // 依存関係の配列
+  }, [sessionId,title, imageUrl, notificationMessage, eventDay, selectedOccupation, charCount]); // 依存関係の配列
 
   const WarningCheck = () => {
     const warningText = WarningArray.join(", ");
@@ -589,14 +609,20 @@ const NewsSelectMenu = ({
                 {EditorStatusCheck(imageUrl, "imageurl")}
                 {followerCounter > 0 && (
                   <>
-                    <p>通知に添えるメッセージ</p>
+                    <p>通知メッセージ</p>
                     {EditorStatusCheck(notificationMessage, "notificationMessage")}
                   </>
                 )}
+
+                {genre !=="Blog" && (
+                <>
                 <p>開催日</p>
                 {EditorStatusCheck(eventDay, "eventDay")}
                 <p>募集職種</p>
                 {EditorStatusCheck(selectedOccupation, "selectedOccupation")}
+                </>
+                )}
+
                 <p>記事内容</p>
                 {EditorContentsStatusCheck()}
               </div>
@@ -666,35 +692,67 @@ const NewsSelectMenu = ({
     }
   };
 
+  console.log("このコードではfollowerCounter", followerCounter);
+
+  const renderMenuItems = () => {
+    let updatedMenuItems = [...menuItems];
+    let classvalue;
+
+    if (genre === "Blog") {
+      updatedMenuItems = updatedMenuItems.filter((item) => item.key === "message");
+      //入力メニューが1個
+      classvalue = "menu_input_one";
+
+      if (followerCounter < 0) {
+        return null;
+      }
+    } else if (followerCounter < 0) {
+      updatedMenuItems = updatedMenuItems.filter((item) => item.key !== "message");
+      //入力メニューが3個
+       classvalue="menu_input_three"
+    }else{
+      //入力メニューが4個
+      classvalue="menu_input"
+    }
+
+    return (
+      <div className="ButtonContainer">
+        <Button
+          id="input-button"
+          aria-controls={openInputMenu ? "menu-input" : undefined}
+          aria-haspopup="true"
+          aria-expanded={openInputMenu ? "true" : undefined}
+          onClick={handleClickInputMenu}
+        >
+          <Typography className="NewsSelectButton_Text">入力メニュー</Typography>
+        </Button>
+        <Menu
+          id="menu-input"
+          anchorEl={anchorElInput}
+          open={openInputMenu}
+          onClose={handleCloseInputMenu}
+          MenuListProps={{
+            "aria-labelledby": "input-button",
+          }}
+          className={classvalue}
+        >
+          {updatedMenuItems.map((item) => (
+            <MenuItem
+              key={item.key}
+              onClick={(e) => handleMenuItemClick(e, "input", item.key)}
+            >
+              {item.label}
+            </MenuItem>
+          ))}
+        </Menu>
+      </div>
+    );
+  };
+
   return (
     <>
       <div className="NewsSelectButton">
-        <div className="ButtonContainer">
-          <Button
-            id="input-button"
-            aria-controls={openInputMenu ? "menu-input" : undefined}
-            aria-haspopup="true"
-            aria-expanded={openInputMenu ? "true" : undefined}
-            onClick={handleClickInputMenu}
-          >
-            <Typography className="NewsSelectButton_Text">入力メニュー</Typography>
-          </Button>
-          <Menu
-            id="menu-input"
-            anchorEl={anchorElInput}
-            open={openInputMenu}
-            onClose={handleCloseInputMenu}
-            MenuListProps={{
-              "aria-labelledby": "input-button",
-            }}
-            className="menu_input"
-          >
-            <MenuItem onClick={(e) => handleMenuItemClick(e, "input", "eventday")}>開催日</MenuItem>
-            <MenuItem onClick={(e) => handleMenuItemClick(e, "input", "jobtype")}>募集職種</MenuItem>
-            <MenuItem onClick={(e) => handleMenuItemClick(e, "input", "message")}>通知メッセージ</MenuItem>
-            <MenuItem onClick={(e) => handleMenuItemClick(e, "input", "createform")}>応募フォーム</MenuItem>
-          </Menu>
-        </div>
+        {renderMenuItems()}
 
         <div className="ButtonContainer">
           <Button
@@ -751,7 +809,6 @@ const NewsSelectMenu = ({
         </div>
 
 
-
         {isContentReady && isFollowerValid ? (
           <div className="ButtonContainer">
             <Button
@@ -772,6 +829,7 @@ const NewsSelectMenu = ({
 };
 
 NewsSelectMenu.propTypes = {
+  sessionId: PropTypes.string.isRequired,
   setEventDay: PropTypes.func.isRequired,
   eventDay: PropTypes.object.isRequired,
   setSelectedOccupation: PropTypes.func.isRequired,
@@ -792,7 +850,8 @@ NewsSelectMenu.propTypes = {
   RewriteNewsEnter: PropTypes.func.isRequired, //下書き中で編集するニュースを選択して、遷移する
   selected_draft: PropTypes.array.isRequired, //現在下書き中のニュース＆フォームの情報
   CreateFormJump: PropTypes.func.isRequired,
-  newsDraftList:PropTypes.func.isRequired,
+  newsDraftList: PropTypes.func.isRequired,
+  genre: PropTypes.string.isRequired
 };
 
 // PropTypesの型定義

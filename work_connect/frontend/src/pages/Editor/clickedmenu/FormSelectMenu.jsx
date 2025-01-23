@@ -50,6 +50,7 @@ const InputDateWithTime = ({ date, setDeadlineDate, format = "YYYY/MM/DD HH:mm" 
         format={format}
         ampm={false}
         clearable
+        className="InputDateWithTime"
       />
     </LocalizationProvider>
   );

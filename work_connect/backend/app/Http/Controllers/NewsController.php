@@ -200,7 +200,7 @@ class NewsController extends Controller
         $title = w_write_form::where('recipient_company_id', $CompanyId)
             ->join('w_news', 'w_write_forms.news_id', '=', 'w_news.id')
             ->whereIn('w_news.public_status', [1, 2])
-            ->groupBy('w_news.article_title')
+            ->groupBy('w_news.article_title','w_news.created_at')
             ->orderBy('w_news.created_at', 'desc')
             ->select('w_news.article_title');
 

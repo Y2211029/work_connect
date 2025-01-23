@@ -31,22 +31,23 @@ import PropTypes from 'prop-types';
 
 // データ保存
 import axios from "axios";
-import dayjs from "dayjs";
-import "dayjs/locale/ja";
+
+//時間
+import moment from "moment-timezone";
 
 import FormSelectMenu from "./clickedmenu/FormSelectMenu";
 
 Modal.setAppElement('#root');
 
-const CreateForm = ({ newsid, HandleBack, genre,setDraftList,setSelectedDraft}) => {
+const CreateForm = ({ newsid, HandleBack,title,genre,setDraftList,setSelectedDraft}) => {
 
   console.log("ニュースid", newsid);
   console.log("HandleBack関数", HandleBack);
   console.log("ジャンル", genre);
   const createform_search_url = "http://127.0.0.1:8000/createform_search";
   const [questions, setQuestions] = useState({});
-  const [deadlineDate, setDeadlineDate] = useState(dayjs());
-  const [backGroundColor, setBackGroundColor] = useState('#808080')
+  const [deadlineDate, setDeadlineDate] = useState(moment.utc());
+  const [backGroundColor, setBackGroundColor] = useState('#cccccc')
   const [titleColor, setTitleColor] = useState('#000000');
   const [barColor, setBarColor] = useState('#000000');
   const [questionColor, setQuestionColor] = useState('#000000');
@@ -105,23 +106,26 @@ const CreateForm = ({ newsid, HandleBack, genre,setDraftList,setSelectedDraft}) 
 
         if (Array.isArray(response.data.create_form) && response.data.create_form.length > 0) {
           console.log("持ってきた内容", response.data.create_form);
-          setDeadlineDate(response.data.create_form.deadline);
+          setDeadlineDate(response.data.create_form[0]?.deadline);
 
           createform = typeof response.data.create_form[0].create_form === "string"
             ? JSON.parse(response.data.create_form[0].create_form)
             : response.data.create_form[0].create_form;
 
-          console.log("クリエイトフォーム", createform);
+          createform.title = title || "タイトル未設定";
 
           // themeSettings を補完
           createform.themeSettings = {
             ...defaultThemeSettings,
             ...createform.themeSettings, // DBから取得したデータを優先
           };
+
+          console.log("クリエイトフォーム", createform);
+
         } else {
           console.warn("create_form が空か存在しません。デフォルト値を設定します。");
           createform = {
-            title: 'タイトル未設定',
+            title: title || "タイトル未設定",
             elements: [
               {
                 id: "1",
@@ -244,7 +248,7 @@ const CreateForm = ({ newsid, HandleBack, genre,setDraftList,setSelectedDraft}) 
 
   const EditopenModal = (Questions_Genre, questionData) => {
     setSelectMenu(Questions_Genre);
-    setQuestionData(questionData);
+    setQuestionData(questionData.jsonObj);
     setEditingStatus('ReEdit');
     setModalOpen(true);
   };
@@ -291,80 +295,52 @@ const CreateForm = ({ newsid, HandleBack, genre,setDraftList,setSelectedDraft}) 
 
   const handleSaveSettings = (settings) => {
     console.log("受け取った設定", settings);
-    console.log("inputType 確認: ", settings.inputType);
-    console.log("質問の長さ", questions.length);
-
-    // questionsが文字列型ならパースする
     let currentQuestions = questions;
+
+    // `questions` が文字列型の場合、パース
     if (typeof currentQuestions === "string") {
       try {
         currentQuestions = JSON.parse(currentQuestions);
       } catch (error) {
         console.error("questions のパースに失敗しました:", error);
-        currentQuestions = { elements: [] };  // パース失敗時に空の配列を初期化
+        currentQuestions = { elements: [] };
       }
     }
 
-    // 最後の質問に設定を適用
+    console.log("questiondata", questionData);
+
+    // elementsの更新
+    const updatedElements = currentQuestions.elements.map((q) =>
+      q.id === questionData?.id
+        ? {
+            ...q,
+            ...settings, // 新しい設定で上書き
+          }
+        : q
+    );
+
+    // 新規作成の場合、`id` が存在しないため新しい質問を追加
+    if (!questionData?.id) {
+      console.log("新規作成");
+      updatedElements.push({
+        id: `${Date.now()}`, // 一意のIDを生成
+        ...settings,
+      });
+    }
+
+    // 質問を更新
     const updatedQuestions = {
       ...currentQuestions,
-      elements: currentQuestions.elements.map((q, index) =>
-        index === currentQuestions.elements.length - 1 // 最後の質問に設定を適用
-          ? {
-            ...q,
-            title: settings.title || q.title,
-            type: settings.type || q.type,
-            inputType: settings.inputType || q.inputType,
-            maxLength: settings.maxLength || q.maxLength,
-            minLength: settings.minLength || q.minLength,
-            placeholder: settings.placeholder || q.placeholder,
-            autocomplete: settings.autocomplete || q.autocomplete,
-            isRequired: settings.isRequired || q.isRequired,
-            description: settings.description || q.description,
-            validators: settings.validators || q.validators,
-            defaultValueExpression: settings.defaultValueExpression || q.defaultValueExpression,
-            minValueExpression: settings.minValueExpression || q.minValueExpression,
-            min: settings.min || q.min,
-            max: settings.max || q.max,
-            defaultValue: settings.defaultValue || q.defaultValue,
-            step: settings.step || q.step,
-            showNoneItem: settings.showNoneItem || q.showNoneItem,
-            showOtherItem: settings.showOtherItem || q.showOtherItem,
-            choices: settings.choices || q.choices,
-            colCount: settings.colCount || q.colCount,
-            noneText: settings.noneText || q.noneText,
-            otherText: settings.otherText || q.otherText,
-            clearText: settings.clearText || q.clearText,
-            separateSpecialChoices: settings.separateSpecialChoices || q.separateSpecialChoices,
-            showClearButton: settings.showClearButton || q.showClearButton,
-            fitToContainer: settings.fitToContainer || q.fitToContainer,
-            showSelectAllItem: settings.showSelectAllItem || q.showSelectAllItem,
-            selectallText: settings.selectallText || q.selectallText,
-            rows: settings.rows || q.rows,
-            autoGrow: settings.autoGrow || q.autoGrow,
-            allowResize: settings.allowResize || q.allowResize,
-            renderAs: settings.renderAs || q.renderAs,
-            titleLocation: settings.titleLocation || q.titleLocation,
-            rateType: settings.rateType || q.rateType,
-            displayMode: settings.displayMode || q.displayMode,
-            scaleColorMode: settings.scaleColorMode || q.scaleColorMode,
-            rateCount: settings.rateCount || q.rateCount,
-            rateValues: settings.rateValues || q.rateValues,
-            rateMax: settings.rateMax || q.rateMax,
-            multiSelect: settings.multiSelect || q.multiSelect,
-            showLabel: settings.showLabel || q.showLabel,
-          }
-          : q
-      ),
+      elements: updatedElements,
     };
 
     console.log("更新した質問", updatedQuestions);
-    // 更新したquestionsをJSON形式に変換してセット
+
+    // 更新をステートに反映
     setQuestions(updatedQuestions);
-    setQuestionData(null);
+    setQuestionData(null); // 編集データをリセット
     setModalOpen(false); // モーダルを閉じる
   };
-
 
 
   console.table(questions);
@@ -399,6 +375,11 @@ const CreateForm = ({ newsid, HandleBack, genre,setDraftList,setSelectedDraft}) 
 
     // 削除ボタンのクリックイベント
     deleteButton.onclick = function () {
+      console.log("questions.elements.length",questions.elements.length);
+      if(questions.elements.length <= 1){
+        return alert("削除することはできません");
+      }
+
       // 削除する質問の ID を取得
       const targetId = options.question.jsonObj.id;
 

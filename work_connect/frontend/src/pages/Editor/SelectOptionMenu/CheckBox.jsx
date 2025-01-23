@@ -44,12 +44,8 @@ export default function CheckBox({ onSave, onCancel, questionData }) {
             setShowSelectAllItem(questionData.showSelectAllItem || false);
             setSeparateSpecialChoices(questionData.separateSpecialChoices || false);
             setColCount(questionData.colCount || 1);
-            // choicesが存在する場合、テキストを抽出してセットする
-            const processedChoices = (questionData.choices || []).map(choice => {
-                // `text` または `jsonObj` からテキストを取り出す
-                return choice.text || choice.jsonObj || "";
-            });
-            setChoices(processedChoices);
+            setChoices(Array.isArray(questionData.choices) ? questionData.choices : []); // 配列チェック
+
         }
     }, [questionData]);
 

@@ -35,16 +35,18 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Tooltip from "@mui/material/Tooltip";
 
-const InputDateWithTime = ({ date, setDeadlineDate, format = "YYYY/MM/DD HH:mm" }) => {
+const InputDateWithTime = ({ date, SetDeadlineDate, format = "YYYY/MM/DD HH:mm" }) => {
   moment.locale("ja"); // 日本語設定
   return (
     <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="ja">
       <DateTimePicker
-        value={moment(date)} // 親コンポーネントから渡された日付を使用
+        slotProps={{ calendarHeader: { format: 'YYYY年MM月' } }}
+        value={moment(date).tz("Asia/Tokyo")}
         onChange={(newDate) => {
           if (newDate) {
             const formattedDate = moment(newDate).format("YYYY-MM-DD HH:mm:ss");
-            setDeadlineDate(formattedDate);
+            console.log("formattedDate",formattedDate);
+            SetDeadlineDate(formattedDate);
           }
         }}
         format={format}
@@ -57,11 +59,10 @@ const InputDateWithTime = ({ date, setDeadlineDate, format = "YYYY/MM/DD HH:mm" 
 };
 
 const NewsSelectMenu = ({
-  setDeadlineDate,
+  SetDeadlineDate,
   deadlineDate,
   CreateFormSave,
   addQuestion,
-  // questions,
   WriteNewsHandleBack,
   handleOpenThemeModal,
 }) => {
@@ -215,7 +216,7 @@ const NewsSelectMenu = ({
             className="menu_deadline"
           >
             <Box sx={{ p: 2, minWidth: 300 }}>
-              <InputDateWithTime date={deadlineDate} setDeadline={setDeadlineDate} />
+              <InputDateWithTime date={deadlineDate} SetDeadlineDate={SetDeadlineDate} />
             </Box>
           </Menu>
         </div>
@@ -237,7 +238,7 @@ const NewsSelectMenu = ({
 };
 
 NewsSelectMenu.propTypes = {
-  setDeadlineDate: PropTypes.func.isRequired,
+  SetDeadlineDate: PropTypes.func.isRequired,
   deadlineDate: PropTypes.string.isRequired,
   CreateFormSave: PropTypes.func.isRequired,
   addQuestion: PropTypes.func.isRequired,
@@ -249,7 +250,7 @@ NewsSelectMenu.propTypes = {
 // PropTypesの型定義
 InputDateWithTime.propTypes = {
   date: PropTypes.object,
-  setDeadlineDate: PropTypes.func.isRequired,
+  SetDeadlineDate: PropTypes.func.isRequired,
   format: PropTypes.string,
 };
 

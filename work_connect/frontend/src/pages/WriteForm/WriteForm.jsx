@@ -86,12 +86,7 @@ export default function WriteFormPage() {
     // console.log("テーマCSS変数:", survey.theme.cssVariables);
     backGroundColor = "#f3f3f3";
 
-    // // CSS変数を取得
-    // backGroundColor = getComputedStyle(rootElement).getPropertyValue('--sjs-general-backcolor-dim').trim();
-
   }
-
-  // background-color: var(--sjs-general-backcolor-dim, var(--background-dim, #f3f3f3));
 
   useEffect(() => {
     // 完了ボタンを非表示にする
@@ -226,10 +221,6 @@ export default function WriteFormPage() {
               </div>
             </div>
           </div>
-
-
-
-
 
         </>
       ) : (

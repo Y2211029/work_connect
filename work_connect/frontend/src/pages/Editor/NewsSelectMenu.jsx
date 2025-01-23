@@ -97,7 +97,6 @@ const Textarea = styled(BaseTextareaAutosize)(
 
 const InputDateWithTime = ({ date, setEventDay, format = "YYYY/MM/DD HH:mm" }) => {
   moment.locale("ja"); // 日本語設定
-  console.log("この時のデータの中身は?", date);
   return (
     <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="ja">
       <DateTimePicker
@@ -198,6 +197,8 @@ const NewsSelectMenu = ({
   console.log("eventDayの中身", eventDay);
   console.log("ジャンル", genre);
   console.log("followerCounter", followerCounter);
+  console.log("Messageの中身",Message);
+  console.log("notificationMessageの中身",notificationMessage);
 
   const [menuItems] = useState([
     { key: "eventday", label: "開催日" },
@@ -504,16 +505,16 @@ const NewsSelectMenu = ({
                 maxRows={12}
                 aria-label="maximum height"
                 placeholder="100字以内"
-                value={Message}
+                value={notificationMessage}
                 onChange={NotificationMessageChange}
                 maxLength={100}
                 sx={{
-                  border: Message === "" ? "1px red solid" : `1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]}`,
+                  border: notificationMessage === "" ? "1px red solid" : `1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]}`,
                 }}
                 className="NotificationMessage"
               />
               <Typography variant="body2" color="textSecondary" className="Message_Length">
-                {Message ? Message.length : <span style={{ color: "red", opacity: 0.7 }}>0</span>} / 100
+                {notificationMessage ? notificationMessage.length : <span style={{ color: "red", opacity: 0.7 }}>0</span>} / 100
               </Typography>
             </Box>
           );
@@ -706,7 +707,7 @@ const NewsSelectMenu = ({
       if (followerCounter < 0) {
         return null;
       }
-    } else if (followerCounter < 0) {
+    } else if (followerCounter <= 0) {
       updatedMenuItems = updatedMenuItems.filter((item) => item.key !== "message");
       //入力メニューが3個
        classvalue="menu_input_three"

@@ -24,7 +24,7 @@ import AccountPopover from "./common/account-popover";
 import Searchbar from "./common/searchbar";
 import ChatPng from "./common/chatPng";
 import NotificationsPopover from "./common/notifications-popover";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 // ゲストモード時、作品投稿・動画投稿・通知
 import { MyContext } from "src/layouts/dashboard/index";
 //学生か企業かで、ヘッダー内容を切り替え、Linkを用いてジャンプする
@@ -43,6 +43,7 @@ import CompanyPreSignModal from "src/components/account/company/CompanyPreSignMo
 
 export default function Header({ onOpenNav }) {
   const Display = useContext(MyContext);
+  const location = useLocation();
   const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData") || {};
   const theme = useTheme();
@@ -57,6 +58,7 @@ export default function Header({ onOpenNav }) {
 
   const [ModalChange, setModalChange] = useState("");
   const [PreModalChange, setPreModalChange] = useState("");
+  const [IsChat, setIsChat] = useState(false);
 
   let navigate = useNavigate();
 
@@ -110,7 +112,7 @@ export default function Header({ onOpenNav }) {
     setOpen(event.currentTarget); // ボタンがクリックされた要素を保存
     console.log("あいうえお通ってます!");
     //パスを取得
-    console.log(window.location.pathname);
+    console.log(location.pathname);
   };
   const handleOpenToolbarNews = (event) => {
     setOpenToolbarNewsButton(event.currentTarget);
@@ -191,6 +193,16 @@ export default function Header({ onOpenNav }) {
       }
     }
   });
+
+  useEffect(() => {
+    console.log("location.pathname", location.pathname);
+
+    if (location.pathname == "/Chat") {
+      setIsChat(true);
+    } else {
+      setIsChat(false)
+    }
+  }, [location]);
 
   const renderContent = (
     <>
@@ -361,7 +373,7 @@ export default function Header({ onOpenNav }) {
     </>
   );
 
-  const renderArrowTopButton = (
+  const renderArrowTopButton = !IsChat && (
     <ArrowUpwardIcon
       onClick={handleScrollToTop}
       className="arrow_up_ward_icon"

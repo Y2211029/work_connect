@@ -3,6 +3,7 @@ import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import Box from "@mui/material/Box";
 import PropTypes from "prop-types";
+import "../CreateForm.css";
 
 // 応募締め切り日を設定:MUI
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";

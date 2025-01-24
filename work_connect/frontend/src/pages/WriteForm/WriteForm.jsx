@@ -63,9 +63,10 @@ export default function WriteFormPage() {
 
   // Survey モデルの生成
   const survey = new Model(createForm);
+  console.log("createForm.themeSettings",createForm.themeSettings);
 
   if (createForm.themeSettings) {
-    const themeObject = themes["ThreeDimensionalLight"];
+    const themeObject = themes[createForm.themeSettings.themeKey];
     console.log('themeobjectがありました', themeObject);
     backGroundColor = createForm.themeSettings.backgroundColor;
     barColor = createForm.themeSettings.barColor;
@@ -84,8 +85,6 @@ export default function WriteFormPage() {
     console.log("サーベイ:", survey);
     console.log("現在のテーマオブジェクト:", survey.cssValue);
     // console.log("テーマCSS変数:", survey.theme.cssVariables);
-    backGroundColor = "#f3f3f3";
-
   }
 
   useEffect(() => {
@@ -102,7 +101,7 @@ export default function WriteFormPage() {
     styleSheet.type = "text/css";
     styleSheet.innerText = css;
     document.head.appendChild(styleSheet);
-  }, []);
+  }, [backGroundColor]);
 
 
   const WriteFormSave = () => {

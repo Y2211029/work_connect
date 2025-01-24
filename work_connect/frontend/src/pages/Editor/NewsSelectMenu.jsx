@@ -41,6 +41,7 @@ import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import ImageNotSupportedIcon from "@mui/icons-material/ImageNotSupported";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Stack } from "@mui/system";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 const blue = {
   100: "#DAECFF",
@@ -441,7 +442,7 @@ const NewsSelectMenu = ({
   const WarningTargetArray = [
     { name: "タイトル", judge: !title, element: title },
     { name: "サムネイル", judge: !imageUrl, element: imageUrl },
-    { name: "記事内容", judge: charCount <= 0, element: charCount}
+    { name: "記事内容", judge: charCount <= 0, element: charCount }
   ];
 
   useEffect(() => {
@@ -676,32 +677,33 @@ const NewsSelectMenu = ({
           return (
             <div className="draftlistScroll">
               <div className="add_draft_news">
-                <Button variant="outlined" onClick={AddDraftNews}>
-                  <Typography className="add_draft_news_text">新たな下書き</Typography>
-                </Button>
+                <Tooltip title="新たな下書き">
+                  <AddCircleOutlineIcon onClick={AddDraftNews} />
+                </Tooltip>
               </div>
               {draftlist.length > 0 ? (
                 draftlist.map((draft) => (
                   <NewsMenuTable className="draftlisttable" key={draft.id}>
                     <TableHead>
                       <TableRow>
-                        <TableCell style={{ backgroundColor: "#fff", border: "none" }}>
+                        <TableCell style={{ backgroundColor: "#fff", border: "none"}}>
+
+                          <Stack direction={"row"}>
                           <Tooltip title={`最終更新日:${FormattedDate(draft.updated_at)}`}>
                             <div className="Last_updated_date">
                               最終更新日:{postDateTimeDisplay(FormattedDate(draft.updated_at))}
                             </div>
                           </Tooltip>
 
-                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                            {/* 画像を左側に配置 */}
-                            <div className="news_img">{header_img_show(draft)}</div>
-                            {/* テキストと削除ボタンを右側に配置 */}
-                            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-                              <div style={{ display: "flex", alignItems: "center", cursor: "pointer", color: "red" }}>
+                          <div className="NewsDeleteIcon">
+                              <div style={{ cursor: "pointer", color: "red" }}>
                                 <DeleteIcon onClick={() => RewriteNewsDelete(draft.id)} />
                               </div>
                             </div>
-                          </div>
+                          </Stack>
+
+                          <div className="news_img">{header_img_show(draft)}</div>
+
                         </TableCell>
                       </TableRow>
                     </TableHead>

@@ -53,6 +53,7 @@ const PostCard = forwardRef((props, ref) => {
       icon,
       follow_status,
       open_jobs,
+      genre,
       deadline,
       event_day,
       form_data_count,
@@ -93,7 +94,6 @@ const PostCard = forwardRef((props, ref) => {
     setExpanded(false);
   };
 
-  // 日付をYY/MM/DDに変換する
   const formatDate = (dateString) => {
     if (!dateString) {
       return null; // nullを返して非表示にする
@@ -109,36 +109,8 @@ const PostCard = forwardRef((props, ref) => {
     const month = dateObj.getMonth() + 1;
     const day = dateObj.getDate();
 
-    const today = new Date();
-    // 日付の差分を計算 (ミリ秒 -> 日)
-    const diffInDays = Math.ceil((dateObj - today) / (1000 * 60 * 60 * 24));
-
-    // 日付の差分を月単位で計算
-    const diffInMonths = (dateObj.getFullYear() - today.getFullYear()) * 12 + (dateObj.getMonth() - today.getMonth());
-
-    const weeksLeft = Math.ceil(diffInDays / 7);
-
-    let deadlineMessage;
-    switch (true) {
-      case diffInDays <= 0:
-        deadlineMessage = "既に締め切られています!";
-        break;
-      case diffInDays > 0 && diffInDays <= 7:
-        deadlineMessage = "締め切り間近!";
-        break;
-      case diffInDays > 7 && diffInDays <= 14:
-        deadlineMessage = `締め切りまで${weeksLeft}週間!`;
-        break;
-      case diffInMonths >= 1:
-        deadlineMessage = `締め切りまで${diffInMonths}ヶ月!`;
-        break;
-    }
-
-    return (
-      <Tooltip title={`${deadlineMessage}`}>
-        {year}/{month}/{day}
-      </Tooltip>
-    );
+    // 文字列として返す
+    return `${year}/${month}/${day}`;
   };
 
   const handleDeleteClick = async (news_id) => {
@@ -160,16 +132,16 @@ const PostCard = forwardRef((props, ref) => {
   // 企業アイコン
   const renderAvatar =
     (console.log("icon", icon),
-    (
-      <Avatar
-        src={icon ? `http://localhost:8000/storage/images/userIcon/${icon}` : "/assets/images/avatars/avatar_0.jpg"}
-        sx={{
-          zIndex: 9,
-          width: 30,
-          height: 30,
-        }}
-      />
-    ));
+      (
+        <Avatar
+          src={icon ? `http://localhost:8000/storage/images/userIcon/${icon}` : "/assets/images/avatars/avatar_0.jpg"}
+          sx={{
+            zIndex: 9,
+            width: 30,
+            height: 30,
+          }}
+        />
+      ));
 
   // サムネイル
   const renderThumbnail = (
@@ -314,25 +286,51 @@ const PostCard = forwardRef((props, ref) => {
     </Box>
   ) : null;
 
+  console.log("締め切り日", deadline);
+  console.log("フォーマットした締め切り日", formatDate(deadline));
+
+  const label = genre === "JobOffer" ? "求人開始日" : "開催日";
   const renderDay = (
     <>
-      {deadlineMessage !== null ? <Box className="news_list_view_items">{deadlineMessage}</Box> : ""}
+      {deadlineMessage && (
+        <Tooltip title={`締切日: ${formatDate(deadline)}`}>
+          <Box className="news_list_view_items">{deadlineMessage}</Box>
+        </Tooltip>
+      )}
+
       {event_day !== null ? (
         <>
-          <Box className="news_list_view_items">開催日: {formatDate(event_day)}</Box>
+          <Box className="news_list_view_items">
+            {label}: {formatDate(event_day)}
+          </Box>
           <Divider
             sx={{
               borderStyle: "dashed",
               m: 1,
-              display: PathName === "/Internship_JobOffer/Blog" ? "none" : "block",
+              display:
+                PathName === "/Internship_JobOffer/Blog" ? "none" : "block",
             }}
           />
         </>
-      ) : (
-        ""
-      )}
+      ) : genre !== "Blog" ? (
+        <>
+          <Box className="news_list_view_items">
+            {`${label}: 未定・順次開始`}
+          </Box>
+          <Divider
+            sx={{
+              borderStyle: "dashed",
+              m: 1,
+              display:
+                PathName === "/Internship_JobOffer/Blog" ? "none" : "block",
+            }}
+          />
+        </>
+      ) : null}
+
     </>
   );
+
 
   // 企業名
   const renderCompanyName = (

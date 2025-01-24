@@ -79,6 +79,7 @@ const Editor = () => {
   const [formSummary, setFormSummary] = useState(null);
   const [followerCounter, setFollowerCounter] = useState(0);
   const [selectedOccupation, setSelectedOccupation] = useState([]);
+  const [dateUndecided, setDateUndecided] = useState(false);
   const [newsTitle, setNewsTitle] = useState("ブログ");
 
   const news_save_url = "http://localhost:8000/news_save";
@@ -94,7 +95,7 @@ const Editor = () => {
     imageUrl &&
     charCount &&
     (followerCounter <= 0 || notificationMessage) &&
-    (genre === "Blog" || moment(eventDay).isAfter(moment(), 'day')) && // genre が Blog の場合、次の条件をスルー
+    (genre === "Blog" || dateUndecided || moment(eventDay).isAfter(moment(), 'day')) && // genre が Blog の場合、次の条件をスルー
     (genre === "Blog" || selectedOccupation.length > 0) // genre が Blog の場合、次の条件をスルー
   );
 
@@ -187,6 +188,7 @@ const Editor = () => {
       console.log("開催日", eventDay);
       console.log("企業ID", sessionId);
       console.log("ジャンル", genre);
+      console.log("日程が未定かどうか", dateUndecided);
 
       const response = await axios.post(
         news_save_url,
@@ -199,6 +201,7 @@ const Editor = () => {
           eventDay: eventDay, //開催日
           company_id: sessionId, // 企業ID
           genre: genre, //ジャンル
+          dateUndecided: dateUndecided //日程が未定かどうか
         },
       );
 
@@ -1387,6 +1390,8 @@ const Editor = () => {
               CreateFormJump={CreateFormJump}
               newsDraftList={newsDraftList}
               genre={genre}
+              setDateUndecided={setDateUndecided}
+              dateUndecided={dateUndecided}
             />
           </div>
 

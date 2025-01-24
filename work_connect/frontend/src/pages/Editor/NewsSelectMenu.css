@@ -158,7 +158,6 @@
     background-color: #F9FAFB;
     border-radius: 4px !important;
     transition: 0.2s;
-
 }
 
 
@@ -274,6 +273,15 @@
     margin-left: 0%;
 }
 
+.dateUndecided_Text{
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+.dateUndecided_Text_Editing_Status{
+    margin-left: 30%;
+}
+
 
 
 
@@ -340,7 +348,6 @@
         margin-top: 3%;
         margin-left: 5%;
     }
-
 
 
 }
@@ -715,7 +722,7 @@
         min-height: 0;
         width: 30%;
     }
-    
+
     .popover_eventday {
         margin-top: 10px;
         position: relative;

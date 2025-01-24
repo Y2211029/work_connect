@@ -30,10 +30,15 @@ class EditorController extends Controller
         $openJobs = $request->input('selectedOccupation');
         $eventDay = $request->input('eventDay');
         $genre = $request->input('genre');
+        $dateUndecided = $request->input('dateUndecided');
 
 
         if ($title === NULL) {
             $title = "タイトル未設定";
+        }
+
+        if($dateUndecided){
+            $eventDay = null;
         }
 
         if ($news_id == 0) {

@@ -70,7 +70,7 @@ body {
   /* 16:9の比率 */
   max-width: 450px;
   /* 最大幅350px */
-  max-height: 400px;
+  max-height: 500px;
   /* 最大高さ300px */
   object-fit: cover;
   /* 画像が枠に収まるようにトリミング */

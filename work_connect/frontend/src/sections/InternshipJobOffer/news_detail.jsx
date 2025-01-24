@@ -105,6 +105,18 @@ const InternshipJobOfferPage = () => {
   const getEventDayMessage = (event_day) => {
     const today = new Date();
     const eventDayDate = new Date(event_day);
+    let day_alart_label;
+    let already_label;
+
+    console.log("getEventDayMessageのgenre",Genre);
+
+    if(NewsDetail.genre === "JobOffer"){
+      day_alart_label = "求人開始日";
+      already_label = "求人が開始";
+    }else if(NewsDetail.genre === "Internship" || NewsDetail.genre === "Session"){
+      day_alart_label = " 開催日";
+      already_label = " 開催";
+    }
 
     // 日付の差分を計算 (ミリ秒 -> 日)
     const diffInDays = Math.ceil((eventDayDate - today) / (1000 * 60 * 60 * 24));
@@ -120,7 +132,7 @@ const InternshipJobOfferPage = () => {
         <>
 
           <Button className="NewsDetail_Button" variant="contained" color="error">
-            開催日まで残り{diffInDays}日!
+            {day_alart_label}まで残り{diffInDays}日!
           </Button>
 
         </>
@@ -134,7 +146,7 @@ const InternshipJobOfferPage = () => {
       return (
         <>
           <Button className="NewsDetail_Button" variant="contained" color="warning">
-            開催日まで残り{weeksLeft}週間!
+          {day_alart_label}まで残り{weeksLeft}週間!
           </Button>
         </>
 
@@ -150,7 +162,7 @@ const InternshipJobOfferPage = () => {
           </Typography> */}
 
           <Button className="NewsDetail_Button" variant="contained" color="secondary">
-            開催日まで残り{diffInMonths}ヶ月!
+          {day_alart_label}まで残り{diffInMonths}ヶ月!
           </Button>
         </>
 
@@ -161,7 +173,7 @@ const InternshipJobOfferPage = () => {
     if (diffInDays < 0) {
       return (
         <Button className="NewsDetail_Button" variant="contained" color="success">
-          開催されました!
+        {already_label}されました!
         </Button>
 
       );

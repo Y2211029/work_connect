@@ -83,15 +83,11 @@ const CompanyLoginModal = () => {
     }));
   };
 
-  // const handleCloseModal = () => {
-  //   setShowModal(false);
-  //   setFormErrors({}); // エラーメッセージをリセット
-  // };
-
   const handleChange = (e) => {
-    console.log("CompanyLogine.target", e.target); // ログ
+    console.log("CompanyLogine");
     const { name, value } = e.target;
-    
+
+    console.log("CompanyLogine.target", e.target); // ログ
     setFormValues({ ...formValues, [name]: value });
   };
 
@@ -349,7 +345,6 @@ const CompanyLoginModal = () => {
               direction="row"
               spacing={2}
               sx={{
-                // height: "100%",
                 justifyContent: "space-between",
                 alignItems: "align-items: center",
               }}
@@ -369,7 +364,6 @@ const CompanyLoginModal = () => {
                   ログイン（企業）
                 </Typography>
               </Stack>
-              {/* モーダル右上の❌ボタン */}
               <IconButton onClick={handleClose}>
                 <CloseIcon />
               </IconButton>
@@ -377,14 +371,13 @@ const CompanyLoginModal = () => {
             <Divider sx={{ borderStyle: "solid", my: 2, display: "block" }} />
             <div className="loginUiForm">
               <TextField
-                label="企業名またはメールアドレス"
+                label="ユーザーネームまたはメールアドレス"
                 margin="normal"
                 name="user_name"
-                onChange={handleChange}
+                onChange={(e) => handleChange(e)}
                 required
                 type="text"
                 value={formValues.user_name}
-
                 variant="outlined"
                 sx={{
                   width: { xs: "95%", sm: "90%", md: "80%" },

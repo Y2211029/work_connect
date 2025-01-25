@@ -384,7 +384,7 @@ const StudentLoginModal = () => {
                 label="ユーザー名またはメールアドレス"
                 margin="normal"
                 name="user_name"
-                onChange={handleChange}
+                onChange={(e) => handleChange(e)}
                 required
                 type="text"
                 value={formValues.user_name}

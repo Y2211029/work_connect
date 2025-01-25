@@ -241,7 +241,7 @@ const CompanyPreSignModal = () => {
                 label="メールアドレス"
                 margin="normal"
                 name="mail"
-                onChange={handleChange}
+                onChange={(e) => handleChange(e)}
                 type="text"
                 value={formValues.mail}
                 variant="outlined"

@@ -16,6 +16,14 @@ class loginController extends Controller
         $password = $request->input('password');
         $kind = $request->input('kind');
 
+        // $password_x = Hash::make($password);
+        // // 試し
+        // \Log::info('hash:'.$password_x);
+        // // Hash::check(平文のパスワード, ハッシュ化したパスワード)
+        // if(Hash::check($password, $password_x)){
+        //   \Log::info('hash OK');
+        // }
+        // //
         \Log::info('get_InputValue: ' . json_encode($kind));
 
 

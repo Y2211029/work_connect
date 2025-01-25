@@ -16,6 +16,7 @@ import Tooltip from "@mui/material/Tooltip";
 import PostAddIcon from "@mui/icons-material/PostAdd";
 import AddIcon from "@mui/icons-material/Add";
 
+import { TopPageModalContext } from ".";
 import { useResponsive } from "src/hooks/use-responsive";
 import { bgBlur } from "src/theme/css";
 import { NAV, HEADER } from "./config-layout";
@@ -30,7 +31,7 @@ import { MyContext } from "src/layouts/dashboard/index";
 //学生か企業かで、ヘッダー内容を切り替え、Linkを用いてジャンプする
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
-import $ from "jquery";
+// import $ from "jquery";
 // ログイン
 import StudentLoginModal from "src/components/account/students/StudentLoginModal";
 import CompanyLoginModal from "src/components/account/company/CompanyLoginModal";
@@ -38,11 +39,14 @@ import CompanyLoginModal from "src/components/account/company/CompanyLoginModal"
 // 新規登録
 import StudentPreSignModal from "src/components/account/students/StudentPreSignModal";
 import CompanyPreSignModal from "src/components/account/company/CompanyPreSignModal";
+// import { Typography } from "@mui/material";
 
 // ----------------------------------------------------------------------
 
 export default function Header({ onOpenNav }) {
   const Display = useContext(MyContext);
+  const { IsModalContextState, setIsModalContextState } = useContext(TopPageModalContext);
+  const { modalOpen, modalType, preModalOpen, preModalType } = IsModalContextState;
   const location = useLocation();
   const { getSessionData } = useSessionStorage();
   const accountData = getSessionData("accountData") || {};
@@ -56,8 +60,6 @@ export default function Header({ onOpenNav }) {
   const [OpenToolbarNewsButton, setOpenToolbarNewsButton] = useState(null);
   const [login_state, setLoginState] = useState(false);
 
-  const [ModalChange, setModalChange] = useState("");
-  const [PreModalChange, setPreModalChange] = useState("");
   const [IsChat, setIsChat] = useState(false);
 
   let navigate = useNavigate();
@@ -82,6 +84,10 @@ export default function Header({ onOpenNav }) {
     }
   }, [accountData]);
 
+  useEffect(() => {
+    console.log("header : modalOpen : ", modalOpen);
+  }, [modalOpen]); // 空の依存配列を渡して、初回のみ実行するようにする
+
   const handleOpenModal = () => {
     // setShowModal(true);
     navigate("WorkPosting");
@@ -91,22 +97,28 @@ export default function Header({ onOpenNav }) {
     navigate("VideoPosting");
   };
 
-  const callSetModalChange = (newValue) => {
-    setModalChange(newValue);
-  };
-  const callSetPreModalChange = (newValue) => {
-    setPreModalChange(newValue);
-  };
-
   const handleChange = (e) => {
     if (e.target.id === "LoginButton") {
-      setModalChange("学生");
-      setPreModalChange("");
-    } else {
-      setModalChange("");
-      setPreModalChange("学生");
+      setIsModalContextState((prev) => ({
+        ...prev,
+        modalType: "学生",
+        modalOpen: true,
+      }));
+    }
+
+    if (e.target.id === "PreSignButton") {
+      console.log("e.target.id === PreSignButton");
+      setIsModalContextState((prev) => ({
+        ...prev,
+        preModalType: "学生",
+        preModalOpen: true,
+      }));
     }
   };
+
+  useEffect(() => {
+    console.log("header: preModalOpen", preModalOpen);
+  }, [preModalOpen]);
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget); // ボタンがクリックされた要素を保存
@@ -165,42 +177,13 @@ export default function Header({ onOpenNav }) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // ログインのform内以外をクリックしたときにモーダルを閉じる処理
-  $("*").click(function (e) {
-    // クリックした要素の<html>までのすべての親要素の中に"formInModal"クラスがついている要素を取得
-    var targetParants = $(e.target).parents(".formInModal");
-
-    // 取得した要素の個数が0個の場合
-    if (targetParants.length == 0 || $(e.target).text() == "閉じる") console.log($(e.target).text());
-    if (targetParants.length == 0 || $(e.target).text() == "閉じる") {
-      if (
-        $(e.target).attr("class") != "formInModal" &&
-        $(e.target).attr("id") != "LoginButton" &&
-        $(e.target).attr("id") != "loginCompanyModalLink" &&
-        $(e.target).attr("id") != "loginStudentModalLink"
-      ) {
-        setModalChange("");
-      }
-
-      if (
-        $(e.target).attr("class") != "formInModal" &&
-        $(e.target).attr("id") != "PreSignButton" &&
-        $(e.target).attr("id") != "PreSignCompanyModalLink" &&
-        $(e.target).attr("id") != "PreSignStudentModalLink"
-      ) {
-        // 新規登録モーダルを閉じる
-        setPreModalChange("");
-      }
-    }
-  });
-
   useEffect(() => {
     console.log("location.pathname", location.pathname);
 
     if (location.pathname == "/Chat") {
       setIsChat(true);
     } else {
-      setIsChat(false)
+      setIsChat(false);
     }
   }, [location]);
 
@@ -329,17 +312,8 @@ export default function Header({ onOpenNav }) {
           新規登録
         </Button>
 
-        {ModalChange === "学生" ? (
-          <StudentLoginModal callSetModalChange={callSetModalChange} />
-        ) : ModalChange === "企業" ? (
-          <CompanyLoginModal callSetModalChange={callSetModalChange} />
-        ) : null}
-
-        {PreModalChange === "学生" ? (
-          <StudentPreSignModal callSetPreModalChange={callSetPreModalChange} />
-        ) : PreModalChange === "企業" ? (
-          <CompanyPreSignModal callSetPreModalChange={callSetPreModalChange} />
-        ) : null}
+        {modalType === "学生" ? <StudentLoginModal /> : modalType === "企業" ? <CompanyLoginModal /> : ""}
+        {preModalType === "学生" ? <StudentPreSignModal /> : preModalType === "企業" ? <CompanyPreSignModal /> : ""}
 
         <Tooltip title="チャット">
           <IconButton

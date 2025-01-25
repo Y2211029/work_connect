@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 
 import PropTypes from "prop-types";
 import Modal from "react-modal";
@@ -6,11 +6,12 @@ import axios from "axios";
 import $ from "jquery";
 import { Link, useNavigate } from "react-router-dom";
 
+import { TopPageModalContext } from "../../../layouts/dashboard";
+
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import LoginStatusCheck from "src/components/account/loginStatusCheck/loginStatusCheck";
 
 import "src/App.css";
-// import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
@@ -24,12 +25,14 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import ModalStyle from "../ModalStyle";
 
-const StudentLoginModal = (props) => {
+const StudentLoginModal = () => {
   const { updateSessionData } = useSessionStorage();
   const { loginStatusCheckFunction } = LoginStatusCheck();
   const navigate = useNavigate();
 
-  const [showModal, setShowModal] = useState(true);
+  const { IsModalContextState, setIsModalContextState } = useContext(TopPageModalContext);
+  const { modalOpen } = IsModalContextState;
+  // const [showModal, setShowModal] = useState(false);
   const [formValues, setFormValues] = useState({
     user_name: "",
     mail: "",
@@ -54,21 +57,23 @@ const StudentLoginModal = (props) => {
       password: password,
     }));
   };
-  const handleClickShowPassword = (e) => {
-    setShowModal(true);
+  const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
-    e.stopPropagation();
-  };
-
-  const handleMouseDownPassword = (e) => {
-    setShowModal(true);
-    e.preventDefault();
   };
 
   const handleClose = (event, reason) => {
     if (reason === "backdropClick") return;
-    setShowModal(false);
+    setIsModalContextState((prev) => ({
+      ...prev,
+      modalOpen: false,
+    }));
     setFormErrors({}); // エラーメッセージをリセット
+  };
+  const handleOnRequestClose = () => {
+    setIsModalContextState((prev) => ({
+      ...prev,
+      modalOpen: false,
+    }));
   };
   // ヘッダーのログインボタンを押したときにログインモーダルを開いたり閉じたりする処理
   $("#loginModalOpenButton").click(function (e) {
@@ -78,21 +83,27 @@ const StudentLoginModal = (props) => {
     if (clickOneTimes.current) return; // 送信処理中かを判定する（trueなら抜ける）
     clickOneTimes.current = true; // 送信処理中フラグを立てる
 
-    if (showModal == true) {
-      setShowModal(false);
-    } else {
-      setShowModal(true);
-    }
-    // if (showModal == false) {
+    // if (showModal == true) {
+    //   setShowModal(false);
+    // } else {
     //   setShowModal(true);
     // }
+
+    // setIsModalContextState((prev) => ({
+    //   ...prev,
+    //   modalOpen: !prev,
+    // }));
 
     clickOneTimes.current = false; // 送信処理中フラグを下げる
   });
 
-  // 親に渡す。
+  // 企業モーダル開く
   const handleOpenCompanyModal = () => {
-    props.callSetModalChange("企業");
+    // props.callSetModalChange("企業");
+    setIsModalContextState((prev) => ({
+      ...prev,
+      modalType: "企業",
+    }));
   };
 
   // const handleCloseModal = () => {
@@ -120,6 +131,10 @@ const StudentLoginModal = (props) => {
     }
     fetchCsrfToken(); // ページがロードされた時点でCSRFトークンを取得
   }, []); // 空の依存配列を渡して、初回のみ実行するようにする
+
+  useEffect(() => {
+    console.log("modalOpen", modalOpen);
+  }, [modalOpen]); // 空の依存配列を渡して、初回のみ実行するようにする
 
   // aysncつけました
   const handleSubmit = async (e) => {
@@ -250,7 +265,11 @@ const StudentLoginModal = (props) => {
           /*------------------------------------------------------------------*/
           /* ログイン成功時にモーダルを閉じて、作品一覧に飛ばす処理を追加しました。 */
           /*------------------------------------------------------------------*/
-          setShowModal(false);
+          // setShowModal(false);
+          setIsModalContextState((prev) => ({
+            ...prev,
+            modalOpen: false,
+          }));
           setFormValues({
             ...formValues,
             user_name: "",
@@ -335,8 +354,14 @@ const StudentLoginModal = (props) => {
   return (
     <div className="LoginModalTopElement">
       {/* 条件付きレンダリングを使用 */}
-      <Modal isOpen={showModal} contentLabel="Example Modal" onClose={handleClose} style={ModalStyle}>
-        {/* <Box component="div" sx={{ display: "flex", flexDirection: { md: "column", lg: "none" } }}> */}
+      <Modal
+        isOpen={modalOpen}
+        contentLabel="Example Modal"
+        onRequestClose={handleOnRequestClose}
+        shouldCloseOnOverlayClick={true}
+        appElement={document.getElementById("root")}
+        style={ModalStyle}
+      >
         <div className="Modal">
           <form onSubmit={handleSubmit} className="formInModal">
             {renderLoginAccount}
@@ -409,10 +434,10 @@ const StudentLoginModal = (props) => {
                       <IconButton
                         aria-label="toggle password visibility"
                         onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
+                        // onMouseDown={handleMouseDownPassword}
                         edge="end"
-                        sx={{ width: { xs: "95%", sm: "90%", md: "80%" } }}
                         variant="outlined"
+                        id="loginVisibilityIcon"
                       >
                         {showPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
@@ -438,17 +463,13 @@ const StudentLoginModal = (props) => {
             </div>
           </form>
         </div>
-        {/* </Box> */}
       </Modal>
     </div>
   );
 };
 StudentLoginModal.propTypes = {
-  // --------2024 07 24 13:51 藤田がコメントアウト--------
-  // FromCompanyPage: PropTypes.bool.isRequired,
-  // --------2024 07 24 13:51 藤田がコメントアウト--------
   FromCompanyPage: PropTypes.bool,
-  callSetModalChange: PropTypes.func.isRequired,
+  // callSetModalChange: PropTypes.func.isRequired,
 };
 
 export default StudentLoginModal;

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Modal from "react-modal";
 import PropTypes from "prop-types";
 import axios from "axios";
@@ -13,13 +13,14 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
 
+import { TopPageModalContext } from "../../../layouts/dashboard";
 
 import "src/App.css";
 
 import ModalStyle from "../ModalStyle";
 
-const StudentPreSignModal = (props) => {
-  const [showModal, setShowModal] = useState(true);
+const StudentPreSignModal = () => {
+  // const [showModal, setShowModal] = useState(true);
   const [formValues, setFormValues] = useState({
     mail: "",
   });
@@ -32,17 +33,35 @@ const StudentPreSignModal = (props) => {
     setIsSubmitting: false,
   });
 
+  const { IsModalContextState, setIsModalContextState } = useContext(TopPageModalContext);
+  const { preModalOpen } = IsModalContextState;
+
   const url = "http://localhost:8000/s_pre_register";
   const csrf_url = "http://localhost:8000/csrf-token";
 
   // 親に渡す。
   const handleOpenCompanyPreModal = () => {
-    props.callSetPreModalChange("企業");
+    // props.callSetPreModalChange("企業");
+    setIsModalContextState((prev) => ({
+      ...prev,
+      preModalType: "企業",
+    }));
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
+  const handleCloseModal = (reason) => {
+    if (reason === "backdropClick") return;
+    setIsModalContextState((prev) => ({
+      ...prev,
+      preModalOpen: false,
+    }));
     setFormErrors({}); // エラーメッセージをリセット
+  };
+
+  const handleOnRequestClose = () => {
+    setIsModalContextState((prev) => ({
+      ...prev,
+      preModalOpen: false,
+    }));
   };
 
   const handleChange = (e) => {
@@ -159,12 +178,21 @@ const StudentPreSignModal = (props) => {
     }
     return errors;
   };
+  useEffect(() => {
+    console.log("preModalOpen", preModalOpen);
+  }, [preModalOpen]); // 空の依存配列を渡して、初回のみ実行するようにする
 
   return (
     <div>
       {/* 条件付きレンダリングを使用 */}
-
-      <Modal isOpen={showModal} contentLabel="Example Modal" style={ModalStyle}>
+      <Modal
+        isOpen={preModalOpen}
+        contentLabel="Example Modal"
+        onRequestClose={handleOnRequestClose}
+        shouldCloseOnOverlayClick={true}
+        appElement={document.getElementById("root")}
+        style={ModalStyle}
+      >
         <div className="Modal">
           <form onSubmit={handleSubmit} className="formInModal">
             <Stack
@@ -209,7 +237,13 @@ const StudentPreSignModal = (props) => {
                 variant="outlined"
               />
               <p className="errorMsg">{formErrors.mail}</p>
-              <Button variant="outlined" className="Login_modal_Button" type="submit" disabled={isSubmitting.setIsSubmitting} sx={{ width: { xs: "95%", sm: "90%", md: "80%" } }}>
+              <Button
+                variant="outlined"
+                className="Login_modal_Button"
+                type="submit"
+                disabled={isSubmitting.setIsSubmitting}
+                sx={{ width: { xs: "95%", sm: "90%", md: "80%" } }}
+              >
                 {isSubmitting.setIsSubmitting == true ? "送信中..." : isSubmitting.retransmissionFlag == true ? "再送信" : "仮登録"}
               </Button>
 
@@ -229,7 +263,6 @@ const StudentPreSignModal = (props) => {
 };
 
 StudentPreSignModal.propTypes = {
-  FromCompanyPage: PropTypes.bool.isRequired,
-  callSetPreModalChange: PropTypes.func.isRequired,
+  FromCompanyPage: PropTypes.bool,
 };
 export default StudentPreSignModal;

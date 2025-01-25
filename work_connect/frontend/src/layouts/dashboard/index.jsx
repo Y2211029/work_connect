@@ -4,12 +4,9 @@ import PropTypes from "prop-types";
 export const MyContext = createContext();
 export const AllItemsContext = createContext();
 export const WorkImageContext = createContext();
-// export const DataListContext = createContext();
-// export const SearchCheckContext = createContext();
-// export const SortOption = createContext();
 export const WebScokectContext = createContext();
 export const DeleteIdContext = createContext();
-
+export const TopPageModalContext = createContext();
 
 import Box from "@mui/material/Box";
 
@@ -97,22 +94,37 @@ export default function DashboardLayout({ children }) {
   });
 
   const [DeleteId, setDeleteId] = useState();
+  const [IsModalContextState, setIsModalContextState] = useState({
+    modalType: "学生",
+    modalOpen: false,
+    preModalType: "学生",
+    preModalOpen: false,
+  });
 
   const value1 = {
     AllItems,
     setAllItems,
   };
 
+  const value2 = {
+    WebSocketState,
+    setWebSocketState,
+  };
+
   const value3 = {
     workImage,
     setWorkImage,
   };
+
   const value4 = {
     DeleteId,
-    setDeleteId
+    setDeleteId,
   };
 
-
+  const value5 = {
+    IsModalContextState,
+    setIsModalContextState,
+  };
 
   // WebSocket接続
   useEffect(() => {
@@ -172,11 +184,6 @@ export default function DashboardLayout({ children }) {
     }
   }, [accountData.id]);
 
-  const value2 = {
-    WebSocketState,
-    setWebSocketState,
-  };
-
   return (
     <>
       <MyContext.Provider value={pageStyles}>
@@ -184,17 +191,19 @@ export default function DashboardLayout({ children }) {
           <WorkImageContext.Provider value={value3}>
             <WebScokectContext.Provider value={value2}>
               <DeleteIdContext.Provider value={value4}>
-                <Header onOpenNav={() => setOpenNav(true)} />
-                <Box
-                  sx={{
-                    minHeight: 1,
-                    display: "flex",
-                    flexDirection: { xs: "column", lg: "row" },
-                  }}
-                >
-                  <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} />
-                  <Main>{children}</Main>
-                </Box>
+                <TopPageModalContext.Provider value={value5}>
+                  <Header onOpenNav={() => setOpenNav(true)} />
+                  <Box
+                    sx={{
+                      minHeight: 1,
+                      display: "flex",
+                      flexDirection: { xs: "column", lg: "row" },
+                    }}
+                  >
+                    <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} />
+                    <Main>{children}</Main>
+                  </Box>
+                </TopPageModalContext.Provider>
               </DeleteIdContext.Provider>
             </WebScokectContext.Provider>
           </WorkImageContext.Provider>

@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react";
-import PropTypes from "prop-types";
+import { useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Modal from "react-modal";
+import PropTypes from "prop-types";
 import axios from "axios";
 import $ from "jquery";
-import { Link, useNavigate } from "react-router-dom";
 
+import { TopPageModalContext } from "../../../layouts/dashboard";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import LoginStatusCheck from "src/components/account/loginStatusCheck/loginStatusCheck";
-
-import "src/App.css";
 
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
@@ -21,15 +20,17 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
+import "src/App.css";
 import ModalStyle from "../ModalStyle";
 
-const CompanyLoginModal = (props) => {
+const CompanyLoginModal = () => {
   const { updateSessionData } = useSessionStorage();
   const { loginStatusCheckFunction } = LoginStatusCheck();
 
   const navigate = useNavigate();
 
-  const [showModal, setShowModal] = useState(true);
+  const { IsModalContextState, setIsModalContextState } = useContext(TopPageModalContext);
+  const { modalOpen } = IsModalContextState;
   const [formValues, setFormValues] = useState({
     user_name: "",
     mail: "",
@@ -52,26 +53,33 @@ const CompanyLoginModal = (props) => {
       user_name: userName,
       password: password,
     }));
-  }
+  };
 
-  const handleClickShowPassword = (e) => {
-    setShowModal(true);
+  const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
-    e.stopPropagation();
   };
 
-  const handleMouseDownPassword = (e) => {
-    setShowModal(true);
-    e.preventDefault();
+  const handleClose = (reason) => {
+    if (reason === "backdropClick") return;
+    setIsModalContextState((prev) => ({
+      ...prev,
+      modalOpen: false,
+    }));
+    setFormErrors({}); // エラーメッセージをリセットz
   };
 
-  const handleClose = (event, reason) => {
-    if (reason === 'backdropClick') return;
-    setShowModal(false);
-    setFormErrors({}); // エラーメッセージをリセット
+  const handleOnRequestClose = () => {
+    setIsModalContextState((prev) => ({
+      ...prev,
+      modalOpen: false,
+    }));
   };
+
   const handleOpenStudentModal = () => {
-    props.callSetModalChange("学生");
+    setIsModalContextState((prev) => ({
+      ...prev,
+      modalType: "学生",
+    }));
   };
 
   // const handleCloseModal = () => {
@@ -103,7 +111,7 @@ const CompanyLoginModal = (props) => {
   // aysncつけました
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitted Form: ", formValues);  // 追加
+    console.log("Submitted Form: ", formValues); // 追加
     // フォームの送信処理architect_2024-09-12_14-10-31.png
     setFormErrors(validate(formValues));
     setIsSubmit(true);
@@ -205,7 +213,7 @@ const CompanyLoginModal = (props) => {
     })
       .done(function (data) {
         // ajax成功時の処理
-        console.log("data",data)
+        console.log("data", data);
 
         if (data != null) {
           console.log(data.id);
@@ -232,7 +240,11 @@ const CompanyLoginModal = (props) => {
           /*------------------------------------------------------------------*/
           /* ログイン成功時にモーダルを閉じて、作品一覧に飛ばす処理を追加しました。 */
           /*------------------------------------------------------------------*/
-          setShowModal(false);
+          setIsModalContextState((prev) => ({
+            ...prev,
+            modalOpen: false,
+          }));
+
           setFormValues({
             ...formValues,
             user_name: "",
@@ -279,29 +291,53 @@ const CompanyLoginModal = (props) => {
       <div className="panel-content">
         <img className="loginSotushin2025" src="http://localhost:8000/storage/images/work/sotushin2025.png" alt="sotushin panel" />
         <div className="button-container">
-          <button type="button" className="login_Honban_data" onClick={() => dataUsers('TechCompany', 'TechPassword')}>TechCompany</button>
-          <button type="button" className="login_Honban_data" onClick={() => dataUsers('EcoGreen', 'EcoGreenPassword')}>EcoGreen</button>
-          <button type="button" className="login_Honban_data" onClick={() => dataUsers('Financials', 'FinancialsPassword')}>Financials</button>
-          <button type="button" className="login_Honban_data" onClick={() => dataUsers('MedicalCare', 'MedicalCarePassword')}>MedicalCare</button>
-          <button type="button" className="login_Honban_data" onClick={() => dataUsers('Architect', 'ArchitectPassword')}>Architect</button>
-          <button type="button" className="login_Honban_data" onClick={() => dataUsers('Entertainment', 'EntertainmentPassword')}>Entertainment</button>
-          <button type="button" className="login_Honban_data" onClick={() => dataUsers('Transport', 'TransportPassword')}>Transport</button>
-          <button type="button" className="login_Honban_data" onClick={() => dataUsers('Telecom', 'TelecomPassword')}>Telecom</button>
-          <button type="button" className="login_Honban_data" onClick={() => dataUsers('InteriorDesign', 'InteriorDesignPassword')}>InteriorDesign</button>
-          <button type="button" className="login_Honban_data" onClick={() => dataUsers('FoodService', 'FoodServicePassword')}>FoodService</button>
-
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers("TechCompany", "TechPassword")}>
+            TechCompany
+          </button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers("EcoGreen", "EcoGreenPassword")}>
+            EcoGreen
+          </button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers("Financials", "FinancialsPassword")}>
+            Financials
+          </button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers("MedicalCare", "MedicalCarePassword")}>
+            MedicalCare
+          </button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers("Architect", "ArchitectPassword")}>
+            Architect
+          </button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers("Entertainment", "EntertainmentPassword")}>
+            Entertainment
+          </button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers("Transport", "TransportPassword")}>
+            Transport
+          </button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers("Telecom", "TelecomPassword")}>
+            Telecom
+          </button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers("InteriorDesign", "InteriorDesignPassword")}>
+            InteriorDesign
+          </button>
+          <button type="button" className="login_Honban_data" onClick={() => dataUsers("FoodService", "FoodServicePassword")}>
+            FoodService
+          </button>
         </div>
       </div>
     </div>
-
   );
 
   return (
-    <div className="LoginModalTopElement" >
+    <div className="LoginModalTopElement">
       {/* 条件付きレンダリングを使用 */}
-      <Modal isOpen={showModal} contentLabel="Example Modal" onClose={handleClose} style={ModalStyle}>
+      <Modal
+        isOpen={modalOpen}
+        contentLabel="Example Modal"
+        onRequestClose={handleOnRequestClose}
+        shouldCloseOnOverlayClick={true}
+        appElement={document.getElementById("root")}
+        style={ModalStyle}
+      >
         <div className="Modal">
-
           <form onSubmit={handleSubmit} className="formInModal">
             {renderLoginAccount}
             <Stack
@@ -314,15 +350,19 @@ const CompanyLoginModal = (props) => {
               }}
             >
               <Stack
-                direction={{ xs: 'column', sm: 'column', md: 'row' }}
+                direction={{ xs: "column", sm: "column", md: "row" }}
                 spacing={2}
                 sx={{
                   justifyContent: "space-between",
                   alignItems: "align-items: center",
-                }}>
-
-                <Typography variant="h5" className="login_modal_items">Work&Connect</Typography>
-                <Typography variant="h" className="login_modal_items">ログイン（企業）</Typography>
+                }}
+              >
+                <Typography variant="h5" className="login_modal_items">
+                  Work&Connect
+                </Typography>
+                <Typography variant="h" className="login_modal_items">
+                  ログイン（企業）
+                </Typography>
               </Stack>
               {/* モーダル右上の❌ボタン */}
               <IconButton onClick={handleClose}>
@@ -369,9 +409,8 @@ const CompanyLoginModal = (props) => {
                       <IconButton
                         aria-label="toggle password visibility"
                         onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
+                        // onMouseDown={handleMouseDownPassword}
                         edge="end"
-                        sx={{ width: { xs: "95%", sm: "90%", md: "80%" } }}
                         variant="outlined"
                       >
                         {showPassword ? <VisibilityOff /> : <Visibility />}
@@ -402,8 +441,8 @@ const CompanyLoginModal = (props) => {
 };
 
 CompanyLoginModal.propTypes = {
-  FromCompanyPage: PropTypes.bool.isRequired,
-  callSetModalChange: PropTypes.func.isRequired,
+  FromCompanyPage: PropTypes.bool,
+  // callSetModalChange: PropTypes.func.isRequired,
 };
 
 export default CompanyLoginModal;

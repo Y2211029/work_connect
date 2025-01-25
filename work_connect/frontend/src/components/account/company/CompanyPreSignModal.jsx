@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import Modal from "react-modal";
 import PropTypes from "prop-types";
 import axios from "axios";
@@ -13,10 +13,12 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
 
+import { TopPageModalContext } from "../../../layouts/dashboard";
+
 import "src/App.css";
 import ModalStyle from "../ModalStyle";
-const CompanyPreSignModal = (props) => {
-  const [showModal, setShowModal] = useState(true);
+const CompanyPreSignModal = () => {
+  // const [showModal, setShowModal] = useState(true);
   const [formValues, setFormValues] = useState({
     mail: "",
   });
@@ -29,54 +31,43 @@ const CompanyPreSignModal = (props) => {
     setIsSubmitting: false,
   });
 
-  
   const clickOneTimes = useRef(false); // 一度だけ処理させたい処理を管理するuseRefを作成する
+
+  const { IsModalContextState, setIsModalContextState } = useContext(TopPageModalContext);
+  const { preModalOpen } = IsModalContextState;
 
   const url = "http://localhost:8000/s_pre_register";
   const csrf_url = "http://localhost:8000/csrf-token";
 
-  // ヘッダーの新規登録ボタンを押したときに新規登録モーダルを開いたり閉じたりする処理
-  $("#CompanypreSignModalOpenButton").click(function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-
+  $("#CompanypreSignModalOpenButton").click(function () {
     if (clickOneTimes.current) return; // 送信処理中かを判定する（trueなら抜ける）
     clickOneTimes.current = true; // 送信処理中フラグを立てる
-
-    if (showModal == true) {
-      setShowModal(false);
-    } else {
-      setShowModal(true);
-    }
-
     clickOneTimes.current = false; // 送信処理中フラグを下げる
-  });
-
-  // 新規登録のform内以外をクリックしたときにモーダルを閉じる処理
-
-  $("*").click(function (e) {
-    // クリックした要素の<html>までのすべての親要素の中に"formInModal"クラスがついている要素を取得
-    var targetParants = $(e.target).parents(".formInModal");
-
-    // 取得した要素の個数が0個の場合
-    // ***if (targetParants.length == 0 || $(e.target).text() == "閉じる")***
-    if (targetParants.length == 0 || $(e.target).text() == "閉じる") {
-      // クリックした要素に"formInModal"クラスがついていない場合
-      if ($(e.target).attr("class") != "formInModal" && $(e.target).attr("id") != "preSignModalOpenButton") {
-        // 新規登録モーダルを閉じる
-        setShowModal(false);
-      }
-    }
   });
 
   // 親に渡す。
   const handleOpenStudentPreModal = () => {
-    props.callSetPreModalChange("学生");
+    // props.callSetPreModalChange("学生");
+    setIsModalContextState((prev) => ({
+      ...prev,
+      preModalType: "学生",
+    }));
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
+  const handleCloseModal = (reason) => {
+    if (reason === "backdropClick") return;
+    setIsModalContextState((prev) => ({
+      ...prev,
+      preModalOpen: false,
+    }));
     setFormErrors({}); // エラーメッセージをリセット
+  };
+
+  const handleOnRequestClose = () => {
+    setIsModalContextState((prev) => ({
+      ...prev,
+      preModalOpen: false,
+    }));
   };
 
   const handleChange = (e) => {
@@ -107,7 +98,6 @@ const CompanyPreSignModal = (props) => {
     });
 
     e.preventDefault();
-    
 
     // フォームの送信処理
     const errors = validate(formValues, true);
@@ -139,7 +129,7 @@ const CompanyPreSignModal = (props) => {
     })
       .done(function (data) {
         // ajax成功時の処理
-setIsSubmitting({
+        setIsSubmitting({
           ...setIsSubmitting,
           retransmissionFlag: true,
           setIsSubmitting: false, //  "仮登録"から"送信中..."にボタンの文字を変える
@@ -201,7 +191,14 @@ setIsSubmitting({
 
       {/* 条件付きレンダリングを使用 */}
       {/* <button onClick={handleOpenModal}>新規登録</button> */}
-      <Modal isOpen={showModal} contentLabel="Example Modal" style={ModalStyle}>
+      <Modal
+        isOpen={preModalOpen}
+        contentLabel="Example Modal"
+        onRequestClose={handleOnRequestClose}
+        shouldCloseOnOverlayClick={true}
+        appElement={document.getElementById("root")}
+        style={ModalStyle}
+      >
         <div className="Modal">
           <form onSubmit={handleSubmit} className="formInModal">
             <Stack
@@ -270,7 +267,6 @@ setIsSubmitting({
   );
 };
 CompanyPreSignModal.propTypes = {
-  FromCompanyPage: PropTypes.bool.isRequired,
-  callSetPreModalChange: PropTypes.func.isRequired,
+  FromCompanyPage: PropTypes.bool,
 };
 export default CompanyPreSignModal;

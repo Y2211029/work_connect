@@ -1,77 +1,38 @@
-import { useState, useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useSessionStorage } from "../../../hooks/use-sessionStorage";
 import "react-device-frameset/styles/marvel-devices.min.css";
-import $ from "jquery";
+// import $ from "jquery";
+
+import { TopPageModalContext } from "../../../layouts/dashboard";
 
 import Button from "@mui/material/Button";
 
 // ゲストモード時、作品投稿・動画投稿・通知
 import { MyContext } from "src/layouts/dashboard/index";
 
-// ログイン
-import StudentLoginModal from "src/components/account/students/StudentLoginModal";
-import CompanyLoginModal from "src/components/account/company/CompanyLoginModal";
-
 // 新規登録
-import StudentPreSignModal from "src/components/account/students/StudentPreSignModal";
-import CompanyPreSignModal from "src/components/account/company/CompanyPreSignModal";
-
 export default function TopPageListView() {
-  const [ModalChange, setModalChange] = useState("");
-  const [PreModalChange, setPreModalChange] = useState("");
+  const { IsModalContextState, setIsModalContextState } = useContext(TopPageModalContext);
+  const { modalOpen } = IsModalContextState;
   const Display = useContext(MyContext);
   // 登録項目確認の際に利用
   const { deleteSessionData } = useSessionStorage();
   deleteSessionData("accountData");
 
-  const callSetModalChange = (newValue) => {
-    setModalChange(newValue);
-  };
-  const callSetPreModalChange = (newValue) => {
-    setPreModalChange(newValue);
-  };
+  useEffect(() => {
+    console.log("modalOpen", modalOpen);
+  }, [modalOpen]); // 空の依存配列を渡して、初回のみ実行するようにする
 
   const handleChange = (e) => {
     if (e.target.id === "LoginButton") {
-      setModalChange("学生");
-      setPreModalChange("");
-    } else {
-      setModalChange("");
-      setPreModalChange("学生");
+      setIsModalContextState((prev) => ({
+        ...prev,
+        modalType: "学生",
+        modalOpen: true,
+      }));
     }
   };
 
-  // ログインのform内以外をクリックしたときにモーダルを閉じる処理
-  $("*").click(function (e) {
-    // クリックした要素の<html>までのすべての親要素の中に"formInModal"クラスがついている要素を取得
-    var targetParants = $(e.target).parents(".formInModal");
-
-    // 取得した要素の個数が0個の場合
-    // ***if (targetParants.length == 0 || $(e.target).text() == "閉じる")***
-    // console.log($(e.target).text());
-    if (targetParants.length == 0 || $(e.target).text() == "閉じる") {
-      // クリックした要素に"formInModal"クラスがついていない場合
-      if (
-        $(e.target).attr("class") != "formInModal" &&
-        $(e.target).attr("id") != "LoginButton" &&
-        $(e.target).attr("id") != "loginCompanyModalLink" &&
-        $(e.target).attr("id") != "loginStudentModalLink"
-      ) {
-        // ログインモーダルを閉じる
-        setModalChange("");
-      }
-
-      if (
-        $(e.target).attr("class") != "formInModal" &&
-        $(e.target).attr("id") != "PreSignButton" &&
-        $(e.target).attr("id") != "PreSignCompanyModalLink" &&
-        $(e.target).attr("id") != "PreSignStudentModalLink"
-      ) {
-        // 新規登録モーダルを閉じる
-        setPreModalChange("");
-      }
-    }
-  });
   return (
     <>
       <div className="top_page_wrapper">
@@ -97,17 +58,6 @@ export default function TopPageListView() {
                   始めよう
                 </Button>
               </div>
-              {ModalChange === "学生" ? (
-                <StudentLoginModal callSetModalChange={callSetModalChange} />
-              ) : ModalChange === "企業" ? (
-                <CompanyLoginModal callSetModalChange={callSetModalChange} />
-              ) : null}
-
-              {PreModalChange === "学生" ? (
-                <StudentPreSignModal callSetPreModalChange={callSetPreModalChange} />
-              ) : PreModalChange === "企業" ? (
-                <CompanyPreSignModal callSetPreModalChange={callSetPreModalChange} />
-              ) : null}
             </div>
           </div>
         </div>

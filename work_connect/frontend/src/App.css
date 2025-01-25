@@ -230,8 +230,8 @@ nav ul li a:hover {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  gap: 20px;
-  padding-bottom: 50px;
+  /* padding-bottom: 50px; */
+
 }
 
 .Login_modal_Button {
@@ -267,7 +267,7 @@ nav ul li a:hover {
 .Modal form {
   /* position: relative; */
   background-color: white;
-  width: 70%;
+  width: 100%;
   max-width: 600px;
   padding: 30px;
   border-radius: 20px;

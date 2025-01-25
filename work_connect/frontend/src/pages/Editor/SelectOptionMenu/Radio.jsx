@@ -41,14 +41,7 @@ export default function Radio({ onSave, onCancel, questionData }) {
             setIsRequired(questionData.isRequired || false);
             setShowNoneItem(questionData.showNoneItem || false);
             setShowOtherItem(questionData.showOtherItem || false);
-
-            // choicesが存在する場合、テキストを抽出してセットする
-            const processedChoices = (questionData.choices || []).map(choice => {
-                // `text` または `jsonObj` からテキストを取り出す
-                return choice.text || choice.jsonObj || "";
-            });
-            setChoices(processedChoices);
-
+            setChoices(Array.isArray(questionData.choices) ? questionData.choices : []); // 配列チェック
             setColCount(questionData.colCount || 1);
             setseparateSpecialChoices(questionData.separateSpecialChoices || false);
             setshowClearButton(questionData.showClearButton || false);

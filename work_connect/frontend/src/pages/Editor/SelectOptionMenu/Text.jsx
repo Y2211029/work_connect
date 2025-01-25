@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import Checkbox from '@mui/material/Checkbox';
 
 export default function Text({ onSave, onCancel, questionData }) {
-    
+
     const inputtype = [
         { label: 'テキスト', id: 1, name: "username" },
         { label: 'メールアドレス', id: 2, name: "email" },
@@ -41,7 +41,7 @@ export default function Text({ onSave, onCancel, questionData }) {
             setSelectedType(inputtype.find(type => type.name === questionData.inputType) || null);
             setPlaceholder(questionData.placeholder || "");
             setAutoComplete(questionData.autocomplete || false);
-            setIsRequired(questionData.isrequired || false);
+            setIsRequired(questionData.isRequired || false);
             setDescription(questionData.description || "");
 
             if (questionData.validators && questionData.validators[0]) {
@@ -64,7 +64,7 @@ export default function Text({ onSave, onCancel, questionData }) {
                     text: validatorstext || ""
                 });
             }
-    
+
             const settings = {
                 title: title || "新しい質問",
                 inputType: selectedType ? selectedType.name : "username",
@@ -72,11 +72,11 @@ export default function Text({ onSave, onCancel, questionData }) {
                 minLength: minLength ? parseInt(minLength, 10) : undefined,
                 placeholder: placeholder || "",
                 autocomplete: autocomplete || false,
-                isrequired: isrequired || false,
+                isRequired: isrequired || false,
                 description: description || "",
                 validators: validators
             };
-    
+
             onSave(settings);
             console.log("設定", settings);
         }else{

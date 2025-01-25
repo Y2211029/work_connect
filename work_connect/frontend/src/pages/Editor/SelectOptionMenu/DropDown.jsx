@@ -18,7 +18,7 @@ export default function DropDown({ onSave, onCancel, questionData }) {
     const [showNoneItem, setShowNoneItem] = useState(false);
     const [showOtherItem, setShowOtherItem] = useState(false);
     const [Type, setType] = useState(false);
-    const [choices, setChoices] = useState([""]);
+    const [choices, setChoices] = useState([]);
     const [expanded, setExpanded] = useState(false);
 
 
@@ -46,12 +46,7 @@ export default function DropDown({ onSave, onCancel, questionData }) {
             setIsRequired(questionData.isRequired || false);
             setShowNoneItem(questionData.showNoneItem || false);
             setShowOtherItem(questionData.showOtherItem || false);
-            // choicesが存在する場合、テキストを抽出してセットする
-            const processedChoices = (questionData.choices || []).map(choice => {
-                // `text` または `jsonObj` からテキストを取り出す
-                return choice.text || choice.jsonObj || "";
-            });
-            setChoices(processedChoices);
+            setChoices(Array.isArray(questionData.choices) ? questionData.choices : []); // 配列チェック
 
             if (questionData?.Type === "tagbox" || questionData?.jsonObj?.type === "tagbox") {
                 setType(true);

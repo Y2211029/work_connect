@@ -8,12 +8,14 @@ import PropTypes from "prop-types";
 import "./NewsSelectMenu.css";
 import Tooltip from "@mui/material/Tooltip";
 import { postDateTimeDisplay } from "src/components/view/PostDatatime";
+import Checkbox from '@mui/material/Checkbox';
 
 // 応募締め切り日を設定:MUI
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import moment from "moment";
 import "moment/locale/ja";
+
 
 // 募集職種のタグを設定
 import CreatableSelect from "react-select/creatable";
@@ -39,6 +41,7 @@ import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import ImageNotSupportedIcon from "@mui/icons-material/ImageNotSupported";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Stack } from "@mui/system";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 const blue = {
   100: "#DAECFF",
@@ -97,7 +100,6 @@ const Textarea = styled(BaseTextareaAutosize)(
 
 const InputDateWithTime = ({ date, setEventDay, format = "YYYY/MM/DD HH:mm" }) => {
   moment.locale("ja"); // 日本語設定
-  console.log("この時のデータの中身は?", date);
   return (
     <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="ja">
       <DateTimePicker
@@ -176,7 +178,9 @@ const NewsSelectMenu = ({
   selected_draft,
   CreateFormJump,
   newsDraftList,
-  genre
+  genre,
+  setDateUndecided,
+  dateUndecided
 }) => {
   const [anchorElInput, setAnchorElInput] = useState(null); // 入力メニューのアンカー要素
   const [anchorElConfirmation, setAnchorElConfirmation] = useState(null); // 確認メニューのアンカー要素
@@ -190,6 +194,7 @@ const NewsSelectMenu = ({
   const [Message, setMessage] = useState(notificationMessage);
   const theme = useTheme();
   const [WarningArray, setWarningArray] = useState([]);
+  const [dayKindText, setDayKindText] = useState(null);
 
   console.log("imageurlの中身", imageUrl);
 
@@ -198,13 +203,25 @@ const NewsSelectMenu = ({
   console.log("eventDayの中身", eventDay);
   console.log("ジャンル", genre);
   console.log("followerCounter", followerCounter);
+  console.log("Messageの中身", Message);
+  console.log("notificationMessageの中身", notificationMessage);
 
   const [menuItems] = useState([
     { key: "eventday", label: "開催日" },
+    { key: "eventday", label: "求人開始日" },
     { key: "jobtype", label: "募集職種" },
     { key: "createform", label: "応募フォーム" },
     { key: "message", label: "通知メッセージ" },
   ]);
+
+  useEffect(() => {
+    if (genre === "JobOffer") {
+      setDayKindText("求人開始日");
+    } else if (genre === "Internship" || genre === "Session") {
+      setDayKindText("開催日");
+    }
+  }, []);
+
 
   useEffect(() => {
     let optionArrayPromise = GetTagAllListFunction("company_selected_occupation");
@@ -421,31 +438,42 @@ const NewsSelectMenu = ({
   };
 
 
-  console.log("notificationMessage",notificationMessage);
-  const WarningTargetArray =
-    [
-      { name: "タイトル", judge: title == null || title == "", element: title },
-      { name: "サムネイル", judge: imageUrl == null || imageUrl == "", element: imageUrl },
-      ...followerCounter > 0 ? [{ name: "通知メッセージ", judge: notificationMessage == null || notificationMessage == "", element: notificationMessage }] : [],
-      ...genre !== "Blog"?[{ name: "開催日", judge: !moment(eventDay).isAfter(moment(), 'day'), element: eventDay }] : [],
-      ...genre !== "Blog"?[{ name: "募集職種", judge: selectedOccupation.length <= 0, element: selectedOccupation }] : [],
-      { name: "記事内容", judge: charCount <= 0, element: charCount },
-    ]
+  console.log("notificationMessage", notificationMessage);
+  const WarningTargetArray = [
+    { name: "タイトル", judge: !title, element: title },
+    { name: "サムネイル", judge: !imageUrl, element: imageUrl },
+    { name: "記事内容", judge: charCount <= 0, element: charCount }
+  ];
 
   useEffect(() => {
-    const newWarningArray = WarningTargetArray
-      .filter(warn => warn.judge)
-      .map(warn => warn.name);
+    console.log("ジャンル", genre);
+    console.log("dateUndecided", dateUndecided, typeof dateUndecided);
 
+    if (genre !== "Blog" && dateUndecided === false) {
+      console.log("条件を満たしました: push します");
+      WarningTargetArray.push({
+        name: dayKindText || "未定の日付",
+        judge: !moment(eventDay).isAfter(moment(), "day"),
+        element: eventDay,
+      });
+      console.log("WarningTargetArray:", WarningTargetArray);
+    } else {
+      console.log("条件を満たしていません");
+    }
+  }, [genre, dateUndecided]); // 状態が変化するたびに再実行
 
-      console.log("title",title);
-      console.log("imageUrl",imageUrl);
-      console.log("charCount",charCount);
-      console.log("eventDay",eventDay);
-      console.log("selectedOccupation",selectedOccupation);
+  if (followerCounter > 0) {
+    WarningTargetArray.push({ name: "通知メッセージ", judge: !notificationMessage, element: notificationMessage });
+  }
 
+  if (genre !== "Blog") {
+    WarningTargetArray.push({ name: "募集職種", judge: selectedOccupation.length <= 0, element: selectedOccupation });
+  }
+
+  useEffect(() => {
+    const newWarningArray = WarningTargetArray.filter((warn) => warn.judge).map((warn) => warn.name);
     setWarningArray(newWarningArray);
-  }, [sessionId,title, imageUrl, notificationMessage, eventDay, selectedOccupation, charCount]); // 依存関係の配列
+  }, [sessionId, title, imageUrl, notificationMessage, eventDay, selectedOccupation, charCount, dateUndecided]);
 
   const WarningCheck = () => {
     const warningText = WarningArray.join(", ");
@@ -461,6 +489,7 @@ const NewsSelectMenu = ({
   };
 
 
+
   const renderPopoverContent = () => {
     if (selectedMenu === "input") {
       switch (menuState) {
@@ -468,6 +497,16 @@ const NewsSelectMenu = ({
           return (
             <Box sx={{ p: 2 }}>
               <InputDateWithTime date={eventDay} setEventDay={setEventDay} />
+              <Stack direction={"row"}>
+                <Typography className="dateUndecided_Text">
+                  日程が未定・順次開始
+                </Typography>
+                <Checkbox
+                  checked={dateUndecided}
+                  onChange={() => setDateUndecided((prev) => !prev)}
+                  inputProps={{ 'aria-label': 'controlled' }}
+                />
+              </Stack>
             </Box>
           );
         case "jobtype":
@@ -504,16 +543,16 @@ const NewsSelectMenu = ({
                 maxRows={12}
                 aria-label="maximum height"
                 placeholder="100字以内"
-                value={Message}
+                value={notificationMessage}
                 onChange={NotificationMessageChange}
                 maxLength={100}
                 sx={{
-                  border: Message === "" ? "1px red solid" : `1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]}`,
+                  border: notificationMessage === "" ? "1px red solid" : `1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]}`,
                 }}
                 className="NotificationMessage"
               />
               <Typography variant="body2" color="textSecondary" className="Message_Length">
-                {Message ? Message.length : <span style={{ color: "red", opacity: 0.7 }}>0</span>} / 100
+                {notificationMessage ? notificationMessage.length : <span style={{ color: "red", opacity: 0.7 }}>0</span>} / 100
               </Typography>
             </Box>
           );
@@ -614,13 +653,18 @@ const NewsSelectMenu = ({
                   </>
                 )}
 
-                {genre !=="Blog" && (
-                <>
-                <p>開催日</p>
-                {EditorStatusCheck(eventDay, "eventDay")}
-                <p>募集職種</p>
-                {EditorStatusCheck(selectedOccupation, "selectedOccupation")}
-                </>
+                {genre !== "Blog" && (
+                  <>
+                    <p>{dayKindText}</p>
+                    {dateUndecided ?
+                      <p className="dateUndecided_Text_Editing_Status">
+                        未定・順次開始
+                      </p>
+                      : EditorStatusCheck(eventDay, "eventDay")}
+
+                    <p>募集職種</p>
+                    {EditorStatusCheck(selectedOccupation, "selectedOccupation")}
+                  </>
                 )}
 
                 <p>記事内容</p>
@@ -633,32 +677,33 @@ const NewsSelectMenu = ({
           return (
             <div className="draftlistScroll">
               <div className="add_draft_news">
-                <Button variant="outlined" onClick={AddDraftNews}>
-                  <Typography className="add_draft_news_text">新たな下書き</Typography>
-                </Button>
+                <Tooltip title="新たな下書き">
+                  <AddCircleOutlineIcon onClick={AddDraftNews} />
+                </Tooltip>
               </div>
               {draftlist.length > 0 ? (
                 draftlist.map((draft) => (
                   <NewsMenuTable className="draftlisttable" key={draft.id}>
                     <TableHead>
                       <TableRow>
-                        <TableCell style={{ backgroundColor: "#fff", border: "none" }}>
+                        <TableCell style={{ backgroundColor: "#fff", border: "none"}}>
+
+                          <Stack direction={"row"}>
                           <Tooltip title={`最終更新日:${FormattedDate(draft.updated_at)}`}>
                             <div className="Last_updated_date">
                               最終更新日:{postDateTimeDisplay(FormattedDate(draft.updated_at))}
                             </div>
                           </Tooltip>
 
-                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                            {/* 画像を左側に配置 */}
-                            <div className="news_img">{header_img_show(draft)}</div>
-                            {/* テキストと削除ボタンを右側に配置 */}
-                            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-                              <div style={{ display: "flex", alignItems: "center", cursor: "pointer", color: "red" }}>
+                          <div className="NewsDeleteIcon">
+                              <div style={{ cursor: "pointer", color: "red" }}>
                                 <DeleteIcon onClick={() => RewriteNewsDelete(draft.id)} />
                               </div>
                             </div>
-                          </div>
+                          </Stack>
+
+                          <div className="news_img">{header_img_show(draft)}</div>
+
                         </TableCell>
                       </TableRow>
                     </TableHead>
@@ -698,6 +743,12 @@ const NewsSelectMenu = ({
     let updatedMenuItems = [...menuItems];
     let classvalue;
 
+    if (genre === "JobOffer") {
+      updatedMenuItems = updatedMenuItems.filter((item) => item.label !== "開催日");
+    } else if (genre === "Internship" || genre === "Session") {
+      updatedMenuItems = updatedMenuItems.filter((item) => item.label !== "求人開始日");
+    }
+
     if (genre === "Blog") {
       updatedMenuItems = updatedMenuItems.filter((item) => item.key === "message");
       //入力メニューが1個
@@ -706,13 +757,13 @@ const NewsSelectMenu = ({
       if (followerCounter < 0) {
         return null;
       }
-    } else if (followerCounter < 0) {
+    } else if (followerCounter <= 0) {
       updatedMenuItems = updatedMenuItems.filter((item) => item.key !== "message");
       //入力メニューが3個
-       classvalue="menu_input_three"
-    }else{
+      classvalue = "menu_input_three"
+    } else {
       //入力メニューが4個
-      classvalue="menu_input"
+      classvalue = "menu_input"
     }
 
     return (
@@ -851,7 +902,9 @@ NewsSelectMenu.propTypes = {
   selected_draft: PropTypes.array.isRequired, //現在下書き中のニュース＆フォームの情報
   CreateFormJump: PropTypes.func.isRequired,
   newsDraftList: PropTypes.func.isRequired,
-  genre: PropTypes.string.isRequired
+  genre: PropTypes.string.isRequired,
+  setDateUndecided: PropTypes.func.isRequired,
+  dateUndecided: PropTypes.bool.isRequired
 };
 
 // PropTypesの型定義

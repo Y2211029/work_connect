@@ -151,6 +151,8 @@ class FormController extends Controller
                 )
                 ->first();
 
+            Log::info("post" . $post);
+
             if ($post) {
                 $decodedForm = json_decode($post->create_form);
                 if (json_last_error() !== JSON_ERROR_NONE) {

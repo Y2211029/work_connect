@@ -60,7 +60,7 @@ const InternshipJobOfferPage = () => {
 
         console.log("デッドラインステータス", deadline_status);
         console.log("ライトフォームステータス", writeform_status);
-
+        console.log("クリエイトフォームステータス", createform_status);
 
         setWriteFormStatus(writeform_status);
         setDeadLineStatus(deadline_status);
@@ -102,9 +102,32 @@ const InternshipJobOfferPage = () => {
     }
   };
 
-  const getEventDayMessage = (event_day) => {
+  const getMessage = (event_day, genre) => {
     const today = new Date();
     const eventDayDate = new Date(event_day);
+    let day_alart_label;
+    let already_label;
+
+    console.log("getEventDayMessageのgenre", Genre);
+
+    if (NewsDetail.genre === "JobOffer") {
+      if (genre === "eventDay") {
+        day_alart_label = "求人開始日";
+        already_label = "求人が開始さ";
+      } else {
+        day_alart_label = "締切日";
+        already_label = "締め切ら";
+      }
+    } else if (["Internship", "Session"].includes(NewsDetail.genre)) {
+      if (genre === "eventDay") {
+        day_alart_label = "開催日";
+        already_label = "開催";
+      } else {
+        day_alart_label = "締切日";
+        already_label = "締め切ら";
+      }
+    }
+
 
     // 日付の差分を計算 (ミリ秒 -> 日)
     const diffInDays = Math.ceil((eventDayDate - today) / (1000 * 60 * 60 * 24));
@@ -120,7 +143,7 @@ const InternshipJobOfferPage = () => {
         <>
 
           <Button className="NewsDetail_Button" variant="contained" color="error">
-            開催日まで残り{diffInDays}日!
+            {day_alart_label}まで残り{diffInDays}日!
           </Button>
 
         </>
@@ -134,7 +157,7 @@ const InternshipJobOfferPage = () => {
       return (
         <>
           <Button className="NewsDetail_Button" variant="contained" color="warning">
-            開催日まで残り{weeksLeft}週間!
+            {day_alart_label}まで残り{weeksLeft}週間!
           </Button>
         </>
 
@@ -145,12 +168,8 @@ const InternshipJobOfferPage = () => {
     if (diffInMonths >= 1) {
       return (
         <>
-          {/* <Typography className="EventDayAlert" variant="body1" color="info.dark">
-
-          </Typography> */}
-
           <Button className="NewsDetail_Button" variant="contained" color="secondary">
-            開催日まで残り{diffInMonths}ヶ月!
+            {day_alart_label}まで残り{diffInMonths}ヶ月!
           </Button>
         </>
 
@@ -161,7 +180,7 @@ const InternshipJobOfferPage = () => {
     if (diffInDays < 0) {
       return (
         <Button className="NewsDetail_Button" variant="contained" color="success">
-          開催されました!
+          {already_label}れました!
         </Button>
 
       );
@@ -209,9 +228,6 @@ const InternshipJobOfferPage = () => {
     Genre = "求人";
   }
 
-  console.log("ジャンル", Genre);
-  console.log("writeformStatus", writeformStatus);
-  console.log("followstatus", followStatus);
 
   return (
     <>
@@ -230,14 +246,23 @@ const InternshipJobOfferPage = () => {
                 </Button>
               </div>
 
+              {Genre !== 'ブログ' && (
+                <Stack direction={"row"}>
+                  <div>
+                    <div className="day_information">
+                      <Tooltip title={formatDate(NewsDetail.event_day)}>
+                        <span>{getMessage(NewsDetail.event_day, "eventDay")}</span>
+                      </Tooltip>
 
-              {Genre !== 'ブログ' ? (
-                <div className='day_information'>
-                  {getEventDayMessage(NewsDetail.event_day)}
-                </div>
-              ) : null}
-
-
+                      {NewsDetail.deadline && (
+                        <Tooltip title={formatDate(NewsDetail.deadline)}>
+                          <span>{getMessage(NewsDetail.deadline, "deadLine")}</span>
+                        </Tooltip>
+                      )}
+                    </div>
+                  </div>
+                </Stack>
+              )}
 
             </Stack>
 
@@ -279,40 +304,35 @@ const InternshipJobOfferPage = () => {
                   </Button>
 
 
-                  {Genre !== "ブログ" && createformstatus !== undefined && (
-                    createformstatus ? (
+                  {Genre !== "ブログ" && (
+                    createformstatus == true ? (
                       <Button
                         className="Apply_Button"
                         variant="contained"
                         sx={{
-                          background: deadlinestatus
-                            ? writeformStatus
-                              ? "linear-gradient(#d3d3d3, #a6a6a6)" // 応募済みの場合の背景
-                              : "linear-gradient(#41A4FF, #9198e5)" // 応募可能な場合の背景
-                            : "linear-gradient(#d3d3d3, #a6a6a6)", // 締切が過ぎている場合の背景
+                          background: deadlinestatus == true || writeformStatus == true
+                            ? "linear-gradient(#d3d3d3, #a6a6a6)" : "linear-gradient(#41A4FF, #9198e5)",
                           "&:hover": {
-                            background: deadlinestatus
-                              ? writeformStatus
-                                ? "linear-gradient(#b8b8b8, #9e9e9e)" // 応募済みの場合のホバー時背景
-                                : "linear-gradient(#c2c2c2, #e5ad91)" // 応募可能な場合のホバー時背景
-                              : "linear-gradient(#b8b8b8, #9e9e9e)", // 締切が過ぎている場合のホバー時背景
+                            background: deadlinestatus == true || writeformStatus == true
+                              ? "linear-gradient(#d3d3d3, #a6a6a6)" : "linear-gradient(#41A4FF, #9198e5)",
                           },
                           color: "white", // ボタンの文字色
                         }}
                         onClick={
-                          deadlinestatus && !writeformStatus
+                          deadlinestatus == false && writeformStatus == false
                             ? handleFormJump // 応募可能な場合のクリックイベント
                             : undefined // 応募できない場合または応募済みの場合は無効化
                         }
-                        disabled={!deadlinestatus || writeformStatus} // 締切が過ぎている場合または応募済みの場合にボタンを無効化
+                        disabled={deadlinestatus == true || writeformStatus == true} // 締切が過ぎている場合または応募済みの場合にボタンを無効化
                       >
-                        {!deadlinestatus
+                        {deadlinestatus == true
                           ? "応募できません" // 締切が過ぎている場合
-                          : writeformStatus
+                          : writeformStatus == true
                             ? "応募済み" // 応募済みの場合
-                            : "応募する"} 
+                            : "応募する"}
                       </Button>
                     ) : (
+
                       <Button
                         className="Apply_Button"
                         variant="contained"
@@ -329,9 +349,6 @@ const InternshipJobOfferPage = () => {
                       </Button>
                     )
                   )}
-
-
-
 
                   {(followStatus === "フォローしています" || followStatus === "フォローされています") && (
                     <Button variant="contained" className="NewsDetail_Button" onClick={handleChatJump}>

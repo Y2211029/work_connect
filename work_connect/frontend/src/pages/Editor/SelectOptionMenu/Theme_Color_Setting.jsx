@@ -173,7 +173,7 @@ export default function Theme_Color_Setting({
           onChange={handleColorChange} // 色変更
         />
 
-        <Stack direction={"row"}>
+        <Stack direction={"column"}>
         {/* ライト/ダークモード */}
         <ToggleButtonGroup
           size="thin"

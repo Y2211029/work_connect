@@ -79,6 +79,7 @@ const Editor = () => {
   const [formSummary, setFormSummary] = useState(null);
   const [followerCounter, setFollowerCounter] = useState(0);
   const [selectedOccupation, setSelectedOccupation] = useState([]);
+  const [dateUndecided, setDateUndecided] = useState(false);
   const [newsTitle, setNewsTitle] = useState("ブログ");
 
   const news_save_url = "http://localhost:8000/news_save";
@@ -93,8 +94,9 @@ const Editor = () => {
     title &&
     imageUrl &&
     charCount &&
-    (genre !== "Blog" || moment(eventDay).isAfter(moment(), 'day')) &&
-    (genre !== "Blog" ? selectedOccupation.length > 0 : true)
+    (followerCounter <= 0 || notificationMessage) &&
+    (genre === "Blog" || dateUndecided || moment(eventDay).isAfter(moment(), 'day')) && // genre が Blog の場合、次の条件をスルー
+    (genre === "Blog" || selectedOccupation.length > 0) // genre が Blog の場合、次の条件をスルー
   );
 
   console.log("title",title);
@@ -186,6 +188,7 @@ const Editor = () => {
       console.log("開催日", eventDay);
       console.log("企業ID", sessionId);
       console.log("ジャンル", genre);
+      console.log("日程が未定かどうか", dateUndecided);
 
       const response = await axios.post(
         news_save_url,
@@ -198,6 +201,7 @@ const Editor = () => {
           eventDay: eventDay, //開催日
           company_id: sessionId, // 企業ID
           genre: genre, //ジャンル
+          dateUndecided: dateUndecided //日程が未定かどうか
         },
       );
 
@@ -328,7 +332,6 @@ const Editor = () => {
     moment.locale("ja"); // 日本語ロケール設定
     setEventDay(moment.utc(select_draft_list.event_day).format("YYYY/MM/DD HH:mm"));
 
-    // まず変換関数を定義
     const transformOpenJobs = (openJobsString) => {
       return openJobsString.split(",").map((job) => ({
         value: job,
@@ -338,7 +341,9 @@ const Editor = () => {
 
     const OpenJobs = select_draft_list.open_jobs;
     setSelectedOccupation(transformOpenJobs(OpenJobs));
-    console.log("応募職種配列", transformOpenJobs(OpenJobs));
+
+    console.log("select_draft_list.message",select_draft_list.message);
+    setNotificationMessage(select_draft_list.message);
   };
 
   const rewrite_news_delete = async (id) => {
@@ -1385,6 +1390,8 @@ const Editor = () => {
               CreateFormJump={CreateFormJump}
               newsDraftList={newsDraftList}
               genre={genre}
+              setDateUndecided={setDateUndecided}
+              dateUndecided={dateUndecided}
             />
           </div>
 

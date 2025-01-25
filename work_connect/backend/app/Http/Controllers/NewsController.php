@@ -54,36 +54,35 @@ class NewsController extends Controller
             $createForm = w_create_form::where('news_id', $newsdetail_id)
                 ->first();
 
-            Log::info('クリエイトフォーム' . $createForm);
-            Log::info('ジャンル' . $news_detail->genre);
+            $deadline = w_news::where('id', $newsdetail_id)
+                ->first();
+
 
             //もしもジャンルがブログではないかつフォームを作成していた場合
             //今見ている人が応募済みかどうかチェック
             if ($news_detail->genre !== 'Blog' && $createForm) { // 存在するかどうかをチェック
 
-                $createFormStatus = true;
-                $news_detail->createform_status = $createFormStatus;
-
-                Log::info('クリエイトフォームステータス' . $createFormStatus);
+                $now = Carbon::now('Asia/Tokyo');
+                $deadlineTime = Carbon::parse($deadline->deadline)->setTimezone('Asia/Tokyo');
+                $news_detail->createform_status = true;
 
                 $writeformStatus = w_write_form::where('user_id', $MyId)
                     ->where('news_id', $newsdetail_id)
                     ->first();
-
                 if ($writeformStatus) {
                     $news_detail->writeform_status = true;
-                    $now = Carbon::now('Asia/Tokyo');
-
-                    // 締め切りを確認する 締切日を設定していないもしくは締切日超過の場合はfalseを返す
-                    if ($createForm->deadline !== null && $createForm->deadline->lt($now)) {
-                        $news_detail->deadlineStatus = true;
-                    } else {
-                        $news_detail->deadlineStatus = false;
-                    }
                 } else {
                     $news_detail->writeform_status = false;
-                    $news_detail->deadlineStatus = false;
                 }
+
+                Log::info("deadlineTime" . $deadlineTime);
+                Log::info("now" . $now);
+                                // 締め切り日が設定されており、締め切り日が過去の場合はtrueを返す
+                                if ($deadlineTime && $deadlineTime->lt($now)) {
+                                    $news_detail->deadlineStatus = true;
+                                  } else {
+                                    $news_detail->deadlineStatus = false;
+                                }
             } else {
                 $news_detail->writeform_status = false;
                 $news_detail->deadlineStatus = false;
@@ -111,11 +110,12 @@ class NewsController extends Controller
             // 次のニュース（$targetIndex + 1）
             $nextNews = $all_news_data->get($targetIndex + 1) ?? null;
 
-            // Logで確認
-            Log::info('前のニュース:', [$previousNews]);
-            Log::info('次のニュース:', [$nextNews]);
 
-            // ['apply_histories' => $posts]
+            Log::info("デッドラインステータス" . var_export($news_detail->deadlineStatus, true));
+            Log::info("ライトフォームステータス" . var_export($news_detail->writeform_status, true));
+            Log::info("クリエイトフォームステータス" . var_export($news_detail->createform_status, true));
+
+
 
             return response()->json(['news_detail' => $news_detail, 'previousNews' => $previousNews, 'nextNews' => $nextNews]);
         } else {

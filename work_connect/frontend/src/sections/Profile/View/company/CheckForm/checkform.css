@@ -115,6 +115,7 @@
   border: 1px solid rgb(218, 220, 224);
   border-collapse: collapse;
   padding: 5px 15px 5px;
+  width: 100%;
 }
 
 .writeform-length {
@@ -281,17 +282,13 @@
 .GraphSelectButton {
   display: flex;
   flex-wrap: wrap;
-  column-gap: 10px;
-  row-gap: 10px;
+  column-gap: 20px;
   overflow: hidden;
   width: 800px;
   height: 100%;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: center;
-  margin-top: 1%;
-  padding-top: 1%;
-  padding-bottom: 5%;
-  margin-left: 0%;
+  margin-top: 10%;
 }
 
 
@@ -307,6 +304,10 @@
   height: 50px;
   font-size: 12px;
   margin-top: 20%;
+}
+
+.css-1ov46kg > :not(style):not(style){
+  margin-top: 10px;
 }
 
 .CreateForm_Cancel_Button{
@@ -575,8 +576,8 @@
 
 
   .write-form{
-    margin-top: -80%;
-    width: 430px;
+    margin-top: -90%;
+    width: 450px;
     padding-bottom: 50%;
     margin-left: -10%;
   }

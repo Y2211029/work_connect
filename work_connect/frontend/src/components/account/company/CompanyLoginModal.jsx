@@ -21,7 +21,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import "src/App.css";
-import ModalStyle from "../ModalStyle";
+import useModalStyle from "../ModalStyle";
 
 const CompanyLoginModal = () => {
   const { updateSessionData } = useSessionStorage();
@@ -43,6 +43,7 @@ const CompanyLoginModal = () => {
   const url = "http://localhost:8000/s_login";
   const csrf_url = "http://localhost:8000/csrf-token";
 
+  const modalStyle = useModalStyle();
   // パスワード表示/非表示の切り替え(パスワード)
   const [showPassword, setShowPassword] = useState("");
 
@@ -90,6 +91,7 @@ const CompanyLoginModal = () => {
   const handleChange = (e) => {
     console.log("CompanyLogine.target", e.target); // ログ
     const { name, value } = e.target;
+    
     setFormValues({ ...formValues, [name]: value });
   };
 
@@ -335,7 +337,10 @@ const CompanyLoginModal = () => {
         onRequestClose={handleOnRequestClose}
         shouldCloseOnOverlayClick={true}
         appElement={document.getElementById("root")}
-        style={ModalStyle}
+        style={{
+          overlay: modalStyle.overlay,
+          content: modalStyle.content,
+        }}
       >
         <div className="Modal">
           <form onSubmit={handleSubmit} className="formInModal">
@@ -379,6 +384,7 @@ const CompanyLoginModal = () => {
                 required
                 type="text"
                 value={formValues.user_name}
+
                 variant="outlined"
                 sx={{
                   width: { xs: "95%", sm: "90%", md: "80%" },

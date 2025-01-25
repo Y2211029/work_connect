@@ -234,6 +234,23 @@ nav ul li a:hover {
 
 }
 
+.Login-sign-modal {
+  background: none;
+  border: none;
+  border-radius: 0px;
+  height: fit-content;
+  overflow: visible;
+  /* "none" は無効な値なので "visible" を使用 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .Login_modal_Button {
   margin-top: 16px !important;
   margin-bottom: 8px !important;
@@ -1492,6 +1509,10 @@ textarea::placeholder {
     color: #1C2025 !important;
 
   }
+  .panel-content {
+    display: block;
+    margin: 0 auto;
+  }
 }
 
 @media (max-width: 900px) {
@@ -1533,10 +1554,7 @@ textarea::placeholder {
     width: 90%;
   }
 
-  .panel-content {
-    display: block;
-    margin: 0 auto;
-  }
+ 
 
   .arrow_up_ward_icon {
     bottom: 110px !important;

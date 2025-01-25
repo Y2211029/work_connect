@@ -17,7 +17,7 @@ import { TopPageModalContext } from "../../../layouts/dashboard";
 
 import "src/App.css";
 
-import ModalStyle from "../ModalStyle";
+import useModalStyle from "../ModalStyle";
 
 const StudentPreSignModal = () => {
   // const [showModal, setShowModal] = useState(true);
@@ -38,6 +38,8 @@ const StudentPreSignModal = () => {
 
   const url = "http://localhost:8000/s_pre_register";
   const csrf_url = "http://localhost:8000/csrf-token";
+
+  const modalStyle = useModalStyle();
 
   // 親に渡す。
   const handleOpenCompanyPreModal = () => {
@@ -191,7 +193,10 @@ const StudentPreSignModal = () => {
         onRequestClose={handleOnRequestClose}
         shouldCloseOnOverlayClick={true}
         appElement={document.getElementById("root")}
-        style={ModalStyle}
+        style={{
+          overlay: modalStyle.overlay,
+          content: modalStyle.content,
+        }}
       >
         <div className="Modal">
           <form onSubmit={handleSubmit} className="formInModal">

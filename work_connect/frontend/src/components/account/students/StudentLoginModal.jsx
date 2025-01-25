@@ -23,7 +23,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
-import ModalStyle from "../ModalStyle";
+import useModalStyle from "../ModalStyle";
 
 const StudentLoginModal = () => {
   const { updateSessionData } = useSessionStorage();
@@ -47,6 +47,7 @@ const StudentLoginModal = () => {
   const url = "http://localhost:8000/s_login";
   const csrf_url = "http://localhost:8000/csrf-token";
 
+  const modalStyle = useModalStyle();
   // パスワード表示/非表示の切り替え(パスワード)
   const [showPassword, setShowPassword] = useState("");
 
@@ -76,24 +77,9 @@ const StudentLoginModal = () => {
     }));
   };
   // ヘッダーのログインボタンを押したときにログインモーダルを開いたり閉じたりする処理
-  $("#loginModalOpenButton").click(function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-
+  $("#loginModalOpenButton").click(function () {
     if (clickOneTimes.current) return; // 送信処理中かを判定する（trueなら抜ける）
     clickOneTimes.current = true; // 送信処理中フラグを立てる
-
-    // if (showModal == true) {
-    //   setShowModal(false);
-    // } else {
-    //   setShowModal(true);
-    // }
-
-    // setIsModalContextState((prev) => ({
-    //   ...prev,
-    //   modalOpen: !prev,
-    // }));
-
     clickOneTimes.current = false; // 送信処理中フラグを下げる
   });
 
@@ -105,11 +91,6 @@ const StudentLoginModal = () => {
       modalType: "企業",
     }));
   };
-
-  // const handleCloseModal = () => {
-  //   setShowModal(false);
-  //   setFormErrors({}); // エラーメッセージをリセット
-  // };
 
   const handleChange = (e) => {
     console.log("CompanyLogine.target", e.target); // ログ
@@ -360,7 +341,10 @@ const StudentLoginModal = () => {
         onRequestClose={handleOnRequestClose}
         shouldCloseOnOverlayClick={true}
         appElement={document.getElementById("root")}
-        style={ModalStyle}
+        style={{
+          overlay: modalStyle.overlay,
+          content: modalStyle.content,
+        }}
       >
         <div className="Modal">
           <form onSubmit={handleSubmit} className="formInModal">

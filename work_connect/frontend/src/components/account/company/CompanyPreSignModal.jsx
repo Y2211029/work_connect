@@ -16,7 +16,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { TopPageModalContext } from "../../../layouts/dashboard";
 
 import "src/App.css";
-import ModalStyle from "../ModalStyle";
+import useModalStyle from "../ModalStyle";
 const CompanyPreSignModal = () => {
   // const [showModal, setShowModal] = useState(true);
   const [formValues, setFormValues] = useState({
@@ -39,6 +39,7 @@ const CompanyPreSignModal = () => {
   const url = "http://localhost:8000/s_pre_register";
   const csrf_url = "http://localhost:8000/csrf-token";
 
+  const modalStyle = useModalStyle();
   $("#CompanypreSignModalOpenButton").click(function () {
     if (clickOneTimes.current) return; // 送信処理中かを判定する（trueなら抜ける）
     clickOneTimes.current = true; // 送信処理中フラグを立てる
@@ -197,7 +198,10 @@ const CompanyPreSignModal = () => {
         onRequestClose={handleOnRequestClose}
         shouldCloseOnOverlayClick={true}
         appElement={document.getElementById("root")}
-        style={ModalStyle}
+        style={{
+          overlay: modalStyle.overlay,
+          content: modalStyle.content,
+        }}
       >
         <div className="Modal">
           <form onSubmit={handleSubmit} className="formInModal">

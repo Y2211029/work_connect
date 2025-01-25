@@ -102,21 +102,32 @@ const InternshipJobOfferPage = () => {
     }
   };
 
-  const getEventDayMessage = (event_day) => {
+  const getMessage = (event_day, genre) => {
     const today = new Date();
     const eventDayDate = new Date(event_day);
     let day_alart_label;
     let already_label;
 
-    console.log("getEventDayMessageのgenre",Genre);
+    console.log("getEventDayMessageのgenre", Genre);
 
-    if(NewsDetail.genre === "JobOffer"){
-      day_alart_label = "求人開始日";
-      already_label = "求人が開始";
-    }else if(NewsDetail.genre === "Internship" || NewsDetail.genre === "Session"){
-      day_alart_label = " 開催日";
-      already_label = " 開催";
+    if (NewsDetail.genre === "JobOffer") {
+      if (genre === "eventDay") {
+        day_alart_label = "求人開始日";
+        already_label = "求人が開始さ";
+      } else {
+        day_alart_label = "締切日";
+        already_label = "締め切ら";
+      }
+    } else if (["Internship", "Session"].includes(NewsDetail.genre)) {
+      if (genre === "eventDay") {
+        day_alart_label = "開催日";
+        already_label = "開催";
+      } else {
+        day_alart_label = "締切日";
+        already_label = "締め切ら";
+      }
     }
+
 
     // 日付の差分を計算 (ミリ秒 -> 日)
     const diffInDays = Math.ceil((eventDayDate - today) / (1000 * 60 * 60 * 24));
@@ -146,7 +157,7 @@ const InternshipJobOfferPage = () => {
       return (
         <>
           <Button className="NewsDetail_Button" variant="contained" color="warning">
-          {day_alart_label}まで残り{weeksLeft}週間!
+            {day_alart_label}まで残り{weeksLeft}週間!
           </Button>
         </>
 
@@ -157,12 +168,8 @@ const InternshipJobOfferPage = () => {
     if (diffInMonths >= 1) {
       return (
         <>
-          {/* <Typography className="EventDayAlert" variant="body1" color="info.dark">
-
-          </Typography> */}
-
           <Button className="NewsDetail_Button" variant="contained" color="secondary">
-          {day_alart_label}まで残り{diffInMonths}ヶ月!
+            {day_alart_label}まで残り{diffInMonths}ヶ月!
           </Button>
         </>
 
@@ -173,7 +180,7 @@ const InternshipJobOfferPage = () => {
     if (diffInDays < 0) {
       return (
         <Button className="NewsDetail_Button" variant="contained" color="success">
-        {already_label}されました!
+          {already_label}れました!
         </Button>
 
       );
@@ -239,14 +246,23 @@ const InternshipJobOfferPage = () => {
                 </Button>
               </div>
 
+              {Genre !== 'ブログ' && (
+                <Stack direction={"row"}>
+                  <div>
+                    <div className="day_information">
+                      <Tooltip title={formatDate(NewsDetail.event_day)}>
+                        <span>{getMessage(NewsDetail.event_day, "eventDay")}</span>
+                      </Tooltip>
 
-              {Genre !== 'ブログ' ? (
-                <div className='day_information'>
-                  {getEventDayMessage(NewsDetail.event_day)}
-                </div>
-              ) : null}
-
-
+                      {NewsDetail.deadline && (
+                        <Tooltip title={formatDate(NewsDetail.deadline)}>
+                          <span>{getMessage(NewsDetail.deadline, "deadLine")}</span>
+                        </Tooltip>
+                      )}
+                    </div>
+                  </div>
+                </Stack>
+              )}
 
             </Stack>
 
@@ -298,7 +314,7 @@ const InternshipJobOfferPage = () => {
                             ? "linear-gradient(#d3d3d3, #a6a6a6)" : "linear-gradient(#41A4FF, #9198e5)",
                           "&:hover": {
                             background: deadlinestatus == true || writeformStatus == true
-                            ? "linear-gradient(#d3d3d3, #a6a6a6)" : "linear-gradient(#41A4FF, #9198e5)",
+                              ? "linear-gradient(#d3d3d3, #a6a6a6)" : "linear-gradient(#41A4FF, #9198e5)",
                           },
                           color: "white", // ボタンの文字色
                         }}

@@ -177,7 +177,7 @@ const Individual = ({
                             ...(field.displayMode && { displayMode: field.displayMode }),
                             ...(field.fitToContainer && { fitToContainer: field.fitToContainer }),
                             ...(field.separateSpecialChoices  && { separateSpecialChoices : field.separateSpecialChoices  }),
-                            ...(field.response && { defaultValue: field.response } || {defaultValue: "※無回答です"}),
+                            ...(field.response && { defaultValue: field.response } || {defaultValue: "無回答"}),
 
                             readOnly: true,
                         })),

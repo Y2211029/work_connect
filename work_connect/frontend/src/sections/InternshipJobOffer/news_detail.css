@@ -212,6 +212,7 @@
     display: flex; /* フレックスボックスで子要素を整列 */
     align-items: flex-start; /* 子要素を上揃え */
     gap: 10px; /* アイコンと内容の間に余白を追加 */
+
 }
 
 .PreviousNews_content, .NextNews_content {
@@ -228,6 +229,10 @@
     font-size: 20px;
     cursor: pointer;
     font-weight: bold;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 500px;
 }
 
 .PreviousNews_icon, .NextNews_icon {
@@ -290,7 +295,7 @@
         padding-top: 3%;
         padding-bottom: 3%;
         padding-left: 4%;
-        
+
     }
 
     .NextNews_text,
@@ -474,6 +479,7 @@
     }
 
     .news_title {
+        width: 90%;
         padding-top: 10px;
         font-size: 15px;
     }
@@ -525,6 +531,7 @@
 
 
     .news_title {
+        width: 90%;
         padding-top: 10px;
         font-size: 15px;
     }

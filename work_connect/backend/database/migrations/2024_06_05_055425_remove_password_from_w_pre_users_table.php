@@ -24,7 +24,7 @@ class RemovePasswordFromWPreUsersTable extends Migration
     public function down(): void
     {
         Schema::table('w_pre_users', function (Blueprint $table) {
-            $table->text('user_name')->nullable(); // ユーザー名
+            $table->text('user_name')->nullable(); // ユーザーネーム
             $table->text('password')->nullable(); // passwordカラムを再追加
             $table->dateTime('date')->nullable(); // 日付
         });

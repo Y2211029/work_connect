@@ -71,7 +71,7 @@ const PostCard = forwardRef((props, ref) => {
       {postDateTimeDisplay(created_at)}
     </Typography>
   );
-  /*  ユーザー名 */
+  /*  ユーザーネーム */
   const renderUserName = user_name !== null && (
     <Typography
       // キャプションは通常、小さいサイズで補足情報や注釈などを表示するために使われます。
@@ -87,7 +87,7 @@ const PostCard = forwardRef((props, ref) => {
     </Typography>
   );
 
-  /* 表示：ユーザー名、コメント数、閲覧数、投稿日 */
+  /* 表示：ユーザーネーム、コメント数、閲覧数、投稿日 */
   const renderInfo = renderDate !== null && renderAvatar !== null && renderUserName !== null && (
     // 素を垂直または水平方向に整列
     <Stack

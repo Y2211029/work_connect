@@ -106,7 +106,7 @@ const SignUp1 = () => {
   //       } else {
   //         console.log("login失敗");
   //         alert(
-  //           "ログインに失敗しました。\nユーザー名、メールアドレス、パスワードをご確認ください。"
+  //           "ログインに失敗しました。\nユーザーネーム、メールアドレス、パスワードをご確認ください。"
   //         );
   //       }
   //     })
@@ -126,7 +126,7 @@ const SignUp1 = () => {
   //     /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/;
 
   //   if (!values.user_name) {
-  //     errors.user_name = "ユーザー名またはメールアドレスを入力してください";
+  //     errors.user_name = "ユーザーネームまたはメールアドレスを入力してください";
   //   } else if (/[@]/.test(values.user_name) && !regex.test(values.user_name)) {
   //     // @マークを含み(メールアドレス)かつ、メールアドレスが無効の場合
   //     errors.mail = "正しいメールアドレスを入力してください";

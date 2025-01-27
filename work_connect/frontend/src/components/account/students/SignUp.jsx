@@ -77,7 +77,7 @@ const SignUp = () => {
             <hr />
             <div className="signUpUiForm">
               <div className="signUpFormField">
-                <label>ユーザー名</label>
+                <label>ユーザーネーム</label>
                 <input
                   type="text"
                   name="mail"

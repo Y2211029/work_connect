@@ -29,7 +29,7 @@ class registerController extends Controller
             \Log::info('$requestData');
             \Log::info($requestData);
             $mail = $requestData['mail'];
-            // ユーザー名
+            // ユーザーネーム
             $user_name = $requestData['user_name'];
             // パスワード
             $password = $requestData['password'];
@@ -74,7 +74,7 @@ class registerController extends Controller
 
             /* 学生アカウントのID生成 */
             try {
-                // ユーザー名重複チェック
+                // ユーザーネーム重複チェック
 
                 $userNameDuplicateCheck = w_users::where('user_name', $user_name)->exists();
                 // idが存在しなかった場合にフラグをtrueにする
@@ -190,7 +190,7 @@ class registerController extends Controller
         \Log::info('$c_requestData');
         \Log::info($c_requestData);
         $c_mail = $c_requestData['mail'];
-        // ユーザー名
+        // ユーザーネーム
         $c_user_name = $c_requestData['user_name'];
         // パスワード
         $c_password = $c_requestData['password'];

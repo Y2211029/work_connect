@@ -25,7 +25,7 @@ class SearchInternshipJobOfferController extends Controller
             // 検索者のIDを取得
             $myId = $request->input('myId', "");
 
-            // 開いている企業プロフィール画面の企業のユーザー名を取得
+            // 開いている企業プロフィール画面の企業のユーザーネームを取得
             $user_name = $request->input('user_name', "");
 
             // 検索文字列を取得
@@ -112,7 +112,7 @@ class SearchInternshipJobOfferController extends Controller
                 $query->where('w_news.genre', $genre);
             }
 
-            // ユーザー名で絞り込み
+            // ユーザーネームで絞り込み
             if (isset($user_name) && $user_name != "") {
                 $query->where('w_companies.user_name', "$user_name");
             }

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('w_pre_users', function (Blueprint $table) {
             $table->id(); // idを主キーとして設定、自動増分
             $table->string('urltoken', 128)->unique(); // URLトークン
-            $table->text('user_name'); // ユーザー名
+            $table->text('user_name'); // ユーザーネーム
             $table->string('mail', 50); // メール
             $table->text('password'); // パスワード
             $table->dateTime('date'); // 日付

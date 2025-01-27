@@ -30,8 +30,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { MyContext } from "src/layouts/dashboard/index";
 //学生か企業かで、ヘッダー内容を切り替え、Linkを用いてジャンプする
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
-
-// import $ from "jquery";
 // ログイン
 import StudentLoginModal from "src/components/account/students/StudentLoginModal";
 import CompanyLoginModal from "src/components/account/company/CompanyLoginModal";
@@ -39,7 +37,6 @@ import CompanyLoginModal from "src/components/account/company/CompanyLoginModal"
 // 新規登録
 import StudentPreSignModal from "src/components/account/students/StudentPreSignModal";
 import CompanyPreSignModal from "src/components/account/company/CompanyPreSignModal";
-// import { Typography } from "@mui/material";
 
 // ----------------------------------------------------------------------
 
@@ -330,19 +327,7 @@ export default function Header({ onOpenNav }) {
 
         <NotificationsPopover />
 
-        <Tooltip title="アカウント" sx={{ display: Display.HomePage === "none" ? "none" : "flex" }}>
-          <IconButton
-            sx={{
-              marginLeft: "auto", // 右揃え
-              "&:hover": { backgroundColor: "#f0f0f0", title: "a" },
-              width: "30px",
-              height: "30px",
-              display: Display.HomePage === "none" ? "none" : { xs: "none", md: "flex" },
-            }}
-          >
-            <AccountPopover />
-          </IconButton>
-        </Tooltip>
+        <AccountPopover phoneSize={false} />
       </Stack>
     </>
   );
@@ -494,7 +479,7 @@ export default function Header({ onOpenNav }) {
         ) : null}
 
         {/* アカウントアイコン */}
-        <Tooltip title="アカウント" sx={{ display: Display.HomePage ? "none" : "flex" }}>
+        {/* <Tooltip title="アカウント" sx={{ display: Display.HomePage ? "none" : "flex" }}>
           <IconButton
             sx={{
               marginLeft: "auto", // 右揃え
@@ -503,10 +488,9 @@ export default function Header({ onOpenNav }) {
               height: "30px",
               display: Display.HomePage ? "none" : "felx",
             }}
-          >
-            <AccountPopover />
-          </IconButton>
-        </Tooltip>
+          > */}
+        <AccountPopover phoneSize={true} />
+        {/* </Tooltip>  */}
       </Stack>
     </>
   );

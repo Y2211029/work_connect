@@ -19,7 +19,7 @@ class SearchWorkController extends Controller
 
             $sortOption = $request->query('sort');
 
-            // ユーザー名を取得
+            // ユーザーネームを取得
             $user_name = $request->input('user_name', "");
 
             // 検索者のIDを取得
@@ -88,7 +88,7 @@ class SearchWorkController extends Controller
 
             $query->join('w_users', 'w_works.creator_id', '=', 'w_users.id');
 
-            // ユーザー名で絞り込み
+            // ユーザーネームで絞り込み
             if ($user_name != "") {
                 $query->where('w_users.user_name', $user_name);
             }

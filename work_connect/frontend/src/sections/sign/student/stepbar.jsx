@@ -24,7 +24,7 @@ const steps = ["アカウント", "学校情報", "詳細情報", "確認"];
 let stepConnectorLinesArray = [];
 
 export default function HorizontalLinearStepper({ Stepbar }) {
-  // ユーザー名重複エラー用
+  // ユーザーネーム重複エラー用
   const [userAccountCheck, setUserAccountCheck] = useState({
     user_name: false,
     password: false,

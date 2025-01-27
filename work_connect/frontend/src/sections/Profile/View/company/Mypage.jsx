@@ -420,55 +420,61 @@ const ProfileMypage = () => {
             </div>
           </div>
         )}
-
-        <Card
-          sx={{
-            textAlign: "center",
-            display: "flex",
-            justifyContent: "center",
-            backgroundColor: theme.palette.background.default,
-            boxShadow: "none",
-          }}
-        >
-          {responseIcon ? (
-            <Box sx={{ height: "calc(100vw * 0.58)", width: "calc(100vw * 0.58)", maxHeight: 350, maxWidth: 350 }}>
-              <ColorRingStyle />
-            </Box>
-          ) : ResponseData.icon ? (
-            <CardMedia
-              component="img"
-              sx={{
-                height: "calc(100vw * 0.58)",
-                width: "calc(100vw * 0.58)",
-                objectFit: "cover",
-                borderRadius: "50%",
-                maxHeight: 350,
-                maxWidth: 350,
-                "@media (min-width: 600px)": {
-                  height: 350,
-                  width: 350,
-                },
-              }}
-              image={`http://localhost:8000/storage/images/userIcon/${ResponseData.icon}`}
-            />
-          ) : (
-            <DefaultIcon
-              sx={{
-                height: "calc(100vw * 0.58)",
-                width: "calc(100vw * 0.58)",
-                padding: "20px",
-                objectFit: "cover",
-                borderRadius: "50%",
-                maxHeight: 350,
-                maxWidth: 350,
-                "@media (min-width: 600px)": {
-                  height: 350,
-                  width: 350,
-                },
-              }}
-            />
-          )}
-        </Card>
+        <Stack sx={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+          <Card
+            sx={{
+              // textAlign: "center",
+              // display: "flex",
+              // justifyContent: "center",
+              backgroundColor: theme.palette.background.default,
+              boxShadow: "none",
+            }}
+          >
+            {responseIcon ? (
+              <Box sx={{ height: "calc(100vw * 0.58)", width: "calc(100vw * 0.58)", maxHeight: 350, maxWidth: 350 }}>
+                <ColorRingStyle />
+              </Box>
+            ) : ResponseData.icon ? (
+              <CardMedia
+                component="img"
+                sx={{
+                  height: "calc(100vw * 0.58)",
+                  width: "calc(100vw * 0.58)",
+                  objectFit: "cover",
+                  borderRadius: "50%",
+                  maxHeight: 350,
+                  maxWidth: 350,
+                  "@media (min-width: 600px)": {
+                    height: 350,
+                    width: 350,
+                  },
+                }}
+                image={`http://localhost:8000/storage/images/userIcon/${ResponseData.icon}`}
+              />
+            ) : (
+              <DefaultIcon
+                sx={{
+                  height: "calc(100vw * 0.58)",
+                  width: "calc(100vw * 0.58)",
+                  padding: "20px",
+                  objectFit: "cover",
+                  borderRadius: "50%",
+                  maxHeight: 350,
+                  maxWidth: 350,
+                  "@media (min-width: 600px)": {
+                    height: 350,
+                    width: 350,
+                  },
+                }}
+              />
+            )}
+          </Card>
+          <Box>
+            <Typography variant="h6" sx={{ my: 2 }}>
+              {ResponseData.user_name}
+            </Typography>
+          </Box>
+        </Stack>
 
         <Box>
           <Typography variant="h6">企業名</Typography>

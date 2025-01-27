@@ -53,6 +53,7 @@ const StudentOfList = () => {
     }
   }, [IsSearch.searchToggle, IsSearch.Check]);
 
+
   // 学生データを取得
   useEffect(() => {
     const fetchStudents = async () => {

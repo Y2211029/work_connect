@@ -2,23 +2,22 @@
 import { useEffect, useState, useRef, forwardRef, useImperativeHandle } from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
-import { useParams } from 'react-router-dom';
+import { useParams } from "react-router-dom";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 
 // muiインポート
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import { styled } from '@mui/material/styles';
-import Button from '@mui/material/Button';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import { styled } from "@mui/material/styles";
+import Button from "@mui/material/Button";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 //import TextField from "@mui/material/TextField";
-
 
 // コンポーネントをインポート
 // --- アイコン --- //
@@ -30,7 +29,6 @@ import CompanyKanaName from "./EditRequiredFields/CompanyKanaName";
 
 import CompanyAddress from "./EditRequiredFields/CompanyAddress";
 import CompanyAddressMap from "./EditRequiredFields/CompanyAddressMap";
-
 
 import Intro from "./EditRequiredFields/Intro";
 // import GraduationYear from "./EditRequiredFields/GraduationYear";
@@ -47,12 +45,11 @@ import IntroVideo from "./EditDetailFields/IntroVideo";
 //企業情報
 import CompanyInformation from "./EditDetailFields/CompanyInformation";
 
-
 // Showmoreのスタイルを定義
 const Showmore = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   padding: theme.spacing(1),
-  textAlign: 'center',
+  textAlign: "center",
   fontSize: "14px",
   [theme.breakpoints.up("sm")]: {
     fontSize: "16px", // 画面幅が"sm"以上の場合
@@ -63,7 +60,7 @@ const Showmore = styled(Paper)(({ theme }) => ({
 const Save = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   padding: theme.spacing(1),
-  textAlign: 'right',
+  textAlign: "right",
   fontSize: "14px",
   [theme.breakpoints.up("sm")]: {
     fontSize: "16px", // 画面幅が"sm"以上の場合
@@ -71,17 +68,18 @@ const Save = styled(Paper)(({ theme }) => ({
 }));
 
 const ProfileMypageEdit = forwardRef((props, ref) => {
-
   // 親コンポーネント(Mypage.jsx)から渡されたデータ
   useImperativeHandle(ref, () => ({
     openEdit() {
-      Edit.current.style.display = '';
-    }
+      Edit.current.style.display = "";
+    },
   }));
 
   // 「さらに表示」ボタンの初期設定
   const [showMoreText, setShowMoreText] = useState(
-    <><KeyboardArrowDownIcon /> さらに表示</>
+    <>
+      <KeyboardArrowDownIcon /> さらに表示
+    </>
   );
 
   // useRef初期化
@@ -116,7 +114,6 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
   // ProfileUserNameが変化したとき
   useEffect(() => {
     async function GetData() {
-
       try {
         // Laravel側からデータを取得
         const response = await axios.get(Get_url, {
@@ -159,10 +156,10 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
 
   // 初回レンダリング時の一度だけ実行させる
   useEffect(() => {
-    detail.current.forEach(ref => {
-      if (ref) ref.style.display = 'none';
+    detail.current.forEach((ref) => {
+      if (ref) ref.style.display = "none";
     });
-    Edit.current.style.display = 'none';
+    Edit.current.style.display = "none";
   }, []);
 
   // 戻るボタンを押したときの処理
@@ -179,27 +176,34 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
     if (close) {
       // 「さらに表示」のとき、詳細項目を表示して、ボタンを「閉じる」に変更
       setClose(false);
-      detail.current.forEach(ref => {
+      detail.current.forEach((ref) => {
         if (ref) {
-          ref.style.display = '';
+          ref.style.display = "";
         }
       });
-      setShowMoreText(<><KeyboardArrowUpIcon /> 閉じる</>);
+      setShowMoreText(
+        <>
+          <KeyboardArrowUpIcon /> 閉じる
+        </>
+      );
     } else {
       // 「閉じる」のとき、詳細項目を非表示にして、ボタンを「さらに表示」に変更
       setClose(true);
-      detail.current.forEach(ref => {
+      detail.current.forEach((ref) => {
         if (ref) {
-          ref.style.display = 'none';
+          ref.style.display = "none";
         }
       });
-      setShowMoreText(<><KeyboardArrowDownIcon /> さらに表示</>);
+      setShowMoreText(
+        <>
+          <KeyboardArrowDownIcon /> さらに表示
+        </>
+      );
     }
   };
 
   // 保存ボタンを押したときの処理
   const handleSaveClick = () => {
-
     async function PostData() {
       try {
         console.log(SessionData.CompanyName);
@@ -244,40 +248,39 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
           CompanyHPMap: SessionData.CompanyHPMap,
 
           //詳細な企業情報
-          CompanyInformationData: CompanyInformationData
+          CompanyInformationData: CompanyInformationData,
         });
         console.log("レスポンス", response);
         if (response.data === true) {
-
           console.log("保存成功");
 
           // 編集中状態をオフ(accountDataから削除)
           const keysToDelete = [
-            'CompanyIconEditing',
-            'CompanyNameEditing',
-            'CompanyKanaNameEditing',
-            'CompanyUserNameEditing',
-            'CompanyIntroEditing',
-            'CompanyIntroVideoEditing',
-            'CompanyAddressEditing',
-            'CompanyAddressMapEditing',
-            'CompanyPrefectureEditing',
-            'CompanySelectedOccupationEditing',
-            'CompanyIndustryEditing',
-            'CompanyEnvironmentEditing',
-            'CompanyProgrammingLanguageEditing',
-            'CompanyQualificationEditing',
-            'CompanySoftwareEditing',
-            'CompanyHPMapEditing'
+            "CompanyIconEditing",
+            "CompanyNameEditing",
+            "CompanyKanaNameEditing",
+            "CompanyUserNameEditing",
+            "CompanyIntroEditing",
+            "CompanyIntroVideoEditing",
+            "CompanyAddressEditing",
+            "CompanyAddressMapEditing",
+            "CompanyPrefectureEditing",
+            "CompanySelectedOccupationEditing",
+            "CompanyIndustryEditing",
+            "CompanyEnvironmentEditing",
+            "CompanyProgrammingLanguageEditing",
+            "CompanyQualificationEditing",
+            "CompanySoftwareEditing",
+            "CompanyHPMapEditing",
           ];
 
           // 編集中状態のSessionDataを削除
-          keysToDelete.forEach(key => {
+          keysToDelete.forEach((key) => {
             delete SessionData[key];
           });
 
           // 更新された SessionData を sessionStorage に保存
-          sessionStorage.setItem('accountData', JSON.stringify(SessionData));
+          sessionStorage.setItem("accountData", JSON.stringify(SessionData));
 
           // popoverのアイコンを更新
           updateSessionData("accountData", "popover_icon", SessionData.CompanyIcon);
@@ -330,9 +333,7 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
         CompanyKanaNameBox.current.scrollIntoView({ behavior: "smooth", block: "center" });
       }
       alert("エラー：未入力項目があります。");
-    } else if (
-      !Kana.test(SessionData.CompanyKanaName)
-    ) {
+    } else if (!Kana.test(SessionData.CompanyKanaName)) {
       // カタカナがある場合
       // <Box ref={StudentKanaNameBox}>にスクロール
       CompanyKanaNameBox.current.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -341,33 +342,32 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
       // それ以外(実行)
       PostData();
     }
-
   };
 
   const HandleAddRow = (rowNumber) => {
     console.log("現在のrow_number", rowNumber);
 
-    const maxId = Math.max(...CompanyInformationData.map(item => item.id), 0); // ユニークIDを生成
+    const maxId = Math.max(...CompanyInformationData.map((item) => item.id), 0); // ユニークIDを生成
     const newId = maxId + 1;
 
     const newRow = {
       id: newId, // ユニークID
-      title: '新しいタイトル', // 新しい行の初期タイトル
-      contents: '新しい内容', // 新しい行の初期内容
+      title: "新しいタイトル", // 新しい行の初期タイトル
+      contents: "新しい内容", // 新しい行の初期内容
       public_status: 0, // 初期は非公開
       company_id: CompanyId, // 既存の企業IDを設定
-      row_number: rowNumber + 1 // 新しい行のrow_numberを設定
+      row_number: rowNumber + 1, // 新しい行のrow_numberを設定
     };
 
     console.log("追加する行", newRow);
 
-    setResponseCompanyInformationData(prevContents => {
+    setResponseCompanyInformationData((prevContents) => {
       if (Array.isArray(prevContents)) {
         console.log("配列データ:", prevContents);
 
         // 新しい行を挿入
         const newContents = [...prevContents];
-        const insertIndex = prevContents.findIndex(item => item.row_number === rowNumber) + 1;
+        const insertIndex = prevContents.findIndex((item) => item.row_number === rowNumber) + 1;
         newContents.splice(insertIndex, 0, newRow);
 
         // row_numberを振り直す
@@ -384,13 +384,12 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
     });
   };
 
-
   const HandleDeleteRow = (index) => {
     const result = window.confirm("本当に削除しますか?");
     if (result) {
-      setResponseCompanyInformationData(prevContents => {
+      setResponseCompanyInformationData((prevContents) => {
         console.log("更新前の企業情報", prevContents);
-        const updatedContents = prevContents.filter(item => item.id !== index);
+        const updatedContents = prevContents.filter((item) => item.id !== index);
         console.log("更新後の企業情報", updatedContents);
         return updatedContents;
       });
@@ -398,15 +397,15 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
   };
 
   const HandleChangePublicStatus = (index) => {
-    setResponseCompanyInformationData(prevContents => {
+    setResponseCompanyInformationData((prevContents) => {
       console.log(index);
       console.log(prevContents);
-      return prevContents.map(item => {
+      return prevContents.map((item) => {
         // 該当するidが見つかった場合、public_statusをトグル
         if (item.id === index) {
           return {
             ...item,
-            public_status: item.public_status === 1 ? 0 : 1
+            public_status: item.public_status === 1 ? 0 : 1,
           };
         }
         console.log("更新後", item);
@@ -419,13 +418,7 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
     let newValue = e.target.value;
 
     const updatedInfo = CompanyInformationData.map((item) =>
-      item.id === id
-        ? genre === "contents"
-          ? { ...item, contents: newValue }
-          : genre === "title"
-            ? { ...item, title: newValue }
-            : item
-        : item
+      item.id === id ? (genre === "contents" ? { ...item, contents: newValue } : genre === "title" ? { ...item, title: newValue } : item) : item
     );
 
     setResponseCompanyInformationData(updatedInfo);
@@ -435,18 +428,15 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
     console.log("更新後の企業情報", updatedInfo);
   };
 
-
-
-
   return (
     <Stack spacing={3} ref={Edit}>
       {/* 戻るボタン */}
-      <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+      <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
         <Tooltip title="戻る">
           <IconButton
             onClick={handleBackClick}
             sx={{
-              '&:hover': { backgroundColor: '#f0f0f0' },
+              "&:hover": { backgroundColor: "#f0f0f0" },
             }}
           >
             <ArrowBackOutlinedIcon sx={{ fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" } }} />
@@ -454,7 +444,7 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
         </Tooltip>
       </Box>
 
-      <UserIcon IconData={ResponseData.icon} />
+      <UserIcon IconData={ResponseData.icon} userName={ResponseData.user_name} />
       <Box ref={CompanyNameBox}>
         <Typography variant="h6">企業名*</Typography>
         <CompanyName CompanyNameData={ResponseData.company_name} />
@@ -482,49 +472,52 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
       </Box>
       <Box>
         <Showmore>
-          <Button variant="outlined" ref={showmore} onClick={ShowmoreClick}
-            sx={{ borderColor: '#5956FF', color: '#5956FF', '&:hover': { borderColor: '#5956FF' }, cursor: 'pointer' }}>
+          <Button
+            variant="outlined"
+            ref={showmore}
+            onClick={ShowmoreClick}
+            sx={{ borderColor: "#5956FF", color: "#5956FF", "&:hover": { borderColor: "#5956FF" }, cursor: "pointer" }}
+          >
             {showMoreText}
           </Button>
         </Showmore>
       </Box>
-      <Box ref={el => (detail.current[0] = el)} id="detail">
+      <Box ref={(el) => (detail.current[0] = el)} id="detail">
         <Typography variant="h6">勤務地</Typography>
         <Prefecture PrefectureData={ResponseData.prefecture} />
       </Box>
-      <Box ref={el => (detail.current[1] = el)} id="detail">
+      <Box ref={(el) => (detail.current[1] = el)} id="detail">
         <Typography variant="h6">社員の職種・募集職種</Typography>
         <SelectedOccupation SelectedOccupationData={ResponseData.selected_occupation} />
       </Box>
-      <Box ref={el => (detail.current[2] = el)} id="detail">
+      <Box ref={(el) => (detail.current[2] = el)} id="detail">
         <Typography variant="h6">業界キーワード</Typography>
         <Industry IndustryData={ResponseData.industry} />
       </Box>
-      <Box ref={el => (detail.current[3] = el)} id="detail">
+      <Box ref={(el) => (detail.current[3] = el)} id="detail">
         <Typography variant="h6">開発環境</Typography>
         <Environment EnvironmentData={ResponseData.development_environment} />
       </Box>
-      <Box ref={el => (detail.current[4] = el)} id="detail">
+      <Box ref={(el) => (detail.current[4] = el)} id="detail">
         <Typography variant="h6">プログラミング言語</Typography>
         <ProgrammingLanguage ProgrammingLanguageData={ResponseData.programming_language} />
       </Box>
-      <Box ref={el => (detail.current[5] = el)} id="detail">
+      <Box ref={(el) => (detail.current[5] = el)} id="detail">
         <Typography variant="h6">社員が取得している資格・取得支援資格・歓迎資格・必須資格</Typography>
         <Qualification QualificationData={ResponseData.acquisition_qualification} />
       </Box>
-      <Box ref={el => (detail.current[6] = el)} id="detail">
+      <Box ref={(el) => (detail.current[6] = el)} id="detail">
         <Typography variant="h6">ソフトウェア</Typography>
         <Software SoftwareData={ResponseData.software} />
       </Box>
-      <Box ref={el => (detail.current[7] = el)} id="detail">
+      <Box ref={(el) => (detail.current[7] = el)} id="detail">
         <Typography variant="h6">ホームページURL</Typography>
         <CompanyHPMap CompanyHPMapData={ResponseData.hp_url} />
       </Box>
-      <Box ref={el => (detail.current[8] = el)} id="detail">
+      <Box ref={(el) => (detail.current[8] = el)} id="detail">
         <Typography variant="h6">紹介動画</Typography>
         <IntroVideo IntroVideoData={ResponseData.video_url} />
       </Box>
-
 
       {/* 自由記述の企業情報 */}
       {!close && (
@@ -547,35 +540,34 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
           ) : (
             <Box textAlign="center" mt={2}>
               <Typography variant="body1">企業情報がありません</Typography>
-              <Button variant="outlined"
-            sx={{ borderColor: '#1877F2', color: '#1877F2', '&:hover': { borderColor: '#1877F2' }, cursor: 'pointer' }}
-            size="large" onClick={HandleAddRow}>
+              <Button
+                variant="outlined"
+                sx={{ borderColor: "#1877F2", color: "#1877F2", "&:hover": { borderColor: "#1877F2" }, cursor: "pointer" }}
+                size="large"
+                onClick={HandleAddRow}
+              >
                 企業情報を追加する
               </Button>
             </Box>
-
           )}
         </>
       )}
 
-
-
-
       <Box>
         <Save>
-          <Button variant="outlined"
-            sx={{ borderColor: '#1877F2', color: '#1877F2', '&:hover': { borderColor: '#1877F2' }, cursor: 'pointer' }}
+          <Button
+            variant="outlined"
+            sx={{ borderColor: "#1877F2", color: "#1877F2", "&:hover": { borderColor: "#1877F2" }, cursor: "pointer" }}
             size="large"
-            onClick={handleSaveClick}>
+            onClick={handleSaveClick}
+          >
             保存
           </Button>
         </Save>
       </Box>
       {/* </span> */}
     </Stack>
-
   );
-
 });
 
 ProfileMypageEdit.propTypes = {
@@ -585,4 +577,4 @@ ProfileMypageEdit.propTypes = {
 };
 
 export default ProfileMypageEdit;
-ProfileMypageEdit.displayName = 'Child';
+ProfileMypageEdit.displayName = "Child";

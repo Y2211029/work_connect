@@ -66,6 +66,14 @@ const VideoOfList = ({ ParamUserName }) => {
       setNoDataMessage(null);
     }
   }, [IsSearch.searchToggle, IsSearch.Check]);
+  useEffect(() => {
+    return () => {
+      setAllItems((prevItems) => ({
+        ...prevItems,
+        sortOption: "orderNewPostsDate", // 並び替えを新しい順にリセット
+      }));
+    };
+  }, [location.pathname]);
 
   // 学生データを取得
   useEffect(() => {
@@ -139,7 +147,6 @@ const VideoOfList = ({ ParamUserName }) => {
       setAllItems((prev) => ({
         ...prev,
         Page: 1,
-        sortOption: "orderNewPostsDate",
       }));
       console.log("VideoOfList unmount");
     };
@@ -157,6 +164,7 @@ const VideoOfList = ({ ParamUserName }) => {
   useEffect(() => {
     console.log("VideoOflist - List : ", students);
   }, [students]);
+
   return (
     <>
       {isLoadItem && (

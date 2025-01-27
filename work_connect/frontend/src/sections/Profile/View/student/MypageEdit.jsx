@@ -324,7 +324,7 @@ const ProfileMypageEdit = forwardRef((props, ref) => {
         </Tooltip>
       </Box>
 
-      <UserIcon IconData={ResponseData.icon} />
+      <UserIcon IconData={ResponseData.icon} userName={ResponseData.user_name} />
 
       <Box ref={StudentNameBox}>
         <Typography variant="h6">名前*</Typography>

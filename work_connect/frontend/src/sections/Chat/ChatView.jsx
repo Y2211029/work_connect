@@ -195,7 +195,7 @@ const FollowGroup = ({
               <ListItemIcon>
                 <SelectIcon chatViewIcon={element.icon} />
               </ListItemIcon>
-              {/* ユーザー名 */}
+              {/* ユーザーネーム */}
               <ListItemText primary={element.company_name ? element.company_name : element.user_name} />
               {/* チャットの更新時間を表示(未読がある場合は非表示) */}
               {element.unread === 0 ? (
@@ -437,7 +437,7 @@ const ChatView = () => {
   const [FollowStatusCount_2, setFollowStatusCount_2] = useState(null);
   const [FollowStatusCount_3, setFollowStatusCount_3] = useState(null);
 
-  // チャットに表示するユーザー名やアイコンなどを管理する変数
+  // チャットに表示するユーザーネームやアイコンなどを管理する変数
   // chatViewIdはチャットの取得に必須
   const [chatViewId, setChatViewId] = useState(accountData.ChatOpenId ? accountData.ChatOpenId : null);
   const [chatViewUserName, setChatViewUserName] = useState(accountData.ChatOpenUserName ? accountData.ChatOpenUserName : null);

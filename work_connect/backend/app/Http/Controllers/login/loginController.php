@@ -45,7 +45,7 @@ class loginController extends Controller
             }
 
           } else {
-            // @マークを含まない(ユーザー名)
+            // @マークを含まない(ユーザーネーム)
             if($kind == "s"){
               // 学生の場合
               $userInfo = DB::table('w_users')

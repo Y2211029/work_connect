@@ -75,7 +75,7 @@ const PostCard = forwardRef((props, ref) => {
           <div className="postCard item-stack" style={{ width: "100%", padding: "10px" }}>
             {/* フォロー状況 */}
             {renderFollow}
-            {/* アバターとユーザー名 */}
+            {/* アバターとユーザーネーム */}
             <Stack direction="column" alignItems="center" justifyContent="space-between" spacing={1} sx={{ marginTop: "10px" }}>
               {renderAvatar}
               <Typography variant="h6" sx={{ mt: 2 }}>

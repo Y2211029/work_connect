@@ -154,7 +154,7 @@ const StudentPreSignModal = () => {
           }
         } else {
           console.log("login失敗");
-          alert("ログインに失敗しました。\nユーザー名、メールアドレス、パスワードをご確認ください。");
+          alert("ログインに失敗しました。\nユーザーネーム、メールアドレス、パスワードをご確認ください。");
         }
       })
       .fail(function (textStatus, errorThrown) {

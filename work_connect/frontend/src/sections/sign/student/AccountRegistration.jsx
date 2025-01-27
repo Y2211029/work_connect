@@ -50,7 +50,7 @@ const AccountRegistar = forwardRef((props, ref) => {
       }
     }
   }));
-  // ユーザー名重複時のhelperTextの内容を宣言
+  // ユーザーネーム重複時のhelperTextの内容を宣言
   const [userNameHelperText, setUserNameHelperText] = useState("");
 
   // アカウントデータの状態管理
@@ -123,9 +123,9 @@ const AccountRegistar = forwardRef((props, ref) => {
     }
   };
 
-  // ユーザー名の重複チェック
+  // ユーザーネームの重複チェック
   const inviteUserNameCheck = (user_name) => {
-    // ユーザー名重複チェックのリクエスト用URL
+    // ユーザーネーム重複チェックのリクエスト用URL
     const url = "http://localhost:8000/user_name_check";
 
     axios
@@ -141,8 +141,8 @@ const AccountRegistar = forwardRef((props, ref) => {
 
         console.log("response.data:", response.data);
         if (response.data == "重複あり") {
-          // console.log("ユーザー名が重複しています");
-          setUserNameHelperText("ユーザー名が重複しています");
+          // console.log("ユーザーネームが重複しています");
+          setUserNameHelperText("ユーザーネームが重複しています");
           // console.log("inputError.user_name: ", inputError.user_name);
           setInputError((prevState) => ({
             ...prevState,
@@ -252,7 +252,7 @@ const AccountRegistar = forwardRef((props, ref) => {
     // メイのバリデーションチェック
     student_kananameCheck(student_kananameElement);
 
-    // ユーザー名の重複チェック
+    // ユーザーネームの重複チェック
     inviteUserNameCheck(accountData.user_name);
 
     // パスワードのhtmlオブジェクトを取得
@@ -503,10 +503,10 @@ useEffect(() => {
               fullWidth
               helperText={userNameHelperText}
               // helperText={
-              //   (inputError.user_name ? "ユーザー名が条件に合致していません" : "") +
+              //   (inputError.user_name ? "ユーザーネームが条件に合致していません" : "") +
               //   "※大文字・小文字・英数字・8文字以上16文字以内"
               // }
-              label="ユーザー名"
+              label="ユーザーネーム"
               margin="normal"
               name="user_name"
               onChange={handleChange}

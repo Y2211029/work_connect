@@ -1,6 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
+import PropTypes from "prop-types";
 
 import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
@@ -9,9 +10,10 @@ import { alpha } from "@mui/material/styles";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
-
+import Tooltip from "@mui/material/Tooltip";
 import Box from "@mui/material/Box";
-
+// ゲストモード時、作品投稿・動画投稿・通知
+import { MyContext } from "src/layouts/dashboard/index";
 import { account } from "src/_mock/account";
 import { useSessionStorage } from "src/hooks/use-sessionStorage";
 import { AllItemsContext } from "src/layouts/dashboard/index";
@@ -20,7 +22,8 @@ import DefaultIcon from "src/sections/Profile/View/DefaultIcon";
 
 // ----------------------------------------------------------------------
 
-export default function AccountPopover() {
+export default function AccountPopover({phoneSize}) {
+  const Display = useContext(MyContext);
   const [open, setOpen] = useState(null);
   const navigate = useNavigate();
   // セッションストレージ取得
@@ -98,8 +101,13 @@ export default function AccountPopover() {
     },
   ];
 
-  return (
-    <>
+  const HeaderAccountPopover = (
+    <Tooltip
+      title="アカウント"
+      sx={{
+        display: Display.HomePage === "none" ? "none" : "flex",
+      }}
+    >
       <IconButton
         onClick={handleOpen}
         sx={{
@@ -109,6 +117,10 @@ export default function AccountPopover() {
           ...(open && {
             background: (theme) => `linear-gradient(135deg, ${theme.palette.primary.light} 0%, ${theme.palette.primary.main} 100%)`,
           }),
+
+          marginLeft: "auto", // 右揃え
+          "&:hover": { backgroundColor: "#f0f0f0", title: "a" },
+          display: Display.HomePage === "none" ? "none" : { xs: "none", md: "flex" },
         }}
       >
         {popoverIcon ? (
@@ -135,7 +147,59 @@ export default function AccountPopover() {
           />
         )}
       </IconButton>
+    </Tooltip>
+  );
+  const ToolAccountPopover = (
+    <Tooltip
+      title="アカウント"
+      sx={{
+        display: Display.HomePage === "none" ? "none" : "flex",
+      }}
+    >
+      <IconButton
+        onClick={handleOpen}
+        sx={{
+          marginLeft: "auto", // 右揃え
+          "&:hover": { backgroundColor: "#f0f0f0" },
+          width: "30px",
+          height: "30px",
+          background: (theme) => alpha(theme.palette.grey[500], 0.08),
+          ...(open && {
+            background: (theme) => `linear-gradient(135deg, ${theme.palette.primary.light} 0%, ${theme.palette.primary.main} 100%)`,
+          }),
+          display: Display.HomePage === "none" ? "none" : { xs: "flex", md: "none" },
+        }}
+      >
+        {popoverIcon ? (
+          // アイコンを設定しているとき
+          <Avatar
+            src={`http://localhost:8000/storage/images/userIcon/${popoverIcon}`}
+            alt={account.displayName}
+            sx={{
+              width: 36,
+              height: 36,
+              border: (theme) => `solid 2px ${theme.palette.background.default}`,
+            }}
+          >
+            {account.displayName.charAt(0).toUpperCase()}
+          </Avatar>
+        ) : (
+          // アイコンを設定していないとき
+          <DefaultIcon
+            sx={{
+              width: 36,
+              height: 36,
+              border: (theme) => `solid 2px ${theme.palette.background.default}`,
+            }}
+          />
+        )}
+      </IconButton>
+    </Tooltip>
+  );
 
+  return (
+    <>
+      {phoneSize ? ToolAccountPopover : HeaderAccountPopover}
       <Popover
         open={!!open}
         anchorEl={open}
@@ -171,7 +235,7 @@ export default function AccountPopover() {
               <span>{option.label}</span>
             </div>
           </MenuItem>
-        ))}            
+        ))}
         <Divider sx={{ borderStyle: "dashed", m: "0 !important", display: login_state ? "block" : "none" }} />
 
         <MenuItem
@@ -186,3 +250,7 @@ export default function AccountPopover() {
     </>
   );
 }
+
+AccountPopover.propTypes = {
+  phoneSize: PropTypes.bool,
+};

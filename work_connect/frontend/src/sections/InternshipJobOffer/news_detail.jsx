@@ -239,7 +239,7 @@ const InternshipJobOfferPage = () => {
         <div className="NewsDetailContainer">
           <div className="Menu">
 
-            <Stack direction={"row"} spacing={2}>
+            <Stack direction={"row"} spacing={1}>
               <div className="day_information">
                 <Button className="NewsDetail_Button" variant="contained" color="primary">
                   {Genre}

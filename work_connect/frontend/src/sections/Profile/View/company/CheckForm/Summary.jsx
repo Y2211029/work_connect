@@ -38,7 +38,7 @@ const Graph = ({ title, responses, userNames, onRequestClose }) => {
   console.log("レスポンスの内容", userNames);
 
   const responseUserMap = responses.map((response, index) => ({
-    response: response === "" ? "無回答" : response,
+    response: response === "" || response === null ? "無回答" : response,
     userName: userNames[index],
   }));
 
